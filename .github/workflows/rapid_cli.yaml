@@ -1,0 +1,293 @@
+name: rapid_cli
+
+on:
+  push:
+    paths:
+      - "packages/rapid_cli/**"
+      - ".github/workflows/rapid_cli.yaml"
+
+  pull_request:
+    paths:
+      - "packages/rapid_cli/**"
+      - ".github/workflows/rapid_cli.yaml"
+
+jobs:
+  test:
+    defaults:
+      run:
+        working-directory: packages/rapid_cli
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Lint commit messages
+        uses: wagoid/commitlint-github-action@v5
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter --version
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Format
+        run: flutter format . --set-exit-if-changed
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos --fatal-warnings .
+
+      - name: Run Tests
+        run: flutter test
+
+  e2e-android:
+    defaults:
+      run:
+        working-directory: packages/rapid_cli
+
+    runs-on: macos-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        api-level:
+          - 29
+
+    steps:
+      - uses: actions/checkout@v3
+      # Setup Git to clone private Repos (this step should not be needed when rapid is public)
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+      # - uses: gradle/wrapper-validation-action@v1
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 11
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+     # TODO remove and disable gradle caching   
+
+      # - name: AVD Cache
+      #   uses: actions/cache@v3
+      #   id: avd-cache
+      #   with:
+      #     path: |
+      #       ~/.android/avd/*
+      #       ~/.android/adb*
+      #     key: avd-29
+
+      # - name: Create AVD And Generate Snapshot For Caching
+      #   if: steps.avd-cache.outputs.cache-hit != 'true'
+      #   uses: reactivecircus/android-emulator-runner@v2
+      #   with:
+      #     api-level: 29
+      #     force-avd-creation: false
+      #     emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+      #     disable-animations: false
+      #     script: echo "Generated AVD snapshot for caching."
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter --version
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Run E2E Tests
+        # more info on https://github.com/ReactiveCircus/android-emulator-runner
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          #force-avd-creation: false
+          #emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          #disable-animations: true
+          #arch: x86_64
+          #profile: Nexus 6
+          script: cd packages/rapid_cli && flutter test --run-skipped -t e2e -t android
+
+  e2e-ios:
+    defaults:
+      run:
+        working-directory: packages/rapid_cli
+
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      # Setup Git to clone private Repos (this step should not be needed when rapid is public)
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+
+      - name: "List All Simulators"
+        run: "xcrun xctrace list devices"
+      - name: "Start Simulator"
+        run: |
+          UDID=$(xcrun xctrace list devices | grep "^iPhone 11 Simulator (15.2)" | awk '{gsub(/[()]/,""); print $NF}')
+          echo $UDID
+          xcrun simctl boot "${UDID:?No Simulator with this name found}"
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter --version
+      - run: flutter devices
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Run E2E Tests
+        run: flutter test --run-skipped -t e2e -t ios
+
+  e2e-linux:
+    defaults:
+      run:
+        working-directory: packages/rapid_cli
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - run: sudo apt-get update -y
+
+      - run: sudo apt-get install -y ninja-build libgtk-3-dev libblkid-dev
+      # Setup Git to clone private Repos (this step should not be needed when rapid is public)
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter --version
+      - run: flutter devices
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Run E2E Tests
+        run: |
+          export DISPLAY=:99
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+          flutter test --run-skipped -t e2e -t linux
+
+  e2e-macos:
+    defaults:
+      run:
+        working-directory: packages/rapid_cli
+
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      # Setup Git to clone private Repos (this step should not be needed when rapid is public)
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter --version
+      - run: flutter devices
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Run E2E Tests
+        run: flutter test --run-skipped -t e2e -t macos
+
+  e2e-web:
+    defaults:
+      run:
+        working-directory: packages/rapid_cli
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      # Setup Git to clone private Repos (should not be needed when rapid is public)
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter --version
+      - run: flutter devices
+      - run: chromedriver --version
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Run E2E Tests
+        run: flutter test --run-skipped -t e2e -t web
+
+  e2e-windows:
+    defaults:
+      run:
+        working-directory: packages/rapid_cli
+
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      # Setup Git to clone private Repos (this step should not be needed when rapid is public)
+      - uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter --version
+      - run: flutter devices
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Run E2E Tests
+        run: flutter test --run-skipped -t e2e -t windows

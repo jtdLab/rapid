@@ -1,0 +1,45 @@
+name: rapid_di
+
+on:
+  push:
+    paths:
+      - "packages/rapid_di/**"
+      - ".github/workflows/rapid_di.yaml"
+
+  pull_request:
+    paths:
+      - "packages/rapid_di/**"
+      - ".github/workflows/rapid_di.yaml"
+
+jobs:
+  test:
+    defaults:
+      run:
+        working-directory: packages/rapid_di
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Lint commit messages
+        uses: wagoid/commitlint-github-action@v5
+
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter --version
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Format
+        run: flutter format --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze --fatal-infos --fatal-warnings .
+
+      - name: Run Tests
+        run: flutter test -j 1 --no-pub --test-randomize-ordering-seed random

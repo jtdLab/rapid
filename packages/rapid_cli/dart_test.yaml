@@ -1,0 +1,17 @@
+tags:
+  pull-request-only:
+    skip: "Should only be run during pull request"
+  e2e:
+    skip: "End to end tests should be run in parallel with other unit tests"
+  android:
+    skip: "Should only run in an Android environment with a device ready to use"
+  ios:
+    skip: "Should only run in an iOS environment with a device ready to use"
+  linux:
+    skip: "Should only run in an Linux environment with a device ready to use"
+  macos:
+    skip: "Should only run in an macOS environment with a device ready to use"
+  web:
+    skip: "Should only run in an Web environment with a device ready to use"
+  windows:
+    skip: "Should only run in an Windows environment with a device ready to use"

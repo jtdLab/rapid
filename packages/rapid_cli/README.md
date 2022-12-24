@@ -1,1 +1,1 @@
-Rapid Command Line Interface
+Rapid CLI

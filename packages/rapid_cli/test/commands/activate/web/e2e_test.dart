@@ -1,4 +1,6 @@
 @Tags(['e2e', 'web'])
+import 'dart:convert';
+
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/command_runner.dart';
@@ -47,14 +49,21 @@ void main() {
 
           // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
           // TODO check  platform packges and dirs exists
-          final integrationTestResult = await Process.run(
+          final integrationTestResult = await Process.start(
             'flutter',
             ['test', 'integration_test/development_test.dart', '-d', '-web'],
             workingDirectory: appPackagePath,
             runInShell: true,
           );
+          integrationTestResult.stderr.listen((event) {
+            print(utf8.decode(event));
+          });
+          integrationTestResult.stdout.listen((event) {
+            print(utf8.decode(event));
+          });
+          final exitCode = await integrationTestResult.exitCode;
           expect(
-            integrationTestResult.exitCode,
+            exitCode,
             equals(ExitCode.success.code),
           );
           expect(integrationTestResult.stderr, isEmpty);

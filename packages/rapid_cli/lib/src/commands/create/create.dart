@@ -231,33 +231,33 @@ class CreateCommand extends Command<int>
 
   /// Whether the user specified that the project supports Android.
   ///
-  /// Defaults to `true` when the user did not specify any platform.
-  bool get _android => _any ? argResults['android'] : true;
+  /// Defaults to `false` when the user did not specify any platform.
+  bool get _android => _any ? argResults['android'] : false;
 
   /// Whether the user specified that the project supports iOS.
   ///
-  /// Defaults to `true` when the user did not specify any platform.
-  bool get _ios => _any ? argResults['ios'] : true;
+  /// Defaults to `false` when the user did not specify any platform.
+  bool get _ios => _any ? argResults['ios'] : false;
 
   /// Whether the user specified that the project supports Linux.
   ///
-  /// Defaults to `true` when the user did not specify any platform.
-  bool get _linux => _any ? argResults['linux'] : true;
+  /// Defaults to `false` when the user did not specify any platform.
+  bool get _linux => _any ? argResults['linux'] : false;
 
   /// Whether the user specified that the project supports macOS.
   ///
-  /// Defaults to `true` when the user did not specify any platform.
-  bool get _macos => _any ? argResults['macos'] : true;
+  /// Defaults to `false` when the user did not specify any platform.
+  bool get _macos => _any ? argResults['macos'] : false;
 
   /// Whether the user specified that the project supports Web.
   ///
-  /// Defaults to `true` when the user did not specify any platform.
-  bool get _web => _any ? argResults['web'] : true;
+  /// Defaults to `false` when the user did not specify any platform.
+  bool get _web => _any ? argResults['web'] : false;
 
   /// Whether the user specified that the project supports Windows.
   ///
-  /// Defaults to `true` when the user did not specify any platform.
-  bool get _windows => _any ? argResults['windows'] : true;
+  /// Defaults to `false` when the user did not specify any platform.
+  bool get _windows => _any ? argResults['windows'] : false;
 
   /// Gets the directory where the project will be generated in specified by the user.
   Directory get _outputDirectory =>

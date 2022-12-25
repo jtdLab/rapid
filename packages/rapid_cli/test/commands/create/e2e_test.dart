@@ -30,6 +30,25 @@ void main() {
         Directory.current = cwd;
       });
 
+// TODO add ci setup and uncomment this test
+/*       test(
+        '--create',
+        () async {
+          final commandResult = await commandRunner.run(
+            [
+              'create',
+              Directory.current.path,
+              '--project-name',
+              projectName,
+            ],
+          );
+          expect(commandResult, equals(ExitCode.success.code));
+
+          // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
+          // TODO check no platform packges and dirs exists
+        },
+      ); */
+
       group('create', () {
         test(
           '--android',
@@ -49,6 +68,7 @@ void main() {
             expect(commandResult, equals(ExitCode.success.code));
 
             // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
+            // TODO check  platform packges and dirs exists
             final integrationTestResult = await Process.run(
               'flutter',
               [
@@ -88,6 +108,7 @@ void main() {
             expect(commandResult, equals(ExitCode.success.code));
 
             // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
+            // TODO check  platform packges and dirs exists
             final integrationTestResult = await Process.run(
               'flutter',
               [
@@ -127,6 +148,7 @@ void main() {
             expect(commandResult, equals(ExitCode.success.code));
 
             // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
+            // TODO check  platform packges and dirs exists
             final integrationTestResult = await Process.run(
               'flutter',
               ['test', 'integration_test/development_test.dart', '-d', 'linux'],
@@ -161,6 +183,7 @@ void main() {
             expect(commandResult, equals(ExitCode.success.code));
 
             // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
+            // TODO check  platform packges and dirs exists
             final integrationTestResult = await Process.run(
               'flutter',
               ['test', 'integration_test/development_test.dart', '-d', 'macos'],
@@ -195,6 +218,7 @@ void main() {
             expect(commandResult, equals(ExitCode.success.code));
 
             // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
+            // TODO check  platform packges and dirs exists
             await Process.start(
               'chromedriver',
               ['--port=4444'],
@@ -242,6 +266,7 @@ void main() {
             expect(commandResult, equals(ExitCode.success.code));
 
             // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
+            // TODO check  platform packges and dirs exists
             final integrationTestResult = await Process.run(
               'flutter',
               [

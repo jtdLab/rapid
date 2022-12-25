@@ -283,24 +283,6 @@ void main() {
 
       // Assert
       verify(() => flutterInstalled()).called(1);
-      verify(() => logger.progress('Running "flutter config --enable-android"'))
-          .called(1);
-      verify(() => flutterConfigEnableAndroid()).called(1);
-      verify(() => logger.progress('Running "flutter config --enable-ios"'))
-          .called(1);
-      verify(() => flutterConfigEnableIos()).called(1);
-      verify(() => logger.progress('Running "flutter config --enable-web"'))
-          .called(1);
-      verify(() => flutterConfigEnableWeb()).called(1);
-      verify(() => logger.progress(
-          'Running "flutter config --enable-linux-desktop"')).called(1);
-      verify(() => flutterConfigEnableLinux()).called(1);
-      verify(() => logger.progress(
-          'Running "flutter config --enable-macos-desktop"')).called(1);
-      verify(() => flutterConfigEnableMacos()).called(1);
-      verify(() => logger.progress(
-          'Running "flutter config --enable-windows-desktop"')).called(1);
-      verify(() => flutterConfigEnableWindows()).called(1);
       verify(() => logger.progress('Bootstrapping')).called(1);
       verify(
         () => generator.generate(
@@ -316,12 +298,12 @@ void main() {
             'org_name': 'com.example',
             'description': 'A Rapid app.',
             'example': false,
-            'android': true,
-            'ios': true,
-            'linux': true,
-            'macos': true,
-            'web': true,
-            'windows': true,
+            'android': false,
+            'ios': false,
+            'linux': false,
+            'macos': false,
+            'web': false,
+            'windows': false,
           },
           logger: logger,
         ),
@@ -333,7 +315,7 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
       verify(() => melosBootstrap(cwd: outputDir)).called(1);
-      verify(() => progress.complete()).called(7);
+      verify(() => progress.complete()).called(1);
       verify(() => logger.alert('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -485,12 +467,12 @@ void main() {
                 'org_name': orgName,
                 'description': 'A Rapid app.',
                 'example': false,
-                'android': true,
-                'ios': true,
-                'web': true,
-                'linux': true,
-                'macos': true,
-                'windows': true,
+                'android': false,
+                'ios': false,
+                'web': false,
+                'linux': false,
+                'macos': false,
+                'windows': false,
               },
               logger: logger,
             ),

@@ -31,6 +31,10 @@ abstract class FlutterConfigEnablePlatformCommand {
   Future<void> call();
 }
 
+abstract class FlutterPubGetCommand {
+  Future<void> call({required String cwd});
+}
+
 abstract class FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
   Future<void> call({required String cwd});
 }
@@ -68,6 +72,8 @@ class MockProject extends Mock implements Project {}
 class MockFlutterConfigEnablePlatformCommand extends Mock
     implements FlutterConfigEnablePlatformCommand {}
 
+class MockFlutterPubGetCommand extends Mock implements FlutterPubGetCommand {}
+
 class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     extends Mock
     implements FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
@@ -91,6 +97,7 @@ void main() {
     late Progress progress;
     late RootDir rootDir;
     late MelosFile melosFile;
+    const appPackagePath = 'bam/boz';
     late PubspecFile appPackagePubspec;
     late MainFile mainFileDev;
     late MainFile mainFileTest;
@@ -98,9 +105,11 @@ void main() {
     late AppPackage appPackage;
     late PubspecFile diPackagePubspec;
     late InjectionFile injectionFile;
+    const diPackagePath = 'foo/bar/baz';
     late DiPackage diPackage;
     late Project project;
     late FlutterConfigEnablePlatformCommand flutterConfigEnableWindows;
+    late FlutterPubGetCommand flutterPubGet;
     late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
     late MelosBoostrapCommand melosBootstrap;
@@ -143,13 +152,14 @@ void main() {
       mainFileTest = MockMainFile();
       mainFileProd = MockMainFile();
       appPackage = MockAppPackage();
+      when(() => appPackage.path).thenReturn(appPackagePath);
       when(() => appPackage.pubspecFile).thenReturn(appPackagePubspec);
       when(() => appPackage.mainFiles)
           .thenReturn({mainFileDev, mainFileTest, mainFileProd});
       diPackagePubspec = MockPubspecFile();
       injectionFile = MockInjectionFile();
       diPackage = MockDiPackage();
-      when(() => diPackage.path).thenReturn('foo/bar/baz');
+      when(() => diPackage.path).thenReturn(diPackagePath);
       when(() => diPackage.pubspecFile).thenReturn(diPackagePubspec);
       when(() => diPackage.injectionFile).thenReturn(injectionFile);
       project = MockProject();
@@ -160,6 +170,9 @@ void main() {
       when(() => project.isActivated(Platform.windows)).thenReturn(false);
       flutterConfigEnableWindows = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableWindows()).thenAnswer((_) async {});
+      flutterPubGet = MockFlutterPubGetCommand();
+      when(() => flutterPubGet(cwd: any(named: 'cwd')))
+          .thenAnswer((_) async {});
       flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
           MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
       when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
@@ -186,6 +199,7 @@ void main() {
         logger: logger,
         project: project,
         flutterConfigEnableWindows: flutterConfigEnableWindows,
+        flutterPubGetCommand: flutterPubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
         melosBootstrap: melosBootstrap,
@@ -245,8 +259,11 @@ void main() {
 
       // Assert
       verifyNever(() => logger.err('Windows already activated.'));
-      verify(() => logger.progress('Activating Windows')).called(1);
+      verify(() => logger.info('Activating Windows ...')).called(1);
+      verify(() => logger.progress(
+          'Running "flutter config --enable-windows-desktop"')).called(1);
       verify(() => flutterConfigEnableWindows()).called(1);
+      verify(() => logger.progress('Generating Windows files')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -263,24 +280,46 @@ void main() {
           logger: logger,
         ),
       ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} Windows file(s)']),
+      );
+      verify(() => logger.progress('Updating package $appPackagePath '))
+          .called(1);
       verify(() =>
               appPackagePubspec.addDependency('${projectName}_windows_app'))
           .called(1);
       verify(() => mainFileDev.addPlatform(Platform.windows)).called(1);
       verify(() => mainFileTest.addPlatform(Platform.windows)).called(1);
       verify(() => mainFileProd.addPlatform(Platform.windows)).called(1);
+      verify(() => logger.progress('Updating package $diPackagePath '))
+          .called(1);
       verify(() => diPackagePubspec
           .addDependency('${projectName}_windows_home_page')).called(1);
       verify(() => injectionFile.addPackage('${projectName}_windows_home_page'))
           .called(1);
-      verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: diPackage.path)).called(1);
+      verify(() => logger.progress('Running "melos clean" in ${tempDir.path} '))
+          .called(1);
       verify(() => melosClean(cwd: tempDir.path)).called(1);
+      verify(() =>
+              logger.progress('Running "melos bootstrap" in ${tempDir.path} '))
+          .called(1);
       verify(() => melosBootstrap(cwd: tempDir.path)).called(1);
-      expect(progressLogs, ['Activated Windows']);
+      verify(() =>
+              logger.progress('Running "flutter pub get" in $diPackagePath '))
+          .called(1);
+      verify(() => flutterPubGet(cwd: diPackagePath)).called(1);
+      verify(() => logger.progress(
+              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $diPackagePath '))
+          .called(1);
+      verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          cwd: diPackagePath)).called(1);
+
+      verify(() => logger.info('Windows activated!')).called(1);
       expect(result, ExitCode.success.code);
     });
 
+    // TODO maybe share test logic better between this and the test before this all but the custom org name is same
     test('completes successfully with correct output w/ custom org-name',
         () async {
       // Arrange
@@ -292,9 +331,11 @@ void main() {
 
       // Assert
       verifyNever(() => logger.err('Windows already activated.'));
-
-      verify(() => logger.progress('Activating Windows')).called(1);
+      verify(() => logger.info('Activating Windows ...')).called(1);
+      verify(() => logger.progress(
+          'Running "flutter config --enable-windows-desktop"')).called(1);
       verify(() => flutterConfigEnableWindows()).called(1);
+      verify(() => logger.progress('Generating Windows files')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -311,21 +352,42 @@ void main() {
           logger: logger,
         ),
       ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} Windows file(s)']),
+      );
+      verify(() => logger.progress('Updating package $appPackagePath '))
+          .called(1);
       verify(() =>
               appPackagePubspec.addDependency('${projectName}_windows_app'))
           .called(1);
       verify(() => mainFileDev.addPlatform(Platform.windows)).called(1);
       verify(() => mainFileTest.addPlatform(Platform.windows)).called(1);
       verify(() => mainFileProd.addPlatform(Platform.windows)).called(1);
+      verify(() => logger.progress('Updating package $diPackagePath '))
+          .called(1);
       verify(() => diPackagePubspec
           .addDependency('${projectName}_windows_home_page')).called(1);
       verify(() => injectionFile.addPackage('${projectName}_windows_home_page'))
           .called(1);
-      verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: diPackage.path)).called(1);
+      verify(() => logger.progress('Running "melos clean" in ${tempDir.path} '))
+          .called(1);
       verify(() => melosClean(cwd: tempDir.path)).called(1);
+      verify(() =>
+              logger.progress('Running "melos bootstrap" in ${tempDir.path} '))
+          .called(1);
       verify(() => melosBootstrap(cwd: tempDir.path)).called(1);
-      expect(progressLogs, ['Activated Windows']);
+      verify(() =>
+              logger.progress('Running "flutter pub get" in $diPackagePath '))
+          .called(1);
+      verify(() => flutterPubGet(cwd: diPackagePath)).called(1);
+      verify(() => logger.progress(
+              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $diPackagePath '))
+          .called(1);
+      verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          cwd: diPackagePath)).called(1);
+
+      verify(() => logger.info('Windows activated!')).called(1);
       expect(result, ExitCode.success.code);
     });
 

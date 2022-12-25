@@ -6,6 +6,8 @@ import 'package:rapid_cli/src/command_runner.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
+import '../../helpers/helpers.dart';
+
 class MockLogger extends Mock implements Logger {}
 
 class MockProgress extends Mock implements Progress {}
@@ -115,7 +117,7 @@ void main() {
                 'test',
                 'integration_test/development_test.dart',
                 '-d',
-                'iPhone 11'
+                iosDevice,
               ], // TODO device should be ios but does not work
               workingDirectory: appPackagePath,
               runInShell: true,

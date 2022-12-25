@@ -17,6 +17,7 @@ class AndroidCommand extends Command<int>
     Logger? logger,
     required Project project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableAndroid,
+    FlutterPubGetCommand? flutterPubGetCommand,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     MelosBootstrapCommand? melosBootstrap,
@@ -26,6 +27,7 @@ class AndroidCommand extends Command<int>
         _project = project,
         _flutterConfigEnableAndroid =
             flutterConfigEnableAndroid ?? Flutter.configEnableAndroid,
+        _flutterPubGetCommand = flutterPubGetCommand ?? Flutter.pubGet,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
@@ -40,6 +42,7 @@ class AndroidCommand extends Command<int>
   final Logger _logger;
   final Project _project;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableAndroid;
+  final FlutterPubGetCommand _flutterPubGetCommand;
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
       _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final MelosBootstrapCommand _melosBootstrap;
@@ -67,16 +70,19 @@ class AndroidCommand extends Command<int>
 
       return ExitCode.config.code;
     } else {
-      final runProgress = _logger.progress(
-        'Activating ${lightYellow.wrap('Android')}',
-      );
+      _logger.info('Activating ${lightYellow.wrap('Android')} ...');
 
+      final enableAndroidProgress = _logger.progress(
+        'Running "flutter config --enable-android"',
+      );
       await _flutterConfigEnableAndroid();
+      enableAndroidProgress.complete();
 
       final projectName = _project.melosFile.name;
 
+      final generateProgress = _logger.progress('Generating Android files');
       final generator = await _generator(androidBundle);
-      await generator.generate(
+      final files = await generator.generate(
         DirectoryGeneratorTarget(_project.rootDir.directory),
         vars: {
           'project_name': projectName,
@@ -84,29 +90,50 @@ class AndroidCommand extends Command<int>
         },
         logger: _logger,
       );
+      generateProgress.complete('Generated ${files.length} Android file(s)');
 
       final appPackage = _project.appPackage;
+      final appUpdatePackageProgress =
+          _logger.progress('Updating package ${appPackage.path} ');
       final appPackagePubspec = appPackage.pubspecFile;
       appPackagePubspec.addDependency('${projectName}_android_app');
       for (final mainFile in appPackage.mainFiles) {
         mainFile.addPlatform(Platform.android);
       }
+      appUpdatePackageProgress.complete();
 
       final diPackage = _project.diPackage;
+      final diUpdatePackageProgress =
+          _logger.progress('Updating package ${diPackage.path} ');
       final diPackagePubspec = diPackage.pubspecFile;
       final package = '${projectName}_android_home_page';
       diPackagePubspec.addDependency(package);
       diPackage.injectionFile.addPackage(package);
+      diUpdatePackageProgress.complete();
+
+      final melosCleanProgress = _logger.progress(
+        'Running "melos clean" in ${_project.rootDir.path} ',
+      );
+      await _melosClean(cwd: _project.rootDir.path);
+      melosCleanProgress.complete();
+      final melosBootstrapProgress = _logger.progress(
+        'Running "melos bootstrap" in ${_project.rootDir.path} ',
+      );
+      await _melosBootstrap(cwd: _project.rootDir.path);
+      melosBootstrapProgress.complete();
+
+      final diPubGetProgress =
+          _logger.progress('Running "flutter pub get" in ${diPackage.path} ');
+      await _flutterPubGetCommand(cwd: diPackage.path);
+      diPubGetProgress.complete();
+      final diBuildProgress = _logger.progress(
+          'Running "flutter pub run build_runner build --delete-conflicting-outputs" in ${diPackage.path} ');
       await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
         cwd: diPackage.path,
       );
+      diBuildProgress.complete();
 
-      await _melosClean(cwd: _project.rootDir.path);
-      await _melosBootstrap(cwd: _project.rootDir.path);
-
-      runProgress.complete(
-        'Activated ${lightYellow.wrap('Android')}',
-      );
+      _logger.info('${lightYellow.wrap('Android')} activated!');
 
       return ExitCode.success.code;
     }

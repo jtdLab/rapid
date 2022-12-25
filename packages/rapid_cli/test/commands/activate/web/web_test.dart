@@ -28,6 +28,10 @@ abstract class FlutterConfigEnablePlatformCommand {
   Future<void> call();
 }
 
+abstract class FlutterPubGetCommand {
+  Future<void> call({required String cwd});
+}
+
 abstract class FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
   Future<void> call({required String cwd});
 }
@@ -63,6 +67,8 @@ class MockProject extends Mock implements Project {}
 class MockFlutterConfigEnablePlatformCommand extends Mock
     implements FlutterConfigEnablePlatformCommand {}
 
+class MockFlutterPubGetCommand extends Mock implements FlutterPubGetCommand {}
+
 class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     extends Mock
     implements FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
@@ -86,6 +92,7 @@ void main() {
     late Progress progress;
     late RootDir rootDir;
     late MelosFile melosFile;
+    const appPackagePath = 'bam/boz';
     late PubspecFile appPackagePubspec;
     late MainFile mainFileDev;
     late MainFile mainFileTest;
@@ -93,9 +100,11 @@ void main() {
     late AppPackage appPackage;
     late PubspecFile diPackagePubspec;
     late InjectionFile injectionFile;
+    const diPackagePath = 'foo/bar/baz';
     late DiPackage diPackage;
     late Project project;
     late FlutterConfigEnablePlatformCommand flutterConfigEnableWeb;
+    late FlutterPubGetCommand flutterPubGet;
     late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
     late MelosBoostrapCommand melosBootstrap;
@@ -137,13 +146,14 @@ void main() {
       mainFileTest = MockMainFile();
       mainFileProd = MockMainFile();
       appPackage = MockAppPackage();
+      when(() => appPackage.path).thenReturn(appPackagePath);
       when(() => appPackage.pubspecFile).thenReturn(appPackagePubspec);
       when(() => appPackage.mainFiles)
           .thenReturn({mainFileDev, mainFileTest, mainFileProd});
       diPackagePubspec = MockPubspecFile();
       injectionFile = MockInjectionFile();
       diPackage = MockDiPackage();
-      when(() => diPackage.path).thenReturn('foo/bar/baz');
+      when(() => diPackage.path).thenReturn(diPackagePath);
       when(() => diPackage.pubspecFile).thenReturn(diPackagePubspec);
       when(() => diPackage.injectionFile).thenReturn(injectionFile);
       project = MockProject();
@@ -154,6 +164,9 @@ void main() {
       when(() => project.isActivated(Platform.web)).thenReturn(false);
       flutterConfigEnableWeb = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableWeb()).thenAnswer((_) async {});
+      flutterPubGet = MockFlutterPubGetCommand();
+      when(() => flutterPubGet(cwd: any(named: 'cwd')))
+          .thenAnswer((_) async {});
       flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
           MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
       when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
@@ -178,6 +191,7 @@ void main() {
         logger: logger,
         project: project,
         flutterConfigEnableWeb: flutterConfigEnableWeb,
+        flutterPubGetCommand: flutterPubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
         melosBootstrap: melosBootstrap,
@@ -225,8 +239,11 @@ void main() {
 
       // Assert
       verifyNever(() => logger.err('Web already activated.'));
-      verify(() => logger.progress('Activating Web')).called(1);
+      verify(() => logger.info('Activating Web ...')).called(1);
+      verify(() => logger.progress('Running "flutter config --enable-web"'))
+          .called(1);
       verify(() => flutterConfigEnableWeb()).called(1);
+      verify(() => logger.progress('Generating Web files')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -242,21 +259,42 @@ void main() {
           logger: logger,
         ),
       ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} Web file(s)']),
+      );
+      verify(() => logger.progress('Updating package $appPackagePath '))
+          .called(1);
       verify(() => appPackagePubspec.addDependency('${projectName}_web_app'))
           .called(1);
       verify(() => mainFileDev.addPlatform(Platform.web)).called(1);
       verify(() => mainFileTest.addPlatform(Platform.web)).called(1);
       verify(() => mainFileProd.addPlatform(Platform.web)).called(1);
+      verify(() => logger.progress('Updating package $diPackagePath '))
+          .called(1);
       verify(() =>
               diPackagePubspec.addDependency('${projectName}_web_home_page'))
           .called(1);
       verify(() => injectionFile.addPackage('${projectName}_web_home_page'))
           .called(1);
-      verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: diPackage.path)).called(1);
+      verify(() => logger.progress('Running "melos clean" in ${tempDir.path} '))
+          .called(1);
       verify(() => melosClean(cwd: tempDir.path)).called(1);
+      verify(() =>
+              logger.progress('Running "melos bootstrap" in ${tempDir.path} '))
+          .called(1);
       verify(() => melosBootstrap(cwd: tempDir.path)).called(1);
-      expect(progressLogs, ['Activated Web']);
+      verify(() =>
+              logger.progress('Running "flutter pub get" in $diPackagePath '))
+          .called(1);
+      verify(() => flutterPubGet(cwd: diPackagePath)).called(1);
+      verify(() => logger.progress(
+              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $diPackagePath '))
+          .called(1);
+      verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          cwd: diPackagePath)).called(1);
+
+      verify(() => logger.info('Web activated!')).called(1);
       expect(result, ExitCode.success.code);
     });
 

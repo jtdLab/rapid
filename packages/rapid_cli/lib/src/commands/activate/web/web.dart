@@ -15,6 +15,7 @@ class WebCommand extends Command<int> with OverridableArgResults {
     Logger? logger,
     required Project project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWeb,
+    FlutterPubGetCommand? flutterPubGetCommand,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     MelosBootstrapCommand? melosBootstrap,
@@ -24,6 +25,7 @@ class WebCommand extends Command<int> with OverridableArgResults {
         _project = project,
         _flutterConfigEnableWeb =
             flutterConfigEnableWeb ?? Flutter.configEnableWeb,
+        _flutterPubGetCommand = flutterPubGetCommand ?? Flutter.pubGet,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
@@ -34,6 +36,7 @@ class WebCommand extends Command<int> with OverridableArgResults {
   final Logger _logger;
   final Project _project;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableWeb;
+  final FlutterPubGetCommand _flutterPubGetCommand;
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
       _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final MelosBootstrapCommand _melosBootstrap;
@@ -58,45 +61,69 @@ class WebCommand extends Command<int> with OverridableArgResults {
 
       return ExitCode.config.code;
     } else {
-      final runProgress = _logger.progress(
-        'Activating ${lightYellow.wrap('Web')}',
-      );
+      _logger.info('Activating ${lightYellow.wrap('Web')} ...');
 
+      final enableMacosProgress = _logger.progress(
+        'Running "flutter config --enable-web"',
+      );
       await _flutterConfigEnableWeb();
+      enableMacosProgress.complete();
 
       final projectName = _project.melosFile.name;
 
+      final generateProgress = _logger.progress('Generating Web files');
       final generator = await _generator(webBundle);
-      await generator.generate(
+      final files = await generator.generate(
         DirectoryGeneratorTarget(_project.rootDir.directory),
         vars: {
           'project_name': projectName,
         },
         logger: _logger,
       );
+      generateProgress.complete('Generated ${files.length} Web file(s)');
 
       final appPackage = _project.appPackage;
+      final appUpdatePackageProgress =
+          _logger.progress('Updating package ${appPackage.path} ');
       final appPackagePubspec = appPackage.pubspecFile;
       appPackagePubspec.addDependency('${projectName}_web_app');
       for (final mainFile in appPackage.mainFiles) {
         mainFile.addPlatform(Platform.web);
       }
+      appUpdatePackageProgress.complete();
 
       final diPackage = _project.diPackage;
+      final diUpdatePackageProgress =
+          _logger.progress('Updating package ${diPackage.path} ');
       final diPackagePubspec = diPackage.pubspecFile;
       final package = '${projectName}_web_home_page';
       diPackagePubspec.addDependency(package);
       diPackage.injectionFile.addPackage(package);
+      diUpdatePackageProgress.complete();
+
+      final melosCleanProgress = _logger.progress(
+        'Running "melos clean" in ${_project.rootDir.path} ',
+      );
+      await _melosClean(cwd: _project.rootDir.path);
+      melosCleanProgress.complete();
+      final melosBootstrapProgress = _logger.progress(
+        'Running "melos bootstrap" in ${_project.rootDir.path} ',
+      );
+      await _melosBootstrap(cwd: _project.rootDir.path);
+      melosBootstrapProgress.complete();
+
+      final diPubGetProgress =
+          _logger.progress('Running "flutter pub get" in ${diPackage.path} ');
+      await _flutterPubGetCommand(cwd: diPackage.path);
+      diPubGetProgress.complete();
+      final diBuildProgress = _logger.progress(
+          'Running "flutter pub run build_runner build --delete-conflicting-outputs" in ${diPackage.path} ');
       await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
         cwd: diPackage.path,
       );
+      diBuildProgress.complete();
 
-      await _melosClean(cwd: _project.rootDir.path);
-      await _melosBootstrap(cwd: _project.rootDir.path);
-
-      runProgress.complete(
-        'Activated ${lightYellow.wrap('Web')}',
-      );
+      _logger.info('${lightYellow.wrap('Web')} activated!');
 
       return ExitCode.success.code;
     }

@@ -17,6 +17,7 @@ class MacosCommand extends Command<int>
     Logger? logger,
     required Project project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableMacos,
+    FlutterPubGetCommand? flutterPubGetCommand,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     MelosBootstrapCommand? melosBootstrap,
@@ -26,6 +27,7 @@ class MacosCommand extends Command<int>
         _project = project,
         _flutterConfigEnableMacos =
             flutterConfigEnableMacos ?? Flutter.configEnableMacos,
+        _flutterPubGetCommand = flutterPubGetCommand ?? Flutter.pubGet,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
@@ -40,6 +42,7 @@ class MacosCommand extends Command<int>
   final Logger _logger;
   final Project _project;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableMacos;
+  final FlutterPubGetCommand _flutterPubGetCommand;
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
       _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final MelosBootstrapCommand _melosBootstrap;
@@ -67,16 +70,19 @@ class MacosCommand extends Command<int>
 
       return ExitCode.config.code;
     } else {
-      final runProgress = _logger.progress(
-        'Activating ${lightYellow.wrap('macOS')}',
-      );
+      _logger.info('Activating ${lightYellow.wrap('macOS')} ...');
 
+      final enableMacosProgress = _logger.progress(
+        'Running "flutter config --enable-macos-desktop"',
+      );
       await _flutterConfigEnableMacos();
+      enableMacosProgress.complete();
 
       final projectName = _project.melosFile.name;
 
+      final generateProgress = _logger.progress('Generating macOS files');
       final generator = await _generator(macosBundle);
-      await generator.generate(
+      final files = await generator.generate(
         DirectoryGeneratorTarget(_project.rootDir.directory),
         vars: {
           'project_name': projectName,
@@ -84,29 +90,50 @@ class MacosCommand extends Command<int>
         },
         logger: _logger,
       );
+      generateProgress.complete('Generated ${files.length} macOS file(s)');
 
       final appPackage = _project.appPackage;
+      final appUpdatePackageProgress =
+          _logger.progress('Updating package ${appPackage.path} ');
       final appPackagePubspec = appPackage.pubspecFile;
       appPackagePubspec.addDependency('${projectName}_macos_app');
       for (final mainFile in appPackage.mainFiles) {
         mainFile.addPlatform(Platform.macos);
       }
+      appUpdatePackageProgress.complete();
 
       final diPackage = _project.diPackage;
+      final diUpdatePackageProgress =
+          _logger.progress('Updating package ${diPackage.path} ');
       final diPackagePubspec = diPackage.pubspecFile;
       final package = '${projectName}_macos_home_page';
       diPackagePubspec.addDependency(package);
       diPackage.injectionFile.addPackage(package);
+      diUpdatePackageProgress.complete();
+
+      final melosCleanProgress = _logger.progress(
+        'Running "melos clean" in ${_project.rootDir.path} ',
+      );
+      await _melosClean(cwd: _project.rootDir.path);
+      melosCleanProgress.complete();
+      final melosBootstrapProgress = _logger.progress(
+        'Running "melos bootstrap" in ${_project.rootDir.path} ',
+      );
+      await _melosBootstrap(cwd: _project.rootDir.path);
+      melosBootstrapProgress.complete();
+
+      final diPubGetProgress =
+          _logger.progress('Running "flutter pub get" in ${diPackage.path} ');
+      await _flutterPubGetCommand(cwd: diPackage.path);
+      diPubGetProgress.complete();
+      final diBuildProgress = _logger.progress(
+          'Running "flutter pub run build_runner build --delete-conflicting-outputs" in ${diPackage.path} ');
       await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
         cwd: diPackage.path,
       );
+      diBuildProgress.complete();
 
-      await _melosClean(cwd: _project.rootDir.path);
-      await _melosBootstrap(cwd: _project.rootDir.path);
-
-      runProgress.complete(
-        'Activated ${lightYellow.wrap('macOS')}',
-      );
+      _logger.info('${lightYellow.wrap('macOS')} activated!');
 
       return ExitCode.success.code;
     }

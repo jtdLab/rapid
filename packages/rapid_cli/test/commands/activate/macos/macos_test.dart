@@ -31,6 +31,10 @@ abstract class FlutterConfigEnablePlatformCommand {
   Future<void> call();
 }
 
+abstract class FlutterPubGetCommand {
+  Future<void> call({required String cwd});
+}
+
 abstract class FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
   Future<void> call({required String cwd});
 }
@@ -68,6 +72,8 @@ class MockProject extends Mock implements Project {}
 class MockFlutterConfigEnablePlatformCommand extends Mock
     implements FlutterConfigEnablePlatformCommand {}
 
+class MockFlutterPubGetCommand extends Mock implements FlutterPubGetCommand {}
+
 class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     extends Mock
     implements FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
@@ -91,6 +97,7 @@ void main() {
     late Progress progress;
     late RootDir rootDir;
     late MelosFile melosFile;
+    const appPackagePath = 'bam/boz';
     late PubspecFile appPackagePubspec;
     late MainFile mainFileDev;
     late MainFile mainFileTest;
@@ -98,9 +105,11 @@ void main() {
     late AppPackage appPackage;
     late PubspecFile diPackagePubspec;
     late InjectionFile injectionFile;
+    const diPackagePath = 'foo/bar/baz';
     late DiPackage diPackage;
     late Project project;
     late FlutterConfigEnablePlatformCommand flutterConfigEnableMacos;
+    late FlutterPubGetCommand flutterPubGet;
     late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
     late MelosBoostrapCommand melosBootstrap;
@@ -143,13 +152,14 @@ void main() {
       mainFileTest = MockMainFile();
       mainFileProd = MockMainFile();
       appPackage = MockAppPackage();
+      when(() => appPackage.path).thenReturn(appPackagePath);
       when(() => appPackage.pubspecFile).thenReturn(appPackagePubspec);
       when(() => appPackage.mainFiles)
           .thenReturn({mainFileDev, mainFileTest, mainFileProd});
       diPackagePubspec = MockPubspecFile();
       injectionFile = MockInjectionFile();
       diPackage = MockDiPackage();
-      when(() => diPackage.path).thenReturn('foo/bar/baz');
+      when(() => diPackage.path).thenReturn(diPackagePath);
       when(() => diPackage.pubspecFile).thenReturn(diPackagePubspec);
       when(() => diPackage.injectionFile).thenReturn(injectionFile);
       project = MockProject();
@@ -157,11 +167,12 @@ void main() {
       when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.appPackage).thenReturn(appPackage);
       when(() => project.diPackage).thenReturn(diPackage);
-
       when(() => project.isActivated(Platform.macos)).thenReturn(false);
-
       flutterConfigEnableMacos = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableMacos()).thenAnswer((_) async {});
+      flutterPubGet = MockFlutterPubGetCommand();
+      when(() => flutterPubGet(cwd: any(named: 'cwd')))
+          .thenAnswer((_) async {});
       flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
           MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
       when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
@@ -188,6 +199,7 @@ void main() {
         logger: logger,
         project: project,
         flutterConfigEnableMacos: flutterConfigEnableMacos,
+        flutterPubGetCommand: flutterPubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
         melosBootstrap: melosBootstrap,
@@ -243,8 +255,11 @@ void main() {
 
       // Assert
       verifyNever(() => logger.err('macOS already activated.'));
-      verify(() => logger.progress('Activating macOS')).called(1);
+      verify(() => logger.info('Activating macOS ...')).called(1);
+      verify(() => logger.progress(
+          'Running "flutter config --enable-macos-desktop"')).called(1);
       verify(() => flutterConfigEnableMacos()).called(1);
+      verify(() => logger.progress('Generating macOS files')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -261,24 +276,46 @@ void main() {
           logger: logger,
         ),
       ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} macOS file(s)']),
+      );
+      verify(() => logger.progress('Updating package $appPackagePath '))
+          .called(1);
       verify(() => appPackagePubspec.addDependency('${projectName}_macos_app'))
           .called(1);
       verify(() => mainFileDev.addPlatform(Platform.macos)).called(1);
       verify(() => mainFileTest.addPlatform(Platform.macos)).called(1);
       verify(() => mainFileProd.addPlatform(Platform.macos)).called(1);
+      verify(() => logger.progress('Updating package $diPackagePath '))
+          .called(1);
       verify(() =>
               diPackagePubspec.addDependency('${projectName}_macos_home_page'))
           .called(1);
       verify(() => injectionFile.addPackage('${projectName}_macos_home_page'))
           .called(1);
-      verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: diPackage.path)).called(1);
+      verify(() => logger.progress('Running "melos clean" in ${tempDir.path} '))
+          .called(1);
       verify(() => melosClean(cwd: tempDir.path)).called(1);
+      verify(() =>
+              logger.progress('Running "melos bootstrap" in ${tempDir.path} '))
+          .called(1);
       verify(() => melosBootstrap(cwd: tempDir.path)).called(1);
-      expect(progressLogs, ['Activated macOS']);
+      verify(() =>
+              logger.progress('Running "flutter pub get" in $diPackagePath '))
+          .called(1);
+      verify(() => flutterPubGet(cwd: diPackagePath)).called(1);
+      verify(() => logger.progress(
+              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $diPackagePath '))
+          .called(1);
+      verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          cwd: diPackagePath)).called(1);
+
+      verify(() => logger.info('macOS activated!')).called(1);
       expect(result, ExitCode.success.code);
     });
 
+    // TODO maybe share test logic better between this and the test before this all but the custom org name is same
     test('completes successfully with correct output w/ custom org-name',
         () async {
       // Arrange
@@ -290,9 +327,11 @@ void main() {
 
       // Assert
       verifyNever(() => logger.err('macOS already activated.'));
-
-      verify(() => logger.progress('Activating macOS')).called(1);
+      verify(() => logger.info('Activating macOS ...')).called(1);
+      verify(() => logger.progress(
+          'Running "flutter config --enable-macos-desktop"')).called(1);
       verify(() => flutterConfigEnableMacos()).called(1);
+      verify(() => logger.progress('Generating macOS files')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -309,21 +348,42 @@ void main() {
           logger: logger,
         ),
       ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} macOS file(s)']),
+      );
+      verify(() => logger.progress('Updating package $appPackagePath '))
+          .called(1);
       verify(() => appPackagePubspec.addDependency('${projectName}_macos_app'))
           .called(1);
       verify(() => mainFileDev.addPlatform(Platform.macos)).called(1);
       verify(() => mainFileTest.addPlatform(Platform.macos)).called(1);
       verify(() => mainFileProd.addPlatform(Platform.macos)).called(1);
+      verify(() => logger.progress('Updating package $diPackagePath '))
+          .called(1);
       verify(() =>
               diPackagePubspec.addDependency('${projectName}_macos_home_page'))
           .called(1);
       verify(() => injectionFile.addPackage('${projectName}_macos_home_page'))
           .called(1);
-      verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: diPackage.path)).called(1);
+      verify(() => logger.progress('Running "melos clean" in ${tempDir.path} '))
+          .called(1);
       verify(() => melosClean(cwd: tempDir.path)).called(1);
+      verify(() =>
+              logger.progress('Running "melos bootstrap" in ${tempDir.path} '))
+          .called(1);
       verify(() => melosBootstrap(cwd: tempDir.path)).called(1);
-      expect(progressLogs, ['Activated macOS']);
+      verify(() =>
+              logger.progress('Running "flutter pub get" in $diPackagePath '))
+          .called(1);
+      verify(() => flutterPubGet(cwd: diPackagePath)).called(1);
+      verify(() => logger.progress(
+              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $diPackagePath '))
+          .called(1);
+      verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          cwd: diPackagePath)).called(1);
+
+      verify(() => logger.info('macOS activated!')).called(1);
       expect(result, ExitCode.success.code);
     });
 

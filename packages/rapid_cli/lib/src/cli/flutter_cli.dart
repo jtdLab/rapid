@@ -1,5 +1,8 @@
 part of 'cli.dart';
 
+/// Signature for the [Flutter.pubGet] method.
+typedef FlutterPubGetCommand = Future<void> Function({required String cwd});
+
 /// Signature for the [Flutter.installed] method.
 typedef FlutterInstalledCommand = Future<bool> Function();
 
@@ -32,6 +35,19 @@ class Flutter {
     } catch (_) {
       return false;
     }
+  }
+
+  /// Get dependencies (`flutter pub get`).
+  static Future<void> pubGet({
+    String cwd = '.',
+  }) async {
+    try {
+      await _Cmd.run(
+        'flutter',
+        ['pub', 'get'],
+        workingDirectory: cwd,
+      );
+    } catch (_) {}
   }
 
   /// Enable Flutter for Android (`flutter config --enable-android`)

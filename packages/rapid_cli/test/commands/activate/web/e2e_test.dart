@@ -49,25 +49,31 @@ void main() {
 
           // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
           // TODO check  platform packges and dirs exists
-          final integrationTestResult = await Process.start(
-            'flutter',
-            ['test', 'integration_test/development_test.dart', '-d', 'web'],
+          await Process.start(
+            'chromedriver',
+            ['--port=4444'],
             workingDirectory: appPackagePath,
             runInShell: true,
           );
-          integrationTestResult.stderr.listen((event) {
-            print(utf8.decode(event));
-          });
-          integrationTestResult.stdout.listen((event) {
-            print(utf8.decode(event));
-          });
-          final exitCode = await integrationTestResult.exitCode;
+          final integrationTestResult = await Process.run(
+            'flutter',
+            [
+              'drive',
+              '--driver',
+              'test_driver/integration_test.dart',
+              '--target',
+              'integration_test/development_test.dart',
+              '-d',
+              'web-server'
+            ],
+            workingDirectory: appPackagePath,
+            runInShell: true,
+          );
           expect(
-            exitCode,
+            integrationTestResult.exitCode,
             equals(ExitCode.success.code),
           );
-          expect(integrationTestResult.stderr, isEmpty);
-          expect(integrationTestResult.stdout, contains('All tests passed!'));
+          expect(integrationTestResult.stdout, contains('All tests passed.'));
         },
       );
     },

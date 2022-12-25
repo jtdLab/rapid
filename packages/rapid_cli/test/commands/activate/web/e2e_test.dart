@@ -51,7 +51,7 @@ void main() {
           // TODO check  platform packges and dirs exists
           final integrationTestResult = await Process.start(
             'flutter',
-            ['test', 'integration_test/development_test.dart', '-d', '-web'],
+            ['test', 'integration_test/development_test.dart', '-d', 'web'],
             workingDirectory: appPackagePath,
             runInShell: true,
           );

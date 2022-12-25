@@ -49,7 +49,7 @@ void main() {
           // TODO check  platform packges and dirs exists
           final integrationTestResult = await Process.run(
             'flutter',
-            ['test', 'integration_test/development_test.dart', '-d', '-macos'],
+            ['test', 'integration_test/development_test.dart', '-d', 'macos'],
             workingDirectory: appPackagePath,
             runInShell: true,
           );

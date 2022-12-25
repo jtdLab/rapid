@@ -1,6 +1,4 @@
 @Tags(['e2e', 'web'])
-import 'dart:convert';
-
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/command_runner.dart';

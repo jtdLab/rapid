@@ -38,58 +38,42 @@ class Flutter {
   }
 
   /// Get dependencies (`flutter pub get`).
-  static Future<void> pubGet({
-    String cwd = '.',
-  }) async {
-    try {
-      await _Cmd.run(
-        'flutter',
-        ['pub', 'get'],
-        workingDirectory: cwd,
-      );
-    } catch (_) {}
+  static Future<void> pubGet({String cwd = '.'}) async {
+    await _Cmd.run(
+      'flutter',
+      ['pub', 'get'],
+      workingDirectory: cwd,
+    );
   }
 
   /// Enable Flutter for Android (`flutter config --enable-android`)
   static Future<void> configEnableAndroid() async {
-    try {
-      await _Cmd.run('flutter', ['config', '--enable-android']);
-    } catch (_) {}
+    await _Cmd.run('flutter', ['config', '--enable-android']);
   }
 
   /// Enable Flutter for iOS (`flutter config --enable-ios`)
   static Future<void> configEnableIos() async {
-    try {
-      await _Cmd.run('flutter', ['config', '--enable-ios']);
-    } catch (_) {}
+    await _Cmd.run('flutter', ['config', '--enable-ios']);
   }
 
   /// Enable Flutter for Linux (`flutter config --enable-linux-desktop`)
   static Future<void> configEnableLinux() async {
-    try {
-      await _Cmd.run('flutter', ['config', '--enable-linux-desktop']);
-    } catch (_) {}
+    await _Cmd.run('flutter', ['config', '--enable-linux-desktop']);
   }
 
   /// Enable Flutter for macOS (`flutter config --enable-macos-desktop`)
   static Future<void> configEnableMacos() async {
-    try {
-      await _Cmd.run('flutter', ['config', '--enable-macos-desktop']);
-    } catch (_) {}
+    await _Cmd.run('flutter', ['config', '--enable-macos-desktop']);
   }
 
   /// Enable Flutter for Web (`flutter config --enable-web`)
   static Future<void> configEnableWeb() async {
-    try {
-      await _Cmd.run('flutter', ['config', '--enable-web']);
-    } catch (_) {}
+    await _Cmd.run('flutter', ['config', '--enable-web']);
   }
 
   /// Enable Flutter for Windows (`flutter config --enable-windows-desktop`)
   static Future<void> configEnableWindows() async {
-    try {
-      await _Cmd.run('flutter', ['config', '--enable-windows-desktop']);
-    } catch (_) {}
+    await _Cmd.run('flutter', ['config', '--enable-windows-desktop']);
   }
 
   /// Run code generation (`flutter pub run build_runner build --delete-conflicting-outputs`).

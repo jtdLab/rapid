@@ -9,24 +9,20 @@ typedef MelosCleanCommand = Future<void> Function({required String cwd});
 /// Melos CLI
 class Melos {
   /// Bootstrap the melos project (`melos bootstrap`)
-  static Future<void> bootstrap({required String cwd}) async {
-    try {
-      await Process.run(
-        'melos',
-        ['bootstrap'],
-        workingDirectory: cwd,
-      );
-    } catch (_) {}
+  static Future<void> bootstrap({String cwd = '.'}) async {
+    await _Cmd.run(
+      'melos',
+      ['bootstrap'],
+      workingDirectory: cwd,
+    );
   }
 
   /// Clean the melos project (`melos clean`)
-  static Future<void> clean({required String cwd}) async {
-    try {
-      await _Cmd.run(
-        'melos',
-        ['clean'],
-        workingDirectory: cwd,
-      );
-    } catch (_) {}
+  static Future<void> clean({String cwd = '.'}) async {
+    await _Cmd.run(
+      'melos',
+      ['clean'],
+      workingDirectory: cwd,
+    );
   }
 }

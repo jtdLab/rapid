@@ -42,8 +42,9 @@ class PubspecFile extends ProjectFile {
     final yamlEditor = YamlEditor(file.readAsStringSync());
 
     yamlEditor.update(['dependencies', name], version);
-
-    file.writeAsStringSync(yamlEditor.toString(), flush: true);
+    var output = yamlEditor.toString();
+    output = output.replaceAll(': null', ':');
+    file.writeAsStringSync(output, flush: true);
   }
 
   /// Removes dependency [name] from the dependencies field

@@ -1,8 +1,123 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/core/app_package.dart';
 import 'package:rapid_cli/src/core/melos_file.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/project.dart';
 import 'package:test/test.dart';
+import 'package:universal_io/io.dart';
+
+// TODO update when app templates  is updated -remove empty lines etc
+const emptyMainFile = '''
+import 'package:foo_bar/router_observer.dart';
+
+import 'package:foo_bar_di/foo_bar_di.dart';
+
+
+import 'package:foo_bar_logging/foo_bar_logging.dart';
+
+
+
+import 'package:flutter/widgets.dart';
+import 'package:rapid/rapid.dart';
+
+import 'bootstrap.dart';
+
+void main() => runOnPlatform(
+      
+      
+      
+      
+      
+      
+    );
+
+
+
+
+
+
+
+
+
+
+
+''';
+
+const mainFileWithIos = '''
+import 'package:flutter/widgets.dart';
+import 'package:foo_bar/router_observer.dart';
+import 'package:foo_bar_di/foo_bar_di.dart';
+import 'package:foo_bar_ios_app/foo_bar_ios_app.dart' as ios;
+import 'package:foo_bar_logging/foo_bar_logging.dart';
+import 'package:rapid/rapid.dart';
+
+import 'bootstrap.dart';
+
+void main() => runOnPlatform(
+      ios: runIosApp,
+    );
+
+Future<void> runIosApp() async {
+  configureDependencies(Environment.dev, Platform.ios);
+  WidgetsFlutterBinding.ensureInitialized();
+  // TODO: add more ios development setup here
+
+  final logger = getIt<FooBarLogger>();
+  final app = ios.App(
+    navigatorObserverBuilder: () => [
+      FooBarRouterObserver(logger),
+    ],
+  );
+  await bootstrap(app, logger);
+}
+''';
+
+const mainFileWithIosAndWeb = '''
+import 'package:flutter/widgets.dart';
+import 'package:foo_bar/router_observer.dart';
+import 'package:foo_bar_di/foo_bar_di.dart';
+import 'package:foo_bar_ios_app/foo_bar_ios_app.dart' as ios;
+import 'package:foo_bar_logging/foo_bar_logging.dart';
+import 'package:foo_bar_web_app/foo_bar_web_app.dart' as web;
+import 'package:rapid/rapid.dart';
+import 'package:url_strategy/url_strategy.dart';
+
+import 'bootstrap.dart';
+
+void main() => runOnPlatform(
+      ios: runIosApp,
+      web: runWebApp,
+    );
+
+Future<void> runIosApp() async {
+  configureDependencies(Environment.dev, Platform.ios);
+  WidgetsFlutterBinding.ensureInitialized();
+  // TODO: add more ios development setup here
+
+  final logger = getIt<FooBarLogger>();
+  final app = ios.App(
+    navigatorObserverBuilder: () => [
+      FooBarRouterObserver(logger),
+    ],
+  );
+  await bootstrap(app, logger);
+}
+
+Future<void> runWebApp() async {
+  configureDependencies(Environment.dev, Platform.web);
+  setPathUrlStrategy();
+  WidgetsFlutterBinding.ensureInitialized();
+  // TODO: add more web development setup here
+
+  final logger = getIt<FooBarLogger>();
+  final app = web.App(
+    navigatorObserverBuilder: () => [
+      FooBarRouterObserver(logger),
+    ],
+  );
+  await bootstrap(app, logger);
+}
+''';
 
 class MockMelosFile extends Mock implements MelosFile {}
 
@@ -42,18 +157,34 @@ void main() {
   });
 
   group('MainFile', () {
+    final cwd = Directory.current;
+
+    const projectName = 'foo_bar';
     late Environment environment;
+    late MelosFile melosFile;
+    late Project project;
     late AppPackage appPackage;
     late MainFile mainFile;
 
     setUp(() {
+      Directory.current = Directory.systemTemp.createTempSync();
+
       environment = Environment.development;
+      melosFile = MockMelosFile();
+      when(() => melosFile.name).thenReturn(projectName);
+      project = MockProject();
+      when(() => project.melosFile).thenReturn(melosFile);
       appPackage = MockAppPackage();
       when(() => appPackage.path).thenReturn('app/package/path');
+      when(() => appPackage.project).thenReturn(project);
       mainFile = MainFile(
         environment,
         appPackage: appPackage,
       );
+    });
+
+    tearDown(() {
+      Directory.current = cwd;
     });
 
     group('path', () {
@@ -77,7 +208,35 @@ void main() {
     });
 
     group('addPlatform', () {
-      // TODO: impl
+      test(
+          'adds import to app, call to platform method in main and implementation of platform method correctly when no platforms present',
+          () {
+        // Arrange
+        final file = File(mainFile.path);
+        file.createSync(recursive: true);
+        file.writeAsStringSync(emptyMainFile);
+
+        // Act
+        mainFile.addPlatform(Platform.ios);
+
+        // Assert
+        expect(file.readAsStringSync(), mainFileWithIos);
+      });
+
+      test(
+          'adds import to app, call to platform method in main and implementation of platform method correctly when platforms present',
+          () {
+        // Arrange
+        final file = File(mainFile.path);
+        file.createSync(recursive: true);
+        file.writeAsStringSync(mainFileWithIos);
+
+        // Act
+        mainFile.addPlatform(Platform.web);
+
+        // Assert
+        expect(file.readAsStringSync(), mainFileWithIosAndWeb);
+      });
     });
 
     group('removePlatform', () {

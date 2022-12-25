@@ -66,9 +66,9 @@ class InjectionFile extends ProjectFile with DartFile {
     final closingCornerBraceIndex =
         content.indexOf(']', openingCornerBraceIndex);
 
-    final modulesString =
-        content.substring(openingCornerBraceIndex + 1, closingCornerBraceIndex);
-    modulesString.replaceAll('\n', '');
+    final modulesString = content.substring(
+        openingCornerBraceIndex + 1, closingCornerBraceIndex)
+      ..replaceAll('\n', '');
     final modules = modulesString.split(',');
     modules.removeWhere((string) => string.trim().isEmpty);
 
@@ -87,7 +87,7 @@ class InjectionFile extends ProjectFile with DartFile {
       ),
     );
 
-    file.writeAsStringSync(output);
+    file.writeAsStringSync(output, flush: true);
   }
 
   /// Removes all code required for dependency injection for package with [packageName].

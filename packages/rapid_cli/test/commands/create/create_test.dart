@@ -324,6 +324,7 @@ void main() {
 
     group('org-name', () {
       group('--org', () {
+        // TODO this fails when melos is not available
         test(
           'is a valid alias',
           withRunner((commandRunner, logger, project, printLogs) async {

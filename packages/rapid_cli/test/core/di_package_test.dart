@@ -152,6 +152,20 @@ void main() {
         );
       });
     });
+
+    group('injectionFile', () {
+      test('returns injection file with reference to this di package', () {
+        // Assert
+        expect(
+          diPackage.injectionFile,
+          isA<InjectionFile>().having(
+            (injectionFile) => injectionFile.diPackage,
+            '',
+            diPackage,
+          ),
+        );
+      });
+    });
   });
 
   group('InjectionFile', () {

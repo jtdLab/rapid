@@ -320,11 +320,302 @@ void main() {
       expect(result, equals(ExitCode.success.code));
     });
 
-    // TODO: add test for other params
+    test('completes successfully with correct output w/ --android', () async {
+      // Arrange
+      when(() => argResults['android']).thenReturn(true);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => flutterInstalled()).called(1);
+      verify(() => logger.progress('Running "flutter config --enable-android"'))
+          .called(1);
+      verify(() => flutterConfigEnableAndroid()).called(1);
+      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(
+        () => generator.generate(
+          any(
+            that: isA<DirectoryGeneratorTarget>().having(
+              (g) => g.dir.path,
+              'dir',
+              outputDir,
+            ),
+          ),
+          vars: <String, dynamic>{
+            'project_name': projectName,
+            'org_name': 'com.example',
+            'description': 'A Rapid app.',
+            'example': false,
+            'android': true,
+            'ios': false,
+            'linux': false,
+            'macos': false,
+            'web': false,
+            'windows': false,
+          },
+          logger: logger,
+        ),
+      ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} file(s)']),
+      );
+      verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
+          .called(1);
+      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(2);
+      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      expect(result, equals(ExitCode.success.code));
+    });
+
+    test('completes successfully with correct output w/ --ios', () async {
+      // Arrange
+      when(() => argResults['ios']).thenReturn(true);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => flutterInstalled()).called(1);
+      verify(() => logger.progress('Running "flutter config --enable-ios"'))
+          .called(1);
+      verify(() => flutterConfigEnableIos()).called(1);
+      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(
+        () => generator.generate(
+          any(
+            that: isA<DirectoryGeneratorTarget>().having(
+              (g) => g.dir.path,
+              'dir',
+              outputDir,
+            ),
+          ),
+          vars: <String, dynamic>{
+            'project_name': projectName,
+            'org_name': 'com.example',
+            'description': 'A Rapid app.',
+            'example': false,
+            'android': false,
+            'ios': true,
+            'linux': false,
+            'macos': false,
+            'web': false,
+            'windows': false,
+          },
+          logger: logger,
+        ),
+      ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} file(s)']),
+      );
+      verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
+          .called(1);
+      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(2);
+      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      expect(result, equals(ExitCode.success.code));
+    });
+
+    test('completes successfully with correct output w/ --linux', () async {
+      // Arrange
+      when(() => argResults['linux']).thenReturn(true);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => flutterInstalled()).called(1);
+      verify(() => logger.progress(
+          'Running "flutter config --enable-linux-desktop"')).called(1);
+      verify(() => flutterConfigEnableLinux()).called(1);
+      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(
+        () => generator.generate(
+          any(
+            that: isA<DirectoryGeneratorTarget>().having(
+              (g) => g.dir.path,
+              'dir',
+              outputDir,
+            ),
+          ),
+          vars: <String, dynamic>{
+            'project_name': projectName,
+            'org_name': 'com.example',
+            'description': 'A Rapid app.',
+            'example': false,
+            'android': false,
+            'ios': false,
+            'linux': true,
+            'macos': false,
+            'web': false,
+            'windows': false,
+          },
+          logger: logger,
+        ),
+      ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} file(s)']),
+      );
+      verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
+          .called(1);
+      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(2);
+      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      expect(result, equals(ExitCode.success.code));
+    });
+
+    test('completes successfully with correct output w/ --macos', () async {
+      // Arrange
+      when(() => argResults['macos']).thenReturn(true);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => flutterInstalled()).called(1);
+      verify(() => logger.progress(
+          'Running "flutter config --enable-macos-desktop"')).called(1);
+      verify(() => flutterConfigEnableMacos()).called(1);
+      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(
+        () => generator.generate(
+          any(
+            that: isA<DirectoryGeneratorTarget>().having(
+              (g) => g.dir.path,
+              'dir',
+              outputDir,
+            ),
+          ),
+          vars: <String, dynamic>{
+            'project_name': projectName,
+            'org_name': 'com.example',
+            'description': 'A Rapid app.',
+            'example': false,
+            'android': false,
+            'ios': false,
+            'linux': false,
+            'macos': true,
+            'web': false,
+            'windows': false,
+          },
+          logger: logger,
+        ),
+      ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} file(s)']),
+      );
+      verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
+          .called(1);
+      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(2);
+      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      expect(result, equals(ExitCode.success.code));
+    });
+
+    test('completes successfully with correct output w/ --web', () async {
+      // Arrange
+      when(() => argResults['web']).thenReturn(true);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => flutterInstalled()).called(1);
+      verify(() => logger.progress('Running "flutter config --enable-web"'))
+          .called(1);
+      verify(() => flutterConfigEnableWeb()).called(1);
+      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(
+        () => generator.generate(
+          any(
+            that: isA<DirectoryGeneratorTarget>().having(
+              (g) => g.dir.path,
+              'dir',
+              outputDir,
+            ),
+          ),
+          vars: <String, dynamic>{
+            'project_name': projectName,
+            'org_name': 'com.example',
+            'description': 'A Rapid app.',
+            'example': false,
+            'android': false,
+            'ios': false,
+            'linux': false,
+            'macos': false,
+            'web': true,
+            'windows': false,
+          },
+          logger: logger,
+        ),
+      ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} file(s)']),
+      );
+      verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
+          .called(1);
+      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(2);
+      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      expect(result, equals(ExitCode.success.code));
+    });
+
+    test('completes successfully with correct output w/ --windows', () async {
+      // Arrange
+      when(() => argResults['windows']).thenReturn(true);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => flutterInstalled()).called(1);
+      verify(() => logger.progress(
+          'Running "flutter config --enable-windows-desktop"')).called(1);
+      verify(() => flutterConfigEnableWindows()).called(1);
+      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(
+        () => generator.generate(
+          any(
+            that: isA<DirectoryGeneratorTarget>().having(
+              (g) => g.dir.path,
+              'dir',
+              outputDir,
+            ),
+          ),
+          vars: <String, dynamic>{
+            'project_name': projectName,
+            'org_name': 'com.example',
+            'description': 'A Rapid app.',
+            'example': false,
+            'android': false,
+            'ios': false,
+            'linux': false,
+            'macos': false,
+            'web': false,
+            'windows': true,
+          },
+          logger: logger,
+        ),
+      ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} file(s)']),
+      );
+      verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
+          .called(1);
+      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(2);
+      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      expect(result, equals(ExitCode.success.code));
+    });
 
     group('org-name', () {
       group('--org', () {
-        // TODO this fails when melos is not available
         test(
           'is a valid alias',
           withRunner((commandRunner, logger, project, printLogs) async {
@@ -338,7 +629,6 @@ void main() {
                 p.join(outputDir, 'foo'),
                 '--org',
                 orgName,
-                '--android'
               ],
             );
 

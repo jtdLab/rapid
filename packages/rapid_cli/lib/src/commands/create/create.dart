@@ -232,32 +232,32 @@ class CreateCommand extends Command<int>
   /// Whether the user specified that the project supports Android.
   ///
   /// Defaults to `false` when the user did not specify any platform.
-  bool get _android => _any ? argResults['android'] : false;
+  bool get _android => _any ? (argResults['android'] ?? false) : false;
 
   /// Whether the user specified that the project supports iOS.
   ///
   /// Defaults to `false` when the user did not specify any platform.
-  bool get _ios => _any ? argResults['ios'] : false;
+  bool get _ios => _any ? (argResults['ios'] ?? false) : false;
 
   /// Whether the user specified that the project supports Linux.
   ///
   /// Defaults to `false` when the user did not specify any platform.
-  bool get _linux => _any ? argResults['linux'] : false;
+  bool get _linux => _any ? (argResults['linux'] ?? false) : false;
 
   /// Whether the user specified that the project supports macOS.
   ///
   /// Defaults to `false` when the user did not specify any platform.
-  bool get _macos => _any ? argResults['macos'] : false;
+  bool get _macos => _any ? (argResults['macos'] ?? false) : false;
 
   /// Whether the user specified that the project supports Web.
   ///
   /// Defaults to `false` when the user did not specify any platform.
-  bool get _web => _any ? argResults['web'] : false;
+  bool get _web => _any ? (argResults['web'] ?? false) : false;
 
   /// Whether the user specified that the project supports Windows.
   ///
   /// Defaults to `false` when the user did not specify any platform.
-  bool get _windows => _any ? argResults['windows'] : false;
+  bool get _windows => _any ? (argResults['windows'] ?? false) : false;
 
   /// Gets the directory where the project will be generated in specified by the user.
   Directory get _outputDirectory =>

@@ -33,6 +33,9 @@ jobs:
           cache: true
       - run: flutter --version
 
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
       - name: Install Dependencies
         run: flutter pub get
 

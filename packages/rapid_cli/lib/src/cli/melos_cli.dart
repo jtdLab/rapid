@@ -8,7 +8,7 @@ typedef MelosCleanCommand = Future<void> Function({required String cwd});
 
 /// Melos CLI
 class Melos {
-  /// Bootstrap the melos project (`melos bootstrap`)
+  /// Bootstrap the melos project (`melos bootstrap`).
   static Future<void> bootstrap({String cwd = '.'}) async {
     await _Cmd.run(
       'melos',
@@ -17,7 +17,7 @@ class Melos {
     );
   }
 
-  /// Clean the melos project (`melos clean`)
+  /// Clean the melos project (`melos clean`).
   static Future<void> clean({String cwd = '.'}) async {
     await _Cmd.run(
       'melos',

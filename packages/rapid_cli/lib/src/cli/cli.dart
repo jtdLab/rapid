@@ -8,7 +8,7 @@ part 'melos_cli.dart';
 
 const _asyncRunZoned = runZoned;
 
-/// Type definition for [Process.run].
+/// Signature for [Process.run].
 typedef RunProcess = Future<ProcessResult> Function(
   String executable,
   List<String> arguments, {

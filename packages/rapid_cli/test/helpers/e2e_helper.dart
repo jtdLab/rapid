@@ -2,5 +2,5 @@
 ///
 /// This gets passed via -d to a flutter command
 ///
-/// This is needed becaus of https://github.com/flutter/flutter/issues/117158
+/// This is needed because of https://github.com/flutter/flutter/issues/117158
 const iosDevice = 'iPhone 11';

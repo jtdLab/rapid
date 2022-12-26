@@ -53,38 +53,15 @@ class RapidCommandRunner extends CommandRunner<int> {
     }
   }
 
-  // TODO checking for melos.yaml here feels out of scope
-  // consider delegating this to the specific command
   @override
   Future<int?> runCommand(ArgResults topLevelResults) async {
     int? exitCode = ExitCode.unavailable.code;
     if (topLevelResults['version']) {
       _logger.info(packageVersion);
       exitCode = ExitCode.success.code;
-    } else if (topLevelResults['help'] ||
-        topLevelResults.command?.name == 'create' ||
-        topLevelResults.hasNoCommand) {
-      exitCode = await super.runCommand(topLevelResults);
-    } else {
-      final melosFile = _project.melosFile;
-      if (!melosFile.exists()) {
-        throw UsageException(
-          '''
- Could not find a melos.yaml.
- This command should be run from the root of your Rapid project.''',
-          usage,
-        );
-      }
-
-      exitCode = await super.runCommand(topLevelResults);
     }
+    exitCode = await super.runCommand(topLevelResults);
 
     return exitCode;
   }
-}
-
-extension on ArgResults {
-  /// Wheter this parsed empty command line args.
-  bool get hasNoCommand =>
-      arguments.isEmpty && command == null && name == null && rest.isEmpty;
 }

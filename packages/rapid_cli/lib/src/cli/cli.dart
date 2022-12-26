@@ -62,7 +62,7 @@ class _ProcessOverridesScope extends ProcessOverrides {
 }
 
 /// Abstraction for running commands via command-line.
-class _Cmd {
+abstract class _Cmd {
   /// Runs the specified [cmd] with the provided [args].
   static Future<ProcessResult> run(
     String cmd,

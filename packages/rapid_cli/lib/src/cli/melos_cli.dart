@@ -7,7 +7,7 @@ typedef MelosBootstrapCommand = Future<void> Function({required String cwd});
 typedef MelosCleanCommand = Future<void> Function({required String cwd});
 
 /// Melos CLI
-class Melos {
+abstract class Melos {
   /// Bootstrap the melos project (`melos bootstrap`).
   static Future<void> bootstrap({String cwd = '.'}) async {
     await _Cmd.run(

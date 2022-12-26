@@ -26,7 +26,7 @@ typedef FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     = Future<void> Function({required String cwd});
 
 /// Flutter CLI
-class Flutter {
+abstract class Flutter {
   /// Determine whether flutter is installed.
   static Future<bool> installed() async {
     try {

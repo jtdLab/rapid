@@ -57,7 +57,6 @@ class RapidCommandRunner extends CommandRunner<int> {
   // consider delegating this to the specific command
   @override
   Future<int?> runCommand(ArgResults topLevelResults) async {
-    
     int? exitCode = ExitCode.unavailable.code;
     if (topLevelResults['version']) {
       _logger.info(packageVersion);

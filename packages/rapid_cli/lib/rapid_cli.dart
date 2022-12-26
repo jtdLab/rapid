@@ -7,4 +7,5 @@
 /// # see usage
 /// rapid --help
 /// ```
+// TODO doc: its not correct
 library rapid_cli;

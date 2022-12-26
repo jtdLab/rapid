@@ -72,6 +72,35 @@ Future<void> runIosApp() async {
 }
 ''';
 
+const mainFileWithIosTest = '''
+import 'package:flutter/widgets.dart';
+import 'package:foo_bar/router_observer.dart';
+import 'package:foo_bar_di/foo_bar_di.dart';
+import 'package:foo_bar_ios_app/foo_bar_ios_app.dart' as ios;
+import 'package:foo_bar_logging/foo_bar_logging.dart';
+import 'package:rapid/rapid.dart';
+
+import 'bootstrap.dart';
+
+void main() => runOnPlatform(
+      ios: runIosApp,
+    );
+
+Future<void> runIosApp() async {
+  configureDependencies(Environment.test, Platform.ios);
+  WidgetsFlutterBinding.ensureInitialized();
+  // TODO: add more ios test setup here
+
+  final logger = getIt<FooBarLogger>();
+  final app = ios.App(
+    navigatorObserverBuilder: () => [
+      FooBarRouterObserver(logger),
+    ],
+  );
+  await bootstrap(app, logger);
+}
+''';
+
 const mainFileWithIosAndWeb = '''
 import 'package:flutter/widgets.dart';
 import 'package:foo_bar/router_observer.dart';
@@ -154,6 +183,58 @@ void main() {
         expect(appPackage.directory.path, 'packages/$projectName/$projectName');
       });
     });
+
+    group('mainFiles', () {
+      test(
+          'Returns a set of main files one main file per environment all having a reference to the app package',
+          () {
+        // Assert
+        final mainFiles = appPackage.mainFiles;
+        expect(mainFiles, hasLength(3));
+        expect(
+          mainFiles.elementAt(0),
+          isA<MainFile>()
+              .having(
+                (mainFile) => mainFile.appPackage,
+                '',
+                appPackage,
+              )
+              .having(
+                (mainFile) => mainFile.environment,
+                '',
+                Environment.development,
+              ),
+        );
+        expect(
+          mainFiles.elementAt(1),
+          isA<MainFile>()
+              .having(
+                (mainFile) => mainFile.appPackage,
+                '',
+                appPackage,
+              )
+              .having(
+                (mainFile) => mainFile.environment,
+                '',
+                Environment.test,
+              ),
+        );
+        expect(
+          mainFiles.elementAt(2),
+          isA<MainFile>()
+              .having(
+                (mainFile) => mainFile.appPackage,
+                '',
+                appPackage,
+              )
+              .having(
+                (mainFile) => mainFile.environment,
+                '',
+                Environment.production,
+              ),
+        );
+      });
+    });
   });
 
   group('MainFile', () {
@@ -221,6 +302,23 @@ void main() {
 
         // Assert
         expect(file.readAsStringSync(), mainFileWithIos);
+      });
+
+      test(
+          'adds import to app, call to platform method in main and implementation of platform method correctly when no platforms present (test env)',
+          () {
+        // Arrange
+        environment = Environment.test;
+        mainFile = MainFile(environment, appPackage: appPackage);
+        final file = File(mainFile.path);
+        file.createSync(recursive: true);
+        file.writeAsStringSync(emptyMainFile);
+
+        // Act
+        mainFile.addPlatform(Platform.ios);
+
+        // Assert
+        expect(file.readAsStringSync(), mainFileWithIosTest);
       });
 
       test(

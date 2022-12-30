@@ -1,4 +1,4 @@
+import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/core/platform_ui_package.dart';
 
-typedef PlatformUiPackageBuilder = PlatformUiPackage Function(Platform);
+typedef PlatformUiPackageBuilder = DartPackage Function(Platform);

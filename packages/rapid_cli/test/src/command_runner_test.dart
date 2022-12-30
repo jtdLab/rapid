@@ -4,8 +4,8 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart' hide packageVersion;
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner.dart';
-import 'package:rapid_cli/src/core/melos_file.dart';
-import 'package:rapid_cli/src/core/project.dart';
+import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/version.dart';
 import 'package:test/test.dart';
 
@@ -59,7 +59,7 @@ void main() {
       printLogs = [];
       logger = MockLogger();
       melosFile = MockMelosFile();
-      when(() => melosFile.name).thenReturn(projectName);
+      when(() => melosFile.name()).thenReturn(projectName);
       project = MockProject();
       when(() => project.melosFile).thenReturn(melosFile);
 

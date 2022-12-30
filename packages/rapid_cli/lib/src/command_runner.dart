@@ -3,10 +3,12 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart' hide packageVersion;
 import 'package:rapid_cli/src/commands/activate/activate.dart';
 import 'package:rapid_cli/src/commands/deactivate/deactivate.dart';
-import 'package:rapid_cli/src/core/project.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 import 'commands/create/create.dart';
 import 'version.dart';
+
+// TODO should project be injected here or only in the commands
 
 /// {@template rapid_command_runner}
 /// A [CommandRunner] for the Rapid Command Line Interface.
@@ -16,7 +18,6 @@ class RapidCommandRunner extends CommandRunner<int> {
     Logger? logger,
     Project? project,
   })  : _logger = logger ?? Logger(),
-        _project = project ?? Project(),
         super('rapid', 'Rapid Command Line Interface') {
     argParser.addFlag(
       'version',
@@ -24,13 +25,13 @@ class RapidCommandRunner extends CommandRunner<int> {
       help: 'Print the current version.',
       negatable: false,
     );
+    final p = project ?? Project();
     addCommand(CreateCommand(logger: logger));
-    addCommand(ActivateCommand(logger: logger, project: _project));
-    addCommand(DeactivateCommand(logger: logger, project: _project));
+    addCommand(ActivateCommand(logger: logger, project: p));
+    addCommand(DeactivateCommand(logger: logger, project: p));
   }
 
   final Logger _logger;
-  final Project _project;
 
   @override
   Future<int> run(Iterable<String> args) async {
@@ -58,7 +59,7 @@ class RapidCommandRunner extends CommandRunner<int> {
     int? exitCode = ExitCode.unavailable.code;
     if (topLevelResults['version']) {
       _logger.info(packageVersion);
-      exitCode = ExitCode.success.code;
+      return ExitCode.success.code;
     }
     exitCode = await super.runCommand(topLevelResults);
 

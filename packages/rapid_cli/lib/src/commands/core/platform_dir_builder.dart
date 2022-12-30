@@ -1,4 +1,4 @@
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/core/platform_dir.dart';
+import 'package:universal_io/io.dart';
 
-typedef PlatformDirBuilder = PlatformDir Function(Platform);
+typedef PlatformDirBuilder = Directory Function(Platform);

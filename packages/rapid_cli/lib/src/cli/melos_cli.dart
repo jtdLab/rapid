@@ -1,10 +1,10 @@
 part of 'cli.dart';
 
 /// Signature for the [Melos.bootstrap] method.
-typedef MelosBootstrapCommand = Future<void> Function({required String cwd});
+typedef MelosBootstrapCommand = Future<void> Function({String cwd});
 
 /// Signature for the [Melos.clean] method.
-typedef MelosCleanCommand = Future<void> Function({required String cwd});
+typedef MelosCleanCommand = Future<void> Function({String cwd});
 
 /// Melos CLI
 abstract class Melos {

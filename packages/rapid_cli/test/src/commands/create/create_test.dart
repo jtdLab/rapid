@@ -44,7 +44,7 @@ abstract class FlutterConfigEnablePlatformCommand {
 }
 
 abstract class MelosBootstrapCommand {
-  Future<void> call({required String cwd});
+  Future<void> call({String cwd});
 }
 
 class MockLogger extends Mock implements Logger {}

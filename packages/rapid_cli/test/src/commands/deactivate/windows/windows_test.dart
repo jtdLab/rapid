@@ -1,13 +1,11 @@
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/deactivate/windows/windows.dart';
-import 'package:rapid_cli/src/core/app_package.dart';
-import 'package:rapid_cli/src/core/di_package.dart';
+import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/core/platform_dir.dart';
-import 'package:rapid_cli/src/core/platform_ui_package.dart';
-import 'package:rapid_cli/src/core/project.dart';
-import 'package:rapid_cli/src/core/project_package.dart';
+import 'package:rapid_cli/src/project/app_package.dart';
+import 'package:rapid_cli/src/project/di_package.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -41,9 +39,9 @@ class MockInjectionFile extends Mock implements InjectionFile {}
 
 class MockDiPackage extends Mock implements DiPackage {}
 
-class MockPlatformDir extends Mock implements PlatformDir {}
+class MockDirectory extends Mock implements Directory {}
 
-class MockPlatformUiPackage extends Mock implements PlatformUiPackage {}
+class MockDartPackage extends Mock implements DartPackage {}
 
 class MockProject extends Mock implements Project {}
 
@@ -54,9 +52,6 @@ class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
 void main() {
   group('windows', () {
     Directory cwd = Directory.current;
-
-    const package1 = 'foo_bar';
-    const package2 = 'baz_boo';
 
     late List<String> progressLogs;
     late Progress progress;
@@ -69,8 +64,8 @@ void main() {
     late PubspecFile diPackagePubspec;
     late InjectionFile injectionFile;
     late DiPackage diPackage;
-    late PlatformDir platformDir;
-    late PlatformUiPackage platformUiPackage;
+    late Directory platformDirectory;
+    late DartPackage platformUiPackage;
     late Project project;
     late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
@@ -79,6 +74,7 @@ void main() {
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
+
       progressLogs = <String>[];
       progress = MockProgress();
       when(() => progress.complete(any())).thenAnswer((_) {
@@ -98,18 +94,17 @@ void main() {
           .thenReturn({mainFileDev, mainFileTest, mainFileProd});
       diPackagePubspec = MockPubspecFile();
       injectionFile = MockInjectionFile();
-      when(() => injectionFile.getPackagesByPlatform(Platform.windows))
-          .thenReturn([package1, package2]);
       diPackage = MockDiPackage();
       when(() => diPackage.path).thenReturn('foo/bar/baz');
       when(() => diPackage.pubspecFile).thenReturn(diPackagePubspec);
       when(() => diPackage.injectionFile).thenReturn(injectionFile);
-      platformDir = MockPlatformDir();
-      platformUiPackage = MockPlatformUiPackage();
+      platformDirectory = MockDirectory();
+      platformUiPackage = MockDartPackage();
       project = MockProject();
       when(() => project.appPackage).thenReturn(appPackage);
       when(() => project.diPackage).thenReturn(diPackage);
-      when(() => project.platformDir(Platform.windows)).thenReturn(platformDir);
+      when(() => project.platformDirectory(Platform.windows))
+          .thenReturn(platformDirectory);
       when(() => project.platformUiPackage(Platform.windows))
           .thenReturn(platformUiPackage);
       when(() => project.isActivated(Platform.windows)).thenReturn(true);
@@ -139,9 +134,8 @@ void main() {
       'help',
       withRunner((commandRunner, logger, project, printLogs) async {
         // Act
-        final result = await commandRunner.run(
-          ['deactivate', 'windows', '--help'],
-        );
+        final result =
+            await commandRunner.run(['deactivate', 'windows', '--help']);
 
         // Assert
         expect(printLogs, equals(expectedUsage));
@@ -150,9 +144,8 @@ void main() {
         printLogs.clear();
 
         // Act
-        final resultAbbr = await commandRunner.run(
-          ['deactivate', 'windows', '-h'],
-        );
+        final resultAbbr =
+            await commandRunner.run(['deactivate', 'windows', '-h']);
 
         // Assert
         expect(printLogs, equals(expectedUsage));
@@ -181,13 +174,10 @@ void main() {
       verify(() => mainFileProd.removePlatform(Platform.windows)).called(1);
       verify(() => diPackagePubspec.removeDependencyByPattern('windows'))
           .called(1);
-      verify(() => injectionFile.getPackagesByPlatform(Platform.windows))
-          .called(1);
-      verify(() => injectionFile.removePackage(package1)).called(1);
-      verify(() => injectionFile.removePackage(package2)).called(1);
+      verify(() => injectionFile.removePlatform(Platform.windows)).called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: diPackage.path)).called(1);
-      verify(() => platformDir.delete()).called(1);
+      verify(() => platformDirectory.deleteSync(recursive: true)).called(1);
       verify(() => platformUiPackage.delete()).called(1);
       verify(() => logger.success('Windows is now deactivated.')).called(1);
       expect(result, ExitCode.success.code);

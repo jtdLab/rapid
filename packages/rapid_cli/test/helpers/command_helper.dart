@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner.dart';
-import 'package:rapid_cli/src/core/melos_file.dart';
-import 'package:rapid_cli/src/core/project.dart';
+import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 class _MockLogger extends Mock implements Logger {}
 
@@ -41,8 +41,8 @@ void Function() withRunner(
   return _overridePrint((printLogs) async {
     final logger = _MockLogger();
     final melosFile = _MockMelosFile();
-    when(() => melosFile.name).thenReturn('test_app');
-    when(() => melosFile.exists()).thenReturn(true);
+    when(() => melosFile.name()).thenReturn('test_app');
+    //when(() => melosFile.exists()).thenReturn(true); // TODO needed when melos check is impled
     final project = _MockProject();
     when(() => project.melosFile).thenReturn(melosFile);
     final progress = _MockProgress();

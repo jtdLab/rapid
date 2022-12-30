@@ -1,18 +1,17 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/commands/activate/activate_sub_command.dart';
 import 'package:rapid_cli/src/commands/activate/macos/macos_bundle.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/core/project.dart';
+import 'package:rapid_cli/src/project/project.dart';
+import 'package:universal_io/io.dart';
 
 /// {@template activate_macos_command}
 /// `rapid activate macos` command adds support for macOS to an existing Rapid project.
 /// {@endtemplate}
-class MacosCommand extends Command<int>
-    with OverridableArgResults, OrgNameGetters {
+class MacosCommand extends ActivateSubCommand with OrgNameGetters {
   MacosCommand({
     Logger? logger,
     required Project project,
@@ -23,119 +22,42 @@ class MacosCommand extends Command<int>
     MelosBootstrapCommand? melosBootstrap,
     MelosCleanCommand? melosClean,
     GeneratorBuilder? generator,
-  })  : _logger = logger ?? Logger(),
-        _project = project,
-        _flutterConfigEnableMacos =
-            flutterConfigEnableMacos ?? Flutter.configEnableMacos,
-        _flutterPubGetCommand = flutterPubGetCommand ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _melosClean = melosClean ?? Melos.clean,
-        _generator = generator ?? MasonGenerator.fromBundle {
+  })  : _generator = generator ?? MasonGenerator.fromBundle,
+        super(
+          platform: Platform.macos,
+          logger: logger ?? Logger(),
+          project: project,
+          flutterConfigEnablePlatform:
+              flutterConfigEnableMacos ?? Flutter.configEnableMacos,
+          flutterPubGetCommand: flutterPubGetCommand ?? Flutter.pubGet,
+          flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+              flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                  Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
+          melosBootstrap: melosBootstrap ?? Melos.bootstrap,
+          melosClean: melosClean ?? Melos.clean,
+        ) {
     argParser.addOrgNameOption(
       help: 'The organization for the native macOS project.',
     );
   }
 
-  final Logger _logger;
-  final Project _project;
-  final FlutterConfigEnablePlatformCommand _flutterConfigEnableMacos;
-  final FlutterPubGetCommand _flutterPubGetCommand;
-  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
-  final MelosBootstrapCommand _melosBootstrap;
-  final MelosCleanCommand _melosClean;
   final GeneratorBuilder _generator;
 
   @override
-  String get description => 'Adds support for macOS to this project.';
+  Future<List<GeneratedFile>> generate({
+    required Logger logger,
+    required Project project,
+  }) async {
+    final projectName = project.melosFile.name();
 
-  @override
-  String get invocation => 'rapid activate macos';
-
-  @override
-  String get name => 'macos';
-
-  @override
-  List<String> get aliases => ['mac', 'm'];
-
-  @override
-  Future<int> run() async {
-    final platformIsActivated = _project.isActivated(Platform.macos);
-
-    if (platformIsActivated) {
-      _logger.err('macOS is already activated.');
-
-      return ExitCode.config.code;
-    } else {
-      _logger.info('Activating ${lightYellow.wrap('macOS')} ...');
-
-      final enableMacosProgress = _logger.progress(
-        'Running "flutter config --enable-macos-desktop"',
-      );
-      await _flutterConfigEnableMacos();
-      enableMacosProgress.complete();
-
-      final projectName = _project.melosFile.name;
-
-      final generateProgress = _logger.progress('Generating macOS files');
-      final generator = await _generator(macosBundle);
-      final files = await generator.generate(
-        DirectoryGeneratorTarget(_project.rootDir.directory),
-        vars: {
-          'project_name': projectName,
-          'org_name': orgName,
-        },
-        logger: _logger,
-      );
-      generateProgress.complete('Generated ${files.length} macOS file(s)');
-
-      final appPackage = _project.appPackage;
-      final appUpdatePackageProgress =
-          _logger.progress('Updating package ${appPackage.path} ');
-      final appPackagePubspec = appPackage.pubspecFile;
-      appPackagePubspec.addDependency('${projectName}_macos_app');
-      for (final mainFile in appPackage.mainFiles) {
-        mainFile.addPlatform(Platform.macos);
-      }
-      appUpdatePackageProgress.complete();
-
-      final diPackage = _project.diPackage;
-      final diUpdatePackageProgress =
-          _logger.progress('Updating package ${diPackage.path} ');
-      final diPackagePubspec = diPackage.pubspecFile;
-      final package = '${projectName}_macos_home_page';
-      diPackagePubspec.addDependency(package);
-      diPackage.injectionFile.addPackage(package);
-      diUpdatePackageProgress.complete();
-
-      final melosCleanProgress = _logger.progress(
-        'Running "melos clean" in ${_project.rootDir.path} ',
-      );
-      await _melosClean(cwd: _project.rootDir.path);
-      melosCleanProgress.complete();
-      final melosBootstrapProgress = _logger.progress(
-        'Running "melos bootstrap" in ${_project.rootDir.path} ',
-      );
-      await _melosBootstrap(cwd: _project.rootDir.path);
-      melosBootstrapProgress.complete();
-
-      final diPubGetProgress =
-          _logger.progress('Running "flutter pub get" in ${diPackage.path} ');
-      await _flutterPubGetCommand(cwd: diPackage.path);
-      diPubGetProgress.complete();
-      final diBuildProgress = _logger.progress(
-          'Running "flutter pub run build_runner build --delete-conflicting-outputs" in ${diPackage.path} ');
-      await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-        cwd: diPackage.path,
-      );
-      diBuildProgress.complete();
-
-      _logger.info('${lightYellow.wrap('macOS')} activated!');
-
-      return ExitCode.success.code;
-    }
+    final generator = await _generator(macosBundle);
+    return generator.generate(
+      DirectoryGeneratorTarget(Directory('.')),
+      vars: {
+        'project_name': projectName,
+        'org_name': orgName,
+      },
+      logger: logger,
+    );
   }
 }

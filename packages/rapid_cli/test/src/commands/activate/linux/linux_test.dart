@@ -2,13 +2,12 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/activate/linux/linux.dart';
-import 'package:rapid_cli/src/core/app_package.dart';
-import 'package:rapid_cli/src/core/di_package.dart';
-import 'package:rapid_cli/src/core/melos_file.dart';
+import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/core/project.dart';
-import 'package:rapid_cli/src/core/project_package.dart';
-import 'package:rapid_cli/src/core/root_dir.dart';
+import 'package:rapid_cli/src/project/app_package.dart';
+import 'package:rapid_cli/src/project/di_package.dart';
+import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -32,19 +31,19 @@ abstract class FlutterConfigEnablePlatformCommand {
 }
 
 abstract class FlutterPubGetCommand {
-  Future<void> call({required String cwd});
+  Future<void> call({String cwd});
 }
 
 abstract class FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
-  Future<void> call({required String cwd});
+  Future<void> call({String cwd});
 }
 
 abstract class MelosBoostrapCommand {
-  Future<void> call({required String cwd});
+  Future<void> call({String cwd});
 }
 
 abstract class MelosCleanCommand {
-  Future<void> call({required String cwd});
+  Future<void> call({String cwd});
 }
 
 class MockArgResults extends Mock implements ArgResults {}
@@ -52,8 +51,6 @@ class MockArgResults extends Mock implements ArgResults {}
 class MockLogger extends Mock implements Logger {}
 
 class MockProgress extends Mock implements Progress {}
-
-class MockRootDir extends Mock implements RootDir {}
 
 class MockMelosFile extends Mock implements MelosFile {}
 
@@ -91,17 +88,16 @@ void main() {
   group('linux', () {
     final cwd = Directory.current;
 
-    late Directory tempDir;
     late List<String> progressLogs;
     late Logger logger;
     late Progress progress;
-    late RootDir rootDir;
+    const projectName = 'test_app';
     late MelosFile melosFile;
-    const appPackagePath = 'bam/boz';
     late PubspecFile appPackagePubspec;
     late MainFile mainFileDev;
     late MainFile mainFileTest;
     late MainFile mainFileProd;
+    const appPackagePath = 'bam/boz';
     late AppPackage appPackage;
     late PubspecFile diPackagePubspec;
     late InjectionFile injectionFile;
@@ -114,24 +110,21 @@ void main() {
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
     late MelosBoostrapCommand melosBootstrap;
     late MelosCleanCommand melosClean;
-    late MasonGenerator generator;
-    late ArgResults argResults;
-
-    late LinuxCommand command;
-
-    const projectName = 'test_app';
     final generatedFiles = List.filled(
       62,
       const GeneratedFile.created(path: ''),
     );
+    late MasonGenerator generator;
+    late ArgResults argResults;
+
+    late LinuxCommand command;
 
     setUpAll(() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
     setUp(() {
-      tempDir = Directory.systemTemp.createTempSync();
-      Directory.current = tempDir;
+      Directory.current = Directory.systemTemp.createTempSync();
 
       progressLogs = <String>[];
       progress = MockProgress();
@@ -142,11 +135,8 @@ void main() {
       logger = MockLogger();
       when(() => logger.progress(any())).thenReturn(progress);
       when(() => logger.err(any())).thenReturn(null);
-      rootDir = MockRootDir();
-      when(() => rootDir.directory).thenReturn(tempDir);
-      when(() => rootDir.path).thenReturn(tempDir.path);
       melosFile = MockMelosFile();
-      when(() => melosFile.name).thenReturn(projectName);
+      when(() => melosFile.name()).thenReturn(projectName);
       appPackagePubspec = MockPubspecFile();
       mainFileDev = MockMainFile();
       mainFileTest = MockMainFile();
@@ -163,7 +153,6 @@ void main() {
       when(() => diPackage.pubspecFile).thenReturn(diPackagePubspec);
       when(() => diPackage.injectionFile).thenReturn(injectionFile);
       project = MockProject();
-      when(() => project.rootDir).thenReturn(rootDir);
       when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.appPackage).thenReturn(appPackage);
       when(() => project.diPackage).thenReturn(diPackage);
@@ -213,10 +202,18 @@ void main() {
     });
 
     test('l is a valid alias', () {
+      // Act
+      final command = LinuxCommand(project: project);
+
+      // Assert
       expect(command.aliases, contains('l'));
     });
 
     test('lin is a valid alias', () {
+      // Act
+      final command = LinuxCommand(project: project);
+
+      // Assert
       expect(command.aliases, contains('lin'));
     });
 
@@ -266,7 +263,7 @@ void main() {
             that: isA<DirectoryGeneratorTarget>().having(
               (g) => g.dir.path,
               'dir',
-              tempDir.path,
+              '.',
             ),
           ),
           vars: <String, dynamic>{
@@ -282,7 +279,7 @@ void main() {
       );
       verify(() => logger.progress('Updating package $appPackagePath '))
           .called(1);
-      verify(() => appPackagePubspec.addDependency('${projectName}_linux_app'))
+      verify(() => appPackagePubspec.setDependency('${projectName}_linux_app'))
           .called(1);
       verify(() => mainFileDev.addPlatform(Platform.linux)).called(1);
       verify(() => mainFileTest.addPlatform(Platform.linux)).called(1);
@@ -290,17 +287,15 @@ void main() {
       verify(() => logger.progress('Updating package $diPackagePath '))
           .called(1);
       verify(() =>
-              diPackagePubspec.addDependency('${projectName}_linux_home_page'))
+              diPackagePubspec.setDependency('${projectName}_linux_home_page'))
           .called(1);
       verify(() => injectionFile.addPackage('${projectName}_linux_home_page'))
           .called(1);
-      verify(() => logger.progress('Running "melos clean" in ${tempDir.path} '))
+      verify(() => logger.progress('Running "melos clean" in . ')).called(1);
+      verify(() => melosClean()).called(1);
+      verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
-      verify(() => melosClean(cwd: tempDir.path)).called(1);
-      verify(() =>
-              logger.progress('Running "melos bootstrap" in ${tempDir.path} '))
-          .called(1);
-      verify(() => melosBootstrap(cwd: tempDir.path)).called(1);
+      verify(() => melosBootstrap()).called(1);
       verify(() =>
               logger.progress('Running "flutter pub get" in $diPackagePath '))
           .called(1);
@@ -310,7 +305,6 @@ void main() {
           .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: diPackagePath)).called(1);
-
       verify(() => logger.info('Linux activated!')).called(1);
       expect(result, ExitCode.success.code);
     });
@@ -338,7 +332,7 @@ void main() {
             that: isA<DirectoryGeneratorTarget>().having(
               (g) => g.dir.path,
               'dir',
-              tempDir.path,
+              '.',
             ),
           ),
           vars: <String, dynamic>{
@@ -354,7 +348,7 @@ void main() {
       );
       verify(() => logger.progress('Updating package $appPackagePath '))
           .called(1);
-      verify(() => appPackagePubspec.addDependency('${projectName}_linux_app'))
+      verify(() => appPackagePubspec.setDependency('${projectName}_linux_app'))
           .called(1);
       verify(() => mainFileDev.addPlatform(Platform.linux)).called(1);
       verify(() => mainFileTest.addPlatform(Platform.linux)).called(1);
@@ -362,17 +356,15 @@ void main() {
       verify(() => logger.progress('Updating package $diPackagePath '))
           .called(1);
       verify(() =>
-              diPackagePubspec.addDependency('${projectName}_linux_home_page'))
+              diPackagePubspec.setDependency('${projectName}_linux_home_page'))
           .called(1);
       verify(() => injectionFile.addPackage('${projectName}_linux_home_page'))
           .called(1);
-      verify(() => logger.progress('Running "melos clean" in ${tempDir.path} '))
+      verify(() => logger.progress('Running "melos clean" in . ')).called(1);
+      verify(() => melosClean()).called(1);
+      verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
-      verify(() => melosClean(cwd: tempDir.path)).called(1);
-      verify(() =>
-              logger.progress('Running "melos bootstrap" in ${tempDir.path} '))
-          .called(1);
-      verify(() => melosBootstrap(cwd: tempDir.path)).called(1);
+      verify(() => melosBootstrap()).called(1);
       verify(() =>
               logger.progress('Running "flutter pub get" in $diPackagePath '))
           .called(1);

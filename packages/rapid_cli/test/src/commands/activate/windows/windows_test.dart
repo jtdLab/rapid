@@ -276,9 +276,12 @@ void main() {
       verify(() =>
               appPackagePubspec.setDependency('${projectName}_windows_app'))
           .called(1);
-      verify(() => mainFileDev.addPlatform(Platform.windows)).called(1);
-      verify(() => mainFileTest.addPlatform(Platform.windows)).called(1);
-      verify(() => mainFileProd.addPlatform(Platform.windows)).called(1);
+      verify(() => mainFileDev.addSetupCodeForPlatform(Platform.windows))
+          .called(1);
+      verify(() => mainFileTest.addSetupCodeForPlatform(Platform.windows))
+          .called(1);
+      verify(() => mainFileProd.addSetupCodeForPlatform(Platform.windows))
+          .called(1);
       verify(() => logger.progress('Updating package $diPackagePath '))
           .called(1);
       verify(() => diPackagePubspec
@@ -345,9 +348,12 @@ void main() {
       verify(() =>
               appPackagePubspec.setDependency('${projectName}_windows_app'))
           .called(1);
-      verify(() => mainFileDev.addPlatform(Platform.windows)).called(1);
-      verify(() => mainFileTest.addPlatform(Platform.windows)).called(1);
-      verify(() => mainFileProd.addPlatform(Platform.windows)).called(1);
+      verify(() => mainFileDev.addSetupCodeForPlatform(Platform.windows))
+          .called(1);
+      verify(() => mainFileTest.addSetupCodeForPlatform(Platform.windows))
+          .called(1);
+      verify(() => mainFileProd.addSetupCodeForPlatform(Platform.windows))
+          .called(1);
       verify(() => logger.progress('Updating package $diPackagePath '))
           .called(1);
       verify(() => diPackagePubspec

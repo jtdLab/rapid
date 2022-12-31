@@ -68,7 +68,7 @@ void main() {
       // TODO
     });
 
-    group('removePlatform', () {
+    group('removePackagesByPlatform', () {
       // TODO
     });
   });

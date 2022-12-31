@@ -174,12 +174,16 @@ void main() {
       verify(() => project.isActivated(Platform.linux)).called(1);
       verify(() => appPackagePubspec.removeDependencyByPattern('linux'))
           .called(1);
-      verify(() => mainFileDev.removePlatform(Platform.linux)).called(1);
-      verify(() => mainFileTest.removePlatform(Platform.linux)).called(1);
-      verify(() => mainFileProd.removePlatform(Platform.linux)).called(1);
+      verify(() => mainFileDev.removeSetupCodeForPlatform(Platform.linux))
+          .called(1);
+      verify(() => mainFileTest.removeSetupCodeForPlatform(Platform.linux))
+          .called(1);
+      verify(() => mainFileProd.removeSetupCodeForPlatform(Platform.linux))
+          .called(1);
       verify(() => diPackagePubspec.removeDependencyByPattern('linux'))
           .called(1);
-      verify(() => injectionFile.removePlatform(Platform.linux)).called(1);
+      verify(() => injectionFile.removePackagesByPlatform(Platform.linux))
+          .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: diPackage.path)).called(1);
       verify(() => platformDirectory.deleteSync(recursive: true)).called(1);

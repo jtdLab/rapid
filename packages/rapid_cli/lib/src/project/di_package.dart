@@ -45,7 +45,7 @@ class InjectionFile {
   }
 
   /// Removes all packages with [platform].
-  void removePlatform(Platform platform) {
+  void removePackagesByPlatform(Platform platform) {
     // TODO: impl
     throw UnimplementedError();
   }

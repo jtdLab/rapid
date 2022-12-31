@@ -51,13 +51,13 @@ abstract class DeactivateSubCommand extends Command<int>
       final appPackagePubspec = appPackage.pubspecFile;
       appPackagePubspec.removeDependencyByPattern(_platform.name);
       for (final mainFile in appPackage.mainFiles) {
-        mainFile.removePlatform(_platform);
+        mainFile.removeSetupCodeForPlatform(_platform);
       }
 
       final diPackage = _project.diPackage;
       final diPackagePubspec = diPackage.pubspecFile;
       diPackagePubspec.removeDependencyByPattern(_platform.name);
-      diPackage.injectionFile.removePlatform(_platform);
+      diPackage.injectionFile.removePackagesByPlatform(_platform);
       await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
         cwd: diPackage.path,
       );

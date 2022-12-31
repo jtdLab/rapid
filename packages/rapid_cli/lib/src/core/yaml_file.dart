@@ -3,14 +3,8 @@ import 'package:universal_io/io.dart';
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
-/// Thrown when [YamlFile.readValue] is called with empty [path].
-class YamlPathEmpty implements Exception {}
-
-/// Thrown when [YamlFile.readValue] is called with [path] having a length larger than 4.
-class YamlPathToDeep implements Exception {}
-
-/// Thrown when [YamlFile.readValue] is called with [path] that does not reference a value.
-class ValueNotFound implements Exception {}
+/// Thrown when [YamlFile.removeValue] is called with [path] that does not reference a value.
+class InvalidPath implements Exception {}
 
 /// {@template yaml_file}
 /// Abstraction of a yaml file.
@@ -36,28 +30,25 @@ class YamlFile {
 
   /// Reads the value at [path].
   T readValue<T extends Object?>(Iterable<Object?> path) {
-    try {
-      if (path.isEmpty) {
-        throw YamlPathEmpty();
-      }
+    assert(path.isNotEmpty);
+    assert(path.length < 5);
 
-      final yaml = loadYaml(_read());
+    final contents = _read();
+
+    try {
+      final yaml = loadYaml(contents);
       if (path.length == 1) {
         return yaml[path.first];
       } else if (path.length == 2) {
         return yaml[path.first][path.last];
       } else if (path.length == 3) {
         return yaml[path.first][path.elementAt(1)][path.last];
-      } else if (path.length == 4) {
+      } else {
         return yaml[path.first][path.elementAt(1)][path.elementAt(2)]
             [path.last];
-      } else {
-        throw YamlPathToDeep();
       }
-    } catch (e) {
-      if (e is YamlPathEmpty) rethrow;
-      if (e is YamlPathToDeep) rethrow;
-      throw ValueNotFound();
+    } catch (_) {
+      throw InvalidPath();
     }
   }
 
@@ -65,11 +56,14 @@ class YamlFile {
   void removeValue(Iterable<Object?> path) {
     final contents = _read();
 
-    final editor = YamlEditor(contents);
-    editor.remove(path);
-    final output = editor.toString();
+    try {
+      final editor = YamlEditor(contents);
+      editor.remove(path);
+      // TODO in nested paths the removing leads to a empty set "{}" instead of blank field
+      final output = editor.toString();
 
-    _write(output);
+      _write(output);
+    } catch (_) {}
   }
 
   /// Sets [value] at [path].
@@ -94,10 +88,10 @@ class YamlFile {
     final editor = YamlEditor(contents);
     editor.update(path, value);
     var output = editor.toString();
-    if (blankIfValueNull) {
+    if (value == null && blankIfValueNull) {
       final replacement = editor.edits.first.replacement;
       output =
-          output.replaceAll(replacement, replacement.replaceAll(': null', ':'));
+          output.replaceAll(replacement, replacement.replaceAll(' null', ''));
     }
 
     _write(output);

@@ -1,5 +1,6 @@
 import 'package:path/path.dart' as p;
 import 'package:universal_io/io.dart';
+import 'package:yaml/yaml.dart';
 
 import 'yaml_file.dart';
 
@@ -41,9 +42,15 @@ class PubspecFile {
       _file.removeValue(['dependencies', name]);
 
   /// Removes dependencies that match [pattern].
-  void removeDependencyByPattern(String patttern) {
-    // TODO impl
-    throw UnimplementedError();
+  void removeDependencyByPattern(String pattern) {
+    final dependencies = _file.readValue(['dependencies']);
+
+    for (final dependency in (dependencies as YamlMap)
+        .entries
+        .map((e) => (e.key as String).split(':').first.trim())
+        .where((e) => e.contains(pattern))) {
+      removeDependency(dependency);
+    }
   }
 
   /// Adds dependency with [name] and an optional [version].

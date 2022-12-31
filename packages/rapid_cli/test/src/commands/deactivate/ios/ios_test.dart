@@ -167,11 +167,15 @@ void main() {
       verify(() => project.isActivated(Platform.ios)).called(1);
       verify(() => appPackagePubspec.removeDependencyByPattern('ios'))
           .called(1);
-      verify(() => mainFileDev.removePlatform(Platform.ios)).called(1);
-      verify(() => mainFileTest.removePlatform(Platform.ios)).called(1);
-      verify(() => mainFileProd.removePlatform(Platform.ios)).called(1);
+      verify(() => mainFileDev.removeSetupCodeForPlatform(Platform.ios))
+          .called(1);
+      verify(() => mainFileTest.removeSetupCodeForPlatform(Platform.ios))
+          .called(1);
+      verify(() => mainFileProd.removeSetupCodeForPlatform(Platform.ios))
+          .called(1);
       verify(() => diPackagePubspec.removeDependencyByPattern('ios')).called(1);
-      verify(() => injectionFile.removePlatform(Platform.ios)).called(1);
+      verify(() => injectionFile.removePackagesByPlatform(Platform.ios))
+          .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: diPackage.path)).called(1);
       verify(() => platformDirectory.deleteSync(recursive: true)).called(1);

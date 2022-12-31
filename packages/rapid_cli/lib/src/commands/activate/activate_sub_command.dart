@@ -91,7 +91,7 @@ abstract class ActivateSubCommand extends Command<int>
       final appPackagePubspec = appPackage.pubspecFile;
       appPackagePubspec.setDependency('${projectName}_${_platform.name}_app');
       for (final mainFile in appPackage.mainFiles) {
-        mainFile.addPlatform(_platform);
+        mainFile.addSetupCodeForPlatform(_platform);
       }
       appUpdatePackageProgress.complete();
 

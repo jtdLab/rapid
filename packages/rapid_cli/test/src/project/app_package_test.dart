@@ -66,11 +66,11 @@ void main() {
   });
 
   group('MainFile', () {
-    group('addPlatform', () {
+    group('addSetupCodeForPlatform', () {
       // TODO
     });
 
-    group('removePlatform', () {
+    group('removeSetupCodeForPlatform', () {
       // TODO
     });
   });

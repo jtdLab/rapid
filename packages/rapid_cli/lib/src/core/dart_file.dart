@@ -178,8 +178,64 @@ class DartFile {
 
   String get path => _file.path;
 
+  /// [name] = null refers to the root scope
+  _Scope _getScope(String? name, String contents) {
+    if (name == null) {
+      return _Scope(name, contents, 0, contents.length);
+    }
+
+    final classMixinOrExtensionRegExp =
+        RegExp(r'(?:[\s]|^)(class|extension|mixin)(?=[\s]|$) ' + name);
+
+    final parentExists = classMixinOrExtensionRegExp.hasMatch(contents);
+    if (parentExists) {
+      final matchStart =
+          classMixinOrExtensionRegExp.firstMatch(contents)!.start;
+      final start = matchStart;
+      final end = contents.indexOfClosingBrace(
+        contents.indexOf('{', matchStart),
+      );
+      return _Scope(name, contents.substring(start, end), start, end);
+    }
+
+    throw ScopeNotFound();
+  }
+
+  /// Inserts [code] at [start].
+  void _insertCode(String code, {required int start}) {
+    var contents = _read();
+
+    final output = contents.replaceRange(start, start, code);
+
+    _write(output);
+  }
+
+  /// Inserts [code] after the [occurence] match of [pattern].
+  void _insertCodeAfterPattern(String code,
+      {required RegExp pattern, int occurence = 0}) {
+    var contents = _read();
+
+    final matches = pattern.allMatches(contents);
+    if (occurence + 1 <= matches.length) {
+      final match = matches.elementAt(occurence);
+      final start =
+          match.start + match.group(0)!.length + 1; // TODO +1 needed ?
+      final output = contents.replaceRange(start, start, code);
+      _write(output);
+    }
+  }
+
   /// Reads the contents of the underlying file.
   String _read() => _file.readAsStringSync();
+
+  /// Removes code from [start] to [end] (both inclusive).
+  void _removeCode(int start, int end) {
+    final contents = _read();
+
+    final output = contents.replaceRange(start, end, '');
+
+    _write(output);
+  }
 
   /// Formates and writes [contents] to the underlying file.
   void _write(String contents) =>
@@ -247,51 +303,27 @@ class DartFile {
     }
   }
 
-  /// Inserts [code] at [start].
-  void insertCode(String code, {required int start}) {
-    var contents = _read();
-
-    final output = contents.replaceRange(start, start, code);
-
-    _write(output);
-  }
-
-  /// Removes code from [start] to [end] (both inclusive).
-  void removeCode(int start, int end) {
-    final contents = _read();
-
-    final output = contents.replaceRange(start, end, '');
-
-    _write(output);
-  }
-
-  /// [name] = null refers to the root scope
-  _Scope _getScope(String? name, String contents) {
-    if (name == null) {
-      return _Scope(name, contents, 0, contents.length);
-    }
-
-    final classMixinOrExtensionRegExp =
-        RegExp(r'(?:[\s]|^)(class|extension|mixin)(?=[\s]|$) ' + name);
-
-    final parentExists = classMixinOrExtensionRegExp.hasMatch(contents);
-    if (parentExists) {
-      final matchStart =
-          classMixinOrExtensionRegExp.firstMatch(contents)!.start;
-      final start = matchStart;
-      final end = contents.indexOfClosingBrace(
-        contents.indexOf('{', matchStart),
-      );
-      return _Scope(name, contents.substring(start, end), start, end);
-    }
-
-    throw ScopeNotFound();
+  void addNamedParamToMethodCall(
+    String methodName,
+    String paramName,
+    String paramValue, {
+    String? parent,
+  }) {
+    // TODO
   }
 
   /// Removes [import]
   void removeImport(String import) {
-    // TODO impl
-    throw UnimplementedError();
+    final contents = _read();
+
+    final regExp = RegExp('import \'$import\'( as [a-z]+)?;' r'[\s]*');
+    final match = regExp.firstMatch(contents);
+    if (match == null) {
+      return;
+    }
+    final output = contents.replaceRange(match.start, match.end, '');
+
+    _write(output);
   }
 
   /// Removes the member function of [parent] with [name].
@@ -311,6 +343,14 @@ class DartFile {
         contents.replaceRange(method.start + offset, method.end + offset, ''),
       );
     }
+  }
+
+  void removeNamedParamFromMethodCall(
+    String method,
+    String param, {
+    String? parent,
+  }) {
+    // TODO
   }
 
   /// Sets the [property] of [annotation] to [value].

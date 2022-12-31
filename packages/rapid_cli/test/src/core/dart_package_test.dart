@@ -52,6 +52,21 @@ dependencies:
   my_dependency:
 ''';
 
+const pubspecWithAdditionalPatternDependencies = '''
+name: foo_bar
+description: Foo bar
+version: 0.0.1
+
+dependencies:
+  foo: ^1.0.3
+  my_pattern_a: ^1.0.0
+  bar:
+  bis: null
+  baz: ^3.2.0
+  my_pattern_b: 1.2.1
+  my_pattern_c: ^3.1.0
+''';
+
 void main() {
   group('DartPackage', () {
     final cwd = Directory.current;
@@ -161,6 +176,34 @@ void main() {
 
         // Act
         pubspecFile.removeDependency('my_dependency');
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, pubspecWithDependencies);
+      });
+    });
+
+    group('removeDependencyByPattern', () {
+      test('removes dependencies that match the pattern correctly', () {
+        // Arrange
+        final file = File(pubspecFile.path);
+        file.writeAsStringSync(pubspecWithAdditionalPatternDependencies);
+
+        // Act
+        pubspecFile.removeDependencyByPattern('my_pattern');
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, pubspecWithDependencies);
+      });
+
+      test('does nothing when no dependencies that match pattern exist', () {
+        // Arrange
+        final file = File(pubspecFile.path);
+        file.writeAsStringSync(pubspecWithDependencies);
+
+        // Act
+        pubspecFile.removeDependencyByPattern('my_pattern');
 
         // Assert
         final contents = file.readAsStringSync();

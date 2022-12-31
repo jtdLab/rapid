@@ -332,8 +332,53 @@ void main() {
       });
     });
 
-    group('removeImport', () {
+    group('insertCode', () {
       // TODO
+    });
+
+    group('removeCode', () {
+      // TODO
+    });
+
+    group('removeImport', () {
+      test('removes import correctly', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithAdditionalDartImport);
+
+        // Act
+        dartFile.removeImport('dart:bbb');
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWith2ImportsPerType);
+      });
+
+      test('removes import with alias correctly', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithAdditionalAliasImport);
+
+        // Act
+        dartFile.removeImport('package:bbb/bbb.dart');
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWith2ImportsPerType);
+      });
+
+      test('does nothing when import does not exist', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWith2ImportsPerType);
+
+        // Act
+        dartFile.removeImport('dart:zzz');
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWith2ImportsPerType);
+      });
     });
 
     group('removeMethod', () {

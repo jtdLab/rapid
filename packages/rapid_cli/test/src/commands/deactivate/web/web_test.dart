@@ -162,11 +162,15 @@ void main() {
       verify(() => project.isActivated(Platform.web)).called(1);
       verify(() => appPackagePubspec.removeDependencyByPattern('web'))
           .called(1);
-      verify(() => mainFileDev.removePlatform(Platform.web)).called(1);
-      verify(() => mainFileTest.removePlatform(Platform.web)).called(1);
-      verify(() => mainFileProd.removePlatform(Platform.web)).called(1);
+      verify(() => mainFileDev.removeSetupCodeForPlatform(Platform.web))
+          .called(1);
+      verify(() => mainFileTest.removeSetupCodeForPlatform(Platform.web))
+          .called(1);
+      verify(() => mainFileProd.removeSetupCodeForPlatform(Platform.web))
+          .called(1);
       verify(() => diPackagePubspec.removeDependencyByPattern('web')).called(1);
-      verify(() => injectionFile.removePlatform(Platform.web)).called(1);
+      verify(() => injectionFile.removePackagesByPlatform(Platform.web))
+          .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: diPackage.path)).called(1);
       verify(() => platformDirectory.deleteSync(recursive: true)).called(1);

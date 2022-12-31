@@ -169,12 +169,16 @@ void main() {
       verify(() => project.isActivated(Platform.android)).called(1);
       verify(() => appPackagePubspec.removeDependencyByPattern('android'))
           .called(1);
-      verify(() => mainFileDev.removePlatform(Platform.android)).called(1);
-      verify(() => mainFileTest.removePlatform(Platform.android)).called(1);
-      verify(() => mainFileProd.removePlatform(Platform.android)).called(1);
+      verify(() => mainFileDev.removeSetupCodeForPlatform(Platform.android))
+          .called(1);
+      verify(() => mainFileTest.removeSetupCodeForPlatform(Platform.android))
+          .called(1);
+      verify(() => mainFileProd.removeSetupCodeForPlatform(Platform.android))
+          .called(1);
       verify(() => diPackagePubspec.removeDependencyByPattern('android'))
           .called(1);
-      verify(() => injectionFile.removePlatform(Platform.android)).called(1);
+      verify(() => injectionFile.removePackagesByPlatform(Platform.android))
+          .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: diPackage.path)).called(1);
       verify(() => platformDirectory.deleteSync(recursive: true)).called(1);

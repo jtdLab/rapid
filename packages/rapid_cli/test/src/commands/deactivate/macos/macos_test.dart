@@ -174,12 +174,16 @@ void main() {
       verify(() => project.isActivated(Platform.macos)).called(1);
       verify(() => appPackagePubspec.removeDependencyByPattern('macos'))
           .called(1);
-      verify(() => mainFileDev.removePlatform(Platform.macos)).called(1);
-      verify(() => mainFileTest.removePlatform(Platform.macos)).called(1);
-      verify(() => mainFileProd.removePlatform(Platform.macos)).called(1);
+      verify(() => mainFileDev.removeSetupCodeForPlatform(Platform.macos))
+          .called(1);
+      verify(() => mainFileTest.removeSetupCodeForPlatform(Platform.macos))
+          .called(1);
+      verify(() => mainFileProd.removeSetupCodeForPlatform(Platform.macos))
+          .called(1);
       verify(() => diPackagePubspec.removeDependencyByPattern('macos'))
           .called(1);
-      verify(() => injectionFile.removePlatform(Platform.macos)).called(1);
+      verify(() => injectionFile.removePackagesByPlatform(Platform.macos))
+          .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: diPackage.path)).called(1);
       verify(() => platformDirectory.deleteSync(recursive: true)).called(1);

@@ -61,7 +61,7 @@ class MainFile {
 
   String get path => _file.path;
 
-  void addPlatform(Platform platform) {
+  void addSetupCodeForPlatform(Platform platform) {
     final projectName = _appPackage._project.melosFile.name();
     final platformName = platform.name;
     final envName = env == Environment.development
@@ -79,11 +79,14 @@ class MainFile {
       _file.addImport('package:url_strategy/url_strategy.dart');
     }
 
+    // TODO add this functionality
+    //_file.addNamedParamToMethodCall(methodName, paramName, paramValue);
+
     // TODO rethink the procces of adding/inserting code / method is it the same?
-    _file.insertCode(
+/*     _file.insertCode(
       '${platform.name}: run${platform.name.pascalCase}App,',
       start: 'TODO'.indexOf('runOnPlatform('), // TODO use contents
-    );
+    ); */
 
     _file.addMethod(
       Method(
@@ -109,8 +112,8 @@ class MainFile {
     );
   }
 
-  void removePlatform(Platform platform) {
-    final projectName = 'TODO'; // TODO
+  void removeSetupCodeForPlatform(Platform platform) {
+    final projectName = _appPackage._project.melosFile.name();
     final platformName = platform.name;
 
     _file.removeImport(
@@ -121,11 +124,14 @@ class MainFile {
       _file.removeImport('package:url_strategy/url_strategy.dart');
     }
 
-    // TODO rethink the procces of removing code / method is it the same?
+    // TODO add this functionality
+    //_file.removeNamedParamFromMethodCall(methodName, paramName, paramValue);
+
+/*     // TODO rethink the procces of removing code / method is it the same?
     final token = '${platform.name}: run${platform.name.pascalCase}App';
     final start = 'TODO'.indexOf(token); // TODO file content
     final end = start + token.length;
-    _file.removeCode(start, end);
+    //_file.removeCode(start, end); */
 
     _file.removeMethod('run${platformName.pascalCase}App');
   }

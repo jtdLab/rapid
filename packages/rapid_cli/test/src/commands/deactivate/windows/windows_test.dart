@@ -169,12 +169,16 @@ void main() {
       verify(() => project.isActivated(Platform.windows)).called(1);
       verify(() => appPackagePubspec.removeDependencyByPattern('windows'))
           .called(1);
-      verify(() => mainFileDev.removePlatform(Platform.windows)).called(1);
-      verify(() => mainFileTest.removePlatform(Platform.windows)).called(1);
-      verify(() => mainFileProd.removePlatform(Platform.windows)).called(1);
+      verify(() => mainFileDev.removeSetupCodeForPlatform(Platform.windows))
+          .called(1);
+      verify(() => mainFileTest.removeSetupCodeForPlatform(Platform.windows))
+          .called(1);
+      verify(() => mainFileProd.removeSetupCodeForPlatform(Platform.windows))
+          .called(1);
       verify(() => diPackagePubspec.removeDependencyByPattern('windows'))
           .called(1);
-      verify(() => injectionFile.removePlatform(Platform.windows)).called(1);
+      verify(() => injectionFile.removePackagesByPlatform(Platform.windows))
+          .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: diPackage.path)).called(1);
       verify(() => platformDirectory.deleteSync(recursive: true)).called(1);

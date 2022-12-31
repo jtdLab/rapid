@@ -1,4 +1,4 @@
-name: rapid_cli
+name: rapid_cli_e2e
 
 on:
   workflow_dispatch:

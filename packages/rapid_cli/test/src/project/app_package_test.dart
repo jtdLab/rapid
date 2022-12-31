@@ -14,7 +14,6 @@ void main() {
     final cwd = Directory.current;
 
     const projectName = 'foo_bar';
-
     late MelosFile melosFile;
     late Project project;
     late AppPackage appPackage;
@@ -67,6 +66,12 @@ void main() {
   });
 
   group('MainFile', () {
-    // TODO
+    group('addPlatform', () {
+      // TODO
+    });
+
+    group('removePlatform', () {
+      // TODO
+    });
   });
 }

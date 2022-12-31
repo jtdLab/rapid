@@ -15,12 +15,15 @@ enum Environment { development, test, production }
 class AppPackage {
   /// {@macro app_package}
   AppPackage({required Project project})
-      : _package = DartPackage(
+      : _project = project,
+        _package = DartPackage(
           path: p.join(
               'packages', project.melosFile.name(), project.melosFile.name()),
         );
 
   final DartPackage _package;
+
+  final Project _project;
 
   /// The main files.
   ///
@@ -59,7 +62,7 @@ class MainFile {
   String get path => _file.path;
 
   void addPlatform(Platform platform) {
-    final projectName = 'TODO'; // TODO
+    final projectName = _appPackage._project.melosFile.name();
     final platformName = platform.name;
     final envName = env == Environment.development
         ? 'dev'
@@ -76,7 +79,11 @@ class MainFile {
       _file.addImport('package:url_strategy/url_strategy.dart');
     }
 
-    // TODO add platform to main method -> this might be another fct in dart file
+    // TODO rethink the procces of adding/inserting code / method is it the same?
+    _file.insertCode(
+      '${platform.name}: run${platform.name.pascalCase}App,',
+      start: 'TODO'.indexOf('runOnPlatform('), // TODO use contents
+    );
 
     _file.addMethod(
       Method(
@@ -114,7 +121,11 @@ class MainFile {
       _file.removeImport('package:url_strategy/url_strategy.dart');
     }
 
-    // TODO remove platform from main method -> this might be another fct in dart file
+    // TODO rethink the procces of removing code / method is it the same?
+    final token = '${platform.name}: run${platform.name.pascalCase}App';
+    final start = 'TODO'.indexOf(token); // TODO file content
+    final end = start + token.length;
+    _file.removeCode(start, end);
 
     _file.removeMethod('run${platformName.pascalCase}App');
   }

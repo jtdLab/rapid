@@ -136,6 +136,10 @@ class _Method {
 
 extension on String {
   int indexOfClosingBrace(int openingBraceIndex) {
+    if (openingBraceIndex == -1) {
+      return length - 1;
+    }
+
     assert(this[openingBraceIndex] == '{');
 
     int count = 0;
@@ -222,9 +226,6 @@ class DartFile {
     _write(output);
   }
 
-  /// Removes [import]
-  void removeImport(String import) {}
-
   /// Adds [method] as a member function of [parent] (class, mixin, extension).
   ///
   /// If [parent] is null [method] gets added as a top level function.
@@ -236,7 +237,7 @@ class DartFile {
     if (!methodExists) {
       _write(
         contents.replaceRange(
-          scope.end - 1,
+          (scope.end - 1) > 0 ? (scope.end - 1) : 0,
           scope.end,
           '${method.accept(DartEmitter())}',
         ),
@@ -244,6 +245,24 @@ class DartFile {
     } else {
       throw MethodAlreadyExists();
     }
+  }
+
+  /// Inserts [code] at [start].
+  void insertCode(String code, {required int start}) {
+    var contents = _read();
+
+    final output = contents.replaceRange(start, start, code);
+
+    _write(output);
+  }
+
+  /// Removes code from [start] to [end] (both inclusive).
+  void removeCode(int start, int end) {
+    final contents = _read();
+
+    final output = contents.replaceRange(start, end, '');
+
+    _write(output);
   }
 
   /// [name] = null refers to the root scope
@@ -267,6 +286,12 @@ class DartFile {
     }
 
     throw ScopeNotFound();
+  }
+
+  /// Removes [import]
+  void removeImport(String import) {
+    // TODO impl
+    throw UnimplementedError();
   }
 
   /// Removes the member function of [parent] with [name].

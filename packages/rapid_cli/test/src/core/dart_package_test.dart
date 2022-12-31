@@ -56,12 +56,13 @@ void main() {
   group('DartPackage', () {
     final cwd = Directory.current;
 
+    const path = 'foo';
     late DartPackage dartPackage;
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync().path;
 
-      dartPackage = DartPackage();
+      dartPackage = DartPackage(path: path);
       Directory(dartPackage.path).createSync(recursive: true);
     });
 
@@ -69,33 +70,63 @@ void main() {
       Directory.current = cwd;
     });
 
+    group('delete', () {
+      test('deletes the file', () {
+        // Arrange
+        final directory = Directory(dartPackage.path);
+
+        // Act
+        dartPackage.delete();
+
+        // Assert
+        expect(directory.existsSync(), false);
+      });
+    });
+
+    group('exists', () {
+      test('returns true when the file exists', () {
+        // Act
+        final exists = dartPackage.exists();
+
+        // Assert
+        expect(exists, true);
+      });
+
+      test('returns false when the file does not exists', () {
+        // Arrange
+        Directory(dartPackage.path).deleteSync(recursive: true);
+
+        // Act
+        final exists = dartPackage.exists();
+
+        // Assert
+        expect(exists, false);
+      });
+    });
+
     group('path', () {
       test('is correct', () {
         // Assert
-        expect(dartPackage.path, '.');
+        expect(dartPackage.path, path);
       });
 
-      test('is correct with path', () {
+      test('is correct (no path)', () {
         // Arrange
-        final path = 'foo';
-        dartPackage = DartPackage(path: path);
-        Directory(dartPackage.path).createSync(recursive: true);
+        dartPackage = DartPackage();
 
         // Assert
-        expect(dartPackage.path, path);
+        expect(dartPackage.path, '.');
       });
     });
 
     group('pubspecFile', () {
-      // TODO
-    });
+      test('returns correct pubspec file', () {
+        // Act
+        final pubspecFile = dartPackage.pubspecFile;
 
-    group('delete', () {
-      // TODO
-    });
-
-    group('exists', () {
-      // TODO
+        // Assert
+        expect(pubspecFile.path, '$path/pubspec.yaml');
+      });
     });
   });
 

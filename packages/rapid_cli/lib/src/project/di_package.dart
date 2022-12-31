@@ -31,11 +31,8 @@ class InjectionFile {
   /// {@macro injection_file}
   InjectionFile({
     required DiPackage diPackage,
-  })  : _diPackage = diPackage,
-        _file = DartFile(
+  }) : _file = DartFile(
             path: p.join(diPackage.path, 'lib', 'src'), name: 'injection');
-
-  final DiPackage _diPackage;
 
   final DartFile _file;
 

@@ -13,11 +13,11 @@ class DartPackage {
   /// The underlying directory.
   final Directory _directory;
 
-  String get path => _directory.path;
-
   void delete() => _directory.deleteSync();
 
   bool exists() => _directory.existsSync();
+
+  String get path => _directory.path;
 
   /// The pubspec file of this dart package.
   late final PubspecFile pubspecFile = PubspecFile(path: path);

@@ -14,7 +14,6 @@ void main() {
     final cwd = Directory.current;
 
     const projectName = 'foo_bar';
-
     late MelosFile melosFile;
     late Project project;
     late DiPackage diPackage;
@@ -51,9 +50,26 @@ void main() {
         expect(diPackage.path, 'packages/$projectName/${projectName}_di');
       });
     });
+
+    group('pubspecFile', () {
+      test('returns correct pubspec file', () {
+        // Act
+        final pubspecFile = diPackage.pubspecFile;
+
+        // Assert
+        expect(pubspecFile.path,
+            'packages/$projectName/${projectName}_di/pubspec.yaml');
+      });
+    });
   });
 
   group('InjectionFile', () {
-    // TODO
+    group('addPackage', () {
+      // TODO
+    });
+
+    group('removePlatform', () {
+      // TODO
+    });
   });
 }

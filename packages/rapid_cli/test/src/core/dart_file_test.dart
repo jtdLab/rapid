@@ -139,6 +139,14 @@ class Bar {
 }
 ''';
 
+const emptyFile = '';
+
+const fileWithSingleMethod = '''
+String aaa() {
+  print(1);
+}
+''';
+
 void main() {
   group('DartFile', () {
     final cwd = Directory.current;
@@ -270,6 +278,26 @@ void main() {
         // Assert
         final contents = file.readAsStringSync();
         expect(contents, dartFileWithAdditionalMemberMethod);
+      });
+
+      test('adds member method correctly when file is empty', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(emptyFile);
+
+        // Act
+        dartFile.addMethod(
+          Method(
+            (m) => m
+              ..returns = refer('String')
+              ..name = 'aaa'
+              ..body = Code('print(1);'),
+          ),
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, fileWithSingleMethod);
       });
 
       test('throws when parent does not exist', () {

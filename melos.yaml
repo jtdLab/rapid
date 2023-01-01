@@ -30,7 +30,11 @@ scripts:
     description: |
       Set up pre commit hook to ensure Conventional Commits (https://www.conventionalcommits.org/en/v1.0.0/) via commitlint (https://www.npmjs.com/package/commitlint).
        - Requires `node` (can be installed via Brew on macOS).
-  
+
   format:
     run: melos exec -- "flutter format . --fix"
+    description: Format the project
+
+  analyze:
+    run: melos exec -- "flutter analyze"
     description: Format the project

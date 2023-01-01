@@ -6,6 +6,7 @@ import 'package:code_builder/code_builder.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:path/path.dart' as p;
 import 'package:universal_io/io.dart';
+// import 'package:analyzer/dart/ast/ast.dart';
 
 export 'package:code_builder/code_builder.dart';
 
@@ -201,16 +202,16 @@ class DartFile {
     throw ScopeNotFound();
   }
 
-  /// Inserts [code] at [start].
-  void _insertCode(String code, {required int start}) {
+  /// Inserts [code] at [position].
+  void _insertCode(String code, {required int position}) {
     var contents = _read();
 
-    final output = contents.replaceRange(start, start, code);
+    final output = contents.replaceRange(position, position, code);
 
     _write(output);
   }
 
-  /// Inserts [code] after the [occurence] match of [pattern].
+/*   /// Inserts [code] after the [occurence] match of [pattern].
   void _insertCodeAfterPattern(String code,
       {required RegExp pattern, int occurence = 0}) {
     var contents = _read();
@@ -223,7 +224,7 @@ class DartFile {
       final output = contents.replaceRange(start, start, code);
       _write(output);
     }
-  }
+  } */
 
   /// Reads the contents of the underlying file.
   String _read() => _file.readAsStringSync();
@@ -309,7 +310,24 @@ class DartFile {
     String paramValue, {
     String? parent,
   }) {
-    // TODO
+    late final int position;
+    if (parent == null) {
+      // scope is top level
+      position = 0; // TODO calc pos
+    } else {
+      // scope is class level
+      position = 0; // TODO calc pos
+      //start: 'TODO'.indexOf('runOnPlatform('), // TODO use contents
+      // TODO
+      // # Find the position where to insert the param
+      // #1. find range of class scope referenced by parent
+      // #2. find method scope inside class scope refed by methodName
+      // #3. find named params scope (might no exist)
+      // #4. check if param with name exists in named params scope
+      // # Add the code at position
+    }
+
+    _insertCode('$paramName: $paramValue,', position: position);
   }
 
   /// Removes [import]
@@ -350,7 +368,28 @@ class DartFile {
     String param, {
     String? parent,
   }) {
-    // TODO
+    late final int start;
+    late final int end;
+    if (parent == null) {
+      // scope is top level
+      start = 0; // TODO calc start
+      end = 0; // TODO calc end
+    } else {
+      // scope is class level
+      start = 0; // TODO calc start
+      end = 0; // TODO calc end
+
+      //start: 'TODO'.indexOf('runOnPlatform('), // TODO use contents
+      // TODO
+      // # Find the position where to insert the param
+      // #1. find range of class scope referenced by parent
+      // #2. find method scope inside class scope refed by methodName
+      // #3. find named params scope (might no exist)
+      // #4. check if param with name exists in named params scope
+      // # Add the code at position
+    }
+
+    _removeCode(start, end);
   }
 
   /// Sets the [property] of [annotation] to [value].
@@ -378,6 +417,8 @@ class DartFile {
   void setAnnotationProperty<T extends Object?>({
     required String property,
     required String annotation,
+    required String element,
+    String? parent,
     required T value,
   }) {
     final contents = _read();
@@ -386,3 +427,5 @@ class DartFile {
     _write(output);
   }
 }
+
+class DartEditor {}

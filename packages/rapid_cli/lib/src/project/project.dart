@@ -4,7 +4,7 @@ import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/app_package.dart';
 import 'package:rapid_cli/src/project/di_package.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
-import 'package:universal_io/io.dart';
+import 'package:rapid_cli/src/project/platform_directory.dart';
 
 /// Rapid Project
 class Project {
@@ -19,17 +19,12 @@ class Project {
 
   /// Wheter [platform] is activated.
   bool isActivated(Platform platform) =>
-      platformDirectory(platform).existsSync() &&
+      platformDirectory(platform).exists() &&
       platformUiPackage(platform).exists();
 
   /// The directory containing [platform] specific packages.
-  Directory platformDirectory(Platform platform) => Directory(
-        p.join(
-          'packages',
-          melosFile.name(),
-          '${melosFile.name()}_${platform.name}',
-        ),
-      );
+  PlatformDirectory platformDirectory(Platform platform) =>
+      PlatformDirectory(platform: platform, project: this);
 
   /// The package containing [platform] specific ui code.
   DartPackage platformUiPackage(Platform platform) => DartPackage(

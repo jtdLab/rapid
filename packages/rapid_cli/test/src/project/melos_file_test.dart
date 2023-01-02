@@ -34,6 +34,27 @@ void main() {
       });
     });
 
+    group('exists', () {
+      test('returns true when the file exists', () {
+        // Act
+        final exists = melosFile.exists();
+
+        // Assert
+        expect(exists, true);
+      });
+
+      test('returns false when the file does not exists', () {
+        // Arrange
+        File(melosFile.path).deleteSync(recursive: true);
+
+        // Act
+        final exists = melosFile.exists();
+
+        // Assert
+        expect(exists, false);
+      });
+    });
+
     group('name', () {
       test('returns name', () {
         // Arrange

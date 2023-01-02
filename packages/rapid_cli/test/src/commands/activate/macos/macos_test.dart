@@ -136,6 +136,7 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
       when(() => logger.err(any())).thenReturn(null);
       melosFile = MockMelosFile();
+      when(() => melosFile.exists()).thenReturn(true);
       when(() => melosFile.name()).thenReturn(projectName);
       appPackagePubspec = MockPubspecFile();
       mainFileDev = MockMainFile();
@@ -383,6 +384,20 @@ void main() {
 
       verify(() => logger.info('macOS activated!')).called(1);
       expect(result, ExitCode.success.code);
+    });
+
+    test('exits with 66 when melos does not exist', () async {
+      // Arrange
+      when(() => melosFile.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err('''
+ Could not find a melos.yaml.
+ This command should be run from the root of your Rapid project.''')).called(1);
+      expect(result, ExitCode.noInput.code);
     });
 
     test('exits with 78 when macOS is already activated', () async {

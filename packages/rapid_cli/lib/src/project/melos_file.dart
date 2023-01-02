@@ -15,6 +15,8 @@ class MelosFile {
 
   String get path => _file.path;
 
+  bool exists() => _file.exists();
+
   /// The name of the project.
   String name() {
     try {

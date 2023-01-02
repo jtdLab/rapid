@@ -86,7 +86,7 @@ void main() {
     });
 
     group('delete', () {
-      test('deletes the file', () {
+      test('deletes the directory', () {
         // Arrange
         final directory = Directory(dartPackage.path);
 
@@ -99,7 +99,7 @@ void main() {
     });
 
     group('exists', () {
-      test('returns true when the file exists', () {
+      test('returns true when the directory exists', () {
         // Act
         final exists = dartPackage.exists();
 
@@ -107,7 +107,7 @@ void main() {
         expect(exists, true);
       });
 
-      test('returns false when the file does not exists', () {
+      test('returns false when the directory does not exists', () {
         // Arrange
         Directory(dartPackage.path).deleteSync(recursive: true);
 

@@ -28,6 +28,8 @@ class YamlFile {
 
   String get path => _file.path;
 
+  bool exists() => _file.existsSync();
+
   /// Reads the value at [path].
   T readValue<T extends Object?>(Iterable<Object?> path) {
     assert(path.isNotEmpty);

@@ -59,16 +59,19 @@ void main() {
     });
 
     group('isActivated', () {
+      const platform = Platform.android;
+
       setUp(() {
-        project.platformDirectory(Platform.android).createSync(recursive: true);
-        Directory(project.platformUiPackage(Platform.android).path)
+        Directory(project.platformDirectory(platform).path)
+            .createSync(recursive: true);
+        Directory(project.platformUiPackage(platform).path)
             .createSync(recursive: true);
       });
 
       test('returns true when platform directory and platform ui package exist',
           () {
         // Act
-        final isActivated = project.isActivated(Platform.android);
+        final isActivated = project.isActivated(platform);
 
         // Assert
         expect(isActivated, true);
@@ -76,10 +79,11 @@ void main() {
 
       test('returns false when platform directory does not exist', () {
         // Arrange
-        project.platformDirectory(Platform.android).deleteSync(recursive: true);
+        Directory(project.platformDirectory(platform).path)
+            .deleteSync(recursive: true);
 
         // Act
-        final isActivated = project.isActivated(Platform.android);
+        final isActivated = project.isActivated(platform);
 
         // Assert
         expect(isActivated, false);
@@ -87,11 +91,11 @@ void main() {
 
       test('returns false when  platform ui package does not exist', () {
         // Arrange
-        Directory(project.platformUiPackage(Platform.android).path)
+        Directory(project.platformUiPackage(platform).path)
             .deleteSync(recursive: false);
 
         // Act
-        final isActivated = project.isActivated(Platform.android);
+        final isActivated = project.isActivated(platform);
 
         // Assert
         expect(isActivated, false);
@@ -101,21 +105,22 @@ void main() {
     group('platformDirectory', () {
       test('returns correct platform directory', () {
         // Act
-        final directory = project.platformDirectory(Platform.android);
+        final platformDirectory = project.platformDirectory(Platform.android);
 
         // Assert
-        expect(directory.path, 'packages/$projectName/${projectName}_android');
+        expect(platformDirectory.path,
+            'packages/$projectName/${projectName}_android');
       });
     });
 
     group('platformUiPackage', () {
       test('returns correct dart package', () {
         // Act
-        final package = project.platformUiPackage(Platform.android);
+        final platformUiPackage = project.platformUiPackage(Platform.android);
 
         // Assert
         expect(
-          package.path,
+          platformUiPackage.path,
           'packages/${projectName}_ui/${projectName}_ui_android',
         );
       });

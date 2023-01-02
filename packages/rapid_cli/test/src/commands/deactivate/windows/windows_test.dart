@@ -5,6 +5,8 @@ import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/app_package.dart';
 import 'package:rapid_cli/src/project/di_package.dart';
+import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/platform_directory.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -29,6 +31,8 @@ class MockProgress extends Mock implements Progress {}
 
 class MockLogger extends Mock implements Logger {}
 
+class MockMelosFile extends Mock implements MelosFile {}
+
 class MockPubspecFile extends Mock implements PubspecFile {}
 
 class MockMainFile extends Mock implements MainFile {}
@@ -39,7 +43,7 @@ class MockInjectionFile extends Mock implements InjectionFile {}
 
 class MockDiPackage extends Mock implements DiPackage {}
 
-class MockDirectory extends Mock implements Directory {}
+class MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
 class MockDartPackage extends Mock implements DartPackage {}
 
@@ -56,6 +60,7 @@ void main() {
     late List<String> progressLogs;
     late Progress progress;
     late Logger logger;
+    late MelosFile melosFile;
     late PubspecFile appPackagePubspec;
     late MainFile mainFileDev;
     late MainFile mainFileTest;
@@ -64,7 +69,7 @@ void main() {
     late PubspecFile diPackagePubspec;
     late InjectionFile injectionFile;
     late DiPackage diPackage;
-    late Directory platformDirectory;
+    late PlatformDirectory platformDirectory;
     late DartPackage platformUiPackage;
     late Project project;
     late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
@@ -85,6 +90,8 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
       when(() => logger.err(any())).thenReturn(null);
       appPackagePubspec = MockPubspecFile();
+      melosFile = MockMelosFile();
+      when(() => melosFile.exists()).thenReturn(true);
       mainFileDev = MockMainFile();
       mainFileTest = MockMainFile();
       mainFileProd = MockMainFile();
@@ -98,9 +105,10 @@ void main() {
       when(() => diPackage.path).thenReturn('foo/bar/baz');
       when(() => diPackage.pubspecFile).thenReturn(diPackagePubspec);
       when(() => diPackage.injectionFile).thenReturn(injectionFile);
-      platformDirectory = MockDirectory();
+      platformDirectory = MockPlatformDirectory();
       platformUiPackage = MockDartPackage();
       project = MockProject();
+      when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.appPackage).thenReturn(appPackage);
       when(() => project.diPackage).thenReturn(diPackage);
       when(() => project.platformDirectory(Platform.windows))
@@ -181,14 +189,27 @@ void main() {
           .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: diPackage.path)).called(1);
-      verify(() => platformDirectory.deleteSync(recursive: true)).called(1);
+      verify(() => platformDirectory.delete()).called(1);
       verify(() => platformUiPackage.delete()).called(1);
       verify(() => logger.success('Windows is now deactivated.')).called(1);
       expect(result, ExitCode.success.code);
     });
 
-    test('completes with correct output when windows is not activated',
-        () async {
+    test('exits with 66 when melos does not exist', () async {
+      // Arrange
+      when(() => melosFile.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err('''
+ Could not find a melos.yaml.
+ This command should be run from the root of your Rapid project.''')).called(1);
+      expect(result, ExitCode.noInput.code);
+    });
+
+    test('exits with 78 when windows is not activated', () async {
       // Arrange
       when(() => project.isActivated(Platform.windows)).thenReturn(false);
 

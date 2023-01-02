@@ -169,6 +169,27 @@ void main() {
       });
     });
 
+    group('exists', () {
+      test('returns true when the file exists', () {
+        // Act
+        final exists = yamlFile.exists();
+
+        // Assert
+        expect(exists, true);
+      });
+
+      test('returns false when the file does not exists', () {
+        // Arrange
+        File(yamlFile.path).deleteSync(recursive: true);
+
+        // Act
+        final exists = yamlFile.exists();
+
+        // Assert
+        expect(exists, false);
+      });
+    });
+
     group('readValue', () {
       test('returns correct value (depth = 1)', () {
         // Arrange

@@ -2,6 +2,7 @@ import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart' hide packageVersion;
 import 'package:rapid_cli/src/commands/activate/activate.dart';
+import 'package:rapid_cli/src/commands/android/android.dart';
 import 'package:rapid_cli/src/commands/deactivate/deactivate.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -26,10 +27,14 @@ class RapidCommandRunner extends CommandRunner<int> {
       negatable: false,
     );
     final p = project ?? Project();
-    addCommand(CreateCommand(logger: logger));
     addCommand(ActivateCommand(logger: logger, project: p));
+    addCommand(AndroidCommand(logger: logger, project: p));
+    addCommand(CreateCommand(logger: logger));
     addCommand(DeactivateCommand(logger: logger, project: p));
   }
+
+  @override
+  String get invocation => 'rapid <command>';
 
   final Logger _logger;
 

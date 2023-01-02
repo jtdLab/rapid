@@ -19,7 +19,7 @@ const expectedUsage = [
   // ignore: no_adjacent_strings_in_list
   'Rapid Command Line Interface\n'
       '\n'
-      'Usage: rapid <command> [arguments]\n'
+      'Usage: rapid <command>\n'
       '\n'
       'Global options:\n'
       '-h, --help       Print this usage information.\n'
@@ -27,6 +27,7 @@ const expectedUsage = [
       '\n'
       'Available commands:\n'
       '  activate     Adds support for a platform to an existing Rapid project.\n'
+      '  android      Work with the Android part of an existing Rapid project.\n'
       '  create       Creates a new Rapid project in the specified directory.\n'
       '  deactivate   Removes support for a platform from an existing Rapid project.\n'
       '\n'

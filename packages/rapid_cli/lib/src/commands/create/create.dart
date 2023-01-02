@@ -5,6 +5,7 @@ import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/create/app_bundle.dart';
 import 'package:universal_io/io.dart';
 
@@ -13,10 +14,6 @@ const _defaultDescription = 'A Rapid app.';
 
 /// The default value for enabling example features.
 const _defaultExample = false;
-
-// The regex for a dart package name, i.e. no capital letters.
-// https://dart.dev/guides/language/language-tour#important-concepts
-final _packageRegExp = RegExp('[a-z_][a-z0-9_]*');
 
 /// {@template create_command}
 /// `rapid create` command creates a new Rapid project in the specified directory.
@@ -221,6 +218,7 @@ class CreateCommand extends Command<int>
     await _melosBootstrap(cwd: outputDirectory.path);
     melosBootstrapProgress.complete();
 
+    // TODO maybe use logger.success here
     _logger
       ..info('\n')
       ..alert('Created a Rapid App!')
@@ -307,7 +305,7 @@ class CreateCommand extends Command<int>
   ///
   /// Returns [name] when valid.
   String _validateProjectName(String name) {
-    final isValid = _isValidPackageName(name);
+    final isValid = isValidPackageName(name);
     if (!isValid) {
       throw UsageException(
         '"$name" is not a valid package name.\n\n'
@@ -316,11 +314,5 @@ class CreateCommand extends Command<int>
       );
     }
     return name;
-  }
-
-  /// Whether [name] is valid project name.
-  bool _isValidPackageName(String name) {
-    final match = _packageRegExp.matchAsPrefix(name);
-    return match != null && match.end == name.length;
   }
 }

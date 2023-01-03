@@ -10,15 +10,16 @@ import 'package:rapid_cli/src/core/platform.dart';
 class FeatureCommand extends PlatformAddFeatureCommand {
   /// {@macro android_add_feature_command}
   FeatureCommand({
-    super.logger,
+    Logger? logger,
     required super.project,
     GeneratorBuilder? generator,
     MelosBootstrapCommand? melosBootstrap,
     MelosCleanCommand? melosClean,
   }) : super(
           platform: Platform.android,
+          logger: logger ?? Logger(),
           generator: generator ?? MasonGenerator.fromBundle,
-          melosBootstrap: Melos.bootstrap,
-          melosClean: Melos.clean,
+          melosBootstrap: melosBootstrap ?? Melos.bootstrap,
+          melosClean: melosClean ?? Melos.clean,
         );
 }

@@ -11,10 +11,10 @@ abstract class PlatformRemoveLanguageCommand extends Command<int> {
   /// {@macro platform_remove_language_command}
   PlatformRemoveLanguageCommand({
     required Platform platform,
-    Logger? logger,
+    required Logger logger,
     required Project project,
   })  : _platform = platform,
-        _logger = logger ?? Logger(),
+        _logger = logger,
         _project = project;
 
   final Logger _logger;

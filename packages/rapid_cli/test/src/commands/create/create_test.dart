@@ -165,7 +165,7 @@ void main() {
 
     test(
       'help',
-      withRunner((commandRunner, logger, project, printLogs) async {
+      withRunner((commandRunner, logger, printLogs) async {
         // Act
         final result = await commandRunner.run(
           ['create', '--help'],
@@ -199,7 +199,7 @@ void main() {
     test(
       'throws UsageException when --project-name is missing '
       'and directory base is not a valid package name',
-      withRunner((commandRunner, logger, project, printLogs) async {
+      withRunner((commandRunner, logger, printLogs) async {
         // Arrange
         outputDir = '.invalid';
         final expectedErrorMessage =
@@ -219,7 +219,7 @@ void main() {
 
     test(
       'throws UsageException when --project-name is invalid',
-      withRunner((commandRunner, logger, project, printLogs) async {
+      withRunner((commandRunner, logger, printLogs) async {
         // Arrange
         projectName = 'My App';
         final expectedErrorMessage =
@@ -239,7 +239,7 @@ void main() {
 
     test(
       'throws UsageException when output directory is missing',
-      withRunner((commandRunner, logger, project, printLogs) async {
+      withRunner((commandRunner, logger, printLogs) async {
         // Arrange
         const expectedErrorMessage =
             'No option specified for the output directory.';
@@ -255,7 +255,7 @@ void main() {
 
     test(
       'throws UsageException when multiple output directories are provided',
-      withRunner((commandRunner, logger, project, printLogs) async {
+      withRunner((commandRunner, logger, printLogs) async {
         // Assert
         const expectedErrorMessage = 'Multiple output directories specified.';
 
@@ -300,6 +300,53 @@ void main() {
             'project_name': projectName,
             'org_name': 'com.example',
             'description': 'A Rapid app.',
+            'example': false,
+            'android': false,
+            'ios': false,
+            'linux': false,
+            'macos': false,
+            'web': false,
+            'windows': false,
+          },
+          logger: logger,
+        ),
+      ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} file(s)']),
+      );
+      verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
+          .called(1);
+      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(1);
+      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      expect(result, equals(ExitCode.success.code));
+    });
+
+    test('completes successfully with correct output w/ --desc', () async {
+      // Arrange
+      final description = 'My cool description.';
+      when(() => argResults['desc']).thenReturn(description);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => flutterInstalled()).called(1);
+      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(
+        () => generator.generate(
+          any(
+            that: isA<DirectoryGeneratorTarget>().having(
+              (g) => g.dir.path,
+              'dir',
+              outputDir,
+            ),
+          ),
+          vars: <String, dynamic>{
+            'project_name': projectName,
+            'org_name': 'com.example',
+            'description': description,
             'example': false,
             'android': false,
             'ios': false,
@@ -621,7 +668,7 @@ void main() {
       group('--org', () {
         test(
           'is a valid alias',
-          withRunner((commandRunner, logger, project, printLogs) async {
+          withRunner((commandRunner, logger, printLogs) async {
             // Arrange
             const orgName = 'com.my.org';
 
@@ -653,7 +700,7 @@ void main() {
 
         test(
           'no delimiters',
-          withRunner((commandRunner, logger, project, printLogs) async {
+          withRunner((commandRunner, logger, printLogs) async {
             // Arrange
             const orgName = 'My App';
 
@@ -670,7 +717,7 @@ void main() {
 
         test(
           'less than 2 domains',
-          withRunner((commandRunner, logger, project, printLogs) async {
+          withRunner((commandRunner, logger, printLogs) async {
             // Arrange
             const orgName = 'badorgname';
 
@@ -687,7 +734,7 @@ void main() {
 
         test(
           'invalid characters present',
-          withRunner((commandRunner, logger, project, printLogs) async {
+          withRunner((commandRunner, logger, printLogs) async {
             // Arrange
             const orgName = 'bad%.org@.#name';
 
@@ -704,7 +751,7 @@ void main() {
 
         test(
           'segment starts with a non-letter',
-          withRunner((commandRunner, logger, project, printLogs) async {
+          withRunner((commandRunner, logger, printLogs) async {
             // Arrange
             const orgName = 'bad.org.1name';
 
@@ -721,7 +768,7 @@ void main() {
 
         test(
           'valid prefix but invalid suffix',
-          withRunner((commandRunner, logger, project, printLogs) async {
+          withRunner((commandRunner, logger, printLogs) async {
             // Arrange
             const orgName = 'some.good.prefix.bad@@suffix';
 

@@ -74,7 +74,7 @@ void main() {
 
   test(
     'help',
-    withRunner((commandRunner, logger, project, printLogs) async {
+    withRunner((commandRunner, logger, printLogs) async {
       // Act
       final result = await commandRunner.run(
         ['android', 'remove', 'language', '--help'],
@@ -114,7 +114,7 @@ void main() {
     expect(result, ExitCode.success.code);
   }); */
 
-  test('exits with 66 when melos does not exist', () async {
+  test('exits with 66 when melos.yaml does not exist', () async {
     // Arrange
     when(() => melosFile.exists()).thenReturn(false);
 

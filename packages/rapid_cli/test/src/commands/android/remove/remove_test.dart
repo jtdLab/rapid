@@ -63,7 +63,7 @@ void main() {
 
   test(
     'help',
-    withRunner((commandRunner, logger, project, printLogs) async {
+    withRunner((commandRunner, logger, printLogs) async {
       // Act
       final result = await commandRunner.run(
         ['android', 'remove', '--help'],

@@ -8,7 +8,6 @@ import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 import 'package:universal_io/io.dart';
 
 /// The default description.
@@ -22,24 +21,19 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   /// {@macro platform_add_feature_command}
   PlatformAddFeatureCommand({
     required Platform platform,
-    Logger? logger,
+    required Logger logger,
     required Project project,
     required GeneratorBuilder generator,
     required MelosBootstrapCommand melosBootstrap,
     required MelosCleanCommand melosClean,
   })  : _platform = platform,
-        _logger = logger ?? Logger(),
+        _logger = logger,
         _project = project,
         _generator = generator,
         _melosBootstrap = melosBootstrap,
         _melosClean = melosClean {
     argParser
       ..addSeparator('')
-      ..addOption(
-        'name',
-        help: 'The name of this new feature. '
-            'This must be a valid dart package name.',
-      )
       ..addOption(
         'desc',
         help: 'The description of this new feature.',
@@ -62,6 +56,9 @@ abstract class PlatformAddFeatureCommand extends Command<int>
       'Adds a feature to the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
+  String get invocation => 'rapid android add feature <name> [arguments]';
+
+  @override
   List<String> get aliases => ['feat'];
 
   @override
@@ -74,6 +71,8 @@ abstract class PlatformAddFeatureCommand extends Command<int>
           final projectName = _project.melosFile.name();
           final name = _name;
           final description = _description;
+
+          // TODO check if feature exists
 
           final generateProgress = _logger.progress('Generating files');
           final generator = await _generator(featureBundle);
@@ -90,7 +89,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
           );
           generateProgress.complete('Generated ${files.length} file(s)');
 
-          // TODO add the localizations delegate of this feature to the app feature
+          // TODO HIGH PRIO add the localizations delegate of this feature to the app feature
 
           final melosCleanProgress = _logger.progress(
             'Running "melos clean" in . ',
@@ -104,7 +103,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
           melosBootstrapProgress.complete();
 
           _logger.success(
-            'Added ${_platform.prettyName} feature ${name.pascalCase}.',
+            'Added ${_platform.prettyName} feature $name.',
           );
 
           // TODO maybe add hint how to register a page in the routing feature
@@ -117,7 +116,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
         }
       });
 
-  String get _name => _validateFeatureName(argResults.rest.first);
+  String get _name => _validateNameArg(argResults.rest);
 
   /// Gets the description for the project specified by the user.
   String get _description => argResults['desc'] ?? _defaultDescription;
@@ -125,7 +124,19 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   /// Validates whether [name] is valid feature name.
   ///
   /// Returns [name] when valid.
-  String _validateFeatureName(String name) {
+  String _validateNameArg(List<String> args) {
+    if (args.isEmpty) {
+      throw UsageException(
+        'No option specified for the name.',
+        usage,
+      );
+    }
+
+    if (args.length > 1) {
+      throw UsageException('Multiple names specified.', usage);
+    }
+
+    final name = args.first;
     final isValid = isValidPackageName(name);
     if (!isValid) {
       throw UsageException(
@@ -134,6 +145,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
         usage,
       );
     }
+
     return name;
   }
 }

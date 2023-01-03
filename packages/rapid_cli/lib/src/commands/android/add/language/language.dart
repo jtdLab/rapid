@@ -1,3 +1,4 @@
+import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/platform/add/language/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 
@@ -7,9 +8,10 @@ import 'package:rapid_cli/src/core/platform.dart';
 class LanguageCommand extends PlatformAddLanguageCommand {
   /// {@macro android_add_language_command}
   LanguageCommand({
-    super.logger,
+    Logger? logger,
     required super.project,
   }) : super(
           platform: Platform.android,
+          logger: logger ?? Logger(),
         );
 }

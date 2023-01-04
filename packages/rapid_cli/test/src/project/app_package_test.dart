@@ -5,9 +5,9 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
-class MockMelosFile extends Mock implements MelosFile {}
+class _MockMelosFile extends Mock implements MelosFile {}
 
-class MockProject extends Mock implements Project {}
+class _MockProject extends Mock implements Project {}
 
 void main() {
   group('AppPackage', () {
@@ -21,9 +21,9 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync().path;
 
-      melosFile = MockMelosFile();
+      melosFile = _MockMelosFile();
       when(() => melosFile.name()).thenReturn(projectName);
-      project = MockProject();
+      project = _MockProject();
       when(() => project.melosFile).thenReturn(melosFile);
       appPackage = AppPackage(project: project);
       Directory(appPackage.path).createSync(recursive: true);

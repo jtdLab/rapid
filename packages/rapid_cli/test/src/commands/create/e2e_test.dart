@@ -1,16 +1,11 @@
 @Tags(['e2e'])
 import 'package:mason/mason.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../helpers/helpers.dart';
-
-class MockLogger extends Mock implements Logger {}
-
-class MockProgress extends Mock implements Progress {}
 
 void main() {
   group(

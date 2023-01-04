@@ -16,13 +16,13 @@ const l10nWithoutTemplateArbFile = '''
 some: value
 ''';
 
-class MockMelosFile extends Mock implements MelosFile {}
+class _MockMelosFile extends Mock implements MelosFile {}
 
-class MockProject extends Mock implements Project {}
+class _MockProject extends Mock implements Project {}
 
-class MockPlatformDirectory extends Mock implements PlatformDirectory {}
+class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
-class MockFeature extends Mock implements Feature {}
+class _MockFeature extends Mock implements Feature {}
 
 void main() {
   group('Feature', () {
@@ -40,11 +40,11 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync().path;
 
-      melosFile = MockMelosFile();
+      melosFile = _MockMelosFile();
       when(() => melosFile.name()).thenReturn(projectName);
-      project = MockProject();
+      project = _MockProject();
       when(() => project.melosFile).thenReturn(melosFile);
-      platformDirectory = MockPlatformDirectory();
+      platformDirectory = _MockPlatformDirectory();
       when(() => platformDirectory.platform).thenReturn(platform);
       when(() => platformDirectory.path).thenReturn(platformDirPath);
       when(() => platformDirectory.project).thenReturn(project);
@@ -249,7 +249,7 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync().path;
 
-      feature = MockFeature();
+      feature = _MockFeature();
       when(() => feature.name).thenReturn(featureName);
       when(() => feature.path).thenReturn(featurePath);
       arbFile = ArbFile(language: language, feature: feature);

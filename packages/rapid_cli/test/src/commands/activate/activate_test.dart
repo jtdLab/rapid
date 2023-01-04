@@ -24,14 +24,14 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
-class MockProject extends Mock implements Project {}
+class _MockProject extends Mock implements Project {}
 
 void main() {
   group('activate', () {
     late Project project;
 
     setUp(() {
-      project = MockProject();
+      project = _MockProject();
     });
 
     test(

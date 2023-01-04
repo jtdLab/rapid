@@ -37,36 +37,37 @@ const expectedUsage = [
 ];
 
 // ignore: one_member_abstracts
-abstract class FlutterInstalledCommand {
+abstract class _FlutterInstalledCommand {
   Future<bool> call();
 }
 
-abstract class FlutterConfigEnablePlatformCommand {
+abstract class _FlutterConfigEnablePlatformCommand {
   Future<void> call();
 }
 
-abstract class MelosBootstrapCommand {
+abstract class _MelosBootstrapCommand {
   Future<void> call({String cwd});
 }
 
-class MockLogger extends Mock implements Logger {}
+class _MockLogger extends Mock implements Logger {}
 
-class MockProgress extends Mock implements Progress {}
+class _MockProgress extends Mock implements Progress {}
 
-class MockArgResults extends Mock implements ArgResults {}
+class _MockArgResults extends Mock implements ArgResults {}
 
 class MockFlutterInstalledCommand extends Mock
-    implements FlutterInstalledCommand {}
+    implements _FlutterInstalledCommand {}
 
 class MockFlutterConfigEnablePlatformCommand extends Mock
-    implements FlutterConfigEnablePlatformCommand {}
+    implements _FlutterConfigEnablePlatformCommand {}
 
-class MockMasonGenerator extends Mock implements MasonGenerator {}
+class _MockMasonGenerator extends Mock implements MasonGenerator {}
 
 class FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}
 
-class MockMelosBootstrapCommand extends Mock implements MelosBootstrapCommand {}
+class _MockMelosBootstrapCommand extends Mock
+    implements _MelosBootstrapCommand {}
 
 void main() {
   group('create', () {
@@ -76,15 +77,15 @@ void main() {
     late Logger logger;
     late Progress progress;
     late ArgResults argResults;
-    late FlutterInstalledCommand flutterInstalled;
-    late FlutterConfigEnablePlatformCommand flutterConfigEnableAndroid;
-    late FlutterConfigEnablePlatformCommand flutterConfigEnableIos;
-    late FlutterConfigEnablePlatformCommand flutterConfigEnableLinux;
-    late FlutterConfigEnablePlatformCommand flutterConfigEnableMacos;
-    late FlutterConfigEnablePlatformCommand flutterConfigEnableWeb;
-    late FlutterConfigEnablePlatformCommand flutterConfigEnableWindows;
+    late _FlutterInstalledCommand flutterInstalled;
+    late _FlutterConfigEnablePlatformCommand flutterConfigEnableAndroid;
+    late _FlutterConfigEnablePlatformCommand flutterConfigEnableIos;
+    late _FlutterConfigEnablePlatformCommand flutterConfigEnableLinux;
+    late _FlutterConfigEnablePlatformCommand flutterConfigEnableMacos;
+    late _FlutterConfigEnablePlatformCommand flutterConfigEnableWeb;
+    late _FlutterConfigEnablePlatformCommand flutterConfigEnableWindows;
     late MasonGenerator generator;
-    late MelosBootstrapCommand melosBootstrap;
+    late _MelosBootstrapCommand melosBootstrap;
 
     late CreateCommand command;
 
@@ -102,15 +103,15 @@ void main() {
 
       projectName = 'test_app';
       progressLogs = <String>[];
-      progress = MockProgress();
+      progress = _MockProgress();
       when(() => progress.complete(any())).thenAnswer((_) {
         final message = _.positionalArguments.elementAt(0) as String?;
         if (message != null) progressLogs.add(message);
       });
-      logger = MockLogger();
+      logger = _MockLogger();
       when(() => logger.err(any())).thenReturn(null);
       when(() => logger.progress(any())).thenReturn(progress);
-      argResults = MockArgResults();
+      argResults = _MockArgResults();
       when(() => argResults['project-name']).thenReturn(projectName);
       when(() => argResults.rest).thenReturn([outputDir]);
       flutterInstalled = MockFlutterInstalledCommand();
@@ -127,7 +128,7 @@ void main() {
       when(() => flutterConfigEnableMacos()).thenAnswer((_) async {});
       flutterConfigEnableWindows = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableWindows()).thenAnswer((_) async {});
-      generator = MockMasonGenerator();
+      generator = _MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
       when(
@@ -137,7 +138,7 @@ void main() {
           logger: any(named: 'logger'),
         ),
       ).thenAnswer((_) async => generatedFiles);
-      melosBootstrap = MockMelosBootstrapCommand();
+      melosBootstrap = _MockMelosBootstrapCommand();
       when(() => melosBootstrap(cwd: any(named: 'cwd')))
           .thenAnswer((_) async {});
 

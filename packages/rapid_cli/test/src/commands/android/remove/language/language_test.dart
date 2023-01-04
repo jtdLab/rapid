@@ -22,23 +22,24 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
-abstract class FlutterGenl10nCommand {
+abstract class _FlutterGenl10nCommand {
   Future<void> call({String cwd});
 }
 
-class MockArgResults extends Mock implements ArgResults {}
+class _MockArgResults extends Mock implements ArgResults {}
 
-class MockProgress extends Mock implements Progress {}
+class _MockProgress extends Mock implements Progress {}
 
-class MockLogger extends Mock implements Logger {}
+class _MockLogger extends Mock implements Logger {}
 
-class MockMelosFile extends Mock implements MelosFile {}
+class _MockMelosFile extends Mock implements MelosFile {}
 
-class MockPlatformDirectory extends Mock implements PlatformDirectory {}
+class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
-class MockProject extends Mock implements Project {}
+class _MockProject extends Mock implements Project {}
 
-class MockFlutterGenl10nCommand extends Mock implements FlutterGenl10nCommand {}
+class _MockFlutterGenl10nCommand extends Mock
+    implements _FlutterGenl10nCommand {}
 
 void main() {
   Directory cwd = Directory.current;
@@ -50,7 +51,7 @@ void main() {
   late List<Feature> features;
   late PlatformDirectory platformDirectory;
   late Project project;
-  late FlutterGenl10nCommand flutterGenl10n;
+  late _FlutterGenl10nCommand flutterGenl10n;
   const language = 'en';
   late ArgResults argResults;
 
@@ -60,28 +61,28 @@ void main() {
     Directory.current = Directory.systemTemp.createTempSync();
 
     progressLogs = <String>[];
-    progress = MockProgress();
+    progress = _MockProgress();
     when(() => progress.complete(any())).thenAnswer((_) {
       final message = _.positionalArguments.elementAt(0) as String?;
       if (message != null) progressLogs.add(message);
     });
-    logger = MockLogger();
+    logger = _MockLogger();
     when(() => logger.progress(any())).thenReturn(progress);
     when(() => logger.err(any())).thenReturn(null);
-    melosFile = MockMelosFile();
+    melosFile = _MockMelosFile();
     when(() => melosFile.exists()).thenReturn(true);
     features = []; // TODO
-    platformDirectory = MockPlatformDirectory();
+    platformDirectory = _MockPlatformDirectory();
     when(() => platformDirectory.getFeatures(exclude: any(named: 'exclude')))
         .thenReturn(features);
-    project = MockProject();
+    project = _MockProject();
     when(() => project.isActivated(Platform.android)).thenReturn(true);
     when(() => project.melosFile).thenReturn(melosFile);
     when(() => project.platformDirectory(Platform.android))
         .thenReturn(platformDirectory);
-    flutterGenl10n = MockFlutterGenl10nCommand();
+    flutterGenl10n = _MockFlutterGenl10nCommand();
     when(() => flutterGenl10n(cwd: any(named: 'cwd'))).thenAnswer((_) async {});
-    argResults = MockArgResults();
+    argResults = _MockArgResults();
     when(() => argResults.rest).thenReturn([language]);
 
     command = LanguageCommand(

@@ -23,35 +23,35 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
-abstract class FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
+abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
   Future<void> call({required String cwd});
 }
 
-class MockProgress extends Mock implements Progress {}
+class _MockProgress extends Mock implements Progress {}
 
-class MockLogger extends Mock implements Logger {}
+class _MockLogger extends Mock implements Logger {}
 
-class MockMelosFile extends Mock implements MelosFile {}
+class _MockMelosFile extends Mock implements MelosFile {}
 
-class MockPubspecFile extends Mock implements PubspecFile {}
+class _MockPubspecFile extends Mock implements PubspecFile {}
 
-class MockMainFile extends Mock implements MainFile {}
+class _MockMainFile extends Mock implements MainFile {}
 
-class MockAppPackage extends Mock implements AppPackage {}
+class _MockAppPackage extends Mock implements AppPackage {}
 
-class MockInjectionFile extends Mock implements InjectionFile {}
+class _MockInjectionFile extends Mock implements InjectionFile {}
 
-class MockDiPackage extends Mock implements DiPackage {}
+class _MockDiPackage extends Mock implements DiPackage {}
 
-class MockPlatformDirectory extends Mock implements PlatformDirectory {}
+class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
-class MockDartPackage extends Mock implements DartPackage {}
+class _MockDartPackage extends Mock implements DartPackage {}
 
-class MockProject extends Mock implements Project {}
+class _MockProject extends Mock implements Project {}
 
 class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     extends Mock
-    implements FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
+    implements _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
 
 void main() {
   group('web', () {
@@ -72,7 +72,7 @@ void main() {
     late PlatformDirectory platformDirectory;
     late DartPackage platformUiPackage;
     late Project project;
-    late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+    late _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
     late WebCommand command;
@@ -81,33 +81,33 @@ void main() {
       Directory.current = Directory.systemTemp.createTempSync();
 
       progressLogs = <String>[];
-      progress = MockProgress();
+      progress = _MockProgress();
       when(() => progress.complete(any())).thenAnswer((_) {
         final message = _.positionalArguments.elementAt(0) as String?;
         if (message != null) progressLogs.add(message);
       });
-      logger = MockLogger();
+      logger = _MockLogger();
       when(() => logger.progress(any())).thenReturn(progress);
       when(() => logger.err(any())).thenReturn(null);
-      melosFile = MockMelosFile();
+      melosFile = _MockMelosFile();
       when(() => melosFile.exists()).thenReturn(true);
-      appPackagePubspec = MockPubspecFile();
-      mainFileDev = MockMainFile();
-      mainFileTest = MockMainFile();
-      mainFileProd = MockMainFile();
-      appPackage = MockAppPackage();
+      appPackagePubspec = _MockPubspecFile();
+      mainFileDev = _MockMainFile();
+      mainFileTest = _MockMainFile();
+      mainFileProd = _MockMainFile();
+      appPackage = _MockAppPackage();
       when(() => appPackage.pubspecFile).thenReturn(appPackagePubspec);
       when(() => appPackage.mainFiles)
           .thenReturn({mainFileDev, mainFileTest, mainFileProd});
-      diPackagePubspec = MockPubspecFile();
-      injectionFile = MockInjectionFile();
-      diPackage = MockDiPackage();
+      diPackagePubspec = _MockPubspecFile();
+      injectionFile = _MockInjectionFile();
+      diPackage = _MockDiPackage();
       when(() => diPackage.path).thenReturn('foo/bar/baz');
       when(() => diPackage.pubspecFile).thenReturn(diPackagePubspec);
       when(() => diPackage.injectionFile).thenReturn(injectionFile);
-      platformDirectory = MockPlatformDirectory();
-      platformUiPackage = MockDartPackage();
-      project = MockProject();
+      platformDirectory = _MockPlatformDirectory();
+      platformUiPackage = _MockDartPackage();
+      project = _MockProject();
       when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.appPackage).thenReturn(appPackage);
       when(() => project.diPackage).thenReturn(diPackage);

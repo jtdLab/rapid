@@ -21,11 +21,11 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
-class MockProgress extends Mock implements Progress {}
+class _MockProgress extends Mock implements Progress {}
 
-class MockLogger extends Mock implements Logger {}
+class _MockLogger extends Mock implements Logger {}
 
-class MockProject extends Mock implements Project {}
+class _MockProject extends Mock implements Project {}
 
 void main() {
   Directory cwd = Directory.current;
@@ -41,15 +41,15 @@ void main() {
     Directory.current = Directory.systemTemp.createTempSync();
 
     progressLogs = <String>[];
-    progress = MockProgress();
+    progress = _MockProgress();
     when(() => progress.complete(any())).thenAnswer((_) {
       final message = _.positionalArguments.elementAt(0) as String?;
       if (message != null) progressLogs.add(message);
     });
-    logger = MockLogger();
+    logger = _MockLogger();
     when(() => logger.progress(any())).thenReturn(progress);
     when(() => logger.err(any())).thenReturn(null);
-    project = MockProject();
+    project = _MockProject();
 
     command = RemoveCommand(
       logger: logger,

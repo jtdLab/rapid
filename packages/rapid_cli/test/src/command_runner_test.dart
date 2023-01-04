@@ -9,11 +9,11 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/version.dart';
 import 'package:test/test.dart';
 
-class MockLogger extends Mock implements Logger {}
+class _MockLogger extends Mock implements Logger {}
 
-class MockMelosFile extends Mock implements MelosFile {}
+class _MockMelosFile extends Mock implements MelosFile {}
 
-class MockProject extends Mock implements Project {}
+class _MockProject extends Mock implements Project {}
 
 const expectedUsage = [
   // ignore: no_adjacent_strings_in_list
@@ -59,10 +59,10 @@ void main() {
 
     setUp(() {
       printLogs = [];
-      logger = MockLogger();
-      melosFile = MockMelosFile();
+      logger = _MockLogger();
+      melosFile = _MockMelosFile();
       when(() => melosFile.name()).thenReturn(projectName);
-      project = MockProject();
+      project = _MockProject();
       when(() => project.melosFile).thenReturn(melosFile);
 
       commandRunner = RapidCommandRunner(

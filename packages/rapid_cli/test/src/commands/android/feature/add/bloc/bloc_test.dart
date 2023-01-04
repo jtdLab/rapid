@@ -27,29 +27,29 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
-abstract class FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
+abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
   Future<void> call({String cwd});
 }
 
-class MockArgResults extends Mock implements ArgResults {}
+class _MockArgResults extends Mock implements ArgResults {}
 
-class MockProgress extends Mock implements Progress {}
+class _MockProgress extends Mock implements Progress {}
 
-class MockLogger extends Mock implements Logger {}
+class _MockLogger extends Mock implements Logger {}
 
-class MockMelosFile extends Mock implements MelosFile {}
+class _MockMelosFile extends Mock implements MelosFile {}
 
-class MockFeature extends Mock implements Feature {}
+class _MockFeature extends Mock implements Feature {}
 
-class MockPlatformDirectory extends Mock implements PlatformDirectory {}
+class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
-class MockProject extends Mock implements Project {}
+class _MockProject extends Mock implements Project {}
 
 class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     extends Mock
-    implements FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
+    implements _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
 
-class MockMasonGenerator extends Mock implements MasonGenerator {}
+class _MockMasonGenerator extends Mock implements MasonGenerator {}
 
 class FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}
@@ -66,7 +66,7 @@ void main() {
   late Feature feature;
   late PlatformDirectory platformDirectory;
   late Project project;
-  late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+  late _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
       flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final generatedFiles = List.filled(
     62,
@@ -87,23 +87,23 @@ void main() {
     Directory.current = Directory.systemTemp.createTempSync();
 
     progressLogs = <String>[];
-    progress = MockProgress();
+    progress = _MockProgress();
     when(() => progress.complete(any())).thenAnswer((_) {
       final message = _.positionalArguments.elementAt(0) as String?;
       if (message != null) progressLogs.add(message);
     });
-    logger = MockLogger();
+    logger = _MockLogger();
     when(() => logger.progress(any())).thenReturn(progress);
     when(() => logger.err(any())).thenReturn(null);
-    melosFile = MockMelosFile();
+    melosFile = _MockMelosFile();
     when(() => melosFile.exists()).thenReturn(true);
     when(() => melosFile.name()).thenReturn(projectName);
-    feature = MockFeature();
+    feature = _MockFeature();
     when(() => feature.path).thenReturn(featurePackagePath);
-    platformDirectory = MockPlatformDirectory();
+    platformDirectory = _MockPlatformDirectory();
     when(() => platformDirectory.featureExists(any())).thenReturn(true);
     when(() => platformDirectory.findFeature(any())).thenReturn(feature);
-    project = MockProject();
+    project = _MockProject();
     when(() => project.platformDirectory(Platform.android))
         .thenReturn(platformDirectory);
     when(() => project.melosFile).thenReturn(melosFile);
@@ -112,7 +112,7 @@ void main() {
         MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
     when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
         cwd: any(named: 'cwd'))).thenAnswer((_) async {});
-    generator = MockMasonGenerator();
+    generator = _MockMasonGenerator();
     when(() => generator.id).thenReturn('generator_id');
     when(() => generator.description).thenReturn('generator description');
     when(
@@ -124,7 +124,7 @@ void main() {
     ).thenAnswer((_) async => generatedFiles);
     blocName = 'FooBar';
     featureName = 'my_cool_feature';
-    argResults = MockArgResults();
+    argResults = _MockArgResults();
     when(() => argResults['feature-name']).thenReturn(featureName);
     when(() => argResults.rest).thenReturn([blocName]);
 

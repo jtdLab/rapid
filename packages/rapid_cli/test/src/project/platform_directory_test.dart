@@ -130,6 +130,82 @@ void main() {
       });
     });
 
+    group('getFeatures', () {
+      test('returns empty list when platform directory has no sub directories',
+          () {
+        // Act
+        final features = platformDirectory.getFeatures();
+
+        // Assert
+        expect(features, isEmpty);
+      });
+
+      test(
+          'returns list with features when platform directory has sub directories',
+          () {
+        // Arrange
+        const featureNames = ['my_feat_a', 'my_feat_b'];
+        for (final featureName in featureNames) {
+          Directory(
+            p.join(
+              platformDirectory.path,
+              '${projectName}_${platform.name}_$featureName',
+            ),
+          ).createSync(recursive: true);
+        }
+
+        // Act
+        final features = platformDirectory.getFeatures();
+
+        // Assert
+        expect(features, hasLength(2));
+        for (int i = 0; i < 2; i++) {
+          final feature = features[i];
+          expect(feature.name, featureNames[i]);
+          expect(feature.platform, platform);
+          expect(
+            feature.path,
+            p.join(
+              platformDirectory.path,
+              '${projectName}_${platform.name}_${featureNames[i]}',
+            ),
+          );
+        }
+      });
+
+      test('excludes features correctly', () {
+        // Arrange
+        const excludedFeature = 'my_feat_a';
+        const featureNames = [excludedFeature, 'my_feat_b'];
+        for (final featureName in featureNames) {
+          Directory(
+            p.join(
+              platformDirectory.path,
+              '${projectName}_${platform.name}_$featureName',
+            ),
+          ).createSync(recursive: true);
+        }
+
+        // Act
+        final features =
+            platformDirectory.getFeatures(exclude: {excludedFeature});
+
+        // Assert
+        expect(features, hasLength(1));
+
+        final feature = features.first;
+        expect(feature.name, featureNames.last);
+        expect(feature.platform, platform);
+        expect(
+          feature.path,
+          p.join(
+            platformDirectory.path,
+            '${projectName}_${platform.name}_${featureNames.last}',
+          ),
+        );
+      });
+    });
+
     group('path', () {
       test('is correct', () {
         // Assert
@@ -137,6 +213,20 @@ void main() {
           platformDirectory.path,
           'packages/$projectName/${projectName}_${platform.name}',
         );
+      });
+    });
+
+    group('platform', () {
+      test('is correct', () {
+        // Assert
+        expect(platformDirectory.platform, platform);
+      });
+    });
+
+    group('project', () {
+      test('is correct', () {
+        // Assert
+        expect(platformDirectory.project, project);
       });
     });
   });

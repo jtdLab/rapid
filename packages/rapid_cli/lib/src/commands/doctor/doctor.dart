@@ -22,7 +22,8 @@ class DoctorCommand extends Command<int> {
   String get name => 'doctor';
 
   @override
-  String get description => 'Shows information about an existing Rapid project';
+  String get description =>
+      'Shows information about an existing Rapid project.';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {

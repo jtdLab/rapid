@@ -30,6 +30,7 @@ const expectedUsage = [
       '  android      Work with the Android part of an existing Rapid project.\n'
       '  create       Creates a new Rapid project in the specified directory.\n'
       '  deactivate   Removes support for a platform from an existing Rapid project.\n'
+      '  doctor       Shows information about an existing Rapid project.\n'
       '\n'
       'Run "rapid help <command>" for more information about a command.'
 ];

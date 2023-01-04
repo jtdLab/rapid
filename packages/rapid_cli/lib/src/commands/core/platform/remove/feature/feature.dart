@@ -53,8 +53,8 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
           final platformDirectory = _project.platformDirectory(_platform);
 
           if (platformDirectory.featureExists(name)) {
-            final featurePackage = platformDirectory.findFeature(name);
-            featurePackage.delete();
+            final feature = platformDirectory.findFeature(name);
+            feature.delete();
 
             // TODO HIGH PRIO think about remove from pubspec of other packages that depend on it
             // TODO think about remove the localizations delegate of this feature from the app feature

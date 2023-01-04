@@ -69,7 +69,7 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
 
           final platformDirectory = _project.platformDirectory(_platform);
           if (platformDirectory.featureExists(_featureName)) {
-            final featurePackage = platformDirectory.findFeature(_featureName);
+            final feature = platformDirectory.findFeature(_featureName);
 
             // TODO check if cubit exists
 
@@ -88,10 +88,10 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
             generateProgress.complete('Generated ${files.length} file(s)');
 
             final featureBuildProgress = _logger.progress(
-              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in ${featurePackage.path} ',
+              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in ${feature.path} ',
             );
             await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: featurePackage.path,
+              cwd: feature.path,
             );
             featureBuildProgress.complete();
 

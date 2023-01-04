@@ -1,30 +1,19 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
-// TODO better word than healthiness pls
-
 /// {@template rapid_doctor}
-/// `rapid doctor language` command shows information about the healthiness of an existing Rapid project.
+/// `rapid doctor language` command shows information about an existing Rapid project.
 /// {@endtemplate}
-class DoctorCommand extends Command<int> with OverridableArgResults {
+class DoctorCommand extends Command<int> {
   /// {@macro rapid_doctor}
   DoctorCommand({
     Logger? logger,
     Project? project,
   })  : _logger = logger ?? Logger(),
-        _project = project ?? Project() {
-    argParser
-      ..addSeparator('')
-      ..addFlag(
-        'language',
-        help:
-            'Wheter to show information about the projects language healthiness',
-        negatable: false,
-      );
-  }
+        _project = project ?? Project();
 
   final Logger _logger;
   final Project _project;
@@ -33,23 +22,49 @@ class DoctorCommand extends Command<int> with OverridableArgResults {
   String get name => 'doctor';
 
   @override
-  String get description =>
-      'Shows information about the healthiness of an existing Rapid project';
+  String get description => 'Shows information about an existing Rapid project';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        final language = _language;
-        if (language) {
-          // TODO impl
-          // read supported languages from all platfroms and features
-          // then check if each platforms feature support the same language
-          // if yes feedback to the user there is no problem
-          // else give an descriptive overview which featurs on what platform
-          // are missing a language
+        final platformDirectories = Platform.values
+            .where((e) => _project.isActivated(e))
+            .map((e) => _project.platformDirectory(e));
+
+        for (final platformDirectory in platformDirectories) {
+          final platformName = platformDirectory.platform.prettyName;
+
+          _logger.alert('$platformName:');
+          _logger.info('');
+
+          final features =
+              platformDirectory.getFeatures(exclude: {'app', 'routing'});
+
+          for (final feature in features) {
+            final featureName = feature.name;
+            final defaultLanguage = feature.defaultLanguage();
+            final languagesWithoutDefaultLanguage = feature.supportedLanguages()
+              ..remove(defaultLanguage);
+
+            _logger.info(
+              '[$featureName] ($defaultLanguage (default)${languagesWithoutDefaultLanguage.isEmpty ? '' : languagesWithoutDefaultLanguage.enumerate()})',
+            );
+          }
+
+          _logger.info('');
+          _logger.info('');
         }
 
         return ExitCode.success.code;
       });
+}
 
-  bool get _language => argResults['language'] ?? false;
+extension on Set<String> {
+  String enumerate() {
+    final buffer = StringBuffer();
+    for (final item in this) {
+      buffer.write(', $item');
+    }
+
+    return buffer.toString();
+  }
 }

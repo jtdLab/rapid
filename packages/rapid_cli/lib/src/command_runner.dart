@@ -4,6 +4,7 @@ import 'package:mason/mason.dart' hide packageVersion;
 import 'package:rapid_cli/src/commands/activate/activate.dart';
 import 'package:rapid_cli/src/commands/android/android.dart';
 import 'package:rapid_cli/src/commands/deactivate/deactivate.dart';
+import 'package:rapid_cli/src/commands/doctor/doctor.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 import 'commands/create/create.dart';
@@ -31,6 +32,7 @@ class RapidCommandRunner extends CommandRunner<int> {
     addCommand(AndroidCommand(logger: logger, project: p));
     addCommand(CreateCommand(logger: logger));
     addCommand(DeactivateCommand(logger: logger, project: p));
+    addCommand(DoctorCommand(logger: logger, project: p));
   }
 
   @override

@@ -2,8 +2,8 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/android/remove/feature/feature.dart';
-import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/feature.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
 import 'package:rapid_cli/src/project/platform_directory.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -38,7 +38,7 @@ class MockLogger extends Mock implements Logger {}
 
 class MockMelosFile extends Mock implements MelosFile {}
 
-class MockDartPackage extends Mock implements DartPackage {}
+class MockFeature extends Mock implements Feature {}
 
 class MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
@@ -55,7 +55,7 @@ void main() {
   late Progress progress;
   late Logger logger;
   late MelosFile melosFile;
-  late DartPackage featurePackage;
+  late Feature feature;
   late PlatformDirectory platformDirectory;
   late Project project;
   late MelosBoostrapCommand melosBootstrap;
@@ -79,10 +79,10 @@ void main() {
     when(() => logger.err(any())).thenReturn(null);
     melosFile = MockMelosFile();
     when(() => melosFile.exists()).thenReturn(true);
-    featurePackage = MockDartPackage();
+    feature = MockFeature();
     platformDirectory = MockPlatformDirectory();
     when(() => platformDirectory.featureExists(any())).thenReturn(true);
-    when(() => platformDirectory.findFeature(any())).thenReturn(featurePackage);
+    when(() => platformDirectory.findFeature(any())).thenReturn(feature);
     melosBootstrap = MockMelosBootstrapCommand();
     when(() => melosBootstrap(cwd: any(named: 'cwd'))).thenAnswer((_) async {});
     melosClean = MockMelosCleanCommand();
@@ -191,7 +191,7 @@ void main() {
     verify(() => project.platformDirectory(Platform.android)).called(1);
     verify(() => platformDirectory.featureExists(featureName)).called(1);
     verify(() => platformDirectory.findFeature(featureName)).called(1);
-    verify(() => featurePackage.delete()).called(1);
+    verify(() => feature.delete()).called(1);
     verify(() => logger.progress('Running "melos clean" in . ')).called(1);
     verify(() => melosBootstrap()).called(1);
     verify(() => logger.progress('Running "melos bootstrap" in . ')).called(1);

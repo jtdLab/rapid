@@ -89,10 +89,10 @@ void main() {
         expect(isActivated, false);
       });
 
-      test('returns false when  platform ui package does not exist', () {
+      test('returns false when platform ui package does not exist', () {
         // Arrange
         Directory(project.platformUiPackage(platform).path)
-            .deleteSync(recursive: false);
+            .deleteSync(recursive: true);
 
         // Act
         final isActivated = project.isActivated(platform);

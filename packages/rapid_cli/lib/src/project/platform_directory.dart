@@ -27,7 +27,7 @@ class PlatformDirectory {
 
   final Directory _directory;
 
-  void delete() => _directory.deleteSync();
+  void delete() => _directory.deleteSync(recursive: true);
 
   bool exists() => _directory.existsSync();
 
@@ -42,9 +42,7 @@ class PlatformDirectory {
 
   /// Returns the feature with [name] on [platform].
   Feature findFeature(String name) {
-    final projectName = project.melosFile.name();
-    final featureName = '${projectName}_${platform.name}_$name';
-    final feature = Feature(name: featureName, platformDirectory: this);
+    final feature = Feature(name: name, platformDirectory: this);
 
     if (feature.exists()) {
       return feature;

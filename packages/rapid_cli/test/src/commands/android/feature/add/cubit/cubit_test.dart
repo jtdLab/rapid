@@ -2,8 +2,8 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/cubit/cubit.dart';
-import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/feature.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
 import 'package:rapid_cli/src/project/platform_directory.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -39,7 +39,7 @@ class MockLogger extends Mock implements Logger {}
 
 class MockMelosFile extends Mock implements MelosFile {}
 
-class MockDartPackage extends Mock implements DartPackage {}
+class MockFeature extends Mock implements Feature {}
 
 class MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
@@ -63,7 +63,7 @@ void main() {
   const projectName = 'test_app';
   late MelosFile melosFile;
   const featurePackagePath = 'foo/bar/baz';
-  late DartPackage featurePackage;
+  late Feature feature;
   late PlatformDirectory platformDirectory;
   late Project project;
   late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
@@ -98,11 +98,11 @@ void main() {
     melosFile = MockMelosFile();
     when(() => melosFile.exists()).thenReturn(true);
     when(() => melosFile.name()).thenReturn(projectName);
-    featurePackage = MockDartPackage();
-    when(() => featurePackage.path).thenReturn(featurePackagePath);
+    feature = MockFeature();
+    when(() => feature.path).thenReturn(featurePackagePath);
     platformDirectory = MockPlatformDirectory();
     when(() => platformDirectory.featureExists(any())).thenReturn(true);
-    when(() => platformDirectory.findFeature(any())).thenReturn(featurePackage);
+    when(() => platformDirectory.findFeature(any())).thenReturn(feature);
     project = MockProject();
     when(() => project.platformDirectory(Platform.android))
         .thenReturn(platformDirectory);

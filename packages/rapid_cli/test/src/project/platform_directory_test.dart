@@ -102,7 +102,7 @@ void main() {
 
     group('findFeature', () {
       test(
-          'returns a dartpackage with correct path when the requested feature exists',
+          'returns a dart package with correct path when the requested feature exists',
           () {
         // Arrange
         final featureName = 'existing_feature';

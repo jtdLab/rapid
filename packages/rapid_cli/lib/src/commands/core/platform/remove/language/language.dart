@@ -50,7 +50,7 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
           final platformDirectory = _project.platformDirectory(_platform);
           final features =
               platformDirectory.getFeatures(exclude: {'app', 'routing'});
-              
+
           for (final feature in features) {
             if (feature.supportsLanguage(language)) {
               if (language != feature.defaultLanguage()) {

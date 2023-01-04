@@ -14,7 +14,7 @@ class DartPackage {
   /// The underlying directory.
   final Directory _directory;
 
-  void delete() => _directory.deleteSync();
+  void delete() => _directory.deleteSync(recursive: true);
 
   bool exists() => _directory.existsSync();
 

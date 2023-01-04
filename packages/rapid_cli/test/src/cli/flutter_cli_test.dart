@@ -198,5 +198,28 @@ void main() {
         );
       });
     });
+
+    group('.genl10n', () {
+      test('completes when the process succeeds', () {
+        ProcessOverrides.runZoned(
+          () => expectLater(
+            Flutter.genl10n(),
+            completes,
+          ),
+          runProcess: process.run,
+        );
+      });
+
+      test('throws when process fails', () {
+        when(() => processResult.exitCode).thenReturn(ExitCode.software.code);
+        ProcessOverrides.runZoned(
+          () => expectLater(
+            Flutter.genl10n(),
+            throwsException,
+          ),
+          runProcess: process.run,
+        );
+      });
+    });
   });
 }

@@ -25,6 +25,9 @@ typedef FlutterConfigEnablePlatformCommand = Future<void> Function();
 typedef FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     = Future<void> Function({required String cwd});
 
+/// Signature for the [Flutter.genl10n] method.
+typedef FlutterGenl10nCommand = Future<void> Function({required String cwd});
+
 /// Flutter CLI
 abstract class Flutter {
   /// Determine whether flutter is installed.
@@ -83,6 +86,17 @@ abstract class Flutter {
     await _Cmd.run(
       'flutter',
       ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs'],
+      workingDirectory: cwd,
+    );
+  }
+
+  /// Run localization generation (`flutter gen-l10n`)
+  static Future<void> genl10n({
+    String cwd = '.',
+  }) async {
+    await _Cmd.run(
+      'flutter',
+      ['gen-l10n'],
       workingDirectory: cwd,
     );
   }

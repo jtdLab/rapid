@@ -1,4 +1,5 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/platform/remove/language/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 
@@ -10,8 +11,10 @@ class LanguageCommand extends PlatformRemoveLanguageCommand {
   LanguageCommand({
     Logger? logger,
     required super.project,
+    FlutterGenl10nCommand? flutterGenl10n,
   }) : super(
           platform: Platform.android,
           logger: logger ?? Logger(),
+          flutterGenl10n: flutterGenl10n ?? Flutter.genl10n,
         );
 }

@@ -159,10 +159,10 @@ void main() {
 
         // Assert
         expect(features, hasLength(2));
-        features.forEach((element) {
+        for (final element in features) {
           print(element.name);
           print(element.platform);
-        });
+        }
 
         for (int i = 0; i < 2; i++) {
           final feature = features[i];

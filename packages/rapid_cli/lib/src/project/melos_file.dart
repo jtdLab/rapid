@@ -1,6 +1,6 @@
 import 'package:rapid_cli/src/core/yaml_file.dart';
 
-/// Thrown when [MelosFile.name] fails to read the name property.
+/// Thrown when [MelosFile.name] fails to read the `name` property.
 class ReadNameFailure implements Exception {}
 
 /// {@template melos_file}
@@ -17,7 +17,7 @@ class MelosFile {
 
   bool exists() => _file.exists();
 
-  /// The name of the project.
+  /// The `name` property.
   String name() {
     try {
       return _file.readValue(['name']);

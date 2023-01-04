@@ -55,7 +55,7 @@ class PlatformDirectory {
   List<Feature> getFeatures({Set<String> exclude = const {}}) {
     final projectName = project.melosFile.name();
 
-    String packageName(String path) {
+    String featureName(String path) {
       return p
           .basename(path)
           .replaceFirst('${projectName}_${platform.name}_', '');
@@ -64,10 +64,11 @@ class PlatformDirectory {
     final features = _directory
         .listSync()
         .whereType<Directory>()
-        .map((e) => packageName(e.path))
+        .map((e) => featureName(e.path))
         .where((e) => !exclude.contains(e))
         .map((e) => Feature(name: e, platformDirectory: this))
         .toList();
+    features.sort((a, b) => a.name.compareTo(b.name));
 
     return features;
   }

@@ -9,6 +9,8 @@ import 'macos/macos.dart';
 import 'web/web.dart';
 import 'windows/windows.dart';
 
+// TODO think about a flag that allows to pick wheter to remove the platforms ui package or not
+
 /// {@template deactivate_command}
 /// `rapid deactivate` command removes support for a platform from an existing Rapid project.
 /// {@endtemplate}

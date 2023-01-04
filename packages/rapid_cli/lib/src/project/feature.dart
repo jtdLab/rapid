@@ -79,8 +79,11 @@ class Feature {
     }
   }
 
+  Set<String> supportedLanguages() =>
+      _arbFiles().map((e) => e.language).toSet();
+
   bool supportsLanguage(String language) =>
-      _arbFiles().map((e) => e.language).contains(language);
+      supportedLanguages().contains(language);
 
   final String name;
 

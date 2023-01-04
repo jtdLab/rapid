@@ -147,6 +147,35 @@ void main() {
       });
     });
 
+    group('supportedLanguages', () {
+      test(
+          'returns the correct supported languages depending on existing .arb files',
+          () {
+        // Arrange
+        const languages = ['de', 'fr', 'en'];
+        for (final language in languages) {
+          final arbFile = File(
+            p.join(
+              feature.path,
+              'lib',
+              'src',
+              'presentation',
+              'l10n',
+              'arb',
+              '${featureName}_$language.arb',
+            ),
+          );
+          arbFile.createSync(recursive: true);
+        }
+
+        // Act
+        final supportedLanguages = feature.supportedLanguages();
+
+        // Assert
+        expect(supportedLanguages, equals(languages));
+      });
+    });
+
     group('supportsLanguage', () {
       test('returns true when the corresponding .arb file exists', () {
         // Arrange

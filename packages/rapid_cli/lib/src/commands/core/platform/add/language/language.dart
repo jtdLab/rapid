@@ -1,4 +1,5 @@
 import 'package:args/command_runner.dart';
+import 'package:collection/collection.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
@@ -10,6 +11,8 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'package:universal_io/io.dart';
 
 import 'language_bundle.dart';
+
+// TODO share code with the remove lang command
 
 /// {@template platform_add_language_command}
 /// Base class for TODO
@@ -57,25 +60,56 @@ abstract class PlatformAddLanguageCommand extends Command<int>
           final platformDirectory = _project.platformDirectory(_platform);
           final features =
               platformDirectory.getFeatures(exclude: {'app', 'routing'});
+          if (features.isEmpty) {
+            _logger.err('No ${_platform.prettyName} features found!\n'
+                'Run "rapid android add feature" to add your first ${_platform.prettyName} feature.');
 
-          for (final feature in features) {
-            if (!feature.supportsLanguage(language)) {
-              final generator = await _generator(languageBundle);
-              await generator.generate(
-                DirectoryGeneratorTarget(Directory(feature.path)),
-                vars: <String, dynamic>{
-                  'feature_name': feature.name,
-                  'language': language,
-                },
-                logger: _logger,
-              );
-
-              await _flutterGenl10n(cwd: feature.path);
-            }
+            return ExitCode.config.code;
           }
 
-          // TODO add hint how to work with localization
-          return ExitCode.success.code;
+          final allFeaturesHaveSameLanguages = EqualitySet.from(
+                  DeepCollectionEquality.unordered(),
+                  features.map((e) => e.supportedLanguages())).length ==
+              1;
+
+          if (allFeaturesHaveSameLanguages) {
+            final allFeaturesHaveSameDefaultLanguage =
+                features.map((e) => e.defaultLanguage()).toSet().length == 1;
+            if (allFeaturesHaveSameDefaultLanguage) {
+              if (!features.first.supportsLanguage(language)) {
+                for (final feature in features) {
+                  final generator = await _generator(languageBundle);
+                  await generator.generate(
+                    DirectoryGeneratorTarget(Directory(feature.path)),
+                    vars: <String, dynamic>{
+                      'feature_name': feature.name,
+                      'language': language,
+                    },
+                    logger: _logger,
+                  );
+
+                  await _flutterGenl10n(cwd: feature.path);
+                }
+              }
+
+              // TODO add hint how to work with localization
+              return ExitCode.success.code;
+            } else {
+              _logger.err(
+                  'The ${_platform.prettyName} part of your project is corrupted.\n'
+                  'Because not all features have the same default language.\n\n'
+                  'Run "rapid doctor" to see which features are affected.');
+
+              return ExitCode.config.code;
+            }
+          } else {
+            _logger.err(
+                'The ${_platform.prettyName} part of your project is corrupted.\n'
+                'Because not all features support the same languages.\n\n'
+                'Run "rapid doctor" to see which features are affected.');
+
+            return ExitCode.config.code;
+          }
         } else {
           _logger.err('${_platform.prettyName} is not activated.');
 

@@ -19,6 +19,7 @@ dependencies:
   recase: ^4.1.0
   dart_style: ^2.2.4
   code_builder: ^4.4.0
+  collection: ^1.17.0
 
 dev_dependencies:
   lints: ^2.0.1

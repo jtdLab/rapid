@@ -1,4 +1,5 @@
 import 'package:args/command_runner.dart';
+import 'package:collection/collection.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -51,27 +52,50 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
           final features =
               platformDirectory.getFeatures(exclude: {'app', 'routing'});
 
-          for (final feature in features) {
-            if (feature.supportsLanguage(language)) {
-              if (language != feature.defaultLanguage()) {
-                final arbFile = feature.findArbFileByLanguage(language);
-                arbFile.delete();
+          if (features.isEmpty) {
+            _logger.err('No ${_platform.prettyName} features found!\n'
+                'Run "rapid android add feature" to add your first ${_platform.prettyName} feature.');
 
-                await _flutterGenl10n(cwd: feature.path);
-              } else {
-                // TODO dont return but collect the failed features
-                // TODO hint that the user has to first chanage the default language of the platform
-
-                return ExitCode.config.code;
-              }
-            } else {
-              // TODO dont return but collect the failed features
-              // TODO hint the user that the language is not present on the platform
-              return ExitCode.config.code;
-            }
+            return ExitCode.config.code;
           }
 
-          return ExitCode.success.code;
+          final allFeaturesHaveSameLanguages = EqualitySet.from(
+                  DeepCollectionEquality.unordered(),
+                  features.map((e) => e.supportedLanguages())).length ==
+              1;
+
+          if (allFeaturesHaveSameLanguages) {
+            final allFeaturesHaveSameDefaultLanguage =
+                features.map((e) => e.defaultLanguage()).toSet().length == 1;
+            if (allFeaturesHaveSameDefaultLanguage) {
+              if (!features.first.supportsLanguage(language) &&
+                  features.first.defaultLanguage() != language) {
+                for (final feature in features) {
+                  final arbFile = feature.findArbFileByLanguage(language);
+                  arbFile.delete();
+
+                  await _flutterGenl10n(cwd: feature.path);
+                }
+              }
+
+              // TODO add hint how to work with localization
+              return ExitCode.success.code;
+            } else {
+              _logger.err(
+                  'The ${_platform.prettyName} part of your project is corrupted.\n'
+                  'Because not all features have the same default language.\n\n'
+                  'Run "rapid doctor" to see which features are affected.');
+
+              return ExitCode.config.code;
+            }
+          } else {
+            _logger.err(
+                'The ${_platform.prettyName} part of your project is corrupted.\n'
+                'Because not all features support the same languages.\n\n'
+                'Run "rapid doctor" to see which features are affected.');
+
+            return ExitCode.config.code;
+          }
         } else {
           _logger.err('${_platform.prettyName} is not activated.');
 

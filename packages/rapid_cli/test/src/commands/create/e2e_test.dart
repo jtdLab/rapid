@@ -280,8 +280,8 @@ void main() {
               workingDirectory: appPackagePath,
               runInShell: true,
             );
-            print(integrationTestResult.stderr);
-            print(integrationTestResult.stdout);
+            print(integrationTestResult.stderr); // TODO
+            print(integrationTestResult.stdout); // TODO
             expect(
               integrationTestResult.exitCode,
               equals(ExitCode.success.code),

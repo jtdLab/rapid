@@ -1,6 +1,6 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/activate/activate_sub_command.dart';
+import 'package:rapid_cli/src/commands/activate/core/activate_platform_command.dart';
 import 'package:rapid_cli/src/commands/activate/macos/macos_bundle.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
@@ -11,7 +11,8 @@ import 'package:universal_io/io.dart';
 /// {@template activate_macos_command}
 /// `rapid activate macos` command adds support for macOS to an existing Rapid project.
 /// {@endtemplate}
-class ActivateMacosCommand extends ActivateSubCommand with OrgNameGetters {
+class ActivateMacosCommand extends ActivatePlatformCommand with OrgNameGetters {
+  /// {@macro activate_macos_command}
   ActivateMacosCommand({
     Logger? logger,
     required Project project,

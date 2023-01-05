@@ -1,6 +1,6 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/activate/activate_sub_command.dart';
+import 'package:rapid_cli/src/commands/activate/core/activate_platform_command.dart';
 import 'package:rapid_cli/src/commands/activate/linux/linux_bundle.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
@@ -11,7 +11,8 @@ import 'package:universal_io/io.dart';
 /// {@template activate_linux_command}
 /// `rapid activate linux` command adds support for Linux to an existing Rapid project.
 /// {@endtemplate}
-class ActivateLinuxCommand extends ActivateSubCommand with OrgNameGetters {
+class ActivateLinuxCommand extends ActivatePlatformCommand with OrgNameGetters {
+  /// {@macro activate_linux_command}
   ActivateLinuxCommand({
     Logger? logger,
     required Project project,

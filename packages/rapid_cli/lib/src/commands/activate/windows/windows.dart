@@ -1,6 +1,6 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/activate/activate_sub_command.dart';
+import 'package:rapid_cli/src/commands/activate/core/activate_platform_command.dart';
 import 'package:rapid_cli/src/commands/activate/windows/windows_bundle.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
@@ -11,7 +11,9 @@ import 'package:universal_io/io.dart';
 /// {@template activate_windows_command}
 /// `rapid activate windows` command adds support for Windows to an existing Rapid project.
 /// {@endtemplate}
-class ActivateWindowsCommand extends ActivateSubCommand with OrgNameGetters {
+class ActivateWindowsCommand extends ActivatePlatformCommand
+    with OrgNameGetters {
+  /// {@macro activate_windows_command}
   ActivateWindowsCommand({
     Logger? logger,
     required Project project,

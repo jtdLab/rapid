@@ -1,6 +1,6 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/activate/activate_sub_command.dart';
+import 'package:rapid_cli/src/commands/activate/core/activate_platform_command.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -12,7 +12,9 @@ import 'android_bundle.dart';
 /// {@template activate_android_command}
 /// `rapid activate android` command adds support for Android to an existing Rapid project.
 /// {@endtemplate}
-class ActivateAndroidCommand extends ActivateSubCommand with OrgNameGetters {
+class ActivateAndroidCommand extends ActivatePlatformCommand
+    with OrgNameGetters {
+  /// {@macro activate_android_command}
   ActivateAndroidCommand({
     Logger? logger,
     required Project project,

@@ -1,6 +1,6 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/activate/activate_sub_command.dart';
+import 'package:rapid_cli/src/commands/activate/core/activate_platform_command.dart';
 import 'package:rapid_cli/src/commands/activate/web/web_bundle.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -10,7 +10,8 @@ import 'package:universal_io/io.dart';
 /// {@template activate_web_command}
 /// `rapid activate web` command adds support for Web to an existing Rapid project.
 /// {@endtemplate}
-class ActivateWebCommand extends ActivateSubCommand {
+class ActivateWebCommand extends ActivatePlatformCommand {
+  /// {@macro activate_web_command}
   ActivateWebCommand({
     Logger? logger,
     required Project project,

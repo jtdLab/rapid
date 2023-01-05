@@ -1,22 +1,36 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/activate/activate.dart';
+import 'package:rapid_cli/src/commands/activate/android/android.dart';
+import 'package:rapid_cli/src/commands/activate/ios/ios.dart';
+import 'package:rapid_cli/src/commands/activate/linux/linux.dart';
+import 'package:rapid_cli/src/commands/activate/macos/macos.dart';
+import 'package:rapid_cli/src/commands/activate/web/web.dart';
+import 'package:rapid_cli/src/commands/activate/windows/windows.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
-// TODO sort vars and methods alphabetically
-
-// TODO name it to ActivatePlatformCommand
-
-// TODO move into activate/core
-
-/// Base class for all subcommands of [ActivateCommand].
-abstract class ActivateSubCommand extends Command<int>
+/// {@template activate_platform_command}
+/// Base class for:
+///
+///  * [ActivateAndroidCommand]
+///
+///  * [ActivateIosCommand]
+///
+///  * [ActivateLinuxCommand]
+///
+///  * [ActivateMacosCommand]
+///
+///  * [ActivateWebCommand]
+///
+///  * [ActivateWindowsCommand]
+/// {@endtemplate}
+abstract class ActivatePlatformCommand extends Command<int>
     with OverridableArgResults {
-  ActivateSubCommand({
+  /// {@macro activate_platform_command}
+  ActivatePlatformCommand({
     required Platform platform,
     required Logger logger,
     required Project project,

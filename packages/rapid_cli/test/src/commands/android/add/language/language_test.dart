@@ -66,7 +66,7 @@ void main() {
     late Project project;
     late _FlutterGenl10nCommand flutterGenl10n;
     final generatedFiles = List.filled(
-      62,
+      23,
       const GeneratedFile.created(path: ''),
     );
     late MasonGenerator generator;

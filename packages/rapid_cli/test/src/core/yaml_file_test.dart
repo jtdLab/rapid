@@ -152,7 +152,7 @@ void main() {
     late YamlFile yamlFile;
 
     setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync().path;
+      Directory.current = Directory.systemTemp.createTempSync();
 
       yamlFile = YamlFile(name: 'foo');
       File(yamlFile.path).createSync(recursive: true);

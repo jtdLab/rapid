@@ -64,7 +64,7 @@ void main() {
     late _MelosBoostrapCommand melosBootstrap;
     late _MelosCleanCommand melosClean;
     final generatedFiles = List.filled(
-      62,
+      23,
       const GeneratedFile.created(path: ''),
     );
     late MasonGenerator generator;

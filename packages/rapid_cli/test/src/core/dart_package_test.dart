@@ -75,7 +75,7 @@ void main() {
     late DartPackage dartPackage;
 
     setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync().path;
+      Directory.current = Directory.systemTemp.createTempSync();
 
       dartPackage = DartPackage(path: path);
       Directory(dartPackage.path).createSync(recursive: true);
@@ -151,7 +151,7 @@ void main() {
     late PubspecFile pubspecFile;
 
     setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync().path;
+      Directory.current = Directory.systemTemp.createTempSync();
 
       pubspecFile = PubspecFile();
       File(pubspecFile.path).createSync(recursive: true);

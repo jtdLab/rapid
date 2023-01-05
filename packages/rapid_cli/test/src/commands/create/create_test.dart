@@ -88,7 +88,7 @@ void main() {
     late CreateCommand command;
 
     final generatedFiles = List.filled(
-      62,
+      23,
       const GeneratedFile.created(path: ''),
     );
 

@@ -38,7 +38,7 @@ void main() {
     late Feature feature;
 
     setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync().path;
+      Directory.current = Directory.systemTemp.createTempSync();
 
       melosFile = _MockMelosFile();
       when(() => melosFile.name()).thenReturn(projectName);
@@ -247,7 +247,7 @@ void main() {
     late ArbFile arbFile;
 
     setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync().path;
+      Directory.current = Directory.systemTemp.createTempSync();
 
       feature = _MockFeature();
       when(() => feature.name).thenReturn(featureName);
@@ -297,7 +297,7 @@ void main() {
     late L10nFile l10nFile;
 
     setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync().path;
+      Directory.current = Directory.systemTemp.createTempSync();
 
       l10nFile = L10nFile();
       File(l10nFile.path).createSync(recursive: true);

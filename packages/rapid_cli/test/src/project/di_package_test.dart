@@ -19,7 +19,7 @@ void main() {
     late DiPackage diPackage;
 
     setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync().path;
+      Directory.current = Directory.systemTemp.createTempSync();
 
       melosFile = _MockMelosFile();
       when(() => melosFile.name()).thenReturn(projectName);

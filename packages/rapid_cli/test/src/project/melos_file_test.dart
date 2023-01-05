@@ -17,7 +17,7 @@ void main() {
     late MelosFile melosFile;
 
     setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync().path;
+      Directory.current = Directory.systemTemp.createTempSync();
 
       melosFile = MelosFile();
       File(melosFile.path).createSync(recursive: true);

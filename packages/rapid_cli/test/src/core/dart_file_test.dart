@@ -154,7 +154,7 @@ void main() {
     late DartFile dartFile;
 
     setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync().path;
+      Directory.current = Directory.systemTemp.createTempSync();
 
       dartFile = DartFile(name: 'foo');
       File(dartFile.path).createSync(recursive: true);

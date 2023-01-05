@@ -16,7 +16,7 @@ void main() {
     late Project project;
 
     setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync().path;
+      Directory.current = Directory.systemTemp.createTempSync();
 
       project = Project();
       final melosFile = File(project.melosFile.path);

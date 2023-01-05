@@ -69,7 +69,7 @@ void main() {
     late _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
     final generatedFiles = List.filled(
-      62,
+      23,
       const GeneratedFile.created(path: ''),
     );
     late MasonGenerator generator;

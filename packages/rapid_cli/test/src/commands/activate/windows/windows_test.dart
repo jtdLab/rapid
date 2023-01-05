@@ -14,7 +14,7 @@ import 'package:universal_io/io.dart';
 import '../../../../helpers/helpers.dart';
 
 const expectedUsage = [
-  // ignore: no_adjacent_strings_in_list
+  // ignore: no_adjacent_strings_in_list // TODO remove in all tests if possible
   'Adds support for Windows to this project.\n'
       '\n'
       'Usage: rapid activate windows\n'
@@ -86,7 +86,7 @@ class FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}
 
 void main() {
-  group('windows', () {
+  group('activate windows', () {
     final cwd = Directory.current;
 
     late List<String> progressLogs;
@@ -118,7 +118,7 @@ void main() {
     late MasonGenerator generator;
     late ArgResults argResults;
 
-    late WindowsCommand command;
+    late ActivateWindowsCommand command;
 
     setUpAll(() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
@@ -186,7 +186,7 @@ void main() {
       argResults = _MockArgResults();
       when(() => argResults['org-name']).thenReturn(null);
 
-      command = WindowsCommand(
+      command = ActivateWindowsCommand(
         logger: logger,
         project: project,
         flutterConfigEnableWindows: flutterConfigEnableWindows,
@@ -205,7 +205,7 @@ void main() {
 
     test('i is win valid alias', () {
       // Act
-      final command = WindowsCommand(project: project);
+      final command = ActivateWindowsCommand(project: project);
 
       // Assert
       expect(command.aliases, contains('win'));
@@ -236,7 +236,7 @@ void main() {
 
     test('can be instantiated without explicit logger', () {
       // Act
-      final command = WindowsCommand(project: project);
+      final command = ActivateWindowsCommand(project: project);
 
       // Assert
       expect(command, isNotNull);

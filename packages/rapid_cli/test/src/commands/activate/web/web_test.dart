@@ -84,7 +84,7 @@ class FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}
 
 void main() {
-  group('web', () {
+  group('activate web', () {
     final cwd = Directory.current;
 
     late List<String> progressLogs;
@@ -116,7 +116,7 @@ void main() {
     late MasonGenerator generator;
     late ArgResults argResults;
 
-    late WebCommand command;
+    late ActivateWebCommand command;
 
     setUpAll(() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
@@ -184,7 +184,7 @@ void main() {
       argResults = _MockArgResults();
       when(() => argResults['org-name']).thenReturn(null);
 
-      command = WebCommand(
+      command = ActivateWebCommand(
         logger: logger,
         project: project,
         flutterConfigEnableWeb: flutterConfigEnableWeb,
@@ -224,7 +224,7 @@ void main() {
 
     test('can be instantiated without explicit logger', () {
       // Act
-      final command = WebCommand(project: project);
+      final command = ActivateWebCommand(project: project);
 
       // Assert
       expect(command, isNotNull);

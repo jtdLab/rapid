@@ -11,8 +11,8 @@ import 'package:universal_io/io.dart';
 /// {@template activate_ios_command}
 /// `rapid activate ios` command adds support for iOS to an existing Rapid project.
 /// {@endtemplate}
-class IosCommand extends ActivateSubCommand with OrgNameGetters {
-  IosCommand({
+class ActivateIosCommand extends ActivateSubCommand with OrgNameGetters {
+  ActivateIosCommand({
     Logger? logger,
     required Project project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableIos,

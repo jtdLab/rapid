@@ -12,8 +12,8 @@ import 'android_bundle.dart';
 /// {@template activate_android_command}
 /// `rapid activate android` command adds support for Android to an existing Rapid project.
 /// {@endtemplate}
-class AndroidCommand extends ActivateSubCommand with OrgNameGetters {
-  AndroidCommand({
+class ActivateAndroidCommand extends ActivateSubCommand with OrgNameGetters {
+  ActivateAndroidCommand({
     Logger? logger,
     required Project project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableAndroid,

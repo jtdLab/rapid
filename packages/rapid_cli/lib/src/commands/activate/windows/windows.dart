@@ -11,8 +11,8 @@ import 'package:universal_io/io.dart';
 /// {@template activate_windows_command}
 /// `rapid activate windows` command adds support for Windows to an existing Rapid project.
 /// {@endtemplate}
-class WindowsCommand extends ActivateSubCommand with OrgNameGetters {
-  WindowsCommand({
+class ActivateWindowsCommand extends ActivateSubCommand with OrgNameGetters {
+  ActivateWindowsCommand({
     Logger? logger,
     required Project project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWindows,

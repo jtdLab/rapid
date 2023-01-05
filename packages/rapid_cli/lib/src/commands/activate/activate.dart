@@ -18,12 +18,12 @@ class ActivateCommand extends Command<int> {
     Logger? logger,
     required Project project,
   }) {
-    addSubcommand(AndroidCommand(logger: logger, project: project));
-    addSubcommand(IosCommand(logger: logger, project: project));
-    addSubcommand(WebCommand(logger: logger, project: project));
-    addSubcommand(LinuxCommand(logger: logger, project: project));
-    addSubcommand(MacosCommand(logger: logger, project: project));
-    addSubcommand(WindowsCommand(logger: logger, project: project));
+    addSubcommand(ActivateAndroidCommand(logger: logger, project: project));
+    addSubcommand(ActivateIosCommand(logger: logger, project: project));
+    addSubcommand(ActivateWebCommand(logger: logger, project: project));
+    addSubcommand(ActivateLinuxCommand(logger: logger, project: project));
+    addSubcommand(ActivateMacosCommand(logger: logger, project: project));
+    addSubcommand(ActivateWindowsCommand(logger: logger, project: project));
   }
 
   @override

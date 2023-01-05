@@ -86,7 +86,7 @@ class FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}
 
 void main() {
-  group('android', () {
+  group('activate android', () {
     final cwd = Directory.current;
 
     late List<String> progressLogs;
@@ -118,7 +118,7 @@ void main() {
     late MasonGenerator generator;
     late ArgResults argResults;
 
-    late AndroidCommand command;
+    late ActivateAndroidCommand command;
 
     setUpAll(() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
@@ -186,7 +186,7 @@ void main() {
       argResults = _MockArgResults();
       when(() => argResults['org-name']).thenReturn(null);
 
-      command = AndroidCommand(
+      command = ActivateAndroidCommand(
         logger: logger,
         project: project,
         flutterConfigEnableAndroid: flutterConfigEnableAndroid,
@@ -205,7 +205,7 @@ void main() {
 
     test('a is a valid alias', () {
       // Act
-      final command = AndroidCommand(project: project);
+      final command = ActivateAndroidCommand(project: project);
 
       // Assert
       expect(command.aliases, contains('a'));
@@ -236,7 +236,7 @@ void main() {
 
     test('can be instantiated without explicit logger', () {
       // Act
-      final command = AndroidCommand(project: project);
+      final command = ActivateAndroidCommand(project: project);
 
       // Assert
       expect(command, isNotNull);

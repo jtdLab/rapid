@@ -86,7 +86,7 @@ class FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}
 
 void main() {
-  group('linux', () {
+  group('activate linux', () {
     final cwd = Directory.current;
 
     late List<String> progressLogs;
@@ -118,7 +118,7 @@ void main() {
     late MasonGenerator generator;
     late ArgResults argResults;
 
-    late LinuxCommand command;
+    late ActivateLinuxCommand command;
 
     setUpAll(() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
@@ -186,7 +186,7 @@ void main() {
       argResults = _MockArgResults();
       when(() => argResults['org-name']).thenReturn(null);
 
-      command = LinuxCommand(
+      command = ActivateLinuxCommand(
         logger: logger,
         project: project,
         flutterConfigEnableLinux: flutterConfigEnableLinux,
@@ -205,7 +205,7 @@ void main() {
 
     test('l is a valid alias', () {
       // Act
-      final command = LinuxCommand(project: project);
+      final command = ActivateLinuxCommand(project: project);
 
       // Assert
       expect(command.aliases, contains('l'));
@@ -213,7 +213,7 @@ void main() {
 
     test('lin is a valid alias', () {
       // Act
-      final command = LinuxCommand(project: project);
+      final command = ActivateLinuxCommand(project: project);
 
       // Assert
       expect(command.aliases, contains('lin'));
@@ -242,7 +242,7 @@ void main() {
 
     test('can be instantiated without explicit logger', () {
       // Act
-      final command = LinuxCommand(project: project);
+      final command = ActivateLinuxCommand(project: project);
 
       // Assert
       expect(command, isNotNull);

@@ -15,7 +15,9 @@ class AndroidFeatureAddCommand extends PlatformFeatureAddCommand {
     required Project project,
   }) : super(
           platform: Platform.android,
-          blocCommand: AndroidFeatureAddBlocCommand(logger: logger, project: project),
-          cubitCommand: AndroidFeatureAddCubitCommand(logger: logger, project: project),
+          blocCommand:
+              AndroidFeatureAddBlocCommand(logger: logger, project: project),
+          cubitCommand:
+              AndroidFeatureAddCubitCommand(logger: logger, project: project),
         );
 }

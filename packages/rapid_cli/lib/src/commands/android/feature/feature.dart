@@ -14,6 +14,7 @@ class AndroidFeatureCommand extends PlatformFeatureCommand {
     required Project project,
   }) : super(
           platform: Platform.android,
-          addCommand: AndroidFeatureAddCommand(logger: logger, project: project),
+          addCommand:
+              AndroidFeatureAddCommand(logger: logger, project: project),
         );
 }

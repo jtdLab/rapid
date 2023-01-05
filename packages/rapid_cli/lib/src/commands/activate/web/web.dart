@@ -10,8 +10,8 @@ import 'package:universal_io/io.dart';
 /// {@template activate_web_command}
 /// `rapid activate web` command adds support for Web to an existing Rapid project.
 /// {@endtemplate}
-class WebCommand extends ActivateSubCommand {
-  WebCommand({
+class ActivateWebCommand extends ActivateSubCommand {
+  ActivateWebCommand({
     Logger? logger,
     required Project project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWeb,

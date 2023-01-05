@@ -11,8 +11,8 @@ import 'package:universal_io/io.dart';
 /// {@template activate_linux_command}
 /// `rapid activate linux` command adds support for Linux to an existing Rapid project.
 /// {@endtemplate}
-class LinuxCommand extends ActivateSubCommand with OrgNameGetters {
-  LinuxCommand({
+class ActivateLinuxCommand extends ActivateSubCommand with OrgNameGetters {
+  ActivateLinuxCommand({
     Logger? logger,
     required Project project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableLinux,

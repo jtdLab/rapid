@@ -86,7 +86,7 @@ class FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}
 
 void main() {
-  group('macos', () {
+  group('activate macos', () {
     final cwd = Directory.current;
 
     late List<String> progressLogs;
@@ -118,7 +118,7 @@ void main() {
     late MasonGenerator generator;
     late ArgResults argResults;
 
-    late MacosCommand command;
+    late ActivateMacosCommand command;
 
     setUpAll(() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
@@ -186,7 +186,7 @@ void main() {
       argResults = _MockArgResults();
       when(() => argResults['org-name']).thenReturn(null);
 
-      command = MacosCommand(
+      command = ActivateMacosCommand(
         logger: logger,
         project: project,
         flutterConfigEnableMacos: flutterConfigEnableMacos,
@@ -205,7 +205,7 @@ void main() {
 
     test('m is a valid alias', () {
       // Act
-      final command = MacosCommand(project: project);
+      final command = ActivateMacosCommand(project: project);
 
       // Assert
       expect(command.aliases, contains('m'));
@@ -213,7 +213,7 @@ void main() {
 
     test('mac is a valid alias', () {
       // Act
-      final command = MacosCommand(project: project);
+      final command = ActivateMacosCommand(project: project);
 
       // Assert
       expect(command.aliases, contains('mac'));
@@ -242,7 +242,7 @@ void main() {
 
     test('can be instantiated without explicit logger', () {
       // Act
-      final command = MacosCommand(project: project);
+      final command = ActivateMacosCommand(project: project);
 
       // Assert
       expect(command, isNotNull);

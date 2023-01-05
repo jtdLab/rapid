@@ -15,7 +15,9 @@ class AndroidRemoveCommand extends PlatformRemoveCommand {
     required Project project,
   }) : super(
           platform: Platform.android,
-          featureCommand: AndroidRemoveFeatureCommand(logger: logger, project: project),
-          languageCommand: AndroidRemoveLanguageCommand(logger: logger, project: project),
+          featureCommand:
+              AndroidRemoveFeatureCommand(logger: logger, project: project),
+          languageCommand:
+              AndroidRemoveLanguageCommand(logger: logger, project: project),
         );
 }

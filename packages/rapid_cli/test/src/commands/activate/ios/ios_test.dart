@@ -86,7 +86,7 @@ class FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}
 
 void main() {
-  group('ios', () {
+  group('activate ios', () {
     final cwd = Directory.current;
 
     late List<String> progressLogs;
@@ -118,7 +118,7 @@ void main() {
     late MasonGenerator generator;
     late ArgResults argResults;
 
-    late IosCommand command;
+    late ActivateIosCommand command;
 
     setUpAll(() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
@@ -186,7 +186,7 @@ void main() {
       argResults = _MockArgResults();
       when(() => argResults['org-name']).thenReturn(null);
 
-      command = IosCommand(
+      command = ActivateIosCommand(
         logger: logger,
         project: project,
         flutterConfigEnableIos: flutterConfigEnableIos,
@@ -205,7 +205,7 @@ void main() {
 
     test('i is a valid alias', () {
       // Act
-      final command = IosCommand(project: project);
+      final command = ActivateIosCommand(project: project);
 
       // Assert
       expect(command.aliases, contains('i'));
@@ -234,7 +234,7 @@ void main() {
 
     test('can be instantiated without explicit logger', () {
       // Act
-      final command = IosCommand(project: project);
+      final command = ActivateIosCommand(project: project);
 
       // Assert
       expect(command, isNotNull);

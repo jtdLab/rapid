@@ -11,8 +11,8 @@ import 'package:universal_io/io.dart';
 /// {@template activate_macos_command}
 /// `rapid activate macos` command adds support for macOS to an existing Rapid project.
 /// {@endtemplate}
-class MacosCommand extends ActivateSubCommand with OrgNameGetters {
-  MacosCommand({
+class ActivateMacosCommand extends ActivateSubCommand with OrgNameGetters {
+  ActivateMacosCommand({
     Logger? logger,
     required Project project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableMacos,

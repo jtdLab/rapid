@@ -9,6 +9,10 @@ import 'package:rapid_cli/src/project/project.dart';
 
 // TODO sort vars and methods alphabetically
 
+// TODO name it to ActivatePlatformCommand
+
+// TODO move into activate/core
+
 /// Base class for all subcommands of [ActivateCommand].
 abstract class ActivateSubCommand extends Command<int>
     with OverridableArgResults {

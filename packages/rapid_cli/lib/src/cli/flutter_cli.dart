@@ -6,20 +6,21 @@ typedef FlutterInstalledCommand = Future<bool> Function();
 /// Signature for the [Flutter.pubGet] method.
 typedef FlutterPubGetCommand = Future<void> Function({required String cwd});
 
-/// Signature for Flutter config enable platform methods.
+/// Signature for flutter config enable platform methods.
 ///
-/// [Flutter.configEnableAndroid]
+///  * [Flutter.configEnableAndroid]
 ///
-/// [Flutter.configEnableIos]
+///  * [Flutter.configEnableIos]
 ///
-/// [Flutter.configEnableLinux]
+///  * [Flutter.configEnableLinux]
 ///
-/// [Flutter.configEnableMacos]
+///  * [Flutter.configEnableMacos]
 ///
-/// [Flutter.configEnableWeb]
+///  * [Flutter.configEnableWeb]
 ///
-/// [Flutter.configEnableWindows]
+///  * [Flutter.configEnableWindows]
 typedef FlutterConfigEnablePlatformCommand = Future<void> Function();
+
 
 /// Signature for the [Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs] method.
 typedef FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
@@ -90,7 +91,7 @@ abstract class Flutter {
     );
   }
 
-  /// Run localization generation (`flutter gen-l10n`)
+  /// Run localization generation (`flutter gen-l10n`).
   static Future<void> genl10n({
     String cwd = '.',
   }) async {

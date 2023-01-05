@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/activate/macos/macos.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -105,16 +106,16 @@ void main() {
     const diPackagePath = 'foo/bar/baz';
     late DiPackage diPackage;
 
-    late _FlutterConfigEnablePlatformCommand flutterConfigEnableMacos;
+    late FlutterConfigEnablePlatformCommand flutterConfigEnableMacos;
 
-    late _FlutterPubGetCommand flutterPubGet;
+    late FlutterPubGetCommand flutterPubGet;
 
-    late _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+    late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
-    late _MelosBootstrapCommand melosBootstrap;
+    late MelosBootstrapCommand melosBootstrap;
 
-    late _MelosCleanCommand melosClean;
+    late MelosCleanCommand melosClean;
 
     late MasonGenerator generator;
     final generatedFiles = List.filled(

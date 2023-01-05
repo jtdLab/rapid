@@ -184,8 +184,7 @@ void main() {
         const expectedErrorMessage = 'No option specified for the language.';
 
         // Act
-        final result =
-            await commandRunner.run(['linux', 'remove', 'language']);
+        final result = await commandRunner.run(['linux', 'remove', 'language']);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
@@ -220,8 +219,8 @@ void main() {
             'See https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry for more information.';
 
         // Act
-        final result = await commandRunner
-            .run(['linux', 'remove', 'language', language]);
+        final result =
+            await commandRunner.run(['linux', 'remove', 'language', language]);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));

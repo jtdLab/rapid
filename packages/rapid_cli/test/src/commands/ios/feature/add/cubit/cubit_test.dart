@@ -189,14 +189,8 @@ void main() {
         const expectedErrorMessage = 'No option specified for the name.';
 
         // Act
-        final result = await commandRunner.run([
-          'ios',
-          'feature',
-          'add',
-          'cubit',
-          '--feature-name',
-          'some_feat'
-        ]);
+        final result = await commandRunner.run(
+            ['ios', 'feature', 'add', 'cubit', '--feature-name', 'some_feat']);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
@@ -365,8 +359,9 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err(
-          'The feature "$featureName" does not exist on iOS.')).called(1);
+      verify(() =>
+              logger.err('The feature "$featureName" does not exist on iOS.'))
+          .called(1);
       expect(result, ExitCode.config.code);
     });
 

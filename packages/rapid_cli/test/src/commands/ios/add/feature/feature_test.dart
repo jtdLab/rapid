@@ -266,8 +266,7 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
       verify(() => melosBootstrap()).called(1);
-      verify(() => logger.success('Added iOS feature $featureName.'))
-          .called(1);
+      verify(() => logger.success('Added iOS feature $featureName.')).called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -310,8 +309,7 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
       verify(() => melosBootstrap()).called(1);
-      verify(() => logger.success('Added iOS feature $featureName.'))
-          .called(1);
+      verify(() => logger.success('Added iOS feature $featureName.')).called(1);
       expect(result, ExitCode.success.code);
     });
 

@@ -46,7 +46,6 @@ void main() {
       expect(command.aliases, contains('lin'));
     });
 
-
     test(
       'help',
       withRunner((commandRunner, logger, printLogs) async {

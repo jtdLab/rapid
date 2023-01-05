@@ -165,8 +165,7 @@ void main() {
         const expectedErrorMessage = 'No option specified for the name.';
 
         // Act
-        final result =
-            await commandRunner.run(['linux', 'remove', 'feature']);
+        final result = await commandRunner.run(['linux', 'remove', 'feature']);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
@@ -233,8 +232,9 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err(
-          'The feature "$featureName" does not exist on Linux.')).called(1);
+      verify(() =>
+              logger.err('The feature "$featureName" does not exist on Linux.'))
+          .called(1);
       expect(result, ExitCode.config.code);
     });
 

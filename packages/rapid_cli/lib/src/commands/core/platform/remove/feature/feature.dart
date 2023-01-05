@@ -55,7 +55,7 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
   List<String> get aliases => ['feat'];
 
   @override
-  String get invocation => 'rapid android remove feature <name>';
+  String get invocation => 'rapid ${_platform.name} remove feature <name>';
 
   @override
   String get description =>

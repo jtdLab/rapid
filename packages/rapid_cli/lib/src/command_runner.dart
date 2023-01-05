@@ -5,6 +5,11 @@ import 'package:rapid_cli/src/commands/activate/activate.dart';
 import 'package:rapid_cli/src/commands/android/android.dart';
 import 'package:rapid_cli/src/commands/deactivate/deactivate.dart';
 import 'package:rapid_cli/src/commands/doctor/doctor.dart';
+import 'package:rapid_cli/src/commands/ios/ios.dart';
+import 'package:rapid_cli/src/commands/linux/linux.dart';
+import 'package:rapid_cli/src/commands/macos/macos.dart';
+import 'package:rapid_cli/src/commands/web/web.dart';
+import 'package:rapid_cli/src/commands/windows/windows.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 import 'commands/create/create.dart';
@@ -33,6 +38,11 @@ class RapidCommandRunner extends CommandRunner<int> {
     addCommand(CreateCommand(logger: logger));
     addCommand(DeactivateCommand(logger: logger, project: p));
     addCommand(DoctorCommand(logger: logger, project: p));
+    addCommand(IosCommand(logger: logger, project: p));
+    addCommand(LinuxCommand(logger: logger, project: p));
+    addCommand(MacosCommand(logger: logger, project: p));
+    addCommand(WebCommand(logger: logger, project: p));
+    addCommand(WindowsCommand(logger: logger, project: p));
   }
 
   @override

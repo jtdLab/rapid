@@ -80,7 +80,7 @@ abstract class PlatformAddLanguageCommand extends Command<int>
               platformDirectory.getFeatures(exclude: {'app', 'routing'});
           if (features.isEmpty) {
             _logger.err('No ${_platform.prettyName} features found!\n'
-                'Run "rapid android add feature" to add your first ${_platform.prettyName} feature.');
+                'Run "rapid ${_platform.name} add feature" to add your first ${_platform.prettyName} feature.');
 
             return ExitCode.config.code;
           }

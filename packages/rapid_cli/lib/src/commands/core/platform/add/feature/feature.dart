@@ -73,7 +73,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   List<String> get aliases => ['feat'];
 
   @override
-  String get invocation => 'rapid android add feature <name> [arguments]';
+  String get invocation => 'rapid ${_platform.name} add feature <name> [arguments]';
 
   @override
   String get description =>

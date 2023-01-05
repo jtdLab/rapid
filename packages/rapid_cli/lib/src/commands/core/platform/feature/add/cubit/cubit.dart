@@ -71,7 +71,7 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
   String get name => 'cubit';
 
   @override
-  String get invocation => 'rapid android feature add cubit <name> [arguments]';
+  String get invocation => 'rapid ${_platform.name} feature add cubit <name> [arguments]';
 
   @override
   String get description =>

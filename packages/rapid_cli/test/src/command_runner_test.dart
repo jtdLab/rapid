@@ -30,6 +30,11 @@ const expectedUsage = [
       '  create       Creates a new Rapid project in the specified directory.\n'
       '  deactivate   Removes support for a platform from an existing Rapid project.\n'
       '  doctor       Shows information about an existing Rapid project.\n'
+      '  ios          Work with the iOS part of an existing Rapid project.\n'
+      '  linux        Work with the Linux part of an existing Rapid project.\n'
+      '  macos        Work with the macOS part of an existing Rapid project.\n'
+      '  web          Work with the Web part of an existing Rapid project.\n'
+      '  windows      Work with the Windows part of an existing Rapid project.\n'
       '\n'
       'Run "rapid help <command>" for more information about a command.'
 ];

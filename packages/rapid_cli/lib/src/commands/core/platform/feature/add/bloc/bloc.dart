@@ -74,7 +74,7 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
   String get name => 'bloc';
 
   @override
-  String get invocation => 'rapid android feature add bloc <name> [arguments]';
+  String get invocation => 'rapid ${_platform.name} feature add bloc <name> [arguments]';
 
   @override
   String get description =>

@@ -5,15 +5,15 @@ import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template rapid_doctor}
-/// `rapid doctor language` command shows information about an existing Rapid project.
+/// `rapid doctor` command shows information about an existing Rapid project.
 /// {@endtemplate}
 class DoctorCommand extends Command<int> {
   /// {@macro rapid_doctor}
   DoctorCommand({
     Logger? logger,
-    Project? project,
+    required Project project,
   })  : _logger = logger ?? Logger(),
-        _project = project ?? Project();
+        _project = project;
 
   final Logger _logger;
   final Project _project;
@@ -26,6 +26,9 @@ class DoctorCommand extends Command<int> {
       'Shows information about an existing Rapid project.';
 
   @override
+  String get invocation => 'rapid doctor';
+
+  @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
         final platformDirectories = Platform.values
             .where((e) => _project.isActivated(e))
@@ -33,33 +36,36 @@ class DoctorCommand extends Command<int> {
 
         for (final platformDirectory in platformDirectories) {
           final platformName = platformDirectory.platform.prettyName;
-
-          _logger.alert('$platformName:');
-          _logger.info('');
-
           final features =
               platformDirectory.getFeatures(exclude: {'app', 'routing'});
 
-          for (final feature in features) {
-            final featureName = feature.name;
-            final defaultLanguage = feature.defaultLanguage();
-            final languagesWithoutDefaultLanguage = feature.supportedLanguages()
-              ..remove(defaultLanguage);
+          if (features.isNotEmpty) {
+            _logger.alert('$platformName:');
+            _logger.info('');
+            _logger.success('Found ${features.length} feature(s)');
+            _logger.info('');
+            for (final feature in features) {
+              final featureName = feature.name;
+              final defaultLanguage = feature.defaultLanguage();
+              final languagesWithoutDefaultLanguage = feature
+                  .supportedLanguages()
+                  .where((e) => e != defaultLanguage);
 
-            _logger.info(
-              '[$featureName] ($defaultLanguage (default)${languagesWithoutDefaultLanguage.isEmpty ? '' : languagesWithoutDefaultLanguage.enumerate()})',
-            );
+              _logger.info(
+                '[$featureName] ($defaultLanguage (default)${languagesWithoutDefaultLanguage.isEmpty ? '' : languagesWithoutDefaultLanguage.enumerate()})',
+              );
+            }
+
+            _logger.info('');
+            _logger.info('');
           }
-
-          _logger.info('');
-          _logger.info('');
         }
 
         return ExitCode.success.code;
       });
 }
 
-extension on Set<String> {
+extension on Iterable<String> {
   String enumerate() {
     final buffer = StringBuffer();
     for (final item in this) {

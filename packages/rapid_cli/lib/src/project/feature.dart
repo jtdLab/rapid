@@ -46,7 +46,7 @@ class Feature {
       p.join(path, 'lib', 'src', 'presentation', 'l10n', 'arb'),
     );
 
-    return arbDir
+    final arbFiles = arbDir
         .listSync()
         .whereType<File>()
         .where((e) => e.path.endsWith('.arb'))
@@ -56,7 +56,10 @@ class Feature {
             feature: this,
           ),
         )
-        .toSet();
+        .toList();
+
+    arbFiles.sort((a, b) => a.path.compareTo(b.path));
+    return arbFiles.toSet();
   }
 
   void delete() => _package.delete();

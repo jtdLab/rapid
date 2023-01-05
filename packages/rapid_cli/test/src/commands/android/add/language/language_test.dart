@@ -34,6 +34,8 @@ class _MockLogger extends Mock implements Logger {}
 
 class _MockMelosFile extends Mock implements MelosFile {}
 
+class _MockFeature extends Mock implements Feature {}
+
 class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
 class _MockProject extends Mock implements Project {}
@@ -53,6 +55,12 @@ void main() {
   late Progress progress;
   late Logger logger;
   late MelosFile melosFile;
+  const feature1Path = 'foo/bar/one';
+  const feature1Name = 'my_feature_1';
+  late Feature feature1;
+  const feature2Path = 'foo/bar/two';
+  const feature2Name = 'my_feature_2';
+  late Feature feature2;
   late List<Feature> features;
   late PlatformDirectory platformDirectory;
   late Project project;
@@ -62,7 +70,8 @@ void main() {
     const GeneratedFile.created(path: ''),
   );
   late MasonGenerator generator;
-  const language = 'en';
+  const defaultLanguage = 'en';
+  late String language;
   late ArgResults argResults;
 
   late LanguageCommand command;
@@ -85,7 +94,25 @@ void main() {
     when(() => logger.err(any())).thenReturn(null);
     melosFile = _MockMelosFile();
     when(() => melosFile.exists()).thenReturn(true);
-    features = []; // TODO
+    feature1 = _MockFeature();
+    when(() => feature1.defaultLanguage()).thenReturn(defaultLanguage);
+    when(() => feature1.supportedLanguages())
+        .thenReturn({defaultLanguage, 'de'});
+    when(() => feature1.supportsLanguage(defaultLanguage)).thenReturn(true);
+    when(() => feature1.supportsLanguage('de')).thenReturn(true);
+    when(() => feature1.supportsLanguage('fr')).thenReturn(false);
+    when(() => feature1.path).thenReturn(feature1Path);
+    when(() => feature1.name).thenReturn(feature1Name);
+    feature2 = _MockFeature();
+    when(() => feature2.defaultLanguage()).thenReturn(defaultLanguage);
+    when(() => feature2.supportedLanguages())
+        .thenReturn({'de', defaultLanguage});
+    when(() => feature2.supportsLanguage('de')).thenReturn(true);
+    when(() => feature2.supportsLanguage(defaultLanguage)).thenReturn(true);
+    when(() => feature2.supportsLanguage('fr')).thenReturn(false);
+    when(() => feature2.path).thenReturn(feature2Path);
+    when(() => feature2.name).thenReturn(feature2Name);
+    features = [feature1, feature2];
     platformDirectory = _MockPlatformDirectory();
     when(() => platformDirectory.getFeatures(exclude: any(named: 'exclude')))
         .thenReturn(features);
@@ -106,6 +133,7 @@ void main() {
         logger: any(named: 'logger'),
       ),
     ).thenAnswer((_) async => generatedFiles);
+    language = 'fr';
     argResults = _MockArgResults();
     when(() => argResults.rest).thenReturn([language]);
 
@@ -200,8 +228,8 @@ void main() {
     withRunnerOnProject(
         (commandRunner, logger, melosFile, project, printLogs) async {
       // Arrange
-      const language = 'hello';
-      const expectedErrorMessage = '"$language" is not a valid language.\n\n'
+      language = 'hello';
+      final expectedErrorMessage = '"$language" is not a valid language.\n\n'
           'See https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry for more information.';
 
       // Act
@@ -223,23 +251,40 @@ void main() {
     verify(() => project.platformDirectory(Platform.android)).called(1);
     verify(() => platformDirectory.getFeatures(exclude: {'app', 'routing'}))
         .called(1);
-    /* verify(
+    verify(
       () => generator.generate(
         any(
           that: isA<DirectoryGeneratorTarget>().having(
             (g) => g.dir.path,
             'dir',
-            '.',
+            feature1Path,
           ),
         ),
         vars: <String, dynamic>{
-          'feature_name': featureName,
+          'feature_name': feature1Name,
           'language': language,
         },
         logger: logger,
       ),
-    ).called(1); */
-    // TODO assert stuff
+    ).called(1);
+    verify(() => flutterGenl10n(cwd: feature1Path)).called(1);
+    verify(
+      () => generator.generate(
+        any(
+          that: isA<DirectoryGeneratorTarget>().having(
+            (g) => g.dir.path,
+            'dir',
+            feature2Path,
+          ),
+        ),
+        vars: <String, dynamic>{
+          'feature_name': feature2Name,
+          'language': language,
+        },
+        logger: logger,
+      ),
+    ).called(1);
+    verify(() => flutterGenl10n(cwd: feature2Path)).called(1);
     expect(result, ExitCode.success.code);
   });
 
@@ -255,6 +300,76 @@ void main() {
  Could not find a melos.yaml.
  This command should be run from the root of your Rapid project.''')).called(1);
     expect(result, ExitCode.noInput.code);
+  });
+
+  test('exits with 78 when no Android features exist', () async {
+    // Arrange
+    features = [];
+    when(() => platformDirectory.getFeatures(exclude: any(named: 'exclude')))
+        .thenReturn(features);
+
+    // Act
+    final result = await command.run();
+
+    // Assert
+    verify(() => logger.err('No Android features found!\n'
+            'Run "rapid android add feature" to add your first Android feature.'))
+        .called(1);
+    expect(result, ExitCode.config.code);
+  });
+
+  test(
+      'exits with 78 when some Android features have different default languages',
+      () async {
+    // Arrange
+    when(() => feature1.defaultLanguage()).thenReturn('de');
+    features = [feature1, feature2];
+
+    // Act
+    final result = await command.run();
+
+    // Assert
+    verify(() => logger.err('The Android part of your project is corrupted.\n'
+        'Because not all features have the same default language.\n\n'
+        'Run "rapid doctor" to see which features are affected.')).called(1);
+    expect(result, ExitCode.config.code);
+  });
+
+  test('exits with 78 when some Android features have different languages',
+      () async {
+    // Arrange
+    when(() => feature1.supportedLanguages())
+        .thenReturn({defaultLanguage, 'de'});
+    when(() => feature2.supportedLanguages())
+        .thenReturn({defaultLanguage, 'fr'});
+    features = [feature1, feature2];
+
+    // Act
+    final result = await command.run();
+
+    // Assert
+    verify(() => logger.err('The Android part of your project is corrupted.\n'
+        'Because not all features support the same languages.\n\n'
+        'Run "rapid doctor" to see which features are affected.')).called(1);
+    expect(result, ExitCode.config.code);
+  });
+
+  test('exits with 78 when language is already present in all features',
+      () async {
+    // Arrange
+    language = 'de';
+    when(() => argResults.rest).thenReturn([language]);
+
+    // Act
+    final result = await command.run();
+
+    // Assert
+    verify(() => project.isActivated(Platform.android)).called(1);
+    verify(() => project.platformDirectory(Platform.android)).called(1);
+    verify(() => platformDirectory.getFeatures(exclude: {'app', 'routing'}))
+        .called(1);
+    verify(() => logger.err('The language "de" is already present.')).called(1);
+    expect(result, ExitCode.config.code);
   });
 
   test('exits with 78 when Android is not activated', () async {

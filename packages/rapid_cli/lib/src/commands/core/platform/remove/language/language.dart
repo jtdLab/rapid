@@ -68,18 +68,30 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
             final allFeaturesHaveSameDefaultLanguage =
                 features.map((e) => e.defaultLanguage()).toSet().length == 1;
             if (allFeaturesHaveSameDefaultLanguage) {
-              if (!features.first.supportsLanguage(language) &&
-                  features.first.defaultLanguage() != language) {
-                for (final feature in features) {
-                  final arbFile = feature.findArbFileByLanguage(language);
-                  arbFile.delete();
+              if (features.first.supportsLanguage(language)) {
+                if (features.first.defaultLanguage() != language) {
+                  for (final feature in features) {
+                    final arbFile = feature.findArbFileByLanguage(language);
+                    arbFile.delete();
 
-                  await _flutterGenl10n(cwd: feature.path);
+                    await _flutterGenl10n(cwd: feature.path);
+                  }
+
+                  // TODO add hint how to work with localization
+                  return ExitCode.success.code;
+                } else {
+                  _logger.err(
+                      'Can not remove language "$language" because it is the default language.');
+                  // TODO add hint how to change default language
+
+                  return ExitCode.config.code;
                 }
-              }
+              } else {
+                _logger.err(
+                    'The language "$language" is not present.'); // TODO better hint
 
-              // TODO add hint how to work with localization
-              return ExitCode.success.code;
+                return ExitCode.config.code;
+              }
             } else {
               _logger.err(
                   'The ${_platform.prettyName} part of your project is corrupted.\n'

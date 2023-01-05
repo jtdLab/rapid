@@ -77,8 +77,8 @@ abstract class PlatformAddLanguageCommand extends Command<int>
                 features.map((e) => e.defaultLanguage()).toSet().length == 1;
             if (allFeaturesHaveSameDefaultLanguage) {
               if (!features.first.supportsLanguage(language)) {
+                final generator = await _generator(languageBundle);
                 for (final feature in features) {
-                  final generator = await _generator(languageBundle);
                   await generator.generate(
                     DirectoryGeneratorTarget(Directory(feature.path)),
                     vars: <String, dynamic>{
@@ -90,10 +90,14 @@ abstract class PlatformAddLanguageCommand extends Command<int>
 
                   await _flutterGenl10n(cwd: feature.path);
                 }
+
+                // TODO add hint how to work with localization
+                return ExitCode.success.code;
               }
 
-              // TODO add hint how to work with localization
-              return ExitCode.success.code;
+              _logger.err('The language "$language" is already present.');
+
+              return ExitCode.config.code;
             } else {
               _logger.err(
                   'The ${_platform.prettyName} part of your project is corrupted.\n'

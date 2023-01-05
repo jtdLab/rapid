@@ -21,7 +21,6 @@ typedef FlutterPubGetCommand = Future<void> Function({required String cwd});
 ///  * [Flutter.configEnableWindows]
 typedef FlutterConfigEnablePlatformCommand = Future<void> Function();
 
-
 /// Signature for the [Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs] method.
 typedef FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     = Future<void> Function({required String cwd});

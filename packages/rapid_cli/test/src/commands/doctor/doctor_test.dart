@@ -20,65 +20,67 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
+class _MockLogger extends Mock implements Logger {}
+
 class _MockProgress extends Mock implements Progress {}
 
-class _MockLogger extends Mock implements Logger {}
+class _MockProject extends Mock implements Project {}
 
 class _MockMelosFile extends Mock implements MelosFile {}
 
-class _MockFeature extends Mock implements Feature {}
-
 class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
-class _MockProject extends Mock implements Project {}
+class _MockFeature extends Mock implements Feature {}
 
 void main() {
   group('doctor', () {
     Directory cwd = Directory.current;
 
-    late List<String> progressLogs;
-    late Progress progress;
     late Logger logger;
+    late List<String> progressLogs;
+
+    late Project project;
     late MelosFile melosFile;
-    late List<Feature> featuresAndroid;
     late PlatformDirectory platformDirectoryAndroid;
+    late List<Feature> featuresAndroid;
+    late PlatformDirectory platformDirectoryMacos;
+    late List<Feature> featuresMacos;
+    late Feature feature1Macos;
     const feature1MacosDefaultLanguage = 'de';
     const feature1MacosSupportedLanguages = {'en', 'de'};
     const feature1MacosName = 'my_macos_feature_one';
-    late Feature feature1Macos;
+    late Feature feature2Macos;
     const feature2MacosDefaultLanguage = 'en';
     const feature2MacosSupportedLanguages = {'de', 'en'};
     const feature2MacosName = 'my_macos_feature_two';
-    late Feature feature2Macos;
-    late List<Feature> featuresMacos;
-    late PlatformDirectory platformDirectoryMacos;
+    late PlatformDirectory platformDirectoryWeb;
+    late List<Feature> featuresWeb;
+    late Feature feature1Web;
     const feature1WebDefaultLanguage = 'fr';
     const feature1WebSupportedLanguages = {'fr'};
     const feature1WebName = 'my_web_feature_one';
-    late Feature feature1Web;
-    late List<Feature> featuresWeb;
-    late PlatformDirectory platformDirectoryWeb;
-    late Project project;
 
     late DoctorCommand command;
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
+      logger = _MockLogger();
+      final progress = _MockProgress();
       progressLogs = <String>[];
-      progress = _MockProgress();
       when(() => progress.complete(any())).thenAnswer((_) {
         final message = _.positionalArguments.elementAt(0) as String?;
         if (message != null) progressLogs.add(message);
       });
-      logger = _MockLogger();
       when(() => logger.progress(any())).thenReturn(progress);
+
+      project = _MockProject();
       melosFile = _MockMelosFile();
       when(() => melosFile.exists()).thenReturn(true);
-      featuresAndroid = [];
       platformDirectoryAndroid = _MockPlatformDirectory();
       when(() => platformDirectoryAndroid.platform)
           .thenReturn(Platform.android);
+      featuresAndroid = [];
       when(() => platformDirectoryAndroid.getFeatures(
           exclude: any(named: 'exclude'))).thenReturn(featuresAndroid);
       platformDirectoryMacos = _MockPlatformDirectory();
@@ -110,7 +112,6 @@ void main() {
       when(() =>
               platformDirectoryWeb.getFeatures(exclude: any(named: 'exclude')))
           .thenReturn(featuresWeb);
-      project = _MockProject();
       when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.isActivated(Platform.android)).thenReturn(true);
       when(() => project.isActivated(Platform.ios)).thenReturn(false);

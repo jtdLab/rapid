@@ -57,8 +57,8 @@ void main() {
   group('deactivate ios', () {
     Directory cwd = Directory.current;
 
-    late List<String> progressLogs;
     late Logger logger;
+    late List<String> progressLogs;
 
     late Project project;
     late MelosFile melosFile;

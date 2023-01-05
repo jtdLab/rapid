@@ -30,8 +30,8 @@ class CreateCommand extends Command<int>
     FlutterConfigEnablePlatformCommand? flutterConfigEnableMacos,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWeb,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWindows,
-    GeneratorBuilder? generator,
     MelosBootstrapCommand? melosBootstrap,
+    GeneratorBuilder? generator,
   })  : _logger = logger ?? Logger(),
         _flutterInstalled = flutterInstalled ?? Flutter.installed,
         _flutterConfigEnableAndroid =
@@ -46,8 +46,8 @@ class CreateCommand extends Command<int>
             flutterConfigEnableWeb ?? Flutter.configEnableWeb,
         _flutterConfigEnableWindows =
             flutterConfigEnableWindows ?? Flutter.configEnableWindows,
-        _generator = generator ?? MasonGenerator.fromBundle,
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap {
+        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        _generator = generator ?? MasonGenerator.fromBundle {
     argParser
       ..addSeparator('')
       ..addOption(
@@ -111,21 +111,21 @@ class CreateCommand extends Command<int>
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableMacos;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableWeb;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableWindows;
-  final GeneratorBuilder _generator;
   final MelosBootstrapCommand _melosBootstrap;
+  final GeneratorBuilder _generator;
 
   @override
   String get name => 'create';
 
   @override
-  String get description =>
-      'Creates a new Rapid project in the specified directory.';
+  List<String> get aliases => ['c'];
 
   @override
   String get invocation => 'rapid create <output directory>';
 
   @override
-  List<String> get aliases => ['c'];
+  String get description =>
+      'Creates a new Rapid project in the specified directory.';
 
   @override
   Future<int> run() async {

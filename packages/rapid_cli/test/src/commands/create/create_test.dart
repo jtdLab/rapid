@@ -2,6 +2,7 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/create/create.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -49,83 +50,99 @@ class _MockLogger extends Mock implements Logger {}
 
 class _MockProgress extends Mock implements Progress {}
 
-class _MockArgResults extends Mock implements ArgResults {}
-
 class MockFlutterInstalledCommand extends Mock
     implements _FlutterInstalledCommand {}
 
 class MockFlutterConfigEnablePlatformCommand extends Mock
     implements _FlutterConfigEnablePlatformCommand {}
 
-class _MockMasonGenerator extends Mock implements MasonGenerator {}
-
-class FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
-
 class _MockMelosBootstrapCommand extends Mock
     implements _MelosBootstrapCommand {}
+
+class _MockMasonGenerator extends Mock implements MasonGenerator {}
+
+class _MockArgResults extends Mock implements ArgResults {}
+
+class _FakeDirectoryGeneratorTarget extends Fake
+    implements DirectoryGeneratorTarget {}
 
 void main() {
   group('create', () {
     final cwd = Directory.current;
 
-    late String outputDir;
-    late String projectName;
-    late List<String> progressLogs;
     late Logger logger;
+    late List<String> progressLogs;
     late Progress progress;
-    late ArgResults argResults;
-    late _FlutterInstalledCommand flutterInstalled;
-    late _FlutterConfigEnablePlatformCommand flutterConfigEnableAndroid;
-    late _FlutterConfigEnablePlatformCommand flutterConfigEnableIos;
-    late _FlutterConfigEnablePlatformCommand flutterConfigEnableLinux;
-    late _FlutterConfigEnablePlatformCommand flutterConfigEnableMacos;
-    late _FlutterConfigEnablePlatformCommand flutterConfigEnableWeb;
-    late _FlutterConfigEnablePlatformCommand flutterConfigEnableWindows;
+
+    late FlutterInstalledCommand flutterInstalled;
+
+    late FlutterConfigEnablePlatformCommand flutterConfigEnableAndroid;
+
+    late FlutterConfigEnablePlatformCommand flutterConfigEnableIos;
+
+    late FlutterConfigEnablePlatformCommand flutterConfigEnableLinux;
+
+    late FlutterConfigEnablePlatformCommand flutterConfigEnableMacos;
+
+    late FlutterConfigEnablePlatformCommand flutterConfigEnableWeb;
+
+    late FlutterConfigEnablePlatformCommand flutterConfigEnableWindows;
+
+    late MelosBootstrapCommand melosBootstrap;
+
     late MasonGenerator generator;
-    late _MelosBootstrapCommand melosBootstrap;
-
-    late CreateCommand command;
-
     final generatedFiles = List.filled(
       23,
       const GeneratedFile.created(path: ''),
     );
 
+    late ArgResults argResults;
+    late String outputDir;
+    late String projectName;
+
+    late CreateCommand command;
+
     setUpAll(() {
-      registerFallbackValue(FakeDirectoryGeneratorTarget());
+      registerFallbackValue(_FakeDirectoryGeneratorTarget());
     });
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      outputDir = '.';
-      projectName = 'test_app';
-      progressLogs = <String>[];
+      logger = _MockLogger();
       progress = _MockProgress();
+      progressLogs = <String>[];
       when(() => progress.complete(any())).thenAnswer((_) {
         final message = _.positionalArguments.elementAt(0) as String?;
         if (message != null) progressLogs.add(message);
       });
-      logger = _MockLogger();
       when(() => logger.progress(any())).thenReturn(progress);
-      argResults = _MockArgResults();
-      when(() => argResults['project-name']).thenReturn(projectName);
-      when(() => argResults.rest).thenReturn([outputDir]);
+
       flutterInstalled = MockFlutterInstalledCommand();
       when(() => flutterInstalled()).thenAnswer((_) async => true);
+
       flutterConfigEnableAndroid = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableAndroid()).thenAnswer((_) async {});
+
       flutterConfigEnableIos = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableIos()).thenAnswer((_) async {});
+
       flutterConfigEnableWeb = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableWeb()).thenAnswer((_) async {});
+
       flutterConfigEnableLinux = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableLinux()).thenAnswer((_) async {});
+
       flutterConfigEnableMacos = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableMacos()).thenAnswer((_) async {});
+
       flutterConfigEnableWindows = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableWindows()).thenAnswer((_) async {});
+
+      melosBootstrap = _MockMelosBootstrapCommand();
+      when(() => melosBootstrap(cwd: any(named: 'cwd')))
+          .thenAnswer((_) async {});
+
       generator = _MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
@@ -136,9 +153,12 @@ void main() {
           logger: any(named: 'logger'),
         ),
       ).thenAnswer((_) async => generatedFiles);
-      melosBootstrap = _MockMelosBootstrapCommand();
-      when(() => melosBootstrap(cwd: any(named: 'cwd')))
-          .thenAnswer((_) async {});
+
+      argResults = _MockArgResults();
+      projectName = 'test_app';
+      outputDir = '.';
+      when(() => argResults['project-name']).thenReturn(projectName);
+      when(() => argResults.rest).thenReturn([outputDir]);
 
       command = CreateCommand(
         logger: logger,
@@ -149,8 +169,8 @@ void main() {
         flutterConfigEnableMacos: flutterConfigEnableMacos,
         flutterConfigEnableWeb: flutterConfigEnableWeb,
         flutterConfigEnableWindows: flutterConfigEnableWindows,
-        generator: (_) async => generator,
         melosBootstrap: melosBootstrap,
+        generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
 
@@ -655,7 +675,7 @@ void main() {
       expect(result, equals(ExitCode.success.code));
     });
 
-    // TODO
+    // TODO case for all platform
 
     test('exits with 69 when flutter is not installed', () async {
       // Arrange

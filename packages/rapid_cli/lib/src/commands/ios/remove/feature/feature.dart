@@ -1,12 +1,12 @@
 import 'package:rapid_cli/src/commands/core/platform/remove/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 
-/// {@template android_remove_feature_command}
+/// {@template ios_remove_feature_command}
 /// `rapid ios remove feature` command removes a feature from the iOS part of an existing Rapid project.
 /// {@endtemplate}
-class AndroidRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
-  /// {@macro android_remove_feature_command}
-  AndroidRemoveFeatureCommand({
+class IosRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
+  /// {@macro ios_remove_feature_command}
+  IosRemoveFeatureCommand({
     super.logger,
     required super.project,
     super.melosBootstrap,

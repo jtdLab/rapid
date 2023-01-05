@@ -7,8 +7,8 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template deactivate_ios_command}
 /// `rapid deactivate ios` command removes support for iOS from an existing Rapid project.
 /// {@endtemplate}
-class IosCommand extends DeactivateSubCommand {
-  IosCommand({
+class DeactivateIosCommand extends DeactivateSubCommand {
+  DeactivateIosCommand({
     Logger? logger,
     required Project project,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?

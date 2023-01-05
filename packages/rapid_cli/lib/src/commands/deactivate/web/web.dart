@@ -7,8 +7,8 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template deactivate_web_command}
 /// `rapid deactivate web` command removes support for Web from an existing Rapid project.
 /// {@endtemplate}
-class WebCommand extends DeactivateSubCommand {
-  WebCommand({
+class DeactivateWebCommand extends DeactivateSubCommand {
+  DeactivateWebCommand({
     Logger? logger,
     required Project project,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?

@@ -54,7 +54,7 @@ class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     implements _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
 
 void main() {
-  group('web', () {
+  group('deactivate web', () {
     Directory cwd = Directory.current;
 
     late List<String> progressLogs;
@@ -75,7 +75,7 @@ void main() {
     late _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
-    late WebCommand command;
+    late DeactivateWebCommand command;
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
@@ -121,7 +121,7 @@ void main() {
       when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: any(named: 'cwd'))).thenAnswer((_) async {});
 
-      command = WebCommand(
+      command = DeactivateWebCommand(
         logger: logger,
         project: project,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
@@ -156,7 +156,7 @@ void main() {
 
     test('can be instantiated without explicit logger', () {
       // Act
-      final command = WebCommand(project: project);
+      final command = DeactivateWebCommand(project: project);
 
       // Assert
       expect(command, isNotNull);

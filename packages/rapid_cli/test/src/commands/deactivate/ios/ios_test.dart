@@ -54,7 +54,7 @@ class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     implements _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
 
 void main() {
-  group('ios', () {
+  group('deactivate ios', () {
     Directory cwd = Directory.current;
 
     late List<String> progressLogs;
@@ -75,7 +75,7 @@ void main() {
     late _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
-    late IosCommand command;
+    late DeactivateIosCommand command;
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
@@ -121,7 +121,7 @@ void main() {
       when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: any(named: 'cwd'))).thenAnswer((_) async {});
 
-      command = IosCommand(
+      command = DeactivateIosCommand(
         logger: logger,
         project: project,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
@@ -161,7 +161,7 @@ void main() {
 
     test('can be instantiated without explicit logger', () {
       // Act
-      final command = IosCommand(project: project);
+      final command = DeactivateIosCommand(project: project);
 
       // Assert
       expect(command, isNotNull);

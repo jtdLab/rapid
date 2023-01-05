@@ -20,12 +20,12 @@ class DeactivateCommand extends Command<int> {
     Logger? logger,
     required Project project,
   }) {
-    addSubcommand(AndroidCommand(logger: logger, project: project));
-    addSubcommand(IosCommand(logger: logger, project: project));
-    addSubcommand(LinuxCommand(logger: logger, project: project));
-    addSubcommand(MacosCommand(logger: logger, project: project));
-    addSubcommand(WebCommand(logger: logger, project: project));
-    addSubcommand(WindowsCommand(logger: logger, project: project));
+    addSubcommand(DeactivateAndroidCommand(logger: logger, project: project));
+    addSubcommand(DeactivateIosCommand(logger: logger, project: project));
+    addSubcommand(DeactivateLinuxCommand(logger: logger, project: project));
+    addSubcommand(DeactivateMacosCommand(logger: logger, project: project));
+    addSubcommand(DeactivateWebCommand(logger: logger, project: project));
+    addSubcommand(DeactivateWindowsCommand(logger: logger, project: project));
   }
 
   @override

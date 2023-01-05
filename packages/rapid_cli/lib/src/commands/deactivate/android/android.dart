@@ -7,8 +7,8 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template deactivate_android_command}
 /// `rapid deactivate android` command removes support for Android from an existing Rapid project.
 /// {@endtemplate}
-class AndroidCommand extends DeactivateSubCommand {
-  AndroidCommand({
+class DeactivateAndroidCommand extends DeactivateSubCommand {
+  DeactivateAndroidCommand({
     Logger? logger,
     required Project project,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?

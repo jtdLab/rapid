@@ -9,6 +9,10 @@ import 'package:rapid_cli/src/project/project.dart';
 
 // TODO sort vars and methods alphabetically
 
+// TODO rename to DeactivatePlatormCommand
+
+// TODO move to /deactivate/core
+
 /// Base class for all subcommands of [DeactivateCommand].
 abstract class DeactivateSubCommand extends Command<int>
     with OverridableArgResults {

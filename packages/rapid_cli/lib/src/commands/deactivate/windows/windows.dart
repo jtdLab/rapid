@@ -7,8 +7,8 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template deactivate_windows_command}
 /// `rapid deactivate windows` command removes support for Windows from an existing Rapid project.
 /// {@endtemplate}
-class WindowsCommand extends DeactivateSubCommand {
-  WindowsCommand({
+class DeactivateWindowsCommand extends DeactivateSubCommand {
+  DeactivateWindowsCommand({
     Logger? logger,
     required Project project,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?

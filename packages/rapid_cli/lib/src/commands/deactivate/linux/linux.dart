@@ -7,8 +7,8 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template deactivate_linux_command}
 /// `rapid deactivate linux` command removes support for Linux from an existing Rapid project.
 /// {@endtemplate}
-class LinuxCommand extends DeactivateSubCommand {
-  LinuxCommand({
+class DeactivateLinuxCommand extends DeactivateSubCommand {
+  DeactivateLinuxCommand({
     Logger? logger,
     required Project project,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?

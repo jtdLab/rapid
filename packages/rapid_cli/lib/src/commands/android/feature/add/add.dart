@@ -8,14 +8,14 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template android_feature_add_command}
 /// `rapid android remove` command add components to features of the Android part of an existing Rapid project.
 /// {@endtemplate}
-class AddCommand extends PlatformFeatureAddCommand {
+class AndroidFeatureAddCommand extends PlatformFeatureAddCommand {
   /// {@macro android_feature_add_command}
-  AddCommand({
+  AndroidFeatureAddCommand({
     Logger? logger,
     required Project project,
   }) : super(
           platform: Platform.android,
-          blocCommand: BlocCommand(logger: logger, project: project),
-          cubitCommand: CubitCommand(logger: logger, project: project),
+          blocCommand: AndroidFeatureAddBlocCommand(logger: logger, project: project),
+          cubitCommand: AndroidFeatureAddCubitCommand(logger: logger, project: project),
         );
 }

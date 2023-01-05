@@ -29,77 +29,79 @@ class _MockLogger extends Mock implements Logger {}
 class _MockProject extends Mock implements Project {}
 
 void main() {
-  Directory cwd = Directory.current;
+  group('android', () {
+    Directory cwd = Directory.current;
 
-  late List<String> progressLogs;
-  late Progress progress;
-  late Logger logger;
-  late Project project;
+    late List<String> progressLogs;
+    late Progress progress;
+    late Logger logger;
+    late Project project;
 
-  late AndroidCommand command;
+    late AndroidCommand command;
 
-  setUp(() {
-    Directory.current = Directory.systemTemp.createTempSync();
+    setUp(() {
+      Directory.current = Directory.systemTemp.createTempSync();
 
-    progressLogs = <String>[];
-    progress = _MockProgress();
-    when(() => progress.complete(any())).thenAnswer((_) {
-      final message = _.positionalArguments.elementAt(0) as String?;
-      if (message != null) progressLogs.add(message);
+      progressLogs = <String>[];
+      progress = _MockProgress();
+      when(() => progress.complete(any())).thenAnswer((_) {
+        final message = _.positionalArguments.elementAt(0) as String?;
+        if (message != null) progressLogs.add(message);
+      });
+      logger = _MockLogger();
+      when(() => logger.progress(any())).thenReturn(progress);
+      when(() => logger.err(any())).thenReturn(null);
+      project = _MockProject();
+
+      command = AndroidCommand(
+        logger: logger,
+        project: project,
+      );
     });
-    logger = _MockLogger();
-    when(() => logger.progress(any())).thenReturn(progress);
-    when(() => logger.err(any())).thenReturn(null);
-    project = _MockProject();
 
-    command = AndroidCommand(
-      logger: logger,
-      project: project,
+    tearDown(() {
+      Directory.current = cwd;
+    });
+
+    test('a is a valid alias', () {
+      // Arrange
+      command = AndroidCommand(project: project);
+
+      // Act + Assert
+      expect(command.aliases, contains('a'));
+    });
+
+    test(
+      'help',
+      withRunner((commandRunner, logger, printLogs) async {
+        // Act
+        final result = await commandRunner.run(
+          ['android', '--help'],
+        );
+
+        // Assert
+        expect(printLogs, equals(expectedUsage));
+        expect(result, equals(ExitCode.success.code));
+
+        printLogs.clear();
+
+        // Act
+        final resultAbbr = await commandRunner.run(
+          ['android', '-h'],
+        );
+
+        // Assert
+        expect(printLogs, equals(expectedUsage));
+        expect(resultAbbr, equals(ExitCode.success.code));
+      }),
     );
-  });
 
-  tearDown(() {
-    Directory.current = cwd;
-  });
-
-  test('a is a valid alias', () {
-    // Arrange
-    command = AndroidCommand(project: project);
-
-    // Act + Assert
-    expect(command.aliases, contains('a'));
-  });
-
-  test(
-    'help',
-    withRunner((commandRunner, logger, printLogs) async {
+    test('can be instantiated without explicit logger', () {
       // Act
-      final result = await commandRunner.run(
-        ['android', '--help'],
-      );
+      command = AndroidCommand(project: project);
 
       // Assert
-      expect(printLogs, equals(expectedUsage));
-      expect(result, equals(ExitCode.success.code));
-
-      printLogs.clear();
-
-      // Act
-      final resultAbbr = await commandRunner.run(
-        ['android', '-h'],
-      );
-
-      // Assert
-      expect(printLogs, equals(expectedUsage));
-      expect(resultAbbr, equals(ExitCode.success.code));
-    }),
-  );
-
-  test('can be instantiated without explicit logger', () {
-    // Act
-    command = AndroidCommand(project: project);
-
-    // Assert
-    expect(command, isNotNull);
+      expect(command, isNotNull);
+    });
   });
 }

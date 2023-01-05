@@ -7,13 +7,13 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template android_feature_command}
 /// `rapid android feature` command work with features of the Android part of an existing Rapid project.
 /// {@endtemplate}
-class FeatureCommand extends PlatformFeatureCommand {
+class AndroidFeatureCommand extends PlatformFeatureCommand {
   /// {@macro android_feature_command}
-  FeatureCommand({
+  AndroidFeatureCommand({
     Logger? logger,
     required Project project,
   }) : super(
           platform: Platform.android,
-          addCommand: AddCommand(logger: logger, project: project),
+          addCommand: AndroidFeatureAddCommand(logger: logger, project: project),
         );
 }

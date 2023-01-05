@@ -6,9 +6,9 @@ import 'package:rapid_cli/src/core/platform.dart';
 /// {@template android_remove_language_command}
 /// `rapid android remove language` command removes a language from the Android part of an existing Rapid project.
 /// {@endtemplate}
-class LanguageCommand extends PlatformRemoveLanguageCommand {
+class AndroidRemoveLanguageCommand extends PlatformRemoveLanguageCommand {
   /// {@macro android_remove_language_command}
-  LanguageCommand({
+  AndroidRemoveLanguageCommand({
     Logger? logger,
     required super.project,
     FlutterGenl10nCommand? flutterGenl10n,

@@ -7,9 +7,9 @@ import 'package:rapid_cli/src/core/platform.dart';
 /// {@template android_feature_add_bloc_command}
 /// `rapid android feature add bloc` command adds a bloc to a feature of the Android part of an existing Rapid project.
 /// {@endtemplate}
-class BlocCommand extends PlatformFeatureAddBlocCommand {
+class AndroidFeatureAddBlocCommand extends PlatformFeatureAddBlocCommand {
   /// {@macro android_feature_add_bloc_command}
-  BlocCommand({
+  AndroidFeatureAddBlocCommand({
     Logger? logger,
     required super.project,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?

@@ -6,9 +6,9 @@ import 'package:rapid_cli/src/core/platform.dart';
 /// {@template android_remove_feature_command}
 /// `rapid android remove feature` command removes a feature from the Android part of an existing Rapid project.
 /// {@endtemplate}
-class FeatureCommand extends PlatformRemoveFeatureCommand {
+class AndroidRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   /// {@macro android_remove_feature_command}
-  FeatureCommand({
+  AndroidRemoveFeatureCommand({
     Logger? logger,
     required super.project,
     MelosBootstrapCommand? melosBootstrap,

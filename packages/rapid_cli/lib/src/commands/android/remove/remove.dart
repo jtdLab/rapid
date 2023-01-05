@@ -8,14 +8,14 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template android_remove_command}
 /// `rapid android remove` command removes features or languages from the Android part of an existing Rapid project.
 /// {@endtemplate}
-class RemoveCommand extends PlatformRemoveCommand {
+class AndroidRemoveCommand extends PlatformRemoveCommand {
   /// {@macro android_remove_command}
-  RemoveCommand({
+  AndroidRemoveCommand({
     Logger? logger,
     required Project project,
   }) : super(
           platform: Platform.android,
-          featureCommand: FeatureCommand(logger: logger, project: project),
-          languageCommand: LanguageCommand(logger: logger, project: project),
+          featureCommand: AndroidRemoveFeatureCommand(logger: logger, project: project),
+          languageCommand: AndroidRemoveLanguageCommand(logger: logger, project: project),
         );
 }

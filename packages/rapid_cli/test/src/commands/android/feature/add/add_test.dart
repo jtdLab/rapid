@@ -28,69 +28,71 @@ class _MockLogger extends Mock implements Logger {}
 class _MockProject extends Mock implements Project {}
 
 void main() {
-  Directory cwd = Directory.current;
+  group('android feature add', () {
+    Directory cwd = Directory.current;
 
-  late List<String> progressLogs;
-  late Progress progress;
-  late Logger logger;
-  late Project project;
+    late List<String> progressLogs;
+    late Progress progress;
+    late Logger logger;
+    late Project project;
 
-  late AddCommand command;
+    late AndroidFeatureAddCommand command;
 
-  setUp(() {
-    Directory.current = Directory.systemTemp.createTempSync();
+    setUp(() {
+      Directory.current = Directory.systemTemp.createTempSync();
 
-    progressLogs = <String>[];
-    progress = _MockProgress();
-    when(() => progress.complete(any())).thenAnswer((_) {
-      final message = _.positionalArguments.elementAt(0) as String?;
-      if (message != null) progressLogs.add(message);
+      progressLogs = <String>[];
+      progress = _MockProgress();
+      when(() => progress.complete(any())).thenAnswer((_) {
+        final message = _.positionalArguments.elementAt(0) as String?;
+        if (message != null) progressLogs.add(message);
+      });
+      logger = _MockLogger();
+      when(() => logger.progress(any())).thenReturn(progress);
+      when(() => logger.err(any())).thenReturn(null);
+      project = _MockProject();
+
+      command = AndroidFeatureAddCommand(
+        logger: logger,
+        project: project,
+      );
     });
-    logger = _MockLogger();
-    when(() => logger.progress(any())).thenReturn(progress);
-    when(() => logger.err(any())).thenReturn(null);
-    project = _MockProject();
 
-    command = AddCommand(
-      logger: logger,
-      project: project,
+    tearDown(() {
+      Directory.current = cwd;
+    });
+
+    test(
+      'help',
+      withRunner((commandRunner, logger, printLogs) async {
+        // Act
+        final result = await commandRunner.run(
+          ['android', 'feature', 'add', '--help'],
+        );
+
+        // Assert
+        expect(printLogs, equals(expectedUsage));
+        expect(result, equals(ExitCode.success.code));
+
+        printLogs.clear();
+
+        // Act
+        final resultAbbr = await commandRunner.run(
+          ['android', 'feature', 'add', '-h'],
+        );
+
+        // Assert
+        expect(printLogs, equals(expectedUsage));
+        expect(resultAbbr, equals(ExitCode.success.code));
+      }),
     );
-  });
 
-  tearDown(() {
-    Directory.current = cwd;
-  });
-
-  test(
-    'help',
-    withRunner((commandRunner, logger, printLogs) async {
+    test('can be instantiated without explicit logger', () {
       // Act
-      final result = await commandRunner.run(
-        ['android', 'feature', 'add', '--help'],
-      );
+      command = AndroidFeatureAddCommand(project: project);
 
       // Assert
-      expect(printLogs, equals(expectedUsage));
-      expect(result, equals(ExitCode.success.code));
-
-      printLogs.clear();
-
-      // Act
-      final resultAbbr = await commandRunner.run(
-        ['android', 'feature', 'add', '-h'],
-      );
-
-      // Assert
-      expect(printLogs, equals(expectedUsage));
-      expect(resultAbbr, equals(ExitCode.success.code));
-    }),
-  );
-
-  test('can be instantiated without explicit logger', () {
-    // Act
-    command = AddCommand(project: project);
-
-    // Assert
-    expect(command, isNotNull);
+      expect(command, isNotNull);
+    });
   });
 }

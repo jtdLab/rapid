@@ -8,14 +8,14 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template android_add_command}
 /// `rapid android add` command work with the Android part of an existing Rapid project.
 /// {@endtemplate}
-class AddCommand extends PlatformAddCommand {
+class AndroidAddCommand extends PlatformAddCommand {
   /// {@macro android_add_command}
-  AddCommand({
+  AndroidAddCommand({
     Logger? logger,
     required Project project,
   }) : super(
           platform: Platform.android,
-          featureCommand: FeatureCommand(logger: logger, project: project),
-          languageCommand: LanguageCommand(logger: logger, project: project),
+          featureCommand: AndroidAddFeatureCommand(logger: logger, project: project),
+          languageCommand: AndroidAddLanguageCommand(logger: logger, project: project),
         );
 }

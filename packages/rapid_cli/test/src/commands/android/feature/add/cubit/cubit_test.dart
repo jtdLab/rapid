@@ -55,323 +55,325 @@ class FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}
 
 void main() {
-  Directory cwd = Directory.current;
+  group('android feature add cubit', () {
+    Directory cwd = Directory.current;
 
-  late List<String> progressLogs;
-  late Progress progress;
-  late Logger logger;
-  const projectName = 'test_app';
-  late MelosFile melosFile;
-  const featurePackagePath = 'foo/bar/baz';
-  late Feature feature;
-  late PlatformDirectory platformDirectory;
-  late Project project;
-  late _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
-  final generatedFiles = List.filled(
-    62,
-    const GeneratedFile.created(path: ''),
-  );
-  late MasonGenerator generator;
-  late String cubitName;
-  late String featureName;
-  late ArgResults argResults;
-
-  late CubitCommand command;
-
-  setUpAll(() {
-    registerFallbackValue(FakeDirectoryGeneratorTarget());
-  });
-
-  setUp(() {
-    Directory.current = Directory.systemTemp.createTempSync();
-
-    progressLogs = <String>[];
-    progress = _MockProgress();
-    when(() => progress.complete(any())).thenAnswer((_) {
-      final message = _.positionalArguments.elementAt(0) as String?;
-      if (message != null) progressLogs.add(message);
-    });
-    logger = _MockLogger();
-    when(() => logger.progress(any())).thenReturn(progress);
-    when(() => logger.err(any())).thenReturn(null);
-    melosFile = _MockMelosFile();
-    when(() => melosFile.exists()).thenReturn(true);
-    when(() => melosFile.name()).thenReturn(projectName);
-    feature = _MockFeature();
-    when(() => feature.path).thenReturn(featurePackagePath);
-    platformDirectory = _MockPlatformDirectory();
-    when(() => platformDirectory.featureExists(any())).thenReturn(true);
-    when(() => platformDirectory.findFeature(any())).thenReturn(feature);
-    project = _MockProject();
-    when(() => project.platformDirectory(Platform.android))
-        .thenReturn(platformDirectory);
-    when(() => project.melosFile).thenReturn(melosFile);
-    when(() => project.isActivated(Platform.android)).thenReturn(true);
-    flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-        MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
-    when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-        cwd: any(named: 'cwd'))).thenAnswer((_) async {});
-    generator = _MockMasonGenerator();
-    when(() => generator.id).thenReturn('generator_id');
-    when(() => generator.description).thenReturn('generator description');
-    when(
-      () => generator.generate(
-        any(),
-        vars: any(named: 'vars'),
-        logger: any(named: 'logger'),
-      ),
-    ).thenAnswer((_) async => generatedFiles);
-    cubitName = 'FooBar';
-    featureName = 'my_cool_feature';
-    argResults = _MockArgResults();
-    when(() => argResults['feature-name']).thenReturn(featureName);
-    when(() => argResults.rest).thenReturn([cubitName]);
-
-    command = CubitCommand(
-      logger: logger,
-      project: project,
-      flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
-          flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-      generator: (_) async => generator,
-    )..argResultOverrides = argResults;
-  });
-
-  tearDown(() {
-    Directory.current = cwd;
-  });
-
-  test(
-    'help',
-    withRunner((commandRunner, logger, printLogs) async {
-      // Act
-      final result = await commandRunner.run(
-        ['android', 'feature', 'add', 'cubit', '--help'],
-      );
-
-      // Assert
-      expect(printLogs, equals(expectedUsage));
-      expect(result, equals(ExitCode.success.code));
-
-      printLogs.clear();
-
-      // Act
-      final resultAbbr = await commandRunner.run(
-        ['android', 'feature', 'add', 'cubit', '-h'],
-      );
-
-      // Assert
-      expect(printLogs, equals(expectedUsage));
-      expect(resultAbbr, equals(ExitCode.success.code));
-    }),
-  );
-
-  test('can be instantiated without explicit logger', () {
-    // Act
-    command = CubitCommand(project: project);
-
-    // Assert
-    expect(command, isNotNull);
-  });
-
-  test(
-    'throws UsageException when name is missing',
-    withRunnerOnProject(
-        (commandRunner, logger, melosFile, project, printLogs) async {
-      // Arrange
-      const expectedErrorMessage = 'No option specified for the name.';
-
-      // Act
-      final result = await commandRunner.run([
-        'android',
-        'feature',
-        'add',
-        'cubit',
-        '--feature-name',
-        'some_feat'
-      ]);
-
-      // Assert
-      expect(result, equals(ExitCode.usage.code));
-      verify(() => logger.err(expectedErrorMessage)).called(1);
-    }),
-  );
-
-  test(
-    'throws UsageException when multiple names are provided',
-    withRunnerOnProject(
-        (commandRunner, logger, melosFile, project, printLogs) async {
-      // Arrange
-      const expectedErrorMessage = 'Multiple names specified.';
-
-      // Act
-      final result = await commandRunner.run([
-        'android',
-        'feature',
-        'add',
-        'cubit',
-        'name1',
-        'name2',
-        '--feature-name',
-        'some_feat'
-      ]);
-
-      // Assert
-      expect(result, equals(ExitCode.usage.code));
-      verify(() => logger.err(expectedErrorMessage)).called(1);
-    }),
-  );
-
-  test(
-    'throws UsageException when name is invalid',
-    withRunnerOnProject(
-        (commandRunner, logger, melosFile, project, printLogs) async {
-      // Arrange
-      cubitName = '_*fff';
-      final expectedErrorMessage =
-          '"$cubitName" is not a valid dart class name.';
-
-      // Act
-      final result = await commandRunner.run([
-        'android',
-        'feature',
-        'add',
-        'cubit',
-        cubitName,
-        '--feature-name',
-        featureName
-      ]);
-
-      // Assert
-      expect(result, equals(ExitCode.usage.code));
-      verify(() => logger.err(expectedErrorMessage)).called(1);
-    }),
-  );
-
-  test(
-    'throws UsageException when --feature-name is missing',
-    withRunnerOnProject(
-        (commandRunner, logger, melosFile, project, printLogs) async {
-      // Arrange
-      const expectedErrorMessage = 'No option specified for the feature name.';
-
-      // Act
-      final result = await commandRunner
-          .run(['android', 'feature', 'add', 'cubit', 'FooBar']);
-
-      // Assert
-      expect(result, equals(ExitCode.usage.code));
-      verify(() => logger.err(expectedErrorMessage)).called(1);
-    }),
-  );
-
-  test(
-    'throws UsageException when --feature-name is invalid',
-    withRunnerOnProject(
-        (commandRunner, logger, melosFile, project, printLogs) async {
-      // Arrange
-      featureName = 'My*Feature';
-      final expectedErrorMessage =
-          '"$featureName" is not a valid package name.\n\n'
-          'See https://dart.dev/tools/pub/pubspec#name for more information.';
-
-      // Act
-      final result = await commandRunner.run([
-        'android',
-        'feature',
-        'add',
-        'cubit',
-        'FooBar',
-        '--feature-name',
-        featureName
-      ]);
-
-      // Assert
-      expect(result, equals(ExitCode.usage.code));
-      verify(() => logger.err(expectedErrorMessage)).called(1);
-    }),
-  );
-
-  test('completes successfully with correct output', () async {
-    // Act
-    final result = await command.run();
-
-    // Assert
-    verify(() => project.isActivated(Platform.android)).called(1);
-    verify(() => project.platformDirectory(Platform.android)).called(1);
-    verify(() => platformDirectory.featureExists(featureName)).called(1);
-    verify(() => platformDirectory.findFeature(featureName)).called(1);
-    verify(() => logger.progress('Generating files')).called(1);
-    verify(
-      () => generator.generate(
-        any(
-          that: isA<DirectoryGeneratorTarget>().having(
-            (g) => g.dir.path,
-            'dir',
-            '.',
-          ),
-        ),
-        vars: <String, dynamic>{
-          'project_name': projectName,
-          'feature_name': featureName,
-          'name': cubitName,
-          'platform': 'android',
-        },
-        logger: logger,
-      ),
-    ).called(1);
-    expect(
-      progressLogs,
-      equals(['Generated ${generatedFiles.length} file(s)']),
+    late List<String> progressLogs;
+    late Progress progress;
+    late Logger logger;
+    const projectName = 'test_app';
+    late MelosFile melosFile;
+    const featurePackagePath = 'foo/bar/baz';
+    late Feature feature;
+    late PlatformDirectory platformDirectory;
+    late Project project;
+    late _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+    final generatedFiles = List.filled(
+      62,
+      const GeneratedFile.created(path: ''),
     );
-    verify(() => logger.progress(
-            'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $featurePackagePath '))
-        .called(1);
-    verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-        cwd: featurePackagePath)).called(1);
-    verify(() => logger.success(
-            'Added ${cubitName.pascalCase}Cubit to Android feature $featureName.'))
-        .called(1);
-    expect(result, ExitCode.success.code);
-  });
+    late MasonGenerator generator;
+    late String cubitName;
+    late String featureName;
+    late ArgResults argResults;
 
-  test('exits with 66 when melos.yaml does not exist', () async {
-    // Arrange
-    when(() => melosFile.exists()).thenReturn(false);
+    late AndroidFeatureAddCubitCommand command;
 
-    // Act
-    final result = await command.run();
+    setUpAll(() {
+      registerFallbackValue(FakeDirectoryGeneratorTarget());
+    });
 
-    // Assert
-    verify(() => logger.err('''
+    setUp(() {
+      Directory.current = Directory.systemTemp.createTempSync();
+
+      progressLogs = <String>[];
+      progress = _MockProgress();
+      when(() => progress.complete(any())).thenAnswer((_) {
+        final message = _.positionalArguments.elementAt(0) as String?;
+        if (message != null) progressLogs.add(message);
+      });
+      logger = _MockLogger();
+      when(() => logger.progress(any())).thenReturn(progress);
+      when(() => logger.err(any())).thenReturn(null);
+      melosFile = _MockMelosFile();
+      when(() => melosFile.exists()).thenReturn(true);
+      when(() => melosFile.name()).thenReturn(projectName);
+      feature = _MockFeature();
+      when(() => feature.path).thenReturn(featurePackagePath);
+      platformDirectory = _MockPlatformDirectory();
+      when(() => platformDirectory.featureExists(any())).thenReturn(true);
+      when(() => platformDirectory.findFeature(any())).thenReturn(feature);
+      project = _MockProject();
+      when(() => project.platformDirectory(Platform.android))
+          .thenReturn(platformDirectory);
+      when(() => project.melosFile).thenReturn(melosFile);
+      when(() => project.isActivated(Platform.android)).thenReturn(true);
+      flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+          MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
+      when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+      generator = _MockMasonGenerator();
+      when(() => generator.id).thenReturn('generator_id');
+      when(() => generator.description).thenReturn('generator description');
+      when(
+        () => generator.generate(
+          any(),
+          vars: any(named: 'vars'),
+          logger: any(named: 'logger'),
+        ),
+      ).thenAnswer((_) async => generatedFiles);
+      cubitName = 'FooBar';
+      featureName = 'my_cool_feature';
+      argResults = _MockArgResults();
+      when(() => argResults['feature-name']).thenReturn(featureName);
+      when(() => argResults.rest).thenReturn([cubitName]);
+
+      command = AndroidFeatureAddCubitCommand(
+        logger: logger,
+        project: project,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+        generator: (_) async => generator,
+      )..argResultOverrides = argResults;
+    });
+
+    tearDown(() {
+      Directory.current = cwd;
+    });
+
+    test(
+      'help',
+      withRunner((commandRunner, logger, printLogs) async {
+        // Act
+        final result = await commandRunner.run(
+          ['android', 'feature', 'add', 'cubit', '--help'],
+        );
+
+        // Assert
+        expect(printLogs, equals(expectedUsage));
+        expect(result, equals(ExitCode.success.code));
+
+        printLogs.clear();
+
+        // Act
+        final resultAbbr = await commandRunner.run(
+          ['android', 'feature', 'add', 'cubit', '-h'],
+        );
+
+        // Assert
+        expect(printLogs, equals(expectedUsage));
+        expect(resultAbbr, equals(ExitCode.success.code));
+      }),
+    );
+
+    test('can be instantiated without explicit logger', () {
+      // Act
+      command = AndroidFeatureAddCubitCommand(project: project);
+
+      // Assert
+      expect(command, isNotNull);
+    });
+
+    test(
+      'throws UsageException when name is missing',
+      withRunnerOnProject(
+          (commandRunner, logger, melosFile, project, printLogs) async {
+        // Arrange
+        const expectedErrorMessage = 'No option specified for the name.';
+
+        // Act
+        final result = await commandRunner.run([
+          'android',
+          'feature',
+          'add',
+          'cubit',
+          '--feature-name',
+          'some_feat'
+        ]);
+
+        // Assert
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+      }),
+    );
+
+    test(
+      'throws UsageException when multiple names are provided',
+      withRunnerOnProject(
+          (commandRunner, logger, melosFile, project, printLogs) async {
+        // Arrange
+        const expectedErrorMessage = 'Multiple names specified.';
+
+        // Act
+        final result = await commandRunner.run([
+          'android',
+          'feature',
+          'add',
+          'cubit',
+          'name1',
+          'name2',
+          '--feature-name',
+          'some_feat'
+        ]);
+
+        // Assert
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+      }),
+    );
+
+    test(
+      'throws UsageException when name is invalid',
+      withRunnerOnProject(
+          (commandRunner, logger, melosFile, project, printLogs) async {
+        // Arrange
+        cubitName = '_*fff';
+        final expectedErrorMessage =
+            '"$cubitName" is not a valid dart class name.';
+
+        // Act
+        final result = await commandRunner.run([
+          'android',
+          'feature',
+          'add',
+          'cubit',
+          cubitName,
+          '--feature-name',
+          featureName
+        ]);
+
+        // Assert
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+      }),
+    );
+
+    test(
+      'throws UsageException when --feature-name is missing',
+      withRunnerOnProject(
+          (commandRunner, logger, melosFile, project, printLogs) async {
+        // Arrange
+        const expectedErrorMessage =
+            'No option specified for the feature name.';
+
+        // Act
+        final result = await commandRunner
+            .run(['android', 'feature', 'add', 'cubit', 'FooBar']);
+
+        // Assert
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+      }),
+    );
+
+    test(
+      'throws UsageException when --feature-name is invalid',
+      withRunnerOnProject(
+          (commandRunner, logger, melosFile, project, printLogs) async {
+        // Arrange
+        featureName = 'My*Feature';
+        final expectedErrorMessage =
+            '"$featureName" is not a valid package name.\n\n'
+            'See https://dart.dev/tools/pub/pubspec#name for more information.';
+
+        // Act
+        final result = await commandRunner.run([
+          'android',
+          'feature',
+          'add',
+          'cubit',
+          'FooBar',
+          '--feature-name',
+          featureName
+        ]);
+
+        // Assert
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+      }),
+    );
+
+    test('completes successfully with correct output', () async {
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => project.isActivated(Platform.android)).called(1);
+      verify(() => project.platformDirectory(Platform.android)).called(1);
+      verify(() => platformDirectory.featureExists(featureName)).called(1);
+      verify(() => platformDirectory.findFeature(featureName)).called(1);
+      verify(() => logger.progress('Generating files')).called(1);
+      verify(
+        () => generator.generate(
+          any(
+            that: isA<DirectoryGeneratorTarget>().having(
+              (g) => g.dir.path,
+              'dir',
+              '.',
+            ),
+          ),
+          vars: <String, dynamic>{
+            'project_name': projectName,
+            'feature_name': featureName,
+            'name': cubitName,
+            'platform': 'android',
+          },
+          logger: logger,
+        ),
+      ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} file(s)']),
+      );
+      verify(() => logger.progress(
+              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $featurePackagePath '))
+          .called(1);
+      verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          cwd: featurePackagePath)).called(1);
+      verify(() => logger.success(
+              'Added ${cubitName.pascalCase}Cubit to Android feature $featureName.'))
+          .called(1);
+      expect(result, ExitCode.success.code);
+    });
+
+    test('exits with 66 when melos.yaml does not exist', () async {
+      // Arrange
+      when(() => melosFile.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err('''
  Could not find a melos.yaml.
  This command should be run from the root of your Rapid project.''')).called(1);
-    expect(result, ExitCode.noInput.code);
-  });
+      expect(result, ExitCode.noInput.code);
+    });
 
-  test('exits with 78 when the feature does not exists', () async {
-    // Arrange
-    when(() => platformDirectory.featureExists(any())).thenReturn(false);
+    test('exits with 78 when the feature does not exists', () async {
+      // Arrange
+      when(() => platformDirectory.featureExists(any())).thenReturn(false);
 
-    // Act
-    final result = await command.run();
+      // Act
+      final result = await command.run();
 
-    // Assert
-    verify(() =>
-            logger.err('The feature "$featureName" does not exist on Android.'))
-        .called(1);
-    expect(result, ExitCode.config.code);
-  });
+      // Assert
+      verify(() => logger.err(
+          'The feature "$featureName" does not exist on Android.')).called(1);
+      expect(result, ExitCode.config.code);
+    });
 
-  test('exits with 78 when Android is not activated', () async {
-    // Arrange
-    when(() => project.isActivated(Platform.android)).thenReturn(false);
+    test('exits with 78 when Android is not activated', () async {
+      // Arrange
+      when(() => project.isActivated(Platform.android)).thenReturn(false);
 
-    // Act
-    final result = await command.run();
+      // Act
+      final result = await command.run();
 
-    // Assert
-    verify(() => logger.err('Android is not activated.')).called(1);
-    expect(result, ExitCode.config.code);
+      // Assert
+      verify(() => logger.err('Android is not activated.')).called(1);
+      expect(result, ExitCode.config.code);
+    });
   });
 }

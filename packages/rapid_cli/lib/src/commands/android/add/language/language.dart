@@ -7,9 +7,9 @@ import 'package:rapid_cli/src/core/platform.dart';
 /// {@template android_add_language_command}
 /// `rapid android add language` command adds a language to the Android part of an existing Rapid project.
 /// {@endtemplate}
-class LanguageCommand extends PlatformAddLanguageCommand {
+class AndroidAddLanguageCommand extends PlatformAddLanguageCommand {
   /// {@macro android_add_language_command}
-  LanguageCommand({
+  AndroidAddLanguageCommand({
     Logger? logger,
     required super.project,
     FlutterGenl10nCommand? flutterGenl10n,

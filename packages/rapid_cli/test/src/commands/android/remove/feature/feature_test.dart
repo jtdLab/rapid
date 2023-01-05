@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/remove/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/feature.dart';
@@ -21,7 +22,7 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
-abstract class _MelosBoostrapCommand {
+abstract class _MelosBootstrapCommand {
   Future<void> call({String cwd});
 }
 
@@ -29,71 +30,77 @@ abstract class _MelosCleanCommand {
   Future<void> call({String cwd});
 }
 
-class _MockArgResults extends Mock implements ArgResults {}
+class _MockLogger extends Mock implements Logger {}
 
 class _MockProgress extends Mock implements Progress {}
 
-class _MockLogger extends Mock implements Logger {}
+class _MockProject extends Mock implements Project {}
 
 class _MockMelosFile extends Mock implements MelosFile {}
 
-class _MockFeature extends Mock implements Feature {}
-
 class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
-class _MockProject extends Mock implements Project {}
+class _MockFeature extends Mock implements Feature {}
 
-class _MockMelosBootstrapCommand extends Mock implements _MelosBoostrapCommand {
-}
+class _MockMelosBootstrapCommand extends Mock
+    implements _MelosBootstrapCommand {}
 
 class _MockMelosCleanCommand extends Mock implements _MelosCleanCommand {}
+
+class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
   group('android remove feature', () {
     Directory cwd = Directory.current;
 
-    late List<String> progressLogs;
-    late Progress progress;
     late Logger logger;
-    late MelosFile melosFile;
-    late Feature feature;
-    late PlatformDirectory platformDirectory;
+    late List<String> progressLogs;
+
     late Project project;
-    late _MelosBoostrapCommand melosBootstrap;
-    late _MelosCleanCommand melosClean;
-    late String featureName;
+    late MelosFile melosFile;
+    late PlatformDirectory platformDirectory;
+    late Feature feature;
+
+    late MelosBootstrapCommand melosBootstrap;
+
+    late MelosCleanCommand melosClean;
+
     late ArgResults argResults;
+    const featureName = 'my_new_feature';
 
     late AndroidRemoveFeatureCommand command;
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
+      logger = _MockLogger();
+      final progress = _MockProgress();
       progressLogs = <String>[];
-      progress = _MockProgress();
       when(() => progress.complete(any())).thenAnswer((_) {
         final message = _.positionalArguments.elementAt(0) as String?;
         if (message != null) progressLogs.add(message);
       });
-      logger = _MockLogger();
       when(() => logger.progress(any())).thenReturn(progress);
+
+      project = _MockProject();
       melosFile = _MockMelosFile();
       when(() => melosFile.exists()).thenReturn(true);
-      feature = _MockFeature();
       platformDirectory = _MockPlatformDirectory();
+      feature = _MockFeature();
       when(() => platformDirectory.featureExists(any())).thenReturn(true);
       when(() => platformDirectory.findFeature(any())).thenReturn(feature);
-      melosBootstrap = _MockMelosBootstrapCommand();
-      when(() => melosBootstrap(cwd: any(named: 'cwd')))
-          .thenAnswer((_) async {});
-      melosClean = _MockMelosCleanCommand();
-      when(() => melosClean(cwd: any(named: 'cwd'))).thenAnswer((_) async {});
-      project = _MockProject();
       when(() => project.isActivated(Platform.android)).thenReturn(true);
       when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.platformDirectory(Platform.android))
           .thenReturn(platformDirectory);
-      featureName = 'my_cool_feature';
+
+      melosBootstrap = _MockMelosBootstrapCommand();
+      when(() => melosBootstrap(cwd: any(named: 'cwd')))
+          .thenAnswer((_) async {});
+
+      melosClean = _MockMelosCleanCommand();
+      when(() => melosClean(cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+
       argResults = _MockArgResults();
       when(() => argResults.rest).thenReturn([featureName]);
 

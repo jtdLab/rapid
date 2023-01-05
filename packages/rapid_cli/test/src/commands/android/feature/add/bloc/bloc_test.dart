@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/feature.dart';
@@ -30,19 +31,17 @@ abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
   Future<void> call({String cwd});
 }
 
-class _MockArgResults extends Mock implements ArgResults {}
+class _MockLogger extends Mock implements Logger {}
 
 class _MockProgress extends Mock implements Progress {}
 
-class _MockLogger extends Mock implements Logger {}
+class _MockProject extends Mock implements Project {}
 
 class _MockMelosFile extends Mock implements MelosFile {}
 
-class _MockFeature extends Mock implements Feature {}
-
 class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
-class _MockProject extends Mock implements Project {}
+class _MockFeature extends Mock implements Feature {}
 
 class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     extends Mock
@@ -50,67 +49,75 @@ class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
 
 class _MockMasonGenerator extends Mock implements MasonGenerator {}
 
-class FakeDirectoryGeneratorTarget extends Fake
+class _MockArgResults extends Mock implements ArgResults {}
+
+class _FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}
 
 void main() {
   group('android feature add bloc', () {
     Directory cwd = Directory.current;
 
-    late List<String> progressLogs;
-    late Progress progress;
     late Logger logger;
-    const projectName = 'test_app';
-    late MelosFile melosFile;
-    const featurePackagePath = 'foo/bar/baz';
-    late Feature feature;
-    late PlatformDirectory platformDirectory;
+    late List<String> progressLogs;
+
     late Project project;
-    late _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+    late MelosFile melosFile;
+    const projectName = 'test_app';
+    late PlatformDirectory platformDirectory;
+    late Feature feature;
+    const featurePath = 'foo/bar/baz';
+
+    late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+
+    late MasonGenerator generator;
     final generatedFiles = List.filled(
       23,
       const GeneratedFile.created(path: ''),
     );
-    late MasonGenerator generator;
-    late String blocName;
-    late String featureName;
+
     late ArgResults argResults;
+    late String featureName;
+    late String blocName;
 
     late AndroidFeatureAddBlocCommand command;
 
     setUpAll(() {
-      registerFallbackValue(FakeDirectoryGeneratorTarget());
+      registerFallbackValue(_FakeDirectoryGeneratorTarget());
     });
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
+      logger = _MockLogger();
+      final progress = _MockProgress();
       progressLogs = <String>[];
-      progress = _MockProgress();
       when(() => progress.complete(any())).thenAnswer((_) {
         final message = _.positionalArguments.elementAt(0) as String?;
         if (message != null) progressLogs.add(message);
       });
-      logger = _MockLogger();
       when(() => logger.progress(any())).thenReturn(progress);
+
+      project = _MockProject();
       melosFile = _MockMelosFile();
       when(() => melosFile.exists()).thenReturn(true);
       when(() => melosFile.name()).thenReturn(projectName);
-      feature = _MockFeature();
-      when(() => feature.path).thenReturn(featurePackagePath);
       platformDirectory = _MockPlatformDirectory();
+      feature = _MockFeature();
+      when(() => feature.path).thenReturn(featurePath);
       when(() => platformDirectory.featureExists(any())).thenReturn(true);
       when(() => platformDirectory.findFeature(any())).thenReturn(feature);
-      project = _MockProject();
+      when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.platformDirectory(Platform.android))
           .thenReturn(platformDirectory);
-      when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.isActivated(Platform.android)).thenReturn(true);
+
       flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
           MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
       when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+
       generator = _MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
@@ -121,9 +128,10 @@ void main() {
           logger: any(named: 'logger'),
         ),
       ).thenAnswer((_) async => generatedFiles);
-      blocName = 'FooBar';
-      featureName = 'my_cool_feature';
+
       argResults = _MockArgResults();
+      featureName = 'my_cool_feature';
+      blocName = 'FooBar';
       when(() => argResults['feature-name']).thenReturn(featureName);
       when(() => argResults.rest).thenReturn([blocName]);
 
@@ -325,10 +333,10 @@ void main() {
         equals(['Generated ${generatedFiles.length} file(s)']),
       );
       verify(() => logger.progress(
-              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $featurePackagePath '))
+              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $featurePath '))
           .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: featurePackagePath)).called(1);
+          cwd: featurePath)).called(1);
       verify(() => logger.success(
               'Added ${blocName.pascalCase}Bloc to Android feature $featureName.'))
           .called(1);

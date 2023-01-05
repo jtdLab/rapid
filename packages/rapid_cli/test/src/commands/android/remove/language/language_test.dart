@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/remove/language/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/feature.dart';
@@ -25,64 +26,69 @@ abstract class _FlutterGenl10nCommand {
   Future<void> call({String cwd});
 }
 
-class _MockArgResults extends Mock implements ArgResults {}
+class _MockLogger extends Mock implements Logger {}
 
 class _MockProgress extends Mock implements Progress {}
 
-class _MockLogger extends Mock implements Logger {}
+class _MockProject extends Mock implements Project {}
 
 class _MockMelosFile extends Mock implements MelosFile {}
 
-class _MockArbFile extends Mock implements ArbFile {}
+class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
 class _MockFeature extends Mock implements Feature {}
 
-class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
-
-class _MockProject extends Mock implements Project {}
+class _MockArbFile extends Mock implements ArbFile {}
 
 class _MockFlutterGenl10nCommand extends Mock
     implements _FlutterGenl10nCommand {}
+
+class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
   group('android remove language', () {
     Directory cwd = Directory.current;
 
-    late List<String> progressLogs;
-    late Progress progress;
     late Logger logger;
-    late MelosFile melosFile;
-    const feature1Path = 'foo/bar/one';
-    late ArbFile feature1ArbFileDe;
-    late Feature feature1;
-    const feature2Path = 'foo/bar/two';
-    late ArbFile feature2ArbFileDe;
-    late Feature feature2;
-    late List<Feature> features;
-    late PlatformDirectory platformDirectory;
+    late List<String> progressLogs;
+
     late Project project;
-    late _FlutterGenl10nCommand flutterGenl10n;
+    late MelosFile melosFile;
+    late PlatformDirectory platformDirectory;
+    late List<Feature> features;
     const defaultLanguage = 'en';
-    late String language;
+    late Feature feature1;
+    late ArbFile feature1ArbFileDe;
+    const feature1Path = 'foo/bar/one';
+    late Feature feature2;
+    late ArbFile feature2ArbFileDe;
+    const feature2Path = 'foo/bar/two';
+
+    late FlutterGenl10nCommand flutterGenl10n;
+
     late ArgResults argResults;
+    late String language;
 
     late AndroidRemoveLanguageCommand command;
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
+      logger = _MockLogger();
+      final progress = _MockProgress();
       progressLogs = <String>[];
-      progress = _MockProgress();
       when(() => progress.complete(any())).thenAnswer((_) {
         final message = _.positionalArguments.elementAt(0) as String?;
         if (message != null) progressLogs.add(message);
       });
-      logger = _MockLogger();
       when(() => logger.progress(any())).thenReturn(progress);
+
+      project = _MockProject();
       melosFile = _MockMelosFile();
       when(() => melosFile.exists()).thenReturn(true);
-      feature1ArbFileDe = _MockArbFile();
+      platformDirectory = _MockPlatformDirectory();
       feature1 = _MockFeature();
+      feature1ArbFileDe = _MockArbFile();
       when(() => feature1.findArbFileByLanguage('de'))
           .thenReturn(feature1ArbFileDe);
       when(() => feature1.defaultLanguage()).thenReturn(defaultLanguage);
@@ -92,8 +98,8 @@ void main() {
       when(() => feature1.supportsLanguage('de')).thenReturn(true);
       when(() => feature1.supportsLanguage('fr')).thenReturn(false);
       when(() => feature1.path).thenReturn(feature1Path);
-      feature2ArbFileDe = _MockArbFile();
       feature2 = _MockFeature();
+      feature2ArbFileDe = _MockArbFile();
       when(() => feature2.findArbFileByLanguage('de'))
           .thenReturn(feature2ArbFileDe);
       when(() => feature2.defaultLanguage()).thenReturn(defaultLanguage);
@@ -104,19 +110,19 @@ void main() {
       when(() => feature2.supportsLanguage('fr')).thenReturn(false);
       when(() => feature2.path).thenReturn(feature2Path);
       features = [feature1, feature2];
-      platformDirectory = _MockPlatformDirectory();
       when(() => platformDirectory.getFeatures(exclude: any(named: 'exclude')))
           .thenReturn(features);
-      project = _MockProject();
       when(() => project.isActivated(Platform.android)).thenReturn(true);
       when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.platformDirectory(Platform.android))
           .thenReturn(platformDirectory);
+
       flutterGenl10n = _MockFlutterGenl10nCommand();
       when(() => flutterGenl10n(cwd: any(named: 'cwd')))
           .thenAnswer((_) async {});
-      language = 'de';
+
       argResults = _MockArgResults();
+      language = 'de';
       when(() => argResults.rest).thenReturn([language]);
 
       command = AndroidRemoveLanguageCommand(

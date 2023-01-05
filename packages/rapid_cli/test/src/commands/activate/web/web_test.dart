@@ -34,7 +34,7 @@ abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
   Future<void> call({String cwd});
 }
 
-abstract class _MelosBoostrapCommand {
+abstract class _MelosBootstrapCommand {
   Future<void> call({String cwd});
 }
 
@@ -71,8 +71,8 @@ class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     extends Mock
     implements _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
 
-class _MockMelosBootstrapCommand extends Mock implements _MelosBoostrapCommand {
-}
+class _MockMelosBootstrapCommand extends Mock
+    implements _MelosBootstrapCommand {}
 
 class _MockMelosCleanCommand extends Mock implements _MelosCleanCommand {}
 
@@ -105,7 +105,7 @@ void main() {
     late _FlutterPubGetCommand flutterPubGet;
     late _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
-    late _MelosBoostrapCommand melosBootstrap;
+    late _MelosBootstrapCommand melosBootstrap;
     late _MelosCleanCommand melosClean;
     final generatedFiles = List.filled(
       23,

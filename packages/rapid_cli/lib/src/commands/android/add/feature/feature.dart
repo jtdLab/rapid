@@ -9,9 +9,9 @@ class AndroidAddFeatureCommand extends PlatformAddFeatureCommand {
   AndroidAddFeatureCommand({
     super.logger,
     required super.project,
-    super.generator,
     super.melosBootstrap,
     super.melosClean,
+    super.generator,
   }) : super(
           platform: Platform.android,
         );

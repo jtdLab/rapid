@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
@@ -23,7 +24,7 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
-abstract class _MelosBoostrapCommand {
+abstract class _MelosBootstrapCommand {
   Future<void> call({String cwd});
 }
 
@@ -31,74 +32,81 @@ abstract class _MelosCleanCommand {
   Future<void> call({String cwd});
 }
 
-class _MockArgResults extends Mock implements ArgResults {}
+class _MockLogger extends Mock implements Logger {}
 
 class _MockProgress extends Mock implements Progress {}
 
-class _MockLogger extends Mock implements Logger {}
+class _MockProject extends Mock implements Project {}
 
 class _MockMelosFile extends Mock implements MelosFile {}
 
-class _MockProject extends Mock implements Project {}
-
-class _MockMelosBootstrapCommand extends Mock implements _MelosBoostrapCommand {
-}
+class _MockMelosBootstrapCommand extends Mock
+    implements _MelosBootstrapCommand {}
 
 class _MockMelosCleanCommand extends Mock implements _MelosCleanCommand {}
 
 class _MockMasonGenerator extends Mock implements MasonGenerator {}
 
-class FakeDirectoryGeneratorTarget extends Fake
+class _MockArgResults extends Mock implements ArgResults {}
+
+class _FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}
 
 void main() {
   group('android add feature', () {
     Directory cwd = Directory.current;
 
-    late List<String> progressLogs;
-    late Progress progress;
     late Logger logger;
-    const projectName = 'test_app';
-    late MelosFile melosFile;
+    late List<String> progressLogs;
+
     late Project project;
-    late _MelosBoostrapCommand melosBootstrap;
-    late _MelosCleanCommand melosClean;
+    late MelosFile melosFile;
+    const projectName = 'test_app';
+
+    late MelosBootstrapCommand melosBootstrap;
+    late MelosCleanCommand melosClean;
+
+    late MasonGenerator generator;
     final generatedFiles = List.filled(
       23,
       const GeneratedFile.created(path: ''),
     );
-    late MasonGenerator generator;
-    late String featureName;
+
     late ArgResults argResults;
+    late String featureName;
 
     late AndroidAddFeatureCommand command;
 
     setUpAll(() {
-      registerFallbackValue(FakeDirectoryGeneratorTarget());
+      registerFallbackValue(_FakeDirectoryGeneratorTarget());
     });
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
+      logger = _MockLogger();
+      final progress = _MockProgress();
       progressLogs = <String>[];
-      progress = _MockProgress();
       when(() => progress.complete(any())).thenAnswer((_) {
         final message = _.positionalArguments.elementAt(0) as String?;
         if (message != null) progressLogs.add(message);
       });
-      logger = _MockLogger();
       when(() => logger.progress(any())).thenReturn(progress);
+
+      project = _MockProject();
       melosFile = _MockMelosFile();
       when(() => melosFile.exists()).thenReturn(true);
       when(() => melosFile.name()).thenReturn(projectName);
-      project = _MockProject();
       when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.isActivated(Platform.android)).thenReturn(true);
+
       melosBootstrap = _MockMelosBootstrapCommand();
       when(() => melosBootstrap(cwd: any(named: 'cwd')))
           .thenAnswer((_) async {});
+
       melosClean = _MockMelosCleanCommand();
       when(() => melosClean(cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+
       generator = _MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
@@ -109,16 +117,17 @@ void main() {
           logger: any(named: 'logger'),
         ),
       ).thenAnswer((_) async => generatedFiles);
-      featureName = 'my_cool_feature';
+
       argResults = _MockArgResults();
+      featureName = 'my_cool_feature';
       when(() => argResults.rest).thenReturn([featureName]);
 
       command = AndroidAddFeatureCommand(
         logger: logger,
         project: project,
-        generator: (_) async => generator,
         melosBootstrap: melosBootstrap,
         melosClean: melosClean,
+        generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
 

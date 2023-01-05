@@ -13,6 +13,8 @@ import 'package:universal_io/io.dart';
 
 import 'bloc_bundle.dart';
 
+// TODO share code with add cubit command
+
 /// {@template platform_feature_add_bloc_command}
 /// Base class for TODO
 /// {@endtemplate}

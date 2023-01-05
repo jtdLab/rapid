@@ -23,15 +23,15 @@ abstract class PlatformAddFeatureCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
-    GeneratorBuilder? generator,
     MelosBootstrapCommand? melosBootstrap,
     MelosCleanCommand? melosClean,
+    GeneratorBuilder? generator,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
-        _generator = generator ?? MasonGenerator.fromBundle,
         _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _melosClean = melosClean ?? Melos.clean {
+        _melosClean = melosClean ?? Melos.clean,
+        _generator = generator ?? MasonGenerator.fromBundle {
     argParser
       ..addSeparator('')
       ..addOption(
@@ -41,12 +41,12 @@ abstract class PlatformAddFeatureCommand extends Command<int>
       );
   }
 
-  final GeneratorBuilder _generator;
+  final Platform _platform;
   final Logger _logger;
+  final Project _project;
   final MelosBootstrapCommand _melosBootstrap;
   final MelosCleanCommand _melosClean;
-  final Platform _platform;
-  final Project _project;
+  final GeneratorBuilder _generator;
 
   @override
   String get name => 'feature';

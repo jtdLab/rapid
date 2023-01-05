@@ -152,7 +152,7 @@ void main() {
           'returns the correct supported languages depending on existing .arb files',
           () {
         // Arrange
-        const languages = ['de', 'fr', 'en'];
+        const languages = ['de', 'en', 'fr'];
         for (final language in languages) {
           final arbFile = File(
             p.join(

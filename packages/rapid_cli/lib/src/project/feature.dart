@@ -57,8 +57,8 @@ class Feature {
           ),
         )
         .toList();
+    arbFiles.sort((a, b) => a.language.compareTo(b.language));
 
-    arbFiles.sort((a, b) => a.path.compareTo(b.path));
     return arbFiles.toSet();
   }
 

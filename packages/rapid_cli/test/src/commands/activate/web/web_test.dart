@@ -22,7 +22,6 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
-// ignore: one_member_abstracts
 abstract class _FlutterConfigEnablePlatformCommand {
   Future<void> call();
 }

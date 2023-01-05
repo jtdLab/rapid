@@ -9,9 +9,9 @@ class MacosAddFeatureCommand extends PlatformAddFeatureCommand {
   MacosAddFeatureCommand({
     super.logger,
     required super.project,
-    super.generator,
     super.melosBootstrap,
     super.melosClean,
+    super.generator,
   }) : super(
           platform: Platform.macos,
         );

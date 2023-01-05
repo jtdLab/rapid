@@ -9,9 +9,9 @@ class WindowsAddFeatureCommand extends PlatformAddFeatureCommand {
   WindowsAddFeatureCommand({
     super.logger,
     required super.project,
-    super.generator,
     super.melosBootstrap,
     super.melosClean,
+    super.generator,
   }) : super(
           platform: Platform.windows,
         );

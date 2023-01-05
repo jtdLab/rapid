@@ -9,9 +9,9 @@ class WebAddFeatureCommand extends PlatformAddFeatureCommand {
   WebAddFeatureCommand({
     super.logger,
     required super.project,
-    super.generator,
     super.melosBootstrap,
     super.melosClean,
+    super.generator,
   }) : super(
           platform: Platform.web,
         );

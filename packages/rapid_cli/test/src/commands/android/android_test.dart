@@ -49,7 +49,6 @@ void main() {
       });
       logger = _MockLogger();
       when(() => logger.progress(any())).thenReturn(progress);
-      when(() => logger.err(any())).thenReturn(null);
       project = _MockProject();
 
       command = AndroidCommand(

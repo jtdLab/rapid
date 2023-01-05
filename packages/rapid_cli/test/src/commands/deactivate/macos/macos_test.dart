@@ -87,7 +87,6 @@ void main() {
       });
       logger = _MockLogger();
       when(() => logger.progress(any())).thenReturn(progress);
-      when(() => logger.err(any())).thenReturn(null);
       melosFile = _MockMelosFile();
       when(() => melosFile.exists()).thenReturn(true);
       appPackagePubspec = _MockPubspecFile();

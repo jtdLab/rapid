@@ -108,7 +108,6 @@ void main() {
         if (message != null) progressLogs.add(message);
       });
       logger = _MockLogger();
-      when(() => logger.err(any())).thenReturn(null);
       when(() => logger.progress(any())).thenReturn(progress);
       argResults = _MockArgResults();
       when(() => argResults['project-name']).thenReturn(projectName);
@@ -655,6 +654,8 @@ void main() {
       verify(() => logger.alert('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
+
+    // TODO
 
     test('exits with 69 when flutter is not installed', () async {
       // Arrange

@@ -11,7 +11,6 @@ import 'package:universal_io/io.dart';
 import '../../../../../helpers/helpers.dart';
 
 const expectedUsage = [
-  // ignore: no_adjacent_strings_in_list
   'Adds a feature to the Android part of an existing Rapid project.\n'
       '\n'
       'Usage: rapid android add feature <name> [arguments]\n'

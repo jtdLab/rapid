@@ -11,7 +11,6 @@ import '../../../helpers/helpers.dart';
 // TODO make this test use cwd like other tests do if possible and make em run faster if possible
 
 const expectedUsage = [
-  // ignore: no_adjacent_strings_in_list
   'Creates a new Rapid project in the specified directory.\n'
       '\n'
       'Usage: rapid create <output directory>\n'

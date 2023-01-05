@@ -7,7 +7,6 @@ import 'package:test/test.dart';
 import '../../../helpers/helpers.dart';
 
 const expectedUsage = [
-  // ignore: no_adjacent_strings_in_list
   'Adds support for a platform to an existing Rapid project.\n'
       '\n'
       'Usage: rapid activate <platform>\n'

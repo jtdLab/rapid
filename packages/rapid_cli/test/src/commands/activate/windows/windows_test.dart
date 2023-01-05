@@ -14,7 +14,6 @@ import 'package:universal_io/io.dart';
 import '../../../../helpers/helpers.dart';
 
 const expectedUsage = [
-  // ignore: no_adjacent_strings_in_list // TODO remove in all tests if possible
   'Adds support for Windows to this project.\n'
       '\n'
       'Usage: rapid activate windows\n'

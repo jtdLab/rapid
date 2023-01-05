@@ -12,7 +12,6 @@ import 'package:universal_io/io.dart';
 import '../../../helpers/helpers.dart';
 
 const expectedUsage = [
-  // ignore: no_adjacent_strings_in_list
   'Shows information about an existing Rapid project.\n'
       '\n'
       'Usage: rapid doctor\n'

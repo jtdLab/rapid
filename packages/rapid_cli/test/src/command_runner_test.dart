@@ -16,7 +16,6 @@ class _MockMelosFile extends Mock implements MelosFile {}
 class _MockProject extends Mock implements Project {}
 
 const expectedUsage = [
-  // ignore: no_adjacent_strings_in_list
   'Rapid Command Line Interface\n'
       '\n'
       'Usage: rapid <command>\n'

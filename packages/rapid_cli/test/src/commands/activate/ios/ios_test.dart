@@ -14,7 +14,6 @@ import 'package:universal_io/io.dart';
 import '../../../../helpers/helpers.dart';
 
 const expectedUsage = [
-  // ignore: no_adjacent_strings_in_list
   'Adds support for iOS to this project.\n'
       '\n'
       'Usage: rapid activate ios\n'

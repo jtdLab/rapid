@@ -7,7 +7,6 @@ import 'package:test/test.dart';
 import '../../../helpers/helpers.dart';
 
 const expectedUsage = [
-  // ignore: no_adjacent_strings_in_list
   'Removes support for a platform from an existing Rapid project.\n'
       '\n'
       'Usage: rapid deactivate <platform>\n'

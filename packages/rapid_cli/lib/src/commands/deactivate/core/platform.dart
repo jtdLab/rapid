@@ -3,30 +3,45 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
-import 'package:rapid_cli/src/commands/deactivate/deactivate.dart';
+import 'package:rapid_cli/src/commands/deactivate/android/android.dart';
+import 'package:rapid_cli/src/commands/deactivate/ios/ios.dart';
+import 'package:rapid_cli/src/commands/deactivate/linux/linux.dart';
+import 'package:rapid_cli/src/commands/deactivate/macos/macos.dart';
+import 'package:rapid_cli/src/commands/deactivate/web/web.dart';
+import 'package:rapid_cli/src/commands/deactivate/windows/windows.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
-// TODO sort vars and methods alphabetically
-
-// TODO rename to DeactivatePlatormCommand
-
-// TODO move to /deactivate/core
-
-/// Base class for all subcommands of [DeactivateCommand].
-abstract class DeactivateSubCommand extends Command<int>
+/// {@template deactivate_platform_command}
+/// Base class for:
+///
+///  * [DeactivateAndroidCommand]
+///
+///  * [DeactivateIosCommand]
+///
+///  * [DeactivateLinuxCommand]
+///
+///  * [DeactivateMacosCommand]
+///
+///  * [DeactivateWebCommand]
+///
+///  * [DeactivateWindowsCommand]
+/// {@endtemplate}
+abstract class DeactivatePlatformCommand extends Command<int>
     with OverridableArgResults {
-  DeactivateSubCommand({
+  /// {@macro deactivate_platform_command}
+  DeactivatePlatformCommand({
     required Platform platform,
-    required Logger logger,
+    Logger? logger,
     required Project project,
-    required FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
-        _logger = logger,
+        _logger = logger ?? Logger(),
         _project = project,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   final Platform _platform;
   final Logger _logger;
@@ -35,17 +50,17 @@ abstract class DeactivateSubCommand extends Command<int>
       _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   @override
-  String get description =>
-      'Removes support for ${_platform.prettyName} from this project.';
+  String get name => _platform.name;
+
+  @override
+  List<String> get aliases => _platform.aliases;
 
   @override
   String get invocation => 'rapid deactivate ${_platform.name}';
 
   @override
-  String get name => _platform.name;
-
-  @override
-  List<String> get aliases => _platform.aliases;
+  String get description =>
+      'Removes support for ${_platform.prettyName} from this project.';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {

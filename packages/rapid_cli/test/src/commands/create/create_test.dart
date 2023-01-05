@@ -8,8 +8,6 @@ import 'package:universal_io/io.dart';
 
 import '../../../helpers/helpers.dart';
 
-// TODO make this test use cwd like other tests do if possible and make em run faster if possible
-
 const expectedUsage = [
   'Creates a new Rapid project in the specified directory.\n'
       '\n'
@@ -69,6 +67,8 @@ class _MockMelosBootstrapCommand extends Mock
 
 void main() {
   group('create', () {
+    final cwd = Directory.current;
+
     late String outputDir;
     late String projectName;
     late List<String> progressLogs;
@@ -97,8 +97,9 @@ void main() {
     });
 
     setUp(() {
-      outputDir = Directory.systemTemp.createTempSync().path;
+      Directory.current = Directory.systemTemp.createTempSync();
 
+      outputDir = '.';
       projectName = 'test_app';
       progressLogs = <String>[];
       progress = _MockProgress();
@@ -152,6 +153,10 @@ void main() {
         generator: (_) async => generator,
         melosBootstrap: melosBootstrap,
       )..argResultOverrides = argResults;
+    });
+
+    tearDown(() {
+      Directory.current = cwd;
     });
 
     test('c is a valid alias', () {

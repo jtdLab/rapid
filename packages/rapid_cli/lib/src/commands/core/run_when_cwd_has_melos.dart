@@ -1,7 +1,9 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
-// TODO test + doc
+/// Runs [callback] when [project] has an existing melos file.
+///
+/// This function is commonly used in rapid commands that only run from the root of a rapid project.
 Future<int> runWhenCwdHasMelos(
   Project project,
   Logger logger,

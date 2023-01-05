@@ -50,8 +50,8 @@ abstract class PlatformAddLanguageCommand extends Command<int>
         _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
         _generator = generator ?? MasonGenerator.fromBundle;
 
-  final Logger _logger;
   final Platform _platform;
+  final Logger _logger;
   final Project _project;
   final FlutterGenl10nCommand _flutterGenl10n;
   final GeneratorBuilder _generator;

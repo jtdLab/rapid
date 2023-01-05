@@ -63,8 +63,8 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
       );
   }
 
-  final Logger _logger;
   final Platform _platform;
+  final Logger _logger;
   final Project _project;
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
       _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;

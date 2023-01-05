@@ -1,4 +1,6 @@
-// https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
+/// Allowed languages extracted from:
+///
+///  https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
 const _validLanguages = [
   'aa',
   'ab',
@@ -8242,4 +8244,9 @@ const _validLanguages = [
   'zzj',
 ];
 
+/// Whether [language] is supported by flutters l10n localization.
+///
+/// For more information see:
+///
+///  https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
 bool validateLanguage(String language) => _validLanguages.contains(language);

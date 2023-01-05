@@ -14,15 +14,15 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
   /// {@macro platform_remove_feature_command}
   PlatformRemoveFeatureCommand({
     required Platform platform,
-    required Logger logger,
+    Logger? logger,
     required Project project,
-    required MelosBootstrapCommand melosBootstrap,
-    required MelosCleanCommand melosClean,
+    MelosBootstrapCommand? melosBootstrap,
+    MelosCleanCommand? melosClean,
   })  : _platform = platform,
-        _logger = logger,
+        _logger = logger ?? Logger(),
         _project = project,
-        _melosBootstrap = melosBootstrap,
-        _melosClean = melosClean;
+        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        _melosClean = melosClean ?? Melos.clean;
 
   final Logger _logger;
   final MelosBootstrapCommand _melosBootstrap;
@@ -34,14 +34,14 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
   String get name => 'feature';
 
   @override
-  String get description =>
-      'Removes a feature from the ${_platform.prettyName} part of an existing Rapid project.';
+  List<String> get aliases => ['feat'];
 
   @override
   String get invocation => 'rapid android remove feature <name>';
 
   @override
-  List<String> get aliases => ['feat'];
+  String get description =>
+      'Removes a feature from the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {

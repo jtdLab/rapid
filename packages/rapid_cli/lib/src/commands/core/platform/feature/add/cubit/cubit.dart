@@ -21,17 +21,18 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
   /// {@macro platform_feature_add_cubit_command}
   PlatformFeatureAddCubitCommand({
     required Platform platform,
-    required Logger logger,
+    Logger? logger,
     required Project project,
-    required FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    required GeneratorBuilder generator,
+    GeneratorBuilder? generator,
   })  : _platform = platform,
-        _logger = logger,
+        _logger = logger ?? Logger(),
         _project = project,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-        _generator = generator {
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
+        _generator = generator ?? MasonGenerator.fromBundle {
     argParser
       ..addSeparator('')
       ..addOption(
@@ -52,11 +53,11 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
   String get name => 'cubit';
 
   @override
-  String get description =>
-      'Adds a cubit to a feature of the ${_platform.prettyName} part of an existing Rapid project.';
+  String get invocation => 'rapid android feature add cubit <name> [arguments]';
 
   @override
-  String get invocation => 'rapid android feature add cubit <name> [arguments]';
+  String get description =>
+      'Adds a cubit to a feature of the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {

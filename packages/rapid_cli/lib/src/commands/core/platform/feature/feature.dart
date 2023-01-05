@@ -20,12 +20,12 @@ abstract class PlatformFeatureCommand extends Command<int> {
   String get name => 'feature';
 
   @override
-  String get description =>
-      'Work with features of the ${_platform.prettyName} part of an existing Rapid project.';
+  List<String> get aliases => ['feat'];
 
   @override
   String get invocation => 'rapid ${_platform.name} features <subcommand>';
 
   @override
-  List<String> get aliases => ['feat'];
+  String get description =>
+      'Work with features of the ${_platform.prettyName} part of an existing Rapid project.';
 }

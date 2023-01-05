@@ -23,9 +23,9 @@ abstract class PlatformAddCommand extends Command<int> {
   String get name => 'add';
 
   @override
-  String get description =>
-      'Add features or languages to the ${_platform.prettyName} part of an existing Rapid project.';
+  String get invocation => 'rapid ${_platform.name} add <subcommand>';
 
   @override
-  String get invocation => 'rapid ${_platform.name} add <subcommand>';
+  String get description =>
+      'Add features or languages to the ${_platform.prettyName} part of an existing Rapid project.';
 }

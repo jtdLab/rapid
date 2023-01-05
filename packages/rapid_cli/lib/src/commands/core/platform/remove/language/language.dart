@@ -16,13 +16,13 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
   /// {@macro platform_remove_language_command}
   PlatformRemoveLanguageCommand({
     required Platform platform,
-    required Logger logger,
+    Logger? logger,
     required Project project,
-    required FlutterGenl10nCommand flutterGenl10n,
+    FlutterGenl10nCommand? flutterGenl10n,
   })  : _platform = platform,
-        _logger = logger,
+        _logger = logger ?? Logger(),
         _project = project,
-        _flutterGenl10n = flutterGenl10n;
+        _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n;
 
   final Logger _logger;
   final Platform _platform;
@@ -33,14 +33,14 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
   String get name => 'language';
 
   @override
-  String get description =>
-      'Removes a language from the ${_platform.prettyName} part of an existing Rapid project.';
+  List<String> get aliases => ['lang'];
 
   @override
   String get invocation => 'rapid ${_platform.name} remove language <language>';
 
   @override
-  List<String> get aliases => ['lang'];
+  String get description =>
+      'Removes a language from the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {

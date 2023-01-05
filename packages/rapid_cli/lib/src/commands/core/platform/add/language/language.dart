@@ -22,15 +22,15 @@ abstract class PlatformAddLanguageCommand extends Command<int>
   /// {@macro platform_add_language_command}
   PlatformAddLanguageCommand({
     required Platform platform,
-    required Logger logger,
+    Logger? logger,
     required Project project,
-    required FlutterGenl10nCommand flutterGenl10n,
-    required GeneratorBuilder generator,
+    FlutterGenl10nCommand? flutterGenl10n,
+    GeneratorBuilder? generator,
   })  : _platform = platform,
-        _logger = logger,
+        _logger = Logger(),
         _project = project,
-        _flutterGenl10n = flutterGenl10n,
-        _generator = generator;
+        _flutterGenl10n = Flutter.genl10n,
+        _generator = MasonGenerator.fromBundle;
 
   final Logger _logger;
   final Platform _platform;
@@ -42,14 +42,14 @@ abstract class PlatformAddLanguageCommand extends Command<int>
   String get name => 'language';
 
   @override
-  String get description =>
-      'Adds a language to the ${_platform.prettyName} part of an existing Rapid project.';
-
-  @override
   List<String> get aliases => ['lang'];
 
   @override
   String get invocation => 'rapid ${_platform.name} add language <language>';
+
+  @override
+  String get description =>
+      'Adds a language to the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {

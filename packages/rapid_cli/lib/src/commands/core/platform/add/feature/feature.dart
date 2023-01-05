@@ -21,17 +21,17 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   /// {@macro platform_add_feature_command}
   PlatformAddFeatureCommand({
     required Platform platform,
-    required Logger logger,
+    Logger? logger,
     required Project project,
-    required GeneratorBuilder generator,
-    required MelosBootstrapCommand melosBootstrap,
-    required MelosCleanCommand melosClean,
+    GeneratorBuilder? generator,
+    MelosBootstrapCommand? melosBootstrap,
+    MelosCleanCommand? melosClean,
   })  : _platform = platform,
-        _logger = logger,
+        _logger = logger ?? Logger(),
         _project = project,
-        _generator = generator,
-        _melosBootstrap = melosBootstrap,
-        _melosClean = melosClean {
+        _generator = generator ?? MasonGenerator.fromBundle,
+        _melosBootstrap = Melos.bootstrap,
+        _melosClean = Melos.clean {
     argParser
       ..addSeparator('')
       ..addOption(
@@ -52,14 +52,14 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   String get name => 'feature';
 
   @override
-  String get description =>
-      'Adds a feature to the ${_platform.prettyName} part of an existing Rapid project.';
+  List<String> get aliases => ['feat'];
 
   @override
   String get invocation => 'rapid android add feature <name> [arguments]';
 
   @override
-  List<String> get aliases => ['feat'];
+  String get description =>
+      'Adds a feature to the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {

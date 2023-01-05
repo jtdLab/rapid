@@ -1,6 +1,3 @@
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/platform/add/language/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 
@@ -10,14 +7,11 @@ import 'package:rapid_cli/src/core/platform.dart';
 class AndroidAddLanguageCommand extends PlatformAddLanguageCommand {
   /// {@macro android_add_language_command}
   AndroidAddLanguageCommand({
-    Logger? logger,
+    super.logger,
     required super.project,
-    FlutterGenl10nCommand? flutterGenl10n,
-    GeneratorBuilder? generator,
+    super.flutterGenl10n,
+    super.generator,
   }) : super(
           platform: Platform.android,
-          logger: logger ?? Logger(),
-          flutterGenl10n: flutterGenl10n ?? Flutter.genl10n,
-          generator: generator ?? MasonGenerator.fromBundle,
         );
 }

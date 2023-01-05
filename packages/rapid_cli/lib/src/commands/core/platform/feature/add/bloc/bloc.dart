@@ -21,17 +21,18 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
   /// {@macro platform_feature_add_bloc_command}
   PlatformFeatureAddBlocCommand({
     required Platform platform,
-    required Logger logger,
+    Logger? logger,
     required Project project,
-    required FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    required GeneratorBuilder generator,
+    GeneratorBuilder? generator,
   })  : _platform = platform,
-        _logger = logger,
+        _logger = logger ?? Logger(),
         _project = project,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-        _generator = generator {
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
+        _generator = generator ?? MasonGenerator.fromBundle {
     argParser
       ..addSeparator('')
       // TODO add hint that its a dart package nameish string but not the full name of the related package
@@ -53,11 +54,11 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
   String get name => 'bloc';
 
   @override
-  String get description =>
-      'Adds a bloc to a feature of the ${_platform.prettyName} part of an existing Rapid project.';
+  String get invocation => 'rapid android feature add bloc <name> [arguments]';
 
   @override
-  String get invocation => 'rapid android feature add bloc <name> [arguments]';
+  String get description =>
+      'Adds a bloc to a feature of the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {

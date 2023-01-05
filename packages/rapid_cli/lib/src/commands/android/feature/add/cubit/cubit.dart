@@ -1,6 +1,3 @@
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 
@@ -10,17 +7,11 @@ import 'package:rapid_cli/src/core/platform.dart';
 class AndroidFeatureAddCubitCommand extends PlatformFeatureAddCubitCommand {
   /// {@macro android_feature_add_cubit_command}
   AndroidFeatureAddCubitCommand({
-    Logger? logger,
+    super.logger,
     required super.project,
-    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    GeneratorBuilder? generator,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+    super.generator,
   }) : super(
           platform: Platform.android,
-          logger: logger ?? Logger(),
-          flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
-              flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-                  Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
-          generator: generator ?? MasonGenerator.fromBundle,
         );
 }

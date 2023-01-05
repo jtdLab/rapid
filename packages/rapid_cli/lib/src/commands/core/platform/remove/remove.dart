@@ -23,9 +23,9 @@ abstract class PlatformRemoveCommand extends Command<int> {
   String get name => 'remove';
 
   @override
-  String get description =>
-      'Removes features or languages from the ${_platform.prettyName} part of an existing Rapid project.';
+  String get invocation => 'rapid ${_platform.name} remove <subcommand>';
 
   @override
-  String get invocation => 'rapid ${_platform.name} remove <subcommand>';
+  String get description =>
+      'Removes features or languages from the ${_platform.prettyName} part of an existing Rapid project.';
 }

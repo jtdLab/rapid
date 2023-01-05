@@ -18,7 +18,8 @@ class WindowsCommand extends PlatformCommand {
           platform: Platform.windows,
           project: project,
           addCommand: WindowsAddCommand(logger: logger, project: project),
-          featureCommand: WindowsFeatureCommand(logger: logger, project: project),
+          featureCommand:
+              WindowsFeatureCommand(logger: logger, project: project),
           removeCommand: WindowsRemoveCommand(logger: logger, project: project),
         );
 }

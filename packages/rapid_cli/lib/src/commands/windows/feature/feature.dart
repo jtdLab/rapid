@@ -14,6 +14,7 @@ class WindowsFeatureCommand extends PlatformFeatureCommand {
     required Project project,
   }) : super(
           platform: Platform.windows,
-          addCommand: WindowsFeatureAddCommand(logger: logger, project: project),
+          addCommand:
+              WindowsFeatureAddCommand(logger: logger, project: project),
         );
 }

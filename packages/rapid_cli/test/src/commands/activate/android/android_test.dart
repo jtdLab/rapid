@@ -44,25 +44,23 @@ abstract class _MelosCleanCommand {
   Future<void> call({String cwd});
 }
 
-class _MockArgResults extends Mock implements ArgResults {}
-
 class _MockLogger extends Mock implements Logger {}
 
 class _MockProgress extends Mock implements Progress {}
 
+class _MockProject extends Mock implements Project {}
+
 class _MockMelosFile extends Mock implements MelosFile {}
+
+class _MockAppPackage extends Mock implements AppPackage {}
 
 class _MockPubspecFile extends Mock implements PubspecFile {}
 
 class _MockMainFile extends Mock implements MainFile {}
 
-class _MockAppPackage extends Mock implements AppPackage {}
-
-class _MockInjectionFile extends Mock implements InjectionFile {}
-
 class _MockDiPackage extends Mock implements DiPackage {}
 
-class _MockProject extends Mock implements Project {}
+class _MockInjectionFile extends Mock implements InjectionFile {}
 
 class MockFlutterConfigEnablePlatformCommand extends Mock
     implements _FlutterConfigEnablePlatformCommand {}
@@ -80,96 +78,113 @@ class _MockMelosCleanCommand extends Mock implements _MelosCleanCommand {}
 
 class _MockMasonGenerator extends Mock implements MasonGenerator {}
 
-class FakeDirectoryGeneratorTarget extends Fake
+class _MockArgResults extends Mock implements ArgResults {}
+
+class _FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}
 
 void main() {
   group('activate android', () {
     final cwd = Directory.current;
 
-    late List<String> progressLogs;
     late Logger logger;
-    late Progress progress;
-    const projectName = 'test_app';
+    late List<String> progressLogs;
+
+    late Project project;
     late MelosFile melosFile;
+    const projectName = 'test_app';
+    late AppPackage appPackage;
+    const appPackagePath = 'bam/boz';
     late PubspecFile appPackagePubspec;
     late MainFile mainFileDev;
     late MainFile mainFileTest;
     late MainFile mainFileProd;
-    const appPackagePath = 'bam/boz';
-    late AppPackage appPackage;
+
     late PubspecFile diPackagePubspec;
     late InjectionFile injectionFile;
     const diPackagePath = 'foo/bar/baz';
     late DiPackage diPackage;
-    late Project project;
+
     late _FlutterConfigEnablePlatformCommand flutterConfigEnableAndroid;
+
     late _FlutterPubGetCommand flutterPubGet;
+
     late _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+
     late _MelosBootstrapCommand melosBootstrap;
+
     late _MelosCleanCommand melosClean;
+
+    late MasonGenerator generator;
     final generatedFiles = List.filled(
       23,
       const GeneratedFile.created(path: ''),
     );
-    late MasonGenerator generator;
+
     late ArgResults argResults;
 
     late ActivateAndroidCommand command;
 
     setUpAll(() {
-      registerFallbackValue(FakeDirectoryGeneratorTarget());
+      registerFallbackValue(_FakeDirectoryGeneratorTarget());
     });
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
+      logger = _MockLogger();
+      final progress = _MockProgress();
       progressLogs = <String>[];
-      progress = _MockProgress();
       when(() => progress.complete(any())).thenAnswer((_) {
         final message = _.positionalArguments.elementAt(0) as String?;
         if (message != null) progressLogs.add(message);
       });
-      logger = _MockLogger();
       when(() => logger.progress(any())).thenReturn(progress);
+
+      project = _MockProject();
       melosFile = _MockMelosFile();
       when(() => melosFile.exists()).thenReturn(true);
       when(() => melosFile.name()).thenReturn(projectName);
+      appPackage = _MockAppPackage();
       appPackagePubspec = _MockPubspecFile();
       mainFileDev = _MockMainFile();
       mainFileTest = _MockMainFile();
       mainFileProd = _MockMainFile();
-      appPackage = _MockAppPackage();
       when(() => appPackage.path).thenReturn(appPackagePath);
       when(() => appPackage.pubspecFile).thenReturn(appPackagePubspec);
       when(() => appPackage.mainFiles)
           .thenReturn({mainFileDev, mainFileTest, mainFileProd});
+      diPackage = _MockDiPackage();
       diPackagePubspec = _MockPubspecFile();
       injectionFile = _MockInjectionFile();
-      diPackage = _MockDiPackage();
       when(() => diPackage.path).thenReturn(diPackagePath);
       when(() => diPackage.pubspecFile).thenReturn(diPackagePubspec);
       when(() => diPackage.injectionFile).thenReturn(injectionFile);
-      project = _MockProject();
       when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.appPackage).thenReturn(appPackage);
       when(() => project.diPackage).thenReturn(diPackage);
       when(() => project.isActivated(Platform.android)).thenReturn(false);
+
       flutterConfigEnableAndroid = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableAndroid()).thenAnswer((_) async {});
+
       flutterPubGet = _MockFlutterPubGetCommand();
       when(() => flutterPubGet(cwd: any(named: 'cwd')))
           .thenAnswer((_) async {});
+
       flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
           MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
       when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+
       melosBootstrap = _MockMelosBootstrapCommand();
       when(() => melosBootstrap(cwd: any(named: 'cwd')))
           .thenAnswer((_) async {});
+
       melosClean = _MockMelosCleanCommand();
       when(() => melosClean(cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+
       generator = _MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
@@ -180,6 +195,7 @@ void main() {
           logger: any(named: 'logger'),
         ),
       ).thenAnswer((_) async => generatedFiles);
+
       argResults = _MockArgResults();
 
       command = ActivateAndroidCommand(

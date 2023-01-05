@@ -16,7 +16,6 @@ class LinuxCommand extends PlatformCommand {
     required Project project,
   }) : super(
           platform: Platform.linux,
-          project: project,
           addCommand: LinuxAddCommand(logger: logger, project: project),
           featureCommand: LinuxFeatureCommand(logger: logger, project: project),
           removeCommand: LinuxRemoveCommand(logger: logger, project: project),

@@ -1,11 +1,17 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/commands/android/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
+import 'package:rapid_cli/src/commands/ios/feature/add/bloc/bloc.dart';
+import 'package:rapid_cli/src/commands/linux/feature/add/bloc/bloc.dart';
+import 'package:rapid_cli/src/commands/macos/feature/add/bloc/bloc.dart';
+import 'package:rapid_cli/src/commands/web/feature/add/bloc/bloc.dart';
+import 'package:rapid_cli/src/commands/windows/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:recase/recase.dart';
@@ -16,7 +22,19 @@ import 'bloc_bundle.dart';
 // TODO share code with add cubit command
 
 /// {@template platform_feature_add_bloc_command}
-/// Base class for TODO
+/// Base class for:
+///
+///  * [AndroidFeatureAddBlocCommand]
+///
+///  * [IosFeatureAddBlocCommand]
+///
+///  * [LinuxFeatureAddBlocCommand]
+///
+///  * [MacosFeatureAddBlocCommand]
+///
+///  * [WebFeatureAddBlocCommand]
+///
+///  * [WindowsFeatureAddBlocCommand]
 /// {@endtemplate}
 abstract class PlatformFeatureAddBlocCommand extends Command<int>
     with OverridableArgResults {

@@ -1,9 +1,27 @@
 import 'package:args/command_runner.dart';
+import 'package:rapid_cli/src/commands/android/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/add/add.dart';
+import 'package:rapid_cli/src/commands/ios/feature/feature.dart';
+import 'package:rapid_cli/src/commands/linux/feature/feature.dart';
+import 'package:rapid_cli/src/commands/macos/feature/feature.dart';
+import 'package:rapid_cli/src/commands/web/feature/feature.dart';
+import 'package:rapid_cli/src/commands/windows/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 
 /// {@template platform_feature_command}
-/// Base class for TODO
+/// Base class for:
+///
+///  * [AndroidFeatureCommand]
+///
+///  * [IosFeatureCommand]
+///
+///  * [LinuxFeatureCommand]
+///
+///  * [MacosFeatureCommand]
+///
+///  * [WebFeatureCommand]
+///
+///  * [WindowsFeatureCommand]
 /// {@endtemplate}
 abstract class PlatformFeatureCommand extends Command<int> {
   /// {@macro platform_feature_command}

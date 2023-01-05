@@ -16,7 +16,6 @@ class WebCommand extends PlatformCommand {
     required Project project,
   }) : super(
           platform: Platform.web,
-          project: project,
           addCommand: WebAddCommand(logger: logger, project: project),
           featureCommand: WebFeatureCommand(logger: logger, project: project),
           removeCommand: WebRemoveCommand(logger: logger, project: project),

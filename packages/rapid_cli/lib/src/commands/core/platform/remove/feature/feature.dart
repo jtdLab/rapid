@@ -1,13 +1,31 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/commands/android/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/ios/remove/feature/feature.dart';
+import 'package:rapid_cli/src/commands/linux/remove/feature/feature.dart';
+import 'package:rapid_cli/src/commands/macos/remove/feature/feature.dart';
+import 'package:rapid_cli/src/commands/web/remove/feature/feature.dart';
+import 'package:rapid_cli/src/commands/windows/remove/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template platform_remove_feature_command}
-/// Base class for // TODO
+/// Base class for:
+///
+///  * [AndroidRemoveFeatureCommand]
+///
+///  * [IosRemoveFeatureCommand]
+///
+///  * [LinuxRemoveFeatureCommand]
+///
+///  * [MacosRemoveFeatureCommand]
+///
+///  * [WebRemoveFeatureCommand]
+///
+///  * [WindowsRemoveFeatureCommand]
 /// {@endtemplate}
 abstract class PlatformRemoveFeatureCommand extends Command<int>
     with OverridableArgResults {
@@ -24,11 +42,11 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
         _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         _melosClean = melosClean ?? Melos.clean;
 
+  final Platform _platform;
   final Logger _logger;
+  final Project _project;
   final MelosBootstrapCommand _melosBootstrap;
   final MelosCleanCommand _melosClean;
-  final Platform _platform;
-  final Project _project;
 
   @override
   String get name => 'feature';

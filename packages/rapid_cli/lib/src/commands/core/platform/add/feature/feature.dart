@@ -1,11 +1,17 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/commands/android/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform/add/feature/feature_bundle.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
+import 'package:rapid_cli/src/commands/ios/add/feature/feature.dart';
+import 'package:rapid_cli/src/commands/linux/add/feature/feature.dart';
+import 'package:rapid_cli/src/commands/macos/add/feature/feature.dart';
+import 'package:rapid_cli/src/commands/web/add/feature/feature.dart';
+import 'package:rapid_cli/src/commands/windows/add/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:universal_io/io.dart';
@@ -14,7 +20,19 @@ import 'package:universal_io/io.dart';
 const _defaultDescription = 'A Rapid feature.';
 
 /// {@template platform_add_feature_command}
-/// Base class for TODO
+/// Base class for:
+///
+///  * [AndroidAddFeatureCommand]
+///
+///  * [IosAddFeatureCommand]
+///
+///  * [LinuxAddFeatureCommand]
+///
+///  * [MacosAddFeatureCommand]
+///
+///  * [WebAddFeatureCommand]
+///
+///  * [WindowsAddFeatureCommand]
 /// {@endtemplate}
 abstract class PlatformAddFeatureCommand extends Command<int>
     with OverridableArgResults {

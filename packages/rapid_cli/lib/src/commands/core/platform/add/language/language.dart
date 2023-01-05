@@ -2,10 +2,16 @@ import 'package:args/command_runner.dart';
 import 'package:collection/collection.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/commands/android/add/language/language.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/commands/core/validate_language.dart';
+import 'package:rapid_cli/src/commands/ios/add/language/language.dart';
+import 'package:rapid_cli/src/commands/linux/add/language/language.dart';
+import 'package:rapid_cli/src/commands/macos/add/language/language.dart';
+import 'package:rapid_cli/src/commands/web/add/language/language.dart';
+import 'package:rapid_cli/src/commands/windows/add/language/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:universal_io/io.dart';
@@ -15,7 +21,19 @@ import 'language_bundle.dart';
 // TODO share code with the remove lang command
 
 /// {@template platform_add_language_command}
-/// Base class for TODO
+/// Base class for:
+///
+///  * [AndroidAddLanguageCommand]
+///
+///  * [IosAddLanguageCommand]
+///
+///  * [LinuxAddLanguageCommand]
+///
+///  * [MacosAddLanguageCommand]
+///
+///  * [WebAddLanguageCommand]
+///
+///  * [WindowsAddLanguageCommand]
 /// {@endtemplate}
 abstract class PlatformAddLanguageCommand extends Command<int>
     with OverridableArgResults {

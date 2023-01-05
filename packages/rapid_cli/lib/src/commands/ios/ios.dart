@@ -16,7 +16,6 @@ class IosCommand extends PlatformCommand {
     required Project project,
   }) : super(
           platform: Platform.ios,
-          project: project,
           addCommand: IosAddCommand(logger: logger, project: project),
           featureCommand: IosFeatureCommand(logger: logger, project: project),
           removeCommand: IosRemoveCommand(logger: logger, project: project),

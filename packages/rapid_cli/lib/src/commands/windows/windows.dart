@@ -16,7 +16,6 @@ class WindowsCommand extends PlatformCommand {
     required Project project,
   }) : super(
           platform: Platform.windows,
-          project: project,
           addCommand: WindowsAddCommand(logger: logger, project: project),
           featureCommand:
               WindowsFeatureCommand(logger: logger, project: project),

@@ -1,10 +1,28 @@
 import 'package:args/command_runner.dart';
+import 'package:rapid_cli/src/commands/android/remove/remove.dart';
 import 'package:rapid_cli/src/commands/core/platform/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/platform/remove/language/language.dart';
+import 'package:rapid_cli/src/commands/ios/remove/remove.dart';
+import 'package:rapid_cli/src/commands/linux/remove/remove.dart';
+import 'package:rapid_cli/src/commands/macos/remove/remove.dart';
+import 'package:rapid_cli/src/commands/web/remove/remove.dart';
+import 'package:rapid_cli/src/commands/windows/remove/remove.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 
 /// {@template platform_remove_command}
-/// Base class for // TODO
+/// Base class for:
+///
+///  * [AndroidRemoveCommand]
+///
+///  * [IosRemoveCommand]
+///
+///  * [LinuxRemoveCommand]
+///
+///  * [MacosRemoveCommand]
+///
+///  * [WebRemoveCommand]
+///
+///  * [WindowsRemoveCommand]
 /// {@endtemplate}
 abstract class PlatformRemoveCommand extends Command<int> {
   /// {@macro platform_remove_command}

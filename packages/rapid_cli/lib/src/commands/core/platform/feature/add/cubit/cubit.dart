@@ -1,11 +1,17 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/commands/android/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
+import 'package:rapid_cli/src/commands/ios/feature/add/cubit/cubit.dart';
+import 'package:rapid_cli/src/commands/linux/feature/add/cubit/cubit.dart';
+import 'package:rapid_cli/src/commands/macos/feature/add/cubit/cubit.dart';
+import 'package:rapid_cli/src/commands/web/feature/add/cubit/cubit.dart';
+import 'package:rapid_cli/src/commands/windows/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:recase/recase.dart';
@@ -14,7 +20,19 @@ import 'package:universal_io/io.dart';
 import 'cubit_bundle.dart';
 
 /// {@template platform_feature_add_cubit_command}
-/// Base class for TODO
+/// Base class for:
+///
+///  * [AndroidFeatureAddCubitCommand]
+///
+///  * [IosFeatureAddCubitCommand]
+///
+///  * [LinuxFeatureAddCubitCommand]
+///
+///  * [MacosFeatureAddCubitCommand]
+///
+///  * [WebFeatureAddCubitCommand]
+///
+///  * [WindowsFeatureAddCubitCommand]
 /// {@endtemplate}
 abstract class PlatformFeatureAddCubitCommand extends Command<int>
     with OverridableArgResults {

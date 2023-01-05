@@ -267,18 +267,6 @@ void main() {
       }),
     );
 
-    test('exits with 69 when flutter is not installed', () async {
-      // Arrange
-      when(() => flutterInstalled()).thenAnswer((_) async => false);
-
-      // Act
-      final result = await command.run();
-
-      // Assert
-      verify(() => logger.err('Flutter not installed.')).called(1);
-      expect(result, ExitCode.unavailable.code);
-    });
-
     test('completes successfully with correct output', () async {
       // Act
       final result = await command.run();
@@ -663,6 +651,18 @@ void main() {
       expect(result, equals(ExitCode.success.code));
     });
 
+    test('exits with 69 when flutter is not installed', () async {
+      // Arrange
+      when(() => flutterInstalled()).thenAnswer((_) async => false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err('Flutter not installed.')).called(1);
+      expect(result, ExitCode.unavailable.code);
+    });
+
     group('org-name', () {
       group('--org', () {
         test(
@@ -689,159 +689,112 @@ void main() {
       });
 
       group('invalid --org-name', () {
-        String expectedErrorMessage(String orgName) =>
-            '"$orgName" is not a valid org name.\n\n'
-            'A valid org name has at least 2 parts separated by "."\n'
-            'Each part must start with a letter and only include '
-            'alphanumeric characters (A-Z, a-z, 0-9), underscores (_), '
-            'and hyphens (-)\n'
-            '(ex. com.example)';
+        void Function() verifyOrgNameIsInvalid(String orgName) =>
+            withRunner((commandRunner, logger, printLogs) async {
+              // Act
+              final result = await commandRunner.run(
+                ['create', p.join(outputDir, 'foo'), '--org-name', orgName],
+              );
+
+              // Assert
+              expect(result, equals(ExitCode.usage.code));
+              verify(
+                () => logger.err(
+                  '"$orgName" is not a valid org name.\n\n'
+                  'A valid org name has at least 2 parts separated by "."\n'
+                  'Each part must start with a letter and only include '
+                  'alphanumeric characters (A-Z, a-z, 0-9), underscores (_), '
+                  'and hyphens (-)\n'
+                  '(ex. com.example)',
+                ),
+              ).called(1);
+            });
 
         test(
-          'no delimiters',
-          withRunner((commandRunner, logger, printLogs) async {
-            // Arrange
-            const orgName = 'My App';
-
-            // Act
-            final result = await commandRunner.run(
-              ['create', p.join(outputDir, 'foo'), '--org-name', orgName],
-            );
-
-            // Assert
-            expect(result, equals(ExitCode.usage.code));
-            verify(() => logger.err(expectedErrorMessage(orgName))).called(1);
-          }),
-        );
-
-        test(
-          'less than 2 domains',
-          withRunner((commandRunner, logger, printLogs) async {
-            // Arrange
-            const orgName = 'badorgname';
-
-            // Act
-            final result = await commandRunner.run(
-              ['create', p.join(outputDir, 'foo'), '--org-name', orgName],
-            );
-
-            // Assert
-            expect(result, equals(ExitCode.usage.code));
-            verify(() => logger.err(expectedErrorMessage(orgName))).called(1);
-          }),
+          'valid prefix but invalid suffix',
+          verifyOrgNameIsInvalid('some.good.prefix.bad@@suffix'),
         );
 
         test(
           'invalid characters present',
-          withRunner((commandRunner, logger, printLogs) async {
-            // Arrange
-            const orgName = 'bad%.org@.#name';
-
-            // Act
-            final result = await commandRunner.run(
-              ['create', p.join(outputDir, 'foo'), '--org-name', orgName],
-            );
-
-            // Assert
-            expect(result, equals(ExitCode.usage.code));
-            verify(() => logger.err(expectedErrorMessage(orgName))).called(1);
-          }),
+          verifyOrgNameIsInvalid('bad%.org@.#name'),
         );
+
+        test('no delimiters', verifyOrgNameIsInvalid('My Org'));
 
         test(
           'segment starts with a non-letter',
-          withRunner((commandRunner, logger, printLogs) async {
-            // Arrange
-            const orgName = 'bad.org.1name';
-
-            // Act
-            final result = await commandRunner.run(
-              ['create', p.join(outputDir, 'foo'), '--org-name', orgName],
-            );
-
-            // Assert
-            expect(result, equals(ExitCode.usage.code));
-            verify(() => logger.err(expectedErrorMessage(orgName))).called(1);
-          }),
+          verifyOrgNameIsInvalid('bad.org.1name'),
         );
 
-        test(
-          'valid prefix but invalid suffix',
-          withRunner((commandRunner, logger, printLogs) async {
-            // Arrange
-            const orgName = 'some.good.prefix.bad@@suffix';
-
-            // Act
-            final result = await commandRunner.run(
-              ['create', p.join(outputDir, 'foo'), '--org-name', orgName],
-            );
-
-            // Assert
-            expect(result, equals(ExitCode.usage.code));
-            verify(() => logger.err(expectedErrorMessage(orgName))).called(1);
-          }),
-        );
+        test('less than 2 domains', verifyOrgNameIsInvalid('badorgname'));
       });
 
       group('valid --org-name', () {
-        Future<void> expectValidOrgName(String orgName) async {
-          // Arrange
-          when(() => argResults['org-name']).thenReturn(orgName);
+        void Function() verifyOrgNameIsValid2(String orgName) => () async {
+              // Arrange
+              when(() => argResults['org-name']).thenReturn(orgName);
 
-          // Act
-          final result = await command.run();
+              // Act
+              final result = await command.run();
 
-          // Assert
-          expect(result, equals(ExitCode.success.code));
-          verify(
-            () => generator.generate(
-              any(
-                that: isA<DirectoryGeneratorTarget>().having(
-                  (g) => g.dir.path,
-                  'dir',
-                  outputDir,
+              // Assert
+              expect(result, equals(ExitCode.success.code));
+              verify(
+                () => generator.generate(
+                  any(
+                    that: isA<DirectoryGeneratorTarget>().having(
+                      (g) => g.dir.path,
+                      'dir',
+                      outputDir,
+                    ),
+                  ),
+                  vars: <String, dynamic>{
+                    'project_name': projectName,
+                    'org_name': orgName,
+                    'description': 'A Rapid app.',
+                    'example': false,
+                    'android': false,
+                    'ios': false,
+                    'web': false,
+                    'linux': false,
+                    'macos': false,
+                    'windows': false,
+                  },
+                  logger: logger,
                 ),
-              ),
-              vars: <String, dynamic>{
-                'project_name': projectName,
-                'org_name': orgName,
-                'description': 'A Rapid app.',
-                'example': false,
-                'android': false,
-                'ios': false,
-                'web': false,
-                'linux': false,
-                'macos': false,
-                'windows': false,
-              },
-              logger: logger,
-            ),
-          ).called(1);
-        }
+              ).called(1);
+            };
 
-        test('alphanumeric with three parts', () async {
-          await expectValidOrgName('com.example.app');
-        });
+        test(
+          'alphanumeric with three parts',
+          verifyOrgNameIsValid2('com.example.app'),
+        );
 
-        test('containing an underscore', () async {
-          await expectValidOrgName('com.example.bad_app');
-        });
+        test(
+          'less than three parts',
+          verifyOrgNameIsValid2('com.example'),
+        );
 
-        test('containing a hyphen', () async {
-          await expectValidOrgName('com.example.bad-app');
-        });
+        test(
+          'containing a hyphen',
+          verifyOrgNameIsValid2('com.example.bad-app'),
+        );
 
-        test('single character parts', () async {
-          await expectValidOrgName('c.e.a');
-        });
+        test(
+          'more than three parts',
+          verifyOrgNameIsValid2('com.example.app.identifier'),
+        );
 
-        test('more than three parts', () async {
-          await expectValidOrgName('com.example.app.identifier');
-        });
+        test(
+          'single char parts',
+          verifyOrgNameIsValid2('c.e.a'),
+        );
 
-        test('less than three parts', () async {
-          await expectValidOrgName('com.example');
-        });
+        test(
+          'containing an underscore',
+          verifyOrgNameIsValid2('com.example.bad_app'),
+        );
       });
     });
   });

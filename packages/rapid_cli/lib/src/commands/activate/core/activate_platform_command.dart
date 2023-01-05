@@ -7,6 +7,7 @@ import 'package:rapid_cli/src/commands/activate/linux/linux.dart';
 import 'package:rapid_cli/src/commands/activate/macos/macos.dart';
 import 'package:rapid_cli/src/commands/activate/web/web.dart';
 import 'package:rapid_cli/src/commands/activate/windows/windows.dart';
+import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -32,25 +33,32 @@ abstract class ActivatePlatformCommand extends Command<int>
   /// {@macro activate_platform_command}
   ActivatePlatformCommand({
     required Platform platform,
-    required Logger logger,
+    required MasonBundle platformBundle,
+    Logger? logger,
     required Project project,
-    required FlutterConfigEnablePlatformCommand flutterConfigEnablePlatform,
-    required FlutterPubGetCommand flutterPubGetCommand,
-    required FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+    FlutterConfigEnablePlatformCommand? flutterConfigEnablePlatform,
+    FlutterPubGetCommand? flutterPubGetCommand,
+    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    required MelosBootstrapCommand melosBootstrap,
-    required MelosCleanCommand melosClean,
+    MelosBootstrapCommand? melosBootstrap,
+    MelosCleanCommand? melosClean,
+    GeneratorBuilder? generator,
   })  : _platform = platform,
-        _logger = logger,
+        _platformBundle = platformBundle,
+        _logger = logger ?? Logger(),
         _project = project,
-        _flutterConfigEnablePlatform = flutterConfigEnablePlatform,
-        _flutterPubGetCommand = flutterPubGetCommand,
+        _flutterConfigEnablePlatform =
+            flutterConfigEnablePlatform ?? Flutter.configEnableAndroid,
+        _flutterPubGetCommand = flutterPubGetCommand ?? Flutter.pubGet,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-        _melosBootstrap = melosBootstrap,
-        _melosClean = melosClean;
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
+        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        _melosClean = melosClean ?? Melos.clean,
+        _generator = generator ?? MasonGenerator.fromBundle;
 
   final Platform _platform;
+  final MasonBundle _platformBundle;
   final Logger _logger;
   final Project _project;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnablePlatform;
@@ -59,13 +67,7 @@ abstract class ActivatePlatformCommand extends Command<int>
       _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final MelosBootstrapCommand _melosBootstrap;
   final MelosCleanCommand _melosClean;
-
-  @override
-  String get description =>
-      'Adds support for ${_platform.prettyName} to this project.';
-
-  @override
-  String get invocation => 'rapid activate ${_platform.name}';
+  final GeneratorBuilder _generator;
 
   @override
   String get name => _platform.name;
@@ -73,8 +75,16 @@ abstract class ActivatePlatformCommand extends Command<int>
   @override
   List<String> get aliases => _platform.aliases;
 
+  @override
+  String get invocation => 'rapid activate ${_platform.name}';
+
+  @override
+  String get description =>
+      'Adds support for ${_platform.prettyName} to this project.';
+
   /// Generates the files needed in the process of activating a platform.
   Future<List<GeneratedFile>> generate({
+    required MasonGenerator generator,
     required Logger logger,
     required Project project,
   });
@@ -101,7 +111,12 @@ abstract class ActivatePlatformCommand extends Command<int>
 
           final generateProgress =
               _logger.progress('Generating ${_platform.prettyName} files');
-          final files = await generate(logger: _logger, project: _project);
+          final generator = await _generator(_platformBundle);
+          final files = await generate(
+            logger: _logger,
+            project: _project,
+            generator: generator,
+          );
           generateProgress.complete(
               'Generated ${files.length} ${_platform.prettyName} file(s)');
 

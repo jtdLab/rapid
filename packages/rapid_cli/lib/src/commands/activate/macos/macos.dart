@@ -1,12 +1,12 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/activate/core/activate_platform_command.dart';
-import 'package:rapid_cli/src/commands/activate/macos/macos_bundle.dart';
-import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:universal_io/io.dart';
+
+import 'macos_bundle.dart';
 
 /// {@template activate_macos_command}
 /// `rapid activate macos` command adds support for macOS to an existing Rapid project.
@@ -14,44 +14,32 @@ import 'package:universal_io/io.dart';
 class ActivateMacosCommand extends ActivatePlatformCommand with OrgNameGetters {
   /// {@macro activate_macos_command}
   ActivateMacosCommand({
-    Logger? logger,
-    required Project project,
+    super.logger,
+    required super.project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableMacos,
-    FlutterPubGetCommand? flutterPubGetCommand,
-    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    MelosBootstrapCommand? melosBootstrap,
-    MelosCleanCommand? melosClean,
-    GeneratorBuilder? generator,
-  })  : _generator = generator ?? MasonGenerator.fromBundle,
-        super(
+    super.flutterPubGetCommand,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+    super.melosBootstrap,
+    super.melosClean,
+    super.generator,
+  }) : super(
           platform: Platform.macos,
-          logger: logger ?? Logger(),
-          project: project,
-          flutterConfigEnablePlatform:
-              flutterConfigEnableMacos ?? Flutter.configEnableMacos,
-          flutterPubGetCommand: flutterPubGetCommand ?? Flutter.pubGet,
-          flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
-              flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-                  Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
-          melosBootstrap: melosBootstrap ?? Melos.bootstrap,
-          melosClean: melosClean ?? Melos.clean,
+          platformBundle: macosBundle,
+          flutterConfigEnablePlatform: flutterConfigEnableMacos,
         ) {
     argParser.addOrgNameOption(
       help: 'The organization for the native macOS project.',
     );
   }
 
-  final GeneratorBuilder _generator;
-
   @override
   Future<List<GeneratedFile>> generate({
+    required MasonGenerator generator,
     required Logger logger,
     required Project project,
   }) async {
     final projectName = project.melosFile.name();
 
-    final generator = await _generator(macosBundle);
     return generator.generate(
       DirectoryGeneratorTarget(Directory('.')),
       vars: {

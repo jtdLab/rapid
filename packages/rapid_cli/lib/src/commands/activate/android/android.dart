@@ -1,7 +1,6 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/activate/core/activate_platform_command.dart';
-import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -16,44 +15,32 @@ class ActivateAndroidCommand extends ActivatePlatformCommand
     with OrgNameGetters {
   /// {@macro activate_android_command}
   ActivateAndroidCommand({
-    Logger? logger,
-    required Project project,
+    super.logger,
+    required super.project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableAndroid,
-    FlutterPubGetCommand? flutterPubGetCommand,
-    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    MelosBootstrapCommand? melosBootstrap,
-    MelosCleanCommand? melosClean,
-    GeneratorBuilder? generator,
-  })  : _generator = generator ?? MasonGenerator.fromBundle,
-        super(
+    super.flutterPubGetCommand,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+    super.melosBootstrap,
+    super.melosClean,
+    super.generator,
+  }) : super(
           platform: Platform.android,
-          logger: logger ?? Logger(),
-          project: project,
-          flutterConfigEnablePlatform:
-              flutterConfigEnableAndroid ?? Flutter.configEnableAndroid,
-          flutterPubGetCommand: flutterPubGetCommand ?? Flutter.pubGet,
-          flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
-              flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-                  Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
-          melosBootstrap: melosBootstrap ?? Melos.bootstrap,
-          melosClean: melosClean ?? Melos.clean,
+          platformBundle: androidBundle,
+          flutterConfigEnablePlatform: flutterConfigEnableAndroid,
         ) {
     argParser.addOrgNameOption(
       help: 'The organization for the native Android project.',
     );
   }
 
-  final GeneratorBuilder _generator;
-
   @override
   Future<List<GeneratedFile>> generate({
+    required MasonGenerator generator,
     required Logger logger,
     required Project project,
   }) async {
     final projectName = project.melosFile.name();
 
-    final generator = await _generator(androidBundle);
     return generator.generate(
       DirectoryGeneratorTarget(Directory('.')),
       vars: {

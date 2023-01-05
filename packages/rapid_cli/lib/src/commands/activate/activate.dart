@@ -30,9 +30,9 @@ class ActivateCommand extends Command<int> {
   String get name => 'activate';
 
   @override
-  String get description =>
-      'Adds support for a platform to an existing Rapid project.';
+  String get invocation => 'rapid activate <platform>';
 
   @override
-  String get invocation => 'rapid activate <platform>';
+  String get description =>
+      'Adds support for a platform to an existing Rapid project.';
 }

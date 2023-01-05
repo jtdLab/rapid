@@ -30,8 +30,8 @@ abstract class PlatformAddFeatureCommand extends Command<int>
         _logger = logger ?? Logger(),
         _project = project,
         _generator = generator ?? MasonGenerator.fromBundle,
-        _melosBootstrap = Melos.bootstrap,
-        _melosClean = Melos.clean {
+        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        _melosClean = melosClean ?? Melos.clean {
     argParser
       ..addSeparator('')
       ..addOption(

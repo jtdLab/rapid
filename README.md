@@ -32,34 +32,37 @@ Data only flows from the outside through the app to the view and backwards.
 
 ## Platform-independent Packages
 
-### `app`
+### `<project_name>_app`
 Contains the setup and bootstraping of the application depending on platform and environment.
 
-### `logging`
+### `<project_name>_logging`
 Contains the logging of the application.
 
-### `di`
+### `<project_name>_di`
 Contains the dependency injection of the application.
 
-### `domain`
+### `<project_name>_domain`
 Contains the platform independent domain layer. This consists of service interfaces, entitys, value objects and failures.
 
-### `infrastructure`
+### `<project_name>_infrastructure`
 Contains implementation of the domain layer. This consists of service implementations and data transfer objects.
 
 ## Platform-dependent Packages
 
 Contains features of the specific platform.
 
-### `app`
+### `<project_name>_<platform>_app`
 
 The app feature. A required feature that provides the root widget of the related platform
 
-### `routing`
+### `<project_name>_<platform>_routing`
 
-The routing feature. A required feature where all pages get registered.
+The routing feature. A required feature that provides a router where pages get registered.
+The router is used in other features to navigate.
 
 ### Custom Features
+
+### `<project_name>_<platform>_<feature_name>`
 
 Custom features.
 
@@ -68,11 +71,16 @@ Pure Flutter packages containing the Design Language of the Rapid project.
 What [`material`](https://docs.flutter.dev/development/ui/widgets/material), [`cupertino`](https://docs.flutter.dev/development/ui/widgets/cupertino), [`macos_ui`](https://pub.dev/packages/macos_ui) or [`fluent_ui`](https://pub.dev/packages/fluent_ui) is to Android, iOS, macOS or Windows
 the UI Packages are to your Rapid project.
 
-### `ui`
+### Platform-independent UI Packages
+
+### `<project_name>_ui`
 
 Contains platform independent Design Language.
 
 ### Platform-dependent UI Packages
+
+### `<project_name>_ui_<platform>`
+
 
 Contains platform dependent Design Language. Builds on top of the platform independent `ui` package and existing ui libraries like [`material`](https://docs.flutter.dev/development/ui/widgets/material), [`cupertino`](https://docs.flutter.dev/development/ui/widgets/cupertino), [`macos_ui`](https://pub.dev/packages/macos_ui) or [`fluent_ui`](https://pub.dev/packages/fluent_ui).
 

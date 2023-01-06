@@ -114,7 +114,7 @@ rapid deactivate web
 rapid deactivate windows
 ```
 
-TODO other commands
+TODO other commands with some matrix or other ui
 
 ### `rapid doctor`
 

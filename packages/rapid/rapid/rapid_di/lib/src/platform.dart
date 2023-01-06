@@ -2,7 +2,7 @@ import 'package:injectable/injectable.dart';
 
 /// Used to annotate dependencies which are
 /// registered under certain platforms
-class Platform {
+abstract class Platform {
   /// preset of common platform name 'android'
   static const android = 'android';
 

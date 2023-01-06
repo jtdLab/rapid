@@ -31,3 +31,6 @@ build/
 
 # Melos
 pubspec_overrides.yaml
+
+# Coverage
+coverage/

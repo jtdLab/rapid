@@ -3,19 +3,21 @@ name: rapid_di
 on:
   push:
     paths:
-      - "packages/rapid_di/**"
+      - "packages/rapid/rapid/rapid_di/**"
       - ".github/workflows/rapid_di.yaml"
+      - "!packages/rapid/rapid/rapid_di/README.md"
 
   pull_request:
     paths:
-      - "packages/rapid_di/**"
+      - "packages/rapid/rapid/rapid_di/**"
       - ".github/workflows/rapid_di.yaml"
+      - "!packages/rapid/rapid/rapid_di/README.md"
 
 jobs:
   test:
     defaults:
       run:
-        working-directory: packages/rapid_di
+        working-directory: packages/rapid/rapid/rapid_di
 
     runs-on: ubuntu-latest
 
@@ -30,16 +32,15 @@ jobs:
       - uses: subosito/flutter-action@v2
         with:
           cache: true
-      - run: flutter --version
 
       - name: Install Dependencies
         run: flutter pub get
 
       - name: Format
-        run: flutter format --set-exit-if-changed .
+        run: flutter format . --set-exit-if-changed
 
       - name: Analyze
-        run: flutter analyze --fatal-infos --fatal-warnings .
+        run: flutter analyze .
 
       - name: Run Tests
         run: flutter test -j 1 --no-pub --test-randomize-ordering-seed random

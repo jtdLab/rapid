@@ -1,4 +1,5 @@
-![Rapid CLI Logo][logo]
+![Rapid CLI Logo][logo_white]
+![Rapid CLI Logo][logo_black]
 
 ---
 
@@ -9,7 +10,7 @@ Rapid CLI
 ### Installing 🧑‍💻
 
 ```sh
-dart pub global activate -sgit https://github.com/jtdLab/rapid.git --git-path packages/rapid_cli/
+flutter pub global activate -sgit https://github.com/jtdLab/rapid.git --git-path packages/rapid_cli/
 ```
 
 ### Commands
@@ -124,4 +125,5 @@ Get helpful insights into a Rapid project.
 rapid doctor
 ```
 
-[logo]: https://raw.githubusercontent.com/jtdLab/rapid/main/packages/rapid_cli/assets/logo.svg
+[logo_white]: https://raw.githubusercontent.com/jtdLab/rapid/main/packages/rapid_cli/assets/logo_white.svg
+[logo_black]: https://raw.githubusercontent.com/jtdLab/rapid/main/packages/rapid_cli/assets/logo_black.svg

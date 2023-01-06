@@ -5,11 +5,13 @@ on:
     paths:
       - "packages/rapid_cli/**"
       - ".github/workflows/rapid_cli.yaml"
+      - "!packages/rapid_cli/README.md"
 
   pull_request:
     paths:
       - "packages/rapid_cli/**"
       - ".github/workflows/rapid_cli.yaml"
+      - "!packages/rapid_cli/README.md"
 
 jobs:
   test:

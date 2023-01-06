@@ -7,23 +7,23 @@
 
 Rapid is based on carefully selected packages from the Flutter Community and brings their power together. No headaches about messing up your architecture when adding new features. Rapid enables developers to focus on quickly iterating and adding features.
 
-| Package                                                                   |
-| ------------------------------------------------------------------------- |
-| [rapid_cli](https://github.com/jtdLab/rapid/tree/main/packages/rapid_cli) |
-| [rapid](https://github.com/jtdLab/rapid/tree/main/packages/rapid/rapid) |
-| [rapid_di](https://github.com/jtdLab/rapid/tree/main/packages/rapid_di/rapid_di) |
+| Package                                                                          | Description                            |
+| -------------------------------------------------------------------------------- | -------------------------------------- |
+| [rapid_cli](https://github.com/jtdLab/rapid/tree/main/packages/rapid_cli)        | Command Line Interface for development |
+| [rapid](https://github.com/jtdLab/rapid/tree/main/packages/rapid/rapid)          | TODO                                   |
+| [rapid_di](https://github.com/jtdLab/rapid/tree/main/packages/rapid_di/rapid_di) | TODO                                   |
 
 ## What does Rapid provide? 👀
 
-| Task                   | via                                     |
-| ---------------------- |:---------------------------------------:|
-| Project Management     | [melos](https://pub.dev/packages/melos) |
-| Dependency Injection   | [getIt](https://pub.dev/packages/get_it), [injectable](https://pub.dev/packages/injectable) |
-| Routing                | [auto_route](https://pub.dev/packages/auto_route) |
-| Theming                | [theme_tailor](https://pub.dev/packages/theme_tailor) |
+| Task                   |                                                        via                                                        |
+| ---------------------- | :---------------------------------------------------------------------------------------------------------------: |
+| Project Management     |                                      [melos](https://pub.dev/packages/melos)                                      |
+| Dependency Injection   |            [getIt](https://pub.dev/packages/get_it), [injectable](https://pub.dev/packages/injectable)            |
+| Routing                |                                 [auto_route](https://pub.dev/packages/auto_route)                                 |
+| Theming                |                               [theme_tailor](https://pub.dev/packages/theme_tailor)                               |
 | Localization           | [flutter_localizations](https://docs.flutter.dev/development/accessibility-and-localization/internationalization) |
-| State Management       | [bloc](https://pub.dev/packages/bloc) |
-| Immutable Data Classes | [freezed](https://pub.dev/packages/freezed) |
+| State Management       |                                       [bloc](https://pub.dev/packages/bloc)                                       |
+| Immutable Data Classes |                                    [freezed](https://pub.dev/packages/freezed)                                    |
 
 Special thanks to all developers/contributors of these packages ❤️
 

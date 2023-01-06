@@ -1,4 +1,4 @@
-TODO logo 
+[![Rapid CLI Logo][logo]]
 
 ---
 
@@ -123,3 +123,5 @@ Get helpful insights into a Rapid project.
 # Show information about an existing Rapid project
 rapid doctor
 ```
+
+[logo]: https://raw.githubusercontent.com/jtdLab/rapid/main/packages/rapid_cli/assets/logo.svg

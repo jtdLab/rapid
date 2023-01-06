@@ -3,9 +3,10 @@
 
 ---
 
-Well architectured, modular, scaling Flutter Apps. Fast ⚡
+## Well architectured Flutter apps. Fast ⚡
 
-Rapid is based on some of the Flutter-Communitys most successful packages and brings their power
-together.
+Rapid is based on carefully selected packages from the Flutter Community and brings their power together. No headaches about messing up your architecture when adding new features. Rapid enables developers to focus on what really matters.
+
+## Core principles
 
 ## Architecture

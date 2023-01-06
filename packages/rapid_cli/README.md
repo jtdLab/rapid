@@ -10,6 +10,10 @@ Create well architectured Flutter Apps fast with Rapid CLI.
 ### Installing 🧑‍💻
 
 ```sh
+flutter pub global activate melos
+```
+
+```sh
 flutter pub global activate -sgit https://github.com/jtdLab/rapid.git --git-path packages/rapid_cli/
 ```
 

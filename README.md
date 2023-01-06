@@ -7,25 +7,6 @@
 
 Rapid is based on carefully selected packages from the Flutter Community and brings their power together. No headaches about messing up your architecture when adding new features. Rapid enables developers to focus on quickly iterating and adding features.
 
-## Core principles
-
-### Modularity
-
-Rapid aims to keep scopes small and thus uses a multi package approach. The packages are managed
-in a mono repo using [melos](https://melos.invertase.dev/).
-
-### Single Responsibility
-
-Every package has its clear responsibility.
-
-### Extensibility
-
-Features can be added easily.
-
-### Unidirectional Data Flow
-
-Data only flows from the outside through the app to the view and backwards.
-
 ## Architecture
 
 <img src="./assets/architecture.png">
@@ -33,18 +14,23 @@ Data only flows from the outside through the app to the view and backwards.
 ## Platform-independent Packages
 
 ### `<project_name>_app`
+
 Contains the setup and bootstraping of the application depending on platform and environment.
 
 ### `<project_name>_logging`
+
 Contains the logging of the application.
 
 ### `<project_name>_di`
+
 Contains the dependency injection of the application.
 
 ### `<project_name>_domain`
+
 Contains the platform independent domain layer. This consists of service interfaces, entitys, value objects and failures.
 
 ### `<project_name>_infrastructure`
+
 Contains implementation of the domain layer. This consists of service implementations and data transfer objects.
 
 ## Platform-dependent Packages
@@ -67,6 +53,7 @@ The router is used in other features to navigate.
 Custom features.
 
 ## UI Packages
+
 Pure Flutter packages containing the Design Language of the Rapid project.
 What [`material`](https://docs.flutter.dev/development/ui/widgets/material), [`cupertino`](https://docs.flutter.dev/development/ui/widgets/cupertino), [`macos_ui`](https://pub.dev/packages/macos_ui) or [`fluent_ui`](https://pub.dev/packages/fluent_ui) is to Android, iOS, macOS or Windows
 the UI Packages are to your Rapid project.
@@ -81,6 +68,27 @@ Contains platform independent Design Language.
 
 ### `<project_name>_ui_<platform>`
 
-
 Contains platform dependent Design Language. Builds on top of the platform independent `ui` package and existing ui libraries like [`material`](https://docs.flutter.dev/development/ui/widgets/material), [`cupertino`](https://docs.flutter.dev/development/ui/widgets/cupertino), [`macos_ui`](https://pub.dev/packages/macos_ui) or [`fluent_ui`](https://pub.dev/packages/fluent_ui).
 
+## Core principles
+
+### Modularity
+
+Rapid aims to keep scopes small and thus uses a multi package approach. The packages are managed
+in a mono repo using [melos](https://melos.invertase.dev/).
+
+### Shared Domain
+
+Rapids archticture evolvs around a platform independent domain layer.
+
+### Single Responsibility
+
+Every package has its clear responsibility.
+
+### Extensibility
+
+Features can be added easily.
+
+### Unidirectional Data Flow
+
+Data only flows from the outside through the app to the view and backwards.

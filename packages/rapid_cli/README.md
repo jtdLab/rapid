@@ -1,5 +1,5 @@
-![Rapid CLI Logo][logo_white]
-![Rapid CLI Logo][logo_black]
+![Rapid CLI Logo](./assets/logo_black.svg#gh-dark-mode-only)
+![Rapid CLI Logo](./assets/logo_white.svg#gh-light-mode-only)
 
 ---
 
@@ -124,6 +124,3 @@ Get helpful insights into a Rapid project.
 # Show information about an existing Rapid project
 rapid doctor
 ```
-
-[logo_white]: https://raw.githubusercontent.com/jtdLab/rapid/main/packages/rapid_cli/assets/logo_white.svg
-[logo_black]: https://raw.githubusercontent.com/jtdLab/rapid/main/packages/rapid_cli/assets/logo_black.svg

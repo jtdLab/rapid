@@ -1,5 +1,5 @@
-![Rapid CLI Logo](./assets/logo_black.svg#gh-dark-mode-only)
-![Rapid CLI Logo](./assets/logo_white.svg#gh-light-mode-only)
+<img src="./assets/logo_black.svg#gh-dark-mode-only" height="100">
+<img src="./assets/logo_white.svg#gh-light-mode-only" height="100">
 
 ---
 

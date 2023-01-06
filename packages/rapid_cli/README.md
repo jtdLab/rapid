@@ -3,7 +3,7 @@
 
 ---
 
-Rapid CLI
+Create well architectured Flutter Apps fast with Rapid CLI.
 
 ## Quick Start 🚀
 

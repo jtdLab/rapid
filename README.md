@@ -33,22 +33,35 @@ Data only flows from the outside through the app to the view and backwards.
 ## Platform-independent Packages
 
 ### `app`
+Contains the setup and bootstraping of the application depending on platform and environment.
 
 ### `logging`
+Contains the logging of the application.
 
 ### `di`
+Contains the dependency injection of the application.
 
 ### `domain`
+Contains the platform independent domain layer. This consists of service interfaces, entitys, value objects and failures.
 
 ### `infrastructure`
+Contains implementation of the domain layer. This consists of service implementations and data transfer objects.
 
-### Platform-dependent Packages
+## Platform-dependent Packages
+
+Contains features of the specific platform.
 
 ### `app`
 
+The app feature. A required feature that provides the root widget of the related platform
+
 ### `routing`
 
+The routing feature. A required feature where all pages get registered.
+
 ### Custom Features
+
+Custom features.
 
 ## UI Packages
 Pure Flutter packages containing the Design Language of the Rapid project.

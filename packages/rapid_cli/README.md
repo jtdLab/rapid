@@ -120,7 +120,7 @@ Work with the Android part of an existing Rapid project
 
 ### `rapid android add`
 
-## `rapid android add feature`
+### `rapid android add feature`
 
 ```sh
 # Add feature with name my_feature to an existing Rapid project
@@ -130,7 +130,7 @@ rapid android add feature my_feature
 rapid android add feature my_feature --desc "My cool feature"
 ```
 
-## `rapid android add language`
+### `rapid android add language`
 
 ```sh
 # Add language de to an existing Rapid project
@@ -139,16 +139,16 @@ rapid android add language de
 
 ### `rapid android feature`
 
-## `rapid android feature add`
+### `rapid android feature add`
 
-## `rapid android feature add bloc`
+### `rapid android feature add bloc`
 
 ```sh
 # Add bloc named MyBloc to the Android feature of an existing Rapid project named my_feature
 rapid android feature add bloc My --feature-name my_feature
 ```
 
-## `rapid android feature add cubit`
+### `rapid android feature add cubit`
 
 ```sh
 # Add cubit named MyCubit to the Android feature of an existing Rapid project named my_feature
@@ -157,14 +157,14 @@ rapid android feature add cubit My --feature-name my_feature
 
 ### `rapid android remove`
 
-## `rapid android remove feature`
+### `rapid android remove feature`
 
 ```sh
 # Remove the feature with name my_feature from an existing Rapid project
 rapid android remove feature my_feature
 ```
 
-## `rapid android remove language`
+### `rapid android remove language`
 
 ```sh
 # Remove language de from an existing Rapid project

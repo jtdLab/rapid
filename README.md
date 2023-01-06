@@ -7,6 +7,20 @@
 
 Rapid is based on carefully selected packages from the Flutter Community and brings their power together. No headaches about messing up your architecture when adding new features. Rapid enables developers to focus on quickly iterating and adding features.
 
+## What does Rapid provide? 👀
+
+| Tasks                  | via                                     |
+| ---------------------- |:---------------------------------------:|
+| Project management     | [melos](https://pub.dev/packages/melos) |
+| Dependency Injection   | [getIt](https://pub.dev/packages/get_it), [injectable](https://pub.dev/packages/injectable) |
+| Routing                | [auto_route](https://pub.dev/packages/auto_route) |
+| Theming                | [theme_tailor](https://pub.dev/packages/theme_tailor) |
+| Localization           | [flutter_localizations](https://docs.flutter.dev/development/accessibility-and-localization/internationalization) |
+| State management       | [bloc](https://pub.dev/packages/bloc) |
+| Immutable data classes | [freezed](https://pub.dev/packages/freezed) |
+
+Special thanks to all developers/contributors of these packages ❤️
+
 ## Architecture
 
 <img src="./assets/architecture.png">
@@ -70,7 +84,7 @@ Contains platform independent Design Language.
 
 Contains platform dependent Design Language. Builds on top of the platform independent `ui` package and existing ui libraries like [`material`](https://docs.flutter.dev/development/ui/widgets/material), [`cupertino`](https://docs.flutter.dev/development/ui/widgets/cupertino), [`macos_ui`](https://pub.dev/packages/macos_ui) or [`fluent_ui`](https://pub.dev/packages/fluent_ui).
 
-## Core principles
+<!-- ## Core principles
 
 ### Modularity
 
@@ -92,3 +106,4 @@ Features can be added easily.
 ### Unidirectional Data Flow
 
 Data only flows from the outside through the app to the view and backwards.
+ -->

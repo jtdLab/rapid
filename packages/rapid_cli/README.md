@@ -135,7 +135,7 @@ rapid android add feature my_feature --desc "My cool feature"
 ### `rapid android add language`
 
 ```sh
-# Add language de to an existing Rapid project
+# Add language de to the Android part of an existing Rapid project
 rapid android add language de
 ```
 

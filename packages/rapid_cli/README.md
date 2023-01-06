@@ -125,10 +125,10 @@ Add features and languages to the Android part of an existing Rapid project
 ### `rapid android add feature`
 
 ```sh
-# Add feature with name my_feature to an existing Rapid project
+# Add feature with name my_feature to the Android part of an existing Rapid project
 rapid android add feature my_feature
 
-# Add feature with name my_feature to an existing Rapid project with custom description
+# Add feature with name my_feature to the Android part of an existing Rapid project with custom description
 rapid android add feature my_feature --desc "My cool feature"
 ```
 
@@ -168,14 +168,14 @@ Remove features and languages from the Android part of an existing Rapid project
 ### `rapid android remove feature`
 
 ```sh
-# Remove the feature with name my_feature from an existing Rapid project
+# Remove the feature with name my_feature from the Android part of an existing Rapid project
 rapid android remove feature my_feature
 ```
 
 ### `rapid android remove language`
 
 ```sh
-# Remove language de from an existing Rapid project
+# Remove language de from the Android part of an existing Rapid project
 rapid android remove language de
 ```
 

@@ -30,36 +30,36 @@ Data only flows from the outside through the app to the view and backwards.
 
 <img src="./assets/architecture.png">
 
-### Platform-independent Packages
+## Platform-independent Packages
 
-## `app`
+### `app`
 
-## `logging`
+### `logging`
 
-## `di`
+### `di`
 
-## `domain`
+### `domain`
 
-## `infrastructure`
+### `infrastructure`
 
 ### Platform-dependent Packages
 
-## `app`
+### `app`
 
-## `routing`
+### `routing`
 
-## Custom Features
+### Custom Features
 
-### UI Packages
+## UI Packages
 Pure Flutter packages containing the Design Language of the Rapid project.
 What [`material`](https://docs.flutter.dev/development/ui/widgets/material), [`cupertino`](https://docs.flutter.dev/development/ui/widgets/cupertino), [`macos_ui`](https://pub.dev/packages/macos_ui) or [`fluent_ui`](https://pub.dev/packages/fluent_ui) is to Android, iOS, macOS or Windows
 the UI Packages are to your Rapid project.
 
-## `ui`
+### `ui`
 
 Contains platform independent Design Language.
 
-## Platform-dependent UI Packages
+### Platform-dependent UI Packages
 
 Contains platform dependent Design Language. Builds on top of the platform independent `ui` package and existing ui libraries like [`material`](https://docs.flutter.dev/development/ui/widgets/material), [`cupertino`](https://docs.flutter.dev/development/ui/widgets/cupertino), [`macos_ui`](https://pub.dev/packages/macos_ui) or [`fluent_ui`](https://pub.dev/packages/fluent_ui).
 

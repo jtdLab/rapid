@@ -1,4 +1,4 @@
-[![Rapid CLI Logo][logo]]
+![Rapid CLI Logo][logo]
 
 ---
 

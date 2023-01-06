@@ -10,6 +10,8 @@ Rapid is based on carefully selected packages from the Flutter Community and bri
 | Package                                                                   |
 | ------------------------------------------------------------------------- |
 | [rapid_cli](https://github.com/jtdLab/rapid/tree/main/packages/rapid_cli) |
+| [rapid](https://github.com/jtdLab/rapid/tree/main/packages/rapid/rapid) |
+| [rapid_di](https://github.com/jtdLab/rapid/tree/main/packages/rapid_di/rapid_di) |
 
 ## What does Rapid provide? 👀
 

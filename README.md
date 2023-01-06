@@ -7,17 +7,21 @@
 
 Rapid is based on carefully selected packages from the Flutter Community and brings their power together. No headaches about messing up your architecture when adding new features. Rapid enables developers to focus on quickly iterating and adding features.
 
+| Package                                                                   |
+| ------------------------------------------------------------------------- |
+| [rapid_cli](https://github.com/jtdLab/rapid/tree/main/packages/rapid_cli) |
+
 ## What does Rapid provide? 👀
 
-| Tasks                  | via                                     |
+| Task                   | via                                     |
 | ---------------------- |:---------------------------------------:|
-| Project management     | [melos](https://pub.dev/packages/melos) |
+| Project Management     | [melos](https://pub.dev/packages/melos) |
 | Dependency Injection   | [getIt](https://pub.dev/packages/get_it), [injectable](https://pub.dev/packages/injectable) |
 | Routing                | [auto_route](https://pub.dev/packages/auto_route) |
 | Theming                | [theme_tailor](https://pub.dev/packages/theme_tailor) |
 | Localization           | [flutter_localizations](https://docs.flutter.dev/development/accessibility-and-localization/internationalization) |
-| State management       | [bloc](https://pub.dev/packages/bloc) |
-| Immutable data classes | [freezed](https://pub.dev/packages/freezed) |
+| State Management       | [bloc](https://pub.dev/packages/bloc) |
+| Immutable Data Classes | [freezed](https://pub.dev/packages/freezed) |
 
 Special thanks to all developers/contributors of these packages ❤️
 

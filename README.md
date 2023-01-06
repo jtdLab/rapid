@@ -27,3 +27,5 @@ Features can be added easily.
 Data only flows from the outside through the app to the view and backwards.
 
 ## Architecture
+
+<img src="./assets/architecture.png">

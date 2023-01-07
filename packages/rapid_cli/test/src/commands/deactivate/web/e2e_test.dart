@@ -44,9 +44,11 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
+          final platformDependentDirs = platformDirs('web');
+          verifyDoExist(platformIndependentDirs);
+          verifyDoNotExist(platformDependentDirs);
 
-          verifyDoNotExist(platformDirs('web'));
+          verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
         },
       );
     },

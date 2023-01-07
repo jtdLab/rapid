@@ -24,9 +24,15 @@ final platformIndependentDirs = [
   uiDir
 ];
 
-void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
+void verifyDoExist(Iterable<FileSystemEntity> entities) {
   for (final entity in entities) {
     expect(entity.existsSync(), true);
+  }
+}
+
+void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
+  for (final entity in entities) {
+    expect(entity.existsSync(), false);
   }
 }
 

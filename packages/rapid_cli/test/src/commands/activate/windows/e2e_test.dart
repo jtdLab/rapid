@@ -46,12 +46,13 @@ void main() {
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs('windows');
+          verifyDoExist(platformIndependentDirs);
+          verifyDoExist(platformDependentDirs);
+
           verifyTestsPassWith100PercentCoverage([
             ...platformIndependentDirs,
             ...platformDependentDirs,
           ]);
-
-          // TODO maybe verify that platform dir exist
 
           final failedIntegrationTests = await runFlutterIntegrationTest(
             cwd: appDir.path,

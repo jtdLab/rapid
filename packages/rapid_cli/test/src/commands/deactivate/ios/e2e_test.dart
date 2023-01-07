@@ -44,9 +44,11 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
+          final platformDependentDirs = platformDirs('ios');
+          verifyDoExist(platformIndependentDirs);
+          verifyDoNotExist(platformDependentDirs);
 
-          verifyDoNotExist(platformDirs('ios'));
+          verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
         },
       );
     },

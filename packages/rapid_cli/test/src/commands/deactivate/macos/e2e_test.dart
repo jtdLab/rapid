@@ -44,9 +44,11 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
+          final platformDependentDirs = platformDirs('macos');
+          verifyDoExist(platformIndependentDirs);
+          verifyDoNotExist(platformDependentDirs);
 
-          verifyDoNotExist(platformDirs('macos'));
+          verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
         },
       );
     },

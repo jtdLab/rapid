@@ -157,7 +157,8 @@ Future<int> runFlutterIntegrationTest({
   final String stderr = result.stderr;
   final String stdout = result.stdout;
   if (stderr.isEmpty ||
-      stderr.contains('Test directory "test" not found') ||
+      stderr.contains(
+          'Test directory "test" not found') || // TODO this should return error
       stdout.contains('All tests passed')) {
     return 0;
   }
@@ -181,6 +182,10 @@ Future<int> _runFlutterAnalyze({
   );
 
   final String stderr = result.stderr;
+  if (stderr.isEmpty) {
+    return 0;
+  }
+
   final regExp = RegExp(r'([0-9]+) issues found');
   final match = regExp.firstMatch(stderr)!;
   return int.parse(match.group(1)!);

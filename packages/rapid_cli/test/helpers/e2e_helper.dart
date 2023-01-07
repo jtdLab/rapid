@@ -24,7 +24,16 @@ final platformIndependentDirs = [
   uiDir
 ];
 
+void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
+  for (final entity in entities) {
+    expect(entity.existsSync(), true);
+  }
+}
+
 List<Directory> platformDirs(String platform) => [
+      Directory(p.join('packages', projectName, projectName, platform)),
+      if (platform == 'web')
+        Directory(p.join('packages', projectName, projectName, 'test_driver')),
       Directory(
         p.join('packages', projectName, '${projectName}_$platform',
             '${projectName}_${platform}_app'),

@@ -2,8 +2,11 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/command_runner.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
+
+import '../../../../helpers/helpers.dart';
 
 void main() {
   group(
@@ -11,12 +14,16 @@ void main() {
     () {
       final cwd = Directory.current;
 
-      late RapidCommandRunner commandRunner;
-
       const projectName = 'test_app';
+
+      late Directory appDir;
+
+      late RapidCommandRunner commandRunner;
 
       setUp(() {
         Directory.current = Directory.systemTemp.createTempSync();
+
+        appDir = Directory(p.join('packages', projectName, projectName));
 
         commandRunner = RapidCommandRunner();
       });
@@ -28,40 +35,33 @@ void main() {
       test(
         'activate macos',
         () async {
-          final appPackagePath = p.join(
-              Directory.current.path, 'packages', projectName, projectName);
-
+          // Arrange
           await commandRunner.run(
-            [
-              'create',
-              Directory.current.path,
-              '--project-name',
-              projectName,
-            ],
+            ['create', '.', '--project-name', projectName],
           );
 
-          final activateMacosResult = await commandRunner.run(
+          // Act
+          final commandResult = await commandRunner.run(
             ['activate', 'macos'],
           );
-          expect(activateMacosResult, equals(ExitCode.success.code));
 
-          // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
-          // TODO check  platform packges and dirs exists
-          final integrationTestResult = await Process.run(
-            'flutter',
-            ['test', 'integration_test/development_test.dart', '-d', 'macos'],
-            workingDirectory: appPackagePath,
-            runInShell: true,
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
+          await verifyNoAnalyzerIssues();
+          // await verifyNoFormattingIssues(); TODO add later
+
+          // TODO maybe verify that platform dir exist
+
+          final failedIntegrationTests = await runFlutterIntegrationTest(
+            cwd: appDir.path,
+            pathToTests: 'integration_test/development_test.dart',
+            platform: Platform.macos,
           );
-          expect(
-            integrationTestResult.exitCode,
-            equals(ExitCode.success.code),
-          );
-          expect(integrationTestResult.stderr, isEmpty);
-          expect(integrationTestResult.stdout, contains('All tests passed!'));
+          expect(failedIntegrationTests, 0);
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 8)),
+    timeout: const Timeout(Duration(minutes: 8)), // TODO should be lower
   );
 }

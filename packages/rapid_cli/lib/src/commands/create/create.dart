@@ -207,6 +207,7 @@ class CreateCommand extends Command<int>
         'macos': macos,
         'web': web,
         'windows': windows,
+        'none': !_any
       },
       logger: _logger,
     );

@@ -2,6 +2,7 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/command_runner.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -13,12 +14,30 @@ void main() {
     () {
       final cwd = Directory.current;
 
-      late RapidCommandRunner commandRunner;
-
       const projectName = 'test_app';
+
+      late Directory appDir;
+      late Directory diDir;
+      late Directory domainDir;
+      late Directory infraDir;
+      late Directory loggingDir;
+      late Directory uiDir;
+
+      late RapidCommandRunner commandRunner;
 
       setUp(() {
         Directory.current = Directory.systemTemp.createTempSync();
+
+        appDir = Directory(p.join('packages', projectName, projectName));
+        diDir = Directory(p.join('packages', projectName, '${projectName}_di'));
+        domainDir =
+            Directory(p.join('packages', projectName, '${projectName}_domain'));
+        infraDir = Directory(
+            p.join('packages', projectName, '${projectName}_infrastructure'));
+        loggingDir = Directory(
+            p.join('packages', projectName, '${projectName}_logging'));
+        uiDir = Directory(
+            p.join('packages', '${projectName}_ui', '${projectName}_ui'));
 
         commandRunner = RapidCommandRunner();
       });
@@ -27,62 +46,63 @@ void main() {
         Directory.current = cwd;
       });
 
-// TODO add ci setup and uncomment this test
-/*       test(
+      Future<void> verifyTestsPassWith100PercentCoverage(
+        List<Directory> dirs,
+      ) async {
+        for (final dir in dirs) {
+          final testResult = await runFlutterTest(cwd: dir.path);
+          expect(testResult.failedTests, 0);
+          expect(testResult.coverage, 100);
+        }
+      }
+
+      List<Directory> platformIndependentDirs() =>
+          [appDir, diDir, domainDir, infraDir, loggingDir, uiDir];
+
+      test(
         '--create',
         () async {
+          // Act
           final commandResult = await commandRunner.run(
-            [
-              'create',
-              Directory.current.path,
-              '--project-name',
-              projectName,
-            ],
+            ['create', '.', '--project-name', projectName],
           );
+
+          // Assert
           expect(commandResult, equals(ExitCode.success.code));
 
-          // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
-          // TODO check no platform packges and dirs exists
+          await verifyNoAnalyzerIssues();
+          // await verifyNoFormattingIssues(); TODO add later
+
+          final dirs = platformIndependentDirs();
+          verifyTestsPassWith100PercentCoverage(dirs);
+
+          // TODO maybe verify that no platform dir exists
         },
-      ); */
+      );
 
       group('create', () {
         test(
           '--android',
           () async {
-            final appPackagePath = p.join(
-                Directory.current.path, 'packages', projectName, projectName);
-
+            // Act
             final commandResult = await commandRunner.run(
-              [
-                'create',
-                Directory.current.path,
-                '--project-name',
-                projectName,
-                '--android'
-              ],
+              ['create', '.', '--project-name', projectName, '--android'],
             );
+
+            // Assert
             expect(commandResult, equals(ExitCode.success.code));
 
-            // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
-            // TODO check  platform packges and dirs exists
-            final integrationTestResult = await Process.run(
-              'flutter',
-              [
-                'test',
-                'integration_test/development_test.dart',
-                '-d',
-                'android'
-              ],
-              workingDirectory: appPackagePath,
-              runInShell: true,
+            await verifyNoAnalyzerIssues();
+            // await verifyNoFormattingIssues(); TODO add later
+
+            // TODO maybe verify that platform dir exist
+
+            final failedIntegrationTests = await runFlutterIntegrationTest(
+              cwd: appDir.path,
+              pathToTests: 'integration_test/development_test.dart',
+              platform: Platform.android,
             );
-            expect(
-              integrationTestResult.exitCode,
-              equals(ExitCode.success.code),
-            );
-            expect(integrationTestResult.stderr, isEmpty);
-            expect(integrationTestResult.stdout, contains('All tests passed!'));
+            expect(failedIntegrationTests, 0);
           },
           tags: ['android'],
         );
@@ -90,39 +110,25 @@ void main() {
         test(
           '--ios',
           () async {
-            final appPackagePath = p.join(
-                Directory.current.path, 'packages', projectName, projectName);
-
+            // Act
             final commandResult = await commandRunner.run(
-              [
-                'create',
-                Directory.current.path,
-                '--project-name',
-                projectName,
-                '--ios'
-              ],
+              ['create', '.', '--project-name', projectName, '--ios'],
             );
+
+            // Assert
             expect(commandResult, equals(ExitCode.success.code));
 
-            // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
-            // TODO check  platform packges and dirs exists
-            final integrationTestResult = await Process.run(
-              'flutter',
-              [
-                'test',
-                'integration_test/development_test.dart',
-                '-d',
-                iosDevice,
-              ], // TODO device should be ios but does not work
-              workingDirectory: appPackagePath,
-              runInShell: true,
+            await verifyNoAnalyzerIssues();
+            // await verifyNoFormattingIssues(); TODO add later
+
+            // TODO maybe verify that platform dir exist
+
+            final failedIntegrationTests = await runFlutterIntegrationTest(
+              cwd: appDir.path,
+              pathToTests: 'integration_test/development_test.dart',
+              platform: Platform.ios,
             );
-            expect(
-              integrationTestResult.exitCode,
-              equals(ExitCode.success.code),
-            );
-            expect(integrationTestResult.stderr, isEmpty);
-            expect(integrationTestResult.stdout, contains('All tests passed!'));
+            expect(failedIntegrationTests, 0);
           },
           tags: ['ios'],
         );
@@ -130,34 +136,25 @@ void main() {
         test(
           '--linux',
           () async {
-            final appPackagePath = p.join(
-                Directory.current.path, 'packages', projectName, projectName);
-
+            // Act
             final commandResult = await commandRunner.run(
-              [
-                'create',
-                Directory.current.path,
-                '--project-name',
-                projectName,
-                '--linux'
-              ],
+              ['create', '.', '--project-name', projectName, '--linux'],
             );
+
+            // Assert
             expect(commandResult, equals(ExitCode.success.code));
 
-            // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
-            // TODO check  platform packges and dirs exists
-            final integrationTestResult = await Process.run(
-              'flutter',
-              ['test', 'integration_test/development_test.dart', '-d', 'linux'],
-              workingDirectory: appPackagePath,
-              runInShell: true,
+            await verifyNoAnalyzerIssues();
+            // await verifyNoFormattingIssues(); TODO add later
+
+            // TODO maybe verify that platform dir exist
+
+            final failedIntegrationTests = await runFlutterIntegrationTest(
+              cwd: appDir.path,
+              pathToTests: 'integration_test/development_test.dart',
+              platform: Platform.linux,
             );
-            expect(
-              integrationTestResult.exitCode,
-              equals(ExitCode.success.code),
-            );
-            expect(integrationTestResult.stderr, isEmpty);
-            expect(integrationTestResult.stdout, contains('All tests passed!'));
+            expect(failedIntegrationTests, 0);
           },
           tags: ['linux'],
         );
@@ -165,34 +162,25 @@ void main() {
         test(
           '--macos',
           () async {
-            final appPackagePath = p.join(
-                Directory.current.path, 'packages', projectName, projectName);
-
+            // Act
             final commandResult = await commandRunner.run(
-              [
-                'create',
-                Directory.current.path,
-                '--project-name',
-                projectName,
-                '--macos'
-              ],
+              ['create', '.', '--project-name', projectName, '--macos'],
             );
+
+            // Assert
             expect(commandResult, equals(ExitCode.success.code));
 
-            // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
-            // TODO check  platform packges and dirs exists
-            final integrationTestResult = await Process.run(
-              'flutter',
-              ['test', 'integration_test/development_test.dart', '-d', 'macos'],
-              workingDirectory: appPackagePath,
-              runInShell: true,
+            await verifyNoAnalyzerIssues();
+            // await verifyNoFormattingIssues(); TODO add later
+
+            // TODO maybe verify that platform dir exist
+
+            final failedIntegrationTests = await runFlutterIntegrationTest(
+              cwd: appDir.path,
+              pathToTests: 'integration_test/development_test.dart',
+              platform: Platform.macos,
             );
-            expect(
-              integrationTestResult.exitCode,
-              equals(ExitCode.success.code),
-            );
-            expect(integrationTestResult.stderr, isEmpty);
-            expect(integrationTestResult.stdout, contains('All tests passed!'));
+            expect(failedIntegrationTests, 0);
           },
           tags: ['macos'],
         );
@@ -200,47 +188,25 @@ void main() {
         test(
           '--web',
           () async {
-            final appPackagePath = p.join(
-                Directory.current.path, 'packages', projectName, projectName);
-
+            // Act
             final commandResult = await commandRunner.run(
-              [
-                'create',
-                Directory.current.path,
-                '--project-name',
-                projectName,
-                '--web'
-              ],
+              ['create', '.', '--project-name', projectName, '--web'],
             );
+
+            // Assert
             expect(commandResult, equals(ExitCode.success.code));
 
-            // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
-            // TODO check  platform packges and dirs exists
-            await Process.start(
-              'chromedriver',
-              ['--port=4444'],
-              workingDirectory: appPackagePath,
-              runInShell: true,
+            await verifyNoAnalyzerIssues();
+            // await verifyNoFormattingIssues(); TODO add later
+
+            // TODO maybe verify that platform dir exist
+
+            final failedIntegrationTests = await runFlutterIntegrationTest(
+              cwd: appDir.path,
+              pathToTests: 'integration_test/development_test.dart',
+              platform: Platform.web,
             );
-            final integrationTestResult = await Process.run(
-              'flutter',
-              [
-                'drive',
-                '--driver',
-                'test_driver/integration_test.dart',
-                '--target',
-                'integration_test/development_test.dart',
-                '-d',
-                'web-server'
-              ],
-              workingDirectory: appPackagePath,
-              runInShell: true,
-            );
-            expect(
-              integrationTestResult.exitCode,
-              equals(ExitCode.success.code),
-            );
-            expect(integrationTestResult.stdout, contains('All tests passed.'));
+            expect(failedIntegrationTests, 0);
           },
           tags: ['web'],
         );
@@ -248,46 +214,31 @@ void main() {
         test(
           '--windows',
           () async {
-            final appPackagePath = p.join(
-                Directory.current.path, 'packages', projectName, projectName);
-
+            // Act
             final commandResult = await commandRunner.run(
-              [
-                'create',
-                Directory.current.path,
-                '--project-name',
-                projectName,
-                '--windows'
-              ],
+              ['create', '.', '--project-name', projectName, '--windows'],
             );
+
+            // Assert
             expect(commandResult, equals(ExitCode.success.code));
 
-            // TODO other project metrics like no analyze, format issues, no todos, all tests pass, ..
-            // TODO check  platform packges and dirs exists
-            final integrationTestResult = await Process.run(
-              'flutter',
-              [
-                'test',
-                'integration_test/development_test.dart',
-                '-d',
-                'windows'
-              ],
-              workingDirectory: appPackagePath,
-              runInShell: true,
+            await verifyNoAnalyzerIssues();
+            // await verifyNoFormattingIssues(); TODO add later
+
+            // TODO maybe verify that platform dir exist
+
+            final failedIntegrationTests = await runFlutterIntegrationTest(
+              cwd: appDir.path,
+              pathToTests: 'integration_test/development_test.dart',
+              platform: Platform.windows,
             );
-            print(integrationTestResult.stderr); // TODO
-            print(integrationTestResult.stdout); // TODO
-            expect(
-              integrationTestResult.exitCode,
-              equals(ExitCode.success.code),
-            );
-            expect(integrationTestResult.stderr, isEmpty);
-            expect(integrationTestResult.stdout, contains('All tests passed!'));
+            // TODO fails because of https://github.com/felangel/mason/issues/676
+            expect(failedIntegrationTests, 0);
           },
           tags: ['windows'],
         );
       });
     },
-    timeout: const Timeout(Duration(minutes: 8)),
+    timeout: const Timeout(Duration(minutes: 8)), // TODO should be lower
   );
 }

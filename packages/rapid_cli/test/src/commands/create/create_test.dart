@@ -794,6 +794,7 @@ void main() {
                     'linux': false,
                     'macos': false,
                     'windows': false,
+                    'none': true,
                   },
                   logger: logger,
                 ),

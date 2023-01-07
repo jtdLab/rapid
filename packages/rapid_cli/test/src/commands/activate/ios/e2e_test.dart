@@ -29,6 +29,7 @@ void main() {
         'activate ios',
         () async {
           // Arrange
+          // TODO should be pregenerated project from a fixture
           await commandRunner.run(
             ['create', '.', '--project-name', projectName],
           );

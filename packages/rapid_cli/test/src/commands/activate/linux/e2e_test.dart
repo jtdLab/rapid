@@ -29,6 +29,7 @@ void main() {
         'activate linux',
         () async {
           // Arrange
+          // TODO should be pregenerated project from a fixture
           await commandRunner.run(
             ['create', '.', '--project-name', projectName],
           );

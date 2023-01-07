@@ -43,6 +43,10 @@ abstract class _MelosCleanCommand {
   Future<void> call({String cwd});
 }
 
+abstract class _FlutterFormatFixCommand {
+  Future<void> call({String cwd});
+}
+
 class _MockLogger extends Mock implements Logger {}
 
 class _MockProgress extends Mock implements Progress {}
@@ -73,6 +77,9 @@ class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
 class _MockMelosBootstrapCommand extends Mock
     implements _MelosBootstrapCommand {}
 
+class _MockFlutterFormatFixCommand extends Mock
+    implements _FlutterFormatFixCommand {}
+
 class _MockMelosCleanCommand extends Mock implements _MelosCleanCommand {}
 
 class _MockMasonGenerator extends Mock implements MasonGenerator {}
@@ -87,6 +94,7 @@ void main() {
     final cwd = Directory.current;
 
     late Logger logger;
+    late Progress progress;
     late List<String> progressLogs;
 
     late Project project;
@@ -115,6 +123,8 @@ void main() {
 
     late MelosCleanCommand melosClean;
 
+    late FlutterFormatFixCommand flutterFormatFix;
+
     late MasonGenerator generator;
     final generatedFiles = List.filled(
       23,
@@ -133,7 +143,7 @@ void main() {
       Directory.current = Directory.systemTemp.createTempSync();
 
       logger = _MockLogger();
-      final progress = _MockProgress();
+      progress = _MockProgress();
       progressLogs = <String>[];
       when(() => progress.complete(any())).thenAnswer((_) {
         final message = _.positionalArguments.elementAt(0) as String?;
@@ -184,6 +194,10 @@ void main() {
       melosClean = _MockMelosCleanCommand();
       when(() => melosClean(cwd: any(named: 'cwd'))).thenAnswer((_) async {});
 
+      flutterFormatFix = _MockFlutterFormatFixCommand();
+      when(() => flutterFormatFix(cwd: any(named: 'cwd')))
+          .thenAnswer((_) async {});
+
       generator = _MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
@@ -206,6 +220,7 @@ void main() {
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
         melosBootstrap: melosBootstrap,
         melosClean: melosClean,
+        flutterFormatFix: flutterFormatFix,
         generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
@@ -302,6 +317,10 @@ void main() {
           .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: diPackagePath)).called(1);
+      verify(() => logger.progress('Running "flutter format . --fix" in . '))
+          .called(1);
+      verify(() => flutterFormatFix()).called(1);
+      verify(() => progress.complete()).called(8);
       verify(() => logger.info('Web activated!')).called(1);
       expect(result, ExitCode.success.code);
     });

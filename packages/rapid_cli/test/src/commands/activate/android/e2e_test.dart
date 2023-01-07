@@ -42,7 +42,7 @@ void main() {
           expect(commandResult, equals(ExitCode.success.code));
 
           await verifyNoAnalyzerIssues();
-          // await verifyNoFormattingIssues(); TODO add later
+          await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs('android');
           verifyTestsPassWith100PercentCoverage([

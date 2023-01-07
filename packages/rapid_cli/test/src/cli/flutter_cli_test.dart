@@ -221,5 +221,28 @@ void main() {
         );
       });
     });
+
+    group('.formatFix', () {
+      test('completes when the process succeeds', () {
+        ProcessOverrides.runZoned(
+          () => expectLater(
+            Flutter.formatFix(),
+            completes,
+          ),
+          runProcess: process.run,
+        );
+      });
+
+      test('throws when process fails', () {
+        when(() => processResult.exitCode).thenReturn(ExitCode.software.code);
+        ProcessOverrides.runZoned(
+          () => expectLater(
+            Flutter.formatFix(),
+            throwsException,
+          ),
+          runProcess: process.run,
+        );
+      });
+    });
   });
 }

@@ -28,6 +28,9 @@ typedef FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
 /// Signature for the [Flutter.genl10n] method.
 typedef FlutterGenl10nCommand = Future<void> Function({required String cwd});
 
+/// Signature for the [Flutter.formatFix] method.
+typedef FlutterFormatFixCommand = Future<void> Function({String cwd});
+
 /// Flutter CLI
 abstract class Flutter {
   /// Determine whether flutter is installed.
@@ -97,6 +100,17 @@ abstract class Flutter {
     await _Cmd.run(
       'flutter',
       ['gen-l10n'],
+      workingDirectory: cwd,
+    );
+  }
+
+  /// Run localization generation (`flutter format --fix`).
+  static Future<void> formatFix({
+    String cwd = '.',
+  }) async {
+    await _Cmd.run(
+      'flutter',
+      ['format', '.', '--fix'],
       workingDirectory: cwd,
     );
   }

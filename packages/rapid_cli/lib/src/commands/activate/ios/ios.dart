@@ -21,6 +21,7 @@ class ActivateIosCommand extends ActivatePlatformCommand with OrgNameGetters {
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     super.melosBootstrap,
     super.melosClean,
+    super.flutterFormatFix,
     super.generator,
   }) : super(
           platform: Platform.ios,

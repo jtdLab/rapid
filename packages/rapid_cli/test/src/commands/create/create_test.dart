@@ -46,18 +46,24 @@ abstract class _MelosBootstrapCommand {
   Future<void> call({String cwd});
 }
 
+abstract class _FormatFixCommand {
+  Future<void> call({String cwd});
+}
+
 class _MockLogger extends Mock implements Logger {}
 
 class _MockProgress extends Mock implements Progress {}
 
-class MockFlutterInstalledCommand extends Mock
+class _MockFlutterInstalledCommand extends Mock
     implements _FlutterInstalledCommand {}
 
-class MockFlutterConfigEnablePlatformCommand extends Mock
+class _MockFlutterConfigEnablePlatformCommand extends Mock
     implements _FlutterConfigEnablePlatformCommand {}
 
 class _MockMelosBootstrapCommand extends Mock
     implements _MelosBootstrapCommand {}
+
+class _MockFlutterFormatFixCommand extends Mock implements _FormatFixCommand {}
 
 class _MockMasonGenerator extends Mock implements MasonGenerator {}
 
@@ -90,6 +96,8 @@ void main() {
 
     late MelosBootstrapCommand melosBootstrap;
 
+    late FlutterFormatFixCommand flutterFormatFix;
+
     late MasonGenerator generator;
     final generatedFiles = List.filled(
       23,
@@ -118,29 +126,33 @@ void main() {
       });
       when(() => logger.progress(any())).thenReturn(progress);
 
-      flutterInstalled = MockFlutterInstalledCommand();
+      flutterInstalled = _MockFlutterInstalledCommand();
       when(() => flutterInstalled()).thenAnswer((_) async => true);
 
-      flutterConfigEnableAndroid = MockFlutterConfigEnablePlatformCommand();
+      flutterConfigEnableAndroid = _MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableAndroid()).thenAnswer((_) async {});
 
-      flutterConfigEnableIos = MockFlutterConfigEnablePlatformCommand();
+      flutterConfigEnableIos = _MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableIos()).thenAnswer((_) async {});
 
-      flutterConfigEnableWeb = MockFlutterConfigEnablePlatformCommand();
+      flutterConfigEnableWeb = _MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableWeb()).thenAnswer((_) async {});
 
-      flutterConfigEnableLinux = MockFlutterConfigEnablePlatformCommand();
+      flutterConfigEnableLinux = _MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableLinux()).thenAnswer((_) async {});
 
-      flutterConfigEnableMacos = MockFlutterConfigEnablePlatformCommand();
+      flutterConfigEnableMacos = _MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableMacos()).thenAnswer((_) async {});
 
-      flutterConfigEnableWindows = MockFlutterConfigEnablePlatformCommand();
+      flutterConfigEnableWindows = _MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableWindows()).thenAnswer((_) async {});
 
       melosBootstrap = _MockMelosBootstrapCommand();
       when(() => melosBootstrap(cwd: any(named: 'cwd')))
+          .thenAnswer((_) async {});
+
+      flutterFormatFix = _MockFlutterFormatFixCommand();
+      when(() => flutterFormatFix(cwd: any(named: 'cwd')))
           .thenAnswer((_) async {});
 
       generator = _MockMasonGenerator();
@@ -170,6 +182,7 @@ void main() {
         flutterConfigEnableWeb: flutterConfigEnableWeb,
         flutterConfigEnableWindows: flutterConfigEnableWindows,
         melosBootstrap: melosBootstrap,
+        flutterFormatFix: flutterFormatFix,
         generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
@@ -330,7 +343,10 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
       verify(() => melosBootstrap(cwd: outputDir)).called(1);
-      verify(() => progress.complete()).called(1);
+      verify(() => logger.progress(
+          'Running "flutter format . --fix" in $outputDir ')).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(2);
       verify(() => logger.alert('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -378,7 +394,10 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
       verify(() => melosBootstrap(cwd: outputDir)).called(1);
-      verify(() => progress.complete()).called(1);
+      verify(() => logger.progress(
+          'Running "flutter format . --fix" in $outputDir ')).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(2);
       verify(() => logger.alert('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -428,7 +447,10 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
       verify(() => melosBootstrap(cwd: outputDir)).called(1);
-      verify(() => progress.complete()).called(2);
+      verify(() => logger.progress(
+          'Running "flutter format . --fix" in $outputDir ')).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(3);
       verify(() => logger.alert('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -478,7 +500,10 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
       verify(() => melosBootstrap(cwd: outputDir)).called(1);
-      verify(() => progress.complete()).called(2);
+      verify(() => logger.progress(
+          'Running "flutter format . --fix" in $outputDir ')).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(3);
       verify(() => logger.alert('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -528,7 +553,10 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
       verify(() => melosBootstrap(cwd: outputDir)).called(1);
-      verify(() => progress.complete()).called(2);
+      verify(() => logger.progress(
+          'Running "flutter format . --fix" in $outputDir ')).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(3);
       verify(() => logger.alert('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -578,7 +606,10 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
       verify(() => melosBootstrap(cwd: outputDir)).called(1);
-      verify(() => progress.complete()).called(2);
+      verify(() => logger.progress(
+          'Running "flutter format . --fix" in $outputDir ')).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(3);
       verify(() => logger.alert('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -628,7 +659,10 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
       verify(() => melosBootstrap(cwd: outputDir)).called(1);
-      verify(() => progress.complete()).called(2);
+      verify(() => logger.progress(
+          'Running "flutter format . --fix" in $outputDir ')).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(3);
       verify(() => logger.alert('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -678,7 +712,10 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
       verify(() => melosBootstrap(cwd: outputDir)).called(1);
-      verify(() => progress.complete()).called(2);
+      verify(() => logger.progress(
+          'Running "flutter format . --fix" in $outputDir ')).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(3);
       verify(() => logger.alert('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });

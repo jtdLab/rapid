@@ -31,6 +31,7 @@ class CreateCommand extends Command<int>
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWeb,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWindows,
     MelosBootstrapCommand? melosBootstrap,
+    FlutterFormatFixCommand? flutterFormatFix,
     GeneratorBuilder? generator,
   })  : _logger = logger ?? Logger(),
         _flutterInstalled = flutterInstalled ?? Flutter.installed,
@@ -47,6 +48,7 @@ class CreateCommand extends Command<int>
         _flutterConfigEnableWindows =
             flutterConfigEnableWindows ?? Flutter.configEnableWindows,
         _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle {
     argParser
       ..addSeparator('')
@@ -112,6 +114,7 @@ class CreateCommand extends Command<int>
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableWeb;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableWindows;
   final MelosBootstrapCommand _melosBootstrap;
+  final FlutterFormatFixCommand _flutterFormatFix;
   final GeneratorBuilder _generator;
 
   @override
@@ -218,6 +221,12 @@ class CreateCommand extends Command<int>
     );
     await _melosBootstrap(cwd: outputDirectory.path);
     melosBootstrapProgress.complete();
+
+    final formatFixProgress = _logger.progress(
+      'Running "flutter format . --fix" in ${outputDirectory.path} ',
+    );
+    await _flutterFormatFix(cwd: outputDirectory.path);
+    formatFixProgress.complete();
 
     // TODO maybe use logger.success here
     _logger

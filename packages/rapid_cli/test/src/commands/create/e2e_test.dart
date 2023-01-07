@@ -37,11 +37,11 @@ void main() {
           expect(commandResult, equals(ExitCode.success.code));
 
           await verifyNoAnalyzerIssues();
-          // await verifyNoFormattingIssues(); TODO add later
-
-          verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
+          await verifyNoFormattingIssues();
 
           // TODO maybe verify that no platform dir exists
+
+          verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
         },
       );
 
@@ -58,15 +58,15 @@ void main() {
             expect(commandResult, equals(ExitCode.success.code));
 
             await verifyNoAnalyzerIssues();
-            // await verifyNoFormattingIssues(); TODO add later
+            await verifyNoFormattingIssues();
+
+            // TODO maybe verify that platform dir exist
 
             final platformDependentDirs = platformDirs('android');
             verifyTestsPassWith100PercentCoverage([
               ...platformIndependentDirs,
               ...platformDependentDirs,
             ]);
-
-            // TODO maybe verify that platform dir exist
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
               cwd: appDir.path,
@@ -90,15 +90,15 @@ void main() {
             expect(commandResult, equals(ExitCode.success.code));
 
             await verifyNoAnalyzerIssues();
-            // await verifyNoFormattingIssues(); TODO add later
+            await verifyNoFormattingIssues();
+
+            // TODO maybe verify that platform dir exist
 
             final platformDependentDirs = platformDirs('ios');
             verifyTestsPassWith100PercentCoverage([
               ...platformIndependentDirs,
               ...platformDependentDirs,
             ]);
-
-            // TODO maybe verify that platform dir exist
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
               cwd: appDir.path,
@@ -122,15 +122,15 @@ void main() {
             expect(commandResult, equals(ExitCode.success.code));
 
             await verifyNoAnalyzerIssues();
-            // await verifyNoFormattingIssues(); TODO add later
+            await verifyNoFormattingIssues();
+
+            // TODO maybe verify that platform dir exist
 
             final platformDependentDirs = platformDirs('linux');
             verifyTestsPassWith100PercentCoverage([
               ...platformIndependentDirs,
               ...platformDependentDirs,
             ]);
-
-            // TODO maybe verify that platform dir exist
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
               cwd: appDir.path,
@@ -154,15 +154,15 @@ void main() {
             expect(commandResult, equals(ExitCode.success.code));
 
             await verifyNoAnalyzerIssues();
-            // await verifyNoFormattingIssues(); TODO add later
+            await verifyNoFormattingIssues();
+
+            // TODO maybe verify that platform dir exist
 
             final platformDependentDirs = platformDirs('macos');
             verifyTestsPassWith100PercentCoverage([
               ...platformIndependentDirs,
               ...platformDependentDirs,
             ]);
-
-            // TODO maybe verify that platform dir exist
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
               cwd: appDir.path,
@@ -186,15 +186,15 @@ void main() {
             expect(commandResult, equals(ExitCode.success.code));
 
             await verifyNoAnalyzerIssues();
-            // await verifyNoFormattingIssues(); TODO add later
+            await verifyNoFormattingIssues();
+
+            // TODO maybe verify that platform dir exist
 
             final platformDependentDirs = platformDirs('web');
             verifyTestsPassWith100PercentCoverage([
               ...platformIndependentDirs,
               ...platformDependentDirs,
             ]);
-
-            // TODO maybe verify that platform dir exist
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
               cwd: appDir.path,
@@ -218,15 +218,15 @@ void main() {
             expect(commandResult, equals(ExitCode.success.code));
 
             await verifyNoAnalyzerIssues();
-            // await verifyNoFormattingIssues(); TODO add later
+            await verifyNoFormattingIssues();
+
+            // TODO maybe verify that platform dir exist
 
             final platformDependentDirs = platformDirs('windows');
             verifyTestsPassWith100PercentCoverage([
               ...platformIndependentDirs,
               ...platformDependentDirs,
             ]);
-
-            // TODO maybe verify that platform dir exist
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
               cwd: appDir.path,

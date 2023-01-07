@@ -42,6 +42,7 @@ abstract class ActivatePlatformCommand extends Command<int>
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     MelosBootstrapCommand? melosBootstrap,
     MelosCleanCommand? melosClean,
+    FlutterFormatFixCommand? flutterFormatFix,
     GeneratorBuilder? generator,
   })  : _platform = platform,
         _platformBundle = platformBundle,
@@ -55,6 +56,7 @@ abstract class ActivatePlatformCommand extends Command<int>
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
         _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         _melosClean = melosClean ?? Melos.clean,
+        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle;
 
   final Platform _platform;
@@ -67,6 +69,7 @@ abstract class ActivatePlatformCommand extends Command<int>
       _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final MelosBootstrapCommand _melosBootstrap;
   final MelosCleanCommand _melosClean;
+  final FlutterFormatFixCommand _flutterFormatFix;
   final GeneratorBuilder _generator;
 
   @override
@@ -161,6 +164,12 @@ abstract class ActivatePlatformCommand extends Command<int>
             cwd: diPackage.path,
           );
           diBuildProgress.complete();
+
+          final flutterFormatFixProgress = _logger.progress(
+            'Running "flutter format . --fix" in . ',
+          );
+          await _flutterFormatFix();
+          flutterFormatFixProgress.complete();
 
           _logger.info('${lightYellow.wrap(_platform.prettyName)} activated!');
 

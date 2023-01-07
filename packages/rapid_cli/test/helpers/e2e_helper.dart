@@ -46,7 +46,7 @@ Future<void> verifyTestsPassWith100PercentCoverage(
   List<Directory> dirs,
 ) async {
   for (final dir in dirs) {
-    final testResult = await runFlutterTest(cwd: dir.path);
+    final testResult = await _runFlutterTest(cwd: dir.path);
     expect(testResult.failedTests, 0);
     expect(testResult.coverage, 100);
   }
@@ -58,11 +58,11 @@ Future<void> verifyNoAnalyzerIssues() async {
   expect(analyzerIssues, 0);
 }
 
-/* /// Verify that no formatting issues are found in current directory.
+/// Verify that no formatting issues are found in current directory.
 Future<void> verifyNoFormattingIssues() async {
   final formatIssues = await _runFlutterFormat();
   expect(formatIssues, 0);
-} */
+}
 
 /// The device id of the device ios e2e test run on
 ///
@@ -82,7 +82,7 @@ class TestResult {
 /// Runs `flutter test` in [cwd].
 ///
 /// If [coverage] is true runs with `--coverage`
-Future<TestResult> runFlutterTest({
+Future<TestResult> _runFlutterTest({
   required String cwd,
   bool coverage = true,
 }) async {
@@ -191,7 +191,7 @@ Future<int> _runFlutterAnalyze({
   return int.parse(match.group(1)!);
 }
 
-/* /// Run `flutter format --set-exit-if-changed` in [cwd].
+/// Run `flutter format --set-exit-if-changed` in [cwd].
 ///
 /// Returns the amount of formatting issues.
 Future<int> _runFlutterFormat({
@@ -213,7 +213,7 @@ Future<int> _runFlutterFormat({
   final regExp = RegExp(r'Formatted [0-9]+ files (([0-9]+) changed)');
   final match = regExp.firstMatch(stdout)!;
   return int.parse(match.group(1)!);
-} */
+}
 
 /* /// Returns a [Matcher] that matches when a [FileSystemEntity] exists on disk.
 final Matcher exists = _EntityExists();

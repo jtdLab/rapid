@@ -22,6 +22,7 @@ class ActivateWindowsCommand extends ActivatePlatformCommand
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     super.melosBootstrap,
     super.melosClean,
+    super.flutterFormatFix,
     super.generator,
   }) : super(
           platform: Platform.windows,

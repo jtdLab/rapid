@@ -1,6 +1,5 @@
 @Tags(['e2e'])
 import 'package:mason/mason.dart';
-import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
@@ -14,30 +13,10 @@ void main() {
     () {
       final cwd = Directory.current;
 
-      const projectName = 'test_app';
-
-      late Directory appDir;
-      late Directory diDir;
-      late Directory domainDir;
-      late Directory infraDir;
-      late Directory loggingDir;
-      late Directory uiDir;
-
       late RapidCommandRunner commandRunner;
 
       setUp(() {
         Directory.current = Directory.systemTemp.createTempSync();
-
-        appDir = Directory(p.join('packages', projectName, projectName));
-        diDir = Directory(p.join('packages', projectName, '${projectName}_di'));
-        domainDir =
-            Directory(p.join('packages', projectName, '${projectName}_domain'));
-        infraDir = Directory(
-            p.join('packages', projectName, '${projectName}_infrastructure'));
-        loggingDir = Directory(
-            p.join('packages', projectName, '${projectName}_logging'));
-        uiDir = Directory(
-            p.join('packages', '${projectName}_ui', '${projectName}_ui'));
 
         commandRunner = RapidCommandRunner();
       });
@@ -45,19 +24,6 @@ void main() {
       tearDown(() {
         Directory.current = cwd;
       });
-
-      Future<void> verifyTestsPassWith100PercentCoverage(
-        List<Directory> dirs,
-      ) async {
-        for (final dir in dirs) {
-          final testResult = await runFlutterTest(cwd: dir.path);
-          expect(testResult.failedTests, 0);
-          expect(testResult.coverage, 100);
-        }
-      }
-
-      List<Directory> platformIndependentDirs() =>
-          [appDir, diDir, domainDir, infraDir, loggingDir, uiDir];
 
       test(
         '--create',
@@ -73,8 +39,7 @@ void main() {
           await verifyNoAnalyzerIssues();
           // await verifyNoFormattingIssues(); TODO add later
 
-          final dirs = platformIndependentDirs();
-          verifyTestsPassWith100PercentCoverage(dirs);
+          verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
 
           // TODO maybe verify that no platform dir exists
         },
@@ -94,6 +59,12 @@ void main() {
 
             await verifyNoAnalyzerIssues();
             // await verifyNoFormattingIssues(); TODO add later
+
+            final platformDependentDirs = platformDirs('android');
+            verifyTestsPassWith100PercentCoverage([
+              ...platformIndependentDirs,
+              ...platformDependentDirs,
+            ]);
 
             // TODO maybe verify that platform dir exist
 
@@ -121,6 +92,12 @@ void main() {
             await verifyNoAnalyzerIssues();
             // await verifyNoFormattingIssues(); TODO add later
 
+            final platformDependentDirs = platformDirs('ios');
+            verifyTestsPassWith100PercentCoverage([
+              ...platformIndependentDirs,
+              ...platformDependentDirs,
+            ]);
+
             // TODO maybe verify that platform dir exist
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
@@ -146,6 +123,12 @@ void main() {
 
             await verifyNoAnalyzerIssues();
             // await verifyNoFormattingIssues(); TODO add later
+
+            final platformDependentDirs = platformDirs('linux');
+            verifyTestsPassWith100PercentCoverage([
+              ...platformIndependentDirs,
+              ...platformDependentDirs,
+            ]);
 
             // TODO maybe verify that platform dir exist
 
@@ -173,6 +156,12 @@ void main() {
             await verifyNoAnalyzerIssues();
             // await verifyNoFormattingIssues(); TODO add later
 
+            final platformDependentDirs = platformDirs('macos');
+            verifyTestsPassWith100PercentCoverage([
+              ...platformIndependentDirs,
+              ...platformDependentDirs,
+            ]);
+
             // TODO maybe verify that platform dir exist
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
@@ -199,6 +188,12 @@ void main() {
             await verifyNoAnalyzerIssues();
             // await verifyNoFormattingIssues(); TODO add later
 
+            final platformDependentDirs = platformDirs('web');
+            verifyTestsPassWith100PercentCoverage([
+              ...platformIndependentDirs,
+              ...platformDependentDirs,
+            ]);
+
             // TODO maybe verify that platform dir exist
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
@@ -224,6 +219,12 @@ void main() {
 
             await verifyNoAnalyzerIssues();
             // await verifyNoFormattingIssues(); TODO add later
+
+            final platformDependentDirs = platformDirs('windows');
+            verifyTestsPassWith100PercentCoverage([
+              ...platformIndependentDirs,
+              ...platformDependentDirs,
+            ]);
 
             // TODO maybe verify that platform dir exist
 

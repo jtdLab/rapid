@@ -37,7 +37,7 @@ jobs:
         run: flutter pub get
 
       - name: Run E2E Tests
-        run: flutter test --run-skipped -t e2e -x android -x ios -x linux -x macos -x web -x windows
+        run: flutter test --run-skipped -t e2e -x android,ios,linux,macos,web,windows
 
   e2e-android:
     defaults:
@@ -113,7 +113,7 @@ jobs:
           #disable-animations: true
           #arch: x86_64
           #profile: Nexus 6
-          script: cd packages/rapid_cli && flutter test --run-skipped -t e2e -t android
+          script: cd packages/rapid_cli && flutter test --run-skipped -t e2e,android
 
   e2e-ios:
     defaults:
@@ -152,7 +152,7 @@ jobs:
         run: flutter pub get
 
       - name: Run E2E Tests
-        run: flutter test --run-skipped -t e2e -t ios
+        run: flutter test --run-skipped -t e2e,ios
 
   e2e-linux:
     defaults:
@@ -190,7 +190,7 @@ jobs:
         run: |
           export DISPLAY=:99
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
-          flutter test --run-skipped -t e2e -t linux
+          flutter test --run-skipped -t e2e,linux
 
   e2e-macos:
     defaults:
@@ -221,7 +221,7 @@ jobs:
         run: flutter pub get
 
       - name: Run E2E Tests
-        run: flutter test --run-skipped -t e2e -t macos
+        run: flutter test --run-skipped -t e2e,macos
 
   e2e-web:
     defaults:
@@ -253,7 +253,7 @@ jobs:
         run: flutter pub get
 
       - name: Run E2E Tests
-        run: flutter test --run-skipped -t e2e -t web
+        run: flutter test --run-skipped -t e2e,web
 
   e2e-windows:
     defaults:
@@ -284,4 +284,4 @@ jobs:
         run: flutter pub get
 
       - name: Run E2E Tests
-        run: flutter test --run-skipped -t e2e -t windows
+        run: flutter test --run-skipped -t e2e,windows

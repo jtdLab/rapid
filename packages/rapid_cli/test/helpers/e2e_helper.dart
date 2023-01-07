@@ -1,8 +1,56 @@
-import 'package:dart_style/dart_style.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
+
+const projectName = 'test_app';
+
+final appDir = Directory(p.join('packages', projectName, projectName));
+final diDir = Directory(p.join('packages', projectName, '${projectName}_di'));
+final domainDir =
+    Directory(p.join('packages', projectName, '${projectName}_domain'));
+final infraDir =
+    Directory(p.join('packages', projectName, '${projectName}_infrastructure'));
+final loggingDir =
+    Directory(p.join('packages', projectName, '${projectName}_logging'));
+final uiDir =
+    Directory(p.join('packages', '${projectName}_ui', '${projectName}_ui'));
+final platformIndependentDirs = [
+  appDir,
+  diDir,
+  domainDir,
+  infraDir,
+  loggingDir,
+  uiDir
+];
+
+List<Directory> platformDirs(String platform) => [
+      Directory(
+        p.join('packages', projectName, '${projectName}_$platform',
+            '${projectName}_${platform}_app'),
+      ),
+      Directory(
+        p.join('packages', projectName, '${projectName}_$platform',
+            '${projectName}_${platform}_home_page'),
+      ),
+      Directory(
+        p.join('packages', projectName, '${projectName}_$platform',
+            '${projectName}_${platform}_routing'),
+      ),
+      Directory(
+        p.join('packages', '${projectName}_ui', '${projectName}_ui_$platform'),
+      ),
+    ];
+
+Future<void> verifyTestsPassWith100PercentCoverage(
+  List<Directory> dirs,
+) async {
+  for (final dir in dirs) {
+    final testResult = await runFlutterTest(cwd: dir.path);
+    expect(testResult.failedTests, 0);
+    expect(testResult.coverage, 100);
+  }
+}
 
 /// Verify that no analyzer issues are found in current directory.
 Future<void> verifyNoAnalyzerIssues() async {
@@ -48,7 +96,8 @@ Future<TestResult> runFlutterTest({
   final String stderr = result.stderr;
   final String stdout = result.stdout;
   if (stderr.isEmpty ||
-      stderr.contains('Test directory "test" not found') ||
+      stderr.contains(
+          'Test directory "test" not found') || // TODO this should return error
       stdout.contains('All tests passed')) {
     return TestResult(
       0,
@@ -161,7 +210,7 @@ Future<int> _runFlutterFormat({
   return int.parse(match.group(1)!);
 } */
 
-/// Returns a [Matcher] that matches when a [FileSystemEntity] exists on disk.
+/* /// Returns a [Matcher] that matches when a [FileSystemEntity] exists on disk.
 final Matcher exists = _EntityExists();
 
 class _EntityExists extends CustomMatcher {
@@ -193,3 +242,4 @@ class _IsValidDartFile extends CustomMatcher {
     return ext == '.dart' && valid;
   }
 }
+ */

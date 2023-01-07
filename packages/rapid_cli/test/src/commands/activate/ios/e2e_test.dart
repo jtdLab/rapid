@@ -1,6 +1,5 @@
 @Tags(['e2e', 'ios'])
 import 'package:mason/mason.dart';
-import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
@@ -14,16 +13,10 @@ void main() {
     () {
       final cwd = Directory.current;
 
-      const projectName = 'test_app';
-
-      late Directory appDir;
-
       late RapidCommandRunner commandRunner;
 
       setUp(() {
         Directory.current = Directory.systemTemp.createTempSync();
-
-        appDir = Directory(p.join('packages', projectName, projectName));
 
         commandRunner = RapidCommandRunner();
       });
@@ -50,6 +43,12 @@ void main() {
 
           await verifyNoAnalyzerIssues();
           // await verifyNoFormattingIssues(); TODO add later
+
+          final platformDependentDirs = platformDirs('ios');
+          verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentDirs,
+            ...platformDependentDirs,
+          ]);
 
           // TODO maybe verify that platform dir exist
 

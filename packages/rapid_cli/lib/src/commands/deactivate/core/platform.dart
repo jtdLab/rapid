@@ -71,7 +71,7 @@ abstract class DeactivatePlatformCommand extends Command<int>
           final appPackagePubspec = appPackage.pubspecFile;
           appPackagePubspec.removeDependencyByPattern(_platform.name);
           for (final mainFile in appPackage.mainFiles) {
-            mainFile.removeSetupCodeForPlatform(_platform);
+            mainFile.removeForPlatform(_platform);
           }
 
           final diPackage = _project.diPackage;

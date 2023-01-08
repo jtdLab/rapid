@@ -1,20 +1,14 @@
-// TODO impl cleaner using a dart parse library like analyzer to get the AST instead of manually parsing strings
 // TODO maybe use seperate regexp for dart, package and relative imports
 // TODO support getters and arrow syntax in future and aliases and support for comments
 
-import 'package:code_builder/code_builder.dart';
+import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:code_builder/code_builder.dart' show DartEmitter, Method;
 import 'package:dart_style/dart_style.dart';
 import 'package:path/path.dart' as p;
 import 'package:universal_io/io.dart';
-// import 'package:analyzer/dart/ast/ast.dart';
 
 export 'package:code_builder/code_builder.dart';
-
-/// Thrown when [DartFile.addMethod] is used to add an already existing method.
-class MethodAlreadyExists implements Exception {}
-
-/// Thrown when [DartFile.addMethod] is used with a scope that does not exist.
-class ScopeNotFound implements Exception {}
 
 /// Sorts imports after dart standard
 ///
@@ -54,116 +48,6 @@ int _compareImports(String a, String b) {
 
 final _importRegExp = RegExp('import \'([a-z_/.:]+)\'( as [a-z]+)?;');
 
-final _methodHeadRegExp = RegExp(r'[\w<>]+\s+([\w]+)\([\w\s,?[\]{}]*\)');
-
-class _Scope {
-  _Scope(this.name, this.contents, this.start, this.end);
-
-  final String? name;
-  final String contents;
-  final int start;
-  final int end;
-
-  bool get isRoot => name == null;
-
-  bool hasMethod(String name) => getMethods().any((e) => e.name == name);
-
-  List<_Method> getMethods() {
-    late final RegExp classMixinOrExtensionRegExp;
-    if (isRoot) {
-      classMixinOrExtensionRegExp =
-          RegExp(r'(?:[\s]|^)(class|extension|mixin)(?=[\s]|$)');
-
-      // Remove all classes
-      var contents = this.contents;
-      var offset = 0;
-      for (final match
-          in classMixinOrExtensionRegExp.allMatches(this.contents)) {
-        final start = match.start;
-        final end = this
-                .contents
-                .indexOfClosingBrace(this.contents.indexOf('{', start)) +
-            1;
-        contents = contents.replaceRange(start - offset, end - offset, '');
-        offset += (end - start);
-      }
-
-      // TODO here the start and end is wrong
-      return _methodHeadRegExp.allMatches(contents).map(
-        (match) {
-          final method = contents.substring(
-            match.start,
-            contents.indexOfClosingBrace(contents.indexOf('{', match.start)) +
-                1,
-          );
-
-          final start = this.contents.indexOf(method);
-          final end = start + method.length;
-
-          return _Method(match.group(1)!, contents, start, end);
-        },
-      ).toList();
-    } else {
-      classMixinOrExtensionRegExp =
-          RegExp(r'(?:[\s]|^)(class|extension|mixin)(?=[\s]|$) ' + name!);
-
-      // TODO here the start and end is wrong
-      return _methodHeadRegExp.allMatches(contents).map(
-        (match) {
-          final start = match.start;
-          final end =
-              contents.indexOfClosingBrace(contents.indexOf('{', start)) + 1;
-
-          return _Method(
-            match.group(1)!,
-            contents,
-            start,
-            end,
-          );
-        },
-      ).toList();
-    }
-  }
-}
-
-class _Method {
-  _Method(this.name, this.contents, this.start, this.end);
-
-  final String name;
-  final String contents;
-  final int start;
-  final int end;
-}
-
-extension on String {
-  int indexOfClosingBrace(int openingBraceIndex) {
-    if (openingBraceIndex == -1) {
-      return length - 1;
-    }
-
-    assert(this[openingBraceIndex] == '{');
-
-    int count = 0;
-    for (int i = openingBraceIndex; i < length; i++) {
-      final char = this[i];
-      if (char == '{') {
-        count++;
-        continue;
-      }
-
-      if (char == '}') {
-        count--;
-
-        if (count == 0) {
-          return i;
-        }
-      }
-    }
-
-    return -1;
-  }
-}
-
 /// {@template dart_file}
 /// Abstraction of a dart file.
 /// {@endtemplate}
@@ -179,64 +63,13 @@ class DartFile {
 
   String get path => _file.path;
 
-  /// [name] = null refers to the root scope
-  _Scope _getScope(String? name, String contents) {
-    if (name == null) {
-      return _Scope(name, contents, 0, contents.length);
-    }
-
-    final classMixinOrExtensionRegExp =
-        RegExp(r'(?:[\s]|^)(class|extension|mixin)(?=[\s]|$) ' + name);
-
-    final parentExists = classMixinOrExtensionRegExp.hasMatch(contents);
-    if (parentExists) {
-      final matchStart =
-          classMixinOrExtensionRegExp.firstMatch(contents)!.start;
-      final start = matchStart;
-      final end = contents.indexOfClosingBrace(
-        contents.indexOf('{', matchStart),
-      );
-      return _Scope(name, contents.substring(start, end), start, end);
-    }
-
-    throw ScopeNotFound();
+  List<Declaration> _getTopLevelDeclarations(String source) {
+    final unit = parseString(content: source).unit;
+    return unit.declarations;
   }
-
-  /// Inserts [code] at [position].
-  void _insertCode(String code, {required int position}) {
-    var contents = _read();
-
-    final output = contents.replaceRange(position, position, code);
-
-    _write(output);
-  }
-
-/*   /// Inserts [code] after the [occurence] match of [pattern].
-  void _insertCodeAfterPattern(String code,
-      {required RegExp pattern, int occurence = 0}) {
-    var contents = _read();
-
-    final matches = pattern.allMatches(contents);
-    if (occurence + 1 <= matches.length) {
-      final match = matches.elementAt(occurence);
-      final start =
-          match.start + match.group(0)!.length + 1; // TODO +1 needed ?
-      final output = contents.replaceRange(start, start, code);
-      _write(output);
-    }
-  } */
 
   /// Reads the contents of the underlying file.
   String _read() => _file.readAsStringSync();
-
-  /// Removes code from [start] to [end] (both inclusive).
-  void _removeCode(int start, int end) {
-    final contents = _read();
-
-    final output = contents.replaceRange(start, end, '');
-
-    _write(output);
-  }
 
   /// Formates and writes [contents] to the underlying file.
   void _write(String contents) =>
@@ -283,51 +116,122 @@ class DartFile {
     _write(output);
   }
 
-  /// Adds [method] as a member function of [parent] (class, mixin, extension).
+  /// Adds parameter with [paramName] to the [index]-th call to function with [functionToCallName] inside
+  /// the body of function [functionName] and assigns it to [paramValue].
   ///
-  /// If [parent] is null [method] gets added as a top level function.
-  void addMethod(Method method, {String? parent}) {
+  /// **IMPORTANT**: Does nothing if the the parameter already exists.
+  ///
+  /// For example:
+  ///
+  /// Given:
+  /// ```dart
+  /// void foo() {
+  ///  bar();
+  ///  bar();
+  /// }
+  /// ```
+  /// When call:
+  /// ```dart
+  /// addNamedParamToMethodCallInTopLevelFunctionBody(
+  ///   paramName: 'a',
+  ///   paramValue: '"hello"',
+  ///   functionName: 'foo',
+  ///   functionToCallName: 'bar',
+  ///   index: 1
+  /// );
+  /// ```
+  /// The result is:
+  /// ```dart
+  /// void foo() {
+  ///  bar();
+  ///  bar(
+  ///   a: "hello",
+  ///  );
+  /// }
+  /// ```
+  void addNamedParamToMethodCallInTopLevelFunctionBody({
+    required String paramName,
+    required String paramValue,
+    required String functionName,
+    required String functionToCallName,
+    int index = 0,
+  }) {
     final contents = _read();
 
-    final scope = _getScope(parent, contents);
-    final methodExists = scope.hasMethod(method.name!);
-    if (!methodExists) {
-      _write(
-        contents.replaceRange(
-          (scope.end - 1) > 0 ? (scope.end - 1) : 0,
-          scope.end,
-          '${method.accept(DartEmitter())}',
-        ),
-      );
+    final declarations = _getTopLevelDeclarations(contents);
+    final topLevelFunctions = declarations.whereType<FunctionDeclaration>();
+    final mainMethod =
+        topLevelFunctions.firstWhere((e) => e.name.lexeme == functionName);
+    final mainBody = mainMethod.functionExpression.body.childEntities;
+    late final MethodInvocation methodInvocation;
+    if (mainBody.first is Block) {
+      // block syntax
+      // {
+      //   return methodToCallName(...;
+      // }
+      final block = mainBody.first as Block;
+      methodInvocation = block.childEntities
+          .map(
+            (e) {
+              if (e is ReturnStatement) {
+                return e.expression;
+              } else if (e is ExpressionStatement) {
+                return e.expression;
+              }
+
+              return e;
+            },
+          )
+          .whereType<MethodInvocation>()
+          .where((e) => e.methodName.name == functionToCallName)
+          .elementAt(index);
     } else {
-      throw MethodAlreadyExists();
+      // arrow syntax
+      // => methodToCallName(...;
+      methodInvocation = mainBody
+          .whereType<MethodInvocation>()
+          .where((e) => e.methodName.name == functionToCallName)
+          .first;
+    }
+    final methodInvocationArgumentList = methodInvocation.argumentList;
+    final existingArguments = methodInvocationArgumentList.arguments;
+    final exists = existingArguments
+        .any((e) => e.toString().split(':').first.trim() == paramName);
+
+    if (!exists) {
+      final insertPos = methodInvocationArgumentList.rightParenthesis.offset;
+      final insertion = '$paramName: $paramValue,';
+      final output = contents.replaceRange(insertPos, insertPos, insertion);
+
+      _write(output);
     }
   }
 
-  void addNamedParamToMethodCall(
-    String methodName,
-    String paramName,
-    String paramValue, {
-    String? parent,
-  }) {
-    late final int position;
-    if (parent == null) {
-      // scope is top level
-      position = 0; // TODO calc pos
-    } else {
-      // scope is class level
-      position = 0; // TODO calc pos
-      //start: 'TODO'.indexOf('runOnPlatform('), // TODO use contents
-      // TODO
-      // # Find the position where to insert the param
-      // #1. find range of class scope referenced by parent
-      // #2. find method scope inside class scope refed by methodName
-      // #3. find named params scope (might no exist)
-      // #4. check if param with name exists in named params scope
-      // # Add the code at position
-    }
+  /// Adds [function] as a top-level function.
+  void addTopLevelFunction(Method function) {
+    final contents = _read();
 
-    _insertCode('$paramName: $paramValue,', position: position);
+    final declarations = _getTopLevelDeclarations(contents);
+    final exists = declarations
+        .whereType<FunctionDeclaration>()
+        .any((e) => e.name.lexeme == function.name);
+    if (!exists) {
+      final lastBraceIndex = contents.lastIndexOf('}');
+      final insertPos =
+          lastBraceIndex == -1 ? contents.length : lastBraceIndex + 1;
+      print(lastBraceIndex);
+      final insertion =
+          '\n\n${function.accept(DartEmitter(useNullSafetySyntax: true))}';
+      final output = contents.replaceRange(insertPos, insertPos, insertion);
+
+      _write(output);
+    }
+  }
+
+  // TODO doc
+  T readAnnotationParamOfTopLevelFunction<T extends Object?>() {
+    // TODO: impl
+    throw UnimplementedError();
   }
 
   /// Removes [import]
@@ -344,52 +248,109 @@ class DartFile {
     _write(output);
   }
 
-  /// Removes the member function of [parent] with [name].
+  /// Removes parameter with [paramName] from the [index]-th call to function with [functionToCallName] inside
+  /// the body of function [functionName].
   ///
-  /// If [parent] is null the top level function with [name] gets removed.
-  void removeMethod(String name, {String? parent}) {
+  /// For example:
+  ///
+  /// Given:
+  /// ```dart
+  /// void foo() {
+  ///  bar();
+  ///  bar(
+  ///   a: "hello",
+  ///  );
+  /// }
+  /// ```
+  /// When call:
+  /// ```dart
+  /// removeNamedParamFromMethodCallInTopLevelFunctionBody(
+  ///   paramName: 'a',
+  ///   functionName: 'foo',
+  ///   functionToCallName: 'bar',
+  ///   index: 1
+  /// );
+  /// ```
+  /// The result is:
+  /// ```dart
+  /// void foo() {
+  ///  bar();
+  ///  bar();
+  /// }
+  /// ```
+  void removeNamedParamFromMethodCallInTopLevelFunctionBody({
+    required String paramName,
+    required String functionName,
+    required String functionToCallName,
+    int index = 0,
+  }) {
     final contents = _read();
 
-    final scope = _getScope(parent, contents);
-    final methodExists = scope.hasMethod(name);
-    if (methodExists) {
-      final method = scope.getMethods().firstWhere((e) => e.name == name);
+    final declarations = _getTopLevelDeclarations(contents);
+    final topLevelFunctions = declarations.whereType<FunctionDeclaration>();
+    final mainMethod =
+        topLevelFunctions.firstWhere((e) => e.name.lexeme == functionName);
+    final mainBody = mainMethod.functionExpression.body.childEntities;
+    late final MethodInvocation methodInvocation;
+    if (mainBody.first is Block) {
+      // block syntax
+      // {
+      //   return methodToCallName(...;
+      // }
+      final block = mainBody.first as Block;
+      methodInvocation = block.childEntities
+          .map(
+            (e) {
+              if (e is ReturnStatement) {
+                return e.expression;
+              } else if (e is ExpressionStatement) {
+                return e.expression;
+              }
 
-      final offset = scope.isRoot ? 0 : contents.indexOf(method.contents);
+              return e;
+            },
+          )
+          .whereType<MethodInvocation>()
+          .where((e) => e.methodName.name == functionToCallName)
+          .elementAt(index);
+    } else {
+      // arrow syntax
+      // => methodToCallName(...;
+      methodInvocation = mainBody
+          .whereType<MethodInvocation>()
+          .where((e) => e.methodName.name == functionToCallName)
+          .first;
+    }
+    final methodInvocationArgumentList = methodInvocation.argumentList;
+    final existingArguments = methodInvocationArgumentList.arguments;
+    final exists = existingArguments
+        .any((e) => e.toString().split(':').first.trim() == paramName);
 
-      _write(
-        contents.replaceRange(method.start + offset, method.end + offset, ''),
-      );
+    if (exists) {
+      final argument = existingArguments
+          .firstWhere((e) => e.toString().startsWith(paramName));
+      final output =
+          contents.replaceRange(argument.offset, argument.end + 1, '');
+
+      _write(output);
     }
   }
 
-  void removeNamedParamFromMethodCall(
-    String method,
-    String param, {
-    String? parent,
-  }) {
-    late final int start;
-    late final int end;
-    if (parent == null) {
-      // scope is top level
-      start = 0; // TODO calc start
-      end = 0; // TODO calc end
-    } else {
-      // scope is class level
-      start = 0; // TODO calc start
-      end = 0; // TODO calc end
+  /// Removes the top-level function with [name].
+  void removeTopLevelFunction(String name) {
+    final contents = _read();
 
-      //start: 'TODO'.indexOf('runOnPlatform('), // TODO use contents
-      // TODO
-      // # Find the position where to insert the param
-      // #1. find range of class scope referenced by parent
-      // #2. find method scope inside class scope refed by methodName
-      // #3. find named params scope (might no exist)
-      // #4. check if param with name exists in named params scope
-      // # Add the code at position
+    final declarations = _getTopLevelDeclarations(contents);
+    final exists = declarations
+        .whereType<FunctionDeclaration>()
+        .any((e) => e.name.lexeme == name);
+    if (exists) {
+      final function = declarations
+          .firstWhere((e) => e is FunctionDeclaration && e.name.lexeme == name);
+      final output = contents.replaceRange(function.offset, function.end, '');
+
+      _write(output);
     }
-
-    _removeCode(start, end);
   }
 
   /// Sets the [property] of [annotation] to [value].
@@ -414,11 +375,10 @@ class DartFile {
   /// @SomeAnnotation(someProp: 100)
   /// void foo() {}
   /// ```
-  void setAnnotationProperty<T extends Object?>({
+  void setAnnotationParamOfTopLevelFunction<T extends Object?>({
     required String property,
     required String annotation,
     required String element,
-    String? parent,
     required T value,
   }) {
     final contents = _read();
@@ -427,5 +387,3 @@ class DartFile {
     _write(output);
   }
 }
-
-class DartEditor {}

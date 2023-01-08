@@ -91,6 +91,22 @@ class Bar {
 }
 ''';
 
+const dartFileWithClassesOnly = '''
+import 'dart:aaa';
+
+class Foo {
+  int bbb() {
+    print('Foo.bbb');
+  }
+}
+
+class Bar {
+  Future<void> bbb() {
+    print('Bar.bbb');
+  }
+}
+''';
+
 const dartFileWithAdditionalTopLevelMethod = '''
 import 'dart:aaa';
 
@@ -139,11 +155,52 @@ class Bar {
 }
 ''';
 
-const emptyFile = '';
+const emptyDartFile = '';
 
-const fileWithSingleMethod = '''
+const dartFileWithSingleMethod = '''
 String aaa() {
   print(1);
+}
+''';
+
+const dartFileWithTopLevelFunctionInArrowSyntax = '''
+void foo() => bar();
+''';
+
+const dartFileWithTopLevelFunctionInArrowSyntaxWithParam = '''
+void foo() => bar(
+      a: '3',
+    );
+''';
+
+const fileWithTopLevelFunctionInBodySyntax = '''
+void foo() {
+  kuku();
+  bar();
+  boz();
+  bar();
+}
+''';
+
+const fileWithTopLevelFunctionInBodySyntaxWithParam = '''
+void foo() {
+  kuku();
+  bar(
+    z: 88,
+  );
+  boz();
+  bar();
+}
+''';
+
+const fileWithTopLevelFunctionInBodySyntaxWithParamAndIndex = '''
+void foo() {
+  kuku();
+  bar();
+  boz();
+  bar(
+    z: 88,
+  );
 }
 ''';
 
@@ -238,14 +295,114 @@ void main() {
       });
     });
 
-    group('addMethod', () {
-      test('adds top level method correctly', () {
+    group('addNamedParamToMethodCallInTopLevelFunctionBody', () {
+      test(
+          'adds named param correctly to referenced function call (arrow syntax)',
+          () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithTopLevelFunctionInArrowSyntax);
+
+        // Act
+        dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
+          paramName: 'a',
+          paramValue: '\'3\'',
+          functionName: 'foo',
+          functionToCallName: 'bar',
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithTopLevelFunctionInArrowSyntaxWithParam);
+      });
+
+      test(
+          'adds named param correctly to referenced function call (body syntax)',
+          () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(fileWithTopLevelFunctionInBodySyntax);
+
+        // Act
+        dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
+          paramName: 'z',
+          paramValue: '88',
+          functionName: 'foo',
+          functionToCallName: 'bar',
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, fileWithTopLevelFunctionInBodySyntaxWithParam);
+      });
+
+      test(
+          'adds named param correctly to referenced function call when index is not 0 (body syntax)',
+          () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(fileWithTopLevelFunctionInBodySyntax);
+
+        // Act
+        dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
+          paramName: 'z',
+          paramValue: '88',
+          functionName: 'foo',
+          functionToCallName: 'bar',
+          index: 1,
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, fileWithTopLevelFunctionInBodySyntaxWithParamAndIndex);
+      });
+
+      test('does nothing when param already exists (arrow syntax)', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+            dartFileWithTopLevelFunctionInArrowSyntaxWithParam);
+
+        // Act
+        dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
+          paramName: 'a',
+          paramValue: '\'33\'',
+          functionName: 'foo',
+          functionToCallName: 'bar',
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithTopLevelFunctionInArrowSyntaxWithParam);
+      });
+
+      test('does nothing when param already exists (body syntax)', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(fileWithTopLevelFunctionInBodySyntaxWithParam);
+
+        // Act
+        dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
+          paramName: 'z',
+          paramValue: '100',
+          functionName: 'foo',
+          functionToCallName: 'bar',
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, fileWithTopLevelFunctionInBodySyntaxWithParam);
+      });
+    });
+
+    group('addTopLevelFunction', () {
+      test('adds top level function correctly', () {
         // Arrange
         final file = File(dartFile.path);
         file.writeAsStringSync(dartFileWithMethods);
 
         // Act
-        dartFile.addMethod(
+        dartFile.addTopLevelFunction(
           Method(
             (m) => m
               ..returns = refer('String')
@@ -259,34 +416,13 @@ void main() {
         expect(contents, dartFileWithAdditionalTopLevelMethod);
       });
 
-      test('adds member method correctly', () {
+      test('adds top level function correctly when file is empty', () {
         // Arrange
         final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithMethods);
+        file.writeAsStringSync(emptyDartFile);
 
         // Act
-        dartFile.addMethod(
-          Method(
-            (m) => m
-              ..returns = refer('String')
-              ..name = 'aaa'
-              ..body = Code('print(1);'),
-          ),
-          parent: 'Foo',
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithAdditionalMemberMethod);
-      });
-
-      test('adds member method correctly when file is empty', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(emptyFile);
-
-        // Act
-        dartFile.addMethod(
+        dartFile.addTopLevelFunction(
           Method(
             (m) => m
               ..returns = refer('String')
@@ -297,47 +433,34 @@ void main() {
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, fileWithSingleMethod);
+        expect(contents, dartFileWithSingleMethod);
       });
 
-      test('throws when parent does not exist', () {
+      test(
+          'does nothing when top level function with given name already exists',
+          () {
         // Arrange
         final file = File(dartFile.path);
         file.writeAsStringSync(dartFileWithMethods);
 
-        // Act + Assert
-        expect(
-          () => dartFile.addMethod(
-            Method((m) => m..name = 'aaa'),
-            parent: 'Baz',
+        // Act
+        dartFile.addTopLevelFunction(
+          Method(
+            (m) => m
+              ..returns = refer('String')
+              ..name = 'bbb'
+              ..body = Code('print(1);'),
           ),
-          throwsA(isA<ScopeNotFound>()),
         );
-        // TODO error type
-      });
 
-      test('throws when method already exists', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithMethods);
-
-        // Act + Assert
-        expect(
-          () => dartFile.addMethod(
-            Method((m) => m..name = 'bbb'),
-          ),
-          throwsA(isA<MethodAlreadyExists>()),
-        );
-        // TODO error type
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithMethods);
       });
     });
 
-    group('insertCode', () {
-      // TODO
-    });
-
-    group('removeCode', () {
-      // TODO
+    group('readAnnotationParamOfTopLevelFunction', () {
+      // TODO impl
     });
 
     group('removeImport', () {
@@ -381,62 +504,161 @@ void main() {
       });
     });
 
-    group('removeMethod', () {
-      test('removes top level method correctly', () {
+    group('removeNamedParamFromMethodCall', () {});
+
+    group('removeNamedParamFromMethodCallInTopLevelFunctionBody', () {
+      test(
+          'removes named param correctly from referenced function call (arrow syntax)',
+          () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+          dartFileWithTopLevelFunctionInArrowSyntaxWithParam,
+        );
+
+        // Act
+        dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+          paramName: 'a',
+          functionName: 'foo',
+          functionToCallName: 'bar',
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithTopLevelFunctionInArrowSyntax);
+      });
+
+      test(
+          'removes named param correctly from referenced function call (body syntax)',
+          () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(fileWithTopLevelFunctionInBodySyntaxWithParam);
+
+        // Act
+        dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+          paramName: 'z',
+          functionName: 'foo',
+          functionToCallName: 'bar',
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, fileWithTopLevelFunctionInBodySyntax);
+      });
+
+      test(
+          'remove named param correctly to referenced function call when index is not 0 (body syntax)',
+          () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+            fileWithTopLevelFunctionInBodySyntaxWithParamAndIndex);
+
+        // Act
+        dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+          paramName: 'z',
+          functionName: 'foo',
+          functionToCallName: 'bar',
+          index: 1,
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, fileWithTopLevelFunctionInBodySyntax);
+      });
+
+      test('does nothing when param does not exists (arrow syntax)', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithTopLevelFunctionInArrowSyntax);
+
+        // Act
+        dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+          paramName: 'a',
+          functionName: 'foo',
+          functionToCallName: 'bar',
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithTopLevelFunctionInArrowSyntax);
+      });
+
+      test('does nothing when param does not exists (body syntax)', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(fileWithTopLevelFunctionInBodySyntax);
+
+        // Act
+        dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+          paramName: 'z',
+          functionName: 'foo',
+          functionToCallName: 'bar',
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, fileWithTopLevelFunctionInBodySyntax);
+      });
+    });
+
+    group('removeTopLevelFunction', () {
+      test('removes top level function correctly', () {
         // Arrange
         final file = File(dartFile.path);
         file.writeAsStringSync(dartFileWithAdditionalTopLevelMethod);
 
         // Act
-        dartFile.removeMethod('aaa');
+        dartFile.removeTopLevelFunction('aaa');
 
         // Assert
         final contents = file.readAsStringSync();
         expect(contents, dartFileWithMethods);
       });
 
-      test('removes member method correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithAdditionalMemberMethod);
-
-        // Act
-        dartFile.removeMethod('aaa', parent: 'Foo');
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithMethods);
-      });
-
-      test('does nothing when top level method does not exist', () {
+      test('removes top level function correctly (2)', () {
         // Arrange
         final file = File(dartFile.path);
         file.writeAsStringSync(dartFileWithMethods);
 
         // Act
-        dartFile.removeMethod('zzz');
+        dartFile.removeTopLevelFunction('bbb');
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithClassesOnly);
+      });
+
+      test('does nothing when top level function does not exist', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithMethods);
+
+        // Act
+        dartFile.removeTopLevelFunction('zzz');
 
         // Assert
         final contents = file.readAsStringSync();
         expect(contents, dartFileWithMethods);
       });
 
-      test('does nothing when member method does not exist', () {
+      test('does nothing when file is empty', () {
         // Arrange
         final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithMethods);
+        file.writeAsStringSync(emptyDartFile);
 
         // Act
-        dartFile.removeMethod('zzz', parent: 'Foo');
+        dartFile.removeTopLevelFunction('zzz');
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, dartFileWithMethods);
+        expect(contents, emptyDartFile);
       });
     });
 
-    group('setAnnotationProperty', () {
-      // TODO
+    group('setAnnotationParamOfTopLevelFunction', () {
+      // TODO impl
     });
   });
 }

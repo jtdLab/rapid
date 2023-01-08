@@ -307,11 +307,10 @@ void main() {
       verify(() =>
               appPackagePubspec.setDependency('${projectName}_android_app'))
           .called(1);
-      verify(() => mainFileDev.addSetupCodeForPlatform(Platform.android))
+      verify(() => mainFileDev.addSetupForPlatform(Platform.android)).called(1);
+      verify(() => mainFileTest.addSetupForPlatform(Platform.android))
           .called(1);
-      verify(() => mainFileTest.addSetupCodeForPlatform(Platform.android))
-          .called(1);
-      verify(() => mainFileProd.addSetupCodeForPlatform(Platform.android))
+      verify(() => mainFileProd.addSetupForPlatform(Platform.android))
           .called(1);
       verify(() => logger.progress('Updating package $diPackagePath '))
           .called(1);
@@ -383,11 +382,10 @@ void main() {
       verify(() =>
               appPackagePubspec.setDependency('${projectName}_android_app'))
           .called(1);
-      verify(() => mainFileDev.addSetupCodeForPlatform(Platform.android))
+      verify(() => mainFileDev.addSetupForPlatform(Platform.android)).called(1);
+      verify(() => mainFileTest.addSetupForPlatform(Platform.android))
           .called(1);
-      verify(() => mainFileTest.addSetupCodeForPlatform(Platform.android))
-          .called(1);
-      verify(() => mainFileProd.addSetupCodeForPlatform(Platform.android))
+      verify(() => mainFileProd.addSetupForPlatform(Platform.android))
           .called(1);
       verify(() => logger.progress('Updating package $diPackagePath '))
           .called(1);

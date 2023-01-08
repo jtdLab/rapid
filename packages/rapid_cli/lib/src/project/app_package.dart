@@ -14,16 +14,15 @@ enum Environment { development, test, production }
 /// {@endtemplate}
 class AppPackage {
   /// {@macro app_package}
-  AppPackage({required Project project})
-      : _project = project,
-        _package = DartPackage(
+  AppPackage({required this.project})
+      : _package = DartPackage(
           path: p.join(
               'packages', project.melosFile.name(), project.melosFile.name()),
         );
 
   final DartPackage _package;
 
-  final Project _project;
+  final Project project;
 
   /// The main files.
   ///
@@ -61,8 +60,8 @@ class MainFile {
 
   String get path => _file.path;
 
-  void addSetupCodeForPlatform(Platform platform) {
-    final projectName = _appPackage._project.melosFile.name();
+  void addSetupForPlatform(Platform platform) {
+    final projectName = _appPackage.project.melosFile.name();
     final platformName = platform.name;
     final envName = env == Environment.development
         ? 'dev'
@@ -79,26 +78,18 @@ class MainFile {
       _file.addImport('package:url_strategy/url_strategy.dart');
     }
 
-    // TODO add this functionality
-    //_file.addNamedParamToMethodCall(methodName, paramName, paramValue);
-
-    // TODO rethink the procces of adding/inserting code / method is it the same?
-/*     _file.insertCode(
-      '${platform.name}: run${platform.name.pascalCase}App,',
-      start: 'TODO'.indexOf('runOnPlatform('), // TODO use contents
-    ); */
-
-    _file.addMethod(
+    final functionName = 'run${platformName.pascalCase}App';
+    _file.addTopLevelFunction(
       Method(
         (m) => m
           ..returns = refer('Future<void>')
-          ..name = 'run${platformName.pascalCase}App'
+          ..name = functionName
           ..modifier = MethodModifier.async
           ..body = Code([
             'configureDependencies(Environment.$envName, Platform.$platformName);',
             if (platform == Platform.web) 'setPathUrlStrategy();',
             'WidgetsFlutterBinding.ensureInitialized();',
-            '// TODO: add more $platformName ${env.name} setup here',
+            '  // TODO: add more $platformName ${env.name} setup here',
             '',
             'final logger = getIt<${projectName.pascalCase}Logger>();',
             'final app = $platformName.App(',
@@ -110,10 +101,17 @@ class MainFile {
           ].join('\n')),
       ),
     );
+
+    _file.addNamedParamToMethodCallInTopLevelFunctionBody(
+      paramName: platformName,
+      paramValue: functionName,
+      functionName: 'main',
+      functionToCallName: 'runOnPlatform',
+    );
   }
 
-  void removeSetupCodeForPlatform(Platform platform) {
-    final projectName = _appPackage._project.melosFile.name();
+  void removeForPlatform(Platform platform) {
+    final projectName = _appPackage.project.melosFile.name();
     final platformName = platform.name;
 
     _file.removeImport(
@@ -124,15 +122,12 @@ class MainFile {
       _file.removeImport('package:url_strategy/url_strategy.dart');
     }
 
-    // TODO add this functionality
-    //_file.removeNamedParamFromMethodCall(methodName, paramName, paramValue);
+    _file.removeTopLevelFunction('run${platformName.pascalCase}App');
 
-/*     // TODO rethink the procces of removing code / method is it the same?
-    final token = '${platform.name}: run${platform.name.pascalCase}App';
-    final start = 'TODO'.indexOf(token); // TODO file content
-    final end = start + token.length;
-    //_file.removeCode(start, end); */
-
-    _file.removeMethod('run${platformName.pascalCase}App');
+    _file.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+      paramName: platformName,
+      functionName: 'main',
+      functionToCallName: 'runOnPlatform',
+    );
   }
 }

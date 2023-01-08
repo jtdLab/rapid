@@ -179,12 +179,9 @@ void main() {
       verify(() => project.isActivated(Platform.android)).called(1);
       verify(() => appPackagePubspec.removeDependencyByPattern('android'))
           .called(1);
-      verify(() => mainFileDev.removeSetupCodeForPlatform(Platform.android))
-          .called(1);
-      verify(() => mainFileTest.removeSetupCodeForPlatform(Platform.android))
-          .called(1);
-      verify(() => mainFileProd.removeSetupCodeForPlatform(Platform.android))
-          .called(1);
+      verify(() => mainFileDev.removeForPlatform(Platform.android)).called(1);
+      verify(() => mainFileTest.removeForPlatform(Platform.android)).called(1);
+      verify(() => mainFileProd.removeForPlatform(Platform.android)).called(1);
       verify(() => diPackagePubspec.removeDependencyByPattern('android'))
           .called(1);
       verify(() => injectionFile.removePackagesByPlatform(Platform.android))

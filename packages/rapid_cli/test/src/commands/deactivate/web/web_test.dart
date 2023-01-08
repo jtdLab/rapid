@@ -172,12 +172,9 @@ void main() {
       verify(() => project.isActivated(Platform.web)).called(1);
       verify(() => appPackagePubspec.removeDependencyByPattern('web'))
           .called(1);
-      verify(() => mainFileDev.removeSetupCodeForPlatform(Platform.web))
-          .called(1);
-      verify(() => mainFileTest.removeSetupCodeForPlatform(Platform.web))
-          .called(1);
-      verify(() => mainFileProd.removeSetupCodeForPlatform(Platform.web))
-          .called(1);
+      verify(() => mainFileDev.removeForPlatform(Platform.web)).called(1);
+      verify(() => mainFileTest.removeForPlatform(Platform.web)).called(1);
+      verify(() => mainFileProd.removeForPlatform(Platform.web)).called(1);
       verify(() => diPackagePubspec.removeDependencyByPattern('web')).called(1);
       verify(() => injectionFile.removePackagesByPlatform(Platform.web))
           .called(1);

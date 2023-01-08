@@ -311,12 +311,9 @@ void main() {
           .called(1);
       verify(() => appPackagePubspec.setDependency('${projectName}_linux_app'))
           .called(1);
-      verify(() => mainFileDev.addSetupCodeForPlatform(Platform.linux))
-          .called(1);
-      verify(() => mainFileTest.addSetupCodeForPlatform(Platform.linux))
-          .called(1);
-      verify(() => mainFileProd.addSetupCodeForPlatform(Platform.linux))
-          .called(1);
+      verify(() => mainFileDev.addSetupForPlatform(Platform.linux)).called(1);
+      verify(() => mainFileTest.addSetupForPlatform(Platform.linux)).called(1);
+      verify(() => mainFileProd.addSetupForPlatform(Platform.linux)).called(1);
       verify(() => logger.progress('Updating package $diPackagePath '))
           .called(1);
       verify(() =>
@@ -387,12 +384,9 @@ void main() {
           .called(1);
       verify(() => appPackagePubspec.setDependency('${projectName}_linux_app'))
           .called(1);
-      verify(() => mainFileDev.addSetupCodeForPlatform(Platform.linux))
-          .called(1);
-      verify(() => mainFileTest.addSetupCodeForPlatform(Platform.linux))
-          .called(1);
-      verify(() => mainFileProd.addSetupCodeForPlatform(Platform.linux))
-          .called(1);
+      verify(() => mainFileDev.addSetupForPlatform(Platform.linux)).called(1);
+      verify(() => mainFileTest.addSetupForPlatform(Platform.linux)).called(1);
+      verify(() => mainFileProd.addSetupForPlatform(Platform.linux)).called(1);
       verify(() => logger.progress('Updating package $diPackagePath '))
           .called(1);
       verify(() =>

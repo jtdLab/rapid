@@ -130,7 +130,7 @@ abstract class ActivatePlatformCommand extends Command<int>
           appPackagePubspec
               .setDependency('${projectName}_${_platform.name}_app');
           for (final mainFile in appPackage.mainFiles) {
-            mainFile.addSetupCodeForPlatform(_platform);
+            mainFile.addSetupForPlatform(_platform);
           }
           appUpdatePackageProgress.complete();
 

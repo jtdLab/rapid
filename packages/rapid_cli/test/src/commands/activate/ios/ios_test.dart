@@ -303,11 +303,9 @@ void main() {
           .called(1);
       verify(() => appPackagePubspec.setDependency('${projectName}_ios_app'))
           .called(1);
-      verify(() => mainFileDev.addSetupCodeForPlatform(Platform.ios)).called(1);
-      verify(() => mainFileTest.addSetupCodeForPlatform(Platform.ios))
-          .called(1);
-      verify(() => mainFileProd.addSetupCodeForPlatform(Platform.ios))
-          .called(1);
+      verify(() => mainFileDev.addSetupForPlatform(Platform.ios)).called(1);
+      verify(() => mainFileTest.addSetupForPlatform(Platform.ios)).called(1);
+      verify(() => mainFileProd.addSetupForPlatform(Platform.ios)).called(1);
       verify(() => logger.progress('Updating package $diPackagePath '))
           .called(1);
       verify(() =>
@@ -378,11 +376,9 @@ void main() {
           .called(1);
       verify(() => appPackagePubspec.setDependency('${projectName}_ios_app'))
           .called(1);
-      verify(() => mainFileDev.addSetupCodeForPlatform(Platform.ios)).called(1);
-      verify(() => mainFileTest.addSetupCodeForPlatform(Platform.ios))
-          .called(1);
-      verify(() => mainFileProd.addSetupCodeForPlatform(Platform.ios))
-          .called(1);
+      verify(() => mainFileDev.addSetupForPlatform(Platform.ios)).called(1);
+      verify(() => mainFileTest.addSetupForPlatform(Platform.ios)).called(1);
+      verify(() => mainFileProd.addSetupForPlatform(Platform.ios)).called(1);
       verify(() => logger.progress('Updating package $diPackagePath '))
           .called(1);
       verify(() =>

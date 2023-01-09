@@ -30,13 +30,19 @@ void Function() _overridePrint(void Function(List<String>) fn) {
   };
 }
 
+/// Runs [fn] in a test environment.
+///
+/// This is used to implement negative testing of commands
+/// that do not depend on a project to be available.
+///
+/// E.g help, paramter validation and usage exceptions.
 void Function() withRunner(
   FutureOr<void> Function(
     RapidCommandRunner commandRunner,
     Logger logger,
     List<String> printLogs,
   )
-      runnerFn,
+      fn,
 ) {
   return _overridePrint((printLogs) async {
     final logger = _MockLogger();
@@ -53,10 +59,14 @@ void Function() withRunner(
     });
     when(() => logger.progress(any())).thenReturn(progress);
 
-    await runnerFn(commandRunner, logger, printLogs);
+    await fn(commandRunner, logger, printLogs);
   });
 }
 
+/// Runs [fn] in a test environment with a project.
+///
+/// This is used to implement negative/positive testing of commands
+/// that depend on a project to be available.
 void Function() withRunnerOnProject(
   FutureOr<void> Function(
     RapidCommandRunner commandRunner,
@@ -65,7 +75,7 @@ void Function() withRunnerOnProject(
     Project project,
     List<String> printLogs,
   )
-      runnerFn,
+      fn,
 ) {
   return _overridePrint((printLogs) async {
     registerFallbackValue(Platform.android);
@@ -89,6 +99,6 @@ void Function() withRunnerOnProject(
     });
     when(() => logger.progress(any())).thenReturn(progress);
 
-    await runnerFn(commandRunner, logger, melosFile, project, printLogs);
+    await fn(commandRunner, logger, melosFile, project, printLogs);
   });
 }

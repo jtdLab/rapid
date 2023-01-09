@@ -21,8 +21,8 @@ include: package:lints/recommended.yaml
 
 analyzer:
   exclude:
-    - test/fixtures/project_no_platforms/**
-    - test/fixtures/project_all_platforms/**
+    - test/fixtures/project_none/**
+    - test/fixtures/project_all/**
 
 # For more information about the core and recommended set of lints, see
 # https://dart.dev/go/core-lints

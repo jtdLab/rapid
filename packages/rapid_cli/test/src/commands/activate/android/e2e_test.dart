@@ -11,7 +11,7 @@ void main() {
   group(
     'E2E',
     () {
-      final cwd = Directory.current;
+      cwd = Directory.current;
 
       late RapidCommandRunner commandRunner;
 
@@ -21,18 +21,11 @@ void main() {
         commandRunner = RapidCommandRunner();
       });
 
-      tearDown(() {
-        Directory.current = cwd;
-      });
-
       test(
         'activate android',
         () async {
           // Arrange
-          // TODO should be pregenerated project from a fixture
-          await commandRunner.run(
-            ['create', '.', '--project-name', projectName],
-          );
+          await setupProjectNoPlatforms();
 
           // Act
           final commandResult = await commandRunner.run(

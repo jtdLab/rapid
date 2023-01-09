@@ -1,4 +1,0 @@
-# melos_managed_dependency_overrides: test_app_ui
-dependency_overrides:
-  test_app_ui:
-    path: ../test_app_ui

@@ -1,10 +1,48 @@
+import 'package:io/io.dart' show copyPath;
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
+/// The directory `flutter/dart test` was called from.
+///
+/// **IMPORTANT**: This should be the rapid_cli package.
+/// If it is not fixtures can not be loaded and e2e tests might fail.
+///
+/// Store the directory `flutter/dart test` was called from like this:
+///
+/// ```dart
+/// group(
+///   'E2E',
+///   () {
+///     cwd = Directory.current;
+///
+///     // e2e testing here
+///   }
+/// );
+/// ```
+late Directory cwd;
+
+/// Set up a Rapid test project in the cwd with NO platforms activated.
+Future<void> setupProjectNoPlatforms() async {
+  projectName = 'project_no';
+  copyPath(
+    Directory(p.join(cwd.path, 'test/fixtures/${projectName}_platforms')).path,
+    Directory.current.path,
+  );
+}
+
+/// Set up a Rapid test project in the cwd with ALL platforms activated.
+Future<void> setupProjectAllPlatforms() async {
+  projectName = 'project_all';
+  copyPath(
+    Directory(p.join(cwd.path, 'test/fixtures/${projectName}_platforms')).path,
+    Directory.current.path,
+  );
+}
+
 /// The name of the test project.
-const projectName = 'test_app';
+late String projectName;
 
 /// The app dir of the test project.
 final appDir = Directory(p.join('packages', projectName, projectName));

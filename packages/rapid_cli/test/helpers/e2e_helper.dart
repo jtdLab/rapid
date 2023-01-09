@@ -31,12 +31,7 @@ Future<void> setupProjectNoPlatforms() async {
     Directory.current.path,
   );
 
-  await Process.run(
-    'flutter',
-    ['pub', 'get'],
-    workingDirectory: Directory.current.path,
-    runInShell: true,
-  );
+  await _runFlutterPubGetInAllDirsWithPubspec();
 }
 
 /// Set up a Rapid test project in the cwd with ALL platforms activated.
@@ -47,12 +42,30 @@ Future<void> setupProjectAllPlatforms() async {
     Directory.current.path,
   );
 
-  await Process.run(
-    'flutter',
-    ['pub', 'get'],
-    workingDirectory: Directory.current.path,
-    runInShell: true,
-  );
+  await _runFlutterPubGetInAllDirsWithPubspec();
+}
+
+/// Runs `flutter pub get` recursivly in all dirs with pubspec.yaml
+/// starting from current directory.
+Future<void> _runFlutterPubGetInAllDirsWithPubspec() async {
+  List<Directory> rec(Directory dir) {
+    final subDirs = dir
+        .listSync(recursive: true)
+        .whereType<Directory>()
+        .where((e) => e.listSync().any((e) => e.path == 'pubspec.yaml'));
+    return subDirs.map((e) => rec(dir)).fold([], (prev, curr) => prev + curr);
+  }
+
+  final dirsWithPubspec = rec(Directory.current);
+
+  for (final dirWithPubspec in dirsWithPubspec) {
+    await Process.run(
+      'flutter',
+      ['pub', 'get'],
+      workingDirectory: dirWithPubspec.path,
+      runInShell: true,
+    );
+  }
 }
 
 /// The name of the test project.

@@ -10,28 +10,22 @@ void main() {
   group(
     'E2E',
     () {
-      final cwd = Directory.current;
+      cwd = Directory.current;
 
       late RapidCommandRunner commandRunner;
 
       setUp(() {
         Directory.current = Directory.systemTemp.createTempSync();
 
+        // TODO add mock logger here to prevent logging to stdout while running tests
         commandRunner = RapidCommandRunner();
-      });
-
-      tearDown(() {
-        Directory.current = cwd;
       });
 
       test(
         'deactivate macos',
         () async {
           // Arrange
-          // TODO should be pregenerated project from a fixture
-          await commandRunner.run(
-            ['create', '.', '--project-name', projectName, '--macos'],
-          );
+          await setupProjectAllPlatforms();
 
           // Act
           final commandResult = await commandRunner.run(

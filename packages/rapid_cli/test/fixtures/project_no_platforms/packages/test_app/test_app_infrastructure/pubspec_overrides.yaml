@@ -1,0 +1,6 @@
+# melos_managed_dependency_overrides: test_app_domain,test_app_logging
+dependency_overrides:
+  test_app_domain:
+    path: ../test_app_domain
+  test_app_logging:
+    path: ../test_app_logging

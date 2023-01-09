@@ -1,0 +1,46 @@
+# melos_managed_dependency_overrides: test_app_android_home_page,test_app_android_routing,test_app_di,test_app_domain,test_app_infrastructure,test_app_ios_home_page,test_app_ios_routing,test_app_linux_home_page,test_app_linux_routing,test_app_logging,test_app_macos_home_page,test_app_macos_routing,test_app_ui,test_app_ui_android,test_app_ui_ios,test_app_ui_linux,test_app_ui_macos,test_app_ui_web,test_app_ui_windows,test_app_web_home_page,test_app_windows_home_page,test_app_windows_routing
+dependency_overrides:
+  test_app_android_home_page:
+    path: ../../test_app_android/test_app_android_home_page
+  test_app_android_routing:
+    path: ../../test_app_android/test_app_android_routing
+  test_app_di:
+    path: ../../test_app_di
+  test_app_domain:
+    path: ../../test_app_domain
+  test_app_infrastructure:
+    path: ../../test_app_infrastructure
+  test_app_ios_home_page:
+    path: ../../test_app_ios/test_app_ios_home_page
+  test_app_ios_routing:
+    path: ../../test_app_ios/test_app_ios_routing
+  test_app_linux_home_page:
+    path: ../../test_app_linux/test_app_linux_home_page
+  test_app_linux_routing:
+    path: ../../test_app_linux/test_app_linux_routing
+  test_app_logging:
+    path: ../../test_app_logging
+  test_app_macos_home_page:
+    path: ../../test_app_macos/test_app_macos_home_page
+  test_app_macos_routing:
+    path: ../../test_app_macos/test_app_macos_routing
+  test_app_ui:
+    path: ../../../test_app_ui/test_app_ui
+  test_app_ui_android:
+    path: ../../../test_app_ui/test_app_ui_android
+  test_app_ui_ios:
+    path: ../../../test_app_ui/test_app_ui_ios
+  test_app_ui_linux:
+    path: ../../../test_app_ui/test_app_ui_linux
+  test_app_ui_macos:
+    path: ../../../test_app_ui/test_app_ui_macos
+  test_app_ui_web:
+    path: ../../../test_app_ui/test_app_ui_web
+  test_app_ui_windows:
+    path: ../../../test_app_ui/test_app_ui_windows
+  test_app_web_home_page:
+    path: ../test_app_web_home_page
+  test_app_windows_home_page:
+    path: ../../test_app_windows/test_app_windows_home_page
+  test_app_windows_routing:
+    path: ../../test_app_windows/test_app_windows_routing

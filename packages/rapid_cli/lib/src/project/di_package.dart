@@ -34,22 +34,16 @@ class InjectionFile {
   /// {@macro injection_file}
   InjectionFile({
     required DiPackage diPackage,
-  })  : _file = DartFile(
-            path: p.join(diPackage.path, 'lib', 'src'), name: 'injection'),
-        _diPackage = diPackage;
+  }) : _file = DartFile(
+            path: p.join(diPackage.path, 'lib', 'src'), name: 'injection');
 
   final DartFile _file;
-
-  final DiPackage _diPackage;
 
   String get path => _file.path;
 
   /// Adds [package] to this file.
   void addPackage(String package) {
-    final projectName = _diPackage.project.melosFile.name();
-
-    _file.addImport(
-        'package:${projectName}_$package/${projectName}_$package.dart');
+    _file.addImport('package:$package/$package.dart');
 
     final existingTypes =
         _file.readTypeListFromAnnotationParamOfTopLevelFunction(
@@ -64,7 +58,7 @@ class InjectionFile {
       functionName: 'configureDependencies',
       value: {
         ...existingTypes,
-        '${projectName.pascalCase}${package.pascalCase}PackageModule',
+        '${package.pascalCase}PackageModule',
       }.toList(),
     );
   }

@@ -20,19 +20,24 @@ extension on Environment {
 }
 
 const mainFileNoSetup = '''
-import 'package:ab_cd/router_observer.dart';
+import 'package:rapid/rapid.dart';
+
+void main() => runOnPlatform();
+''';
+
+const mainFileNoSetupButImports = '''
 import 'package:ab_cd_di/ab_cd_di.dart';
 import 'package:ab_cd_logging/ab_cd_logging.dart';
 import 'package:flutter/widgets.dart';
 import 'package:rapid/rapid.dart';
 
 import 'bootstrap.dart';
+import 'router_observer.dart';
 
 void main() => runOnPlatform();
 ''';
 
 String mainFileWithAndroidSetup(Environment env) => '''
-import 'package:ab_cd/router_observer.dart';
 import 'package:ab_cd_android_app/ab_cd_android_app.dart' as android;
 import 'package:ab_cd_di/ab_cd_di.dart';
 import 'package:ab_cd_logging/ab_cd_logging.dart';
@@ -40,6 +45,7 @@ import 'package:flutter/widgets.dart';
 import 'package:rapid/rapid.dart';
 
 import 'bootstrap.dart';
+import 'router_observer.dart';
 
 void main() => runOnPlatform(
       android: runAndroidApp,
@@ -61,7 +67,6 @@ Future<void> runAndroidApp() async {
 ''';
 
 String mainFileWithWebSetup(Environment env) => '''
-import 'package:ab_cd/router_observer.dart';
 import 'package:ab_cd_di/ab_cd_di.dart';
 import 'package:ab_cd_logging/ab_cd_logging.dart';
 import 'package:ab_cd_web_app/ab_cd_web_app.dart' as web;
@@ -70,6 +75,7 @@ import 'package:rapid/rapid.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'bootstrap.dart';
+import 'router_observer.dart';
 
 void main() => runOnPlatform(
       web: runWebApp,
@@ -92,7 +98,6 @@ Future<void> runWebApp() async {
 ''';
 
 String mainFileWithWebAndAndroidSetup(Environment env) => '''
-import 'package:ab_cd/router_observer.dart';
 import 'package:ab_cd_android_app/ab_cd_android_app.dart' as android;
 import 'package:ab_cd_di/ab_cd_di.dart';
 import 'package:ab_cd_logging/ab_cd_logging.dart';
@@ -102,6 +107,7 @@ import 'package:rapid/rapid.dart';
 import 'package:url_strategy/url_strategy.dart';
 
 import 'bootstrap.dart';
+import 'router_observer.dart';
 
 void main() => runOnPlatform(
       web: runWebApp,
@@ -454,7 +460,7 @@ void main() {
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, mainFileNoSetup);
+        expect(contents, mainFileNoSetupButImports);
       });
 
       test('remove platform setup correctly when platform exists (web)', () {
@@ -467,7 +473,7 @@ void main() {
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, mainFileNoSetup);
+        expect(contents, mainFileNoSetupButImports);
       });
 
       test('remove platform setup correctly when other platform setups exist',

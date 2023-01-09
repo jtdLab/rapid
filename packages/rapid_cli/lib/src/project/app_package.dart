@@ -69,6 +69,16 @@ class MainFile {
             ? 'test'
             : 'prod';
 
+    final imports = _file.readImports();
+    if (imports.length == 1 && imports.first == 'package:rapid/rapid.dart') {
+      _file.addImport('package:flutter/widgets.dart');
+      _file.addImport('package:${projectName}_di/${projectName}_di.dart');
+      _file.addImport(
+          'package:${projectName}_logging/${projectName}_logging.dart');
+      _file.addImport('bootstrap.dart');
+      _file.addImport('router_observer.dart');
+    }
+
     _file.addImport(
       'package:${projectName}_${platformName}_app/${projectName}_${platformName}_app.dart',
       alias: platformName,
@@ -129,5 +139,7 @@ class MainFile {
       functionName: 'main',
       functionToCallName: 'runOnPlatform',
     );
+
+    // TODO improvment remove unesessary imports if possible
   }
 }

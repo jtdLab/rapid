@@ -183,7 +183,7 @@ void main() {
         file.writeAsStringSync(injectionFileWithInitialPackages);
 
         // Act
-        injectionFile.addPackage('android_home_page');
+        injectionFile.addPackage('kuk_abc_android_home_page');
 
         // Assert
         final contents = file.readAsStringSync();
@@ -198,7 +198,7 @@ void main() {
         file.writeAsStringSync(injectionFileWithPackages);
 
         // Act
-        injectionFile.addPackage('web_my_page');
+        injectionFile.addPackage('kuk_abc_web_my_page');
 
         // Assert
         final contents = file.readAsStringSync();
@@ -211,7 +211,7 @@ void main() {
         file.writeAsStringSync(injectionFileWithMorePackages);
 
         // Act
-        injectionFile.addPackage('web_my_page');
+        injectionFile.addPackage('kuk_abc_web_my_page');
 
         // Assert
         final contents = file.readAsStringSync();

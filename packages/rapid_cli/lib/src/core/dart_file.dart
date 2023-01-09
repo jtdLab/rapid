@@ -219,7 +219,6 @@ class DartFile {
       final lastBraceIndex = contents.lastIndexOf('}');
       final insertPos =
           lastBraceIndex == -1 ? contents.length : lastBraceIndex + 1;
-      print(lastBraceIndex);
       final insertion =
           '\n\n${function.accept(DartEmitter(useNullSafetySyntax: true))}';
       final output = contents.replaceRange(insertPos, insertPos, insertion);
@@ -238,7 +237,7 @@ class DartFile {
   void removeImport(String import) {
     final contents = _read();
 
-    final regExp = RegExp('import \'$import\'( as [a-z]+)?;' r'[\s]*');
+    final regExp = RegExp('import \'$import\'( as [a-z]+)?;' r'[\s]{1}');
     final match = regExp.firstMatch(contents);
     if (match == null) {
       return;

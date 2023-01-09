@@ -183,9 +183,12 @@ void main() {
       verify(() => project.isActivated(Platform.linux)).called(1);
       verify(() => appPackagePubspec.removeDependencyByPattern('linux'))
           .called(1);
-      verify(() => mainFileDev.removeForPlatform(Platform.linux)).called(1);
-      verify(() => mainFileTest.removeForPlatform(Platform.linux)).called(1);
-      verify(() => mainFileProd.removeForPlatform(Platform.linux)).called(1);
+      verify(() => mainFileDev.removeSetupForPlatform(Platform.linux))
+          .called(1);
+      verify(() => mainFileTest.removeSetupForPlatform(Platform.linux))
+          .called(1);
+      verify(() => mainFileProd.removeSetupForPlatform(Platform.linux))
+          .called(1);
       verify(() => diPackagePubspec.removeDependencyByPattern('linux'))
           .called(1);
       verify(() => injectionFile.removePackagesByPlatform(Platform.linux))

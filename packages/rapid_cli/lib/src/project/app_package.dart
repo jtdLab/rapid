@@ -110,7 +110,7 @@ class MainFile {
     );
   }
 
-  void removeForPlatform(Platform platform) {
+  void removeSetupForPlatform(Platform platform) {
     final projectName = _appPackage.project.melosFile.name();
     final platformName = platform.name;
 

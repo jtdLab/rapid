@@ -184,9 +184,12 @@ void main() {
       verify(() => project.isActivated(Platform.macos)).called(1);
       verify(() => appPackagePubspec.removeDependencyByPattern('macos'))
           .called(1);
-      verify(() => mainFileDev.removeForPlatform(Platform.macos)).called(1);
-      verify(() => mainFileTest.removeForPlatform(Platform.macos)).called(1);
-      verify(() => mainFileProd.removeForPlatform(Platform.macos)).called(1);
+      verify(() => mainFileDev.removeSetupForPlatform(Platform.macos))
+          .called(1);
+      verify(() => mainFileTest.removeSetupForPlatform(Platform.macos))
+          .called(1);
+      verify(() => mainFileProd.removeSetupForPlatform(Platform.macos))
+          .called(1);
       verify(() => diPackagePubspec.removeDependencyByPattern('macos'))
           .called(1);
       verify(() => injectionFile.removePackagesByPlatform(Platform.macos))

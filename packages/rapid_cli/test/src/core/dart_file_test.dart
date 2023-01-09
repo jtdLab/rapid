@@ -182,6 +182,13 @@ void foo() {
 }
 ''';
 
+const fileWithTopLevelFunctionInBodySyntaxWithReturn = '''
+void foo() {
+  kuku();
+  return bar();
+}
+''';
+
 const fileWithTopLevelFunctionInBodySyntaxWithParam = '''
 void foo() {
   kuku();
@@ -190,6 +197,15 @@ void foo() {
   );
   boz();
   bar();
+}
+''';
+
+const fileWithTopLevelFunctionInBodySyntaxWithParamAndReturn = '''
+void foo() {
+  kuku();
+  return bar(
+    z: 88,
+  );
 }
 ''';
 
@@ -334,6 +350,27 @@ void main() {
         // Assert
         final contents = file.readAsStringSync();
         expect(contents, fileWithTopLevelFunctionInBodySyntaxWithParam);
+      });
+
+      test(
+          'adds named param correctly to referenced function call (body syntax with return)',
+          () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(fileWithTopLevelFunctionInBodySyntaxWithReturn);
+
+        // Act
+        dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
+          paramName: 'z',
+          paramValue: '88',
+          functionName: 'foo',
+          functionToCallName: 'bar',
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(
+            contents, fileWithTopLevelFunctionInBodySyntaxWithParamAndReturn);
       });
 
       test(
@@ -545,6 +582,26 @@ void main() {
         // Assert
         final contents = file.readAsStringSync();
         expect(contents, fileWithTopLevelFunctionInBodySyntax);
+      });
+
+      test(
+          'remove named param correctly from referenced function call (body syntax with return)',
+          () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+            fileWithTopLevelFunctionInBodySyntaxWithParamAndReturn);
+
+        // Act
+        dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+          paramName: 'z',
+          functionName: 'foo',
+          functionToCallName: 'bar',
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, fileWithTopLevelFunctionInBodySyntaxWithReturn);
       });
 
       test(

@@ -6,12 +6,23 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
-const mainFileNoSetups = '''
+extension on Environment {
+  String get shortName {
+    switch (this) {
+      case Environment.development:
+        return 'dev';
+      case Environment.test:
+        return 'test';
+      case Environment.production:
+        return 'prod';
+    }
+  }
+}
+
+const mainFileNoSetup = '''
 import 'package:ab_cd/router_observer.dart';
 import 'package:ab_cd_di/ab_cd_di.dart';
-
 import 'package:ab_cd_logging/ab_cd_logging.dart';
-
 import 'package:flutter/widgets.dart';
 import 'package:rapid/rapid.dart';
 
@@ -20,7 +31,7 @@ import 'bootstrap.dart';
 void main() => runOnPlatform();
 ''';
 
-const mainFileWithAndroidSetup = '''
+String mainFileWithAndroidSetup(Environment env) => '''
 import 'package:ab_cd/router_observer.dart';
 import 'package:ab_cd_android_app/ab_cd_android_app.dart' as android;
 import 'package:ab_cd_di/ab_cd_di.dart';
@@ -35,9 +46,9 @@ void main() => runOnPlatform(
     );
 
 Future<void> runAndroidApp() async {
-  configureDependencies(Environment.dev, Platform.android);
+  configureDependencies(Environment.${env.shortName}, Platform.android);
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: add more android development setup here
+  // TODO: add more android ${env.name} setup here
 
   final logger = getIt<AbCdLogger>();
   final app = android.App(
@@ -49,7 +60,7 @@ Future<void> runAndroidApp() async {
 }
 ''';
 
-const mainFileWithWebSetup = '''
+String mainFileWithWebSetup(Environment env) => '''
 import 'package:ab_cd/router_observer.dart';
 import 'package:ab_cd_di/ab_cd_di.dart';
 import 'package:ab_cd_logging/ab_cd_logging.dart';
@@ -65,10 +76,10 @@ void main() => runOnPlatform(
     );
 
 Future<void> runWebApp() async {
-  configureDependencies(Environment.dev, Platform.web);
+  configureDependencies(Environment.${env.shortName}, Platform.web);
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: add more web development setup here
+  // TODO: add more web ${env.name} setup here
 
   final logger = getIt<AbCdLogger>();
   final app = web.App(
@@ -80,7 +91,7 @@ Future<void> runWebApp() async {
 }
 ''';
 
-const mainFileWithWebAndAndroidSetups = '''
+String mainFileWithWebAndAndroidSetup(Environment env) => '''
 import 'package:ab_cd/router_observer.dart';
 import 'package:ab_cd_android_app/ab_cd_android_app.dart' as android;
 import 'package:ab_cd_di/ab_cd_di.dart';
@@ -98,10 +109,10 @@ void main() => runOnPlatform(
     );
 
 Future<void> runWebApp() async {
-  configureDependencies(Environment.dev, Platform.web);
+  configureDependencies(Environment.${env.shortName}, Platform.web);
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: add more web development setup here
+  // TODO: add more web ${env.name} setup here
 
   final logger = getIt<AbCdLogger>();
   final app = web.App(
@@ -113,9 +124,9 @@ Future<void> runWebApp() async {
 }
 
 Future<void> runAndroidApp() async {
-  configureDependencies(Environment.dev, Platform.android);
+  configureDependencies(Environment.${env.shortName}, Platform.android);
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: add more android development setup here
+  // TODO: add more android ${env.name} setup here
 
   final logger = getIt<AbCdLogger>();
   final app = android.App(
@@ -197,7 +208,7 @@ void main() {
     late Project project;
     const appPackagePath = 'foo/bar/baz';
     late AppPackage appPackage;
-    const Environment environment = Environment.development;
+    late Environment environment;
     late MainFile mainFile;
 
     setUp(() {
@@ -210,6 +221,7 @@ void main() {
       appPackage = _MockAppPackage();
       when(() => appPackage.path).thenReturn(appPackagePath);
       when(() => appPackage.project).thenReturn(project);
+      environment = Environment.development;
       mainFile = MainFile(environment, appPackage: appPackage);
       File(mainFile.path).createSync(recursive: true);
     });
@@ -229,64 +241,248 @@ void main() {
     });
 
     group('addSetupForPlatform', () {
-      test('add platform setup correctly when no other platform setups exist',
+      test(
+          'add platform setup correctly when no other platform setups exist (dev)',
           () {
         // Arrange
         final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileNoSetups);
+        file.writeAsStringSync(mainFileNoSetup);
 
         // Act
         mainFile.addSetupForPlatform(Platform.android);
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, mainFileWithAndroidSetup);
+        expect(contents, mainFileWithAndroidSetup(environment));
       });
 
       test(
-          'add platform setup correctly when no other platform setups exist (web)',
+          'add platform setup correctly when no other platform setups exist (web) (dev)',
           () {
         // Arrange
         final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileNoSetups);
+        file.writeAsStringSync(mainFileNoSetup);
 
         // Act
         mainFile.addSetupForPlatform(Platform.web);
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, mainFileWithWebSetup);
+        expect(contents, mainFileWithWebSetup(environment));
       });
 
-      test('add platform setup correctly when other platform setups exist', () {
+      test(
+          'add platform setup correctly when other platform setups exist (dev)',
+          () {
         // Arrange
         final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileWithWebSetup);
+        file.writeAsStringSync(mainFileWithWebSetup(environment));
 
         // Act
         mainFile.addSetupForPlatform(Platform.android);
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, mainFileWithWebAndAndroidSetups);
+        expect(contents, mainFileWithWebAndAndroidSetup(environment));
       });
 
-      test('does nothing when setup for platform already exists', () {
+      test('does nothing when setup for platform already exists (dev)', () {
         // Arrange
         final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileWithAndroidSetup);
+        file.writeAsStringSync(mainFileWithAndroidSetup(environment));
 
         // Act
         mainFile.addSetupForPlatform(Platform.android);
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, mainFileWithAndroidSetup);
+        expect(contents, mainFileWithAndroidSetup(environment));
+      });
+
+      test(
+          'add platform setup correctly when no other platform setups exist (test)',
+          () {
+        // Arrange
+        environment = Environment.test;
+        mainFile = MainFile(environment, appPackage: appPackage);
+        final file = File(mainFile.path);
+        file.writeAsStringSync(mainFileNoSetup);
+
+        // Act
+        mainFile.addSetupForPlatform(Platform.android);
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, mainFileWithAndroidSetup(environment));
+      });
+
+      test(
+          'add platform setup correctly when no other platform setups exist (web) (test)',
+          () {
+        // Arrange
+        environment = Environment.test;
+        mainFile = MainFile(environment, appPackage: appPackage);
+        final file = File(mainFile.path);
+        file.writeAsStringSync(mainFileNoSetup);
+
+        // Act
+        mainFile.addSetupForPlatform(Platform.web);
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, mainFileWithWebSetup(environment));
+      });
+
+      test(
+          'add platform setup correctly when other platform setups exist (test)',
+          () {
+        // Arrange
+        environment = Environment.test;
+        mainFile = MainFile(environment, appPackage: appPackage);
+        final file = File(mainFile.path);
+        file.writeAsStringSync(mainFileWithWebSetup(environment));
+
+        // Act
+        mainFile.addSetupForPlatform(Platform.android);
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, mainFileWithWebAndAndroidSetup(environment));
+      });
+
+      test('does nothing when setup for platform already exists (test)', () {
+        // Arrange
+        environment = Environment.test;
+        final file = File(mainFile.path);
+        file.writeAsStringSync(mainFileWithAndroidSetup(environment));
+
+        // Act
+        mainFile.addSetupForPlatform(Platform.android);
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, mainFileWithAndroidSetup(environment));
+      });
+
+      test(
+          'add platform setup correctly when no other platform setups exist (prod)',
+          () {
+        // Arrange
+        environment = Environment.production;
+        mainFile = MainFile(environment, appPackage: appPackage);
+        final file = File(mainFile.path);
+        file.writeAsStringSync(mainFileNoSetup);
+
+        // Act
+        mainFile.addSetupForPlatform(Platform.android);
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, mainFileWithAndroidSetup(environment));
+      });
+
+      test(
+          'add platform setup correctly when no other platform setups exist (web) (prod)',
+          () {
+        // Arrange
+        environment = Environment.production;
+        mainFile = MainFile(environment, appPackage: appPackage);
+        final file = File(mainFile.path);
+        file.writeAsStringSync(mainFileNoSetup);
+
+        // Act
+        mainFile.addSetupForPlatform(Platform.web);
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, mainFileWithWebSetup(environment));
+      });
+
+      test(
+          'add platform setup correctly when other platform setups exist (prod)',
+          () {
+        // Arrange
+        environment = Environment.production;
+        mainFile = MainFile(environment, appPackage: appPackage);
+        final file = File(mainFile.path);
+        file.writeAsStringSync(mainFileWithWebSetup(environment));
+
+        // Act
+        mainFile.addSetupForPlatform(Platform.android);
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, mainFileWithWebAndAndroidSetup(environment));
+      });
+
+      test('does nothing when setup for platform already exists (prod)', () {
+        // Arrange
+        environment = Environment.production;
+        final file = File(mainFile.path);
+        file.writeAsStringSync(mainFileWithAndroidSetup(environment));
+
+        // Act
+        mainFile.addSetupForPlatform(Platform.android);
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, mainFileWithAndroidSetup(environment));
       });
     });
 
     group('removeSetupForPlatform', () {
-      // TODO
+      test('does nothing when no other platform setups exist', () {
+        // Arrange
+        final file = File(mainFile.path);
+        file.writeAsStringSync(mainFileNoSetup);
+
+        // Act
+        mainFile.removeSetupForPlatform(Platform.android);
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, mainFileNoSetup);
+      });
+
+      test('remove platform setup correctly when platform exists', () {
+        // Arrange
+        final file = File(mainFile.path);
+        file.writeAsStringSync(mainFileWithAndroidSetup(environment));
+
+        // Act
+        mainFile.removeSetupForPlatform(Platform.android);
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, mainFileNoSetup);
+      });
+
+      test('remove platform setup correctly when platform exists (web)', () {
+        // Arrange
+        final file = File(mainFile.path);
+        file.writeAsStringSync(mainFileWithWebSetup(environment));
+
+        // Act
+        mainFile.removeSetupForPlatform(Platform.web);
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, mainFileNoSetup);
+      });
+
+      test('remove platform setup correctly when other platform setups exist',
+          () {
+        // Arrange
+        final file = File(mainFile.path);
+        file.writeAsStringSync(mainFileWithWebAndAndroidSetup(environment));
+
+        // Act
+        mainFile.removeSetupForPlatform(Platform.android);
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, mainFileWithWebSetup(environment));
+      });
     });
   });
 }

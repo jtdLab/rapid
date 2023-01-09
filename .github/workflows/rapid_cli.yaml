@@ -52,5 +52,5 @@ jobs:
       - name: Ensure 95% Code Coverage
         uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
-          min_coverage: 95
+          min_coverage: 100
           path: packages/rapid_cli/coverage/lcov.info

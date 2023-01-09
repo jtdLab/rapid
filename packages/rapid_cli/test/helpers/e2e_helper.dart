@@ -187,9 +187,6 @@ Future<int> runFlutterIntegrationTest({
     return 0;
   }
 
-  // TODO This fails on android emulator
-  print(stderr); // TODO remove
-  print(stdout); // TODO remove
   final regExp = RegExp(r'-([0-9]+): Some tests failed');
   final match = regExp.firstMatch(stderr)!;
   return int.parse(match.group(1)!);

@@ -78,6 +78,7 @@ void main() {
     late MainFile mainFileTest;
     late MainFile mainFileProd;
     late Directory appPackagePlatformDirectory;
+    late Directory appPackageTestDriverDirectory;
     late DiPackage diPackage;
     const diPackagePath = 'bam/baz';
     late PubspecFile diPackagePubspec;
@@ -113,12 +114,15 @@ void main() {
       mainFileTest = _MockMainFile();
       mainFileProd = _MockMainFile();
       appPackagePlatformDirectory = _MockDirectory();
+      appPackageTestDriverDirectory = _MockDirectory();
       when(() => appPackage.path).thenReturn(appPackagePath);
       when(() => appPackage.pubspecFile).thenReturn(appPackagePubspec);
       when(() => appPackage.mainFiles)
           .thenReturn({mainFileDev, mainFileTest, mainFileProd});
       when(() => appPackage.platformDirectory(Platform.web))
           .thenReturn(appPackagePlatformDirectory);
+      when(() => appPackage.testDriverDirectory())
+          .thenReturn(appPackageTestDriverDirectory);
       diPackage = _MockDiPackage();
       diPackagePubspec = _MockPubspecFile();
       injectionFile = _MockInjectionFile();
@@ -203,6 +207,8 @@ void main() {
       verify(() => mainFileProd.removeSetupForPlatform(Platform.web)).called(1);
       verify(() => flutterPubGet(cwd: appPackagePath)).called(1);
       verify(() => appPackagePlatformDirectory.deleteSync(recursive: true))
+          .called(1);
+      verify(() => appPackageTestDriverDirectory.deleteSync(recursive: true))
           .called(1);
       verify(() => logger.progress('Updating package $diPackagePath '))
           .called(1);

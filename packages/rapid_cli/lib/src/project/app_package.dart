@@ -44,6 +44,9 @@ class AppPackage {
   Directory platformDirectory(Platform platform) => Directory(
         p.join(path, platform.name),
       );
+
+  /// The directory containing driver setup needed for web integration tests.
+  Directory testDriverDirectory() => Directory(p.join(path, 'test_driver'));
 }
 
 /// {@template main_file}

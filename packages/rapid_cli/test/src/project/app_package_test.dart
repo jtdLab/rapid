@@ -196,7 +196,7 @@ void main() {
     group('platformDirectory', () {
       late Platform platform;
 
-      test('is correct (android)', () {
+      test('returns directory with correct path (android)', () {
         // Arrange
         platform = Platform.android;
 
@@ -207,7 +207,7 @@ void main() {
         );
       });
 
-      test('is correct (ios)', () {
+      test('returns directory with correct path (ios)', () {
         // Arrange
         platform = Platform.ios;
 
@@ -218,7 +218,7 @@ void main() {
         );
       });
 
-      test('is correct (linux)', () {
+      test('returns directory with correct path (linux)', () {
         // Arrange
         platform = Platform.linux;
 
@@ -229,7 +229,7 @@ void main() {
         );
       });
 
-      test('is correct (macos)', () {
+      test('returns directory with correct path (macos)', () {
         // Arrange
         platform = Platform.macos;
 
@@ -240,7 +240,7 @@ void main() {
         );
       });
 
-      test('is correct (web)', () {
+      test('returns directory with correct path (web)', () {
         // Arrange
         platform = Platform.web;
 
@@ -251,7 +251,7 @@ void main() {
         );
       });
 
-      test('is correct (windows)', () {
+      test('returns directory with correct path (windows)', () {
         // Arrange
         platform = Platform.windows;
 
@@ -259,6 +259,16 @@ void main() {
         expect(
           appPackage.platformDirectory(platform).path,
           'packages/$projectName/$projectName/windows',
+        );
+      });
+    });
+
+    group('testDriverDirectory', () {
+      test('returns directory with correct path', () {
+        // Assert
+        expect(
+          appPackage.testDriverDirectory().path,
+          'packages/$projectName/$projectName/test_driver',
         );
       });
     });

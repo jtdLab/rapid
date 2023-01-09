@@ -84,6 +84,9 @@ abstract class DeactivatePlatformCommand extends Command<int>
           }
           await _flutterPubGet(cwd: appPackage.path);
           appPackage.platformDirectory(_platform).deleteSync(recursive: true);
+          if (_platform == Platform.web) {
+            appPackage.testDriverDirectory().deleteSync(recursive: true);
+          }
           appUpdatePackageProgress.complete();
 
           final diPackage = _project.diPackage;

@@ -192,6 +192,76 @@ void main() {
         expect(appPackage.path, 'packages/$projectName/$projectName');
       });
     });
+
+    group('platformDirectory', () {
+      late Platform platform;
+
+      test('is correct (android)', () {
+        // Arrange
+        platform = Platform.android;
+
+        // Assert
+        expect(
+          appPackage.platformDirectory(platform).path,
+          'packages/$projectName/$projectName/android',
+        );
+      });
+
+      test('is correct (ios)', () {
+        // Arrange
+        platform = Platform.ios;
+
+        // Assert
+        expect(
+          appPackage.platformDirectory(platform).path,
+          'packages/$projectName/$projectName/ios',
+        );
+      });
+
+      test('is correct (linux)', () {
+        // Arrange
+        platform = Platform.linux;
+
+        // Assert
+        expect(
+          appPackage.platformDirectory(platform).path,
+          'packages/$projectName/$projectName/linux',
+        );
+      });
+
+      test('is correct (macos)', () {
+        // Arrange
+        platform = Platform.macos;
+
+        // Assert
+        expect(
+          appPackage.platformDirectory(platform).path,
+          'packages/$projectName/$projectName/macos',
+        );
+      });
+
+      test('is correct (web)', () {
+        // Arrange
+        platform = Platform.web;
+
+        // Assert
+        expect(
+          appPackage.platformDirectory(platform).path,
+          'packages/$projectName/$projectName/web',
+        );
+      });
+
+      test('is correct (windows)', () {
+        // Arrange
+        platform = Platform.windows;
+
+        // Assert
+        expect(
+          appPackage.platformDirectory(platform).path,
+          'packages/$projectName/$projectName/windows',
+        );
+      });
+    });
   });
 
   group('MainFile', () {

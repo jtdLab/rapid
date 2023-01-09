@@ -43,6 +43,8 @@ class _MockPubspecFile extends Mock implements PubspecFile {}
 
 class _MockMainFile extends Mock implements MainFile {}
 
+class _MockDirectory extends Mock implements Directory {}
+
 class _MockDiPackage extends Mock implements DiPackage {}
 
 class _MockInjectionFile extends Mock implements InjectionFile {}
@@ -75,6 +77,7 @@ void main() {
     late MainFile mainFileDev;
     late MainFile mainFileTest;
     late MainFile mainFileProd;
+    late Directory appPackagePlatformDirectory;
     late DiPackage diPackage;
     const diPackagePath = 'bam/baz';
     late PubspecFile diPackagePubspec;
@@ -109,10 +112,13 @@ void main() {
       mainFileDev = _MockMainFile();
       mainFileTest = _MockMainFile();
       mainFileProd = _MockMainFile();
+      appPackagePlatformDirectory = _MockDirectory();
       when(() => appPackage.path).thenReturn(appPackagePath);
       when(() => appPackage.pubspecFile).thenReturn(appPackagePubspec);
       when(() => appPackage.mainFiles)
           .thenReturn({mainFileDev, mainFileTest, mainFileProd});
+      when(() => appPackage.platformDirectory(Platform.web))
+          .thenReturn(appPackagePlatformDirectory);
       diPackage = _MockDiPackage();
       diPackagePubspec = _MockPubspecFile();
       injectionFile = _MockInjectionFile();
@@ -196,6 +202,8 @@ void main() {
       verify(() => mainFileTest.removeSetupForPlatform(Platform.web)).called(1);
       verify(() => mainFileProd.removeSetupForPlatform(Platform.web)).called(1);
       verify(() => flutterPubGet(cwd: appPackagePath)).called(1);
+      verify(() => appPackagePlatformDirectory.deleteSync(recursive: true))
+          .called(1);
       verify(() => logger.progress('Updating package $diPackagePath '))
           .called(1);
       verify(() => diPackagePubspec.removeDependencyByPattern('web')).called(1);

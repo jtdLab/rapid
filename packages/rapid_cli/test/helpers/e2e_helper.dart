@@ -40,18 +40,7 @@ List<Directory> platformDirs(String platform) => [
       Directory(p.join('packages', projectName, projectName, platform)),
       if (platform == 'web')
         Directory(p.join('packages', projectName, projectName, 'test_driver')),
-      Directory(
-        p.join('packages', projectName, '${projectName}_$platform',
-            '${projectName}_${platform}_app'),
-      ),
-      Directory(
-        p.join('packages', projectName, '${projectName}_$platform',
-            '${projectName}_${platform}_home_page'),
-      ),
-      Directory(
-        p.join('packages', projectName, '${projectName}_$platform',
-            '${projectName}_${platform}_routing'),
-      ),
+      Directory(p.join('packages', projectName, '${projectName}_$platform')),
       Directory(
         p.join('packages', '${projectName}_ui', '${projectName}_ui_$platform'),
       ),

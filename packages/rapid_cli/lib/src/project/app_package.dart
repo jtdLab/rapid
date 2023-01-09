@@ -3,6 +3,7 @@ import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:recase/recase.dart';
+import 'package:universal_io/io.dart';
 
 import 'project.dart';
 
@@ -38,6 +39,11 @@ class AppPackage {
   String get path => _package.path;
 
   late final PubspecFile pubspecFile = PubspecFile(path: path);
+
+  /// The directory containing native setup for [platform].
+  Directory platformDirectory(Platform platform) => Directory(
+        p.join(path, platform.name),
+      );
 }
 
 /// {@template main_file}

@@ -83,6 +83,7 @@ abstract class DeactivatePlatformCommand extends Command<int>
             mainFile.removeSetupForPlatform(_platform);
           }
           await _flutterPubGet(cwd: appPackage.path);
+          appPackage.platformDirectory(_platform).deleteSync(recursive: true);
           appUpdatePackageProgress.complete();
 
           final diPackage = _project.diPackage;

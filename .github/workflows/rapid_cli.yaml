@@ -49,7 +49,7 @@ jobs:
       - name: Run Tests
         run: flutter test -j 1 --no-pub --test-randomize-ordering-seed random --coverage
 
-      - name: Ensure 95% Code Coverage
+      - name: Ensure 100% Code Coverage
         uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
           min_coverage: 100

@@ -18,6 +18,7 @@ void main() {
       setUp(() {
         Directory.current = Directory.systemTemp.createTempSync();
 
+        // TODO add mock logger here to prevent logging to stdout while running tests
         commandRunner = RapidCommandRunner();
       });
 

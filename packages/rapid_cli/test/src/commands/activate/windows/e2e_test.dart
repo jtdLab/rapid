@@ -27,7 +27,7 @@ void main() {
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-          
+
           // Act
           final commandResult = await commandRunner.run(
             ['activate', 'windows'],

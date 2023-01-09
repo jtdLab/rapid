@@ -140,6 +140,16 @@ class MainFile {
       functionToCallName: 'runOnPlatform',
     );
 
+    final functions = _file.readTopLevelFunctionNames();
+    if (functions.length == 1 && functions.first == 'main') {
+      _file.removeImport('package:flutter/widgets.dart');
+      _file.removeImport('package:${projectName}_di/${projectName}_di.dart');
+      _file.removeImport(
+          'package:${projectName}_logging/${projectName}_logging.dart');
+      _file.removeImport('bootstrap.dart');
+      _file.removeImport('router_observer.dart');
+    }
+
     // TODO improvment remove unesessary imports if possible
   }
 }

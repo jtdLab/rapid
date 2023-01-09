@@ -319,6 +319,18 @@ import 'dart:aaa';
 import 'dart:ccc' as c;
 ''';
 
+const dartFileWithoutTopLevelFunctions = '''''';
+
+const dartFileWithTopLevelFunctions = '''
+void main() {}
+
+Future<int> runSomeCode() => 1;
+
+String? someText() {
+  return 'Hello';
+}
+''';
+
 void main() {
   group('DartFile', () {
     final cwd = Directory.current;
@@ -621,6 +633,32 @@ void main() {
 
         // Assert
         expect(imports, []);
+      });
+    });
+
+    group('returns names of top level functions', () {
+      test('returns correct imports', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithTopLevelFunctions);
+
+        // Act
+        final imports = dartFile.readTopLevelFunctionNames();
+
+        // Assert
+        expect(imports, ['main', 'runSomeCode', 'someText']);
+      });
+
+      test('returns empty list when no top level functions exist', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithoutTopLevelFunctions);
+
+        // Act
+        final imports = dartFile.readTopLevelFunctionNames();
+
+        // Assert
+        expect(imports, isEmpty);
       });
     });
 

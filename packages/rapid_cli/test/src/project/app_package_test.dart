@@ -25,18 +25,6 @@ import 'package:rapid/rapid.dart';
 void main() => runOnPlatform();
 ''';
 
-const mainFileNoSetupButImports = '''
-import 'package:ab_cd_di/ab_cd_di.dart';
-import 'package:ab_cd_logging/ab_cd_logging.dart';
-import 'package:flutter/widgets.dart';
-import 'package:rapid/rapid.dart';
-
-import 'bootstrap.dart';
-import 'router_observer.dart';
-
-void main() => runOnPlatform();
-''';
-
 String mainFileWithAndroidSetup(Environment env) => '''
 import 'package:ab_cd_android_app/ab_cd_android_app.dart' as android;
 import 'package:ab_cd_di/ab_cd_di.dart';
@@ -460,7 +448,7 @@ void main() {
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, mainFileNoSetupButImports);
+        expect(contents, mainFileNoSetup);
       });
 
       test('remove platform setup correctly when platform exists (web)', () {
@@ -473,7 +461,7 @@ void main() {
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, mainFileNoSetupButImports);
+        expect(contents, mainFileNoSetup);
       });
 
       test('remove platform setup correctly when other platform setups exist',

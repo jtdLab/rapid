@@ -242,6 +242,19 @@ class DartFile {
     return output;
   }
 
+  /// Returns a list with the names of all top-level functions.
+  List<String> readTopLevelFunctionNames() {
+    final contents = _read();
+
+    final declarations = _getTopLevelDeclarations(contents);
+    final functions = declarations
+        .whereType<FunctionDeclaration>()
+        .map((e) => e.name.lexeme)
+        .toList();
+
+    return functions;
+  }
+
   /// Reads the [property] of the [annotation] the function with [functionName] is annotated with.
   ///
   /// The property must be list of Type in source file.

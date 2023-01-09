@@ -30,6 +30,13 @@ Future<void> setupProjectNoPlatforms() async {
     Directory(p.join(cwd.path, 'test/fixtures/${projectName}_platforms')).path,
     Directory.current.path,
   );
+
+  await Process.run(
+    'flutter',
+    ['pub', 'get'],
+    workingDirectory: Directory.current.path,
+    runInShell: true,
+  );
 }
 
 /// Set up a Rapid test project in the cwd with ALL platforms activated.
@@ -38,6 +45,13 @@ Future<void> setupProjectAllPlatforms() async {
   copyPath(
     Directory(p.join(cwd.path, 'test/fixtures/${projectName}_platforms')).path,
     Directory.current.path,
+  );
+
+  await Process.run(
+    'flutter',
+    ['pub', 'get'],
+    workingDirectory: Directory.current.path,
+    runInShell: true,
   );
 }
 

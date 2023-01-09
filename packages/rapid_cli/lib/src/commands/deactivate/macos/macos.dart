@@ -9,6 +9,7 @@ class DeactivateMacosCommand extends DeactivatePlatformCommand {
   DeactivateMacosCommand({
     super.logger,
     required Project project,
+    super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.macos,

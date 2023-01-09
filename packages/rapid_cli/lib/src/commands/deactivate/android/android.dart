@@ -9,6 +9,7 @@ class DeactivateAndroidCommand extends DeactivatePlatformCommand {
   DeactivateAndroidCommand({
     super.logger,
     required Project project,
+    super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.android,

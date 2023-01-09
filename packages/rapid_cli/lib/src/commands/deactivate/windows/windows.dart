@@ -9,6 +9,7 @@ class DeactivateWindowsCommand extends DeactivatePlatformCommand {
   DeactivateWindowsCommand({
     super.logger,
     required Project project,
+    super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.windows,

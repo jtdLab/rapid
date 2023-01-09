@@ -9,6 +9,7 @@ class DeactivateLinuxCommand extends DeactivatePlatformCommand {
   DeactivateLinuxCommand({
     super.logger,
     required Project project,
+    super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.linux,

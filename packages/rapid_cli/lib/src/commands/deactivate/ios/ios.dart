@@ -9,6 +9,7 @@ class DeactivateIosCommand extends DeactivatePlatformCommand {
   DeactivateIosCommand({
     super.logger,
     required Project project,
+    super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.ios,

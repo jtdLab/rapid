@@ -9,6 +9,7 @@ class DeactivateWebCommand extends DeactivatePlatformCommand {
   DeactivateWebCommand({
     super.logger,
     required Project project,
+    super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.web,

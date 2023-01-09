@@ -23,6 +23,10 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
+abstract class _FlutterPubGetCommand {
+  Future<void> call({required String cwd});
+}
+
 abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
   Future<void> call({required String cwd});
 }
@@ -49,6 +53,8 @@ class _MockDartPackage extends Mock implements DartPackage {}
 
 class _MockProject extends Mock implements Project {}
 
+class _MockFlutterPubGetCommand extends Mock implements _FlutterPubGetCommand {}
+
 class _MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     extends Mock
     implements _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
@@ -58,20 +64,25 @@ void main() {
     Directory cwd = Directory.current;
 
     late Logger logger;
+    late Progress progress;
     late List<String> progressLogs;
 
     late Project project;
     late MelosFile melosFile;
     late AppPackage appPackage;
+    const appPackagePath = 'foo/bar';
     late PubspecFile appPackagePubspec;
     late MainFile mainFileDev;
     late MainFile mainFileTest;
     late MainFile mainFileProd;
     late DiPackage diPackage;
+    const diPackagePath = 'bam/baz';
     late PubspecFile diPackagePubspec;
     late InjectionFile injectionFile;
     late PlatformDirectory platformDirectory;
     late DartPackage platformUiPackage;
+
+    late FlutterPubGetCommand flutterPubGet;
 
     late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
@@ -82,7 +93,7 @@ void main() {
       Directory.current = Directory.systemTemp.createTempSync();
 
       logger = _MockLogger();
-      final progress = _MockProgress();
+      progress = _MockProgress();
       progressLogs = <String>[];
       when(() => progress.complete(any())).thenAnswer((_) {
         final message = _.positionalArguments.elementAt(0) as String?;
@@ -98,13 +109,14 @@ void main() {
       mainFileDev = _MockMainFile();
       mainFileTest = _MockMainFile();
       mainFileProd = _MockMainFile();
+      when(() => appPackage.path).thenReturn(appPackagePath);
       when(() => appPackage.pubspecFile).thenReturn(appPackagePubspec);
       when(() => appPackage.mainFiles)
           .thenReturn({mainFileDev, mainFileTest, mainFileProd});
       diPackage = _MockDiPackage();
       diPackagePubspec = _MockPubspecFile();
       injectionFile = _MockInjectionFile();
-      when(() => diPackage.path).thenReturn('foo/bar/baz');
+      when(() => diPackage.path).thenReturn(diPackagePath);
       when(() => diPackage.pubspecFile).thenReturn(diPackagePubspec);
       when(() => diPackage.injectionFile).thenReturn(injectionFile);
       platformDirectory = _MockPlatformDirectory();
@@ -118,6 +130,10 @@ void main() {
           .thenReturn(platformUiPackage);
       when(() => project.isActivated(Platform.macos)).thenReturn(true);
 
+      flutterPubGet = _MockFlutterPubGetCommand();
+      when(() => flutterPubGet(cwd: any(named: 'cwd')))
+          .thenAnswer((_) async {});
+
       flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
           _MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
       when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
@@ -126,6 +142,7 @@ void main() {
       command = DeactivateMacosCommand(
         logger: logger,
         project: project,
+        flutterPubGet: flutterPubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
       );
@@ -182,6 +199,9 @@ void main() {
 
       // Assert
       verify(() => project.isActivated(Platform.macos)).called(1);
+      verify(() => logger.info('Deactivating macOS ...')).called(1);
+      verify(() => logger.progress('Updating package $appPackagePath '))
+          .called(1);
       verify(() => appPackagePubspec.removeDependencyByPattern('macos'))
           .called(1);
       verify(() => mainFileDev.removeSetupForPlatform(Platform.macos))
@@ -190,15 +210,20 @@ void main() {
           .called(1);
       verify(() => mainFileProd.removeSetupForPlatform(Platform.macos))
           .called(1);
+      verify(() => flutterPubGet(cwd: appPackagePath)).called(1);
+      verify(() => logger.progress('Updating package $diPackagePath '))
+          .called(1);
       verify(() => diPackagePubspec.removeDependencyByPattern('macos'))
           .called(1);
       verify(() => injectionFile.removePackagesByPlatform(Platform.macos))
           .called(1);
+      verify(() => flutterPubGet(cwd: diPackagePath)).called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: diPackage.path)).called(1);
+          cwd: diPackagePath)).called(1);
       verify(() => platformDirectory.delete()).called(1);
       verify(() => platformUiPackage.delete()).called(1);
       verify(() => logger.success('macOS is now deactivated.')).called(1);
+      verify(() => progress.complete()).called(2);
       expect(result, ExitCode.success.code);
     });
 

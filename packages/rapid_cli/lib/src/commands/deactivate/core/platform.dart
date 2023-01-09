@@ -34,11 +34,13 @@ abstract class DeactivatePlatformCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
+    FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
+        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs;
@@ -46,6 +48,7 @@ abstract class DeactivatePlatformCommand extends Command<int>
   final Platform _platform;
   final Logger _logger;
   final Project _project;
+  final FlutterPubGetCommand _flutterPubGet;
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
       _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
@@ -67,20 +70,32 @@ abstract class DeactivatePlatformCommand extends Command<int>
         final platformIsActivated = _project.isActivated(_platform);
 
         if (platformIsActivated) {
+          _logger.info(
+            'Deactivating ${lightYellow.wrap(_platform.prettyName)} ...',
+          );
+
           final appPackage = _project.appPackage;
+          final appUpdatePackageProgress =
+              _logger.progress('Updating package ${appPackage.path} ');
           final appPackagePubspec = appPackage.pubspecFile;
           appPackagePubspec.removeDependencyByPattern(_platform.name);
           for (final mainFile in appPackage.mainFiles) {
             mainFile.removeSetupForPlatform(_platform);
           }
+          await _flutterPubGet(cwd: appPackage.path);
+          appUpdatePackageProgress.complete();
 
           final diPackage = _project.diPackage;
+          final diUpdatePackageProgress =
+              _logger.progress('Updating package ${diPackage.path} ');
           final diPackagePubspec = diPackage.pubspecFile;
           diPackagePubspec.removeDependencyByPattern(_platform.name);
           diPackage.injectionFile.removePackagesByPlatform(_platform);
+          await _flutterPubGet(cwd: diPackage.path);
           await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
             cwd: diPackage.path,
           );
+          diUpdatePackageProgress.complete();
 
           final platformDirectory = _project.platformDirectory(_platform);
           platformDirectory.delete();

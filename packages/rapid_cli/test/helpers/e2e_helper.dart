@@ -3,18 +3,32 @@ import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
+/// The name of the test project.
 const projectName = 'test_app';
 
+/// The app dir of the test project.
 final appDir = Directory(p.join('packages', projectName, projectName));
+
+/// The dependency injection dir of the test project.
 final diDir = Directory(p.join('packages', projectName, '${projectName}_di'));
+
+/// The domain  dir of the test project.
 final domainDir =
     Directory(p.join('packages', projectName, '${projectName}_domain'));
+
+/// The infrastructure dir of the test project.
 final infraDir =
     Directory(p.join('packages', projectName, '${projectName}_infrastructure'));
+
+/// The logging dir of the test project.
 final loggingDir =
     Directory(p.join('packages', projectName, '${projectName}_logging'));
+
+/// The ui dir of the test project.
 final uiDir =
     Directory(p.join('packages', '${projectName}_ui', '${projectName}_ui'));
+
+/// All platform independent dirs of the test project.
 final platformIndependentDirs = [
   appDir,
   diDir,
@@ -24,18 +38,21 @@ final platformIndependentDirs = [
   uiDir
 ];
 
+/// Verifys wheter ALL [entities] exist on disk.
 void verifyDoExist(Iterable<FileSystemEntity> entities) {
   for (final entity in entities) {
     expect(entity.existsSync(), true);
   }
 }
 
+/// Verifys wheter NONE of [entities] exist on disk.
 void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
   for (final entity in entities) {
     expect(entity.existsSync(), false);
   }
 }
 
+/// All [platform]-dependent dirs of the test project.
 List<Directory> platformDirs(String platform) => [
       Directory(p.join('packages', projectName, projectName, platform)),
       if (platform == 'web')
@@ -46,6 +63,9 @@ List<Directory> platformDirs(String platform) => [
       ),
     ];
 
+/// Verifys that tests in [dirs] pass with 100% test coverage.
+///
+/// Runs `flutter test --coverage` in every provided dir.
 Future<void> verifyTestsPassWith100PercentCoverage(
   List<Directory> dirs,
 ) async {
@@ -167,6 +187,7 @@ Future<int> runFlutterIntegrationTest({
     return 0;
   }
 
+  // TODO This fails on android emulator
   print(stderr); // TODO remove
   print(stdout); // TODO remove
   final regExp = RegExp(r'-([0-9]+): Some tests failed');
@@ -220,37 +241,3 @@ Future<int> _runFlutterFormat({
   final match = regExp.firstMatch(stdout)!;
   return int.parse(match.group(1)!);
 }
-
-/* /// Returns a [Matcher] that matches when a [FileSystemEntity] exists on disk.
-final Matcher exists = _EntityExists();
-
-class _EntityExists extends CustomMatcher {
-  _EntityExists() : super('File with existing', 'existing', true);
-
-  @override
-  featureValueOf(actual) => (actual as FileSystemEntity).existsSync();
-}
-
-/// Returns a [Matcher] that matches when a [File] exists and is a valid dart file.
-final Matcher isValidDartFile = _IsValidDartFile();
-
-class _IsValidDartFile extends CustomMatcher {
-  _IsValidDartFile()
-      : super('File with is valid dart file', 'is valid dart file', true);
-
-  @override
-  featureValueOf(actual) {
-    final file = actual as File;
-
-    final ext = p.extension(file.path);
-    final contents = file.readAsStringSync();
-    var valid = false;
-    try {
-      DartFormatter().format(contents);
-      valid = true;
-    } catch (_) {}
-
-    return ext == '.dart' && valid;
-  }
-}
- */

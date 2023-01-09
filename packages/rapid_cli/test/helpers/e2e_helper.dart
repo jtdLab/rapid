@@ -58,6 +58,8 @@ Future<void> _runFlutterPubGetInAllDirsWithPubspec() async {
 
   final dirsWithPubspec = rec(Directory.current);
 
+  print(dirsWithPubspec);
+
   for (final dirWithPubspec in dirsWithPubspec) {
     await Process.run(
       'flutter',

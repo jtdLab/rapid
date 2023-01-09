@@ -227,10 +227,49 @@ class DartFile {
     }
   }
 
-  // TODO doc
-  T readAnnotationParamOfTopLevelFunction<T extends Object?>() {
-    // TODO: impl
-    throw UnimplementedError();
+  /// Returns all [import]s.
+  List<String> readImports() {
+    final contents = _read();
+
+    final regExp =
+        RegExp('import \'([a-z0-9_:./]+)\'( as [a-z]+)?;' r'[\s]{1}');
+    final matches = regExp.allMatches(contents);
+    final output = <String>[];
+    for (final match in matches) {
+      output.add(match.group(1)!);
+    }
+
+    return output;
+  }
+
+  /// Reads the [property] of the [annotation] the function with [functionName] is annotated with.
+  ///
+  /// The property must be list of Type in source file.
+  List<String> readTypeListFromAnnotationParamOfTopLevelFunction({
+    required String property,
+    required String annotation,
+    required String functionName,
+  }) {
+    final contents = _read();
+
+    final declarations = _getTopLevelDeclarations(contents);
+
+    final function = declarations.firstWhere(
+      (e) => e is FunctionDeclaration && e.name.lexeme == functionName,
+    );
+    final anot = function.metadata.firstWhere((e) => e.name.name == annotation);
+    final value = anot.arguments!.childEntities.firstWhere(
+        (e) => e is NamedExpression && e.name.label.name == property);
+
+    return value
+        .toString()
+        .split(':')
+        .last
+        .trim()
+        .replaceAll(RegExp(r'[\s\[\]]+'), '')
+        .split(',')
+        .where((e) => e.trim().isNotEmpty)
+        .toList();
   }
 
   /// Removes [import]
@@ -352,7 +391,7 @@ class DartFile {
     }
   }
 
-  /// Sets the [property] of [annotation] to [value].
+  /// Sets the [property] of the [annotation] the function with [functionName] is annotated with to [value].
   ///
   /// For example:
   ///
@@ -366,6 +405,7 @@ class DartFile {
   /// setAnnotationProperty(
   ///   property: 'someProp',
   ///   annotation: 'SomeAnnotation',
+  ///   functionName: 'foo
   ///   value: 100
   /// );
   /// ```
@@ -374,15 +414,29 @@ class DartFile {
   /// @SomeAnnotation(someProp: 100)
   /// void foo() {}
   /// ```
-  void setAnnotationParamOfTopLevelFunction<T extends Object?>({
+  void setTypeListOfAnnotationParamOfTopLevelFunction({
     required String property,
     required String annotation,
-    required String element,
-    required T value,
+    required String functionName,
+    required List<String> value,
   }) {
     final contents = _read();
-    // TODO: impl
-    final output = contents;
+
+    final declarations = _getTopLevelDeclarations(contents);
+
+    final function = declarations.firstWhere(
+      (e) => e is FunctionDeclaration && e.name.lexeme == functionName,
+    );
+    final anot = function.metadata.firstWhere((e) => e.name.name == annotation);
+    final val = anot.arguments!.childEntities.firstWhere(
+            (e) => e is NamedExpression && e.name.label.name == property)
+        as NamedExpression;
+
+    final start = val.offset;
+    final end = val.end;
+
+    final output =
+        contents.replaceRange(start, end, '$property: [${value.join(',')},]');
     _write(output);
   }
 }

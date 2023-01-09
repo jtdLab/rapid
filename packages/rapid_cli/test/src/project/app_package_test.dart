@@ -235,7 +235,7 @@ void main() {
         // Assert
         expect(
           mainFile.path,
-          '${appPackage.path}/lib/main_${environment.name}.dart',
+          '$appPackagePath/lib/main_${environment.name}.dart',
         );
       });
     });

@@ -173,7 +173,7 @@ void foo() => bar(
     );
 ''';
 
-const fileWithTopLevelFunctionInBodySyntax = '''
+const dartFileWithTopLevelFunctionInBodySyntax = '''
 void foo() {
   kuku();
   bar();
@@ -182,14 +182,14 @@ void foo() {
 }
 ''';
 
-const fileWithTopLevelFunctionInBodySyntaxWithReturn = '''
+const dartFileWithTopLevelFunctionInBodySyntaxWithReturn = '''
 void foo() {
   kuku();
   return bar();
 }
 ''';
 
-const fileWithTopLevelFunctionInBodySyntaxWithParam = '''
+const dartFileWithTopLevelFunctionInBodySyntaxWithParam = '''
 void foo() {
   kuku();
   bar(
@@ -200,7 +200,7 @@ void foo() {
 }
 ''';
 
-const fileWithTopLevelFunctionInBodySyntaxWithParamAndReturn = '''
+const dartFileWithTopLevelFunctionInBodySyntaxWithParamAndReturn = '''
 void foo() {
   kuku();
   return bar(
@@ -209,7 +209,7 @@ void foo() {
 }
 ''';
 
-const fileWithTopLevelFunctionInBodySyntaxWithParamAndIndex = '''
+const dartFileWithTopLevelFunctionInBodySyntaxWithParamAndIndex = '''
 void foo() {
   kuku();
   bar();
@@ -218,6 +218,105 @@ void foo() {
     z: 88,
   );
 }
+''';
+
+const dartFileWithAnnotatedTopLevelFunction = '''
+@MyAnnotation(
+  myArg: [
+    A,
+    B,
+    C,
+  ],
+)
+void foo() {}
+''';
+
+const dartFileWithAnnotatedTopLevelFunctionMore = '''
+@MyAnnotation(
+  myArg: [
+    A,
+    B,
+    C,
+    D,
+  ],
+)
+void foo() {}
+''';
+
+const dartFileWithAnnotatedTopLevelFunctionMoreMulti = '''
+@Bar
+@MyAnnotation(
+  myArg: [
+    A,
+    B,
+    C,
+    D,
+  ],
+)
+@Baz
+void foo() {}
+''';
+
+const dartFileWithAnnotatedTopLevelFunctionWithEmptyArg = '''
+@MyAnnotation(
+  myArg: [],
+)
+void foo() {}
+''';
+
+const dartFileWithAnnotatedTopLevelFunctionMulti = '''
+@Bar
+@MyAnnotation(
+  myArg: [
+    A,
+    B,
+    C,
+  ],
+)
+@Baz
+void foo() {}
+''';
+
+const dartFileWithAnnotatedTopLevelFunctionWithEmptyArgMulti = '''
+@Bar
+@MyAnnotation(
+  myArg: [],
+)
+@Baz
+void foo() {}
+''';
+
+const dartFileWithAnnotatedTopLevelFunctionMultipleArgsEmpty = '''
+@Bar
+@MyAnnotation(
+  myArg: [],
+  foo: 3,
+)
+@Baz
+void foo() {}
+''';
+
+const dartFileWithAnnotatedTopLevelFunctionMultipleArgsMore = '''
+@Bar
+@MyAnnotation(
+  myArg: [
+    A,
+    B,
+    C,
+  ],
+  foo: 3,
+)
+@Baz
+void foo() {}
+''';
+
+const dartFileWithoutImports = '''
+void main() {}
+''';
+
+const dartFileWithImports = '''
+import 'dart:aaa';
+import 'dart:ccc' as c;
 ''';
 
 void main() {
@@ -337,7 +436,7 @@ void main() {
           () {
         // Arrange
         final file = File(dartFile.path);
-        file.writeAsStringSync(fileWithTopLevelFunctionInBodySyntax);
+        file.writeAsStringSync(dartFileWithTopLevelFunctionInBodySyntax);
 
         // Act
         dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
@@ -349,7 +448,7 @@ void main() {
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, fileWithTopLevelFunctionInBodySyntaxWithParam);
+        expect(contents, dartFileWithTopLevelFunctionInBodySyntaxWithParam);
       });
 
       test(
@@ -357,7 +456,8 @@ void main() {
           () {
         // Arrange
         final file = File(dartFile.path);
-        file.writeAsStringSync(fileWithTopLevelFunctionInBodySyntaxWithReturn);
+        file.writeAsStringSync(
+            dartFileWithTopLevelFunctionInBodySyntaxWithReturn);
 
         // Act
         dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
@@ -369,8 +469,8 @@ void main() {
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(
-            contents, fileWithTopLevelFunctionInBodySyntaxWithParamAndReturn);
+        expect(contents,
+            dartFileWithTopLevelFunctionInBodySyntaxWithParamAndReturn);
       });
 
       test(
@@ -378,7 +478,7 @@ void main() {
           () {
         // Arrange
         final file = File(dartFile.path);
-        file.writeAsStringSync(fileWithTopLevelFunctionInBodySyntax);
+        file.writeAsStringSync(dartFileWithTopLevelFunctionInBodySyntax);
 
         // Act
         dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
@@ -391,7 +491,8 @@ void main() {
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, fileWithTopLevelFunctionInBodySyntaxWithParamAndIndex);
+        expect(contents,
+            dartFileWithTopLevelFunctionInBodySyntaxWithParamAndIndex);
       });
 
       test('does nothing when param already exists (arrow syntax)', () {
@@ -416,7 +517,8 @@ void main() {
       test('does nothing when param already exists (body syntax)', () {
         // Arrange
         final file = File(dartFile.path);
-        file.writeAsStringSync(fileWithTopLevelFunctionInBodySyntaxWithParam);
+        file.writeAsStringSync(
+            dartFileWithTopLevelFunctionInBodySyntaxWithParam);
 
         // Act
         dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
@@ -428,7 +530,7 @@ void main() {
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, fileWithTopLevelFunctionInBodySyntaxWithParam);
+        expect(contents, dartFileWithTopLevelFunctionInBodySyntaxWithParam);
       });
     });
 
@@ -496,8 +598,115 @@ void main() {
       });
     });
 
-    group('readAnnotationParamOfTopLevelFunction', () {
-      // TODO impl
+    group('readImports', () {
+      test('returns correct imports', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithImports);
+
+        // Act
+        final imports = dartFile.readImports();
+
+        // Assert
+        expect(imports, ['dart:aaa', 'dart:ccc']);
+      });
+
+      test('returns no imports when no imports exists', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithoutImports);
+
+        // Act
+        final imports = dartFile.readImports();
+
+        // Assert
+        expect(imports, []);
+      });
+    });
+
+    group('readTypeListFromAnnotationParamOfTopLevelFunction', () {
+      test('returns list with type names', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithAnnotatedTopLevelFunction);
+
+        // Act
+        final list = dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
+          property: 'myArg',
+          annotation: 'MyAnnotation',
+          functionName: 'foo',
+        );
+
+        // Assert
+        expect(list, ['A', 'B', 'C']);
+      });
+
+      test('returns empty list when no types exist', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+            dartFileWithAnnotatedTopLevelFunctionWithEmptyArg);
+
+        // Act
+        final list = dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
+          property: 'myArg',
+          annotation: 'MyAnnotation',
+          functionName: 'foo',
+        );
+
+        // Assert
+        expect(list, []);
+      });
+
+      test('returns list with type names (multiple annotations)', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithAnnotatedTopLevelFunctionMulti);
+
+        // Act
+        final list = dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
+          property: 'myArg',
+          annotation: 'MyAnnotation',
+          functionName: 'foo',
+        );
+
+        // Assert
+        expect(list, ['A', 'B', 'C']);
+      });
+
+      test('returns empty list when no types exist (multiple annotations)', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+            dartFileWithAnnotatedTopLevelFunctionWithEmptyArgMulti);
+
+        // Act
+        final list = dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
+          property: 'myArg',
+          annotation: 'MyAnnotation',
+          functionName: 'foo',
+        );
+
+        // Assert
+        expect(list, []);
+      });
+
+      test('returns list with type names (multiple annotations & args)', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+            dartFileWithAnnotatedTopLevelFunctionMultipleArgsMore);
+
+        // Act
+        final list = dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
+          property: 'myArg',
+          annotation: 'MyAnnotation',
+          functionName: 'foo',
+        );
+
+        // Assert
+        expect(list, ['A', 'B', 'C']);
+      });
     });
 
     group('removeImport', () {
@@ -541,8 +750,6 @@ void main() {
       });
     });
 
-    group('removeNamedParamFromMethodCall', () {});
-
     group('removeNamedParamFromMethodCallInTopLevelFunctionBody', () {
       test(
           'removes named param correctly from referenced function call (arrow syntax)',
@@ -570,7 +777,8 @@ void main() {
           () {
         // Arrange
         final file = File(dartFile.path);
-        file.writeAsStringSync(fileWithTopLevelFunctionInBodySyntaxWithParam);
+        file.writeAsStringSync(
+            dartFileWithTopLevelFunctionInBodySyntaxWithParam);
 
         // Act
         dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
@@ -581,7 +789,7 @@ void main() {
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, fileWithTopLevelFunctionInBodySyntax);
+        expect(contents, dartFileWithTopLevelFunctionInBodySyntax);
       });
 
       test(
@@ -590,7 +798,7 @@ void main() {
         // Arrange
         final file = File(dartFile.path);
         file.writeAsStringSync(
-            fileWithTopLevelFunctionInBodySyntaxWithParamAndReturn);
+            dartFileWithTopLevelFunctionInBodySyntaxWithParamAndReturn);
 
         // Act
         dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
@@ -601,7 +809,7 @@ void main() {
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, fileWithTopLevelFunctionInBodySyntaxWithReturn);
+        expect(contents, dartFileWithTopLevelFunctionInBodySyntaxWithReturn);
       });
 
       test(
@@ -610,7 +818,7 @@ void main() {
         // Arrange
         final file = File(dartFile.path);
         file.writeAsStringSync(
-            fileWithTopLevelFunctionInBodySyntaxWithParamAndIndex);
+            dartFileWithTopLevelFunctionInBodySyntaxWithParamAndIndex);
 
         // Act
         dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
@@ -622,7 +830,7 @@ void main() {
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, fileWithTopLevelFunctionInBodySyntax);
+        expect(contents, dartFileWithTopLevelFunctionInBodySyntax);
       });
 
       test('does nothing when param does not exists (arrow syntax)', () {
@@ -645,7 +853,7 @@ void main() {
       test('does nothing when param does not exists (body syntax)', () {
         // Arrange
         final file = File(dartFile.path);
-        file.writeAsStringSync(fileWithTopLevelFunctionInBodySyntax);
+        file.writeAsStringSync(dartFileWithTopLevelFunctionInBodySyntax);
 
         // Act
         dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
@@ -656,7 +864,7 @@ void main() {
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, fileWithTopLevelFunctionInBodySyntax);
+        expect(contents, dartFileWithTopLevelFunctionInBodySyntax);
       });
     });
 
@@ -714,8 +922,105 @@ void main() {
       });
     });
 
-    group('setAnnotationParamOfTopLevelFunction', () {
-      // TODO impl
+    group('setTypeListOfAnnotationParamOfTopLevelFunction', () {
+      test('sets type list correctly', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+          dartFileWithAnnotatedTopLevelFunctionWithEmptyArg,
+        );
+
+        // Act
+        dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+          property: 'myArg',
+          annotation: 'MyAnnotation',
+          functionName: 'foo',
+          value: ['A', 'B', 'C'],
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithAnnotatedTopLevelFunction);
+      });
+
+      test('sets type list correctly when some types already exist', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithAnnotatedTopLevelFunction);
+
+        // Act
+        dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+          property: 'myArg',
+          annotation: 'MyAnnotation',
+          functionName: 'foo',
+          value: ['A', 'B', 'C', 'D'],
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithAnnotatedTopLevelFunctionMore);
+      });
+
+      test('sets type list correctly (multiple annotations)', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+          dartFileWithAnnotatedTopLevelFunctionWithEmptyArgMulti,
+        );
+
+        // Act
+        dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+          property: 'myArg',
+          annotation: 'MyAnnotation',
+          functionName: 'foo',
+          value: ['A', 'B', 'C'],
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithAnnotatedTopLevelFunctionMulti);
+      });
+
+      test(
+          'sets type list correctly when some types already exist (multiple annotations)',
+          () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithAnnotatedTopLevelFunctionMulti);
+
+        // Act
+        dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+          property: 'myArg',
+          annotation: 'MyAnnotation',
+          functionName: 'foo',
+          value: ['A', 'B', 'C', 'D'],
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithAnnotatedTopLevelFunctionMoreMulti);
+      });
+
+      test(
+          'sets type list correctly when some types and other args already exist (multiple annotations)',
+          () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+            dartFileWithAnnotatedTopLevelFunctionMultipleArgsEmpty);
+
+        // Act
+        dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+          property: 'myArg',
+          annotation: 'MyAnnotation',
+          functionName: 'foo',
+          value: ['A', 'B', 'C'],
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithAnnotatedTopLevelFunctionMultipleArgsMore);
+      });
     });
   });
 }

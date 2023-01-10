@@ -27,6 +27,8 @@ void main() {
           // Arrange
           await setupProjectAllPlatforms();
 
+          print(Directory.current.path);
+
           // Act
           final commandResult = await commandRunner.run(
             ['deactivate', 'android'],

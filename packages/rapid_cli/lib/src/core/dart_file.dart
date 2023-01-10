@@ -289,7 +289,9 @@ class DartFile {
   void removeImport(String import) {
     final contents = _read();
 
-    final regExp = RegExp('import \'$import\'( as [a-z]+)?;' r'[\s]{1}');
+    final regExp = RegExp(
+      r"import[\s]+\'" + import + r"\'([\s]+as[\s]+[a-z]+)?;" + r"[\s]{1}",
+    );
     final match = regExp.firstMatch(contents);
     if (match == null) {
       return;

@@ -331,6 +331,20 @@ String? someText() {
 }
 ''';
 
+const dartFileWithLongDartImportWithAlias = '''
+import 'package:aaa/aaa.dart';
+import 'package:ccc_ccc_ccc_ccc_ccc_ccc_ccc/ccc_ccc_ccc_ccc_ccc_ccc_ccc.dart'
+    as c;
+
+void main() {}
+''';
+
+const dartFileWithoutLongDartImportWithAlias = '''
+import 'package:aaa/aaa.dart';
+
+void main() {}
+''';
+
 void main() {
   group('DartFile', () {
     final cwd = Directory.current;
@@ -772,6 +786,21 @@ void main() {
         // Assert
         final contents = file.readAsStringSync();
         expect(contents, dartFileWith2ImportsPerType);
+      });
+
+      test('removes long import with alias correctly', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithLongDartImportWithAlias);
+
+        // Act
+        dartFile.removeImport(
+          'package:ccc_ccc_ccc_ccc_ccc_ccc_ccc/ccc_ccc_ccc_ccc_ccc_ccc_ccc.dart',
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithoutLongDartImportWithAlias);
       });
 
       test('does nothing when import does not exist', () {

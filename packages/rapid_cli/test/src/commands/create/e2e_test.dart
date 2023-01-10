@@ -15,6 +15,10 @@ void main() {
 
       late RapidCommandRunner commandRunner;
 
+      setUpAll(() {
+        projectName = 'test_app';
+      });
+
       setUp(() {
         Directory.current = Directory.systemTemp.createTempSync();
 

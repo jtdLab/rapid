@@ -1,4 +1,4 @@
-@Tags(['e2e', 'linux'])
+@Tags(['e2e'])
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:test/test.dart';

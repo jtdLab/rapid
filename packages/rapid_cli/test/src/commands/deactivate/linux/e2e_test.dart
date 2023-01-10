@@ -51,6 +51,6 @@ void main() {
         tags: ['tweak'],
       );
     },
-    timeout: const Timeout(Duration(minutes: 8)), // TODO should be lower
+    timeout: const Timeout(Duration(minutes: 3)), // TODO should be lower
   );
 }

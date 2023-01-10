@@ -1,0 +1,46 @@
+# melos_managed_dependency_overrides: project_all_android_home_page,project_all_android_routing,project_all_di,project_all_domain,project_all_infrastructure,project_all_ios_home_page,project_all_ios_routing,project_all_linux_home_page,project_all_linux_routing,project_all_logging,project_all_macos_home_page,project_all_ui,project_all_ui_android,project_all_ui_ios,project_all_ui_linux,project_all_ui_macos,project_all_ui_web,project_all_ui_windows,project_all_web_home_page,project_all_web_routing,project_all_windows_home_page,project_all_windows_routing
+dependency_overrides:
+  project_all_android_home_page:
+    path: ../../project_all_android/project_all_android_home_page
+  project_all_android_routing:
+    path: ../../project_all_android/project_all_android_routing
+  project_all_di:
+    path: ../../project_all_di
+  project_all_domain:
+    path: ../../project_all_domain
+  project_all_infrastructure:
+    path: ../../project_all_infrastructure
+  project_all_ios_home_page:
+    path: ../../project_all_ios/project_all_ios_home_page
+  project_all_ios_routing:
+    path: ../../project_all_ios/project_all_ios_routing
+  project_all_linux_home_page:
+    path: ../../project_all_linux/project_all_linux_home_page
+  project_all_linux_routing:
+    path: ../../project_all_linux/project_all_linux_routing
+  project_all_logging:
+    path: ../../project_all_logging
+  project_all_macos_home_page:
+    path: ../project_all_macos_home_page
+  project_all_ui:
+    path: ../../../project_all_ui/project_all_ui
+  project_all_ui_android:
+    path: ../../../project_all_ui/project_all_ui_android
+  project_all_ui_ios:
+    path: ../../../project_all_ui/project_all_ui_ios
+  project_all_ui_linux:
+    path: ../../../project_all_ui/project_all_ui_linux
+  project_all_ui_macos:
+    path: ../../../project_all_ui/project_all_ui_macos
+  project_all_ui_web:
+    path: ../../../project_all_ui/project_all_ui_web
+  project_all_ui_windows:
+    path: ../../../project_all_ui/project_all_ui_windows
+  project_all_web_home_page:
+    path: ../../project_all_web/project_all_web_home_page
+  project_all_web_routing:
+    path: ../../project_all_web/project_all_web_routing
+  project_all_windows_home_page:
+    path: ../../project_all_windows/project_all_windows_home_page
+  project_all_windows_routing:
+    path: ../../project_all_windows/project_all_windows_routing

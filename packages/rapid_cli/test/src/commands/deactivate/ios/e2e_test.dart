@@ -29,7 +29,7 @@ void main() {
         'deactivate ios',
         () async {
           // Arrange
-          await setupProjectAllPlatforms();
+          await setupProjectWithPlatform('ios');
 
           // Act
           final commandResult = await commandRunner.run(

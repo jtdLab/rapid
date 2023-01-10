@@ -29,7 +29,7 @@ void main() {
         'deactivate windows',
         () async {
           // Arrange
-          await setupProjectAllPlatforms();
+          await setupProjectWithPlatform('windows');
 
           // Act
           final commandResult = await commandRunner.run(

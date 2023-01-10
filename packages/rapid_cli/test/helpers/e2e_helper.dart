@@ -35,8 +35,8 @@ Future<void> setupProjectNoPlatforms() async {
 }
 
 /// Set up a Rapid test project in the cwd with ALL platforms activated.
-Future<void> setupProjectAllPlatforms() async {
-  projectName = 'project_all';
+Future<void> setupProjectWithPlatform(String platform) async {
+  projectName = 'project_$platform';
   await copyPath(
     Directory(p.join(cwd.path, 'fixtures/$projectName')).path,
     Directory.current.path,

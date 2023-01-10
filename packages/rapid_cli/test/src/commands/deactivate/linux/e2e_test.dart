@@ -29,7 +29,7 @@ void main() {
         'deactivate linux',
         () async {
           // Arrange
-          await setupProjectAllPlatforms();
+          await setupProjectWithPlatform('linux');
 
           // Act
           final commandResult = await commandRunner.run(

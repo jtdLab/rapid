@@ -29,7 +29,7 @@ void main() {
         'deactivate web',
         () async {
           // Arrange
-          await setupProjectAllPlatforms();
+          await setupProjectWithPlatform('web');
 
           // Act
           final commandResult = await commandRunner.run(

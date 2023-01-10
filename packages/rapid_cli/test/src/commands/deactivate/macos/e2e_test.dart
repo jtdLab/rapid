@@ -29,7 +29,7 @@ void main() {
         'deactivate macos',
         () async {
           // Arrange
-          await setupProjectAllPlatforms();
+          await setupProjectWithPlatform('macos');
 
           // Act
           final commandResult = await commandRunner.run(

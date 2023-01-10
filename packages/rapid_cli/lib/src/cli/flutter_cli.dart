@@ -45,11 +45,25 @@ abstract class Flutter {
 
   /// Get dependencies (`flutter pub get`).
   static Future<void> pubGet({String cwd = '.'}) async {
-    await _Cmd.run(
+    final x = await Process.start(
       'flutter',
       ['pub', 'get'],
       workingDirectory: cwd,
     );
+
+    x.stderr.listen((event) {
+      utf8.decode(event);
+    });
+
+    x.stdout.listen((event) {
+      utf8.decode(event);
+    });
+
+    /*   await _Cmd.run(
+      'flutter',
+      ['pub', 'get'],
+      workingDirectory: cwd,
+    ); */
   }
 
   /// Enable Flutter for Android (`flutter config --enable-android`).

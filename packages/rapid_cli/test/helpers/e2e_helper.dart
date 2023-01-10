@@ -48,23 +48,14 @@ Future<void> setupProjectAllPlatforms() async {
 /// Runs `flutter pub get` recursivly in all dirs with pubspec.yaml
 /// starting from current directory.
 Future<void> _runFlutterPubGetInAllDirsWithPubspec() async {
-  List<Directory> rec(Directory dir) {
-    final subDirs = dir.listSync(recursive: true).whereType<Directory>().where(
-          (e) => e
-              .listSync()
-              .whereType<File>()
-              .any((e) => e.path.endsWith('pubspec.yaml')),
-        );
-
-    return subDirs.map((e) => rec(e)).fold([], (prev, curr) => prev + curr);
-  }
-
-  final dirsWithPubspec = rec(Directory.current);
+  final dirsWithPubspec = Directory.current
+      .listSync(recursive: true)
+      .where((e) => e is File && e.path.endsWith('pubspec.yaml'))
+      .map((e) => e.parent);
 
   print(dirsWithPubspec.length);
 
   for (final dirWithPubspec in dirsWithPubspec) {
-    print(dirWithPubspec);
     await Process.run(
       'flutter',
       ['pub', 'get'],

@@ -49,15 +49,19 @@ Future<void> setupProjectAllPlatforms() async {
 /// starting from current directory.
 Future<void> _runFlutterPubGetInAllDirsWithPubspec() async {
   List<Directory> rec(Directory dir) {
-    final subDirs = dir
-        .listSync(recursive: true)
-        .whereType<Directory>()
-        .where((e) => e.listSync().any((e) => e.path.endsWith('pubspec.yaml')));
+    final subDirs = dir.listSync(recursive: true).whereType<Directory>().where(
+          (e) => e
+              .listSync()
+              .whereType<File>()
+              .any((e) => e.path.endsWith('pubspec.yaml')),
+        );
 
     return subDirs.map((e) => rec(e)).fold([], (prev, curr) => prev + curr);
   }
 
   final dirsWithPubspec = rec(Directory.current);
+
+  print(dirsWithPubspec.length);
 
   for (final dirWithPubspec in dirsWithPubspec) {
     print(dirWithPubspec);

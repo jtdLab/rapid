@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:io/io.dart' show copyPath;
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/platform.dart';
@@ -58,12 +60,26 @@ Future<void> _runFlutterPubGetInAllDirsWithPubspec() async {
   for (final dirWithPubspec in dirsWithPubspec) {
     print(dirWithPubspec.path);
 
-    await Process.run(
+    final x = await Process.start(
+      'flutter',
+      ['pub', 'get'],
+      workingDirectory: dirWithPubspec.path,
+    );
+
+    x.stderr.listen((event) {
+      utf8.decode(event);
+    });
+
+    x.stdout.listen((event) {
+      utf8.decode(event);
+    });
+
+   /*  await Process.run(
       'flutter',
       ['pub', 'get'],
       workingDirectory: dirWithPubspec.path,
       runInShell: true,
-    );
+    ); */
   }
 }
 

@@ -21,13 +21,15 @@ void main() {
         commandRunner = RapidCommandRunner();
       });
 
+      tearDown(() {
+        Directory.current = cwd;
+      });
+
       test(
         'deactivate android',
         () async {
           // Arrange
           await setupProjectAllPlatforms();
-
-          print(Directory.current.path);
 
           // Act
           final commandResult = await commandRunner.run(

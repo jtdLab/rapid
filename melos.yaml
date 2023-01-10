@@ -1,7 +1,9 @@
 name: rapid
 
 packages:
-  - packages/**
+  - packages/rapid/rapid/rapid
+  - packages/rapid/rapid/rapid_di
+  - packages/rapid_cli
 
 command:
   bootstrap:

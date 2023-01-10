@@ -27,22 +27,22 @@ late Directory cwd;
 Future<void> setupProjectNoPlatforms() async {
   projectName = 'project_none';
   await copyPath(
-    Directory(p.join(cwd.path, 'test/fixtures/$projectName')).path,
+    Directory(p.join(cwd.path, 'fixtures/$projectName')).path,
     Directory.current.path,
   );
 
-  // await _runFlutterPubGetInAllDirsWithPubspec();
+  await _runFlutterPubGetInAllDirsWithPubspec();
 }
 
 /// Set up a Rapid test project in the cwd with ALL platforms activated.
 Future<void> setupProjectAllPlatforms() async {
   projectName = 'project_all';
   await copyPath(
-    Directory(p.join(cwd.path, 'test/fixtures/$projectName')).path,
+    Directory(p.join(cwd.path, 'fixtures/$projectName')).path,
     Directory.current.path,
   );
 
- // await _runFlutterPubGetInAllDirsWithPubspec();
+  await _runFlutterPubGetInAllDirsWithPubspec();
 }
 
 /// Runs `flutter pub get` recursivly in all dirs with pubspec.yaml
@@ -58,11 +58,6 @@ Future<void> _runFlutterPubGetInAllDirsWithPubspec() async {
   }
 
   final dirsWithPubspec = rec(Directory.current);
-
-  print(dirsWithPubspec.length);
-  for (final path in dirsWithPubspec.map((e) => e.path)) {
-    print(path);
-  }
 
   for (final dirWithPubspec in dirsWithPubspec) {
     await Process.run(
@@ -280,8 +275,6 @@ Future<int> _runFlutterAnalyze({
   if (stderr.isEmpty) {
     return 0;
   }
-
-  print(result.stdout);
 
   final regExp = RegExp(r'([0-9]+) issues found');
   final match = regExp.firstMatch(stderr)!;

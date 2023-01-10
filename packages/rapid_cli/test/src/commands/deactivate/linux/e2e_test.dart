@@ -21,6 +21,10 @@ void main() {
         commandRunner = RapidCommandRunner();
       });
 
+      tearDown(() {
+        Directory.current = cwd;
+      });
+
       test(
         'deactivate linux',
         () async {

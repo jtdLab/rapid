@@ -22,6 +22,10 @@ void main() {
         commandRunner = RapidCommandRunner();
       });
 
+      tearDown(() {
+        Directory.current = cwd;
+      });
+
       test(
         'activate android',
         () async {

@@ -51,16 +51,12 @@ abstract class Flutter {
       workingDirectory: cwd,
     );
 
-    print('flutter pub get');
-
-    
-
     x.stderr.listen((event) {
-      utf8.decode(event);
+      print(utf8.decode(event));
     });
 
     x.stdout.listen((event) {
-      utf8.decode(event);
+      print(utf8.decode(event));
     });
 
     await x.exitCode;

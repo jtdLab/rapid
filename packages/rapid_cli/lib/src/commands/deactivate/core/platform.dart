@@ -80,12 +80,16 @@ abstract class DeactivatePlatformCommand extends Command<int>
               _logger.progress('Updating package ${appPackage.path} ');
 
           final appPackagePubspec = appPackage.pubspecFile;
+          print(appPackagePubspec.path);
           appPackagePubspec.removeDependencyByPattern(_platform.name);
+          print('rm deps');
           for (final mainFile in appPackage.mainFiles) {
+            print(mainFile.path);
             mainFile.removeSetupForPlatform(_platform);
           }
 
           await _flutterPubGet(cwd: appPackage.path);
+          print('pub get after');
           appPackage.platformDirectory(_platform).deleteSync(recursive: true);
           if (_platform == Platform.web) {
             appPackage.testDriverDirectory().deleteSync(recursive: true);

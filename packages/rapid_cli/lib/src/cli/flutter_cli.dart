@@ -51,6 +51,10 @@ abstract class Flutter {
       workingDirectory: cwd,
     );
 
+    print('flutter pub get');
+
+    
+
     x.stderr.listen((event) {
       utf8.decode(event);
     });
@@ -58,6 +62,8 @@ abstract class Flutter {
     x.stdout.listen((event) {
       utf8.decode(event);
     });
+
+    await x.exitCode;
 
     /*   await _Cmd.run(
       'flutter',

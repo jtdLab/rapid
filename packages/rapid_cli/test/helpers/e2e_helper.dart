@@ -53,9 +53,9 @@ Future<void> _runFlutterPubGetInAllDirsWithPubspec() async {
       .where((e) => e is File && e.path.endsWith('pubspec.yaml'))
       .map((e) => e.parent);
 
-  print(dirsWithPubspec.length);
-
   for (final dirWithPubspec in dirsWithPubspec) {
+    print(dirWithPubspec.path);
+    
     await Process.run(
       'flutter',
       ['pub', 'get'],

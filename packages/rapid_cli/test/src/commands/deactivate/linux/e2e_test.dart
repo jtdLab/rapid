@@ -48,6 +48,7 @@ void main() {
 
           await verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
         },
+        tags: ['tweak'],
       );
     },
     timeout: const Timeout(Duration(minutes: 8)), // TODO should be lower

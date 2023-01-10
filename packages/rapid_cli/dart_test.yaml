@@ -15,3 +15,5 @@ tags:
     skip: "Should only run in an Web environment with a device ready to use"
   windows:
     skip: "Should only run in an Windows environment with a device ready to use"
+  tweak:
+    skip: "Should only run when fixing issues in ci"

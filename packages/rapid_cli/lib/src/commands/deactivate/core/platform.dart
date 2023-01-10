@@ -75,27 +75,19 @@ abstract class DeactivatePlatformCommand extends Command<int>
           );
 
           final appPackage = _project.appPackage;
-          print(appPackage.path);
           final appUpdatePackageProgress =
               _logger.progress('Updating package ${appPackage.path} ');
-
           final appPackagePubspec = appPackage.pubspecFile;
-          print(appPackagePubspec.path);
           appPackagePubspec.removeDependencyByPattern(_platform.name);
-          print('rm deps');
           for (final mainFile in appPackage.mainFiles) {
-            print(mainFile.path);
             mainFile.removeSetupForPlatform(_platform);
           }
-
           await _flutterPubGet(cwd: appPackage.path);
-          print('pub get after');
           appPackage.platformDirectory(_platform).deleteSync(recursive: true);
           if (_platform == Platform.web) {
             appPackage.testDriverDirectory().deleteSync(recursive: true);
           }
           appUpdatePackageProgress.complete();
-          print('post app pack');
 
           final diPackage = _project.diPackage;
           final diUpdatePackageProgress =
@@ -108,15 +100,12 @@ abstract class DeactivatePlatformCommand extends Command<int>
             cwd: diPackage.path,
           );
           diUpdatePackageProgress.complete();
-          print('post di pack');
 
           final platformDirectory = _project.platformDirectory(_platform);
           platformDirectory.delete();
-          print('post plat dir');
 
           final platformUiPackage = _project.platformUiPackage(_platform);
           platformUiPackage.delete();
-          print('post ui pack');
 
           _logger.success('${_platform.prettyName} is now deactivated.');
 

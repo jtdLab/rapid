@@ -1,6 +1,0 @@
-# melos_managed_dependency_overrides: project_linux_domain,project_linux_logging
-dependency_overrides:
-  project_linux_domain:
-    path: ../project_linux_domain
-  project_linux_logging:
-    path: ../project_linux_logging

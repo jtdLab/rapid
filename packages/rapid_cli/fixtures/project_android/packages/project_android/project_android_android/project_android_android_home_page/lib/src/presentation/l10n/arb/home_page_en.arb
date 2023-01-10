@@ -1,7 +1,0 @@
-{
-  "@@locale": "en",
-  "title": "The language is english",
-  "@title": {
-    "description": "Title text shown in the Home Page"
-  }
-}

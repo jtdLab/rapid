@@ -107,6 +107,7 @@ void verifyDoExist(Iterable<FileSystemEntity> entities) {
 /// Verifys wheter NONE of [entities] exist on disk.
 void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
   for (final entity in entities) {
+    print(entity.path);
     expect(entity.existsSync(), false);
   }
 }

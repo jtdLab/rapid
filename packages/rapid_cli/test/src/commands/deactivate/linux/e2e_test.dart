@@ -40,20 +40,17 @@ void main() {
           expect(commandResult, equals(ExitCode.success.code));
 
           await verifyNoAnalyzerIssues();
-          print('analyze good');
           await verifyNoFormattingIssues();
-          print('format good');
 
           final platformDependentDirs = platformDirs('linux');
           verifyDoExist(platformIndependentDirs);
           verifyDoNotExist(platformDependentDirs);
-          print('dirs good');
 
           await verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
         },
         tags: ['tweak'],
       );
     },
-    timeout: const Timeout(Duration(minutes: 8)), // TODO should be lower
+    timeout: const Timeout(Duration(minutes: 4)), // TODO should be lower
   );
 }

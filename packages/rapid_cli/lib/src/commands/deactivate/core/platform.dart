@@ -75,8 +75,10 @@ abstract class DeactivatePlatformCommand extends Command<int>
           );
 
           final appPackage = _project.appPackage;
+          print(appPackage);
           final appUpdatePackageProgress =
               _logger.progress('Updating package ${appPackage.path} ');
+
           final appPackagePubspec = appPackage.pubspecFile;
           appPackagePubspec.removeDependencyByPattern(_platform.name);
           for (final mainFile in appPackage.mainFiles) {

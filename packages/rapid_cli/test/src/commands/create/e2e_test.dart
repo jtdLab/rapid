@@ -45,7 +45,7 @@ void main() {
 
           // TODO maybe verify that no platform dir exists
 
-          verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
+          await verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
         },
       );
 
@@ -67,7 +67,7 @@ void main() {
             // TODO maybe verify that platform dir exist
 
             final platformDependentDirs = platformDirs('android');
-            verifyTestsPassWith100PercentCoverage([
+            await verifyTestsPassWith100PercentCoverage([
               ...platformIndependentDirs,
               ...platformDependentDirs,
             ]);
@@ -99,7 +99,7 @@ void main() {
             // TODO maybe verify that platform dir exist
 
             final platformDependentDirs = platformDirs('ios');
-            verifyTestsPassWith100PercentCoverage([
+            await verifyTestsPassWith100PercentCoverage([
               ...platformIndependentDirs,
               ...platformDependentDirs,
             ]);
@@ -131,7 +131,7 @@ void main() {
             // TODO maybe verify that platform dir exist
 
             final platformDependentDirs = platformDirs('linux');
-            verifyTestsPassWith100PercentCoverage([
+            await verifyTestsPassWith100PercentCoverage([
               ...platformIndependentDirs,
               ...platformDependentDirs,
             ]);
@@ -163,7 +163,7 @@ void main() {
             // TODO maybe verify that platform dir exist
 
             final platformDependentDirs = platformDirs('macos');
-            verifyTestsPassWith100PercentCoverage([
+            await verifyTestsPassWith100PercentCoverage([
               ...platformIndependentDirs,
               ...platformDependentDirs,
             ]);
@@ -195,7 +195,7 @@ void main() {
             // TODO maybe verify that platform dir exist
 
             final platformDependentDirs = platformDirs('web');
-            verifyTestsPassWith100PercentCoverage([
+            await verifyTestsPassWith100PercentCoverage([
               ...platformIndependentDirs,
               ...platformDependentDirs,
             ]);
@@ -227,7 +227,7 @@ void main() {
             // TODO maybe verify that platform dir exist
 
             final platformDependentDirs = platformDirs('windows');
-            verifyTestsPassWith100PercentCoverage([
+            await verifyTestsPassWith100PercentCoverage([
               ...platformIndependentDirs,
               ...platformDependentDirs,
             ]);

@@ -47,7 +47,7 @@ void main() {
           verifyDoExist(platformIndependentDirs);
           verifyDoExist(platformDependentDirs);
 
-          verifyTestsPassWith100PercentCoverage([
+          await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentDirs,
             ...platformDependentDirs,
           ]);

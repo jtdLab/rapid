@@ -46,7 +46,7 @@ void main() {
           verifyDoExist(platformIndependentDirs);
           verifyDoNotExist(platformDependentDirs);
 
-          verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
+          await verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
         },
       );
     },

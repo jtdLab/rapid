@@ -185,6 +185,8 @@ Future<TestResult> _runFlutterTest({
 
   final String stderr = result.stderr;
   final String stdout = result.stdout;
+  print(cwd);
+  print('#############');
   print(stdout);
   print(stderr);
   if (stderr.isEmpty ||

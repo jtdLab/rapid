@@ -40,11 +40,14 @@ void main() {
           expect(commandResult, equals(ExitCode.success.code));
 
           await verifyNoAnalyzerIssues();
+          print('analyze good');
           await verifyNoFormattingIssues();
+          print('format good');
 
           final platformDependentDirs = platformDirs('linux');
           verifyDoExist(platformIndependentDirs);
           verifyDoNotExist(platformDependentDirs);
+          print('dirs good');
 
           await verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
         },

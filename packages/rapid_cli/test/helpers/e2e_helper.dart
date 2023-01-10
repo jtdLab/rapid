@@ -31,7 +31,7 @@ Future<void> setupProjectNoPlatforms() async {
     Directory.current.path,
   );
 
-  await _runFlutterPubGetInAllDirsWithPubspec();
+  // await _runFlutterPubGetInAllDirsWithPubspec();
 }
 
 /// Set up a Rapid test project in the cwd with ALL platforms activated.
@@ -42,7 +42,7 @@ Future<void> setupProjectAllPlatforms() async {
     Directory.current.path,
   );
 
-  await _runFlutterPubGetInAllDirsWithPubspec();
+  // await _runFlutterPubGetInAllDirsWithPubspec();
 }
 
 /// Runs `flutter pub get` recursivly in all dirs with pubspec.yaml

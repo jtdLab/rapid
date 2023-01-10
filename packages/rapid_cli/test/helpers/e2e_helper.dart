@@ -185,6 +185,8 @@ Future<TestResult> _runFlutterTest({
 
   final String stderr = result.stderr;
   final String stdout = result.stdout;
+  print(stdout);
+  print(stderr);
   if (stderr.isEmpty ||
       stderr.contains(
           'Test directory "test" not found') || // TODO this should return error

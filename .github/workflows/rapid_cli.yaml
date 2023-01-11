@@ -6,16 +6,18 @@ on:
       - "packages/rapid_cli/**"
       - ".github/workflows/rapid_cli.yaml"
       - "!packages/rapid_cli/README.md"
-      - "!packages/rapid_cli/assets"
-      - "!packages/rapid_cli/fixtures"
+      - "!packages/rapid_cli/assets/**"
+      - "!packages/rapid_cli/fixtures/**"
+      - "!packages/rapid_cli/tool/**"
 
   pull_request:
     paths:
       - "packages/rapid_cli/**"
       - ".github/workflows/rapid_cli.yaml"
       - "!packages/rapid_cli/README.md"
-      - "!packages/rapid_cli/assets"
-      - "!packages/rapid_cli/fixtures"
+      - "!packages/rapid_cli/assets/**"
+      - "!packages/rapid_cli/fixtures/**"
+      - "!packages/rapid_cli/tool/**"
 
 jobs:
   test:

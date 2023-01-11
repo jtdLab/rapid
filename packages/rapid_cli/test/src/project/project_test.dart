@@ -48,6 +48,19 @@ void main() {
       });
     });
 
+    group('domainPackage', () {
+      test('returns correct dart package', () {
+        // Act
+        final domainPackage = project.domainPackage;
+
+        // Assert
+        expect(
+          domainPackage.path,
+          'packages/$projectName/${projectName}_domain',
+        );
+      });
+    });
+
     group('melosFile', () {
       test('returns correct melos file', () {
         // Act

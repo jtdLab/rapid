@@ -16,7 +16,7 @@ import 'entity_bundle.dart';
 const _defaultOutputDir = '.';
 
 /// {@template domain_add_entity_command}
-/// `rapid domain add entity` command adds entity to the domain part part of an existing Rapid project.
+/// `rapid domain add entity` command adds entity to the domain part of an existing Rapid project.
 /// {@endtemplate}
 class DomainAddEntityCommand extends Command<int> with OverridableArgResults {
   /// {@macro domain_add_entity_command}

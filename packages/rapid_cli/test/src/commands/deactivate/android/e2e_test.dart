@@ -4,7 +4,7 @@ import 'package:rapid_cli/src/command_runner.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
-import '../../../../helpers/helpers.dart';
+import '../../../../helpers/e2e_helper.dart';
 
 void main() {
   group(

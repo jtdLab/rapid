@@ -1088,6 +1088,26 @@ void main() {
         final contents = file.readAsStringSync();
         expect(contents, dartFileWithAnnotatedTopLevelFunctionMultipleArgsMore);
       });
+
+      test('sets empty type list correctly', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+          dartFileWithAnnotatedTopLevelFunction,
+        );
+
+        // Act
+        dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+          property: 'myArg',
+          annotation: 'MyAnnotation',
+          functionName: 'foo',
+          value: [],
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithAnnotatedTopLevelFunctionWithEmptyArg);
+      });
     });
   });
 }

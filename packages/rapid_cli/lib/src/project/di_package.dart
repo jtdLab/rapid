@@ -33,11 +33,13 @@ class DiPackage {
 class InjectionFile {
   /// {@macro injection_file}
   InjectionFile({
-    required DiPackage diPackage,
+    required this.diPackage,
   }) : _file = DartFile(
             path: p.join(diPackage.path, 'lib', 'src'), name: 'injection');
 
   final DartFile _file;
+
+  final DiPackage diPackage;
 
   String get path => _file.path;
 
@@ -65,9 +67,12 @@ class InjectionFile {
 
   /// Removes all packages with [platform].
   void removePackagesByPlatform(Platform platform) {
-    final String platformName = platform.name;
+    final projectName = diPackage.project.melosFile.name();
+    final platformName = platform.name;
 
-    final imports = _file.readImports().where((e) => e.contains(platformName));
+    final imports = _file
+        .readImports()
+        .where((e) => e.contains('${projectName}_$platformName'));
     for (final import in imports) {
       _file.removeImport(import);
     }
@@ -84,7 +89,11 @@ class InjectionFile {
       annotation: 'InjectableInit',
       functionName: 'configureDependencies',
       value: externalPackageModules
-          .where((e) => !e.contains(platformName.pascalCase))
+          .where(
+            (e) => !e.contains(
+              '${projectName.pascalCase}${platformName.pascalCase}',
+            ),
+          )
           .toList(),
     );
   }

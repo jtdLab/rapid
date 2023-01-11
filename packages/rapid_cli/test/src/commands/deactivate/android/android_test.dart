@@ -71,6 +71,7 @@ void main() {
 
     late Project project;
     late MelosFile melosFile;
+    const projectName = 'my_app';
     late AppPackage appPackage;
     const appPackagePath = 'foo/bar';
     late PubspecFile appPackagePubspec;
@@ -107,6 +108,7 @@ void main() {
       project = _MockProject();
       melosFile = _MockMelosFile();
       when(() => melosFile.exists()).thenReturn(true);
+      when(() => melosFile.name()).thenReturn(projectName);
       appPackage = _MockAppPackage();
       appPackagePubspec = _MockPubspecFile();
       mainFileDev = _MockMainFile();
@@ -203,8 +205,8 @@ void main() {
       verify(() => logger.info('Deactivating Android ...')).called(1);
       verify(() => logger.progress('Updating package $appPackagePath '))
           .called(1);
-      verify(() => appPackagePubspec.removeDependencyByPattern('android'))
-          .called(1);
+      verify(() => appPackagePubspec
+          .removeDependencyByPattern('${projectName}_android')).called(1);
       verify(() => mainFileDev.removeSetupForPlatform(Platform.android))
           .called(1);
       verify(() => mainFileTest.removeSetupForPlatform(Platform.android))
@@ -216,8 +218,8 @@ void main() {
           .called(1);
       verify(() => logger.progress('Updating package $diPackagePath '))
           .called(1);
-      verify(() => diPackagePubspec.removeDependencyByPattern('android'))
-          .called(1);
+      verify(() => diPackagePubspec
+          .removeDependencyByPattern('${projectName}_android')).called(1);
       verify(() => injectionFile.removePackagesByPlatform(Platform.android))
           .called(1);
       verify(() => flutterPubGet(cwd: diPackagePath)).called(1);

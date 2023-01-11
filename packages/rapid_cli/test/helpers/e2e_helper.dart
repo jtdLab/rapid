@@ -269,7 +269,8 @@ Future<int> _runFlutterAnalyze({
     return 0;
   }
 
-  final regExp = RegExp(r'([0-9]+) issues found');
+  // TODO doesnt match 0 issues found
+  final regExp = RegExp(r'([0-9]+) issue found');
   final match = regExp.firstMatch(stderr)!;
   return int.parse(match.group(1)!);
 }

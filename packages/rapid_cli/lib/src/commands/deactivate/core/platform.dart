@@ -78,7 +78,9 @@ abstract class DeactivatePlatformCommand extends Command<int>
           final appUpdatePackageProgress =
               _logger.progress('Updating package ${appPackage.path} ');
           final appPackagePubspec = appPackage.pubspecFile;
-          appPackagePubspec.removeDependencyByPattern(_platform.name);
+          appPackagePubspec.removeDependencyByPattern(
+            '${_project.melosFile.name()}_${_platform.name}',
+          );
           for (final mainFile in appPackage.mainFiles) {
             mainFile.removeSetupForPlatform(_platform);
           }
@@ -93,7 +95,9 @@ abstract class DeactivatePlatformCommand extends Command<int>
           final diUpdatePackageProgress =
               _logger.progress('Updating package ${diPackage.path} ');
           final diPackagePubspec = diPackage.pubspecFile;
-          diPackagePubspec.removeDependencyByPattern(_platform.name);
+          diPackagePubspec.removeDependencyByPattern(
+            '${_project.melosFile.name()}_${_platform.name}',
+          );
           diPackage.injectionFile.removePackagesByPlatform(_platform);
           await _flutterPubGet(cwd: diPackage.path);
           await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(

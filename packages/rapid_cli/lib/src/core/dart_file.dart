@@ -450,8 +450,9 @@ class DartFile {
     final start = val.offset;
     final end = val.end;
 
-    final output =
-        contents.replaceRange(start, end, '$property: [${value.join(',')},]');
+    final output = contents.replaceRange(start, end,
+        '$property: [${value.join(',')}${value.isEmpty ? '' : ','}]');
+
     _write(output);
   }
 }

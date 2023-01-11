@@ -5,6 +5,7 @@ import 'package:rapid_cli/src/commands/activate/activate.dart';
 import 'package:rapid_cli/src/commands/android/android.dart';
 import 'package:rapid_cli/src/commands/deactivate/deactivate.dart';
 import 'package:rapid_cli/src/commands/doctor/doctor.dart';
+import 'package:rapid_cli/src/commands/domain/domain.dart';
 import 'package:rapid_cli/src/commands/ios/ios.dart';
 import 'package:rapid_cli/src/commands/linux/linux.dart';
 import 'package:rapid_cli/src/commands/macos/macos.dart';
@@ -36,6 +37,7 @@ class RapidCommandRunner extends CommandRunner<int> {
     addCommand(CreateCommand(logger: logger));
     addCommand(DeactivateCommand(logger: logger, project: p));
     addCommand(DoctorCommand(logger: logger, project: p));
+    addCommand(DomainCommand(logger: logger, project: p));
     addCommand(IosCommand(logger: logger, project: p));
     addCommand(LinuxCommand(logger: logger, project: p));
     addCommand(MacosCommand(logger: logger, project: p));

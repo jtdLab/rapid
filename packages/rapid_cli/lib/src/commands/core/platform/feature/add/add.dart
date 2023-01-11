@@ -41,7 +41,8 @@ abstract class PlatformFeatureAddCommand extends Command<int> {
   String get name => 'add';
 
   @override
-  String get invocation => 'rapid ${_platform.name} feature add <subcommand>';
+  String get invocation =>
+      'rapid ${_platform.name} feature add <subcommand>'; // TODO component
 
   @override
   String get description =>

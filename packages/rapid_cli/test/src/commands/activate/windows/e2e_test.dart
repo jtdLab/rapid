@@ -1,4 +1,4 @@
-@Tags(['e2e', 'windows'])
+@Tags(['e2e'])
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -25,6 +25,34 @@ void main() {
       tearDown(() {
         Directory.current = cwd;
       });
+
+      test(
+        'activate windows (fast)',
+        () async {
+          // Arrange
+          await setupProjectNoPlatforms();
+
+          // Act
+          final commandResult = await commandRunner.run(
+            ['activate', 'windows'],
+          );
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+
+          final platformDependentDirs = platformDirs('windows');
+          verifyDoExist(platformIndependentDirs);
+          verifyDoExist(platformDependentDirs);
+
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentDirs,
+            ...platformDependentDirs,
+          ]);
+        },
+      );
 
       test(
         'activate windows',
@@ -59,6 +87,7 @@ void main() {
           );
           expect(failedIntegrationTests, 0);
         },
+        tags: ['windows'],
       );
     },
     timeout: const Timeout(Duration(minutes: 8)), // TODO should be lower

@@ -1,4 +1,4 @@
-@Tags(['e2e', 'android'])
+@Tags(['e2e'])
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -25,6 +25,34 @@ void main() {
       tearDown(() {
         Directory.current = cwd;
       });
+
+      test(
+        'activate android (fast)',
+        () async {
+          // Arrange
+          await setupProjectNoPlatforms();
+
+          // Act
+          final commandResult = await commandRunner.run(
+            ['activate', 'android'],
+          );
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+
+          final platformDependentDirs = platformDirs('android');
+          verifyDoExist(platformIndependentDirs);
+          verifyDoExist(platformDependentDirs);
+
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentDirs,
+            ...platformDependentDirs,
+          ]);
+        },
+      );
 
       test(
         'activate android',
@@ -59,8 +87,9 @@ void main() {
           );
           expect(failedIntegrationTests, 0);
         },
+        tags: ['android'],
       );
     },
-    timeout: const Timeout(Duration(minutes: 8)), // TODO should be lower
+    timeout: const Timeout(Duration(minutes: 7)),
   );
 }

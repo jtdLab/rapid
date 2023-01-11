@@ -51,6 +51,30 @@ void main() {
 
       group('create', () {
         test(
+          '--android (fast)',
+          () async {
+            // Act
+            final commandResult = await commandRunner.run(
+              ['create', '.', '--project-name', projectName, '--android'],
+            );
+
+            // Assert
+            expect(commandResult, equals(ExitCode.success.code));
+
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+
+            // TODO maybe verify that platform dir exist
+
+            final platformDependentDirs = platformDirs('android');
+            await verifyTestsPassWith100PercentCoverage([
+              ...platformIndependentDirs,
+              ...platformDependentDirs,
+            ]);
+          },
+        );
+
+        test(
           '--android',
           () async {
             // Act
@@ -80,6 +104,30 @@ void main() {
             expect(failedIntegrationTests, 0);
           },
           tags: ['android'],
+        );
+
+        test(
+          '--ios (fast)',
+          () async {
+            // Act
+            final commandResult = await commandRunner.run(
+              ['create', '.', '--project-name', projectName, '--ios'],
+            );
+
+            // Assert
+            expect(commandResult, equals(ExitCode.success.code));
+
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+
+            // TODO maybe verify that platform dir exist
+
+            final platformDependentDirs = platformDirs('ios');
+            await verifyTestsPassWith100PercentCoverage([
+              ...platformIndependentDirs,
+              ...platformDependentDirs,
+            ]);
+          },
         );
 
         test(
@@ -115,6 +163,30 @@ void main() {
         );
 
         test(
+          '--linux (fast)',
+          () async {
+            // Act
+            final commandResult = await commandRunner.run(
+              ['create', '.', '--project-name', projectName, '--linux'],
+            );
+
+            // Assert
+            expect(commandResult, equals(ExitCode.success.code));
+
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+
+            // TODO maybe verify that platform dir exist
+
+            final platformDependentDirs = platformDirs('linux');
+            await verifyTestsPassWith100PercentCoverage([
+              ...platformIndependentDirs,
+              ...platformDependentDirs,
+            ]);
+          },
+        );
+
+        test(
           '--linux',
           () async {
             // Act
@@ -144,6 +216,30 @@ void main() {
             expect(failedIntegrationTests, 0);
           },
           tags: ['linux'],
+        );
+
+        test(
+          '--macos (fast)',
+          () async {
+            // Act
+            final commandResult = await commandRunner.run(
+              ['create', '.', '--project-name', projectName, '--macos'],
+            );
+
+            // Assert
+            expect(commandResult, equals(ExitCode.success.code));
+
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+
+            // TODO maybe verify that platform dir exist
+
+            final platformDependentDirs = platformDirs('macos');
+            await verifyTestsPassWith100PercentCoverage([
+              ...platformIndependentDirs,
+              ...platformDependentDirs,
+            ]);
+          },
         );
 
         test(
@@ -179,6 +275,30 @@ void main() {
         );
 
         test(
+          '--web (fast)',
+          () async {
+            // Act
+            final commandResult = await commandRunner.run(
+              ['create', '.', '--project-name', projectName, '--web'],
+            );
+
+            // Assert
+            expect(commandResult, equals(ExitCode.success.code));
+
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+
+            // TODO maybe verify that platform dir exist
+
+            final platformDependentDirs = platformDirs('web');
+            await verifyTestsPassWith100PercentCoverage([
+              ...platformIndependentDirs,
+              ...platformDependentDirs,
+            ]);
+          },
+        );
+
+        test(
           '--web',
           () async {
             // Act
@@ -208,6 +328,30 @@ void main() {
             expect(failedIntegrationTests, 0);
           },
           tags: ['web'],
+        );
+
+        test(
+          '--windows (fast)',
+          () async {
+            // Act
+            final commandResult = await commandRunner.run(
+              ['create', '.', '--project-name', projectName, '--windows'],
+            );
+
+            // Assert
+            expect(commandResult, equals(ExitCode.success.code));
+
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+
+            // TODO maybe verify that platform dir exist
+
+            final platformDependentDirs = platformDirs('windows');
+            await verifyTestsPassWith100PercentCoverage([
+              ...platformIndependentDirs,
+              ...platformDependentDirs,
+            ]);
+          },
         );
 
         test(
@@ -244,6 +388,6 @@ void main() {
         );
       });
     },
-    timeout: const Timeout(Duration(minutes: 8)), // TODO should be lower
+    timeout: const Timeout(Duration(minutes: 6)),
   );
 }

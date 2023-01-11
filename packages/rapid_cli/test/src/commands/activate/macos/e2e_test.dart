@@ -1,4 +1,4 @@
-@Tags(['e2e', 'macos'])
+@Tags(['e2e'])
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -25,6 +25,34 @@ void main() {
       tearDown(() {
         Directory.current = cwd;
       });
+
+      test(
+        'activate macos (fast)',
+        () async {
+          // Arrange
+          await setupProjectNoPlatforms();
+
+          // Act
+          final commandResult = await commandRunner.run(
+            ['activate', 'macos'],
+          );
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+
+          final platformDependentDirs = platformDirs('macos');
+          verifyDoExist(platformIndependentDirs);
+          verifyDoExist(platformDependentDirs);
+
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentDirs,
+            ...platformDependentDirs,
+          ]);
+        },
+      );
 
       test(
         'activate macos',
@@ -59,8 +87,9 @@ void main() {
           );
           expect(failedIntegrationTests, 0);
         },
+        tags: ['macos'],
       );
     },
-    timeout: const Timeout(Duration(minutes: 8)), // TODO should be lower
+    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

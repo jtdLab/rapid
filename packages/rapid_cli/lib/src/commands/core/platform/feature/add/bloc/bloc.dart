@@ -163,7 +163,7 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
     return raw;
   }
 
-  /// Validates whether [name] is valid feature name.
+  /// Validates whether [name] is valid bloc name.
   ///
   /// Returns [name] when valid.
   String _validateNameArg(List<String> args) {

@@ -1,6 +1,7 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/domain/add/entity/entity.dart';
+import 'package:rapid_cli/src/commands/domain/add/service_interface/service_interface.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template domain_add_command}
@@ -13,6 +14,7 @@ class DomainAddCommand extends Command<int> {
     required Project project,
   }) {
     addSubcommand(DomainAddEntityCommand(project: project));
+    addSubcommand(DomainAddServiceInterfaceCommand(project: project));
   }
 
   @override

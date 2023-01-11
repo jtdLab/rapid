@@ -160,7 +160,7 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
     return raw;
   }
 
-  /// Validates whether [name] is valid feature name.
+  /// Validates whether [name] is valid cubit name.
   ///
   /// Returns [name] when valid.
   String _validateNameArg(List<String> args) {

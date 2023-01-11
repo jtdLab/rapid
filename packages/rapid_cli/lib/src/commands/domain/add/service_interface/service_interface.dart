@@ -8,19 +8,19 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'package:recase/recase.dart';
 import 'package:universal_io/io.dart';
 
-import 'entity_bundle.dart';
+import 'service_interface_bundle.dart';
 
 // TODO share code with other domain add commands
 
 /// The default output directory inside `<domain_package>/lib/`.
 const _defaultOutputDir = '.';
 
-/// {@template domain_add_entity_command}
-/// `rapid domain add entity` command adds entity to the domain part part of an existing Rapid project.
+/// {@template domain_add_service_interface_command}
+/// `rapid domain add service_interface` command adds service_interface to the domain part part of an existing Rapid project.
 /// {@endtemplate}
-class DomainAddEntityCommand extends Command<int> with OverridableArgResults {
-  /// {@macro domain_add_entity_command}
-  DomainAddEntityCommand({
+class DomainAddServiceInterfaceCommand extends Command<int> with OverridableArgResults {
+  /// {@macro domain_add_service_interface_command}
+  DomainAddServiceInterfaceCommand({
     Logger? logger,
     required Project project,
     GeneratorBuilder? generator,
@@ -41,14 +41,17 @@ class DomainAddEntityCommand extends Command<int> with OverridableArgResults {
   final GeneratorBuilder _generator;
 
   @override
-  String get name => 'entity';
+  String get name => 'service_interface';
 
   @override
-  String get invocation => 'rapid domain add entity [arguments]';
+  List<String> get aliases => ['service', 'si'];
+
+  @override
+  String get invocation => 'rapid domain add service_interface [arguments]';
 
   @override
   String get description =>
-      'Adds a entity to the domain part of an existing Rapid project.';
+      'Adds a service interface to the domain part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
@@ -57,7 +60,7 @@ class DomainAddEntityCommand extends Command<int> with OverridableArgResults {
         final outputDir = _outputDir;
 
         final generateProgress = _logger.progress('Generating files');
-        final generator = await _generator(entityBundle);
+        final generator = await _generator(serviceInterfaceBundle);
         final files = await generator.generate(
           DirectoryGeneratorTarget(Directory('.')),
           vars: <String, dynamic>{
@@ -70,19 +73,19 @@ class DomainAddEntityCommand extends Command<int> with OverridableArgResults {
         generateProgress.complete('Generated ${files.length} file(s)');
 
         _logger.success(
-          'Added Entity ${name.pascalCase}.',
+          'Added Service Interface ${name.pascalCase}.',
         );
 
         return ExitCode.success.code;
       });
 
-  /// Gets the name of the entity.
+  /// Gets the name of the service interface.
   String get _name => _validateNameArg(argResults.rest);
 
   /// The output directory inside domain packages lib directory.
   String get _outputDir => argResults['output-dir'] ?? _defaultOutputDir;
 
-  /// Validates whether [name] is valid entity name.
+  /// Validates whether [name] is valid service interface name.
   ///
   /// Returns [name] when valid.
   String _validateNameArg(List<String> args) {

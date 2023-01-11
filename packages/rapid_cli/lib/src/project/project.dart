@@ -5,6 +5,7 @@ import 'package:rapid_cli/src/project/app_package.dart';
 import 'package:rapid_cli/src/project/di_package.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
 import 'package:rapid_cli/src/project/platform_directory.dart';
+import 'package:universal_io/io.dart';
 
 /// Rapid Project
 class Project {
@@ -13,6 +14,13 @@ class Project {
 
   /// The dependency injection package.
   late final DiPackage diPackage = DiPackage(project: this);
+
+  // TODO seperate class for that later ? or use dart package
+
+  /// The dependency injection package.
+  late final DartPackage domainPackage = DartPackage(
+    path: p.join('packages', melosFile.name(), '${melosFile.name()}_domain'),
+  );
 
   /// The melos file.
   final MelosFile melosFile = MelosFile();

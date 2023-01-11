@@ -35,16 +35,13 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
-    GeneratorBuilder? generator,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project,
-        _generator = generator ?? MasonGenerator.fromBundle;
+        _project = project;
 
   final Platform _platform;
   final Logger _logger;
   final Project _project;
-  final GeneratorBuilder _generator;
 
   @override
   String get name => 'widget';

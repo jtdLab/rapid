@@ -9,7 +9,6 @@ class UiWebRemoveWidgetCommand extends UiPlatformRemoveWidgetCommand {
   UiWebRemoveWidgetCommand({
     super.logger,
     required super.project,
-    super.generator,
   }) : super(
           platform: Platform.web,
         );

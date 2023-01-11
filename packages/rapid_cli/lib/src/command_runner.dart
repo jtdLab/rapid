@@ -15,8 +15,6 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'commands/create/create.dart';
 import 'version.dart';
 
-// TODO should project be injected here or only in the commands
-
 /// {@template rapid_command_runner}
 /// A [CommandRunner] for the Rapid Command Line Interface.
 /// {@endtemplate}

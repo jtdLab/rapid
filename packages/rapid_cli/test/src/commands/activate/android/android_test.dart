@@ -227,7 +227,6 @@ void main() {
       )..argResultOverrides = argResults;
     });
 
-    // TODO needed ?
     tearDown(() {
       Directory.current = cwd;
     });

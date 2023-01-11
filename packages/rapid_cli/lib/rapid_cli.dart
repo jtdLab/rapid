@@ -1,10 +1,11 @@
-// TODO doc is not correct
-
-/// Rapid Command Line Interface
+/// Rapid Command Line Interface.
 ///
 /// ```sh
-/// # activate rapid_cli
-/// dart pub global activate rapid_cli
+/// # Activate melos
+/// flutter pub global activate melos
+///
+/// # Activate rapid_cli
+/// flutter pub global activate -sgit https://github.com/jtdLab/rapid.git --git-path packages/rapid_cli/
 ///
 /// # see usage
 /// rapid --help

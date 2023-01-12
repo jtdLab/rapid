@@ -11,7 +11,7 @@ import 'web_bundle.dart';
 /// {@template activate_web_command}
 /// `rapid activate web` command adds support for Web to an existing Rapid project.
 /// {@endtemplate}
-class ActivateWebCommand extends ActivatePlatformCommand with OrgNameGetters {
+class ActivateWebCommand extends ActivatePlatformCommand with OrgNameGetter {
   /// {@macro activate_web_command}
   ActivateWebCommand({
     super.logger,

@@ -34,7 +34,7 @@ void main() {
         () async {
           // Act
           final commandResult = await commandRunner.run(
-            ['create', '.', '--project-name', projectName],
+            ['create', projectName],
           );
 
           // Assert
@@ -55,7 +55,7 @@ void main() {
           () async {
             // Act
             final commandResult = await commandRunner.run(
-              ['create', '.', '--project-name', projectName, '--android'],
+              ['create', projectName, '--android'],
             );
 
             // Assert
@@ -79,7 +79,7 @@ void main() {
           () async {
             // Act
             final commandResult = await commandRunner.run(
-              ['create', '.', '--project-name', projectName, '--android'],
+              ['create', projectName, '--android'],
             );
 
             // Assert
@@ -111,7 +111,7 @@ void main() {
           () async {
             // Act
             final commandResult = await commandRunner.run(
-              ['create', '.', '--project-name', projectName, '--ios'],
+              ['create', projectName, '--ios'],
             );
 
             // Assert
@@ -135,7 +135,7 @@ void main() {
           () async {
             // Act
             final commandResult = await commandRunner.run(
-              ['create', '.', '--project-name', projectName, '--ios'],
+              ['create', projectName, '--ios'],
             );
 
             // Assert
@@ -167,7 +167,7 @@ void main() {
           () async {
             // Act
             final commandResult = await commandRunner.run(
-              ['create', '.', '--project-name', projectName, '--linux'],
+              ['create', projectName, '--linux'],
             );
 
             // Assert
@@ -191,7 +191,7 @@ void main() {
           () async {
             // Act
             final commandResult = await commandRunner.run(
-              ['create', '.', '--project-name', projectName, '--linux'],
+              ['create', projectName, '--linux'],
             );
 
             // Assert
@@ -223,7 +223,7 @@ void main() {
           () async {
             // Act
             final commandResult = await commandRunner.run(
-              ['create', '.', '--project-name', projectName, '--macos'],
+              ['create', projectName, '--macos'],
             );
 
             // Assert
@@ -247,7 +247,7 @@ void main() {
           () async {
             // Act
             final commandResult = await commandRunner.run(
-              ['create', '.', '--project-name', projectName, '--macos'],
+              ['create', projectName, '--macos'],
             );
 
             // Assert
@@ -279,7 +279,7 @@ void main() {
           () async {
             // Act
             final commandResult = await commandRunner.run(
-              ['create', '.', '--project-name', projectName, '--web'],
+              ['create', projectName, '--web'],
             );
 
             // Assert
@@ -303,7 +303,7 @@ void main() {
           () async {
             // Act
             final commandResult = await commandRunner.run(
-              ['create', '.', '--project-name', projectName, '--web'],
+              ['create', projectName, '--web'],
             );
 
             // Assert
@@ -335,7 +335,7 @@ void main() {
           () async {
             // Act
             final commandResult = await commandRunner.run(
-              ['create', '.', '--project-name', projectName, '--windows'],
+              ['create', projectName, '--windows'],
             );
 
             // Assert
@@ -359,7 +359,7 @@ void main() {
           () async {
             // Act
             final commandResult = await commandRunner.run(
-              ['create', '.', '--project-name', projectName, '--windows'],
+              ['create', projectName, '--windows'],
             );
 
             // Assert

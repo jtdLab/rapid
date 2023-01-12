@@ -5,7 +5,7 @@ import 'package:rapid_cli/src/commands/infrastructure/add/service_implementation
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template infrastructure_add_command}
-/// `rapid infrastructure add` command add components to the infrastructure part part of an existing Rapid project.
+/// `rapid infrastructure add` command add components to the infrastructure part of an existing Rapid project.
 /// {@endtemplate}
 class InfrastructureAddCommand extends Command<int> {
   /// {@macro infrastructure_add_command}
@@ -27,5 +27,5 @@ class InfrastructureAddCommand extends Command<int> {
 
   @override
   String get description =>
-      'Adds a component to the infrastructure part of an existing Rapid project.';
+      'Add a component to the infrastructure part of an existing Rapid project.';
 }

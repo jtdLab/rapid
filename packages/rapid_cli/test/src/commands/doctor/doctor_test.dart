@@ -12,7 +12,7 @@ import 'package:universal_io/io.dart';
 import '../../../helpers/helpers.dart';
 
 const expectedUsage = [
-  'Shows information about an existing Rapid project.\n'
+  'Show information about an existing Rapid project.\n'
       '\n'
       'Usage: rapid doctor\n'
       '-h, --help    Print this usage information.\n'

@@ -3,8 +3,6 @@ import 'package:args/command_runner.dart';
 
 import 'overridable_arg_results.dart';
 
-// TODO there are other cmd line params on the project who can be implemented like this
-
 /// The default organization name.
 const _defaultOrgName = 'com.example';
 
@@ -25,7 +23,7 @@ extension OrgNameOption on ArgParser {
 }
 
 /// Adds `orgName` getter.
-mixin OrgNameGetters on OverridableArgResults {
+mixin OrgNameGetter on OverridableArgResults {
   /// Gets the organization name specified by the user.
   ///
   /// Returns [_defaultOrgName] when no organization name specified.

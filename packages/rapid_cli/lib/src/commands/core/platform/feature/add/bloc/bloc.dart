@@ -2,10 +2,10 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/bloc/bloc.dart';
+import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
-import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/ios/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/linux/feature/add/bloc/bloc.dart';
@@ -37,7 +37,7 @@ import 'bloc_bundle.dart';
 ///  * [WindowsFeatureAddBlocCommand]
 /// {@endtemplate}
 abstract class PlatformFeatureAddBlocCommand extends Command<int>
-    with OverridableArgResults {
+    with OverridableArgResults, ClassNameGetter {
   /// {@macro platform_feature_add_bloc_command}
   PlatformFeatureAddBlocCommand({
     required Platform platform,
@@ -88,7 +88,7 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
         if (platformIsActivated) {
           final projectName = _project.melosFile.name();
           final featureName = _featureName;
-          final name = _name;
+          final name = super.className;
 
           final platformDirectory = _project.platformDirectory(_platform);
           if (platformDirectory.featureExists(_featureName)) {
@@ -137,9 +137,6 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
         }
       });
 
-  /// Gets the name of the bloc.
-  String get _name => _validateNameArg(argResults.rest);
-
   /// Gets the name the feature the bloc should be added to.
   String get _featureName {
     final raw = argResults['feature-name'] as String?;
@@ -161,32 +158,5 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
     }
 
     return raw;
-  }
-
-  /// Validates whether [name] is valid bloc name.
-  ///
-  /// Returns [name] when valid.
-  String _validateNameArg(List<String> args) {
-    if (args.isEmpty) {
-      throw UsageException(
-        'No option specified for the name.',
-        usage,
-      );
-    }
-
-    if (args.length > 1) {
-      throw UsageException('Multiple names specified.', usage);
-    }
-
-    final name = args.first;
-    final isValid = isValidClassName(name);
-    if (!isValid) {
-      throw UsageException(
-        '"$name" is not a valid dart class name.',
-        usage,
-      );
-    }
-
-    return name;
   }
 }

@@ -1,6 +1,7 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/domain/add/add.dart';
+import 'package:rapid_cli/src/commands/domain/remove/remove.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template domain_command}
@@ -13,6 +14,7 @@ class DomainCommand extends Command<int> {
     required Project project,
   }) {
     addSubcommand(DomainAddCommand(project: project));
+    addSubcommand(DomainRemoveCommand(project: project));
   }
 
   @override

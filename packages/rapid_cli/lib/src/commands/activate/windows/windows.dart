@@ -12,7 +12,7 @@ import 'windows_bundle.dart';
 /// `rapid activate windows` command adds support for Windows to an existing Rapid project.
 /// {@endtemplate}
 class ActivateWindowsCommand extends ActivatePlatformCommand
-    with OrgNameGetters {
+    with OrgNameGetter {
   /// {@macro activate_windows_command}
   ActivateWindowsCommand({
     super.logger,

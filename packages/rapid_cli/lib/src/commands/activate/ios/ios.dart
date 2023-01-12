@@ -11,7 +11,7 @@ import 'ios_bundle.dart';
 /// {@template activate_ios_command}
 /// `rapid activate ios` command adds support for iOS to an existing Rapid project.
 /// {@endtemplate}
-class ActivateIosCommand extends ActivatePlatformCommand with OrgNameGetters {
+class ActivateIosCommand extends ActivatePlatformCommand with OrgNameGetter {
   /// {@macro activate_ios_command}
   ActivateIosCommand({
     super.logger,

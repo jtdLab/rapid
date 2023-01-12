@@ -6,7 +6,7 @@ import 'package:rapid_cli/src/commands/android/add/language/language.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
-import 'package:rapid_cli/src/commands/core/validate_language.dart';
+import 'package:rapid_cli/src/commands/core/platform/core/validate_language.dart';
 import 'package:rapid_cli/src/commands/ios/add/language/language.dart';
 import 'package:rapid_cli/src/commands/linux/add/language/language.dart';
 import 'package:rapid_cli/src/commands/macos/add/language/language.dart';

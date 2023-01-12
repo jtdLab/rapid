@@ -42,5 +42,5 @@ abstract class UiPlatformRemoveCommand extends Command<int> {
 
   @override
   String get description =>
-      'Removes components from the ${_platform.prettyName} UI part of an existing Rapid project.';
+      'Remove components from the ${_platform.prettyName} UI part of an existing Rapid project.';
 }

@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import '../../../helpers/helpers.dart';
 
 const expectedUsage = [
-  'Adds support for a platform to an existing Rapid project.\n'
+  'Add support for a platform to an existing Rapid project.\n'
       '\n'
       'Usage: rapid activate <platform>\n'
       '-h, --help    Print this usage information.\n'

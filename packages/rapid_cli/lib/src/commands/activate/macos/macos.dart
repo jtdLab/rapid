@@ -11,7 +11,7 @@ import 'macos_bundle.dart';
 /// {@template activate_macos_command}
 /// `rapid activate macos` command adds support for macOS to an existing Rapid project.
 /// {@endtemplate}
-class ActivateMacosCommand extends ActivatePlatformCommand with OrgNameGetters {
+class ActivateMacosCommand extends ActivatePlatformCommand with OrgNameGetter {
   /// {@macro activate_macos_command}
   ActivateMacosCommand({
     super.logger,

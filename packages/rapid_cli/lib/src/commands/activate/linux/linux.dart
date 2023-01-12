@@ -11,7 +11,7 @@ import 'linux_bundle.dart';
 /// {@template activate_linux_command}
 /// `rapid activate linux` command adds support for Linux to an existing Rapid project.
 /// {@endtemplate}
-class ActivateLinuxCommand extends ActivatePlatformCommand with OrgNameGetters {
+class ActivateLinuxCommand extends ActivatePlatformCommand with OrgNameGetter {
   /// {@macro activate_linux_command}
   ActivateLinuxCommand({
     super.logger,

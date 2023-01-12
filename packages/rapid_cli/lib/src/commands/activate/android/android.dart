@@ -12,7 +12,7 @@ import 'android_bundle.dart';
 /// `rapid activate android` command adds support for Android to an existing Rapid project.
 /// {@endtemplate}
 class ActivateAndroidCommand extends ActivatePlatformCommand
-    with OrgNameGetters {
+    with OrgNameGetter {
   /// {@macro activate_android_command}
   ActivateAndroidCommand({
     super.logger,

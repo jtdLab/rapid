@@ -33,7 +33,7 @@ class DeactivateCommand extends Command<int> {
 
   @override
   String get description =>
-      'Removes support for a platform from an existing Rapid project.';
+      'Remove support for a platform from an existing Rapid project.';
 
   @override
   String get invocation => 'rapid deactivate <platform>';

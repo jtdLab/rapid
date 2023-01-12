@@ -1,6 +1,7 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
+import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
@@ -10,17 +11,13 @@ import 'package:universal_io/io.dart';
 
 import 'data_transfer_object_bundle.dart';
 
-// TODO share code with other infrastructure add commands
 // TODO in test template without output dir a path gets a unneccessary dot
-
-/// The default output directory inside `<infrastructure_package>/lib/`.
-const _defaultOutputDir = '.';
 
 /// {@template infrastructure_add_data_transfer_object_command}
 /// `rapid infrastructure add data_transfer_object` command adds data_transfer_object to the infrastructure part of an existing Rapid project.
 /// {@endtemplate}
 class InfrastructureAddDataTransferObjectCommand extends Command<int>
-    with OverridableArgResults {
+    with OverridableArgResults, OutputDirGetter {
   /// {@macro infrastructure_add_data_transfer_object_command}
   InfrastructureAddDataTransferObjectCommand({
     Logger? logger,
@@ -35,14 +32,10 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
         'entity',
         help: 'The entity the data transfer object is related to.',
         abbr: 'e',
-        // mandatory: true // TODO good ?
       )
-      ..addOption(
-        'output-dir',
+      ..addOutputDirOption(
         help:
-            'The output directory inside infrastructure packages lib directory.',
-        abbr: 'o',
-        defaultsTo: _defaultOutputDir,
+            'The output directory relative to <infrastructure_package>/lib/ .',
       );
   }
 
@@ -62,13 +55,13 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
 
   @override
   String get description =>
-      'Adds a data transfer object to the infrastructure part of an existing Rapid project.';
+      'Add a data transfer object to the infrastructure part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
         final projectName = _project.melosFile.name();
         final entityName = _entity;
-        final outputDir = _outputDir;
+        final outputDir = super.outputDir;
 
         final generateProgress = _logger.progress('Generating files');
         final generator = await _generator(dataTransferObjectBundle);
@@ -92,11 +85,6 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
 
   /// Gets the name of the entity the data transfer object is related to.
   String get _entity => _validateEntityArg(argResults['entity']);
-
-  /// The output directory inside infrastructure packages lib directory.
-  String get _outputDir => argResults['output-dir'] ?? _defaultOutputDir;
-
-  // TODO this doc is wrong in other commands here it is correct (name ref is wrong)
 
   /// Validates whether `entity` is a valid entity name.
   ///

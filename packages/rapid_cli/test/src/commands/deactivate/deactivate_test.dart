@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 import '../../../helpers/helpers.dart';
 
 const expectedUsage = [
-  'Removes support for a platform from an existing Rapid project.\n'
+  'Remove support for a platform from an existing Rapid project.\n'
       '\n'
       'Usage: rapid deactivate <platform>\n'
       '-h, --help    Print this usage information.\n'

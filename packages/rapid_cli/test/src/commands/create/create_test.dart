@@ -1,7 +1,6 @@
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/create/create.dart';
 import 'package:test/test.dart';
@@ -10,26 +9,27 @@ import 'package:universal_io/io.dart';
 import '../../../helpers/helpers.dart';
 
 const expectedUsage = [
-  'Creates a new Rapid project in the specified directory.\n'
+  'Create a new Rapid project.\n'
       '\n'
-      'Usage: rapid create <output directory>\n'
-      '-h, --help            Print this usage information.\n'
-      '\n'
-      '\n'
-      '    --project-name    The name of this new project. This must be a valid dart package name.\n'
-      '    --desc            The description of this new project.\n'
-      '                      (defaults to "A Rapid app.")\n'
-      '    --org-name        The organization of this new project.\n'
-      '                      (defaults to "com.example")\n'
-      '    --example         Wheter this new project contains example features and their tests.\n'
+      'Usage: rapid create <project name> [arguments]\n'
+      '-h, --help          Print this usage information.\n'
       '\n'
       '\n'
-      '    --android         Wheter this new project supports the Android platform.\n'
-      '    --ios             Wheter this new project supports the iOS platform.\n'
-      '    --linux           Wheter this new project supports the Linux platform.\n'
-      '    --macos           Wheter this new project supports the macOS platform.\n'
-      '    --web             Wheter this new project supports the Web platform.\n'
-      '    --windows         Wheter this new project supports the Windows platform.\n'
+      '-o, --output-dir    The directory where to generate the new project\n'
+      '                    (defaults to ".")\n'
+      '    --desc          The description of the new project.\n'
+      '                    (defaults to "A Rapid app.")\n'
+      '    --org-name      The organization of the new project.\n'
+      '                    (defaults to "com.example")\n'
+      '    --example       Wheter the new project contains example features and their tests.\n'
+      '\n'
+      '\n'
+      '    --android       Wheter the new project supports the Android platform.\n'
+      '    --ios           Wheter the new project supports the iOS platform.\n'
+      '    --linux         Wheter the new project supports the Linux platform.\n'
+      '    --macos         Wheter the new project supports the macOS platform.\n'
+      '    --web           Wheter the new project supports the Web platform.\n'
+      '    --windows       Wheter the new project supports the Windows platform.\n'
       '\n'
       'Run "rapid help" to see global options.'
 ];
@@ -169,8 +169,8 @@ void main() {
       argResults = _MockArgResults();
       projectName = 'test_app';
       outputDir = '.';
-      when(() => argResults['project-name']).thenReturn(projectName);
-      when(() => argResults.rest).thenReturn([outputDir]);
+      when(() => argResults.rest).thenReturn([projectName]);
+      when(() => argResults['output-dir']).thenReturn(outputDir);
 
       command = CreateCommand(
         logger: logger,
@@ -233,18 +233,15 @@ void main() {
     });
 
     test(
-      'throws UsageException when --project-name is missing '
-      'and directory base is not a valid package name',
+      'throws UsageException when project name is missing',
       withRunner((commandRunner, logger, printLogs) async {
         // Arrange
-        outputDir = '.invalid';
-        final expectedErrorMessage =
-            '"$outputDir" is not a valid package name.\n\n'
-            'See https://dart.dev/tools/pub/pubspec#name for more information.';
+        const expectedErrorMessage =
+            'No option specified for the project name.';
 
         // Act
         final result = await commandRunner.run(
-          ['create', outputDir],
+          ['create'],
         );
 
         // Assert
@@ -254,17 +251,17 @@ void main() {
     );
 
     test(
-      'throws UsageException when --project-name is invalid',
+      'throws UsageException when project name is invalid',
       withRunner((commandRunner, logger, printLogs) async {
         // Arrange
-        projectName = 'My App';
-        final expectedErrorMessage =
+        const projectName = 'My App';
+        const expectedErrorMessage =
             '"$projectName" is not a valid package name.\n\n'
             'See https://dart.dev/tools/pub/pubspec#name for more information.';
 
         // Act
         final result = await commandRunner.run(
-          ['create', outputDir, '--project-name', projectName],
+          ['create', projectName],
         );
 
         // Assert
@@ -274,29 +271,15 @@ void main() {
     );
 
     test(
-      'throws UsageException when output directory is missing',
-      withRunner((commandRunner, logger, printLogs) async {
-        // Arrange
-        const expectedErrorMessage =
-            'No option specified for the output directory.';
-
-        // Act
-        final result = await commandRunner.run(['create']);
-
-        // Assert
-        expect(result, equals(ExitCode.usage.code));
-        verify(() => logger.err(expectedErrorMessage)).called(1);
-      }),
-    );
-
-    test(
-      'throws UsageException when multiple output directories are provided',
+      'throws UsageException when multiple project names are provided',
       withRunner((commandRunner, logger, printLogs) async {
         // Assert
-        const expectedErrorMessage = 'Multiple output directories specified.';
+        const expectedErrorMessage = 'Multiple project names specified.';
 
         // Act
-        final result = await commandRunner.run(['create', './a', './b']);
+        final result = await commandRunner.run(
+          ['create', 'my_project1', 'my_project2'],
+        );
 
         // Arrange
         expect(result, equals(ExitCode.usage.code));
@@ -720,7 +703,80 @@ void main() {
       expect(result, equals(ExitCode.success.code));
     });
 
-    // TODO case for all platform
+    test(
+        'completes successfully with correct output w/ --android --ios --linux --macos --web --windows',
+        () async {
+      // Arrange
+      when(() => argResults['android']).thenReturn(true);
+      when(() => argResults['ios']).thenReturn(true);
+      when(() => argResults['linux']).thenReturn(true);
+      when(() => argResults['macos']).thenReturn(true);
+      when(() => argResults['web']).thenReturn(true);
+      when(() => argResults['windows']).thenReturn(true);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => flutterInstalled()).called(1);
+      verify(() => logger.progress('Running "flutter config --enable-android"'))
+          .called(1);
+      verify(() => flutterConfigEnableAndroid()).called(1);
+      verify(() => logger.progress('Running "flutter config --enable-ios"'))
+          .called(1);
+      verify(() => flutterConfigEnableIos()).called(1);
+      verify(() => logger.progress(
+          'Running "flutter config --enable-linux-desktop"')).called(1);
+      verify(() => flutterConfigEnableLinux()).called(1);
+      verify(() => logger.progress(
+          'Running "flutter config --enable-macos-desktop"')).called(1);
+      verify(() => flutterConfigEnableMacos()).called(1);
+      verify(() => logger.progress('Running "flutter config --enable-web"'))
+          .called(1);
+      verify(() => flutterConfigEnableWeb()).called(1);
+      verify(() => logger.progress(
+          'Running "flutter config --enable-windows-desktop"')).called(1);
+      verify(() => flutterConfigEnableWindows()).called(1);
+      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(
+        () => generator.generate(
+          any(
+            that: isA<DirectoryGeneratorTarget>().having(
+              (g) => g.dir.path,
+              'dir',
+              outputDir,
+            ),
+          ),
+          vars: <String, dynamic>{
+            'project_name': projectName,
+            'org_name': 'com.example',
+            'description': 'A Rapid app.',
+            'example': false,
+            'android': true,
+            'ios': true,
+            'linux': true,
+            'macos': true,
+            'web': true,
+            'windows': true,
+            'none': false,
+          },
+          logger: logger,
+        ),
+      ).called(1);
+      expect(
+        progressLogs,
+        equals(['Generated ${generatedFiles.length} file(s)']),
+      );
+      verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
+          .called(1);
+      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => logger.progress(
+          'Running "flutter format . --fix" in $outputDir ')).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => progress.complete()).called(8);
+      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      expect(result, equals(ExitCode.success.code));
+    });
 
     test('exits with 69 when flutter is not installed', () async {
       // Arrange
@@ -744,18 +800,13 @@ void main() {
 
             // Act
             final result = await commandRunner.run(
-              [
-                'create',
-                p.join(outputDir, 'foo'),
-                '--org',
-                orgName,
-              ],
+              ['create', 'my_project', '--org', orgName],
             );
 
             // Assert
             expect(result, equals(ExitCode.success.code));
           }),
-          timeout: const Timeout(Duration(seconds: 120)),
+          timeout: const Timeout(Duration(seconds: 60)),
         );
       });
 
@@ -764,7 +815,7 @@ void main() {
             withRunner((commandRunner, logger, printLogs) async {
               // Act
               final result = await commandRunner.run(
-                ['create', p.join(outputDir, 'foo'), '--org-name', orgName],
+                ['create', 'my_project', '--org-name', orgName],
               );
 
               // Assert

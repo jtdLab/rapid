@@ -1,9 +1,9 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
+import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/create/app_bundle.dart';
@@ -19,7 +19,7 @@ const _defaultExample = false;
 /// `rapid create` command creates a new Rapid project in the specified directory.
 /// {@endtemplate}
 class CreateCommand extends Command<int>
-    with OverridableArgResults, OrgNameGetters {
+    with OverridableArgResults, OutputDirGetter, OrgNameGetter {
   /// {@macro create_command}
   CreateCommand({
     Logger? logger,
@@ -52,55 +52,53 @@ class CreateCommand extends Command<int>
         _generator = generator ?? MasonGenerator.fromBundle {
     argParser
       ..addSeparator('')
-      ..addOption(
-        'project-name',
-        help: 'The name of this new project. '
-            'This must be a valid dart package name.',
+      ..addOutputDirOption(
+        help: 'The directory where to generate the new project',
       )
       ..addOption(
         'desc',
-        help: 'The description of this new project.',
+        help: 'The description of the new project.',
         defaultsTo: _defaultDescription,
       )
       ..addOrgNameOption(
-        help: 'The organization of this new project.',
+        help: 'The organization of the new project.',
       )
       ..addFlag(
         'example',
         help:
-            'Wheter this new project contains example features and their tests.',
+            'Wheter the new project contains example features and their tests.',
         negatable: false,
         defaultsTo: _defaultExample,
       )
       ..addSeparator('')
       ..addFlag(
         'android',
-        help: 'Wheter this new project supports the Android platform.',
+        help: 'Wheter the new project supports the Android platform.',
         negatable: false,
       )
       ..addFlag(
         'ios',
-        help: 'Wheter this new project supports the iOS platform.',
+        help: 'Wheter the new project supports the iOS platform.',
         negatable: false,
       )
       ..addFlag(
         'linux',
-        help: 'Wheter this new project supports the Linux platform.',
+        help: 'Wheter the new project supports the Linux platform.',
         negatable: false,
       )
       ..addFlag(
         'macos',
-        help: 'Wheter this new project supports the macOS platform.',
+        help: 'Wheter the new project supports the macOS platform.',
         negatable: false,
       )
       ..addFlag(
         'web',
-        help: 'Wheter this new project supports the Web platform.',
+        help: 'Wheter the new project supports the Web platform.',
         negatable: false,
       )
       ..addFlag(
         'windows',
-        help: 'Wheter this new project supports the Windows platform.',
+        help: 'Wheter the new project supports the Windows platform.',
         negatable: false,
       );
   }
@@ -124,11 +122,10 @@ class CreateCommand extends Command<int>
   List<String> get aliases => ['c'];
 
   @override
-  String get invocation => 'rapid create <output directory>';
+  String get invocation => 'rapid create <project name> [arguments]';
 
   @override
-  String get description =>
-      'Creates a new Rapid project in the specified directory.';
+  String get description => 'Create a new Rapid project.';
 
   @override
   Future<int> run() async {
@@ -189,7 +186,7 @@ class CreateCommand extends Command<int>
       enableWindowsProgress.complete();
     }
 
-    final outputDirectory = _outputDirectory;
+    final outputDir = super.outputDir;
     final projectName = _projectName;
     final description = _description;
     final orgName = super.orgName;
@@ -198,7 +195,7 @@ class CreateCommand extends Command<int>
     final generateProgress = _logger.progress('Bootstrapping');
     final generator = await _generator(appBundle);
     final files = await generator.generate(
-      DirectoryGeneratorTarget(outputDirectory),
+      DirectoryGeneratorTarget(Directory(outputDir)),
       vars: <String, dynamic>{
         'project_name': projectName,
         'description': description,
@@ -217,15 +214,15 @@ class CreateCommand extends Command<int>
     generateProgress.complete('Generated ${files.length} file(s)');
 
     final melosBootstrapProgress = _logger.progress(
-      'Running "melos bootstrap" in ${outputDirectory.path} ',
+      'Running "melos bootstrap" in $outputDir ',
     );
-    await _melosBootstrap(cwd: outputDirectory.path);
+    await _melosBootstrap(cwd: outputDir);
     melosBootstrapProgress.complete();
 
     final formatFixProgress = _logger.progress(
-      'Running "flutter format . --fix" in ${outputDirectory.path} ',
+      'Running "flutter format . --fix" in $outputDir ',
     );
-    await _flutterFormatFix(cwd: outputDirectory.path);
+    await _flutterFormatFix(cwd: outputDir);
     formatFixProgress.complete();
 
     // TODO maybe use logger.success here
@@ -267,16 +264,8 @@ class CreateCommand extends Command<int>
   /// Defaults to `false` when the user did not specify any platform.
   bool get _windows => _any ? (argResults['windows'] ?? false) : false;
 
-  /// Gets the directory where the project will be generated in specified by the user.
-  Directory get _outputDirectory =>
-      _validateOutputDirectoryArg(argResults.rest);
-
   /// Gets the project name specified by the user.
-  ///
-  /// Uses the current directory path name
-  /// if the `--project-name` option is not explicitly specified.
-  String get _projectName => _validateProjectName(argResults['project-name'] ??
-      p.basename(p.normalize(_outputDirectory.absolute.path)));
+  String get _projectName => _validateProjectNameArg(argResults.rest);
 
   /// Gets the description for the project specified by the user.
   String get _description => argResults['desc'] ?? _defaultDescription;
@@ -293,28 +282,22 @@ class CreateCommand extends Command<int>
       (argResults['web'] ?? false) ||
       (argResults['windows'] ?? false);
 
-  /// Validates wheter [args] contains exactly one path to a directory.
+  /// Validates whether [args] contains ONLY a valid project name.
   ///
-  /// Returns the directory.
-  Directory _validateOutputDirectoryArg(List<String> args) {
+  /// Returns the first element when valid.
+  String _validateProjectNameArg(List<String> args) {
     if (args.isEmpty) {
       throw UsageException(
-        'No option specified for the output directory.',
+        'No option specified for the project name.',
         usage,
       );
     }
 
     if (args.length > 1) {
-      throw UsageException('Multiple output directories specified.', usage);
+      throw UsageException('Multiple project names specified.', usage);
     }
 
-    return Directory(args.first);
-  }
-
-  /// Validates whether [name] is valid project name.
-  ///
-  /// Returns [name] when valid.
-  String _validateProjectName(String name) {
+    final name = args.first;
     final isValid = isValidPackageName(name);
     if (!isValid) {
       throw UsageException(
@@ -323,6 +306,7 @@ class CreateCommand extends Command<int>
         usage,
       );
     }
+
     return name;
   }
 }

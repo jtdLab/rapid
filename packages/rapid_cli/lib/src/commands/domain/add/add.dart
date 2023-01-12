@@ -6,7 +6,7 @@ import 'package:rapid_cli/src/commands/domain/add/value_object/value_object.dart
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template domain_add_command}
-/// `rapid domain add` command add components to the domain part part of an existing Rapid project.
+/// `rapid domain add` command add components to the domain part of an existing Rapid project.
 /// {@endtemplate}
 class DomainAddCommand extends Command<int> {
   /// {@macro domain_add_command}
@@ -27,5 +27,5 @@ class DomainAddCommand extends Command<int> {
 
   @override
   String get description =>
-      'Adds a component to the domain part of an existing Rapid project.';
+      'Add a component to the domain part of an existing Rapid project.';
 }

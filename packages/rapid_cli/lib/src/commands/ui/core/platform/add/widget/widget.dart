@@ -1,9 +1,10 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
+import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
-import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
 import 'package:rapid_cli/src/commands/ui/android/add/widget/widget.dart';
 import 'package:rapid_cli/src/commands/ui/core/platform/add/widget/widget_bundle.dart';
 import 'package:rapid_cli/src/commands/ui/ios/add/widget/widget.dart';
@@ -33,7 +34,7 @@ import 'package:universal_io/io.dart';
 ///  * [UiWindowsAddWidgetCommand]
 /// {@endtemplate}
 abstract class UiPlatformAddWidgetCommand extends Command<int>
-    with OverridableArgResults {
+    with OverridableArgResults, ClassNameGetter, OutputDirGetter {
   /// {@macro ui_platform_add_widget_command}
   UiPlatformAddWidgetCommand({
     required Platform platform,
@@ -43,7 +44,13 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
-        _generator = generator ?? MasonGenerator.fromBundle;
+        _generator = generator ?? MasonGenerator.fromBundle {
+    argParser
+      ..addSeparator('')
+      ..addOutputDirOption(
+        help: 'The output directory relative to <platform_ui_package>/lib/ .',
+      );
+  }
 
   final Platform _platform;
   final Logger _logger;
@@ -60,7 +67,7 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
 
   @override
   String get description =>
-      'Adds a widget to the ${_platform.prettyName} UI part of an existing Rapid project.';
+      'Add a widget to the ${_platform.prettyName} UI part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
@@ -68,8 +75,8 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
 
         if (platformIsActivated) {
           final projectName = _project.melosFile.name();
-          final name = _name;
-          final outputDir = '.'; // TODO
+          final name = super.className;
+          final outputDir = super.outputDir;
 
           // TODO check if widget already exists
 
@@ -88,9 +95,7 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
           );
           generateProgress.complete('Generated ${files.length} file(s)');
 
-          _logger.success(
-            'Added ${_platform.prettyName} widget $name.',
-          );
+          _logger.success('Added ${_platform.prettyName} Widget $name.');
 
           return ExitCode.success.code;
         } else {
@@ -99,33 +104,4 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
           return ExitCode.config.code;
         }
       });
-
-  String get _name => _validateNameArg(argResults.rest);
-
-  /// Validates whether [args] is valid widget name.
-  ///
-  /// Returns the name when valid.
-  String _validateNameArg(List<String> args) {
-    if (args.isEmpty) {
-      throw UsageException(
-        'No option specified for the name.',
-        usage,
-      );
-    }
-
-    if (args.length > 1) {
-      throw UsageException('Multiple names specified.', usage);
-    }
-
-    final name = args.first;
-    final isValid = isValidClassName(name);
-    if (!isValid) {
-      throw UsageException(
-        '"$name" is not a valid dart class name.',
-        usage,
-      );
-    }
-
-    return name;
-  }
 }

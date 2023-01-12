@@ -34,5 +34,5 @@ class ActivateCommand extends Command<int> {
 
   @override
   String get description =>
-      'Adds support for a platform to an existing Rapid project.';
+      'Add support for a platform to an existing Rapid project.';
 }

@@ -86,7 +86,7 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
 
             return ExitCode.success.code;
           } else {
-            _logger.err('Android Widget $name not found.');
+            _logger.err('${_platform.prettyName} Widget $name not found.');
 
             return ExitCode.config.code;
           }

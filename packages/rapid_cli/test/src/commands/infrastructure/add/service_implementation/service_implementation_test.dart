@@ -56,7 +56,8 @@ void main() {
     );
 
     late ArgResults argResults;
-    const serviceImplementationName = 'FooBar';
+    late String? outputDir;
+    const name = 'FooBar';
     late String service;
 
     late InfrastructureAddServiceImplementationCommand command;
@@ -95,9 +96,12 @@ void main() {
       ).thenAnswer((_) async => generatedFiles);
 
       argResults = _MockArgResults();
+      outputDir = null;
       service = 'FooBar';
+      when(() => argResults['output-dir']).thenReturn(outputDir);
       when(() => argResults['service']).thenReturn(service);
-      when(() => argResults.rest).thenReturn([serviceImplementationName]);
+
+      when(() => argResults.rest).thenReturn([name]);
 
       command = InfrastructureAddServiceImplementationCommand(
         logger: logger,
@@ -262,7 +266,7 @@ void main() {
           ),
           vars: <String, dynamic>{
             'project_name': projectName,
-            'name': serviceImplementationName,
+            'name': name,
             'service_name': service,
             'output_dir': '.',
           },
@@ -273,8 +277,7 @@ void main() {
         progressLogs,
         equals(['Generated ${generatedFiles.length} file(s)']),
       );
-      verify(() => logger.success(
-              'Added Service Implementation $serviceImplementationName.'))
+      verify(() => logger.success('Added Service Implementation $name.'))
           .called(1);
       expect(result, ExitCode.success.code);
     });
@@ -282,7 +285,7 @@ void main() {
     test('completes successfully with correct output with custom --output-dir',
         () async {
       // Arrange
-      final outputDir = 'foo/bar';
+      outputDir = 'foo/bar';
       when(() => argResults['output-dir']).thenReturn(outputDir);
 
       // Act
@@ -301,7 +304,7 @@ void main() {
           ),
           vars: <String, dynamic>{
             'project_name': projectName,
-            'name': serviceImplementationName,
+            'name': name,
             'service_name': service,
             'output_dir': outputDir,
           },
@@ -312,8 +315,7 @@ void main() {
         progressLogs,
         equals(['Generated ${generatedFiles.length} file(s)']),
       );
-      verify(() => logger.success(
-              'Added Service Implementation $serviceImplementationName.'))
+      verify(() => logger.success('Added Service Implementation $name.'))
           .called(1);
       expect(result, ExitCode.success.code);
     });

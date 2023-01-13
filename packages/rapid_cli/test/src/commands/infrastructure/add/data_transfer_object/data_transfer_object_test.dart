@@ -57,6 +57,7 @@ void main() {
     );
 
     late ArgResults argResults;
+    late String? outputDir;
     late String entity;
 
     late InfrastructureAddDataTransferObjectCommand command;
@@ -95,7 +96,9 @@ void main() {
       ).thenAnswer((_) async => generatedFiles);
 
       argResults = _MockArgResults();
+      outputDir = null;
       entity = 'FooBar';
+      when(() => argResults['output-dir']).thenReturn(outputDir);
       when(() => argResults['entity']).thenReturn(entity);
 
       command = InfrastructureAddDataTransferObjectCommand(
@@ -227,7 +230,7 @@ void main() {
     test('completes successfully with correct output with custom --output-dir',
         () async {
       // Arrange
-      final outputDir = 'foo/bar';
+      outputDir = 'foo/bar';
       when(() => argResults['output-dir']).thenReturn(outputDir);
 
       // Act

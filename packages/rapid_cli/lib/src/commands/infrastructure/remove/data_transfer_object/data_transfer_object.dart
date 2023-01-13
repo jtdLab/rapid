@@ -5,7 +5,8 @@ import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
+
+// TODO maybe introduce super class for dto and service implementation remove
 
 /// {@template infrastructure_remove_data_transfer_object_command}
 /// `rapid infrastructure remove data_transfer_object` command removes data transfer object from the infrastructure part of an existing Rapid project.
@@ -47,10 +48,28 @@ class InfrastructureRemoveDataTransferObjectCommand extends Command<int>
         final name = super.className;
         final dir = super.dir;
 
-        // TODO remove
+        final infrastructurePackage = _project.infrastructurePackage;
+        final dataTransferObject =
+            infrastructurePackage.dataTransferObject(name: name, dir: dir);
 
-        _logger.success('Removed Data Transfer Object ${name.pascalCase}.');
+        final exists = dataTransferObject.exists();
+        if (exists) {
+          final deletedFiles = dataTransferObject.delete();
 
-        return ExitCode.success.code;
+          for (final file in deletedFiles) {
+            _logger.info(file.path);
+          }
+
+          _logger.info('');
+          _logger.info('Deleted ${deletedFiles.length} item(s)');
+          _logger.info('');
+          _logger.success('Removed Data Transfer Object $name.');
+
+          return ExitCode.success.code;
+        } else {
+          _logger.err('Data Transfer Object $name not found.');
+
+          return ExitCode.config.code;
+        }
       });
 }

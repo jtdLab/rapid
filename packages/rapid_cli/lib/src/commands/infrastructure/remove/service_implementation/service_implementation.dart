@@ -5,7 +5,6 @@ import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 
 /// {@template infrastructure_remove_service_implementation_command}
 /// `rapid infrastructure remove service_implementation` command removes service implementation from the infrastructure part of an existing Rapid project.
@@ -47,10 +46,28 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
         final name = super.className;
         final dir = super.dir;
 
-        // TODO remove
+        final infrastructurePackage = _project.infrastructurePackage;
+        final serviceImplementation =
+            infrastructurePackage.serviceImplementation(name: name, dir: dir);
 
-        _logger.success('Removed Service Implementation ${name.pascalCase}.');
+        final exists = serviceImplementation.exists();
+        if (exists) {
+          final deletedFiles = serviceImplementation.delete();
 
-        return ExitCode.success.code;
+          for (final file in deletedFiles) {
+            _logger.info(file.path);
+          }
+
+          _logger.info('');
+          _logger.info('Deleted ${deletedFiles.length} item(s)');
+          _logger.info('');
+          _logger.success('Removed Service Implementation $name.');
+
+          return ExitCode.success.code;
+        } else {
+          _logger.err('Service Implementation $name not found.');
+
+          return ExitCode.config.code;
+        }
       });
 }

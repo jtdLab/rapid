@@ -42,7 +42,8 @@ class DomainAddServiceInterfaceCommand extends Command<int>
   List<String> get aliases => ['service', 'si'];
 
   @override
-  String get invocation => 'rapid domain add service_interface [arguments]';
+  String get invocation =>
+      'rapid domain add service_interface <name> [arguments]';
 
   @override
   String get description =>

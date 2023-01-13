@@ -39,7 +39,7 @@ class DomainAddEntityCommand extends Command<int>
   String get name => 'entity';
 
   @override
-  String get invocation => 'rapid domain add entity [arguments]';
+  String get invocation => 'rapid domain add entity <name> [arguments]';
 
   @override
   String get description =>

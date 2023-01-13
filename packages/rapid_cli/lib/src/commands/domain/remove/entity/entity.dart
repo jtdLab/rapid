@@ -5,7 +5,8 @@ import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
+
+// TODO maybe introduce super class for entity, service interface and value object remove
 
 /// {@template domain_remove_entity_command}
 /// `rapid domain remove entity` command removes entity from the domain part of an existing Rapid project.
@@ -43,10 +44,27 @@ class DomainRemoveEntityCommand extends Command<int>
         final name = super.className;
         final dir = super.dir;
 
-        // TODO remove
+        final domainPackage = _project.domainPackage;
+        final entity = domainPackage.entity(name: name, dir: dir);
 
-        _logger.success('Removed Entity ${name.pascalCase}.');
+        final exists = entity.exists();
+        if (exists) {
+          final deletedFiles = entity.delete();
 
-        return ExitCode.success.code;
+          for (final file in deletedFiles) {
+            _logger.info(file.path);
+          }
+
+          _logger.info('');
+          _logger.info('Deleted ${deletedFiles.length} item(s)');
+          _logger.info('');
+          _logger.success('Removed Entity $name.');
+
+          return ExitCode.success.code;
+        } else {
+          _logger.err('Entity $name not found.');
+
+          return ExitCode.config.code;
+        }
       });
 }

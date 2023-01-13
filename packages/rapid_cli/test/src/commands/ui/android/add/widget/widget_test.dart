@@ -2,9 +2,9 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/ui/android/add/widget/widget.dart';
-import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/platform_ui_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:recase/recase.dart';
 import 'package:test/test.dart';
@@ -33,7 +33,7 @@ class _MockProject extends Mock implements Project {}
 
 class _MockMelosFile extends Mock implements MelosFile {}
 
-class _MockDartPackage extends Mock implements DartPackage {}
+class _MockPlatformUiPackage extends Mock implements PlatformUiPackage {}
 
 class _MockMasonGenerator extends Mock implements MasonGenerator {}
 
@@ -52,7 +52,7 @@ void main() {
     late Project project;
     late MelosFile melosFile;
     const projectName = 'test_app';
-    late DartPackage platformUiPackage;
+    late PlatformUiPackage platformUiPackage;
     const platformUiPackagePath = 'foo/bar/baz';
 
     late MasonGenerator generator;
@@ -62,7 +62,8 @@ void main() {
     );
 
     late ArgResults argResults;
-    late String widgetName;
+    late String? outputDir;
+    late String name;
 
     late UiAndroidAddWidgetCommand command;
 
@@ -86,7 +87,7 @@ void main() {
       melosFile = _MockMelosFile();
       when(() => melosFile.exists()).thenReturn(true);
       when(() => melosFile.name()).thenReturn(projectName);
-      platformUiPackage = _MockDartPackage();
+      platformUiPackage = _MockPlatformUiPackage();
       when(() => platformUiPackage.path).thenReturn(platformUiPackagePath);
       when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.isActivated(Platform.android)).thenReturn(true);
@@ -105,8 +106,10 @@ void main() {
       ).thenAnswer((_) async => generatedFiles);
 
       argResults = _MockArgResults();
-      widgetName = 'FooBar';
-      when(() => argResults.rest).thenReturn([widgetName]);
+      outputDir = null;
+      name = 'FooBar';
+      when(() => argResults['output-dir']).thenReturn(outputDir);
+      when(() => argResults.rest).thenReturn([name]);
 
       command = UiAndroidAddWidgetCommand(
         logger: logger,
@@ -209,7 +212,7 @@ void main() {
           ),
           vars: <String, dynamic>{
             'project_name': projectName,
-            'name': widgetName,
+            'name': name,
             'output_dir': '.',
           },
           logger: logger,
@@ -219,8 +222,7 @@ void main() {
         progressLogs,
         equals(['Generated ${generatedFiles.length} file(s)']),
       );
-      verify(() =>
-              logger.success('Added Android Widget ${widgetName.pascalCase}.'))
+      verify(() => logger.success('Added Android Widget ${name.pascalCase}.'))
           .called(1);
       expect(result, ExitCode.success.code);
     });
@@ -228,7 +230,7 @@ void main() {
     test('completes successfully with correct output with custom --output-dir',
         () async {
       // Arrange
-      final outputDir = 'foo/bar';
+      outputDir = 'foo/bar';
       when(() => argResults['output-dir']).thenReturn(outputDir);
 
       // Act
@@ -247,7 +249,7 @@ void main() {
           ),
           vars: <String, dynamic>{
             'project_name': projectName,
-            'name': widgetName,
+            'name': name,
             'output_dir': outputDir,
           },
           logger: logger,
@@ -257,8 +259,7 @@ void main() {
         progressLogs,
         equals(['Generated ${generatedFiles.length} file(s)']),
       );
-      verify(() =>
-              logger.success('Added Android Widget ${widgetName.pascalCase}.'))
+      verify(() => logger.success('Added Android Widget ${name.pascalCase}.'))
           .called(1);
       expect(result, ExitCode.success.code);
     });
@@ -275,6 +276,18 @@ void main() {
  Could not find a melos.yaml.
  This command should be run from the root of your Rapid project.''')).called(1);
       expect(result, ExitCode.noInput.code);
+    });
+
+    test('exits with 78 when Android is not activated', () async {
+      // Arrange
+      when(() => project.isActivated(Platform.android)).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err('Android is not activated.')).called(1);
+      expect(result, ExitCode.config.code);
     });
   });
 }

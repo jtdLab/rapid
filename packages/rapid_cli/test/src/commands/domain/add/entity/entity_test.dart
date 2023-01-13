@@ -13,7 +13,7 @@ import '../../../../../helpers/helpers.dart';
 const expectedUsage = [
   'Add an entity to the domain part of an existing Rapid project.\n'
       '\n'
-      'Usage: rapid domain add entity [arguments]\n'
+      'Usage: rapid domain add entity <name> [arguments]\n'
       '-h, --help          Print this usage information.\n'
       '\n'
       '\n'
@@ -56,7 +56,8 @@ void main() {
     );
 
     late ArgResults argResults;
-    late String entityName;
+    late String? outputDir;
+    late String name;
 
     late DomainAddEntityCommand command;
 
@@ -94,8 +95,10 @@ void main() {
       ).thenAnswer((_) async => generatedFiles);
 
       argResults = _MockArgResults();
-      entityName = 'FooBar';
-      when(() => argResults.rest).thenReturn([entityName]);
+      outputDir = null;
+      name = 'FooBar';
+      when(() => argResults['output-dir']).thenReturn(outputDir);
+      when(() => argResults.rest).thenReturn([name]);
 
       command = DomainAddEntityCommand(
         logger: logger,
@@ -196,7 +199,7 @@ void main() {
           ),
           vars: <String, dynamic>{
             'project_name': projectName,
-            'name': entityName,
+            'name': name,
             'output_dir': '.',
           },
           logger: logger,
@@ -206,7 +209,7 @@ void main() {
         progressLogs,
         equals(['Generated ${generatedFiles.length} file(s)']),
       );
-      verify(() => logger.success('Added Entity ${entityName.pascalCase}.'))
+      verify(() => logger.success('Added Entity ${name.pascalCase}.'))
           .called(1);
       expect(result, ExitCode.success.code);
     });
@@ -214,7 +217,7 @@ void main() {
     test('completes successfully with correct output with custom --output-dir',
         () async {
       // Arrange
-      final outputDir = 'foo/bar';
+      outputDir = 'foo/bar';
       when(() => argResults['output-dir']).thenReturn(outputDir);
 
       // Act
@@ -233,7 +236,7 @@ void main() {
           ),
           vars: <String, dynamic>{
             'project_name': projectName,
-            'name': entityName,
+            'name': name,
             'output_dir': outputDir,
           },
           logger: logger,
@@ -243,7 +246,7 @@ void main() {
         progressLogs,
         equals(['Generated ${generatedFiles.length} file(s)']),
       );
-      verify(() => logger.success('Added Entity ${entityName.pascalCase}.'))
+      verify(() => logger.success('Added Entity ${name.pascalCase}.'))
           .called(1);
       expect(result, ExitCode.success.code);
     });

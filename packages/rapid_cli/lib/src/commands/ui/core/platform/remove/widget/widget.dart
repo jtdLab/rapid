@@ -69,14 +69,27 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
           final dir = super.dir;
 
           final platformUiPackage = _project.platformUiPackage(_platform);
+          final widget = platformUiPackage.widget(name: name, dir: dir);
 
-          // TODO remove the source and test files
+          final exists = widget.exists();
+          if (exists) {
+            final deletedFiles = widget.delete();
 
-          // TODO check if feature exists
+            for (final file in deletedFiles) {
+              _logger.info(file.path);
+            }
 
-          _logger.success('Removed ${_platform.prettyName} Widget $name.');
+            _logger.info('');
+            _logger.info('Deleted ${deletedFiles.length} item(s)');
+            _logger.info('');
+            _logger.success('Removed ${_platform.prettyName} Widget $name.');
 
-          return ExitCode.success.code;
+            return ExitCode.success.code;
+          } else {
+            _logger.err('Android Widget $name not found.');
+
+            return ExitCode.config.code;
+          }
         } else {
           _logger.err('${_platform.prettyName} is not activated.');
 

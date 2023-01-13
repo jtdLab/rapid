@@ -44,7 +44,7 @@ class DomainAddValueObjectCommand extends Command<int>
   List<String> get aliases => ['vo'];
 
   @override
-  String get invocation => 'rapid domain add value_object [arguments]';
+  String get invocation => 'rapid domain add value_object <name> [arguments]';
 
   @override
   String get description =>
@@ -64,8 +64,8 @@ class DomainAddValueObjectCommand extends Command<int>
             'project_name': projectName,
             'name': name,
             'output_dir': outputDir,
-            'type': 'List<T>', // TODO
-            'generics': '<T>', // TODO
+            // 'type': 'List<T>', // TODO
+            // 'generics': '<T>', // TODO
           },
           logger: _logger,
         );

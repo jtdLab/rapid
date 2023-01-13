@@ -5,7 +5,6 @@ import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 
 /// {@template domain_remove_service_interface_command}
 /// `rapid domain remove service_interface` command removes service interface from the domain part of an existing Rapid project.
@@ -46,10 +45,28 @@ class DomainRemoveServiceInterfaceCommand extends Command<int>
         final name = super.className;
         final dir = super.dir;
 
-        // TODO remove
+        final domainPackage = _project.domainPackage;
+        final serviceInterface =
+            domainPackage.serviceInterface(name: name, dir: dir);
 
-        _logger.success('Removed Service Interface ${name.pascalCase}.');
+        final exists = serviceInterface.exists();
+        if (exists) {
+          final deletedFiles = serviceInterface.delete();
 
-        return ExitCode.success.code;
+          for (final file in deletedFiles) {
+            _logger.info(file.path);
+          }
+
+          _logger.info('');
+          _logger.info('Deleted ${deletedFiles.length} item(s)');
+          _logger.info('');
+          _logger.success('Removed Service Interface $name.');
+
+          return ExitCode.success.code;
+        } else {
+          _logger.err('Service Interface $name not found.');
+
+          return ExitCode.config.code;
+        }
       });
 }

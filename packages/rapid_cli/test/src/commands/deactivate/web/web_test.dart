@@ -8,6 +8,7 @@ import 'package:rapid_cli/src/project/app_package.dart';
 import 'package:rapid_cli/src/project/di_package.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
 import 'package:rapid_cli/src/project/platform_directory.dart';
+import 'package:rapid_cli/src/project/platform_ui_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -51,7 +52,7 @@ class _MockInjectionFile extends Mock implements InjectionFile {}
 
 class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
-class _MockDartPackage extends Mock implements DartPackage {}
+class _MockPlatformUiPackage extends Mock implements PlatformUiPackage {}
 
 class _MockProject extends Mock implements Project {}
 
@@ -85,7 +86,7 @@ void main() {
     late PubspecFile diPackagePubspec;
     late InjectionFile injectionFile;
     late PlatformDirectory platformDirectory;
-    late DartPackage platformUiPackage;
+    late PlatformUiPackage platformUiPackage;
 
     late FlutterPubGetCommand flutterPubGet;
 
@@ -132,7 +133,7 @@ void main() {
       when(() => diPackage.pubspecFile).thenReturn(diPackagePubspec);
       when(() => diPackage.injectionFile).thenReturn(injectionFile);
       platformDirectory = _MockPlatformDirectory();
-      platformUiPackage = _MockDartPackage();
+      platformUiPackage = _MockPlatformUiPackage();
       when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.appPackage).thenReturn(appPackage);
       when(() => project.diPackage).thenReturn(diPackage);

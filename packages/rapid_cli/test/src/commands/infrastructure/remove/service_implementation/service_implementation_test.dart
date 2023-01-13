@@ -2,9 +2,9 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/infrastructure/remove/service_implementation/service_implementation.dart';
+import 'package:rapid_cli/src/project/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -17,7 +17,7 @@ const expectedUsage = [
       '-h, --help    Print this usage information.\n'
       '\n'
       '\n'
-      '    --dir     The directory relative to <infrastructure_package>/lib/ .\n'
+      '-d, --dir     The directory relative to <infrastructure_package>/lib/ .\n'
       '              (defaults to ".")\n'
       '\n'
       'Run "rapid help" to see global options.'
@@ -31,6 +31,14 @@ class _MockProject extends Mock implements Project {}
 
 class _MockMelosFile extends Mock implements MelosFile {}
 
+class _MockInfrastructurePackage extends Mock implements InfrastructurePackage {
+}
+
+class _MockServiceImplementation extends Mock implements ServiceImplementation {
+}
+
+class _MockFileSystemEntity extends Mock implements FileSystemEntity {}
+
 class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
@@ -41,10 +49,19 @@ void main() {
     late List<String> progressLogs;
 
     late Project project;
+
     late MelosFile melosFile;
     const projectName = 'test_app';
+    late InfrastructurePackage infrastructurePackage;
+    late ServiceImplementation serviceImplementation;
+    late List<FileSystemEntity> deletedEntities;
+    late FileSystemEntity deletedServiceImplementation1;
+    const String deletedServiceImplementation1Path = 'foo/bar/bam';
+    late FileSystemEntity deletedServiceImplementation2;
+    const String deletedServiceImplementation2Path = 'foo/bar/baz';
 
     late ArgResults argResults;
+    late String? dir;
     late String name;
 
     late InfrastructureRemoveServiceImplementationCommand command;
@@ -65,10 +82,31 @@ void main() {
       melosFile = _MockMelosFile();
       when(() => melosFile.exists()).thenReturn(true);
       when(() => melosFile.name()).thenReturn(projectName);
+      infrastructurePackage = _MockInfrastructurePackage();
+      serviceImplementation = _MockServiceImplementation();
+      deletedServiceImplementation1 = _MockFileSystemEntity();
+      when(() => deletedServiceImplementation1.path)
+          .thenReturn(deletedServiceImplementation1Path);
+      deletedServiceImplementation2 = _MockFileSystemEntity();
+      when(() => deletedServiceImplementation2.path)
+          .thenReturn(deletedServiceImplementation2Path);
+      deletedEntities = [
+        deletedServiceImplementation1,
+        deletedServiceImplementation2
+      ];
+      when(() => serviceImplementation.delete()).thenReturn(deletedEntities);
+      when(() => serviceImplementation.exists()).thenReturn(true);
+      when(() => infrastructurePackage.serviceImplementation(
+          name: any(named: 'name'),
+          dir: any(named: 'dir'))).thenReturn(serviceImplementation);
       when(() => project.melosFile).thenReturn(melosFile);
+      when(() => project.infrastructurePackage)
+          .thenReturn(infrastructurePackage);
 
       argResults = _MockArgResults();
+      dir = null;
       name = 'FooBar';
+      when(() => argResults['dir']).thenReturn(dir);
       when(() => argResults.rest).thenReturn([name]);
 
       command = InfrastructureRemoveServiceImplementationCommand(
@@ -173,23 +211,41 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.success(
-          'Added Data Transfer Object ${name.pascalCase}Dto.')).called(1);
+      verify(() =>
+          infrastructurePackage.serviceImplementation(name: name, dir: '.'));
+      verify(() => serviceImplementation.exists()).called(1);
+      verify(() => serviceImplementation.delete()).called(1);
+      verify(() => logger.info(deletedServiceImplementation1Path)).called(1);
+      verify(() => logger.info(deletedServiceImplementation2Path)).called(1);
+      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
+          .called(1);
+      verify(() => logger.info('')).called(2);
+      verify(() => logger.success('Removed Service Implementation $name.'))
+          .called(1);
       expect(result, ExitCode.success.code);
     });
 
     test('completes successfully with correct output with custom --dir',
         () async {
       // Arrange
-      final dir = 'foo/bar';
+      dir = 'foo/bar';
       when(() => argResults['dir']).thenReturn(dir);
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => logger.success(
-          'Added Data Transfer Object ${name.pascalCase}Dto.')).called(1);
+      verify(() =>
+          infrastructurePackage.serviceImplementation(name: name, dir: dir!));
+      verify(() => serviceImplementation.exists()).called(1);
+      verify(() => serviceImplementation.delete()).called(1);
+      verify(() => logger.info(deletedServiceImplementation1Path)).called(1);
+      verify(() => logger.info(deletedServiceImplementation2Path)).called(1);
+      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
+          .called(1);
+      verify(() => logger.info('')).called(2);
+      verify(() => logger.success('Removed Service Implementation $name.'))
+          .called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -205,6 +261,22 @@ void main() {
  Could not find a melos.yaml.
  This command should be run from the root of your Rapid project.''')).called(1);
       expect(result, ExitCode.noInput.code);
+    });
+
+    test(
+        'exits with 78 when the referenced service implementation does not exist',
+        () async {
+      // Arrange
+      when(() => serviceImplementation.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verifyNever(() => serviceImplementation.delete());
+      verify(() => logger.err('Service Implementation $name not found.'))
+          .called(1);
+      expect(result, ExitCode.config.code);
     });
   });
 }

@@ -13,6 +13,7 @@ extension DirOption on ArgParser {
       'dir',
       help: help,
       defaultsTo: _defaultDir,
+      abbr: 'd',
     );
   }
 }

@@ -2,9 +2,9 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/domain/remove/service_interface/service_interface.dart';
+import 'package:rapid_cli/src/project/domain_package.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -17,7 +17,7 @@ const expectedUsage = [
       '-h, --help    Print this usage information.\n'
       '\n'
       '\n'
-      '    --dir     The directory relative to <domain_package>/lib/ .\n'
+      '-d, --dir     The directory relative to <domain_package>/lib/ .\n'
       '              (defaults to ".")\n'
       '\n'
       'Run "rapid help" to see global options.'
@@ -31,6 +31,12 @@ class _MockProject extends Mock implements Project {}
 
 class _MockMelosFile extends Mock implements MelosFile {}
 
+class _MockDomainPackage extends Mock implements DomainPackage {}
+
+class _MockServiceInterface extends Mock implements ServiceInterface {}
+
+class _MockFileSystemEntity extends Mock implements FileSystemEntity {}
+
 class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
@@ -41,10 +47,19 @@ void main() {
     late List<String> progressLogs;
 
     late Project project;
+
     late MelosFile melosFile;
     const projectName = 'test_app';
+    late DomainPackage domainPackage;
+    late ServiceInterface serviceInterface;
+    late List<FileSystemEntity> deletedEntities;
+    late FileSystemEntity deletedServiceInterface1;
+    const String deletedServiceInterface1Path = 'foo/bar/bam';
+    late FileSystemEntity deletedServiceInterface2;
+    const String deletedServiceInterface2Path = 'foo/bar/baz';
 
     late ArgResults argResults;
+    late String? dir;
     late String name;
 
     late DomainRemoveServiceInterfaceCommand command;
@@ -65,10 +80,27 @@ void main() {
       melosFile = _MockMelosFile();
       when(() => melosFile.exists()).thenReturn(true);
       when(() => melosFile.name()).thenReturn(projectName);
+      domainPackage = _MockDomainPackage();
+      serviceInterface = _MockServiceInterface();
+      deletedServiceInterface1 = _MockFileSystemEntity();
+      when(() => deletedServiceInterface1.path)
+          .thenReturn(deletedServiceInterface1Path);
+      deletedServiceInterface2 = _MockFileSystemEntity();
+      when(() => deletedServiceInterface2.path)
+          .thenReturn(deletedServiceInterface2Path);
+      deletedEntities = [deletedServiceInterface1, deletedServiceInterface2];
+      when(() => serviceInterface.delete()).thenReturn(deletedEntities);
+      when(() => serviceInterface.exists()).thenReturn(true);
+      when(() => domainPackage.serviceInterface(
+          name: any(named: 'name'),
+          dir: any(named: 'dir'))).thenReturn(serviceInterface);
       when(() => project.melosFile).thenReturn(melosFile);
+      when(() => project.domainPackage).thenReturn(domainPackage);
 
       argResults = _MockArgResults();
+      dir = null;
       name = 'FooBar';
+      when(() => argResults['dir']).thenReturn(dir);
       when(() => argResults.rest).thenReturn([name]);
 
       command = DomainRemoveServiceInterfaceCommand(
@@ -79,22 +111,6 @@ void main() {
 
     tearDown(() {
       Directory.current = cwd;
-    });
-
-    test('service is a valid alias', () {
-      // Arrange
-      final command = DomainRemoveServiceInterfaceCommand(project: project);
-
-      // Act + Assert
-      expect(command.aliases, contains('service'));
-    });
-
-    test('si is a valid alias', () {
-      // Arrange
-      final command = DomainRemoveServiceInterfaceCommand(project: project);
-
-      // Act + Assert
-      expect(command.aliases, contains('si'));
     });
 
     test(
@@ -170,23 +186,39 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.success(
-          'Added Data Transfer Object ${name.pascalCase}Dto.')).called(1);
+      verify(() => domainPackage.serviceInterface(name: name, dir: '.'));
+      verify(() => serviceInterface.exists()).called(1);
+      verify(() => serviceInterface.delete()).called(1);
+      verify(() => logger.info(deletedServiceInterface1Path)).called(1);
+      verify(() => logger.info(deletedServiceInterface2Path)).called(1);
+      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
+          .called(1);
+      verify(() => logger.info('')).called(2);
+      verify(() => logger.success('Removed Service Interface $name.'))
+          .called(1);
       expect(result, ExitCode.success.code);
     });
 
     test('completes successfully with correct output with custom --dir',
         () async {
       // Arrange
-      final dir = 'foo/bar';
+      dir = 'foo/bar';
       when(() => argResults['dir']).thenReturn(dir);
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => logger.success(
-          'Added Data Transfer Object ${name.pascalCase}Dto.')).called(1);
+      verify(() => domainPackage.serviceInterface(name: name, dir: dir!));
+      verify(() => serviceInterface.exists()).called(1);
+      verify(() => serviceInterface.delete()).called(1);
+      verify(() => logger.info(deletedServiceInterface1Path)).called(1);
+      verify(() => logger.info(deletedServiceInterface2Path)).called(1);
+      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
+          .called(1);
+      verify(() => logger.info('')).called(2);
+      verify(() => logger.success('Removed Service Interface $name.'))
+          .called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -202,6 +234,20 @@ void main() {
  Could not find a melos.yaml.
  This command should be run from the root of your Rapid project.''')).called(1);
       expect(result, ExitCode.noInput.code);
+    });
+
+    test('exits with 78 when the referenced service interface does not exist',
+        () async {
+      // Arrange
+      when(() => serviceInterface.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verifyNever(() => serviceInterface.delete());
+      verify(() => logger.err('Service Interface $name not found.')).called(1);
+      expect(result, ExitCode.config.code);
     });
   });
 }

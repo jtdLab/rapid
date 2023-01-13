@@ -2,11 +2,10 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/ui/android/remove/widget/widget.dart';
-import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/platform_ui_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -19,7 +18,7 @@ const expectedUsage = [
       '-h, --help    Print this usage information.\n'
       '\n'
       '\n'
-      '    --dir     The directory relative to <platform_ui_package>/lib/ .\n'
+      '-d, --dir     The directory relative to <platform_ui_package>/lib/ .\n'
       '              (defaults to ".")\n'
       '\n'
       'Run "rapid help" to see global options.'
@@ -33,9 +32,13 @@ class _MockProject extends Mock implements Project {}
 
 class _MockMelosFile extends Mock implements MelosFile {}
 
-class _MockDartPackage extends Mock implements DartPackage {}
+class _MockPlatformUiPackage extends Mock implements PlatformUiPackage {}
+
+class _MockWidget extends Mock implements Widget {}
 
 class _MockMasonGenerator extends Mock implements MasonGenerator {}
+
+class _MockFileSystemEntity extends Mock implements FileSystemEntity {}
 
 class _MockArgResults extends Mock implements ArgResults {}
 
@@ -52,8 +55,14 @@ void main() {
     late Project project;
     late MelosFile melosFile;
     const projectName = 'test_app';
-    late DartPackage platformUiPackage;
+    late PlatformUiPackage platformUiPackage;
     const platformUiPackagePath = 'foo/bar/baz';
+    late Widget widget;
+    late List<FileSystemEntity> deletedEntities;
+    late FileSystemEntity deletedEntity1;
+    const String deletedEntity1Path = 'foo/bar/bam';
+    late FileSystemEntity deletedEntity2;
+    const String deletedEntity2Path = 'foo/bar/baz';
 
     late MasonGenerator generator;
     final generatedFiles = List.filled(
@@ -62,7 +71,8 @@ void main() {
     );
 
     late ArgResults argResults;
-    late String widgetName;
+    late String? dir;
+    late String name;
 
     late UiAndroidRemoveWidgetCommand command;
 
@@ -86,8 +96,19 @@ void main() {
       melosFile = _MockMelosFile();
       when(() => melosFile.exists()).thenReturn(true);
       when(() => melosFile.name()).thenReturn(projectName);
-      platformUiPackage = _MockDartPackage();
+      platformUiPackage = _MockPlatformUiPackage();
+      widget = _MockWidget();
+      deletedEntity1 = _MockFileSystemEntity();
+      when(() => deletedEntity1.path).thenReturn(deletedEntity1Path);
+      deletedEntity2 = _MockFileSystemEntity();
+      when(() => deletedEntity2.path).thenReturn(deletedEntity2Path);
+      deletedEntities = [deletedEntity1, deletedEntity2];
+      when(() => widget.delete()).thenReturn(deletedEntities);
+      when(() => widget.exists()).thenReturn(true);
       when(() => platformUiPackage.path).thenReturn(platformUiPackagePath);
+      when(() => platformUiPackage.exists()).thenReturn(true);
+      when(() => platformUiPackage.widget(
+          name: any(named: 'name'), dir: any(named: 'dir'))).thenReturn(widget);
       when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.isActivated(Platform.android)).thenReturn(true);
       when(() => project.platformUiPackage(Platform.android))
@@ -105,8 +126,10 @@ void main() {
       ).thenAnswer((_) async => generatedFiles);
 
       argResults = _MockArgResults();
-      widgetName = 'FooBar';
-      when(() => argResults.rest).thenReturn([widgetName]);
+      dir = null;
+      name = 'FooBar';
+      when(() => argResults['dir']).thenReturn(dir);
+      when(() => argResults.rest).thenReturn([name]);
 
       command = UiAndroidRemoveWidgetCommand(
         logger: logger,
@@ -196,69 +219,39 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.progress('Generating files')).called(1);
-      verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              platformUiPackagePath,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'name': widgetName,
-            'output_dir': '.',
-          },
-          logger: logger,
-        ),
-      ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() =>
-              logger.success('Added Android Widget ${widgetName.pascalCase}.'))
+      verify(() => project.platformUiPackage(Platform.android));
+      verify(() => platformUiPackage.widget(name: name, dir: '.'));
+      verify(() => widget.exists()).called(1);
+      verify(() => widget.delete()).called(1);
+      verify(() => logger.info(deletedEntity1Path)).called(1);
+      verify(() => logger.info(deletedEntity2Path)).called(1);
+      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
           .called(1);
+      verify(() => logger.info('')).called(2);
+      verify(() => logger.success('Removed Android Widget $name.')).called(1);
       expect(result, ExitCode.success.code);
     });
 
     test('completes successfully with correct output with custom --dir',
         () async {
       // Arrange
-      final outputDir = 'foo/bar';
-      when(() => argResults['output-dir']).thenReturn(outputDir);
+      dir = 'foo/bar';
+      when(() => argResults['dir']).thenReturn(dir);
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => logger.progress('Generating files')).called(1);
-      verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              platformUiPackagePath,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'name': widgetName,
-            'output_dir': outputDir,
-          },
-          logger: logger,
-        ),
-      ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() =>
-              logger.success('Added Android Widget ${widgetName.pascalCase}.'))
+      verify(() => project.platformUiPackage(Platform.android));
+      verify(() => platformUiPackage.widget(name: name, dir: dir!));
+      verify(() => widget.exists()).called(1);
+      verify(() => widget.delete()).called(1);
+      verify(() => logger.info(deletedEntity1Path)).called(1);
+      verify(() => logger.info(deletedEntity2Path)).called(1);
+      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
           .called(1);
+      verify(() => logger.info('')).called(2);
+      verify(() => logger.success('Removed Android Widget $name.')).called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -274,6 +267,31 @@ void main() {
  Could not find a melos.yaml.
  This command should be run from the root of your Rapid project.''')).called(1);
       expect(result, ExitCode.noInput.code);
+    });
+
+    test('exits with 78 when Android is not activated', () async {
+      // Arrange
+      when(() => project.isActivated(Platform.android)).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err('Android is not activated.')).called(1);
+      expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 78 when the referenced widget does not exist', () async {
+      // Arrange
+      when(() => widget.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verifyNever(() => widget.delete());
+      verify(() => logger.err('Android Widget $name not found.')).called(1);
+      expect(result, ExitCode.config.code);
     });
   });
 }

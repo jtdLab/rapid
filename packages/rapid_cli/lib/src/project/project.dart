@@ -1,10 +1,11 @@
-import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/app_package.dart';
 import 'package:rapid_cli/src/project/di_package.dart';
+import 'package:rapid_cli/src/project/domain_package.dart';
+import 'package:rapid_cli/src/project/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
 import 'package:rapid_cli/src/project/platform_directory.dart';
+import 'package:rapid_cli/src/project/platform_ui_package.dart';
 
 /// Rapid Project
 class Project {
@@ -14,12 +15,12 @@ class Project {
   /// The dependency injection package.
   late final DiPackage diPackage = DiPackage(project: this);
 
-  // TODO maybe add getter for other important packages
-
   /// The domain package.
-  late final DartPackage domainPackage = DartPackage(
-    path: p.join('packages', melosFile.name(), '${melosFile.name()}_domain'),
-  );
+  late final DomainPackage domainPackage = DomainPackage(project: this);
+
+  /// The infrastructure package.
+  late final InfrastructurePackage infrastructurePackage =
+      InfrastructurePackage(project: this);
 
   /// The melos file.
   final MelosFile melosFile = MelosFile();
@@ -34,11 +35,6 @@ class Project {
       PlatformDirectory(platform: platform, project: this);
 
   /// The package containing [platform] specific ui code.
-  DartPackage platformUiPackage(Platform platform) => DartPackage(
-        path: p.join(
-          'packages',
-          '${melosFile.name()}_ui',
-          '${melosFile.name()}_ui_${platform.name}',
-        ),
-      );
+  PlatformUiPackage platformUiPackage(Platform platform) =>
+      PlatformUiPackage(platform: platform, project: this);
 }

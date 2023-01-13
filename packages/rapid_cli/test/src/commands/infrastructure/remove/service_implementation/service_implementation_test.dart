@@ -14,11 +14,12 @@ const expectedUsage = [
   'Remove a service implementation from the infrastructure part of an existing Rapid project.\n'
       '\n'
       'Usage: rapid infrastructure remove service_implementation [arguments]\n'
-      '-h, --help    Print this usage information.\n'
+      '-h, --help       Print this usage information.\n'
       '\n'
       '\n'
-      '-d, --dir     The directory relative to <infrastructure_package>/lib/ .\n'
-      '              (defaults to ".")\n'
+      '-s, --service    The service interface the service implementation is related to.\n'
+      '-d, --dir        The directory relative to <infrastructure_package>/lib/ .\n'
+      '                 (defaults to ".")\n'
       '\n'
       'Run "rapid help" to see global options.'
 ];
@@ -63,6 +64,7 @@ void main() {
     late ArgResults argResults;
     late String? dir;
     late String name;
+    late String service;
 
     late InfrastructureRemoveServiceImplementationCommand command;
 
@@ -98,6 +100,7 @@ void main() {
       when(() => serviceImplementation.exists()).thenReturn(true);
       when(() => infrastructurePackage.serviceImplementation(
           name: any(named: 'name'),
+          service: any(named: 'service'),
           dir: any(named: 'dir'))).thenReturn(serviceImplementation);
       when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.infrastructurePackage)
@@ -105,8 +108,10 @@ void main() {
 
       argResults = _MockArgResults();
       dir = null;
-      name = 'FooBar';
+      name = 'Fake';
+      service = 'FooBar';
       when(() => argResults['dir']).thenReturn(dir);
+      when(() => argResults['service']).thenReturn(service);
       when(() => argResults.rest).thenReturn([name]);
 
       command = InfrastructureRemoveServiceImplementationCommand(
@@ -206,13 +211,55 @@ void main() {
       }),
     );
 
+    test(
+      'throws UsageException when service is missing',
+      withRunnerOnProject(
+          (commandRunner, logger, melosFile, project, printLogs) async {
+        // Arrange
+        const expectedErrorMessage = 'No option specified for the service.';
+
+        // Act
+        final result = await commandRunner
+            .run(['infrastructure', 'remove', 'service_implementation', name]);
+
+        // Assert
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+      }),
+    );
+
+    test(
+      'throws UsageException when service is not a valid dart class name',
+      withRunnerOnProject(
+          (commandRunner, logger, melosFile, project, printLogs) async {
+        // Arrange
+        service = '****::_';
+        final expectedErrorMessage =
+            '"$service" is not a valid dart class name.';
+
+        // Act
+        final result = await commandRunner.run([
+          'infrastructure',
+          'remove',
+          'service_implementation',
+          name,
+          '--service',
+          service
+        ]);
+
+        // Assert
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+      }),
+    );
+
     test('completes successfully with correct output', () async {
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() =>
-          infrastructurePackage.serviceImplementation(name: name, dir: '.'));
+      verify(() => infrastructurePackage.serviceImplementation(
+          name: name, service: service, dir: '.'));
       verify(() => serviceImplementation.exists()).called(1);
       verify(() => serviceImplementation.delete()).called(1);
       verify(() => logger.info(deletedServiceImplementation1Path)).called(1);
@@ -235,8 +282,8 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() =>
-          infrastructurePackage.serviceImplementation(name: name, dir: dir!));
+      verify(() => infrastructurePackage.serviceImplementation(
+          name: name, service: service, dir: dir!));
       verify(() => serviceImplementation.exists()).called(1);
       verify(() => serviceImplementation.delete()).called(1);
       verify(() => logger.info(deletedServiceImplementation1Path)).called(1);

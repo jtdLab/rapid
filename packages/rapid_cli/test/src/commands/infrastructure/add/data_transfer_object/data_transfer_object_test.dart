@@ -18,7 +18,7 @@ const expectedUsage = [
       '\n'
       '\n'
       '-e, --entity        The entity the data transfer object is related to.\n'
-      '-o, --output-dir    The output directory relative to <infrastructure_package>/lib/ .\n'
+      '-o, --output-dir    The output directory relative to <infrastructure_package>/lib/src .\n'
       '                    (defaults to ".")\n'
       '\n'
       'Run "rapid help" to see global options.'

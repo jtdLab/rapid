@@ -30,114 +30,6 @@ class DomainPackage {
 
   ValueObject valueObject({required String name, required String dir}) =>
       ValueObject(name: name, dir: dir, domainPackage: this);
-
-  /// Removes the entity with [name] located at lib/[dir]/ .
-  void removeEntity({
-    required String name,
-    required String dir,
-  }) {
-    /* // TODO seperate entity class that hold all this file the rm logic
-    final entityDir = _entityDir(name, dir);
-    final entityFile = File(p.join(entityDir.path, '${name.snakeCase}.dart'));
-    final entityFreezedFile = File(
-      p.join(entityDir.path, '${name.snakeCase}.freezed.dart'),
-    );
-    final entityTestDir = _entityTestDir(name, dir);
-    final entityTestFile = File(
-      p.join(entityTestDir.path, '${name.snakeCase}_test.dart'),
-    );
-
-    if (entityDir.existsSync()) {
-      if (entityFile.existsSync()) {
-        entityFile.deleteSync();
-      }
-      if (entityFreezedFile.existsSync()) {
-        entityFreezedFile.deleteSync();
-      }
-
-      if (entityDir.listSync().isEmpty) {
-        entityDir.deleteSync();
-      }
-    }
-
-    if (entityTestDir.existsSync()) {
-      if (entityTestFile.existsSync()) {
-        entityTestFile.deleteSync();
-      }
-
-      if (entityTestDir.listSync().isEmpty) {
-        entityTestDir.deleteSync();
-      }
-    } */
-  }
-
-  /// Removes the service interface with [name] located at lib/[dir]/ .
-  void removeServiceInterface({
-    required String name,
-    required String dir,
-  }) {
-    /*  // TODO seperate service interface class that hold all this file and the rm logic
-    final serviceInterfaceDir = _serviceInterfaceDir(name, dir);
-    final serviceInterfaceFile = File(
-        p.join(serviceInterfaceDir.path, 'i_${name.snakeCase}_service.dart'));
-    final serviceInterfaceFreezedFile = File(p.join(
-        serviceInterfaceDir.path, 'i_${name.snakeCase}_service.freezed.dart'));
-
-    if (serviceInterfaceDir.existsSync()) {
-      if (serviceInterfaceFile.existsSync()) {
-        serviceInterfaceFile.deleteSync();
-      }
-
-      if (serviceInterfaceFreezedFile.existsSync()) {
-        serviceInterfaceFreezedFile.deleteSync();
-      }
-
-      if (serviceInterfaceDir.listSync().isEmpty) {
-        serviceInterfaceDir.deleteSync();
-      } 
-    }*/
-  }
-
-  /// Removes the value object with [name] located at lib/[dir]/ .
-  void removeValueObject({
-    required String name,
-    required String dir,
-  }) {
-    /*  // TODO seperate value object class that hold all this file the rm logic
-    final valueObjectDir = _valueObjectDir(name, dir);
-    final valueObjectFile =
-        File(p.join(valueObjectDir.path, '${name.snakeCase}.dart'));
-    final valueObjectFreezedFile = File(
-      p.join(valueObjectDir.path, '${name.snakeCase}.freezed.dart'),
-    );
-    final valueObjectTestDir = _valueObjectTestDir(name, dir);
-    final valueObjectTestFile = File(
-      p.join(valueObjectTestDir.path, '${name.snakeCase}_test.dart'),
-    );
-
-    if (valueObjectDir.existsSync()) {
-      if (valueObjectFile.existsSync()) {
-        valueObjectFile.deleteSync();
-      }
-      if (valueObjectFreezedFile.existsSync()) {
-        valueObjectFreezedFile.deleteSync();
-      }
-
-      if (valueObjectDir.listSync().isEmpty) {
-        valueObjectDir.deleteSync();
-      }
-    }
-
-    if (valueObjectTestDir.existsSync()) {
-      if (valueObjectTestFile.existsSync()) {
-        valueObjectTestFile.deleteSync();
-      }
-
-      if (valueObjectTestDir.listSync().isEmpty) {
-        valueObjectTestDir.deleteSync();
-      }
-    } */
-  }
 }
 
 /// {@template entity}
@@ -175,32 +67,34 @@ class Entity {
 
     late FileSystemEntity entity;
     // source dir + files
-    if (_entityFile.existsSync()) {
-      entity = _entityFile;
+    entity = _entityFile;
+    if (entity.existsSync()) {
       entity.deleteSync();
       deleted.add(entity);
     }
-    if (_entityFreezedFile.existsSync()) {
-      entity = _entityFreezedFile;
+    entity = _entityFreezedFile;
+    if (entity.existsSync()) {
       entity.deleteSync();
       deleted.add(entity);
     }
-    if (_entityDir.listSync().isEmpty) {
-      entity = _entityDir;
+    entity = _entityDir;
+    if ((entity as Directory).listSync().isEmpty) {
       entity.deleteSync();
       deleted.add(entity);
     }
 
     // test dir + file
-    if (_entityTestFile.existsSync()) {
-      entity = _entityTestFile;
+    entity = _entityTestFile;
+    if (entity.existsSync()) {
       entity.deleteSync();
       deleted.add(entity);
     }
-    if (_entityTestDir.listSync().isEmpty) {
-      entity = _entityTestDir;
-      entity.deleteSync();
-      deleted.add(entity);
+    entity = _entityTestDir;
+    if (entity.existsSync()) {
+      if ((entity as Directory).listSync().isEmpty) {
+        entity.deleteSync();
+        deleted.add(entity);
+      }
     }
 
     return deleted..sort((a, b) => a.path.compareTo(b.path));
@@ -208,11 +102,13 @@ class Entity {
 
   /// Wheter an underlying [FileSystemEntity] related to this exists on disk.
   bool exists() {
-    if (_entityDir.existsSync() && _entityDir.listSync().isEmpty) {
+    final entityDir = _entityDir;
+    if (entityDir.existsSync() && entityDir.listSync().isEmpty) {
       return true;
     }
 
-    if (_entityTestDir.existsSync() && _entityTestDir.listSync().isEmpty) {
+    final entityTestDir = _entityTestDir;
+    if (entityTestDir.existsSync() && entityTestDir.listSync().isEmpty) {
       return true;
     }
 
@@ -241,19 +137,47 @@ class ServiceInterface {
 
   late final Directory _serviceInterfaceDir =
       Directory(p.join(_domainPackage.path, 'lib', _dir, _name.snakeCase));
+  late final File _serviceInterfaceFile = File(
+      p.join(_serviceInterfaceDir.path, 'i_${_name.snakeCase}_service.dart'));
+  late final File _serviceInterfaceFreezedFile = File(p.join(
+      _serviceInterfaceDir.path, 'i_${_name.snakeCase}_service.freezed.dart'));
 
   List<FileSystemEntity> delete() {
     final deleted = <FileSystemEntity>[];
 
     late FileSystemEntity entity;
-    // TODO
+    // source dir + files
+    entity = _serviceInterfaceFile;
+    if (entity.existsSync()) {
+      entity.deleteSync();
+      deleted.add(entity);
+    }
+    entity = _serviceInterfaceFreezedFile;
+    if (entity.existsSync()) {
+      entity.deleteSync();
+      deleted.add(entity);
+    }
+    entity = _serviceInterfaceDir;
+    if (entity.existsSync()) {
+      if ((entity as Directory).listSync().isEmpty) {
+        entity.deleteSync();
+        deleted.add(entity);
+      }
+    }
 
-    return deleted;
+    return deleted..sort((a, b) => a.path.compareTo(b.path));
   }
 
+  /// Wheter an underlying [FileSystemEntity] related to this exists on disk.
   bool exists() {
-    // TODO
-    throw UnimplementedError();
+    final serviceInterfaceDir = _serviceInterfaceDir;
+    if (serviceInterfaceDir.existsSync() &&
+        serviceInterfaceDir.listSync().isEmpty) {
+      return true;
+    }
+
+    return _serviceInterfaceFile.existsSync() ||
+        _serviceInterfaceFreezedFile.existsSync();
   }
 }
 
@@ -274,17 +198,72 @@ class ValueObject {
   final String _dir;
   final DomainPackage _domainPackage;
 
+  late final Directory _valueObjectDir =
+      Directory(p.join(_domainPackage.path, 'lib', _dir, _name.snakeCase));
+  late final _valueObjectFile =
+      File(p.join(_valueObjectDir.path, '${_name.snakeCase}.dart'));
+  late final _valueObjectFreezedFile = File(
+    p.join(_valueObjectDir.path, '${_name.snakeCase}.freezed.dart'),
+  );
+  late final Directory _valueObjectTestDir =
+      Directory(p.join(_domainPackage.path, 'test', _dir, _name.snakeCase));
+  late final _valueObjectTestFile = File(
+    p.join(_valueObjectTestDir.path, '${_name.snakeCase}_test.dart'),
+  );
+
   List<FileSystemEntity> delete() {
     final deleted = <FileSystemEntity>[];
 
     late FileSystemEntity entity;
-    // TODO
+    // source dir + files
+    entity = _valueObjectFile;
+    if (entity.existsSync()) {
+      entity.deleteSync();
+      deleted.add(entity);
+    }
+    entity = _valueObjectFreezedFile;
+    if (entity.existsSync()) {
+      entity.deleteSync();
+      deleted.add(entity);
+    }
+    entity = _valueObjectDir;
+    if ((entity as Directory).listSync().isEmpty) {
+      entity.deleteSync();
+      deleted.add(entity);
+    }
 
-    return deleted;
+    // test dir + file
+    entity = _valueObjectTestFile;
+    if (entity.existsSync()) {
+      entity.deleteSync();
+      deleted.add(entity);
+    }
+    entity = _valueObjectTestDir;
+    if (entity.existsSync()) {
+      if ((entity as Directory).listSync().isEmpty) {
+        entity.deleteSync();
+        deleted.add(entity);
+      }
+    }
+
+    return deleted..sort((a, b) => a.path.compareTo(b.path));
   }
 
+  /// Wheter an underlying [FileSystemEntity] related to this exists on disk.
   bool exists() {
-    // TODO
-    throw UnimplementedError();
+    final valueObjectDir = _valueObjectDir;
+    if (valueObjectDir.existsSync() && valueObjectDir.listSync().isEmpty) {
+      return true;
+    }
+
+    final valueObjectTestDir = _valueObjectTestDir;
+    if (valueObjectTestDir.existsSync() &&
+        valueObjectTestDir.listSync().isEmpty) {
+      return true;
+    }
+
+    return _valueObjectFile.existsSync() ||
+        _valueObjectFreezedFile.existsSync() ||
+        _valueObjectTestFile.existsSync();
   }
 }

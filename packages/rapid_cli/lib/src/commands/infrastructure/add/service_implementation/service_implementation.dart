@@ -34,7 +34,7 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
       )
       ..addOutputDirOption(
         help:
-            'The output directory relative to <infrastructure_package>/lib/ .',
+            'The output directory relative to <infrastructure_package>/lib/src .',
       );
   }
 

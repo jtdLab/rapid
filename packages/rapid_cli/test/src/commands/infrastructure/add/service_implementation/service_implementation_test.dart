@@ -17,7 +17,7 @@ const expectedUsage = [
       '\n'
       '\n'
       '-s, --service       The service interface the service implementation is related to.\n'
-      '-o, --output-dir    The output directory relative to <infrastructure_package>/lib/ .\n'
+      '-o, --output-dir    The output directory relative to <infrastructure_package>/lib/src .\n'
       '                    (defaults to ".")\n'
       '\n'
       'Run "rapid help" to see global options.'

@@ -40,7 +40,7 @@ class PlatformDirectory {
     return package.exists();
   }
 
-  /// Returns the feature with [name] on [platform].
+  /// Returns the feature with [name].
   Feature findFeature(String name) {
     final feature = Feature(name: name, platformDirectory: this);
 

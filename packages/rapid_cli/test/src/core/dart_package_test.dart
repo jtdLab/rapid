@@ -67,6 +67,14 @@ dependencies:
   my_pattern_c: ^3.1.0
 ''';
 
+const pubspecWithName = '''
+name: foo_bar
+''';
+
+const pubspecWithoutName = '''
+some: value
+''';
+
 void main() {
   group('DartPackage', () {
     final cwd = Directory.current;
@@ -159,6 +167,26 @@ void main() {
 
     tearDown(() {
       Directory.current = cwd;
+    });
+
+    group('name', () {
+      test('returns name', () {
+        // Arrange
+        final file = File(pubspecFile.path);
+        file.writeAsStringSync(pubspecWithName);
+
+        // Act + Assert
+        expect(pubspecFile.name(), 'foo_bar');
+      });
+
+      test('throws when name is not present', () {
+        // Arrange
+        final file = File(pubspecFile.path);
+        file.writeAsStringSync(pubspecWithoutName);
+
+        // Act + Assert
+        expect(() => pubspecFile.name(), throwsA(isA<ReadNameFailure>()));
+      });
     });
 
     group('path', () {

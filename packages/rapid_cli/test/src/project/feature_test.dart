@@ -235,6 +235,19 @@ void main() {
         expect(feature.platform, platform);
       });
     });
+
+    group('pubspecFile', () {
+      test('has correct path', () {
+        // Act
+        final pubspecFile = feature.pubspecFile;
+
+        // Assert
+        expect(
+          pubspecFile.path,
+          '$platformDirPath/${projectName}_${platform.name}_$featureName/pubspec.yaml',
+        );
+      });
+    });
   });
 
   group('ArbFile', () {

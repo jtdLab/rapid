@@ -4,6 +4,9 @@ import 'package:yaml/yaml.dart';
 
 import 'yaml_file.dart';
 
+/// Thrown when [PubspecFile.name] fails to read the `name` property.
+class ReadNameFailure implements Exception {}
+
 /// {@template dart_package}
 /// Abstraction of a dart package.
 /// {@endtemplate}
@@ -36,6 +39,15 @@ class PubspecFile {
   final YamlFile _file;
 
   String get path => _file.path;
+
+  /// The `name` property.
+  String name() {
+    try {
+      return _file.readValue(['name']);
+    } catch (_) {
+      throw ReadNameFailure();
+    }
+  }
 
   /// Removes dependency with [name].
   void removeDependency(String name) =>

@@ -93,6 +93,8 @@ class Feature {
   String get path => _package.path;
 
   Platform get platform => _platformDirectory.platform;
+
+  late final PubspecFile pubspecFile = PubspecFile(path: path);
 }
 
 /// {@template arb_file}

@@ -200,7 +200,7 @@ Future<void> verifyTestsPassWith100PercentCoverage(
   List<Directory> dirs,
 ) async {
   for (final dir in dirs) {
-    final testResult = await _runFlutterTest(cwd: dir.path) as TestResult;
+    final testResult = await _runFlutterTest(cwd: dir.path);
 
     expect(testResult.failedTests, 0);
     expect(testResult.coverage, 100);

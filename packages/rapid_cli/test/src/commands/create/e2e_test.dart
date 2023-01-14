@@ -30,7 +30,7 @@ void main() {
       });
 
       test(
-        '--create',
+        'create',
         () async {
           // Act
           final commandResult = await commandRunner.run(

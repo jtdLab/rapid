@@ -9,7 +9,7 @@ echo "Generating fixture project without a platform activated ..."
 rm -r project_none
 mkdir project_none
 cd project_none
-rapid create .
+rapid create project_none
 cd ..
 
 platforms=(android ios linux macos web windows)
@@ -20,7 +20,7 @@ do
     rm -r project_$platform
     mkdir project_$platform
     cd project_$platform
-    rapid create . --$platform
+    rapid create project_$platform --$platform
     cd ..
 done
 

@@ -43,27 +43,57 @@ class InjectionFile {
 
   String get path => _file.path;
 
+  List<String> _readExternalPackageModules() =>
+      _file.readTypeListFromAnnotationParamOfTopLevelFunction(
+        property: 'externalPackageModules',
+        annotation: 'InjectableInit',
+        functionName: 'configureDependencies',
+      );
+
   /// Adds [package] to this file.
   void addPackage(String package) {
     _file.addImport('package:$package/$package.dart');
 
-    final existingTypes =
-        _file.readTypeListFromAnnotationParamOfTopLevelFunction(
-      property: 'externalPackageModules',
-      annotation: 'InjectableInit',
-      functionName: 'configureDependencies',
-    );
+    final existingExternalPackageModules = _readExternalPackageModules();
 
     _file.setTypeListOfAnnotationParamOfTopLevelFunction(
       property: 'externalPackageModules',
       annotation: 'InjectableInit',
       functionName: 'configureDependencies',
       value: {
-        ...existingTypes,
+        ...existingExternalPackageModules,
         '${package.pascalCase}PackageModule',
       }.toList(),
     );
   }
+
+  /// Removes the package with [name] available on [platform].
+  void removePackage(String name, Platform platform) {
+    final projectName = diPackage.project.melosFile.name();
+    final platformName = platform.name;
+
+    final import = _file
+        .readImports()
+        .firstWhere((e) => e.contains('${projectName}_${platformName}_$name'));
+    _file.removeImport(import);
+
+    final existingExternalPackageModules = _readExternalPackageModules();
+
+    _file.setTypeListOfAnnotationParamOfTopLevelFunction(
+      property: 'externalPackageModules',
+      annotation: 'InjectableInit',
+      functionName: 'configureDependencies',
+      value: existingExternalPackageModules
+          .where(
+            (e) => !e.contains(
+              '${projectName.pascalCase}${platformName.pascalCase}${name.pascalCase}',
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  // TODO test
 
   /// Removes all packages with [platform].
   void removePackagesByPlatform(Platform platform) {
@@ -77,18 +107,13 @@ class InjectionFile {
       _file.removeImport(import);
     }
 
-    final externalPackageModules =
-        _file.readTypeListFromAnnotationParamOfTopLevelFunction(
-      property: 'externalPackageModules',
-      annotation: 'InjectableInit',
-      functionName: 'configureDependencies',
-    );
+    final existingExternalPackageModules = _readExternalPackageModules();
 
     _file.setTypeListOfAnnotationParamOfTopLevelFunction(
       property: 'externalPackageModules',
       annotation: 'InjectableInit',
       functionName: 'configureDependencies',
-      value: externalPackageModules
+      value: existingExternalPackageModules
           .where(
             (e) => !e.contains(
               '${projectName.pascalCase}${platformName.pascalCase}',

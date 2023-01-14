@@ -72,10 +72,25 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
 
           if (platformDirectory.featureExists(name)) {
             final feature = platformDirectory.findFeature(name);
+            final featurePackageName = feature.pubspecFile.name();
+            final otherFeatures =
+                platformDirectory.getFeatures(exclude: {name});
+
             feature.delete();
 
             // TODO HIGH PRIO think about remove from pubspec of other packages that depend on it
+            final diPackage = _project.diPackage;
+            diPackage.pubspecFile.removeDependency(featurePackageName);
+            for (final otherFeature in otherFeatures) {
+              otherFeature.pubspecFile.removeDependency(featurePackageName);
+            }
             // TODO think about remove the localizations delegate of this feature from the app feature
+            // TODO think about remove the feature from di feature and regenerate it
+            diPackage.injectionFile.removePackage(
+              featurePackageName,
+              _platform,
+            );
+
             // TODO think about remove the feature from routing feature and regenerate it
 
             final melosCleanProgress = _logger.progress(
@@ -88,6 +103,11 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
             );
             await _melosBootstrap();
             melosBootstrapProgress.complete();
+
+            await Flutter.pubGet(cwd: diPackage.path);
+            await Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: diPackage.path,
+            );
 
             _logger.success(
               'Removed ${_platform.prettyName} feature $name.',

@@ -9,7 +9,7 @@ import 'package:universal_io/io.dart';
 /// **IMPORTANT**: This should be the rapid_cli package.
 /// If it is not fixtures can not be loaded and e2e tests might fail.
 ///
-/// Store the directory `flutter/dart test` was called from like this:
+/// Store the directory `flutter test` or `dart test` was called from like this:
 ///
 /// ```dart
 /// group(
@@ -200,7 +200,8 @@ Future<void> verifyTestsPassWith100PercentCoverage(
   List<Directory> dirs,
 ) async {
   for (final dir in dirs) {
-    final testResult = await _runFlutterTest(cwd: dir.path);
+    final testResult = await _runFlutterTest(cwd: dir.path) as TestResult;
+
     expect(testResult.failedTests, 0);
     expect(testResult.coverage, 100);
   }
@@ -225,12 +226,15 @@ Future<void> verifyNoFormattingIssues() async {
 /// This is needed because of https://github.com/flutter/flutter/issues/117158
 const _iosDevice = 'iPhone 11';
 
+/// Thrown when [_runFlutterTest] didnt find a test directory.
+class TestDirNotFound implements Exception {}
+
 class TestResult {
   TestResult(this.failedTests, this.coverage);
 
   final int failedTests;
 
-  final int? coverage;
+  final double? coverage;
 }
 
 /// Runs `flutter test` in [cwd].
@@ -240,31 +244,42 @@ Future<TestResult> _runFlutterTest({
   required String cwd,
   bool coverage = true,
 }) async {
-  final result = await Process.run(
+  final testResult = await Process.run(
     'flutter',
     ['test', if (coverage) '--coverage'],
     workingDirectory: cwd,
     runInShell: true,
   );
 
-  final String stderr = result.stderr;
-  final String stdout = result.stdout;
-  if (stderr.isEmpty ||
-      stderr.contains(
-          'Test directory "test" not found') || // TODO this should return error
-      stdout.contains('All tests passed')) {
-    return TestResult(
-      0,
-      coverage ? 100 : null, // TODO read coverage via genhtml
+  final String stderr = testResult.stderr;
+  final String stdout = testResult.stdout;
+
+  if (stderr.contains('Test directory "test" not found')) {
+    throw TestDirNotFound();
+  }
+
+  double? totalCoverage;
+  if (coverage) {
+    final coverageResult = await Process.run(
+      'test_cov_console',
+      ['-t'],
+      workingDirectory: cwd,
+      runInShell: true,
     );
+
+    // 100.00 when empty lcov
+    totalCoverage = double.tryParse(
+      (coverageResult.stdout as String).replaceAll('.00', '.0'),
+    );
+  }
+
+  if (stderr.isEmpty || stdout.contains('All tests passed')) {
+    return TestResult(0, totalCoverage);
   }
 
   final regExp = RegExp(r'-([0-9]+): Some tests failed');
   final match = regExp.firstMatch(stderr)!;
-  return TestResult(
-    int.parse(match.group(1)!),
-    coverage ? 100 : null, // TODO read coverage via genhtml
-  );
+  return TestResult(int.parse(match.group(1)!), totalCoverage);
 }
 
 /// Runs integration tests at [pathToTests] from [cwd]  using the required mechanism described at https://docs.flutter.dev/testing/integration-tests
@@ -276,7 +291,7 @@ Future<int> runFlutterIntegrationTest({
   String pathToTests = '.',
   required Platform platform,
 }) async {
-  late final ProcessResult result;
+  late final ProcessResult testResult;
   if (platform == Platform.web) {
     await Process.start(
       'chromedriver',
@@ -284,7 +299,7 @@ Future<int> runFlutterIntegrationTest({
       workingDirectory: cwd,
       runInShell: true,
     );
-    result = await Process.run(
+    testResult = await Process.run(
       'flutter',
       [
         'drive',
@@ -300,7 +315,7 @@ Future<int> runFlutterIntegrationTest({
     );
   } else {
     final device = platform == Platform.ios ? _iosDevice : platform.name;
-    result = await Process.run(
+    testResult = await Process.run(
       'flutter',
       ['test', pathToTests, '-d', device],
       workingDirectory: cwd,
@@ -308,12 +323,14 @@ Future<int> runFlutterIntegrationTest({
     );
   }
 
-  final String stderr = result.stderr;
-  final String stdout = result.stdout;
-  if (stderr.isEmpty ||
-      stderr.contains(
-          'Test directory "test" not found') || // TODO this should return error
-      stdout.contains('All tests passed')) {
+  final String stderr = testResult.stderr;
+  final String stdout = testResult.stdout;
+
+  if (stderr.contains('Test directory "test" not found')) {
+    throw TestDirNotFound();
+  }
+
+  if (stderr.isEmpty || stdout.contains('All tests passed')) {
     return 0;
   }
 
@@ -335,16 +352,12 @@ Future<int> _runFlutterAnalyze({
     runInShell: true,
   );
 
-  print(result.stdout);
-  print(result.stderr);
-
   final String stderr = result.stderr;
   if (stderr.isEmpty) {
     return 0;
   }
 
-  // TODO doesnt match 0 issues found
-  final regExp = RegExp(r'([0-9]+) issue found');
+  final regExp = RegExp(r'([0-9]+) issues? found');
   final match = regExp.firstMatch(stderr)!;
   return int.parse(match.group(1)!);
 }

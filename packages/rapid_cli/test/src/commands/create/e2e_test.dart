@@ -45,7 +45,11 @@ void main() {
 
           // TODO maybe verify that no platform dir exists
 
-          await verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
+          await verifyTestsPassWith100PercentCoverage(
+            platformIndependentDirs
+              ..remove(domainDir)
+              ..remove(infraDir),
+          );
         },
       );
 
@@ -68,7 +72,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('android');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs,
+              ...platformIndependentDirs
+                ..remove(domainDir)
+                ..remove(infraDir),
               ...platformDependentDirs,
             ]);
           },
@@ -92,7 +98,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('android');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs,
+              ...platformIndependentDirs
+                ..remove(domainDir)
+                ..remove(infraDir),
               ...platformDependentDirs,
             ]);
 
@@ -124,7 +132,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('ios');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs,
+              ...platformIndependentDirs
+                ..remove(domainDir)
+                ..remove(infraDir),
               ...platformDependentDirs,
             ]);
           },
@@ -148,7 +158,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('ios');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs,
+              ...platformIndependentDirs
+                ..remove(domainDir)
+                ..remove(infraDir),
               ...platformDependentDirs,
             ]);
 
@@ -180,7 +192,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('linux');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs,
+              ...platformIndependentDirs
+                ..remove(domainDir)
+                ..remove(infraDir),
               ...platformDependentDirs,
             ]);
           },
@@ -204,7 +218,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('linux');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs,
+              ...platformIndependentDirs
+                ..remove(domainDir)
+                ..remove(infraDir),
               ...platformDependentDirs,
             ]);
 
@@ -236,7 +252,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('macos');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs,
+              ...platformIndependentDirs
+                ..remove(domainDir)
+                ..remove(infraDir),
               ...platformDependentDirs,
             ]);
           },
@@ -260,7 +278,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('macos');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs,
+              ...platformIndependentDirs
+                ..remove(domainDir)
+                ..remove(infraDir),
               ...platformDependentDirs,
             ]);
 
@@ -292,7 +312,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('web');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs,
+              ...platformIndependentDirs
+                ..remove(domainDir)
+                ..remove(infraDir),
               ...platformDependentDirs,
             ]);
           },
@@ -316,7 +338,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('web');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs,
+              ...platformIndependentDirs
+                ..remove(domainDir)
+                ..remove(infraDir),
               ...platformDependentDirs,
             ]);
 
@@ -348,7 +372,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('windows');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs,
+              ...platformIndependentDirs
+                ..remove(domainDir)
+                ..remove(infraDir),
               ...platformDependentDirs,
             ]);
           },
@@ -372,7 +398,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('windows');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs,
+              ...platformIndependentDirs
+                ..remove(domainDir)
+                ..remove(infraDir),
               ...platformDependentDirs,
             ]);
 

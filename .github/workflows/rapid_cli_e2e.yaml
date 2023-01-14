@@ -33,6 +33,9 @@ jobs:
       - name: Setup Melos
         run: flutter pub global activate melos
 
+      - name: Setup Lcov Utils
+        run: flutter pub global activate test_cov_console
+
       - name: Install Flutter dependencies
         run: flutter pub get
 
@@ -100,6 +103,9 @@ jobs:
       - name: Setup Melos
         run: flutter pub global activate melos
 
+      - name: Setup Lcov Utils
+        run: flutter pub global activate test_cov_console
+
       - name: Install Flutter dependencies
         run: flutter pub get
 
@@ -148,6 +154,9 @@ jobs:
       - name: Setup Melos
         run: flutter pub global activate melos
 
+      - name: Setup Lcov Utils
+        run: flutter pub global activate test_cov_console
+
       - name: Install Flutter dependencies
         run: flutter pub get
 
@@ -183,6 +192,9 @@ jobs:
       - name: Setup Melos
         run: flutter pub global activate melos
 
+      - name: Setup Lcov Utils
+        run: flutter pub global activate test_cov_console
+
       - name: Install Flutter dependencies
         run: flutter pub get
 
@@ -217,6 +229,9 @@ jobs:
       - name: Setup Melos
         run: flutter pub global activate melos
 
+      - name: Setup Lcov Utils
+        run: flutter pub global activate test_cov_console
+
       - name: Install Flutter dependencies
         run: flutter pub get
 
@@ -249,6 +264,9 @@ jobs:
       - name: Setup Melos
         run: flutter pub global activate melos
 
+      - name: Setup Lcov Utils
+        run: flutter pub global activate test_cov_console
+
       - name: Install Flutter dependencies
         run: flutter pub get
 
@@ -279,6 +297,9 @@ jobs:
 
       - name: Setup Melos
         run: flutter pub global activate melos
+
+      - name: Setup Lcov Utils
+        run: flutter pub global activate test_cov_console
 
       - name: Install Flutter dependencies
         run: flutter pub get

@@ -1,4 +1,4 @@
-@Tags(['e2e', 'android'])
+@Tags(['e2e'])
 import 'package:test/test.dart';
 
 void main() {

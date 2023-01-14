@@ -5,7 +5,6 @@ import 'package:mason/mason.dart';
 
 final languageBundle = MasonBundle.fromJson(<String, dynamic>{
   "files": [
-    {"path": "HELLO.md", "data": "SGVsbG8ge3tuYW1lfX0h", "type": "text"},
     {
       "path":
           "lib/src/presentation/l10n/arb/{{feature_name.snakeCase()}}_{{language}}.arb",

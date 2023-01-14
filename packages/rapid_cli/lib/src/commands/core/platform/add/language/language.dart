@@ -5,8 +5,8 @@ import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/language/language.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/commands/core/platform/core/validate_language.dart';
+import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
 import 'package:rapid_cli/src/commands/ios/add/language/language.dart';
 import 'package:rapid_cli/src/commands/linux/add/language/language.dart';
 import 'package:rapid_cli/src/commands/macos/add/language/language.dart';
@@ -43,17 +43,20 @@ abstract class PlatformAddLanguageCommand extends Command<int>
     Logger? logger,
     required Project project,
     FlutterGenl10nCommand? flutterGenl10n,
+    FlutterFormatFixCommand? flutterFormatFix,
     GeneratorBuilder? generator,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
         _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
+        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle;
 
   final Platform _platform;
   final Logger _logger;
   final Project _project;
   final FlutterGenl10nCommand _flutterGenl10n;
+  final FlutterFormatFixCommand _flutterFormatFix;
   final GeneratorBuilder _generator;
 
   @override
@@ -108,6 +111,8 @@ abstract class PlatformAddLanguageCommand extends Command<int>
 
                   await _flutterGenl10n(cwd: feature.path);
                 }
+
+                await _flutterFormatFix();
 
                 // TODO add hint how to work with localization
                 return ExitCode.success.code;

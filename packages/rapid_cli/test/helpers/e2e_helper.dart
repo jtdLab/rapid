@@ -132,6 +132,67 @@ Directory featureDirectory(String feature, String platform) => Directory(
       ),
     );
 
+/// All source files a feature requires to support [languages].
+List<File> languageFiles(
+        String feature, String platform, List<String> languages) =>
+    [
+      for (final language in languages) ...[
+        File(
+          p.join(
+            'packages',
+            projectName,
+            '${projectName}_$platform',
+            '${projectName}_${platform}_$feature',
+            'lib',
+            'src',
+            'presentation',
+            'l10n',
+            'arb',
+            '${feature}_$language.arb',
+          ),
+        ),
+        File(
+          p.join(
+            'packages',
+            projectName,
+            '${projectName}_$platform',
+            '${projectName}_${platform}_$feature',
+            'lib',
+            'src',
+            'presentation',
+            'l10n',
+            '${projectName}_${platform}_${feature}_localizations_$language.dart',
+          ),
+        ),
+      ],
+      File(
+        p.join(
+          'packages',
+          projectName,
+          '${projectName}_$platform',
+          '${projectName}_${platform}_$feature',
+          'lib',
+          'src',
+          'presentation',
+          'l10n',
+          '${projectName}_${platform}_${feature}_localizations.dart',
+        ),
+      ),
+      File(
+        p.join(
+          'packages',
+          projectName,
+          '${projectName}_$platform',
+          '${projectName}_${platform}_$feature',
+          'lib',
+          'src',
+          'presentation',
+          'l10n',
+          'l10n.dart',
+        ),
+      ),
+    ];
+
 /// Verifys that tests in [dirs] pass with 100% test coverage.
 ///
 /// Runs `flutter test --coverage` in every provided dir.

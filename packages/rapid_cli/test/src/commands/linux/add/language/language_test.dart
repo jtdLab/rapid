@@ -26,6 +26,10 @@ abstract class _FlutterGenl10nCommand {
   Future<void> call({String cwd});
 }
 
+abstract class _FlutterFormatFixCommand {
+  Future<void> call({String cwd});
+}
+
 class _MockLogger extends Mock implements Logger {}
 
 class _MockProgress extends Mock implements Progress {}
@@ -40,6 +44,9 @@ class _MockFeature extends Mock implements Feature {}
 
 class _MockFlutterGenl10nCommand extends Mock
     implements _FlutterGenl10nCommand {}
+
+class _MockFlutterFormatFixCommand extends Mock
+    implements _FlutterFormatFixCommand {}
 
 class _MockMasonGenerator extends Mock implements MasonGenerator {}
 
@@ -68,6 +75,8 @@ void main() {
     const feature2Path = 'foo/bar/two';
 
     late FlutterGenl10nCommand flutterGenl10n;
+
+    late FlutterFormatFixCommand flutterFormatFix;
 
     late MasonGenerator generator;
     final generatedFiles = List.filled(
@@ -130,6 +139,10 @@ void main() {
       when(() => flutterGenl10n(cwd: any(named: 'cwd')))
           .thenAnswer((_) async {});
 
+      flutterFormatFix = _MockFlutterFormatFixCommand();
+      when(() => flutterFormatFix(cwd: any(named: 'cwd')))
+          .thenAnswer((_) async {});
+
       generator = _MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
@@ -149,6 +162,7 @@ void main() {
         logger: logger,
         project: project,
         flutterGenl10n: flutterGenl10n,
+        flutterFormatFix: flutterFormatFix,
         generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
@@ -293,6 +307,7 @@ void main() {
         ),
       ).called(1);
       verify(() => flutterGenl10n(cwd: feature2Path)).called(1);
+      verify(() => flutterFormatFix()).called(1);
       expect(result, ExitCode.success.code);
     });
 

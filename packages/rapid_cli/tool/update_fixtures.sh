@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Run from packages/rapid_cli
+
 # Generates fresh fixtures projects used for e2e testing.
 cd fixtures
 

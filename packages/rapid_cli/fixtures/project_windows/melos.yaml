@@ -1,0 +1,35 @@
+name: project_windows
+
+packages:
+  - packages/**
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
+    # https://github.com/dart-lang/pub/issues/3404)
+    runPubGetInParallel: false
+
+ide:
+  intellij: false
+
+# TODO clean scripts
+scripts:
+  #  postbootstrap: melos run setup-pre-commit-hook
+  postclean: |
+    melos exec -c 3 -- "flutter clean"
+
+#    rm -r node_modules && \
+#    rm commitlint.config.js && \
+#    rm package-lock.json && \
+#    rm package.json && \
+#    melos exec -c 3 -- "flutter clean"
+
+#   setup-pre-commit-hook:
+#     run: |
+#       npm install --save-dev @commitlint/{cli,config-conventional} && \
+#       echo "module.exports = { extends: ['@commitlint/config-conventional'] };" > commitlint.config.js && \
+#       npm install husky --save-dev
+#       npx husky install
+#     description: |
+#       Set up pre commit hook to ensure Conventional Commits (https://www.conventionalcommits.org/en/v1.0.0/) via commitlint (https://www.npmjs.com/package/commitlint).
+#        - Requires `node` (can be installed via Brew on macOS).

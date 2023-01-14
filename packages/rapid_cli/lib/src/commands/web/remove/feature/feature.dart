@@ -11,6 +11,8 @@ class WebRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
     required super.project,
     super.melosBootstrap,
     super.melosClean,
+    super.flutterPubGet,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.web,
         );

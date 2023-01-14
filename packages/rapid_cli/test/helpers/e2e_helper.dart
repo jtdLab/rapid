@@ -335,6 +335,9 @@ Future<int> _runFlutterAnalyze({
     runInShell: true,
   );
 
+  print(result.stdout);
+  print(result.stderr);
+
   final String stderr = result.stderr;
   if (stderr.isEmpty) {
     return 0;

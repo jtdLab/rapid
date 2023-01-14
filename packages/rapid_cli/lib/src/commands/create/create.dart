@@ -13,7 +13,7 @@ import 'package:universal_io/io.dart';
 const _defaultDescription = 'A Rapid app.';
 
 /// The default value for enabling example features.
-const _defaultExample = false;
+const _defaultExample = false; // TODO needed
 
 /// {@template create_command}
 /// `rapid create` command creates a new Rapid project in the specified directory.
@@ -234,6 +234,15 @@ class CreateCommand extends Command<int>
     return ExitCode.success.code;
   }
 
+  /// Gets the project name specified by the user.
+  String get _projectName => _validateProjectNameArg(argResults.rest);
+
+  /// Gets the description for the project specified by the user.
+  String get _description => argResults['desc'] ?? _defaultDescription;
+
+  /// Whether the user specified that the project will contain example features.
+  bool get _example => argResults['example'] ?? _defaultExample;
+
   /// Whether the user specified that the project supports Android.
   ///
   /// Defaults to `false` when the user did not specify any platform.
@@ -263,15 +272,6 @@ class CreateCommand extends Command<int>
   ///
   /// Defaults to `false` when the user did not specify any platform.
   bool get _windows => _any ? (argResults['windows'] ?? false) : false;
-
-  /// Gets the project name specified by the user.
-  String get _projectName => _validateProjectNameArg(argResults.rest);
-
-  /// Gets the description for the project specified by the user.
-  String get _description => argResults['desc'] ?? _defaultDescription;
-
-  /// Whether the user specified that the project will contain example features.
-  bool get _example => argResults['example'] ?? _defaultExample;
 
   /// Whether the user specified that the project supports any platform.
   bool get _any =>

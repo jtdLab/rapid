@@ -36,17 +36,27 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
     required Project project,
     MelosBootstrapCommand? melosBootstrap,
     MelosCleanCommand? melosClean,
+    FlutterPubGetCommand? flutterPubGet,
+    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
         _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _melosClean = melosClean ?? Melos.clean;
+        _melosClean = melosClean ?? Melos.clean,
+        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   final Platform _platform;
   final Logger _logger;
   final Project _project;
   final MelosBootstrapCommand _melosBootstrap;
   final MelosCleanCommand _melosClean;
+  final FlutterPubGetCommand _flutterPubGet;
+  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   @override
   String get name => 'feature';
@@ -79,15 +89,16 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
             feature.delete();
 
             // TODO HIGH PRIO think about remove from pubspec of other packages that depend on it
+            // TODO think about remove the localizations delegate of this feature from the app feature
+            // TODO think about remove the feature from di feature and regenerate it
             final diPackage = _project.diPackage;
             diPackage.pubspecFile.removeDependency(featurePackageName);
             for (final otherFeature in otherFeatures) {
               otherFeature.pubspecFile.removeDependency(featurePackageName);
             }
-            // TODO think about remove the localizations delegate of this feature from the app feature
-            // TODO think about remove the feature from di feature and regenerate it
+
             diPackage.injectionFile.removePackage(
-              featurePackageName,
+              name,
               _platform,
             );
 
@@ -104,10 +115,11 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
             await _melosBootstrap();
             melosBootstrapProgress.complete();
 
-            await Flutter.pubGet(cwd: diPackage.path);
-            await Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs(
+            await _flutterPubGet(cwd: diPackage.path);
+            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
               cwd: diPackage.path,
             );
+            // TODO format if needed ?
 
             _logger.success(
               'Removed ${_platform.prettyName} feature $name.',

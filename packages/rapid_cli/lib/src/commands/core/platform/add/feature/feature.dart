@@ -43,6 +43,9 @@ abstract class PlatformAddFeatureCommand extends Command<int>
     required Project project,
     MelosBootstrapCommand? melosBootstrap,
     MelosCleanCommand? melosClean,
+    FlutterPubGetCommand? flutterPubGet,
+    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     FlutterFormatFixCommand? flutterFormatFix,
     GeneratorBuilder? generator,
   })  : _platform = platform,
@@ -50,14 +53,27 @@ abstract class PlatformAddFeatureCommand extends Command<int>
         _project = project,
         _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         _melosClean = melosClean ?? Melos.clean,
+        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
         _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle {
     argParser
       ..addSeparator('')
       ..addOption(
         'desc',
-        help: 'The description of this new feature.',
+        help:
+            'The description of this new feature.', // TODO rename to the might be the cas in other descriptions too
         defaultsTo: _defaultDescription,
+      )
+      ..addSeparator('')
+      // TODO maybe add a option to specify features that want a dependency before melos bs runs
+      ..addFlag(
+        'routing',
+        help:
+            'Wheter the new feature can be registered in the routing package.',
+        negatable: false,
       );
   }
 
@@ -66,7 +82,11 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   final Project _project;
   final MelosBootstrapCommand _melosBootstrap;
   final MelosCleanCommand _melosClean;
+  final FlutterPubGetCommand _flutterPubGet;
+  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final FlutterFormatFixCommand _flutterFormatFix;
+
   final GeneratorBuilder _generator;
 
   @override
@@ -90,53 +110,82 @@ abstract class PlatformAddFeatureCommand extends Command<int>
         final platformIsActivated = _project.isActivated(_platform);
 
         if (platformIsActivated) {
-          final projectName = _project.melosFile.name();
-          final name = _name;
-          final description = _description;
+          final platformDir = _project.platformDirectory(_platform);
 
-          // TODO check if feature exists
+          final exists = platformDir.featureExists(name);
+          if (!exists) {
+            final projectName = _project.melosFile.name();
+            final name = _name;
+            final description = _description;
+            final routing = _routing;
 
-          final generateProgress = _logger.progress('Generating files');
-          final generator = await _generator(featureBundle);
-          final files = await generator.generate(
-            DirectoryGeneratorTarget(Directory('.')),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'name': name,
-              'description': description,
-              'platform': _platform.name,
-              _platform.name: true
-            },
-            logger: _logger,
-          );
-          generateProgress.complete('Generated ${files.length} file(s)');
+            final generateProgress = _logger.progress('Generating files');
+            final generator = await _generator(featureBundle);
+            final files = await generator.generate(
+              DirectoryGeneratorTarget(Directory('.')),
+              vars: <String, dynamic>{
+                'project_name': projectName,
+                'name': name,
+                'description': description,
+                'platform': _platform.name,
+                _platform.name: true
+              },
+              logger: _logger,
+            );
+            generateProgress.complete('Generated ${files.length} file(s)');
 
-          // TODO HIGH PRIO add the localizations delegate of this feature to the app feature
+            final featurePackageName = '${projectName}_${_platform.name}_$name';
 
-          final melosCleanProgress = _logger.progress(
-            'Running "melos clean" in . ',
-          );
-          await _melosClean();
-          melosCleanProgress.complete();
-          final melosBootstrapProgress = _logger.progress(
-            'Running "melos bootstrap" in . ',
-          );
-          await _melosBootstrap();
-          melosBootstrapProgress.complete();
+            // TODO add localizations to app package
 
-          final formatFixProgress = _logger.progress(
-            'Running "flutter format . --fix" in . ',
-          );
-          await _flutterFormatFix();
-          formatFixProgress.complete();
+            if (routing) {
+              final routingFeature = platformDir.findFeature('routing');
 
-          _logger.success(
-            'Added ${_platform.prettyName} feature $name.',
-          );
+              routingFeature.pubspecFile.setDependency(featurePackageName);
+            }
 
-          // TODO maybe add hint how to register a page in the routing feature
+            final diPackage = _project.diPackage;
+            diPackage.pubspecFile.setDependency(featurePackageName);
+            final injectionFile = diPackage.injectionFile;
+            injectionFile.addPackage(featurePackageName);
 
-          return ExitCode.success.code;
+            final melosCleanProgress = _logger.progress(
+              'Running "melos clean" in . ',
+            );
+            await _melosClean();
+            melosCleanProgress.complete();
+            final melosBootstrapProgress = _logger.progress(
+              'Running "melos bootstrap" in . ',
+            );
+            await _melosBootstrap();
+            melosBootstrapProgress.complete();
+
+            await _flutterPubGet(cwd: diPackage.path);
+            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: diPackage.path,
+            );
+
+            final formatFixProgress = _logger.progress(
+              'Running "flutter format . --fix" in . ',
+            );
+            await _flutterFormatFix();
+            formatFixProgress.complete();
+
+            _logger.success(
+              'Added ${_platform.prettyName} feature $name.',
+            );
+
+            // TODO maybe add hint how to register a page in the routing feature
+
+            return ExitCode.success.code;
+          } else {
+            // TODO test
+            _logger.err(
+              'The feature "$name" does not exist on ${_platform.prettyName}.',
+            );
+
+            return ExitCode.config.code;
+          }
         } else {
           _logger.err('${_platform.prettyName} is not activated.');
 
@@ -148,6 +197,9 @@ abstract class PlatformAddFeatureCommand extends Command<int>
 
   /// Gets the description for the project specified by the user.
   String get _description => argResults['desc'] ?? _defaultDescription;
+
+  /// Whether the user specified that the feature can be registered in the routing package.
+  bool get _routing => argResults['routing'] ?? false;
 
   /// Validates whether [name] is valid feature name.
   ///

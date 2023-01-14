@@ -11,6 +11,8 @@ class AndroidAddFeatureCommand extends PlatformAddFeatureCommand {
     required super.project,
     super.melosBootstrap,
     super.melosClean,
+    super.flutterPubGet,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     super.flutterFormatFix,
     super.generator,
   }) : super(

@@ -1,0 +1,16 @@
+# melos_managed_dependency_overrides: project_android_android_routing,project_android_di,project_android_domain,project_android_infrastructure,project_android_logging,project_android_ui,project_android_ui_android
+dependency_overrides:
+  project_android_android_routing:
+    path: ../project_android_android_routing
+  project_android_di:
+    path: ../../project_android_di
+  project_android_domain:
+    path: ../../project_android_domain
+  project_android_infrastructure:
+    path: ../../project_android_infrastructure
+  project_android_logging:
+    path: ../../project_android_logging
+  project_android_ui:
+    path: ../../../project_android_ui/project_android_ui
+  project_android_ui_android:
+    path: ../../../project_android_ui/project_android_ui_android

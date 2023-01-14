@@ -323,6 +323,28 @@ void main() {
       expect(result, ExitCode.success.code);
     });
 
+    test(
+        'completes successfully with correct output when no platform has features',
+        () async {
+      // Arrange
+      when(() => platformDirectoryAndroid.getFeatures(
+          exclude: any(named: 'exclude'))).thenReturn([]);
+
+      when(() => platformDirectoryMacos.getFeatures(
+          exclude: any(named: 'exclude'))).thenReturn([]);
+      when(() =>
+              platformDirectoryWeb.getFeatures(exclude: any(named: 'exclude')))
+          .thenReturn([]);
+
+      // Act
+      final result = await command.run();
+
+      // Act
+      verify(() => logger.info('No issues found.')).called(1);
+      verifyNever(() => logger.info(''));
+      expect(result, ExitCode.success.code);
+    });
+
     test('exits with 66 when melos.yaml does not exist', () async {
       // Arrange
       when(() => melosFile.exists()).thenReturn(false);

@@ -37,6 +37,8 @@ Special thanks to all developers/contributors of these packages ❤️
 
 <img src="./assets/architecture.png">
 
+<img src="./assets/overview.svg">
+
 ## Platform-independent Packages
 
 ### `<project_name>_app`

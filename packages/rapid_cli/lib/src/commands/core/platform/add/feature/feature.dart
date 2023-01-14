@@ -43,12 +43,14 @@ abstract class PlatformAddFeatureCommand extends Command<int>
     required Project project,
     MelosBootstrapCommand? melosBootstrap,
     MelosCleanCommand? melosClean,
+    FlutterFormatFixCommand? flutterFormatFix,
     GeneratorBuilder? generator,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
         _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         _melosClean = melosClean ?? Melos.clean,
+        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle {
     argParser
       ..addSeparator('')
@@ -64,6 +66,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   final Project _project;
   final MelosBootstrapCommand _melosBootstrap;
   final MelosCleanCommand _melosClean;
+  final FlutterFormatFixCommand _flutterFormatFix;
   final GeneratorBuilder _generator;
 
   @override
@@ -120,6 +123,12 @@ abstract class PlatformAddFeatureCommand extends Command<int>
           );
           await _melosBootstrap();
           melosBootstrapProgress.complete();
+
+          final formatFixProgress = _logger.progress(
+            'Running "flutter format . --fix" in . ',
+          );
+          await _flutterFormatFix();
+          formatFixProgress.complete();
 
           _logger.success(
             'Added ${_platform.prettyName} feature $name.',

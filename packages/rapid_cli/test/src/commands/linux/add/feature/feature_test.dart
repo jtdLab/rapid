@@ -32,6 +32,10 @@ abstract class _MelosCleanCommand {
   Future<void> call({String cwd});
 }
 
+abstract class _FlutterFormatFixCommand {
+  Future<void> call({String cwd});
+}
+
 class _MockLogger extends Mock implements Logger {}
 
 class _MockProgress extends Mock implements Progress {}
@@ -44,6 +48,9 @@ class _MockMelosBootstrapCommand extends Mock
     implements _MelosBootstrapCommand {}
 
 class _MockMelosCleanCommand extends Mock implements _MelosCleanCommand {}
+
+class _MockFlutterFormatFixCommand extends Mock
+    implements _FlutterFormatFixCommand {}
 
 class _MockMasonGenerator extends Mock implements MasonGenerator {}
 
@@ -64,7 +71,10 @@ void main() {
     const projectName = 'test_app';
 
     late MelosBootstrapCommand melosBootstrap;
+
     late MelosCleanCommand melosClean;
+
+    late FlutterFormatFixCommand flutterFormatFix;
 
     late MasonGenerator generator;
     final generatedFiles = List.filled(
@@ -107,6 +117,10 @@ void main() {
       melosClean = _MockMelosCleanCommand();
       when(() => melosClean(cwd: any(named: 'cwd'))).thenAnswer((_) async {});
 
+      flutterFormatFix = _MockFlutterFormatFixCommand();
+      when(() => flutterFormatFix(cwd: any(named: 'cwd')))
+          .thenAnswer((_) async {});
+
       generator = _MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
@@ -127,6 +141,7 @@ void main() {
         project: project,
         melosBootstrap: melosBootstrap,
         melosClean: melosClean,
+        flutterFormatFix: flutterFormatFix,
         generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
@@ -266,6 +281,7 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
       verify(() => melosBootstrap()).called(1);
+      verify(() => flutterFormatFix()).called(1);
       verify(() => logger.success('Added Linux feature $featureName.'))
           .called(1);
       expect(result, ExitCode.success.code);
@@ -310,6 +326,7 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
       verify(() => melosBootstrap()).called(1);
+      verify(() => flutterFormatFix()).called(1);
       verify(() => logger.success('Added Linux feature $featureName.'))
           .called(1);
       expect(result, ExitCode.success.code);

@@ -62,6 +62,20 @@ Future<void> _runFlutterPubGetInAllDirsWithPubspec() async {
   }
 }
 
+/// Verifys wheter ALL [entities] exist on disk.
+void verifyDoExist(Iterable<FileSystemEntity> entities) {
+  for (final entity in entities) {
+    expect(entity.existsSync(), true);
+  }
+}
+
+/// Verifys wheter NONE of [entities] exist on disk.
+void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
+  for (final entity in entities) {
+    expect(entity.existsSync(), false);
+  }
+}
+
 /// The name of the test project.
 late String projectName;
 
@@ -97,20 +111,6 @@ final platformIndependentDirs = [
   uiDir
 ];
 
-/// Verifys wheter ALL [entities] exist on disk.
-void verifyDoExist(Iterable<FileSystemEntity> entities) {
-  for (final entity in entities) {
-    expect(entity.existsSync(), true);
-  }
-}
-
-/// Verifys wheter NONE of [entities] exist on disk.
-void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
-  for (final entity in entities) {
-    expect(entity.existsSync(), false);
-  }
-}
-
 /// All [platform]-dependent dirs of the test project.
 List<Directory> platformDirs(String platform) => [
       Directory(p.join('packages', projectName, projectName, platform)),
@@ -121,6 +121,16 @@ List<Directory> platformDirs(String platform) => [
         p.join('packages', '${projectName}_ui', '${projectName}_ui_$platform'),
       ),
     ];
+
+/// The directory of [feature] on platform.
+Directory featureDirectory(String feature, String platform) => Directory(
+      p.join(
+        'packages',
+        projectName,
+        '${projectName}_$platform',
+        '${projectName}_${platform}_$feature',
+      ),
+    );
 
 /// Verifys that tests in [dirs] pass with 100% test coverage.
 ///
@@ -294,7 +304,7 @@ Future<int> _runFlutterFormat({
   }
 
   final String stdout = result.stdout;
-  final regExp = RegExp(r'Formatted [0-9]+ files (([0-9]+) changed)');
+  final regExp = RegExp(r'Formatted [0-9]+ files \(([0-9]+) changed\)');
   final match = regExp.firstMatch(stdout)!;
   return int.parse(match.group(1)!);
 }

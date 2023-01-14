@@ -11,6 +11,7 @@ class LinuxAddFeatureCommand extends PlatformAddFeatureCommand {
     required super.project,
     super.melosBootstrap,
     super.melosClean,
+    super.flutterFormatFix,
     super.generator,
   }) : super(
           platform: Platform.linux,

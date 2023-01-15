@@ -11,7 +11,7 @@ This is under heavy development and not yet ready for real world use.
 
 ## Well architectured Flutter apps. Fast ⚡
 
-Rapid is based on carefully selected packages from the Flutter Community and brings their power together. No headaches about messing up your architecture when adding new features. Rapid enables developers to focus on quickly iterating and adding features.
+Rapid is based on carefully selected packages from the Flutter Community and brings their power together. No headaches about messing up your architecture when adding new features. Rapid enables developers to quickly iterate and focus on what really matters.
 
 | Package                                                                          | Description |
 | -------------------------------------------------------------------------------- | ----------- |
@@ -19,7 +19,7 @@ Rapid is based on carefully selected packages from the Flutter Community and bri
 | [rapid]()          | TODO |
 | [rapid_test]() | TODO |
 
-## What does Rapid provide? 👀
+## What packages is Rapid based on? 👀
 
 | Task                   | via                                     |
 | ---------------------- |:---------------------------------------:|
@@ -29,15 +29,13 @@ Rapid is based on carefully selected packages from the Flutter Community and bri
 | Theming                | [theme_tailor](https://pub.dev/packages/theme_tailor) |
 | Localization           | [flutter_localizations](https://docs.flutter.dev/development/accessibility-and-localization/internationalization) |
 | State Management       | [bloc](https://pub.dev/packages/bloc) |
-| Immutable Data Classes | [freezed](https://pub.dev/packages/freezed) |
+| Immutability           | [freezed](https://pub.dev/packages/freezed) |
 
 Special thanks to all developers/contributors of these packages ❤️
 
 ## Architecture
 
 <img src="./assets/architecture.png">
-
-<img src="./assets/overview.svg">
 
 ## Platform-independent Packages
 

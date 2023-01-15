@@ -43,15 +43,15 @@ void main() {
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs('android');
-          final featureDir = featureDirectory(featureName, 'android');
+          final featureDir = featurePackage(featureName, 'android');
           verifyDoExist([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
             featureDir,
           ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
             featureDir,
           ]);

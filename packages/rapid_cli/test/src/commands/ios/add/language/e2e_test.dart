@@ -45,13 +45,13 @@ void main() {
           final platformDependentDirs = platformDirs('ios');
           final langFiles = languageFiles('home_page', 'ios', ['en', language]);
           verifyDoExist([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
             ...langFiles,
           ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
         },

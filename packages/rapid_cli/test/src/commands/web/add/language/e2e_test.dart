@@ -45,13 +45,13 @@ void main() {
           final platformDependentDirs = platformDirs('web');
           final langFiles = languageFiles('home_page', 'web', ['en', language]);
           verifyDoExist([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
             ...langFiles,
           ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
         },

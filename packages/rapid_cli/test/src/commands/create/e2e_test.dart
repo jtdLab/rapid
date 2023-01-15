@@ -43,12 +43,13 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          // TODO maybe verify that no platform dir exists
+          verifyDoExist(platformIndependentPackages);
+          verifyDoNotExist(allPlatformDirs);
 
+          verifyDoNotHaveTests({domainPackage, infrastructurePackage});
           await verifyTestsPassWith100PercentCoverage(
-            platformIndependentDirs
-              ..remove(domainDir)
-              ..remove(infraDir),
+            platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
           );
         },
       );
@@ -68,15 +69,27 @@ void main() {
             await verifyNoAnalyzerIssues();
             await verifyNoFormattingIssues();
 
-            // TODO maybe verify that platform dir exist
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs('android'),
+              featurePackage('app', 'android'),
+              featurePackage('home_page', 'android'),
+              featurePackage('routing', 'android'),
+            });
+            verifyDoNotExist(allPlatformDirs.without(platformDirs('android')));
 
-            final platformDependentDirs = platformDirs('android');
-            await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs
-                ..remove(domainDir)
-                ..remove(infraDir),
-              ...platformDependentDirs,
-            ]);
+            verifyDoNotHaveTests({
+              domainPackage,
+              infrastructurePackage,
+              featurePackage('routing', 'android'),
+            });
+            await verifyTestsPassWith100PercentCoverage({
+              ...platformIndependentPackages
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', 'android'),
+              featurePackage('home_page', 'android'),
+              platformUiPackage('android'),
+            });
           },
         );
 
@@ -98,14 +111,14 @@ void main() {
 
             final platformDependentDirs = platformDirs('android');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs
-                ..remove(domainDir)
-                ..remove(infraDir),
+              ...platformIndependentPackages
+                ..remove(domainPackage)
+                ..remove(infrastructurePackage),
               ...platformDependentDirs,
             ]);
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
-              cwd: appDir.path,
+              cwd: appPackage.path,
               pathToTests: 'integration_test/development_test.dart',
               platform: Platform.android,
             );
@@ -132,9 +145,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('ios');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs
-                ..remove(domainDir)
-                ..remove(infraDir),
+              ...platformIndependentPackages
+                ..remove(domainPackage)
+                ..remove(infrastructurePackage),
               ...platformDependentDirs,
             ]);
           },
@@ -158,14 +171,14 @@ void main() {
 
             final platformDependentDirs = platformDirs('ios');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs
-                ..remove(domainDir)
-                ..remove(infraDir),
+              ...platformIndependentPackages
+                ..remove(domainPackage)
+                ..remove(infrastructurePackage),
               ...platformDependentDirs,
             ]);
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
-              cwd: appDir.path,
+              cwd: appPackage.path,
               pathToTests: 'integration_test/development_test.dart',
               platform: Platform.ios,
             );
@@ -192,9 +205,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('linux');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs
-                ..remove(domainDir)
-                ..remove(infraDir),
+              ...platformIndependentPackages
+                ..remove(domainPackage)
+                ..remove(infrastructurePackage),
               ...platformDependentDirs,
             ]);
           },
@@ -218,14 +231,14 @@ void main() {
 
             final platformDependentDirs = platformDirs('linux');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs
-                ..remove(domainDir)
-                ..remove(infraDir),
+              ...platformIndependentPackages
+                ..remove(domainPackage)
+                ..remove(infrastructurePackage),
               ...platformDependentDirs,
             ]);
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
-              cwd: appDir.path,
+              cwd: appPackage.path,
               pathToTests: 'integration_test/development_test.dart',
               platform: Platform.linux,
             );
@@ -252,9 +265,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('macos');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs
-                ..remove(domainDir)
-                ..remove(infraDir),
+              ...platformIndependentPackages
+                ..remove(domainPackage)
+                ..remove(infrastructurePackage),
               ...platformDependentDirs,
             ]);
           },
@@ -278,14 +291,14 @@ void main() {
 
             final platformDependentDirs = platformDirs('macos');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs
-                ..remove(domainDir)
-                ..remove(infraDir),
+              ...platformIndependentPackages
+                ..remove(domainPackage)
+                ..remove(infrastructurePackage),
               ...platformDependentDirs,
             ]);
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
-              cwd: appDir.path,
+              cwd: appPackage.path,
               pathToTests: 'integration_test/development_test.dart',
               platform: Platform.macos,
             );
@@ -312,9 +325,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('web');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs
-                ..remove(domainDir)
-                ..remove(infraDir),
+              ...platformIndependentPackages
+                ..remove(domainPackage)
+                ..remove(infrastructurePackage),
               ...platformDependentDirs,
             ]);
           },
@@ -338,14 +351,14 @@ void main() {
 
             final platformDependentDirs = platformDirs('web');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs
-                ..remove(domainDir)
-                ..remove(infraDir),
+              ...platformIndependentPackages
+                ..remove(domainPackage)
+                ..remove(infrastructurePackage),
               ...platformDependentDirs,
             ]);
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
-              cwd: appDir.path,
+              cwd: appPackage.path,
               pathToTests: 'integration_test/development_test.dart',
               platform: Platform.web,
             );
@@ -372,9 +385,9 @@ void main() {
 
             final platformDependentDirs = platformDirs('windows');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs
-                ..remove(domainDir)
-                ..remove(infraDir),
+              ...platformIndependentPackages
+                ..remove(domainPackage)
+                ..remove(infrastructurePackage),
               ...platformDependentDirs,
             ]);
           },
@@ -398,14 +411,14 @@ void main() {
 
             final platformDependentDirs = platformDirs('windows');
             await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentDirs
-                ..remove(domainDir)
-                ..remove(infraDir),
+              ...platformIndependentPackages
+                ..remove(domainPackage)
+                ..remove(infrastructurePackage),
               ...platformDependentDirs,
             ]);
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
-              cwd: appDir.path,
+              cwd: appPackage.path,
               pathToTests: 'integration_test/development_test.dart',
               platform: Platform.windows,
             );

@@ -42,10 +42,10 @@ void main() {
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs('windows');
-          verifyDoExist(platformIndependentDirs);
+          verifyDoExist(platformIndependentPackages);
           verifyDoNotExist(platformDependentDirs);
 
-          await verifyTestsPassWith100PercentCoverage(platformIndependentDirs);
+          await verifyTestsPassWith100PercentCoverage(platformIndependentPackages);
         },
       );
     },

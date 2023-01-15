@@ -3,18 +3,18 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 class ProjectAndroidApp extends StatelessWidget {
   final Locale? locale;
-  final Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates;
+  final Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates;
   final Iterable<Locale> supportedLocales;
-  final RouteInformationParser<Object>? routeInformationParser;
-  final RouterDelegate<Object>? routerDelegate;
+  final RouteInformationParser<Object> routeInformationParser;
+  final RouterDelegate<Object> routerDelegate;
 
   const ProjectAndroidApp({
     super.key,
     this.locale,
-    this.localizationsDelegates,
+    required this.localizationsDelegates,
     required this.supportedLocales,
-    this.routeInformationParser,
-    this.routerDelegate,
+    required this.routeInformationParser,
+    required this.routerDelegate,
   });
 
   @override
@@ -23,7 +23,7 @@ class ProjectAndroidApp extends StatelessWidget {
       locale: locale,
       localizationsDelegates: [
         ...GlobalMaterialLocalizations.delegates,
-        ...?localizationsDelegates,
+        ...localizationsDelegates,
       ],
       supportedLocales: supportedLocales,
       routeInformationParser: routeInformationParser,

@@ -76,61 +76,67 @@ void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
   }
 }
 
-/// The name of the test project.
 late String projectName;
 
-/// The app dir of the test project.
-final appDir = Directory(p.join('packages', projectName, projectName));
+/// The app package containing all setup.
+final appPackage = Directory(p.join('packages', projectName, projectName));
 
-/// The dependency injection dir of the test project.
-final diDir = Directory(p.join('packages', projectName, '${projectName}_di'));
+/// The dependency injection package.
+final diPackage =
+    Directory(p.join('packages', projectName, '${projectName}_di'));
 
-/// The domain  dir of the test project.
-final domainDir =
+/// The domain package.
+final domainPackage =
     Directory(p.join('packages', projectName, '${projectName}_domain'));
 
-/// The infrastructure dir of the test project.
-final infraDir =
+/// The infrastructure package.
+final infrastructurePackage =
     Directory(p.join('packages', projectName, '${projectName}_infrastructure'));
 
-/// The logging dir of the test project.
-final loggingDir =
+/// The logging package.
+final loggingPackage =
     Directory(p.join('packages', projectName, '${projectName}_logging'));
 
-/// The ui dir of the test project.
-final uiDir =
+/// The directory of [platform] containing platform specific features.
+Directory platformDir(String platform) =>
+    Directory(p.join('packages', projectName, '${projectName}_$platform'));
+
+/// The platform-independent ui package.
+final uiPackage =
     Directory(p.join('packages', '${projectName}_ui', '${projectName}_ui'));
 
-/// All platform independent dirs of the test project.
-final platformIndependentDirs = [
-  appDir,
-  diDir,
-  domainDir,
-  infraDir,
-  loggingDir,
-  uiDir
+/// The package of [feature] on platform.
+Directory featurePackage(String feature, String platform) => Directory(
+    p.join(platformDir(platform).path, '${projectName}_${platform}_$feature'));
+
+/// The ui package of [platform].
+Directory platformUiPackage(String platform) => Directory(
+    p.join('packages', '${projectName}_ui', '${projectName}_ui_$platform'));
+
+/// All platform independent packages.
+final platformIndependentPackages = [
+  appPackage,
+  diPackage,
+  domainPackage,
+  infrastructurePackage,
+  loggingPackage,
+  uiPackage
 ];
 
 /// All [platform]-dependent dirs of the test project.
 List<Directory> platformDirs(String platform) => [
-      Directory(p.join('packages', projectName, projectName, platform)),
-      if (platform == 'web')
-        Directory(p.join('packages', projectName, projectName, 'test_driver')),
-      Directory(p.join('packages', projectName, '${projectName}_$platform')),
-      Directory(
-        p.join('packages', '${projectName}_ui', '${projectName}_ui_$platform'),
-      ),
+      Directory(p.join(appPackage.path, platform)),
+      if (platform == 'web') Directory(p.join(appPackage.path, 'test_driver')),
+      platformDir(platform),
+      platformUiPackage(platform),
     ];
 
-/// The directory of [feature] on platform.
-Directory featureDirectory(String feature, String platform) => Directory(
-      p.join(
-        'packages',
-        projectName,
-        '${projectName}_$platform',
-        '${projectName}_${platform}_$feature',
-      ),
-    );
+List<Directory> get allPlatformDirs =>
+    ['android', 'ios', 'linux', 'macos', 'web', 'windows']
+        .map((e) => platformDirs(e))
+        .fold(<Directory>[], (prev, curr) => prev + curr).toList();
+
+// TODO cleaner
 
 /// All source files a feature requires to support [languages].
 List<File> languageFiles(
@@ -193,17 +199,33 @@ List<File> languageFiles(
       ),
     ];
 
+extension IterableX<E extends FileSystemEntity> on Iterable<E> {
+  Iterable<E> without(Iterable<E> iterable) =>
+      where((e) => !iterable.any((element) => e.path == element.path));
+}
+
 /// Verifys that tests in [dirs] pass with 100% test coverage.
 ///
 /// Runs `flutter test --coverage` in every provided dir.
 Future<void> verifyTestsPassWith100PercentCoverage(
-  List<Directory> dirs,
+  Iterable<Directory> dirs,
 ) async {
   for (final dir in dirs) {
     final testResult = await _runFlutterTest(cwd: dir.path);
 
     expect(testResult.failedTests, 0);
     expect(testResult.coverage, 100);
+  }
+}
+
+/// Verifys that no element in [dirs] has a test directory.
+Future<void> verifyDoNotHaveTests(
+  Iterable<Directory> dirs,
+) async {
+  for (final dir in dirs) {
+    final hasTestDir = dir.listSync().any((e) => p.basename(e.path) == 'test');
+
+    expect(hasTestDir, false);
   }
 }
 

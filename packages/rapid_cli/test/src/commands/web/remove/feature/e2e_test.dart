@@ -43,15 +43,15 @@ void main() {
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs('web');
-          final featureDir = featureDirectory(featureName, 'web');
+          final featureDir = featurePackage(featureName, 'web');
           verifyDoExist([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
           verifyDoNotExist([featureDir]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
         },

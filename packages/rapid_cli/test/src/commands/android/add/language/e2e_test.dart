@@ -46,13 +46,13 @@ void main() {
           final langFiles =
               languageFiles('home_page', 'android', ['en', language]);
           verifyDoExist([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
             ...langFiles,
           ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
         },

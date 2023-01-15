@@ -43,15 +43,15 @@ void main() {
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs('macos');
-          final featureDir = featureDirectory(featureName, 'macos');
+          final featureDir = featurePackage(featureName, 'macos');
           verifyDoExist([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
             featureDir,
           ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
             featureDir,
           ]);

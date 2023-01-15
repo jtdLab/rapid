@@ -43,11 +43,11 @@ void main() {
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs('macos');
-          verifyDoExist(platformIndependentDirs);
+          verifyDoExist(platformIndependentPackages);
           verifyDoExist(platformDependentDirs);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
         },
@@ -71,16 +71,16 @@ void main() {
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs('macos');
-          verifyDoExist(platformIndependentDirs);
+          verifyDoExist(platformIndependentPackages);
           verifyDoExist(platformDependentDirs);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentDirs,
+            ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
 
           final failedIntegrationTests = await runFlutterIntegrationTest(
-            cwd: appDir.path,
+            cwd: appPackage.path,
             pathToTests: 'integration_test/development_test.dart',
             platform: Platform.macos,
           );

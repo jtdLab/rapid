@@ -35,7 +35,8 @@ Special thanks to all developers/contributors of these packages ❤️
 
 ## Architecture
 
-<img src="./assets/overview.png">
+<img src="./assets/overview_black.png#gh-dark-mode-only" height="100">
+<img src="./assets/overview_white.png.svg#gh-light-mode-only" height="100">
 
 ## Platform-independent Packages
 

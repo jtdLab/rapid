@@ -24,48 +24,49 @@ flutter pub global activate -sgit https://github.com/jtdLab/rapid.git --git-path
 Quickly create a Rapid project.
 
 ```sh
-Creates a new Rapid project in the specified directory.
+Create a new Rapid project.
 
-Usage: rapid create <output directory>
--h, --help            Print this usage information.
-
-
-    --project-name    The name of this new project. This must be a valid dart package name.
-    --desc            The description of this new project.
-                      (defaults to "A Rapid app.")
-    --org-name        The organization of this new project.
-                      (defaults to "com.example")
-    --example         Wheter this new project contains example features and their tests.
+Usage: rapid create <project name> [arguments]
+-h, --help          Print this usage information.
 
 
-    --android         Wheter this new project supports the Android platform.
-    --ios             Wheter this new project supports the iOS platform.
-    --linux           Wheter this new project supports the Linux platform.
-    --macos           Wheter this new project supports the macOS platform.
-    --web             Wheter this new project supports the Web platform.
-    --windows         Wheter this new project supports the Windows platform.
+-o, --output-dir    The directory where to generate the new project
+                    (defaults to ".")
+    --desc          The description of the new project.
+                    (defaults to "A Rapid app.")
+    --org-name      The organization of the new project.
+                    (defaults to "com.example")
+    --example       Wheter the new project contains example features and their tests.
+
+
+    --android       Wheter the new project supports the Android platform.
+    --ios           Wheter the new project supports the iOS platform.
+    --linux         Wheter the new project supports the Linux platform.
+    --macos         Wheter the new project supports the macOS platform.
+    --web           Wheter the new project supports the Web platform.
+    --windows       Wheter the new project supports the Windows platform.
 
 Run "rapid help" to see global options.
 ```
 
 ```sh
 # Create a new Rapid project named my_app in the current directory with no platform enabled
-rapid create . --project-name my_app
+rapid create my_app --project-name
 
 # Create a new Rapid project named my_app in the current directory with ios enabled
-rapid create . --project-name my_app --ios
+rapid create my_app --project-name --ios
 
 # Create a new Rapid project named my_app in the current directory with ios, web and macos enabled
-rapid create . --project-name my_app --ios --web --macos
+rapid create my_app --project-name --ios --web --macos
 
 # Create a new Rapid project named my_app in the current directory with custom description
-rapid create . --project-name my_app --desc "My new Flutter app"
+rapid create my_app --project-name --desc "My new Flutter app"
 
 # Create a new Rapid project named my_app in the current directory with custom organization
-rapid create . --project-name my_app --org "com.custom.org"
+rapid create my_app --project-name --org "com.custom.org"
 
 # Create a new Rapid project with some example features named my_app in the current directory with android enabled
-rapid create . --project-name my_app --example --android
+rapid create my_app --project-name --example --android
 ```
 
 ---
@@ -118,69 +119,72 @@ rapid deactivate web
 rapid deactivate windows
 ```
 
-### `rapid android`
+### `rapid <platform>`
 
-Work with the Android part of an existing Rapid project
+Work with the <platform> part of an existing Rapid project
 
-### `rapid android add`
+### `rapid <platform> add`
 
-Add features and languages to the Android part of an existing Rapid project
+Add features and languages to the <platform> part of an existing Rapid project
 
-### `rapid android add feature`
+### `rapid <platform> add feature`
 
 ```sh
-# Add feature with name my_feature to the Android part of an existing Rapid project
-rapid android add feature my_feature
+# Add feature with name my_feature to the <platform> part of an existing Rapid project
+rapid <platform> add feature my_feature
 
-# Add feature with name my_feature to the Android part of an existing Rapid project with custom description
-rapid android add feature my_feature --desc "My cool feature"
+# Add feature with name my_feature to the <platform> part of an existing Rapid project with custom description
+rapid <platform> add feature my_feature --desc "My cool feature"
+
+# Add routable feature with name my_feature to the <platform> part of an existing Rapid project
+rapid <platform> add feature my_feature --routing
 ```
 
-### `rapid android add language`
+### `rapid <platform> add language`
 
 ```sh
-# Add language de to the Android part of an existing Rapid project
-rapid android add language de
+# Add language de to the <platform> part of an existing Rapid project
+rapid <platform> add language de
 ```
 
-### `rapid android feature`
+### `rapid <platform> feature`
 
-Work with a feature of the Android part of and existing Rapid project
+Work with a feature of the <platform> part of and existing Rapid project
 
-### `rapid android feature add`
+### `rapid <platform> feature add`
 
-Add a bloc or cubit to a feature of the Android part of an existing Rapid project
+Add a bloc or cubit to a feature of the <platform> part of an existing Rapid project
 
-### `rapid android feature add bloc`
+### `rapid <platform> feature add bloc`
 
 ```sh
-# Add bloc named MyBloc to the Android feature of an existing Rapid project named my_feature
-rapid android feature add bloc My --feature-name my_feature
+# Add bloc named MyBloc to the <platform> feature of an existing Rapid project named my_feature
+rapid <platform> feature add bloc My --feature-name my_feature
 ```
 
-### `rapid android feature add cubit`
+### `rapid <platform> feature add cubit`
 
 ```sh
-# Add cubit named MyCubit to the Android feature of an existing Rapid project named my_feature
-rapid android feature add cubit My --feature-name my_feature
+# Add cubit named MyCubit to the <platform> feature of an existing Rapid project named my_feature
+rapid <platform> feature add cubit My --feature-name my_feature
 ```
 
-### `rapid android remove`
+### `rapid <platform> remove`
 
-Remove features and languages from the Android part of an existing Rapid project
+Remove features and languages from the <platform> part of an existing Rapid project
 
-### `rapid android remove feature`
+### `rapid <platform> remove feature`
 
 ```sh
-# Remove the feature with name my_feature from the Android part of an existing Rapid project
-rapid android remove feature my_feature
+# Remove the feature with name my_feature from the <platform> part of an existing Rapid project
+rapid <platform> remove feature my_feature
 ```
 
-### `rapid android remove language`
+### `rapid <platform> remove language`
 
 ```sh
-# Remove language de from the Android part of an existing Rapid project
-rapid android remove language de
+# Remove language de from the <platform> part of an existing Rapid project
+rapid <platform> remove language de
 ```
 
 ### `rapid doctor`
@@ -190,4 +194,192 @@ Get helpful insights into a Rapid project.
 ```sh
 # Show information about an existing Rapid project
 rapid doctor
+```
+
+### `rapid domain`
+
+Work with the domain part of an existing Rapid project.
+
+### `rapid domain add`
+
+Add a component to the domain part of an existing Rapid project.
+
+### `rapid domain add entity`
+
+```sh
+# TODO doc
+rapid domain add entity
+```
+
+```sh
+# TODO doc
+rapid domain add entity --output-dir
+```
+
+### `rapid domain add service_interface`
+
+```sh
+# TODO doc
+rapid domain add service_interface
+```
+
+```sh
+# TODO doc
+rapid domain add service_interface --output-dir
+```
+
+### `rapid domain add value_object`
+
+```sh
+# TODO doc
+rapid domain add value_object
+```
+
+```sh
+# TODO doc
+rapid domain add value_object --output-dir
+```
+
+### `rapid domain remove`
+
+Remove a component from the domain part of an existing Rapid project.
+
+### `rapid domain remove entity`
+
+```sh
+# TODO doc
+rapid domain remove entity
+```
+
+```sh
+# TODO doc
+rapid domain remove entity --dir
+```
+
+### `rapid domain remove service_interface`
+
+```sh
+# TODO doc
+rapid domain remove service_interface
+```
+
+```sh
+# TODO doc
+rapid domain remove service_interface --dir
+```
+
+### `rapid domain remove value_object`
+
+```sh
+# TODO doc
+rapid domain remove value_object
+```
+
+```sh
+# TODO doc
+rapid domain remove value_object --dir
+```
+
+### `rapid infrastructure`
+
+Work with the infrastructure part of an existing Rapid project.
+
+### `rapid infrastructure add`
+
+Add a component to the infrastructure part of an existing Rapid project.
+
+### `rapid infrastructure add data_transfer_object`
+
+```sh
+# TODO doc
+rapid infrastructure add data_transfer_object --entity Foo
+```
+
+```sh
+# TODO doc
+rapid infrastructure add data_transfer_object --entity Foo --output-dir boom/bam
+```
+
+### `rapid infrastructure add service_implementation`
+
+```sh
+# TODO doc
+rapid infrastructure add service_implementation --service Foo
+```
+
+```sh
+# TODO doc
+rapid infrastructure add service_implementation --service Foo --output-dir boom/bam
+```
+
+### `rapid infrastructure remove`
+
+Remove a component from the infrastructure part of an existing Rapid project.
+
+### `rapid infrastructure remove data_transfer_object`
+
+```sh
+# TODO doc
+rapid infrastructure remove data_transfer_object --entity Foo
+```
+
+```sh
+# TODO doc
+rapid infrastructure remove data_transfer_object --entity Foo --dir boom/bam
+```
+
+### `rapid infrastructure remove service_implementation`
+
+```sh
+# TODO doc
+rapid infrastructure remove service_implementation --service Foo
+```
+
+```sh
+# TODO doc
+rapid infrastructure remove service_implementation --service Foo --dir boom/bam
+```
+
+### `rapid ui`
+
+Work with the UI part of an existing Rapid project.
+
+### `rapid ui <platform>`
+
+Work with the <platform> UI part of an existing Rapid project.
+
+### `rapid ui <platform> add`
+
+Add components to the <platform> UI part of an existing Rapid project.
+
+### `rapid ui <platform> add widget`
+
+Add widget to the <platform> UI part of an existing Rapid project.
+
+```sh
+# TODO doc
+rapid ui <platform> add widget Button
+```
+
+```sh
+# TODO doc
+rapid ui <platform> add widget Button --output-dir
+```
+
+### `rapid ui <platform> remove`
+
+Remove components from the <platform> UI part of an existing Rapid project.
+
+### `rapid ui <platform> remove widget`
+
+Remove widget from the <platform> UI part of an existing Rapid project.
+
+```sh
+# TODO doc
+rapid ui <platform> remove widget Button
+```
+
+```sh
+# TODO doc
+rapid ui <platform> remove widget Button --dir
 ```

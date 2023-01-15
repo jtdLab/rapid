@@ -35,7 +35,7 @@ Special thanks to all developers/contributors of these packages ❤️
 
 ## Architecture
 
-<img src="./assets/architecture.png">
+<img src="./assets/overview.png">
 
 ## Platform-independent Packages
 

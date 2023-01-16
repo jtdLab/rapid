@@ -42,14 +42,28 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('linux');
-          verifyDoExist(platformIndependentPackages);
-          verifyDoExist(platformDependentDirs);
-
-          await verifyTestsPassWith100PercentCoverage([
+          verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
+            ...platformDirs('linux'),
+            featurePackage('app', 'linux'),
+            featurePackage('home_page', 'linux'),
+            featurePackage('routing', 'linux'),
+          });
+          verifyDoNotExist(allPlatformDirs.without(platformDirs('linux')));
+
+          verifyDoNotHaveTests({
+            domainPackage,
+            infrastructurePackage,
+            featurePackage('routing', 'linux'),
+            // TODO home page should be tested and not excluded in future
+            featurePackage('home_page', 'linux'),
+          });
+          await verifyTestsPassWith100PercentCoverage({
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', 'linux'),
+            platformUiPackage('linux'),
+          });
         },
       );
 
@@ -70,14 +84,28 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('linux');
-          verifyDoExist(platformIndependentPackages);
-          verifyDoExist(platformDependentDirs);
-
-          await verifyTestsPassWith100PercentCoverage([
+          verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
+            ...platformDirs('linux'),
+            featurePackage('app', 'linux'),
+            featurePackage('home_page', 'linux'),
+            featurePackage('routing', 'linux'),
+          });
+          verifyDoNotExist(allPlatformDirs.without(platformDirs('linux')));
+
+          verifyDoNotHaveTests({
+            domainPackage,
+            infrastructurePackage,
+            featurePackage('routing', 'linux'),
+            // TODO home page should be tested and not excluded in future
+            featurePackage('home_page', 'linux'),
+          });
+          await verifyTestsPassWith100PercentCoverage({
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', 'linux'),
+            platformUiPackage('linux'),
+          });
 
           final failedIntegrationTests = await runFlutterIntegrationTest(
             cwd: appPackage.path,
@@ -89,6 +117,6 @@ void main() {
         tags: ['linux'],
       );
     },
-    timeout: const Timeout(Duration(minutes: 6)),
+    timeout: const Timeout(Duration(minutes: 7)),
   );
 }

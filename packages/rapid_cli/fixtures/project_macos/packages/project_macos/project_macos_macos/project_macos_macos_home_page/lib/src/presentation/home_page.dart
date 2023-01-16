@@ -1,3 +1,4 @@
+import 'package:project_macos_macos_home_page/src/presentation/l10n/l10n.dart';
 import 'package:project_macos_ui_macos/project_macos_ui_macos.dart';
 
 class HomePage extends StatelessWidget {
@@ -5,25 +6,18 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = ProjectMacosColors.primary;
+    final title = context.l10n.title;
 
-    return PlatformMenuBar(
-      menus: const [],
-      child: MacosWindow(
-        backgroundColor: backgroundColor,
-        child: MacosScaffold(
-          backgroundColor: backgroundColor,
-          children: [
-            ContentArea(
-              builder: (context, controller) {
-                return Center(
-                  child: Text(toString()),
-                );
-              },
-            ),
-          ],
+    return ProjectMacosScaffold(
+      children: [
+        ContentArea(
+          builder: (context, controller) {
+            return Center(
+              child: Text(title),
+            );
+          },
         ),
-      ),
+      ],
     );
   }
 }

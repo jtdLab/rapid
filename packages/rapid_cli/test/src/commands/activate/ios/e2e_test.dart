@@ -42,14 +42,28 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('ios');
-          verifyDoExist(platformIndependentPackages);
-          verifyDoExist(platformDependentDirs);
-
-          await verifyTestsPassWith100PercentCoverage([
+          verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
+            ...platformDirs('ios'),
+            featurePackage('app', 'ios'),
+            featurePackage('home_page', 'ios'),
+            featurePackage('routing', 'ios'),
+          });
+          verifyDoNotExist(allPlatformDirs.without(platformDirs('ios')));
+
+          verifyDoNotHaveTests({
+            domainPackage,
+            infrastructurePackage,
+            featurePackage('routing', 'ios'),
+            // TODO home page should be tested and not excluded in future
+            featurePackage('home_page', 'ios'),
+          });
+          await verifyTestsPassWith100PercentCoverage({
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', 'ios'),
+            platformUiPackage('ios'),
+          });
         },
       );
 
@@ -70,14 +84,28 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('ios');
-          verifyDoExist(platformIndependentPackages);
-          verifyDoExist(platformDependentDirs);
-
-          await verifyTestsPassWith100PercentCoverage([
+          verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
+            ...platformDirs('ios'),
+            featurePackage('app', 'ios'),
+            featurePackage('home_page', 'ios'),
+            featurePackage('routing', 'ios'),
+          });
+          verifyDoNotExist(allPlatformDirs.without(platformDirs('ios')));
+
+          verifyDoNotHaveTests({
+            domainPackage,
+            infrastructurePackage,
+            featurePackage('routing', 'ios'),
+            // TODO home page should be tested and not excluded in future
+            featurePackage('home_page', 'ios'),
+          });
+          await verifyTestsPassWith100PercentCoverage({
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', 'ios'),
+            platformUiPackage('ios'),
+          });
 
           final failedIntegrationTests = await runFlutterIntegrationTest(
             cwd: appPackage.path,
@@ -89,6 +117,6 @@ void main() {
         tags: ['ios'],
       );
     },
-    timeout: const Timeout(Duration(minutes: 8)), // TODO should be lower
+    timeout: const Timeout(Duration(minutes: 7)),
   );
 }

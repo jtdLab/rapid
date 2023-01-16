@@ -12,9 +12,6 @@ import 'package:universal_io/io.dart';
 /// The default description.
 const _defaultDescription = 'A Rapid app.';
 
-/// The default value for enabling example features.
-const _defaultExample = false; // TODO needed
-
 /// {@template create_command}
 /// `rapid create` command creates a new Rapid project in the specified directory.
 /// {@endtemplate}
@@ -68,7 +65,6 @@ class CreateCommand extends Command<int>
         help:
             'Wheter the new project contains example features and their tests.',
         negatable: false,
-        defaultsTo: _defaultExample,
       )
       ..addSeparator('')
       ..addFlag(
@@ -225,10 +221,9 @@ class CreateCommand extends Command<int>
     await _flutterFormatFix(cwd: outputDir);
     formatFixProgress.complete();
 
-    // TODO maybe use logger.success here
     _logger
       ..info('\n')
-      ..alert('Created a Rapid App!')
+      ..success('Created a Rapid App!')
       ..info('\n');
 
     return ExitCode.success.code;
@@ -241,7 +236,7 @@ class CreateCommand extends Command<int>
   String get _description => argResults['desc'] ?? _defaultDescription;
 
   /// Whether the user specified that the project will contain example features.
-  bool get _example => argResults['example'] ?? _defaultExample;
+  bool get _example => argResults['example'] ?? false;
 
   /// Whether the user specified that the project supports Android.
   ///

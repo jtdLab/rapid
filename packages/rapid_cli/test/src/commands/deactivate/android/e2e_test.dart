@@ -41,14 +41,19 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('android');
-          verifyDoExist(platformIndependentPackages);
-          verifyDoNotExist(platformDependentDirs);
+          verifyDoExist({
+            ...platformIndependentPackages,
+          });
+          verifyDoNotExist(allPlatformDirs);
 
-          await verifyTestsPassWith100PercentCoverage(platformIndependentPackages);
+          verifyDoNotHaveTests({domainPackage, infrastructurePackage});
+          await verifyTestsPassWith100PercentCoverage({
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+          });
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 8)), // TODO should be lower
+    timeout: const Timeout(Duration(minutes: 3)),
   );
 }

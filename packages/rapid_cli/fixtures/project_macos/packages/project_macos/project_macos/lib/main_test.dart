@@ -20,7 +20,7 @@ Future<void> runMacosApp() async {
 
   final logger = getIt<ProjectMacosLogger>();
   final app = macos.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       ProjectMacosRouterObserver(logger),
     ],
   );

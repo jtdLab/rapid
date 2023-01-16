@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:project_android_ui_android/src/app.dart';
+import 'package:project_android_ui_android/project_android_ui_android.dart';
+import 'package:project_android_ui_android/src/theme_extensions.dart';
 
 class _MockLocalizationsDelegate extends LocalizationsDelegate<dynamic> {
   @override
@@ -35,26 +35,32 @@ class _MockRouterDelegate extends RouterDelegate<Object> {
 
 void main() {
   group('ProjectAndroidApp', () {
-    late Locale? locale;
     late Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates;
     late Iterable<Locale> supportedLocales;
     late RouteInformationParser<Object> routeInformationParser;
     late RouterDelegate<Object> routerDelegate;
+    late Locale? locale;
+    late ThemeMode? themeMode;
+    late Widget? home;
 
     setUp(() {
-      locale = const Locale('en');
       localizationsDelegates = [_MockLocalizationsDelegate()];
       supportedLocales = {const Locale('en')};
       routeInformationParser = _MockRouteInformationParser();
       routerDelegate = _MockRouterDelegate();
+      locale = null;
+      themeMode = null;
+      home = null;
     });
 
     ProjectAndroidApp getApp() => ProjectAndroidApp(
-          locale: locale,
           localizationsDelegates: localizationsDelegates,
           supportedLocales: supportedLocales,
           routeInformationParser: routeInformationParser,
           routerDelegate: routerDelegate,
+          locale: locale,
+          themeMode: themeMode,
+          home: home,
         );
 
     testWidgets('returns MaterialApp with correct properties', (tester) async {
@@ -63,35 +69,44 @@ void main() {
 
       // Assert
       final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
+      expect(materialApp.locale, null);
       expect(
         materialApp.localizationsDelegates,
         [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
       );
       expect(materialApp.supportedLocales, supportedLocales);
-      expect(materialApp.locale, locale);
+      expect(materialApp.theme!.extensions.values.toSet(), lightExtensions);
+      expect(materialApp.darkTheme!.extensions.values.toSet(), darkExtensions);
       expect(materialApp.routeInformationParser, routeInformationParser);
       expect(materialApp.routerDelegate, routerDelegate);
+      expect(materialApp.home, null);
     });
 
     testWidgets(
-        'returns MaterialApp with correct properties when locale is null',
+        'returns MaterialApp with correct properties when home is not null',
         (tester) async {
       // Arrange
-      locale = null;
+      locale = const Locale('en');
+      themeMode = ThemeMode.light;
+      home = Container();
 
       // Act
       await tester.pumpWidget(getApp());
 
       // Assert
       final materialApp = tester.widget<MaterialApp>(find.byType(MaterialApp));
+      expect(materialApp.locale, locale);
       expect(
         materialApp.localizationsDelegates,
         [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
       );
       expect(materialApp.supportedLocales, supportedLocales);
-      expect(materialApp.locale, locale);
-      expect(materialApp.routeInformationParser, routeInformationParser);
-      expect(materialApp.routerDelegate, routerDelegate);
+      expect(materialApp.routeInformationParser, null);
+      expect(materialApp.routerDelegate, null);
+      expect(materialApp.theme!.extensions.values.toSet(), lightExtensions);
+      expect(materialApp.darkTheme!.extensions.values.toSet(), darkExtensions);
+      expect(materialApp.themeMode, themeMode);
+      expect(materialApp.home, home);
     });
   });
 }

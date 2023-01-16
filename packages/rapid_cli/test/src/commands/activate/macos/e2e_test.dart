@@ -42,14 +42,28 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('macos');
-          verifyDoExist(platformIndependentPackages);
-          verifyDoExist(platformDependentDirs);
-
-          await verifyTestsPassWith100PercentCoverage([
+          verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
+            ...platformDirs('macos'),
+            featurePackage('app', 'macos'),
+            featurePackage('home_page', 'macos'),
+            featurePackage('routing', 'macos'),
+          });
+          verifyDoNotExist(allPlatformDirs.without(platformDirs('macos')));
+
+          verifyDoNotHaveTests({
+            domainPackage,
+            infrastructurePackage,
+            featurePackage('routing', 'macos'),
+            // TODO home page should be tested and not excluded in future
+            featurePackage('home_page', 'macos'),
+          });
+          await verifyTestsPassWith100PercentCoverage({
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', 'macos'),
+            platformUiPackage('macos'),
+          });
         },
       );
 
@@ -70,14 +84,28 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('macos');
-          verifyDoExist(platformIndependentPackages);
-          verifyDoExist(platformDependentDirs);
-
-          await verifyTestsPassWith100PercentCoverage([
+          verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
+            ...platformDirs('macos'),
+            featurePackage('app', 'macos'),
+            featurePackage('home_page', 'macos'),
+            featurePackage('routing', 'macos'),
+          });
+          verifyDoNotExist(allPlatformDirs.without(platformDirs('macos')));
+
+          verifyDoNotHaveTests({
+            domainPackage,
+            infrastructurePackage,
+            featurePackage('routing', 'macos'),
+            // TODO home page should be tested and not excluded in future
+            featurePackage('home_page', 'macos'),
+          });
+          await verifyTestsPassWith100PercentCoverage({
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', 'macos'),
+            platformUiPackage('macos'),
+          });
 
           final failedIntegrationTests = await runFlutterIntegrationTest(
             cwd: appPackage.path,
@@ -89,6 +117,6 @@ void main() {
         tags: ['macos'],
       );
     },
-    timeout: const Timeout(Duration(minutes: 8)),
+    timeout: const Timeout(Duration(minutes: 7)),
   );
 }

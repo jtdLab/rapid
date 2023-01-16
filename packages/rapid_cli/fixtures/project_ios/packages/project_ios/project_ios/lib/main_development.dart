@@ -1,8 +1,6 @@
 import 'package:project_ios_di/project_ios_di.dart';
 import 'package:project_ios_ios_app/project_ios_ios_app.dart' as ios;
-
 import 'package:project_ios_logging/project_ios_logging.dart';
-
 import 'package:flutter/widgets.dart';
 import 'package:rapid/rapid.dart';
 
@@ -20,7 +18,7 @@ Future<void> runIosApp() async {
 
   final logger = getIt<ProjectIosLogger>();
   final app = ios.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       ProjectIosRouterObserver(logger),
     ],
   );

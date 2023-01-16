@@ -46,7 +46,7 @@ Future<void> runAndroidApp() async {
 
   final logger = getIt<AbCdLogger>();
   final app = android.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       AbCdRouterObserver(logger),
     ],
   );
@@ -77,7 +77,7 @@ Future<void> runWebApp() async {
 
   final logger = getIt<AbCdLogger>();
   final app = web.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       AbCdRouterObserver(logger),
     ],
   );
@@ -110,7 +110,7 @@ Future<void> runWebApp() async {
 
   final logger = getIt<AbCdLogger>();
   final app = web.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       AbCdRouterObserver(logger),
     ],
   );
@@ -124,7 +124,7 @@ Future<void> runAndroidApp() async {
 
   final logger = getIt<AbCdLogger>();
   final app = android.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       AbCdRouterObserver(logger),
     ],
   );

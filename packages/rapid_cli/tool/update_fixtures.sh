@@ -25,3 +25,4 @@ do
 done
 
 flutter format . --fix
+flutter analyze .

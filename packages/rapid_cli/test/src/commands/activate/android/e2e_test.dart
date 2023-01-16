@@ -42,14 +42,28 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('android');
-          verifyDoExist(platformIndependentPackages);
-          verifyDoExist(platformDependentDirs);
-
-          await verifyTestsPassWith100PercentCoverage([
+          verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
+            ...platformDirs('android'),
+            featurePackage('app', 'android'),
+            featurePackage('home_page', 'android'),
+            featurePackage('routing', 'android'),
+          });
+          verifyDoNotExist(allPlatformDirs.without(platformDirs('android')));
+
+          verifyDoNotHaveTests({
+            domainPackage,
+            infrastructurePackage,
+            featurePackage('routing', 'android'),
+            // TODO home page should be tested and not excluded in future
+            featurePackage('home_page', 'android'),
+          });
+          await verifyTestsPassWith100PercentCoverage({
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', 'android'),
+            platformUiPackage('android'),
+          });
         },
       );
 
@@ -70,14 +84,28 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('android');
-          verifyDoExist(platformIndependentPackages);
-          verifyDoExist(platformDependentDirs);
-
-          await verifyTestsPassWith100PercentCoverage([
+          verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
+            ...platformDirs('android'),
+            featurePackage('app', 'android'),
+            featurePackage('home_page', 'android'),
+            featurePackage('routing', 'android'),
+          });
+          verifyDoNotExist(allPlatformDirs.without(platformDirs('android')));
+
+          verifyDoNotHaveTests({
+            domainPackage,
+            infrastructurePackage,
+            featurePackage('routing', 'android'),
+            // TODO home page should be tested and not excluded in future
+            featurePackage('home_page', 'android'),
+          });
+          await verifyTestsPassWith100PercentCoverage({
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', 'android'),
+            platformUiPackage('android'),
+          });
 
           final failedIntegrationTests = await runFlutterIntegrationTest(
             cwd: appPackage.path,

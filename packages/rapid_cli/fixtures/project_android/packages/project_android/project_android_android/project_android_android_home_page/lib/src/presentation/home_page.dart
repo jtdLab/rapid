@@ -1,3 +1,4 @@
+import 'package:project_android_android_home_page/src/presentation/l10n/l10n.dart';
 import 'package:project_android_ui_android/project_android_ui_android.dart';
 
 class HomePage extends StatelessWidget {
@@ -5,12 +6,11 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = ProjectAndroidColors.primary;
+    final title = context.l10n.title;
 
-    return Scaffold(
-      backgroundColor: backgroundColor,
+    return ProjectAndroidScaffold(
       body: Center(
-        child: Text(toString()),
+        child: Text(title),
       ),
     );
   }

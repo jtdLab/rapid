@@ -4,24 +4,33 @@ import 'package:project_windows_ui_windows/project_windows_ui_windows.dart';
 import 'localizations.dart';
 
 class App extends StatelessWidget {
-  final List<NavigatorObserver> Function()? navigatorObserverBuilder;
+  final List<AutoRouterObserver> Function()? routerObserverBuilder;
+  final Locale? locale;
+  final ThemeMode? themeMode;
+  final Router? router;
 
   const App({
     super.key,
-    this.navigatorObserverBuilder,
+    this.routerObserverBuilder,
+    this.locale,
+    this.themeMode,
+    this.router,
   });
 
   @override
   Widget build(BuildContext context) {
-    final router = Router();
+    final router = this.router ?? Router();
 
     return ProjectWindowsApp(
       localizationsDelegates: localizationsDelegates,
       supportedLocales: supportedLocales,
       routeInformationParser: router.defaultRouteParser(),
       routerDelegate: router.delegate(
-        navigatorObservers: navigatorObserverBuilder ?? () => [],
+        navigatorObservers: routerObserverBuilder ??
+            AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
+      locale: locale,
+      themeMode: themeMode,
     );
   }
 }

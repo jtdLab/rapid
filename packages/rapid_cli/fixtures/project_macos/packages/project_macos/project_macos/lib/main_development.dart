@@ -1,8 +1,6 @@
 import 'package:project_macos_di/project_macos_di.dart';
-
 import 'package:project_macos_logging/project_macos_logging.dart';
 import 'package:project_macos_macos_app/project_macos_macos_app.dart' as macos;
-
 import 'package:flutter/widgets.dart';
 import 'package:rapid/rapid.dart';
 
@@ -20,7 +18,7 @@ Future<void> runMacosApp() async {
 
   final logger = getIt<ProjectMacosLogger>();
   final app = macos.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       ProjectMacosRouterObserver(logger),
     ],
   );

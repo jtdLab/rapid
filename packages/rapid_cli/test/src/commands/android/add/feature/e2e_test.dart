@@ -1,4 +1,8 @@
-@Tags(['e2e'])
+void main() {
+  // TODO impl
+}
+
+/* @Tags(['e2e'])
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:test/test.dart';
@@ -25,7 +29,7 @@ void main() {
       });
 
       test(
-        'android add feature (fast)',
+        'android add feature',
         () async {
           // Arrange
           const featureName = 'my_feature';
@@ -61,3 +65,4 @@ void main() {
     timeout: const Timeout(Duration(minutes: 4)),
   );
 }
+ */

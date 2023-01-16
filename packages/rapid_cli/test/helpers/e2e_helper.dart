@@ -211,6 +211,7 @@ Future<void> verifyTestsPassWith100PercentCoverage(
   Iterable<Directory> dirs,
 ) async {
   for (final dir in dirs) {
+    print(dir.path);
     final testResult = await _runFlutterTest(cwd: dir.path);
 
     expect(testResult.failedTests, 0);
@@ -223,6 +224,7 @@ Future<void> verifyDoNotHaveTests(
   Iterable<Directory> dirs,
 ) async {
   for (final dir in dirs) {
+    print(dir.path);
     final hasTestDir = dir.listSync().any((e) => p.basename(e.path) == 'test');
 
     expect(hasTestDir, false);
@@ -275,6 +277,9 @@ Future<TestResult> _runFlutterTest({
 
   final String stderr = testResult.stderr;
   final String stdout = testResult.stdout;
+
+  print(stderr);
+  print(stdout);
 
   if (stderr.contains('Test directory "test" not found')) {
     throw TestDirNotFound();
@@ -348,6 +353,9 @@ Future<int> runFlutterIntegrationTest({
   final String stderr = testResult.stderr;
   final String stdout = testResult.stdout;
 
+  print(stderr);
+  print(stdout);
+
   if (stderr.contains('Test directory "test" not found')) {
     throw TestDirNotFound();
   }
@@ -375,6 +383,10 @@ Future<int> _runFlutterAnalyze({
   );
 
   final String stderr = result.stderr;
+  final String stdout = result.stdout;
+  print(stderr);
+  print(stdout);
+
   if (stderr.isEmpty) {
     return 0;
   }
@@ -398,11 +410,14 @@ Future<int> _runFlutterFormat({
   );
 
   final String stderr = result.stderr;
+  final String stdout = result.stdout;
+  print(stderr);
+  print(stdout);
+
   if (stderr.isEmpty) {
     return 0;
   }
 
-  final String stdout = result.stdout;
   final regExp = RegExp(r'Formatted [0-9]+ files \(([0-9]+) changed\)');
   final match = regExp.firstMatch(stdout)!;
   return int.parse(match.group(1)!);

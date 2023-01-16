@@ -1,31 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:project_android_ui_android/src/theme_extensions.dart';
 
 class ProjectAndroidApp extends StatelessWidget {
-  final Locale? locale;
-  final Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates;
+  final Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates;
   final Iterable<Locale> supportedLocales;
-  final RouteInformationParser<Object> routeInformationParser;
-  final RouterDelegate<Object> routerDelegate;
+  final RouteInformationParser<Object>? routeInformationParser;
+  final RouterDelegate<Object>? routerDelegate;
+  final Locale? locale;
+  final ThemeMode? themeMode;
+  final Widget? home;
 
   const ProjectAndroidApp({
     super.key,
+    this.localizationsDelegates,
+    this.supportedLocales = const [Locale('en')],
+    this.routeInformationParser,
+    this.routerDelegate,
     this.locale,
-    required this.localizationsDelegates,
-    required this.supportedLocales,
-    required this.routeInformationParser,
-    required this.routerDelegate,
+    this.themeMode,
+    this.home,
   });
 
   @override
   Widget build(BuildContext context) {
+    final lightTheme = ThemeData(extensions: lightExtensions);
+    final darkTheme = ThemeData(extensions: darkExtensions);
+
+    if (home != null) {
+      return MaterialApp(
+        locale: locale,
+        localizationsDelegates: [
+          ...GlobalMaterialLocalizations.delegates,
+          ...?localizationsDelegates,
+        ],
+        supportedLocales: supportedLocales,
+        theme: lightTheme,
+        darkTheme: darkTheme,
+        themeMode: themeMode,
+        home: home,
+      );
+    }
+
     return MaterialApp.router(
-      locale: locale,
       localizationsDelegates: [
         ...GlobalMaterialLocalizations.delegates,
-        ...localizationsDelegates,
+        ...?localizationsDelegates,
       ],
       supportedLocales: supportedLocales,
+      theme: lightTheme,
+      darkTheme: darkTheme,
       routeInformationParser: routeInformationParser,
       routerDelegate: routerDelegate,
     );

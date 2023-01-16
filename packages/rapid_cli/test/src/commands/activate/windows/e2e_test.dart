@@ -42,14 +42,28 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('windows');
-          verifyDoExist(platformIndependentPackages);
-          verifyDoExist(platformDependentDirs);
-
-          await verifyTestsPassWith100PercentCoverage([
+          verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
+            ...platformDirs('windows'),
+            featurePackage('app', 'windows'),
+            featurePackage('home_page', 'windows'),
+            featurePackage('routing', 'windows'),
+          });
+          verifyDoNotExist(allPlatformDirs.without(platformDirs('windows')));
+
+          verifyDoNotHaveTests({
+            domainPackage,
+            infrastructurePackage,
+            featurePackage('routing', 'windows'),
+            // TODO home page should be tested and not excluded in future
+            featurePackage('home_page', 'windows'),
+          });
+          await verifyTestsPassWith100PercentCoverage({
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', 'windows'),
+            platformUiPackage('windows'),
+          });
         },
       );
 
@@ -70,14 +84,28 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('windows');
-          verifyDoExist(platformIndependentPackages);
-          verifyDoExist(platformDependentDirs);
-
-          await verifyTestsPassWith100PercentCoverage([
+          verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
+            ...platformDirs('windows'),
+            featurePackage('app', 'windows'),
+            featurePackage('home_page', 'windows'),
+            featurePackage('routing', 'windows'),
+          });
+          verifyDoNotExist(allPlatformDirs.without(platformDirs('windows')));
+
+          verifyDoNotHaveTests({
+            domainPackage,
+            infrastructurePackage,
+            featurePackage('routing', 'windows'),
+            // TODO home page should be tested and not excluded in future
+            featurePackage('home_page', 'windows'),
+          });
+          await verifyTestsPassWith100PercentCoverage({
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', 'windows'),
+            platformUiPackage('windows'),
+          });
 
           final failedIntegrationTests = await runFlutterIntegrationTest(
             cwd: appPackage.path,
@@ -89,6 +117,6 @@ void main() {
         tags: ['windows'],
       );
     },
-    timeout: const Timeout(Duration(minutes: 8)), // TODO should be lower
+    timeout: const Timeout(Duration(minutes: 7)),
   );
 }

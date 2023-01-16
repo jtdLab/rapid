@@ -1,7 +1,5 @@
 import 'package:project_windows_di/project_windows_di.dart';
-
 import 'package:project_windows_logging/project_windows_logging.dart';
-
 import 'package:project_windows_windows_app/project_windows_windows_app.dart'
     as windows;
 import 'package:flutter/widgets.dart';
@@ -21,7 +19,7 @@ Future<void> runWindowsApp() async {
 
   final logger = getIt<ProjectWindowsLogger>();
   final app = windows.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       ProjectWindowsRouterObserver(logger),
     ],
   );

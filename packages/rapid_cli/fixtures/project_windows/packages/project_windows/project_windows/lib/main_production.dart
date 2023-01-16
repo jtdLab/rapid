@@ -21,7 +21,7 @@ Future<void> runWindowsApp() async {
 
   final logger = getIt<ProjectWindowsLogger>();
   final app = windows.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       ProjectWindowsRouterObserver(logger),
     ],
   );

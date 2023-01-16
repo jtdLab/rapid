@@ -20,7 +20,7 @@ Future<void> runLinuxApp() async {
 
   final logger = getIt<ProjectLinuxLogger>();
   final app = linux.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       ProjectLinuxRouterObserver(logger),
     ],
   );

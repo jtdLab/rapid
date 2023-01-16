@@ -21,7 +21,7 @@ Future<void> runAndroidApp() async {
 
   final logger = getIt<ProjectAndroidLogger>();
   final app = android.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       ProjectAndroidRouterObserver(logger),
     ],
   );

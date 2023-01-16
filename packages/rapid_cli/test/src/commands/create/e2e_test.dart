@@ -82,12 +82,13 @@ void main() {
               domainPackage,
               infrastructurePackage,
               featurePackage('routing', 'android'),
+              // TODO home page should be tested and not excluded in future
+              featurePackage('home_page', 'android'),
             });
             await verifyTestsPassWith100PercentCoverage({
               ...platformIndependentPackages
                   .without({domainPackage, infrastructurePackage}),
               featurePackage('app', 'android'),
-              featurePackage('home_page', 'android'),
               platformUiPackage('android'),
             });
           },
@@ -107,15 +108,28 @@ void main() {
             await verifyNoAnalyzerIssues();
             await verifyNoFormattingIssues();
 
-            // TODO maybe verify that platform dir exist
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs('android'),
+              featurePackage('app', 'android'),
+              featurePackage('home_page', 'android'),
+              featurePackage('routing', 'android'),
+            });
+            verifyDoNotExist(allPlatformDirs.without(platformDirs('android')));
 
-            final platformDependentDirs = platformDirs('android');
-            await verifyTestsPassWith100PercentCoverage([
+            verifyDoNotHaveTests({
+              domainPackage,
+              infrastructurePackage,
+              featurePackage('routing', 'android'),
+              // TODO home page should be tested and not excluded in future
+              featurePackage('home_page', 'android'),
+            });
+            await verifyTestsPassWith100PercentCoverage({
               ...platformIndependentPackages
-                ..remove(domainPackage)
-                ..remove(infrastructurePackage),
-              ...platformDependentDirs,
-            ]);
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', 'android'),
+              platformUiPackage('android'),
+            });
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
               cwd: appPackage.path,
@@ -141,15 +155,28 @@ void main() {
             await verifyNoAnalyzerIssues();
             await verifyNoFormattingIssues();
 
-            // TODO maybe verify that platform dir exist
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs('ios'),
+              featurePackage('app', 'ios'),
+              featurePackage('home_page', 'ios'),
+              featurePackage('routing', 'ios'),
+            });
+            verifyDoNotExist(allPlatformDirs.without(platformDirs('ios')));
 
-            final platformDependentDirs = platformDirs('ios');
-            await verifyTestsPassWith100PercentCoverage([
+            verifyDoNotHaveTests({
+              domainPackage,
+              infrastructurePackage,
+              featurePackage('routing', 'ios'),
+              // TODO home page should be tested and not excluded in future
+              featurePackage('home_page', 'ios'),
+            });
+            await verifyTestsPassWith100PercentCoverage({
               ...platformIndependentPackages
-                ..remove(domainPackage)
-                ..remove(infrastructurePackage),
-              ...platformDependentDirs,
-            ]);
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', 'ios'),
+              platformUiPackage('ios'),
+            });
           },
         );
 
@@ -167,15 +194,28 @@ void main() {
             await verifyNoAnalyzerIssues();
             await verifyNoFormattingIssues();
 
-            // TODO maybe verify that platform dir exist
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs('ios'),
+              featurePackage('app', 'ios'),
+              featurePackage('home_page', 'ios'),
+              featurePackage('routing', 'ios'),
+            });
+            verifyDoNotExist(allPlatformDirs.without(platformDirs('ios')));
 
-            final platformDependentDirs = platformDirs('ios');
-            await verifyTestsPassWith100PercentCoverage([
+            verifyDoNotHaveTests({
+              domainPackage,
+              infrastructurePackage,
+              featurePackage('routing', 'ios'),
+              // TODO home page should be tested and not excluded in future
+              featurePackage('home_page', 'ios'),
+            });
+            await verifyTestsPassWith100PercentCoverage({
               ...platformIndependentPackages
-                ..remove(domainPackage)
-                ..remove(infrastructurePackage),
-              ...platformDependentDirs,
-            ]);
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', 'ios'),
+              platformUiPackage('ios'),
+            });
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
               cwd: appPackage.path,
@@ -201,15 +241,28 @@ void main() {
             await verifyNoAnalyzerIssues();
             await verifyNoFormattingIssues();
 
-            // TODO maybe verify that platform dir exist
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs('linux'),
+              featurePackage('app', 'linux'),
+              featurePackage('home_page', 'linux'),
+              featurePackage('routing', 'linux'),
+            });
+            verifyDoNotExist(allPlatformDirs.without(platformDirs('linux')));
 
-            final platformDependentDirs = platformDirs('linux');
-            await verifyTestsPassWith100PercentCoverage([
+            verifyDoNotHaveTests({
+              domainPackage,
+              infrastructurePackage,
+              featurePackage('routing', 'linux'),
+              // TODO home page should be tested and not excluded in future
+              featurePackage('home_page', 'linux'),
+            });
+            await verifyTestsPassWith100PercentCoverage({
               ...platformIndependentPackages
-                ..remove(domainPackage)
-                ..remove(infrastructurePackage),
-              ...platformDependentDirs,
-            ]);
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', 'linux'),
+              platformUiPackage('linux'),
+            });
           },
         );
 
@@ -227,15 +280,28 @@ void main() {
             await verifyNoAnalyzerIssues();
             await verifyNoFormattingIssues();
 
-            // TODO maybe verify that platform dir exist
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs('linux'),
+              featurePackage('app', 'linux'),
+              featurePackage('home_page', 'linux'),
+              featurePackage('routing', 'linux'),
+            });
+            verifyDoNotExist(allPlatformDirs.without(platformDirs('linux')));
 
-            final platformDependentDirs = platformDirs('linux');
-            await verifyTestsPassWith100PercentCoverage([
+            verifyDoNotHaveTests({
+              domainPackage,
+              infrastructurePackage,
+              featurePackage('routing', 'linux'),
+              // TODO home page should be tested and not excluded in future
+              featurePackage('home_page', 'linux'),
+            });
+            await verifyTestsPassWith100PercentCoverage({
               ...platformIndependentPackages
-                ..remove(domainPackage)
-                ..remove(infrastructurePackage),
-              ...platformDependentDirs,
-            ]);
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', 'linux'),
+              platformUiPackage('linux'),
+            });
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
               cwd: appPackage.path,
@@ -261,15 +327,28 @@ void main() {
             await verifyNoAnalyzerIssues();
             await verifyNoFormattingIssues();
 
-            // TODO maybe verify that platform dir exist
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs('macos'),
+              featurePackage('app', 'macos'),
+              featurePackage('home_page', 'macos'),
+              featurePackage('routing', 'macos'),
+            });
+            verifyDoNotExist(allPlatformDirs.without(platformDirs('macos')));
 
-            final platformDependentDirs = platformDirs('macos');
-            await verifyTestsPassWith100PercentCoverage([
+            verifyDoNotHaveTests({
+              domainPackage,
+              infrastructurePackage,
+              featurePackage('routing', 'macos'),
+              // TODO home page should be tested and not excluded in future
+              featurePackage('home_page', 'macos'),
+            });
+            await verifyTestsPassWith100PercentCoverage({
               ...platformIndependentPackages
-                ..remove(domainPackage)
-                ..remove(infrastructurePackage),
-              ...platformDependentDirs,
-            ]);
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', 'macos'),
+              platformUiPackage('macos'),
+            });
           },
         );
 
@@ -287,15 +366,28 @@ void main() {
             await verifyNoAnalyzerIssues();
             await verifyNoFormattingIssues();
 
-            // TODO maybe verify that platform dir exist
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs('macos'),
+              featurePackage('app', 'macos'),
+              featurePackage('home_page', 'macos'),
+              featurePackage('routing', 'macos'),
+            });
+            verifyDoNotExist(allPlatformDirs.without(platformDirs('macos')));
 
-            final platformDependentDirs = platformDirs('macos');
-            await verifyTestsPassWith100PercentCoverage([
+            verifyDoNotHaveTests({
+              domainPackage,
+              infrastructurePackage,
+              featurePackage('routing', 'macos'),
+              // TODO home page should be tested and not excluded in future
+              featurePackage('home_page', 'macos'),
+            });
+            await verifyTestsPassWith100PercentCoverage({
               ...platformIndependentPackages
-                ..remove(domainPackage)
-                ..remove(infrastructurePackage),
-              ...platformDependentDirs,
-            ]);
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', 'macos'),
+              platformUiPackage('macos'),
+            });
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
               cwd: appPackage.path,
@@ -321,15 +413,28 @@ void main() {
             await verifyNoAnalyzerIssues();
             await verifyNoFormattingIssues();
 
-            // TODO maybe verify that platform dir exist
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs('web'),
+              featurePackage('app', 'web'),
+              featurePackage('home_page', 'web'),
+              featurePackage('routing', 'web'),
+            });
+            verifyDoNotExist(allPlatformDirs.without(platformDirs('web')));
 
-            final platformDependentDirs = platformDirs('web');
-            await verifyTestsPassWith100PercentCoverage([
+            verifyDoNotHaveTests({
+              domainPackage,
+              infrastructurePackage,
+              featurePackage('routing', 'web'),
+              // TODO home page should be tested and not excluded in future
+              featurePackage('home_page', 'web'),
+            });
+            await verifyTestsPassWith100PercentCoverage({
               ...platformIndependentPackages
-                ..remove(domainPackage)
-                ..remove(infrastructurePackage),
-              ...platformDependentDirs,
-            ]);
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', 'web'),
+              platformUiPackage('web'),
+            });
           },
         );
 
@@ -347,15 +452,28 @@ void main() {
             await verifyNoAnalyzerIssues();
             await verifyNoFormattingIssues();
 
-            // TODO maybe verify that platform dir exist
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs('web'),
+              featurePackage('app', 'web'),
+              featurePackage('home_page', 'web'),
+              featurePackage('routing', 'web'),
+            });
+            verifyDoNotExist(allPlatformDirs.without(platformDirs('web')));
 
-            final platformDependentDirs = platformDirs('web');
-            await verifyTestsPassWith100PercentCoverage([
+            verifyDoNotHaveTests({
+              domainPackage,
+              infrastructurePackage,
+              featurePackage('routing', 'web'),
+              // TODO home page should be tested and not excluded in future
+              featurePackage('home_page', 'web'),
+            });
+            await verifyTestsPassWith100PercentCoverage({
               ...platformIndependentPackages
-                ..remove(domainPackage)
-                ..remove(infrastructurePackage),
-              ...platformDependentDirs,
-            ]);
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', 'web'),
+              platformUiPackage('web'),
+            });
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
               cwd: appPackage.path,
@@ -367,6 +485,7 @@ void main() {
           tags: ['web'],
         );
 
+        // TODO fails because of https://github.com/felangel/mason/issues/676
         test(
           '--windows (fast)',
           () async {
@@ -381,18 +500,32 @@ void main() {
             await verifyNoAnalyzerIssues();
             await verifyNoFormattingIssues();
 
-            // TODO maybe verify that platform dir exist
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs('windows'),
+              featurePackage('app', 'windows'),
+              featurePackage('home_page', 'windows'),
+              featurePackage('routing', 'windows'),
+            });
+            verifyDoNotExist(allPlatformDirs.without(platformDirs('windows')));
 
-            final platformDependentDirs = platformDirs('windows');
-            await verifyTestsPassWith100PercentCoverage([
+            verifyDoNotHaveTests({
+              domainPackage,
+              infrastructurePackage,
+              featurePackage('routing', 'windows'),
+              // TODO home page should be tested and not excluded in future
+              featurePackage('home_page', 'windows'),
+            });
+            await verifyTestsPassWith100PercentCoverage({
               ...platformIndependentPackages
-                ..remove(domainPackage)
-                ..remove(infrastructurePackage),
-              ...platformDependentDirs,
-            ]);
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', 'windows'),
+              platformUiPackage('windows'),
+            });
           },
         );
 
+        // TODO fails because of https://github.com/felangel/mason/issues/676
         test(
           '--windows',
           () async {
@@ -407,22 +540,34 @@ void main() {
             await verifyNoAnalyzerIssues();
             await verifyNoFormattingIssues();
 
-            // TODO maybe verify that platform dir exist
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs('windows'),
+              featurePackage('app', 'windows'),
+              featurePackage('home_page', 'windows'),
+              featurePackage('routing', 'windows'),
+            });
+            verifyDoNotExist(allPlatformDirs.without(platformDirs('windows')));
 
-            final platformDependentDirs = platformDirs('windows');
-            await verifyTestsPassWith100PercentCoverage([
+            verifyDoNotHaveTests({
+              domainPackage,
+              infrastructurePackage,
+              featurePackage('routing', 'windows'),
+              // TODO home page should be tested and not excluded in future
+              featurePackage('home_page', 'windows'),
+            });
+            await verifyTestsPassWith100PercentCoverage({
               ...platformIndependentPackages
-                ..remove(domainPackage)
-                ..remove(infrastructurePackage),
-              ...platformDependentDirs,
-            ]);
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', 'windows'),
+              platformUiPackage('windows'),
+            });
 
             final failedIntegrationTests = await runFlutterIntegrationTest(
               cwd: appPackage.path,
               pathToTests: 'integration_test/development_test.dart',
               platform: Platform.windows,
             );
-            // TODO fails because of https://github.com/felangel/mason/issues/676
             expect(failedIntegrationTests, 0);
           },
           tags: ['windows'],

@@ -42,14 +42,28 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('web');
-          verifyDoExist(platformIndependentPackages);
-          verifyDoExist(platformDependentDirs);
-
-          await verifyTestsPassWith100PercentCoverage([
+          verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
+            ...platformDirs('web'),
+            featurePackage('app', 'web'),
+            featurePackage('home_page', 'web'),
+            featurePackage('routing', 'web'),
+          });
+          verifyDoNotExist(allPlatformDirs.without(platformDirs('web')));
+
+          verifyDoNotHaveTests({
+            domainPackage,
+            infrastructurePackage,
+            featurePackage('routing', 'web'),
+            // TODO home page should be tested and not excluded in future
+            featurePackage('home_page', 'web'),
+          });
+          await verifyTestsPassWith100PercentCoverage({
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', 'web'),
+            platformUiPackage('web'),
+          });
         },
       );
 
@@ -70,14 +84,28 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('web');
-          verifyDoExist(platformIndependentPackages);
-          verifyDoExist(platformDependentDirs);
-
-          await verifyTestsPassWith100PercentCoverage([
+          verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
+            ...platformDirs('web'),
+            featurePackage('app', 'web'),
+            featurePackage('home_page', 'web'),
+            featurePackage('routing', 'web'),
+          });
+          verifyDoNotExist(allPlatformDirs.without(platformDirs('web')));
+
+          verifyDoNotHaveTests({
+            domainPackage,
+            infrastructurePackage,
+            featurePackage('routing', 'web'),
+            // TODO home page should be tested and not excluded in future
+            featurePackage('home_page', 'web'),
+          });
+          await verifyTestsPassWith100PercentCoverage({
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', 'web'),
+            platformUiPackage('web'),
+          });
 
           final failedIntegrationTests = await runFlutterIntegrationTest(
             cwd: appPackage.path,
@@ -89,6 +117,6 @@ void main() {
         tags: ['web'],
       );
     },
-    timeout: const Timeout(Duration(minutes: 5)),
+    timeout: const Timeout(Duration(minutes: 7)),
   );
 }

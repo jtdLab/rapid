@@ -20,7 +20,7 @@ Future<void> runIosApp() async {
 
   final logger = getIt<ProjectIosLogger>();
   final app = ios.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       ProjectIosRouterObserver(logger),
     ],
   );

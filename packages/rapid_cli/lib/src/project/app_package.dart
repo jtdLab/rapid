@@ -112,7 +112,7 @@ class MainFile {
             '',
             'final logger = getIt<${projectName.pascalCase}Logger>();',
             'final app = $platformName.App(',
-            '  navigatorObserverBuilder: () => [',
+            '  routerObserverBuilder: () => [',
             '    ${projectName.pascalCase}RouterObserver(logger),',
             '  ],',
             ');',

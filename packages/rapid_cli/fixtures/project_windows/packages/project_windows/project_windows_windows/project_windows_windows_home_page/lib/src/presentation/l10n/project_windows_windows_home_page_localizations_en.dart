@@ -7,5 +7,5 @@ class ProjectWindowsWindowsHomePageLocalizationsEn
       : super(locale);
 
   @override
-  String get title => 'The language is english';
+  String get title => 'Home Page title in english';
 }

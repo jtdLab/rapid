@@ -1,3 +1,4 @@
+import 'package:project_ios_ios_home_page/src/presentation/l10n/l10n.dart';
 import 'package:project_ios_ui_ios/project_ios_ui_ios.dart';
 
 class HomePage extends StatelessWidget {
@@ -5,12 +6,11 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = ProjectIosColors.primary;
+    final title = context.l10n.title;
 
-    return CupertinoPageScaffold(
-      backgroundColor: backgroundColor,
-      child: Center(
-        child: Text(toString()),
+    return ProjectIosScaffold(
+      body: Center(
+        child: Text(title),
       ),
     );
   }

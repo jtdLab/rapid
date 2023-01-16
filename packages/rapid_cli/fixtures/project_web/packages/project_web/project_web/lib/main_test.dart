@@ -23,7 +23,7 @@ Future<void> runWebApp() async {
 
   final logger = getIt<ProjectWebLogger>();
   final app = web.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       ProjectWebRouterObserver(logger),
     ],
   );

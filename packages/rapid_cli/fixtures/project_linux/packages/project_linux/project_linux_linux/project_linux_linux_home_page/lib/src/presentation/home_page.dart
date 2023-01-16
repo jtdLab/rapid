@@ -1,3 +1,4 @@
+import 'package:project_linux_linux_home_page/src/presentation/l10n/l10n.dart';
 import 'package:project_linux_ui_linux/project_linux_ui_linux.dart';
 
 class HomePage extends StatelessWidget {
@@ -5,12 +6,11 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const backgroundColor = ProjectLinuxColors.primary;
+    final title = context.l10n.title;
 
-    return Scaffold(
-      backgroundColor: backgroundColor,
+    return ProjectLinuxScaffold(
       body: Center(
-        child: Text(toString()),
+        child: Text(title),
       ),
     );
   }

@@ -96,7 +96,7 @@ abstract class ProjectLinuxLinuxHomePageLocalizations {
   /// Title text shown in the Home Page
   ///
   /// In en, this message translates to:
-  /// **'The language is english'**
+  /// **'Home Page title in english'**
   String get title;
 }
 

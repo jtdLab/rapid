@@ -1,9 +1,7 @@
 import 'package:project_android_android_app/project_android_android_app.dart'
     as android;
 import 'package:project_android_di/project_android_di.dart';
-
 import 'package:project_android_logging/project_android_logging.dart';
-
 import 'package:flutter/widgets.dart';
 import 'package:rapid/rapid.dart';
 
@@ -21,7 +19,7 @@ Future<void> runAndroidApp() async {
 
   final logger = getIt<ProjectAndroidLogger>();
   final app = android.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       ProjectAndroidRouterObserver(logger),
     ],
   );

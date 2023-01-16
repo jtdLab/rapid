@@ -1,9 +1,6 @@
 import 'package:project_web_di/project_web_di.dart';
-
 import 'package:project_web_logging/project_web_logging.dart';
-
 import 'package:project_web_web_app/project_web_web_app.dart' as web;
-
 import 'package:flutter/widgets.dart';
 import 'package:rapid/rapid.dart';
 import 'package:url_strategy/url_strategy.dart';
@@ -23,7 +20,7 @@ Future<void> runWebApp() async {
 
   final logger = getIt<ProjectWebLogger>();
   final app = web.App(
-    navigatorObserverBuilder: () => [
+    routerObserverBuilder: () => [
       ProjectWebRouterObserver(logger),
     ],
   );

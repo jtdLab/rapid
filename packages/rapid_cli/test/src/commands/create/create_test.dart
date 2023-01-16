@@ -330,7 +330,7 @@ void main() {
           'Running "flutter format . --fix" in $outputDir ')).called(1);
       verify(() => flutterFormatFix(cwd: outputDir)).called(1);
       verify(() => progress.complete()).called(2);
-      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -381,7 +381,7 @@ void main() {
           'Running "flutter format . --fix" in $outputDir ')).called(1);
       verify(() => flutterFormatFix(cwd: outputDir)).called(1);
       verify(() => progress.complete()).called(2);
-      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -434,7 +434,7 @@ void main() {
           'Running "flutter format . --fix" in $outputDir ')).called(1);
       verify(() => flutterFormatFix(cwd: outputDir)).called(1);
       verify(() => progress.complete()).called(3);
-      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -487,7 +487,7 @@ void main() {
           'Running "flutter format . --fix" in $outputDir ')).called(1);
       verify(() => flutterFormatFix(cwd: outputDir)).called(1);
       verify(() => progress.complete()).called(3);
-      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -540,7 +540,7 @@ void main() {
           'Running "flutter format . --fix" in $outputDir ')).called(1);
       verify(() => flutterFormatFix(cwd: outputDir)).called(1);
       verify(() => progress.complete()).called(3);
-      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -593,7 +593,7 @@ void main() {
           'Running "flutter format . --fix" in $outputDir ')).called(1);
       verify(() => flutterFormatFix(cwd: outputDir)).called(1);
       verify(() => progress.complete()).called(3);
-      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -646,7 +646,7 @@ void main() {
           'Running "flutter format . --fix" in $outputDir ')).called(1);
       verify(() => flutterFormatFix(cwd: outputDir)).called(1);
       verify(() => progress.complete()).called(3);
-      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -699,7 +699,7 @@ void main() {
           'Running "flutter format . --fix" in $outputDir ')).called(1);
       verify(() => flutterFormatFix(cwd: outputDir)).called(1);
       verify(() => progress.complete()).called(3);
-      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -774,7 +774,7 @@ void main() {
           'Running "flutter format . --fix" in $outputDir ')).called(1);
       verify(() => flutterFormatFix(cwd: outputDir)).called(1);
       verify(() => progress.complete()).called(8);
-      verify(() => logger.alert('Created a Rapid App!')).called(1);
+      verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 

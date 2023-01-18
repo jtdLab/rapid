@@ -40,19 +40,19 @@ class RapidCommandRunner extends CommandRunner<int> {
         negatable: false,
       );
     final p = project ?? Project();
-    addCommand(ActivateCommand(logger: logger, project: p));
-    addCommand(AndroidCommand(logger: logger, project: p));
-    addCommand(CreateCommand(logger: logger));
-    addCommand(DeactivateCommand(logger: logger, project: p));
-    addCommand(DoctorCommand(logger: logger, project: p));
-    addCommand(DomainCommand(logger: logger, project: p));
-    addCommand(InfrastructureCommand(logger: logger, project: p));
-    addCommand(IosCommand(logger: logger, project: p));
-    addCommand(LinuxCommand(logger: logger, project: p));
-    addCommand(MacosCommand(logger: logger, project: p));
-    addCommand(UiCommand(logger: logger, project: p));
-    addCommand(WebCommand(logger: logger, project: p));
-    addCommand(WindowsCommand(logger: logger, project: p));
+    addCommand(ActivateCommand(logger: _logger, project: p));
+    addCommand(AndroidCommand(logger: _logger, project: p));
+    addCommand(CreateCommand(logger: _logger));
+    addCommand(DeactivateCommand(logger: _logger, project: p));
+    addCommand(DoctorCommand(logger: _logger, project: p));
+    addCommand(DomainCommand(logger: _logger, project: p));
+    addCommand(InfrastructureCommand(logger: _logger, project: p));
+    addCommand(IosCommand(logger: _logger, project: p));
+    addCommand(LinuxCommand(logger: _logger, project: p));
+    addCommand(MacosCommand(logger: _logger, project: p));
+    addCommand(UiCommand(logger: _logger, project: p));
+    addCommand(WebCommand(logger: _logger, project: p));
+    addCommand(WindowsCommand(logger: _logger, project: p));
   }
 
   @override

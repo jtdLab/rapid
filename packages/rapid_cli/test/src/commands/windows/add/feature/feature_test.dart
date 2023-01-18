@@ -12,14 +12,15 @@ import 'package:universal_io/io.dart';
 import '../../../../../helpers/helpers.dart';
 
 const expectedUsage = [
-  'Adds a feature to the Windows part of an existing Rapid project.\n'
+  'Add a feature to the Windows part of an existing Rapid project.\n'
       '\n'
       'Usage: rapid windows add feature <name> [arguments]\n'
-      '-h, --help    Print this usage information.\n'
+      '-h, --help       Print this usage information.\n'
       '\n'
       '\n'
-      '    --desc    The description of this new feature.\n'
-      '              (defaults to "A Rapid feature.")\n'
+      '    --desc       The description of this new feature.\n'
+      '                 (defaults to "A Rapid feature.")\n'
+      '    --routing    Wheter the new feature can be registered in the routing package.\n'
       '\n'
       'Run "rapid help" to see global options.'
 ];

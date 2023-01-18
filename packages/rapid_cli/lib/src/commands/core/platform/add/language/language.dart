@@ -70,7 +70,7 @@ abstract class PlatformAddLanguageCommand extends Command<int>
 
   @override
   String get description =>
-      'Adds a language to the ${_platform.prettyName} part of an existing Rapid project.';
+      'Add a language to the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {

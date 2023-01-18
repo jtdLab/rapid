@@ -14,7 +14,7 @@ import 'package:universal_io/io.dart';
 import '../../../../../helpers/helpers.dart';
 
 const expectedUsage = [
-  'Adds a language to the Windows part of an existing Rapid project.\n'
+  'Add a language to the Windows part of an existing Rapid project.\n'
       '\n'
       'Usage: rapid windows add language <language>\n'
       '-h, --help    Print this usage information.\n'

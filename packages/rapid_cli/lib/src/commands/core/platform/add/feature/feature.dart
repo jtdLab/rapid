@@ -67,7 +67,6 @@ abstract class PlatformAddFeatureCommand extends Command<int>
             'The description of this new feature.', // TODO rename to the might be the cas in other descriptions too
         defaultsTo: _defaultDescription,
       )
-      ..addSeparator('')
       // TODO maybe add a option to specify features that want a dependency before melos bs runs
       ..addFlag(
         'routing',
@@ -101,7 +100,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
 
   @override
   String get description =>
-      'Adds a feature to the ${_platform.prettyName} part of an existing Rapid project.';
+      'Add a feature to the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {

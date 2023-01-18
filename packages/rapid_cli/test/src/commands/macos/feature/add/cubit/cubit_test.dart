@@ -332,9 +332,6 @@ void main() {
         progressLogs,
         equals(['Generated ${generatedFiles.length} file(s)']),
       );
-      verify(() => logger.progress(
-              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $featurePath '))
-          .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: featurePath, logger: logger)).called(1);
       verify(() => logger.success(

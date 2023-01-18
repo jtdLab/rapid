@@ -38,7 +38,7 @@ abstract class Melos {
     required Logger logger,
   }) async {
     final bootstrapProgress = logger.progress(
-      'Running "melos bootstrapp" in $cwd ',
+      'Running "melos bootstrap" in $cwd ',
     );
 
     try {

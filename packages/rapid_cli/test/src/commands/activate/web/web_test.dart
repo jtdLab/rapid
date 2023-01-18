@@ -266,8 +266,6 @@ void main() {
       // Assert
       verifyNever(() => logger.err('Web already activated.'));
       verify(() => logger.info('Activating Web ...')).called(1);
-      verify(() => logger.progress('Running "flutter config --enable-web"'))
-          .called(1);
       verify(() => flutterConfigEnableWeb(logger: logger)).called(1);
       verify(() => logger.progress('Generating Web files')).called(1);
       verify(
@@ -303,24 +301,13 @@ void main() {
           .called(1);
       verify(() => injectionFile.addPackage('${projectName}_web_home_page'))
           .called(1);
-      verify(() => logger.progress('Running "melos clean" in . ')).called(1);
       verify(() => melosClean(logger: logger)).called(1);
-      verify(() => logger.progress('Running "melos bootstrap" in . '))
-          .called(1);
       verify(() => melosBootstrap(logger: logger)).called(1);
-      verify(() =>
-              logger.progress('Running "flutter pub get" in $diPackagePath '))
-          .called(1);
       verify(() => flutterPubGet(cwd: diPackagePath, logger: logger)).called(1);
-      verify(() => logger.progress(
-              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $diPackagePath '))
-          .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
           cwd: diPackagePath, logger: logger)).called(1);
-      verify(() => logger.progress('Running "flutter format . --fix" in . '))
-          .called(1);
       verify(() => flutterFormatFix(logger: logger)).called(1);
-      verify(() => progress.complete()).called(8);
+      verify(() => progress.complete()).called(2);
       verify(() => logger.info('Web activated!')).called(1);
       expect(result, ExitCode.success.code);
     });

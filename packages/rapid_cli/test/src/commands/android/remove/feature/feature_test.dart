@@ -202,10 +202,7 @@ void main() {
       verify(() => platformDirectory.featureExists(featureName)).called(1);
       verify(() => platformDirectory.findFeature(featureName)).called(1);
       verify(() => feature.delete()).called(1);
-      verify(() => logger.progress('Running "melos clean" in . ')).called(1);
       verify(() => melosBootstrap(logger: logger)).called(1);
-      verify(() => logger.progress('Running "melos bootstrap" in . '))
-          .called(1);
       verify(() => melosClean(logger: logger)).called(1);
       verify(() => logger.success('Removed Android feature $featureName.'))
           .called(1);

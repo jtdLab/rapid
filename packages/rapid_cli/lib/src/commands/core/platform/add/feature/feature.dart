@@ -5,7 +5,7 @@ import 'package:rapid_cli/src/commands/android/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform/add/feature/feature_bundle.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/ios/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/linux/add/feature/feature.dart';
@@ -103,12 +103,15 @@ abstract class PlatformAddFeatureCommand extends Command<int>
       'Add a feature to the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
-  Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        // TODO add a application layer to the feature template
+  Future<int> run() => runWhen(
+        [
+          melosExists(_project),
+          platformIsActivated(_platform, _project),
+        ],
+        _logger,
+        () async {
+          // TODO add a application layer to the feature template
 
-        final platformIsActivated = _project.isActivated(_platform);
-
-        if (platformIsActivated) {
           final platformDir = _project.platformDirectory(_platform);
 
           final exists = platformDir.featureExists(name);
@@ -175,12 +178,8 @@ abstract class PlatformAddFeatureCommand extends Command<int>
 
             return ExitCode.config.code;
           }
-        } else {
-          _logger.err('${_platform.prettyName} is not activated.');
-
-          return ExitCode.config.code;
-        }
-      });
+        },
+      );
 
   String get _name => _validateNameArg(argResults.rest);
 

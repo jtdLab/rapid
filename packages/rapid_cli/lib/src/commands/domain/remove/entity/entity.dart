@@ -3,7 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 // TODO maybe introduce super class for entity, service interface and value object remove
@@ -40,31 +40,35 @@ class DomainRemoveEntityCommand extends Command<int>
       'Remove an entity from the domain part of an existing Rapid project.';
 
   @override
-  Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        final name = super.className;
-        final dir = super.dir;
+  Future<int> run() => runWhen(
+        [melosExists(_project)],
+        _logger,
+        () async {
+          final name = super.className;
+          final dir = super.dir;
 
-        final domainPackage = _project.domainPackage;
-        final entity = domainPackage.entity(name: name, dir: dir);
+          final domainPackage = _project.domainPackage;
+          final entity = domainPackage.entity(name: name, dir: dir);
 
-        final exists = entity.exists();
-        if (exists) {
-          final deletedFiles = entity.delete();
+          final exists = entity.exists();
+          if (exists) {
+            final deletedFiles = entity.delete();
 
-          for (final file in deletedFiles) {
-            _logger.info(file.path);
+            for (final file in deletedFiles) {
+              _logger.info(file.path);
+            }
+
+            _logger.info('');
+            _logger.info('Deleted ${deletedFiles.length} item(s)');
+            _logger.info('');
+            _logger.success('Removed Entity $name.');
+
+            return ExitCode.success.code;
+          } else {
+            _logger.err('Entity $name not found.');
+
+            return ExitCode.config.code;
           }
-
-          _logger.info('');
-          _logger.info('Deleted ${deletedFiles.length} item(s)');
-          _logger.info('');
-          _logger.success('Removed Entity $name.');
-
-          return ExitCode.success.code;
-        } else {
-          _logger.err('Entity $name not found.');
-
-          return ExitCode.config.code;
-        }
-      });
+        },
+      );
 }

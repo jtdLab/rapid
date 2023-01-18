@@ -9,7 +9,7 @@ import 'package:rapid_cli/src/commands/activate/web/web.dart';
 import 'package:rapid_cli/src/commands/activate/windows/windows.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -93,14 +93,13 @@ abstract class ActivatePlatformCommand extends Command<int>
   });
 
   @override
-  Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        final platformIsActivated = _project.isActivated(_platform);
-
-        if (platformIsActivated) {
-          _logger.err('${_platform.prettyName} is already activated.');
-
-          return ExitCode.config.code;
-        } else {
+  Future<int> run() => runWhen(
+        [
+          melosExists(_project),
+          platformIsDeactivated(_platform, _project),
+        ],
+        _logger,
+        () async {
           _logger
               .info('Activating ${lightYellow.wrap(_platform.prettyName)} ...');
 
@@ -154,6 +153,18 @@ abstract class ActivatePlatformCommand extends Command<int>
           _logger.info('${lightYellow.wrap(_platform.prettyName)} activated!');
 
           return ExitCode.success.code;
-        }
-      });
+        },
+      );
+
+  /// Completes when [platform] is deactivated in [project].
+  Future<void> platformIsDeactivated(Platform platform, Project project) async {
+    final platformIsActivated = project.isActivated(platform);
+
+    if (platformIsActivated) {
+      throw EnvironmentException(
+        ExitCode.config.code,
+        '${platform.prettyName} is already activated.',
+      );
+    }
+  }
 }

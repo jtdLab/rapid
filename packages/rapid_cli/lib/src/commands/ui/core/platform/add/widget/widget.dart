@@ -4,7 +4,7 @@ import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ui/android/add/widget/widget.dart';
 import 'package:rapid_cli/src/commands/ui/core/platform/add/widget/widget_bundle.dart';
 import 'package:rapid_cli/src/commands/ui/ios/add/widget/widget.dart';
@@ -70,10 +70,13 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
       'Add a widget to the ${_platform.prettyName} UI part of an existing Rapid project.';
 
   @override
-  Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        final platformIsActivated = _project.isActivated(_platform);
-
-        if (platformIsActivated) {
+  Future<int> run() => runWhen(
+        [
+          melosExists(_project),
+          platformIsActivated(_platform, _project),
+        ],
+        _logger,
+        () async {
           final projectName = _project.melosFile.name();
           final name = super.className;
           final outputDir = super.outputDir;
@@ -98,10 +101,6 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
           _logger.success('Added ${_platform.prettyName} Widget $name.');
 
           return ExitCode.success.code;
-        } else {
-          _logger.err('${_platform.prettyName} is not activated.');
-
-          return ExitCode.config.code;
-        }
-      });
+        },
+      );
 }

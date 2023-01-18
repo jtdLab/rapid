@@ -27,12 +27,18 @@ class RapidCommandRunner extends CommandRunner<int> {
     Project? project,
   })  : _logger = logger ?? Logger(),
         super('rapid', 'Rapid Command Line Interface') {
-    argParser.addFlag(
-      'version',
-      abbr: 'v',
-      help: 'Print the current version.',
-      negatable: false,
-    );
+    argParser
+      ..addFlag(
+        'version',
+        abbr: 'v',
+        help: 'Print the current version.',
+        negatable: false,
+      )
+      ..addFlag(
+        'verbose',
+        help: 'Enable verbose logging.',
+        negatable: false,
+      );
     final p = project ?? Project();
     addCommand(ActivateCommand(logger: logger, project: p));
     addCommand(AndroidCommand(logger: logger, project: p));
@@ -58,6 +64,10 @@ class RapidCommandRunner extends CommandRunner<int> {
   Future<int> run(Iterable<String> args) async {
     try {
       final argResults = parse(args);
+      if (argResults['verbose'] == true) {
+        _logger.level = Level.verbose;
+      }
+
       return await runCommand(argResults) ?? ExitCode.success.code;
     } on FormatException catch (e, stackTrace) {
       _logger
@@ -77,6 +87,31 @@ class RapidCommandRunner extends CommandRunner<int> {
 
   @override
   Future<int?> runCommand(ArgResults topLevelResults) async {
+    _logger
+      ..detail('Argument information:')
+      ..detail('  Top level options:');
+    for (final option in topLevelResults.options) {
+      if (topLevelResults.wasParsed(option)) {
+        _logger.detail('  - $option: ${topLevelResults[option]}');
+      }
+    }
+    if (topLevelResults.command != null) {
+      final commandResult = topLevelResults.command!;
+      _logger
+        ..detail('  Command: ${commandResult.name}')
+        ..detail('    Command options:');
+      for (final option in commandResult.options) {
+        if (commandResult.wasParsed(option)) {
+          _logger.detail('    - $option: ${commandResult[option]}');
+        }
+      }
+
+      if (commandResult.command != null) {
+        final subCommandResult = commandResult.command!;
+        _logger.detail('    Command sub command: ${subCommandResult.name}');
+      }
+    }
+
     int? exitCode = ExitCode.unavailable.code;
     if (topLevelResults['version']) {
       _logger.info(packageVersion);

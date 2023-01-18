@@ -277,7 +277,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verifyNever(() => logger.err('Windows already activated.'));
+      verifyNever(() => logger.err('Windows is already activated.'));
       verify(() => logger.info('Activating Windows ...')).called(1);
       verify(() => flutterConfigEnableWindows(logger: logger)).called(1);
       verify(() => logger.progress('Generating Windows files')).called(1);
@@ -339,7 +339,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verifyNever(() => logger.err('Windows already activated.'));
+      verifyNever(() => logger.err('Windows is already activated.'));
       verify(() => logger.info('Activating Windows ...')).called(1);
       verify(() => flutterConfigEnableWindows(logger: logger)).called(1);
       verify(() => logger.progress('Generating Windows files')).called(1);

@@ -2,7 +2,7 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/deactivate/android/android.dart';
 import 'package:rapid_cli/src/commands/deactivate/ios/ios.dart';
 import 'package:rapid_cli/src/commands/deactivate/linux/linux.dart';
@@ -66,10 +66,13 @@ abstract class DeactivatePlatformCommand extends Command<int>
       'Removes support for ${_platform.prettyName} from this project.';
 
   @override
-  Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        final platformIsActivated = _project.isActivated(_platform);
-
-        if (platformIsActivated) {
+  Future<int> run() => runWhen(
+        [
+          melosExists(_project),
+          platformIsActivated(_platform, _project),
+        ],
+        _logger,
+        () async {
           _logger.info(
             'Deactivating ${lightYellow.wrap(_platform.prettyName)} ...',
           );
@@ -115,10 +118,6 @@ abstract class DeactivatePlatformCommand extends Command<int>
           _logger.success('${_platform.prettyName} is now deactivated.');
 
           return ExitCode.success.code;
-        } else {
-          _logger.err('${_platform.prettyName} already deactivated.');
-
-          return ExitCode.config.code;
-        }
-      });
+        },
+      );
 }

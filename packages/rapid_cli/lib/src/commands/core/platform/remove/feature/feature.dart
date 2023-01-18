@@ -3,7 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ios/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/linux/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/macos/remove/feature/feature.dart';
@@ -72,10 +72,13 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
       'Removes a feature from the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
-  Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        final platformIsActivated = _project.isActivated(_platform);
-
-        if (platformIsActivated) {
+  Future<int> run() => runWhen(
+        [
+          melosExists(_project),
+          platformIsActivated(_platform, _project),
+        ],
+        _logger,
+        () async {
           final name = _name;
 
           final platformDirectory = _project.platformDirectory(_platform);
@@ -127,12 +130,8 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
 
             return ExitCode.config.code;
           }
-        } else {
-          _logger.err('${_platform.prettyName} is not activated.');
-
-          return ExitCode.config.code;
-        }
-      });
+        },
+      );
 
   String get _name => _validateNameArg(argResults.rest);
 

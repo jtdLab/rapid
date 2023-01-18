@@ -264,7 +264,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verifyNever(() => logger.err('Web already activated.'));
+      verifyNever(() => logger.err('Web is already activated.'));
       verify(() => logger.info('Activating Web ...')).called(1);
       verify(() => flutterConfigEnableWeb(logger: logger)).called(1);
       verify(() => logger.progress('Generating Web files')).called(1);

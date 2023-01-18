@@ -3,7 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 // TODO maybe introduce super class for dto and service implementation remove
@@ -44,32 +44,36 @@ class InfrastructureRemoveDataTransferObjectCommand extends Command<int>
       'Remove a data transfer object from the infrastructure part of an existing Rapid project.';
 
   @override
-  Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        final name = super.className;
-        final dir = super.dir;
+  Future<int> run() => runWhen(
+        [melosExists(_project)],
+        _logger,
+        () async {
+          final name = super.className;
+          final dir = super.dir;
 
-        final infrastructurePackage = _project.infrastructurePackage;
-        final dataTransferObject =
-            infrastructurePackage.dataTransferObject(name: name, dir: dir);
+          final infrastructurePackage = _project.infrastructurePackage;
+          final dataTransferObject =
+              infrastructurePackage.dataTransferObject(name: name, dir: dir);
 
-        final exists = dataTransferObject.exists();
-        if (exists) {
-          final deletedFiles = dataTransferObject.delete();
+          final exists = dataTransferObject.exists();
+          if (exists) {
+            final deletedFiles = dataTransferObject.delete();
 
-          for (final file in deletedFiles) {
-            _logger.info(file.path);
+            for (final file in deletedFiles) {
+              _logger.info(file.path);
+            }
+
+            _logger.info('');
+            _logger.info('Deleted ${deletedFiles.length} item(s)');
+            _logger.info('');
+            _logger.success('Removed Data Transfer Object $name.');
+
+            return ExitCode.success.code;
+          } else {
+            _logger.err('Data Transfer Object $name not found.');
+
+            return ExitCode.config.code;
           }
-
-          _logger.info('');
-          _logger.info('Deleted ${deletedFiles.length} item(s)');
-          _logger.info('');
-          _logger.success('Removed Data Transfer Object $name.');
-
-          return ExitCode.success.code;
-        } else {
-          _logger.err('Data Transfer Object $name not found.');
-
-          return ExitCode.config.code;
-        }
-      });
+        },
+      );
 }

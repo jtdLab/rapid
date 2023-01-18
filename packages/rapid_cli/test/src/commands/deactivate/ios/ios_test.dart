@@ -254,7 +254,7 @@ void main() {
 
       // Assert
       verify(() => project.isActivated(Platform.ios)).called(1);
-      verify(() => logger.err('iOS already deactivated.')).called(1);
+      verify(() => logger.err('iOS is already deactivated.')).called(1);
       expect(result, ExitCode.config.code);
     });
   });

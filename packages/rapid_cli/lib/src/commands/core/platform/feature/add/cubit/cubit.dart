@@ -5,7 +5,7 @@ import 'package:rapid_cli/src/commands/android/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/ios/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/linux/feature/add/cubit/cubit.dart';
@@ -79,10 +79,13 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
       'Adds a cubit to a feature of the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
-  Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        final platformIsActivated = _project.isActivated(_platform);
-
-        if (platformIsActivated) {
+  Future<int> run() => runWhen(
+        [
+          melosExists(_project),
+          platformIsActivated(_platform, _project),
+        ],
+        _logger,
+        () async {
           final projectName = _project.melosFile.name();
           final featureName = _featureName;
           final name = super.className;
@@ -124,12 +127,8 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
 
             return ExitCode.config.code;
           }
-        } else {
-          _logger.err('${_platform.prettyName} is not activated.');
-
-          return ExitCode.config.code;
-        }
-      });
+        },
+      );
 
   /// Gets the name the feature the cubit should be added to.
   String get _featureName {

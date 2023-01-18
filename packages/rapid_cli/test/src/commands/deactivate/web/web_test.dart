@@ -255,7 +255,7 @@ void main() {
 
       // Assert
       verify(() => project.isActivated(Platform.web)).called(1);
-      verify(() => logger.err('Web already deactivated.')).called(1);
+      verify(() => logger.err('Web is already deactivated.')).called(1);
       expect(result, ExitCode.config.code);
     });
   });

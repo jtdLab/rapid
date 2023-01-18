@@ -257,7 +257,7 @@ void main() {
 
       // Assert
       verify(() => project.isActivated(Platform.android)).called(1);
-      verify(() => logger.err('Android already deactivated.')).called(1);
+      verify(() => logger.err('Android is already deactivated.')).called(1);
       expect(result, ExitCode.config.code);
     });
   });

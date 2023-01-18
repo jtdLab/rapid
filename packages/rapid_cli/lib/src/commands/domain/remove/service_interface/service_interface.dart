@@ -3,7 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template domain_remove_service_interface_command}
@@ -41,32 +41,36 @@ class DomainRemoveServiceInterfaceCommand extends Command<int>
       'Remove a service interface from the domain part of an existing Rapid project.';
 
   @override
-  Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        final name = super.className;
-        final dir = super.dir;
+  Future<int> run() => runWhen(
+        [melosExists(_project)],
+        _logger,
+        () async {
+          final name = super.className;
+          final dir = super.dir;
 
-        final domainPackage = _project.domainPackage;
-        final serviceInterface =
-            domainPackage.serviceInterface(name: name, dir: dir);
+          final domainPackage = _project.domainPackage;
+          final serviceInterface =
+              domainPackage.serviceInterface(name: name, dir: dir);
 
-        final exists = serviceInterface.exists();
-        if (exists) {
-          final deletedFiles = serviceInterface.delete();
+          final exists = serviceInterface.exists();
+          if (exists) {
+            final deletedFiles = serviceInterface.delete();
 
-          for (final file in deletedFiles) {
-            _logger.info(file.path);
+            for (final file in deletedFiles) {
+              _logger.info(file.path);
+            }
+
+            _logger.info('');
+            _logger.info('Deleted ${deletedFiles.length} item(s)');
+            _logger.info('');
+            _logger.success('Removed Service Interface $name.');
+
+            return ExitCode.success.code;
+          } else {
+            _logger.err('Service Interface $name not found.');
+
+            return ExitCode.config.code;
           }
-
-          _logger.info('');
-          _logger.info('Deleted ${deletedFiles.length} item(s)');
-          _logger.info('');
-          _logger.success('Removed Service Interface $name.');
-
-          return ExitCode.success.code;
-        } else {
-          _logger.err('Service Interface $name not found.');
-
-          return ExitCode.config.code;
-        }
-      });
+        },
+      );
 }

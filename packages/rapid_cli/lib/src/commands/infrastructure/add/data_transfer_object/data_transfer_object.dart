@@ -3,7 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:recase/recase.dart';
@@ -58,30 +58,34 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
       'Add a data transfer object to the infrastructure part of an existing Rapid project.';
 
   @override
-  Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        final projectName = _project.melosFile.name();
-        final entityName = _entity;
-        final outputDir = super.outputDir;
+  Future<int> run() => runWhen(
+        [melosExists(_project)],
+        _logger,
+        () async {
+          final projectName = _project.melosFile.name();
+          final entityName = _entity;
+          final outputDir = super.outputDir;
 
-        final generateProgress = _logger.progress('Generating files');
-        final generator = await _generator(dataTransferObjectBundle);
-        final files = await generator.generate(
-          DirectoryGeneratorTarget(Directory('.')),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'entity_name': entityName,
-            'output_dir': outputDir,
-          },
-          logger: _logger,
-        );
-        generateProgress.complete('Generated ${files.length} file(s)');
+          final generateProgress = _logger.progress('Generating files');
+          final generator = await _generator(dataTransferObjectBundle);
+          final files = await generator.generate(
+            DirectoryGeneratorTarget(Directory('.')),
+            vars: <String, dynamic>{
+              'project_name': projectName,
+              'entity_name': entityName,
+              'output_dir': outputDir,
+            },
+            logger: _logger,
+          );
+          generateProgress.complete('Generated ${files.length} file(s)');
 
-        _logger.success(
-          'Added Data Transfer Object ${entityName.pascalCase}Dto.',
-        );
+          _logger.success(
+            'Added Data Transfer Object ${entityName.pascalCase}Dto.',
+          );
 
-        return ExitCode.success.code;
-      });
+          return ExitCode.success.code;
+        },
+      );
 
   /// Gets the name of the entity the data transfer object is related to.
   String get _entity => _validateEntityArg(argResults['entity']);

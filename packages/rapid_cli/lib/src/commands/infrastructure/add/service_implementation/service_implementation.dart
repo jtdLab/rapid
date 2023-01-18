@@ -4,7 +4,7 @@ import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:recase/recase.dart';
@@ -57,32 +57,36 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
       'Add a service implementation to the infrastructure part of an existing Rapid project.';
 
   @override
-  Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        final projectName = _project.melosFile.name();
-        final name = super.className;
-        final serviceName = _service;
-        final outputDir = super.outputDir;
+  Future<int> run() => runWhen(
+        [melosExists(_project)],
+        _logger,
+        () async {
+          final projectName = _project.melosFile.name();
+          final name = super.className;
+          final serviceName = _service;
+          final outputDir = super.outputDir;
 
-        final generateProgress = _logger.progress('Generating files');
-        // TODO add better templates that remove issues like analyze/testing coverage etc
-        final generator = await _generator(serviceImplementationBundle);
-        final files = await generator.generate(
-          DirectoryGeneratorTarget(Directory('.')),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'name': name,
-            'service_name': serviceName,
-            'output_dir': outputDir,
-          },
-          logger: _logger,
-        );
-        generateProgress.complete('Generated ${files.length} file(s)');
+          final generateProgress = _logger.progress('Generating files');
+          // TODO add better templates that remove issues like analyze/testing coverage etc
+          final generator = await _generator(serviceImplementationBundle);
+          final files = await generator.generate(
+            DirectoryGeneratorTarget(Directory('.')),
+            vars: <String, dynamic>{
+              'project_name': projectName,
+              'name': name,
+              'service_name': serviceName,
+              'output_dir': outputDir,
+            },
+            logger: _logger,
+          );
+          generateProgress.complete('Generated ${files.length} file(s)');
 
-        // TODO better hint containg related service etc
-        _logger.success('Added Service Implementation ${name.pascalCase}.');
+          // TODO better hint containg related service etc
+          _logger.success('Added Service Implementation ${name.pascalCase}.');
 
-        return ExitCode.success.code;
-      });
+          return ExitCode.success.code;
+        },
+      );
 
   /// Gets the name of the service interface this service implementation is related to.
   String get _service => _validateServiceArg(argResults['service']);

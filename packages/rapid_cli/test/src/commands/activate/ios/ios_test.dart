@@ -275,7 +275,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verifyNever(() => logger.err('iOS already activated.'));
+      verifyNever(() => logger.err('iOS is already activated.'));
       verify(() => logger.info('Activating iOS ...')).called(1);
       verify(() => flutterConfigEnableIos(logger: logger)).called(1);
       verify(() => logger.progress('Generating iOS files')).called(1);
@@ -335,7 +335,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verifyNever(() => logger.err('iOS already activated.'));
+      verifyNever(() => logger.err('iOS is already activated.'));
       verify(() => logger.info('Activating iOS ...')).called(1);
       verify(() => flutterConfigEnableIos(logger: logger)).called(1);
       verify(() => logger.progress('Generating iOS files')).called(1);

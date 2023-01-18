@@ -283,7 +283,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verifyNever(() => logger.err('Linux already activated.'));
+      verifyNever(() => logger.err('Linux is already activated.'));
       verify(() => logger.info('Activating Linux ...')).called(1);
       verify(() => flutterConfigEnableLinux(logger: logger)).called(1);
       verify(() => logger.progress('Generating Linux files')).called(1);
@@ -343,7 +343,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verifyNever(() => logger.err('Linux already activated.'));
+      verifyNever(() => logger.err('Linux is already activated.'));
       verify(() => logger.info('Activating Linux ...')).called(1);
       verify(() => flutterConfigEnableLinux(logger: logger)).called(1);
       verify(() => logger.progress('Generating Linux files')).called(1);

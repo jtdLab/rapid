@@ -283,7 +283,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verifyNever(() => logger.err('macOS already activated.'));
+      verifyNever(() => logger.err('macOS is already activated.'));
       verify(() => logger.info('Activating macOS ...')).called(1);
       verify(() => flutterConfigEnableMacos(logger: logger)).called(1);
       verify(() => logger.progress('Generating macOS files')).called(1);
@@ -343,7 +343,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verifyNever(() => logger.err('macOS already activated.'));
+      verifyNever(() => logger.err('macOS is already activated.'));
       verify(() => logger.info('Activating macOS ...')).called(1);
       verify(() => flutterConfigEnableMacos(logger: logger)).called(1);
       verify(() => logger.progress('Generating macOS files')).called(1);

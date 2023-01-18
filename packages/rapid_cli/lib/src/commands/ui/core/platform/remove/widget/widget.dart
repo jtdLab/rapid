@@ -3,7 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ui/android/remove/widget/widget.dart';
 import 'package:rapid_cli/src/commands/ui/ios/remove/widget/widget.dart';
 import 'package:rapid_cli/src/commands/ui/linux/remove/widget/widget.dart';
@@ -61,10 +61,13 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
       'Remove a widget from the ${_platform.prettyName} UI part of an existing Rapid project.';
 
   @override
-  Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        final platformIsActivated = _project.isActivated(_platform);
-
-        if (platformIsActivated) {
+  Future<int> run() => runWhen(
+        [
+          melosExists(_project),
+          platformIsActivated(_platform, _project),
+        ],
+        _logger,
+        () async {
           final name = super.className;
           final dir = super.dir;
 
@@ -90,10 +93,6 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
 
             return ExitCode.config.code;
           }
-        } else {
-          _logger.err('${_platform.prettyName} is not activated.');
-
-          return ExitCode.config.code;
-        }
-      });
+        },
+      );
 }

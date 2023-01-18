@@ -257,7 +257,7 @@ void main() {
 
       // Assert
       verify(() => project.isActivated(Platform.windows)).called(1);
-      verify(() => logger.err('Windows already deactivated.')).called(1);
+      verify(() => logger.err('Windows is already deactivated.')).called(1);
       expect(result, ExitCode.config.code);
     });
   });

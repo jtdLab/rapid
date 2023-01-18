@@ -23,6 +23,7 @@ const expectedUsage = [
       'Global options:\n'
       '-h, --help       Print this usage information.\n'
       '-v, --version    Print the current version.\n'
+      '    --verbose    Enable verbose logging.\n'
       '\n'
       'Available commands:\n'
       '  activate         Add support for a platform to an existing Rapid project.\n'
@@ -170,6 +171,33 @@ void main() {
           // Assert
           expect(result, equals(ExitCode.success.code));
           verify(() => logger.info(packageVersion)).called(1);
+        });
+      });
+
+      group('--verbose', () {
+        test('enables verbose logging', () async {
+          final result = await commandRunner.run(['--verbose']);
+          expect(result, equals(ExitCode.success.code));
+
+          verify(() => logger.detail('Argument information:')).called(1);
+          verify(() => logger.detail('  Top level options:')).called(1);
+          verify(() => logger.detail('  - verbose: true')).called(1);
+          verifyNever(() => logger.detail('    Command options:'));
+        });
+
+        test('enables verbose logging for sub commands', () async {
+          final result = await commandRunner.run([
+            '--verbose',
+            'create',
+            '--help',
+          ]);
+          expect(result, equals(ExitCode.success.code));
+
+          verify(() => logger.detail('Argument information:')).called(1);
+          verify(() => logger.detail('  Top level options:')).called(1);
+          verify(() => logger.detail('  - verbose: true')).called(1);
+          verify(() => logger.detail('  Command: create')).called(1);
+          verify(() => logger.detail('    - help: true')).called(1);
         });
       });
     });

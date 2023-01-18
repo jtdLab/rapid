@@ -5,6 +5,7 @@ import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/create/app_bundle.dart';
 import 'package:universal_io/io.dart';
@@ -127,85 +128,78 @@ class CreateCommand extends Command<int>
   String get description => 'Create a new Rapid project.';
 
   @override
-  Future<int> run() async {
-    final isFlutterInstalled = await _flutterInstalled(logger: _logger);
-    if (!isFlutterInstalled) {
-      _logger.err('Flutter not installed.');
+  Future<int> run() => runWhen(
+        [
+          flutterIsInstalled(_flutterInstalled, logger: _logger),
+          melosIsInstalled(_melosInstalled, logger: _logger),
+        ],
+        _logger,
+        () async {
+          final android = _android;
+          final ios = _ios;
+          final linux = _linux;
+          final macos = _macos;
+          final web = _web;
+          final windows = _windows;
 
-      return ExitCode.unavailable.code;
-    }
+          if (android) {
+            await _flutterConfigEnableAndroid(logger: _logger);
+          }
+          if (ios) {
+            await _flutterConfigEnableIos(logger: _logger);
+          }
+          if (linux) {
+            await _flutterConfigEnableLinux(logger: _logger);
+          }
+          if (macos) {
+            await _flutterConfigEnableMacos(logger: _logger);
+          }
+          if (web) {
+            await _flutterConfigEnableWeb(logger: _logger);
+          }
+          if (windows) {
+            await _flutterConfigEnableWindows(logger: _logger);
+          }
 
-    final isMelosInstalled = await _melosInstalled(logger: _logger);
-    if (!isMelosInstalled) {
-      _logger.err('Melos not installed.');
+          final outputDir = super.outputDir;
+          final projectName = _projectName;
+          final description = _description;
+          final orgName = super.orgName;
+          final example = _example;
 
-      return ExitCode.unavailable.code;
-    }
+          final generateProgress = _logger.progress('Generating');
+          final generator = await _generator(appBundle);
+          final files = await generator.generate(
+            DirectoryGeneratorTarget(Directory(outputDir)),
+            vars: <String, dynamic>{
+              'project_name': projectName,
+              'description': description,
+              'org_name': orgName,
+              'example': example,
+              'android': android,
+              'ios': ios,
+              'linux': linux,
+              'macos': macos,
+              'web': web,
+              'windows': windows,
+              'none': !_any
+            },
+            logger: _logger,
+          );
+          generateProgress.complete('Generated ${files.length} file(s)');
 
-    final android = _android;
-    final ios = _ios;
-    final linux = _linux;
-    final macos = _macos;
-    final web = _web;
-    final windows = _windows;
+          await _melosBootstrap(cwd: outputDir, logger: _logger);
 
-    if (android) {
-      await _flutterConfigEnableAndroid(logger: _logger);
-    }
-    if (ios) {
-      await _flutterConfigEnableIos(logger: _logger);
-    }
-    if (linux) {
-      await _flutterConfigEnableLinux(logger: _logger);
-    }
-    if (macos) {
-      await _flutterConfigEnableMacos(logger: _logger);
-    }
-    if (web) {
-      await _flutterConfigEnableWeb(logger: _logger);
-    }
-    if (windows) {
-      await _flutterConfigEnableWindows(logger: _logger);
-    }
+          await _flutterFormatFix(cwd: outputDir, logger: _logger);
 
-    final outputDir = super.outputDir;
-    final projectName = _projectName;
-    final description = _description;
-    final orgName = super.orgName;
-    final example = _example;
+          _logger
+            ..info('\n')
+            ..success('Created a Rapid App!')
+            ..info('\n');
 
-    final generateProgress = _logger.progress('Generating');
-    final generator = await _generator(appBundle);
-    final files = await generator.generate(
-      DirectoryGeneratorTarget(Directory(outputDir)),
-      vars: <String, dynamic>{
-        'project_name': projectName,
-        'description': description,
-        'org_name': orgName,
-        'example': example,
-        'android': android,
-        'ios': ios,
-        'linux': linux,
-        'macos': macos,
-        'web': web,
-        'windows': windows,
-        'none': !_any
-      },
-      logger: _logger,
-    );
-    generateProgress.complete('Generated ${files.length} file(s)');
-
-    await _melosBootstrap(cwd: outputDir, logger: _logger);
-
-    await _flutterFormatFix(cwd: outputDir, logger: _logger);
-
-    _logger
-      ..info('\n')
-      ..success('Created a Rapid App!')
-      ..info('\n');
-
-    return ExitCode.success.code;
-  }
+          return ExitCode.success.code;
+        },
+      );
 
   /// Gets the project name specified by the user.
   String get _projectName => _validateProjectNameArg(argResults.rest);

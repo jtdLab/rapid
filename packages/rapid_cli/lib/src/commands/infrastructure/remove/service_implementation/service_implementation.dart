@@ -3,7 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/run_when_cwd_has_melos.dart';
+import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -48,36 +48,40 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
       'Remove a service implementation from the infrastructure part of an existing Rapid project.';
 
   @override
-  Future<int> run() => runWhenCwdHasMelos(_project, _logger, () async {
-        final name = super.className;
-        final service = _service;
-        final dir = super.dir;
+  Future<int> run() => runWhen(
+        [melosExists(_project)],
+        _logger,
+        () async {
+          final name = super.className;
+          final service = _service;
+          final dir = super.dir;
 
-        final infrastructurePackage = _project.infrastructurePackage;
+          final infrastructurePackage = _project.infrastructurePackage;
 
-        final serviceImplementation = infrastructurePackage
-            .serviceImplementation(name: name, service: service, dir: dir);
+          final serviceImplementation = infrastructurePackage
+              .serviceImplementation(name: name, service: service, dir: dir);
 
-        final exists = serviceImplementation.exists();
-        if (exists) {
-          final deletedFiles = serviceImplementation.delete();
+          final exists = serviceImplementation.exists();
+          if (exists) {
+            final deletedFiles = serviceImplementation.delete();
 
-          for (final file in deletedFiles) {
-            _logger.info(file.path);
+            for (final file in deletedFiles) {
+              _logger.info(file.path);
+            }
+
+            _logger.info('');
+            _logger.info('Deleted ${deletedFiles.length} item(s)');
+            _logger.info('');
+            _logger.success('Removed Service Implementation $name.');
+
+            return ExitCode.success.code;
+          } else {
+            _logger.err('Service Implementation $name not found.');
+
+            return ExitCode.config.code;
           }
-
-          _logger.info('');
-          _logger.info('Deleted ${deletedFiles.length} item(s)');
-          _logger.info('');
-          _logger.success('Removed Service Implementation $name.');
-
-          return ExitCode.success.code;
-        } else {
-          _logger.err('Service Implementation $name not found.');
-
-          return ExitCode.config.code;
-        }
-      });
+        },
+      );
 
   /// Gets the name of the service interface this service implementation is related to.
   String get _service => _validateServiceArg(argResults['service']);

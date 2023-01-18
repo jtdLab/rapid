@@ -261,7 +261,7 @@ void main() {
 
       // Assert
       verify(() => project.isActivated(Platform.linux)).called(1);
-      verify(() => logger.err('Linux already deactivated.')).called(1);
+      verify(() => logger.err('Linux is already deactivated.')).called(1);
       expect(result, ExitCode.config.code);
     });
   });

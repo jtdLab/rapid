@@ -262,7 +262,7 @@ void main() {
 
       // Assert
       verify(() => project.isActivated(Platform.macos)).called(1);
-      verify(() => logger.err('macOS already deactivated.')).called(1);
+      verify(() => logger.err('macOS is already deactivated.')).called(1);
       expect(result, ExitCode.config.code);
     });
   });

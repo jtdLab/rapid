@@ -277,7 +277,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verifyNever(() => logger.err('Android already activated.'));
+      verifyNever(() => logger.err('Android is already activated.'));
       verify(() => logger.info('Activating Android ...')).called(1);
       verify(() => flutterConfigEnableAndroid(logger: logger)).called(1);
       verify(() => logger.progress('Generating Android files')).called(1);
@@ -339,7 +339,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verifyNever(() => logger.err('Android already activated.'));
+      verifyNever(() => logger.err('Android is already activated.'));
       verify(() => logger.info('Activating Android ...')).called(1);
       verify(() => flutterConfigEnableAndroid(logger: logger)).called(1);
       verify(() => logger.progress('Generating Android files')).called(1);

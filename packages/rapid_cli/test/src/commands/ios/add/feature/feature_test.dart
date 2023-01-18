@@ -25,15 +25,15 @@ const expectedUsage = [
 ];
 
 abstract class _MelosBootstrapCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 abstract class _MelosCleanCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 abstract class _FlutterFormatFixCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 class _MockLogger extends Mock implements Logger {}
@@ -111,14 +111,15 @@ void main() {
       when(() => project.isActivated(Platform.ios)).thenReturn(true);
 
       melosBootstrap = _MockMelosBootstrapCommand();
-      when(() => melosBootstrap(cwd: any(named: 'cwd')))
+      when(() => melosBootstrap(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       melosClean = _MockMelosCleanCommand();
-      when(() => melosClean(cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+      when(() => melosClean(cwd: any(named: 'cwd'), logger: logger))
+          .thenAnswer((_) async {});
 
       flutterFormatFix = _MockFlutterFormatFixCommand();
-      when(() => flutterFormatFix(cwd: any(named: 'cwd')))
+      when(() => flutterFormatFix(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       generator = _MockMasonGenerator();
@@ -277,11 +278,11 @@ void main() {
         equals(['Generated ${generatedFiles.length} file(s)']),
       );
       verify(() => logger.progress('Running "melos clean" in . ')).called(1);
-      verify(() => melosClean()).called(1);
+      verify(() => melosClean(logger: logger)).called(1);
       verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
-      verify(() => melosBootstrap()).called(1);
-      verify(() => flutterFormatFix()).called(1);
+      verify(() => melosBootstrap(logger: logger)).called(1);
+      verify(() => flutterFormatFix(logger: logger)).called(1);
       verify(() => logger.success('Added iOS feature $featureName.')).called(1);
       expect(result, ExitCode.success.code);
     });
@@ -321,11 +322,11 @@ void main() {
         equals(['Generated ${generatedFiles.length} file(s)']),
       );
       verify(() => logger.progress('Running "melos clean" in . ')).called(1);
-      verify(() => melosClean()).called(1);
+      verify(() => melosClean(logger: logger)).called(1);
       verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
-      verify(() => melosBootstrap()).called(1);
-      verify(() => flutterFormatFix()).called(1);
+      verify(() => melosBootstrap(logger: logger)).called(1);
+      verify(() => flutterFormatFix(logger: logger)).called(1);
       verify(() => logger.success('Added iOS feature $featureName.')).called(1);
       expect(result, ExitCode.success.code);
     });

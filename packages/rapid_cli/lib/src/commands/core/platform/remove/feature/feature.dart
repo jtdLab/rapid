@@ -104,20 +104,14 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
 
             // TODO think about remove the feature from routing feature and regenerate it
 
-            final melosCleanProgress = _logger.progress(
-              'Running "melos clean" in . ',
-            );
-            await _melosClean();
-            melosCleanProgress.complete();
-            final melosBootstrapProgress = _logger.progress(
-              'Running "melos bootstrap" in . ',
-            );
-            await _melosBootstrap();
-            melosBootstrapProgress.complete();
+            await _melosClean(logger: _logger);
 
-            await _flutterPubGet(cwd: diPackage.path);
+            await _melosBootstrap(logger: _logger);
+
+            await _flutterPubGet(cwd: diPackage.path, logger: _logger);
             await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
               cwd: diPackage.path,
+              logger: _logger,
             );
             // TODO format if needed ?
 

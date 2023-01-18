@@ -92,7 +92,7 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
                     final arbFile = feature.findArbFileByLanguage(language);
                     arbFile.delete();
 
-                    await _flutterGenl10n(cwd: feature.path);
+                    await _flutterGenl10n(cwd: feature.path, logger: _logger);
                   }
 
                   // TODO add hint how to work with localization

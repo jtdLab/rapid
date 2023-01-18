@@ -109,10 +109,10 @@ abstract class PlatformAddLanguageCommand extends Command<int>
                     logger: _logger,
                   );
 
-                  await _flutterGenl10n(cwd: feature.path);
+                  await _flutterGenl10n(cwd: feature.path, logger: _logger);
                 }
 
-                await _flutterFormatFix();
+                await _flutterFormatFix(logger: _logger);
 
                 // TODO add hint how to work with localization
                 return ExitCode.success.code;

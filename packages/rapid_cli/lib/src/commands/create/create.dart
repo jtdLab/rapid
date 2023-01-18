@@ -125,7 +125,7 @@ class CreateCommand extends Command<int>
 
   @override
   Future<int> run() async {
-    final isFlutterInstalled = await _flutterInstalled();
+    final isFlutterInstalled = await _flutterInstalled(logger: _logger);
     if (!isFlutterInstalled) {
       _logger.err('Flutter not installed.');
 
@@ -140,46 +140,22 @@ class CreateCommand extends Command<int>
     final windows = _windows;
 
     if (android) {
-      final enableAndroidProgress = _logger.progress(
-        'Running "flutter config --enable-android"',
-      );
-      await _flutterConfigEnableAndroid();
-      enableAndroidProgress.complete();
+      await _flutterConfigEnableAndroid(logger: _logger);
     }
     if (ios) {
-      final enableIosProgress = _logger.progress(
-        'Running "flutter config --enable-ios"',
-      );
-      await _flutterConfigEnableIos();
-      enableIosProgress.complete();
+      await _flutterConfigEnableIos(logger: _logger);
     }
     if (linux) {
-      final enableLinuxProgress = _logger.progress(
-        'Running "flutter config --enable-linux-desktop"',
-      );
-      await _flutterConfigEnableLinux();
-      enableLinuxProgress.complete();
+      await _flutterConfigEnableLinux(logger: _logger);
     }
     if (macos) {
-      final enableMacosProgress = _logger.progress(
-        'Running "flutter config --enable-macos-desktop"',
-      );
-      await _flutterConfigEnableMacos();
-      enableMacosProgress.complete();
+      await _flutterConfigEnableMacos(logger: _logger);
     }
     if (web) {
-      final enableWebProgress = _logger.progress(
-        'Running "flutter config --enable-web"',
-      );
-      await _flutterConfigEnableWeb();
-      enableWebProgress.complete();
+      await _flutterConfigEnableWeb(logger: _logger);
     }
     if (windows) {
-      final enableWindowsProgress = _logger.progress(
-        'Running "flutter config --enable-windows-desktop"',
-      );
-      await _flutterConfigEnableWindows();
-      enableWindowsProgress.complete();
+      await _flutterConfigEnableWindows(logger: _logger);
     }
 
     final outputDir = super.outputDir;
@@ -209,17 +185,9 @@ class CreateCommand extends Command<int>
     );
     generateProgress.complete('Generated ${files.length} file(s)');
 
-    final melosBootstrapProgress = _logger.progress(
-      'Running "melos bootstrap" in $outputDir ',
-    );
-    await _melosBootstrap(cwd: outputDir);
-    melosBootstrapProgress.complete();
+    await _melosBootstrap(cwd: outputDir, logger: _logger);
 
-    final formatFixProgress = _logger.progress(
-      'Running "flutter format . --fix" in $outputDir ',
-    );
-    await _flutterFormatFix(cwd: outputDir);
-    formatFixProgress.complete();
+    await _flutterFormatFix(cwd: outputDir, logger: _logger);
 
     _logger
       ..info('\n')

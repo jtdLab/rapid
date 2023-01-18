@@ -23,7 +23,7 @@ const expectedUsage = [
 ];
 
 abstract class _FlutterGenl10nCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 class _MockLogger extends Mock implements Logger {}
@@ -118,7 +118,7 @@ void main() {
           .thenReturn(platformDirectory);
 
       flutterGenl10n = _MockFlutterGenl10nCommand();
-      when(() => flutterGenl10n(cwd: any(named: 'cwd')))
+      when(() => flutterGenl10n(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       argResults = _MockArgResults();
@@ -240,10 +240,10 @@ void main() {
           .called(1);
       verify(() => feature1.findArbFileByLanguage(language)).called(1);
       verify(() => feature1ArbFileDe.delete()).called(1);
-      verify(() => flutterGenl10n(cwd: feature1Path)).called(1);
+      verify(() => flutterGenl10n(cwd: feature1Path, logger: logger)).called(1);
       verify(() => feature2.findArbFileByLanguage(language)).called(1);
       verify(() => feature2ArbFileDe.delete()).called(1);
-      verify(() => flutterGenl10n(cwd: feature2Path)).called(1);
+      verify(() => flutterGenl10n(cwd: feature2Path, logger: logger)).called(1);
       expect(result, ExitCode.success.code);
     });
 

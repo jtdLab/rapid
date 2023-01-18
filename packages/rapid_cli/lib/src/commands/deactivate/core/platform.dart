@@ -84,7 +84,7 @@ abstract class DeactivatePlatformCommand extends Command<int>
           for (final mainFile in appPackage.mainFiles) {
             mainFile.removeSetupForPlatform(_platform);
           }
-          await _flutterPubGet(cwd: appPackage.path);
+          await _flutterPubGet(cwd: appPackage.path, logger: _logger);
           appPackage.platformDirectory(_platform).deleteSync(recursive: true);
           if (_platform == Platform.web) {
             appPackage.testDriverDirectory().deleteSync(recursive: true);
@@ -99,9 +99,10 @@ abstract class DeactivatePlatformCommand extends Command<int>
             '${_project.melosFile.name()}_${_platform.name}',
           );
           diPackage.injectionFile.removePackagesByPlatform(_platform);
-          await _flutterPubGet(cwd: diPackage.path);
+          await _flutterPubGet(cwd: diPackage.path, logger: _logger);
           await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
             cwd: diPackage.path,
+            logger: _logger,
           );
           diUpdatePackageProgress.complete();
 

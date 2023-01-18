@@ -28,7 +28,7 @@ const expectedUsage = [
 ];
 
 abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 class _MockLogger extends Mock implements Logger {}
@@ -116,7 +116,7 @@ void main() {
       flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
           MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
       when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+          cwd: any(named: 'cwd'), logger: logger)).thenAnswer((_) async {});
 
       generator = _MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
@@ -336,7 +336,7 @@ void main() {
               'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $featurePath '))
           .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: featurePath)).called(1);
+          cwd: featurePath, logger: logger)).called(1);
       verify(() => logger.success(
               'Added ${blocName.pascalCase}Bloc to Windows feature $featureName.'))
           .called(1);

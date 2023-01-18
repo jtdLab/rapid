@@ -24,27 +24,27 @@ const expectedUsage = [
 ];
 
 abstract class _FlutterConfigEnablePlatformCommand {
-  Future<void> call();
+  Future<void> call({required Logger logger});
 }
 
 abstract class _FlutterPubGetCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 abstract class _MelosBootstrapCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 abstract class _MelosCleanCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 abstract class _FlutterFormatFixCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 class _MockLogger extends Mock implements Logger {}
@@ -176,26 +176,28 @@ void main() {
       when(() => project.isActivated(Platform.web)).thenReturn(false);
 
       flutterConfigEnableWeb = MockFlutterConfigEnablePlatformCommand();
-      when(() => flutterConfigEnableWeb()).thenAnswer((_) async {});
+      when(() => flutterConfigEnableWeb(logger: logger))
+          .thenAnswer((_) async {});
 
       flutterPubGet = _MockFlutterPubGetCommand();
-      when(() => flutterPubGet(cwd: any(named: 'cwd')))
+      when(() => flutterPubGet(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
           MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
       when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+          cwd: any(named: 'cwd'), logger: logger)).thenAnswer((_) async {});
 
       melosBootstrap = _MockMelosBootstrapCommand();
-      when(() => melosBootstrap(cwd: any(named: 'cwd')))
+      when(() => melosBootstrap(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       melosClean = _MockMelosCleanCommand();
-      when(() => melosClean(cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+      when(() => melosClean(cwd: any(named: 'cwd'), logger: logger))
+          .thenAnswer((_) async {});
 
       flutterFormatFix = _MockFlutterFormatFixCommand();
-      when(() => flutterFormatFix(cwd: any(named: 'cwd')))
+      when(() => flutterFormatFix(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       generator = _MockMasonGenerator();
@@ -266,7 +268,7 @@ void main() {
       verify(() => logger.info('Activating Web ...')).called(1);
       verify(() => logger.progress('Running "flutter config --enable-web"'))
           .called(1);
-      verify(() => flutterConfigEnableWeb()).called(1);
+      verify(() => flutterConfigEnableWeb(logger: logger)).called(1);
       verify(() => logger.progress('Generating Web files')).called(1);
       verify(
         () => generator.generate(
@@ -302,22 +304,22 @@ void main() {
       verify(() => injectionFile.addPackage('${projectName}_web_home_page'))
           .called(1);
       verify(() => logger.progress('Running "melos clean" in . ')).called(1);
-      verify(() => melosClean()).called(1);
+      verify(() => melosClean(logger: logger)).called(1);
       verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
-      verify(() => melosBootstrap()).called(1);
+      verify(() => melosBootstrap(logger: logger)).called(1);
       verify(() =>
               logger.progress('Running "flutter pub get" in $diPackagePath '))
           .called(1);
-      verify(() => flutterPubGet(cwd: diPackagePath)).called(1);
+      verify(() => flutterPubGet(cwd: diPackagePath, logger: logger)).called(1);
       verify(() => logger.progress(
               'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $diPackagePath '))
           .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: diPackagePath)).called(1);
+          cwd: diPackagePath, logger: logger)).called(1);
       verify(() => logger.progress('Running "flutter format . --fix" in . '))
           .called(1);
-      verify(() => flutterFormatFix()).called(1);
+      verify(() => flutterFormatFix(logger: logger)).called(1);
       verify(() => progress.complete()).called(8);
       verify(() => logger.info('Web activated!')).called(1);
       expect(result, ExitCode.success.code);

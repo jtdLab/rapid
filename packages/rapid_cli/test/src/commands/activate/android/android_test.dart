@@ -26,27 +26,27 @@ const expectedUsage = [
 ];
 
 abstract class _FlutterConfigEnablePlatformCommand {
-  Future<void> call();
+  Future<void> call({required Logger logger});
 }
 
 abstract class _FlutterPubGetCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 abstract class _MelosBootstrapCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 abstract class _MelosCleanCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 abstract class _FlutterFormatFixCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 class _MockLogger extends Mock implements Logger {}
@@ -178,26 +178,28 @@ void main() {
       when(() => project.isActivated(Platform.android)).thenReturn(false);
 
       flutterConfigEnableAndroid = MockFlutterConfigEnablePlatformCommand();
-      when(() => flutterConfigEnableAndroid()).thenAnswer((_) async {});
+      when(() => flutterConfigEnableAndroid(logger: logger))
+          .thenAnswer((_) async {});
 
       flutterPubGet = _MockFlutterPubGetCommand();
-      when(() => flutterPubGet(cwd: any(named: 'cwd')))
+      when(() => flutterPubGet(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
           MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
       when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+          cwd: any(named: 'cwd'), logger: logger)).thenAnswer((_) async {});
 
       melosBootstrap = _MockMelosBootstrapCommand();
-      when(() => melosBootstrap(cwd: any(named: 'cwd')))
+      when(() => melosBootstrap(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       melosClean = _MockMelosCleanCommand();
-      when(() => melosClean(cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+      when(() => melosClean(cwd: any(named: 'cwd'), logger: logger))
+          .thenAnswer((_) async {});
 
       flutterFormatFix = _MockFlutterFormatFixCommand();
-      when(() => flutterFormatFix(cwd: any(named: 'cwd')))
+      when(() => flutterFormatFix(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       generator = _MockMasonGenerator();
@@ -279,7 +281,7 @@ void main() {
       verify(() => logger.info('Activating Android ...')).called(1);
       verify(() => logger.progress('Running "flutter config --enable-android"'))
           .called(1);
-      verify(() => flutterConfigEnableAndroid()).called(1);
+      verify(() => flutterConfigEnableAndroid(logger: logger)).called(1);
       verify(() => logger.progress('Generating Android files')).called(1);
       verify(
         () => generator.generate(
@@ -318,22 +320,22 @@ void main() {
       verify(() => injectionFile.addPackage('${projectName}_android_home_page'))
           .called(1);
       verify(() => logger.progress('Running "melos clean" in . ')).called(1);
-      verify(() => melosClean()).called(1);
+      verify(() => melosClean(logger: logger)).called(1);
       verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
-      verify(() => melosBootstrap()).called(1);
+      verify(() => melosBootstrap(logger: logger)).called(1);
       verify(() =>
               logger.progress('Running "flutter pub get" in $diPackagePath '))
           .called(1);
-      verify(() => flutterPubGet(cwd: diPackagePath)).called(1);
+      verify(() => flutterPubGet(cwd: diPackagePath, logger: logger)).called(1);
       verify(() => logger.progress(
               'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $diPackagePath '))
           .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: diPackagePath)).called(1);
+          cwd: diPackagePath, logger: logger)).called(1);
       verify(() => logger.progress('Running "flutter format . --fix" in . '))
           .called(1);
-      verify(() => flutterFormatFix()).called(1);
+      verify(() => flutterFormatFix(logger: logger)).called(1);
       verify(() => progress.complete()).called(8);
       verify(() => logger.info('Android activated!')).called(1);
       expect(result, ExitCode.success.code);
@@ -354,7 +356,7 @@ void main() {
       verify(() => logger.info('Activating Android ...')).called(1);
       verify(() => logger.progress('Running "flutter config --enable-android"'))
           .called(1);
-      verify(() => flutterConfigEnableAndroid()).called(1);
+      verify(() => flutterConfigEnableAndroid(logger: logger)).called(1);
       verify(() => logger.progress('Generating Android files')).called(1);
       verify(
         () => generator.generate(
@@ -393,22 +395,22 @@ void main() {
       verify(() => injectionFile.addPackage('${projectName}_android_home_page'))
           .called(1);
       verify(() => logger.progress('Running "melos clean" in . ')).called(1);
-      verify(() => melosClean()).called(1);
+      verify(() => melosClean(logger: logger)).called(1);
       verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
-      verify(() => melosBootstrap()).called(1);
+      verify(() => melosBootstrap(logger: logger)).called(1);
       verify(() =>
               logger.progress('Running "flutter pub get" in $diPackagePath '))
           .called(1);
-      verify(() => flutterPubGet(cwd: diPackagePath)).called(1);
+      verify(() => flutterPubGet(cwd: diPackagePath, logger: logger)).called(1);
       verify(() => logger.progress(
               'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $diPackagePath '))
           .called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: diPackagePath)).called(1);
+          cwd: diPackagePath, logger: logger)).called(1);
       verify(() => logger.progress('Running "flutter format . --fix" in . '))
           .called(1);
-      verify(() => flutterFormatFix()).called(1);
+      verify(() => flutterFormatFix(logger: logger)).called(1);
       verify(() => progress.complete()).called(8);
       verify(() => logger.info('Android activated!')).called(1);
       expect(result, ExitCode.success.code);

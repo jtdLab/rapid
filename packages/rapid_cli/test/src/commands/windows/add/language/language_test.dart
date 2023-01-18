@@ -23,11 +23,11 @@ const expectedUsage = [
 ];
 
 abstract class _FlutterGenl10nCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 abstract class _FlutterFormatFixCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 class _MockLogger extends Mock implements Logger {}
@@ -136,11 +136,11 @@ void main() {
           .thenReturn(platformDirectory);
 
       flutterGenl10n = _MockFlutterGenl10nCommand();
-      when(() => flutterGenl10n(cwd: any(named: 'cwd')))
+      when(() => flutterGenl10n(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       flutterFormatFix = _MockFlutterFormatFixCommand();
-      when(() => flutterFormatFix(cwd: any(named: 'cwd')))
+      when(() => flutterFormatFix(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       generator = _MockMasonGenerator();
@@ -289,7 +289,7 @@ void main() {
           logger: logger,
         ),
       ).called(1);
-      verify(() => flutterGenl10n(cwd: feature1Path)).called(1);
+      verify(() => flutterGenl10n(cwd: feature1Path, logger: logger)).called(1);
       verify(
         () => generator.generate(
           any(
@@ -306,8 +306,8 @@ void main() {
           logger: logger,
         ),
       ).called(1);
-      verify(() => flutterGenl10n(cwd: feature2Path)).called(1);
-      verify(() => flutterFormatFix()).called(1);
+      verify(() => flutterGenl10n(cwd: feature2Path, logger: logger)).called(1);
+      verify(() => flutterFormatFix(logger: logger)).called(1);
       expect(result, ExitCode.success.code);
     });
 

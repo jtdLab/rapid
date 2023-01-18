@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:universal_io/io.dart';
 
@@ -69,7 +70,9 @@ abstract class _Cmd {
     List<String> args, {
     bool throwOnError = true,
     String? workingDirectory,
+    required Logger logger,
   }) async {
+    logger.detail('Running: $cmd with $args');
     final runProcess = ProcessOverrides.current?.runProcess ?? Process.run;
     final result = await runProcess(
       cmd,
@@ -77,6 +80,9 @@ abstract class _Cmd {
       workingDirectory: workingDirectory,
       runInShell: true,
     );
+    logger
+      ..detail('stdout:\n${result.stdout}')
+      ..detail('stderr:\n${result.stderr}');
 
     if (throwOnError) {
       _throwIfProcessFailed(result, cmd, args);
@@ -85,14 +91,14 @@ abstract class _Cmd {
   }
 
   static void _throwIfProcessFailed(
-    ProcessResult pr,
-    String process,
+    ProcessResult result,
+    String cmd,
     List<String> args,
   ) {
-    if (pr.exitCode != 0) {
+    if (result.exitCode != 0) {
       final values = {
-        'Standard out': pr.stdout.toString().trim(),
-        'Standard error': pr.stderr.toString().trim()
+        'Standard out': result.stdout.toString().trim(),
+        'Standard error': result.stderr.toString().trim()
       }..removeWhere((k, v) => v.isEmpty);
 
       var message = 'Unknown error';
@@ -100,7 +106,7 @@ abstract class _Cmd {
         message = values.entries.map((e) => '${e.key}\n${e.value}').join('\n');
       }
 
-      throw ProcessException(process, args, message, pr.exitCode);
+      throw ProcessException(cmd, args, message, result.exitCode);
     }
   }
 }

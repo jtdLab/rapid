@@ -25,11 +25,11 @@ const expectedUsage = [
 ];
 
 abstract class _FlutterPubGetCommand {
-  Future<void> call({required String cwd});
+  Future<void> call({required String cwd, required Logger logger});
 }
 
 abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
-  Future<void> call({required String cwd});
+  Future<void> call({required String cwd, required Logger logger});
 }
 
 class _MockLogger extends Mock implements Logger {}
@@ -144,13 +144,13 @@ void main() {
       when(() => project.isActivated(Platform.web)).thenReturn(true);
 
       flutterPubGet = _MockFlutterPubGetCommand();
-      when(() => flutterPubGet(cwd: any(named: 'cwd')))
+      when(() => flutterPubGet(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
           _MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
       when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+          cwd: any(named: 'cwd'), logger: logger)).thenAnswer((_) async {});
 
       command = DeactivateWebCommand(
         logger: logger,
@@ -209,7 +209,8 @@ void main() {
       verify(() => mainFileDev.removeSetupForPlatform(Platform.web)).called(1);
       verify(() => mainFileTest.removeSetupForPlatform(Platform.web)).called(1);
       verify(() => mainFileProd.removeSetupForPlatform(Platform.web)).called(1);
-      verify(() => flutterPubGet(cwd: appPackagePath)).called(1);
+      verify(() => flutterPubGet(cwd: appPackagePath, logger: logger))
+          .called(1);
       verify(() => appPackagePlatformDirectory.deleteSync(recursive: true))
           .called(1);
       verify(() => appPackageTestDriverDirectory.deleteSync(recursive: true))
@@ -221,9 +222,9 @@ void main() {
           .called(1);
       verify(() => injectionFile.removePackagesByPlatform(Platform.web))
           .called(1);
-      verify(() => flutterPubGet(cwd: diPackagePath)).called(1);
+      verify(() => flutterPubGet(cwd: diPackagePath, logger: logger)).called(1);
       verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: diPackagePath)).called(1);
+          cwd: diPackagePath, logger: logger)).called(1);
       verify(() => platformDirectory.delete()).called(1);
       verify(() => platformUiPackage.delete()).called(1);
       verify(() => logger.success('Web is now deactivated.')).called(1);

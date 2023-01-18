@@ -35,19 +35,19 @@ const expectedUsage = [
 ];
 
 abstract class _FlutterInstalledCommand {
-  Future<bool> call();
+  Future<bool> call({required Logger logger});
 }
 
 abstract class _FlutterConfigEnablePlatformCommand {
-  Future<void> call();
+  Future<void> call({required Logger logger});
 }
 
 abstract class _MelosBootstrapCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 abstract class _FormatFixCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 class _MockLogger extends Mock implements Logger {}
@@ -127,32 +127,39 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
 
       flutterInstalled = _MockFlutterInstalledCommand();
-      when(() => flutterInstalled()).thenAnswer((_) async => true);
+      when(() => flutterInstalled(logger: logger))
+          .thenAnswer((_) async => true);
 
       flutterConfigEnableAndroid = _MockFlutterConfigEnablePlatformCommand();
-      when(() => flutterConfigEnableAndroid()).thenAnswer((_) async {});
+      when(() => flutterConfigEnableAndroid(logger: logger))
+          .thenAnswer((_) async {});
 
       flutterConfigEnableIos = _MockFlutterConfigEnablePlatformCommand();
-      when(() => flutterConfigEnableIos()).thenAnswer((_) async {});
+      when(() => flutterConfigEnableIos(logger: logger))
+          .thenAnswer((_) async {});
 
       flutterConfigEnableWeb = _MockFlutterConfigEnablePlatformCommand();
-      when(() => flutterConfigEnableWeb()).thenAnswer((_) async {});
+      when(() => flutterConfigEnableWeb(logger: logger))
+          .thenAnswer((_) async {});
 
       flutterConfigEnableLinux = _MockFlutterConfigEnablePlatformCommand();
-      when(() => flutterConfigEnableLinux()).thenAnswer((_) async {});
+      when(() => flutterConfigEnableLinux(logger: logger))
+          .thenAnswer((_) async {});
 
       flutterConfigEnableMacos = _MockFlutterConfigEnablePlatformCommand();
-      when(() => flutterConfigEnableMacos()).thenAnswer((_) async {});
+      when(() => flutterConfigEnableMacos(logger: logger))
+          .thenAnswer((_) async {});
 
       flutterConfigEnableWindows = _MockFlutterConfigEnablePlatformCommand();
-      when(() => flutterConfigEnableWindows()).thenAnswer((_) async {});
+      when(() => flutterConfigEnableWindows(logger: logger))
+          .thenAnswer((_) async {});
 
       melosBootstrap = _MockMelosBootstrapCommand();
-      when(() => melosBootstrap(cwd: any(named: 'cwd')))
+      when(() => melosBootstrap(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       flutterFormatFix = _MockFlutterFormatFixCommand();
-      when(() => flutterFormatFix(cwd: any(named: 'cwd')))
+      when(() => flutterFormatFix(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       generator = _MockMasonGenerator();
@@ -292,7 +299,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => flutterInstalled()).called(1);
+      verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => logger.progress('Bootstrapping')).called(1);
       verify(
         () => generator.generate(
@@ -325,10 +332,10 @@ void main() {
       );
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
-      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter format . --fix" in $outputDir ')).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => progress.complete()).called(2);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
@@ -343,7 +350,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => flutterInstalled()).called(1);
+      verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => logger.progress('Bootstrapping')).called(1);
       verify(
         () => generator.generate(
@@ -376,10 +383,10 @@ void main() {
       );
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
-      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter format . --fix" in $outputDir ')).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => progress.complete()).called(2);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
@@ -393,10 +400,10 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => flutterInstalled()).called(1);
+      verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => logger.progress('Running "flutter config --enable-android"'))
           .called(1);
-      verify(() => flutterConfigEnableAndroid()).called(1);
+      verify(() => flutterConfigEnableAndroid(logger: logger)).called(1);
       verify(() => logger.progress('Bootstrapping')).called(1);
       verify(
         () => generator.generate(
@@ -429,10 +436,10 @@ void main() {
       );
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
-      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter format . --fix" in $outputDir ')).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => progress.complete()).called(3);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
@@ -446,10 +453,10 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => flutterInstalled()).called(1);
+      verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => logger.progress('Running "flutter config --enable-ios"'))
           .called(1);
-      verify(() => flutterConfigEnableIos()).called(1);
+      verify(() => flutterConfigEnableIos(logger: logger)).called(1);
       verify(() => logger.progress('Bootstrapping')).called(1);
       verify(
         () => generator.generate(
@@ -482,10 +489,10 @@ void main() {
       );
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
-      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter format . --fix" in $outputDir ')).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => progress.complete()).called(3);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
@@ -499,10 +506,10 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => flutterInstalled()).called(1);
+      verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter config --enable-linux-desktop"')).called(1);
-      verify(() => flutterConfigEnableLinux()).called(1);
+      verify(() => flutterConfigEnableLinux(logger: logger)).called(1);
       verify(() => logger.progress('Bootstrapping')).called(1);
       verify(
         () => generator.generate(
@@ -535,10 +542,10 @@ void main() {
       );
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
-      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter format . --fix" in $outputDir ')).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => progress.complete()).called(3);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
@@ -552,10 +559,10 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => flutterInstalled()).called(1);
+      verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter config --enable-macos-desktop"')).called(1);
-      verify(() => flutterConfigEnableMacos()).called(1);
+      verify(() => flutterConfigEnableMacos(logger: logger)).called(1);
       verify(() => logger.progress('Bootstrapping')).called(1);
       verify(
         () => generator.generate(
@@ -588,10 +595,10 @@ void main() {
       );
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
-      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter format . --fix" in $outputDir ')).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => progress.complete()).called(3);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
@@ -605,10 +612,10 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => flutterInstalled()).called(1);
+      verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => logger.progress('Running "flutter config --enable-web"'))
           .called(1);
-      verify(() => flutterConfigEnableWeb()).called(1);
+      verify(() => flutterConfigEnableWeb(logger: logger)).called(1);
       verify(() => logger.progress('Bootstrapping')).called(1);
       verify(
         () => generator.generate(
@@ -641,10 +648,10 @@ void main() {
       );
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
-      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter format . --fix" in $outputDir ')).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => progress.complete()).called(3);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
@@ -658,10 +665,10 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => flutterInstalled()).called(1);
+      verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter config --enable-windows-desktop"')).called(1);
-      verify(() => flutterConfigEnableWindows()).called(1);
+      verify(() => flutterConfigEnableWindows(logger: logger)).called(1);
       verify(() => logger.progress('Bootstrapping')).called(1);
       verify(
         () => generator.generate(
@@ -694,10 +701,10 @@ void main() {
       );
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
-      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter format . --fix" in $outputDir ')).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => progress.complete()).called(3);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
@@ -718,25 +725,25 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => flutterInstalled()).called(1);
+      verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => logger.progress('Running "flutter config --enable-android"'))
           .called(1);
-      verify(() => flutterConfigEnableAndroid()).called(1);
+      verify(() => flutterConfigEnableAndroid(logger: logger)).called(1);
       verify(() => logger.progress('Running "flutter config --enable-ios"'))
           .called(1);
-      verify(() => flutterConfigEnableIos()).called(1);
+      verify(() => flutterConfigEnableIos(logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter config --enable-linux-desktop"')).called(1);
-      verify(() => flutterConfigEnableLinux()).called(1);
+      verify(() => flutterConfigEnableLinux(logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter config --enable-macos-desktop"')).called(1);
-      verify(() => flutterConfigEnableMacos()).called(1);
+      verify(() => flutterConfigEnableMacos(logger: logger)).called(1);
       verify(() => logger.progress('Running "flutter config --enable-web"'))
           .called(1);
-      verify(() => flutterConfigEnableWeb()).called(1);
+      verify(() => flutterConfigEnableWeb(logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter config --enable-windows-desktop"')).called(1);
-      verify(() => flutterConfigEnableWindows()).called(1);
+      verify(() => flutterConfigEnableWindows(logger: logger)).called(1);
       verify(() => logger.progress('Bootstrapping')).called(1);
       verify(
         () => generator.generate(
@@ -769,10 +776,10 @@ void main() {
       );
       verify(() => logger.progress('Running "melos bootstrap" in $outputDir '))
           .called(1);
-      verify(() => melosBootstrap(cwd: outputDir)).called(1);
+      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.progress(
           'Running "flutter format . --fix" in $outputDir ')).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir)).called(1);
+      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => progress.complete()).called(8);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
@@ -780,7 +787,8 @@ void main() {
 
     test('exits with 69 when flutter is not installed', () async {
       // Arrange
-      when(() => flutterInstalled()).thenAnswer((_) async => false);
+      when(() => flutterInstalled(logger: logger))
+          .thenAnswer((_) async => false);
 
       // Act
       final result = await command.run();

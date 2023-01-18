@@ -107,13 +107,10 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
             );
             generateProgress.complete('Generated ${files.length} file(s)');
 
-            final featureBuildProgress = _logger.progress(
-              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in ${feature.path} ',
-            );
             await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
               cwd: feature.path,
+              logger: _logger,
             );
-            featureBuildProgress.complete();
 
             _logger.success(
               'Added ${name.pascalCase}Cubit to ${_platform.prettyName} feature $featureName.',

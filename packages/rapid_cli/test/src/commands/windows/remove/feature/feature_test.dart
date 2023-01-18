@@ -23,11 +23,11 @@ const expectedUsage = [
 ];
 
 abstract class _MelosBootstrapCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 abstract class _MelosCleanCommand {
-  Future<void> call({String cwd});
+  Future<void> call({String cwd, required Logger logger});
 }
 
 class _MockLogger extends Mock implements Logger {}
@@ -95,11 +95,12 @@ void main() {
           .thenReturn(platformDirectory);
 
       melosBootstrap = _MockMelosBootstrapCommand();
-      when(() => melosBootstrap(cwd: any(named: 'cwd')))
+      when(() => melosBootstrap(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       melosClean = _MockMelosCleanCommand();
-      when(() => melosClean(cwd: any(named: 'cwd'))).thenAnswer((_) async {});
+      when(() => melosClean(cwd: any(named: 'cwd'), logger: logger))
+          .thenAnswer((_) async {});
 
       argResults = _MockArgResults();
       when(() => argResults.rest).thenReturn([featureName]);
@@ -202,10 +203,10 @@ void main() {
       verify(() => platformDirectory.findFeature(featureName)).called(1);
       verify(() => feature.delete()).called(1);
       verify(() => logger.progress('Running "melos clean" in . ')).called(1);
-      verify(() => melosBootstrap()).called(1);
+      verify(() => melosBootstrap(logger: logger)).called(1);
       verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
-      verify(() => melosClean()).called(1);
+      verify(() => melosClean(logger: logger)).called(1);
       verify(() => logger.success('Removed Windows feature $featureName.'))
           .called(1);
       expect(result, ExitCode.success.code);

@@ -149,27 +149,17 @@ abstract class PlatformAddFeatureCommand extends Command<int>
             final injectionFile = diPackage.injectionFile;
             injectionFile.addPackage(featurePackageName);
 
-            final melosCleanProgress = _logger.progress(
-              'Running "melos clean" in . ',
-            );
-            await _melosClean();
-            melosCleanProgress.complete();
-            final melosBootstrapProgress = _logger.progress(
-              'Running "melos bootstrap" in . ',
-            );
-            await _melosBootstrap();
-            melosBootstrapProgress.complete();
+            await _melosClean(logger: _logger);
 
-            await _flutterPubGet(cwd: diPackage.path);
+            await _melosBootstrap(logger: _logger);
+
+            await _flutterPubGet(cwd: diPackage.path, logger: _logger);
             await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
               cwd: diPackage.path,
+              logger: _logger,
             );
 
-            final formatFixProgress = _logger.progress(
-              'Running "flutter format . --fix" in . ',
-            );
-            await _flutterFormatFix();
-            formatFixProgress.complete();
+            await _flutterFormatFix(logger: _logger);
 
             _logger.success(
               'Added ${_platform.prettyName} feature $name.',

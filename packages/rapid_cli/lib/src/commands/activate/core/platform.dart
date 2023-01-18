@@ -104,11 +104,7 @@ abstract class ActivatePlatformCommand extends Command<int>
           _logger
               .info('Activating ${lightYellow.wrap(_platform.prettyName)} ...');
 
-          final enablePlatformProgress = _logger.progress(
-            'Running "flutter config --enable-${_platform.flutterConfigName}"',
-          );
-          await _flutterConfigEnablePlatform();
-          enablePlatformProgress.complete();
+          await _flutterConfigEnablePlatform(logger: _logger);
 
           final projectName = _project.melosFile.name();
 
@@ -143,33 +139,17 @@ abstract class ActivatePlatformCommand extends Command<int>
           diPackage.injectionFile.addPackage(package);
           diUpdatePackageProgress.complete();
 
-          final melosCleanProgress = _logger.progress(
-            'Running "melos clean" in . ',
-          );
-          await _melosClean();
-          melosCleanProgress.complete();
-          final melosBootstrapProgress = _logger.progress(
-            'Running "melos bootstrap" in . ',
-          );
-          await _melosBootstrap();
-          melosBootstrapProgress.complete();
+          await _melosClean(logger: _logger);
 
-          final diPubGetProgress = _logger
-              .progress('Running "flutter pub get" in ${diPackage.path} ');
-          await _flutterPubGetCommand(cwd: diPackage.path);
-          diPubGetProgress.complete();
-          final diBuildProgress = _logger.progress(
-              'Running "flutter pub run build_runner build --delete-conflicting-outputs" in ${diPackage.path} ');
+          await _melosBootstrap(logger: _logger);
+
+          await _flutterPubGetCommand(cwd: diPackage.path, logger: _logger);
           await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
             cwd: diPackage.path,
+            logger: _logger,
           );
-          diBuildProgress.complete();
 
-          final flutterFormatFixProgress = _logger.progress(
-            'Running "flutter format . --fix" in . ',
-          );
-          await _flutterFormatFix();
-          flutterFormatFixProgress.complete();
+          await _flutterFormatFix(logger: _logger);
 
           _logger.info('${lightYellow.wrap(_platform.prettyName)} activated!');
 

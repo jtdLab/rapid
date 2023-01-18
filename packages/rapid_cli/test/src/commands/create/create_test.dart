@@ -38,6 +38,10 @@ abstract class _FlutterInstalledCommand {
   Future<bool> call({required Logger logger});
 }
 
+abstract class _MelosInstalledCommand {
+  Future<bool> call({required Logger logger});
+}
+
 abstract class _FlutterConfigEnablePlatformCommand {
   Future<void> call({required Logger logger});
 }
@@ -56,6 +60,9 @@ class _MockProgress extends Mock implements Progress {}
 
 class _MockFlutterInstalledCommand extends Mock
     implements _FlutterInstalledCommand {}
+
+class _MockMelosInstalledCommand extends Mock
+    implements _MelosInstalledCommand {}
 
 class _MockFlutterConfigEnablePlatformCommand extends Mock
     implements _FlutterConfigEnablePlatformCommand {}
@@ -81,6 +88,8 @@ void main() {
     late Progress progress;
 
     late FlutterInstalledCommand flutterInstalled;
+
+    late MelosInstalledCommand melosInstalled;
 
     late FlutterConfigEnablePlatformCommand flutterConfigEnableAndroid;
 
@@ -129,6 +138,9 @@ void main() {
       flutterInstalled = _MockFlutterInstalledCommand();
       when(() => flutterInstalled(logger: logger))
           .thenAnswer((_) async => true);
+
+      melosInstalled = _MockMelosInstalledCommand();
+      when(() => melosInstalled(logger: logger)).thenAnswer((_) async => true);
 
       flutterConfigEnableAndroid = _MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableAndroid(logger: logger))
@@ -182,6 +194,7 @@ void main() {
       command = CreateCommand(
         logger: logger,
         flutterInstalled: flutterInstalled,
+        melosInstalled: melosInstalled,
         flutterConfigEnableAndroid: flutterConfigEnableAndroid,
         flutterConfigEnableIos: flutterConfigEnableIos,
         flutterConfigEnableLinux: flutterConfigEnableLinux,
@@ -300,7 +313,8 @@ void main() {
 
       // Assert
       verify(() => flutterInstalled(logger: logger)).called(1);
-      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(() => melosInstalled(logger: logger)).called(1);
+      verify(() => logger.progress('Generating')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -346,7 +360,8 @@ void main() {
 
       // Assert
       verify(() => flutterInstalled(logger: logger)).called(1);
-      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(() => melosInstalled(logger: logger)).called(1);
+      verify(() => logger.progress('Generating')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -391,8 +406,9 @@ void main() {
 
       // Assert
       verify(() => flutterInstalled(logger: logger)).called(1);
+      verify(() => melosInstalled(logger: logger)).called(1);
       verify(() => flutterConfigEnableAndroid(logger: logger)).called(1);
-      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(() => logger.progress('Generating')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -437,8 +453,9 @@ void main() {
 
       // Assert
       verify(() => flutterInstalled(logger: logger)).called(1);
+      verify(() => melosInstalled(logger: logger)).called(1);
       verify(() => flutterConfigEnableIos(logger: logger)).called(1);
-      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(() => logger.progress('Generating')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -483,8 +500,9 @@ void main() {
 
       // Assert
       verify(() => flutterInstalled(logger: logger)).called(1);
+      verify(() => melosInstalled(logger: logger)).called(1);
       verify(() => flutterConfigEnableLinux(logger: logger)).called(1);
-      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(() => logger.progress('Generating')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -529,8 +547,9 @@ void main() {
 
       // Assert
       verify(() => flutterInstalled(logger: logger)).called(1);
+      verify(() => melosInstalled(logger: logger)).called(1);
       verify(() => flutterConfigEnableMacos(logger: logger)).called(1);
-      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(() => logger.progress('Generating')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -575,8 +594,9 @@ void main() {
 
       // Assert
       verify(() => flutterInstalled(logger: logger)).called(1);
+      verify(() => melosInstalled(logger: logger)).called(1);
       verify(() => flutterConfigEnableWeb(logger: logger)).called(1);
-      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(() => logger.progress('Generating')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -621,8 +641,9 @@ void main() {
 
       // Assert
       verify(() => flutterInstalled(logger: logger)).called(1);
+      verify(() => melosInstalled(logger: logger)).called(1);
       verify(() => flutterConfigEnableWindows(logger: logger)).called(1);
-      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(() => logger.progress('Generating')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -674,13 +695,14 @@ void main() {
 
       // Assert
       verify(() => flutterInstalled(logger: logger)).called(1);
+      verify(() => melosInstalled(logger: logger)).called(1);
       verify(() => flutterConfigEnableAndroid(logger: logger)).called(1);
       verify(() => flutterConfigEnableIos(logger: logger)).called(1);
       verify(() => flutterConfigEnableLinux(logger: logger)).called(1);
       verify(() => flutterConfigEnableMacos(logger: logger)).called(1);
       verify(() => flutterConfigEnableWeb(logger: logger)).called(1);
       verify(() => flutterConfigEnableWindows(logger: logger)).called(1);
-      verify(() => logger.progress('Bootstrapping')).called(1);
+      verify(() => logger.progress('Generating')).called(1);
       verify(
         () => generator.generate(
           any(
@@ -726,6 +748,18 @@ void main() {
 
       // Assert
       verify(() => logger.err('Flutter not installed.')).called(1);
+      expect(result, ExitCode.unavailable.code);
+    });
+
+    test('exits with 69 when melos is not installed', () async {
+      // Arrange
+      when(() => melosInstalled(logger: logger)).thenAnswer((_) async => false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err('Melos not installed.')).called(1);
       expect(result, ExitCode.unavailable.code);
     });
 

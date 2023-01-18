@@ -21,6 +21,7 @@ class CreateCommand extends Command<int>
   CreateCommand({
     Logger? logger,
     FlutterInstalledCommand? flutterInstalled,
+    MelosInstalledCommand? melosInstalled,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableAndroid,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableIos,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableLinux,
@@ -32,6 +33,7 @@ class CreateCommand extends Command<int>
     GeneratorBuilder? generator,
   })  : _logger = logger ?? Logger(),
         _flutterInstalled = flutterInstalled ?? Flutter.installed,
+        _melosInstalled = melosInstalled ?? Melos.installed,
         _flutterConfigEnableAndroid =
             flutterConfigEnableAndroid ?? Flutter.configEnableAndroid,
         _flutterConfigEnableIos =
@@ -101,6 +103,7 @@ class CreateCommand extends Command<int>
 
   final Logger _logger;
   final FlutterInstalledCommand _flutterInstalled;
+  final MelosInstalledCommand _melosInstalled;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableAndroid;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableIos;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableLinux;
@@ -128,6 +131,13 @@ class CreateCommand extends Command<int>
     final isFlutterInstalled = await _flutterInstalled(logger: _logger);
     if (!isFlutterInstalled) {
       _logger.err('Flutter not installed.');
+
+      return ExitCode.unavailable.code;
+    }
+
+    final isMelosInstalled = await _melosInstalled(logger: _logger);
+    if (!isMelosInstalled) {
+      _logger.err('Melos not installed.');
 
       return ExitCode.unavailable.code;
     }
@@ -164,7 +174,7 @@ class CreateCommand extends Command<int>
     final orgName = super.orgName;
     final example = _example;
 
-    final generateProgress = _logger.progress('Bootstrapping');
+    final generateProgress = _logger.progress('Generating');
     final generator = await _generator(appBundle);
     final files = await generator.generate(
       DirectoryGeneratorTarget(Directory(outputDir)),

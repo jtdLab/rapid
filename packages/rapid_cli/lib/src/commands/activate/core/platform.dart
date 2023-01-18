@@ -100,15 +100,17 @@ abstract class ActivatePlatformCommand extends Command<int>
         ],
         _logger,
         () async {
-          _logger
-              .info('Activating ${lightYellow.wrap(_platform.prettyName)} ...');
+          final projectName = _project.melosFile.name();
+
+          _logger.info(
+            'Activating ${lightYellow.wrap(_platform.prettyName)} ...',
+          );
 
           await _flutterConfigEnablePlatform(logger: _logger);
 
-          final projectName = _project.melosFile.name();
-
-          final generateProgress =
-              _logger.progress('Generating ${_platform.prettyName} files');
+          final generateProgress = _logger.progress(
+            'Generating ${_platform.prettyName} files',
+          );
           final generator = await _generator(_platformBundle);
           final files = await generate(
             logger: _logger,
@@ -116,22 +118,26 @@ abstract class ActivatePlatformCommand extends Command<int>
             generator: generator,
           );
           generateProgress.complete(
-              'Generated ${files.length} ${_platform.prettyName} file(s)');
+            'Generated ${files.length} ${_platform.prettyName} file(s)',
+          );
 
           final appPackage = _project.appPackage;
-          final appUpdatePackageProgress =
-              _logger.progress('Updating package ${appPackage.path} ');
+          final appUpdatePackageProgress = _logger.progress(
+            'Updating package ${appPackage.path} ',
+          );
           final appPackagePubspec = appPackage.pubspecFile;
-          appPackagePubspec
-              .setDependency('${projectName}_${_platform.name}_app');
+          appPackagePubspec.setDependency(
+            '${projectName}_${_platform.name}_app',
+          );
           for (final mainFile in appPackage.mainFiles) {
             mainFile.addSetupForPlatform(_platform);
           }
           appUpdatePackageProgress.complete();
 
           final diPackage = _project.diPackage;
-          final diUpdatePackageProgress =
-              _logger.progress('Updating package ${diPackage.path} ');
+          final diUpdatePackageProgress = _logger.progress(
+            'Updating package ${diPackage.path} ',
+          );
           final diPackagePubspec = diPackage.pubspecFile;
           final package = '${projectName}_${_platform.name}_home_page';
           diPackagePubspec.setDependency(package);

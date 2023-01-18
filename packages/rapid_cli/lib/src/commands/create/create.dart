@@ -135,6 +135,11 @@ class CreateCommand extends Command<int>
         ],
         _logger,
         () async {
+          final outputDir = super.outputDir;
+          final projectName = _projectName;
+          final description = _description;
+          final orgName = super.orgName;
+          final example = _example;
           final android = _android;
           final ios = _ios;
           final linux = _linux;
@@ -160,12 +165,6 @@ class CreateCommand extends Command<int>
           if (windows) {
             await _flutterConfigEnableWindows(logger: _logger);
           }
-
-          final outputDir = super.outputDir;
-          final projectName = _projectName;
-          final description = _description;
-          final orgName = super.orgName;
-          final example = _example;
 
           final generateProgress = _logger.progress('Generating');
           final generator = await _generator(appBundle);

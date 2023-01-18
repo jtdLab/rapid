@@ -73,16 +73,19 @@ abstract class DeactivatePlatformCommand extends Command<int>
         ],
         _logger,
         () async {
+          final projectName = _project.melosFile.name();
+
           _logger.info(
             'Deactivating ${lightYellow.wrap(_platform.prettyName)} ...',
           );
 
           final appPackage = _project.appPackage;
-          final appUpdatePackageProgress =
-              _logger.progress('Updating package ${appPackage.path} ');
+          final appUpdatePackageProgress = _logger.progress(
+            'Updating package ${appPackage.path} ',
+          );
           final appPackagePubspec = appPackage.pubspecFile;
           appPackagePubspec.removeDependencyByPattern(
-            '${_project.melosFile.name()}_${_platform.name}',
+            '${projectName}_${_platform.name}',
           );
           for (final mainFile in appPackage.mainFiles) {
             mainFile.removeSetupForPlatform(_platform);
@@ -95,11 +98,12 @@ abstract class DeactivatePlatformCommand extends Command<int>
           appUpdatePackageProgress.complete();
 
           final diPackage = _project.diPackage;
-          final diUpdatePackageProgress =
-              _logger.progress('Updating package ${diPackage.path} ');
+          final diUpdatePackageProgress = _logger.progress(
+            'Updating package ${diPackage.path} ',
+          );
           final diPackagePubspec = diPackage.pubspecFile;
           diPackagePubspec.removeDependencyByPattern(
-            '${_project.melosFile.name()}_${_platform.name}',
+            '${projectName}_${_platform.name}',
           );
           diPackage.injectionFile.removePackagesByPlatform(_platform);
           await _flutterPubGet(cwd: diPackage.path, logger: _logger);

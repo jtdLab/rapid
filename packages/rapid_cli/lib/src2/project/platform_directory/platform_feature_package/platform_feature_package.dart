@@ -173,7 +173,7 @@ class PlatformCustomFeaturePackage extends PlatformFeaturePackage {
     await generator.generate(
       DirectoryGeneratorTarget(Directory(path)),
       vars: <String, dynamic>{
-        'feature_name': name,
+        'name': name,
         'project_name': projectName,
         'android': platform == Platform.android,
         'ios': platform == Platform.ios,

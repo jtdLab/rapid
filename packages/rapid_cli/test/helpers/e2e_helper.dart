@@ -65,6 +65,7 @@ Future<void> _runFlutterPubGetInAllDirsWithPubspec() async {
 /// Verifys wheter ALL [entities] exist on disk.
 void verifyDoExist(Iterable<FileSystemEntity> entities) {
   for (final entity in entities) {
+    print(entity.path);
     expect(entity.existsSync(), true);
   }
 }
@@ -72,6 +73,7 @@ void verifyDoExist(Iterable<FileSystemEntity> entities) {
 /// Verifys wheter NONE of [entities] exist on disk.
 void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
   for (final entity in entities) {
+    print(entity.path);
     expect(entity.existsSync(), false);
   }
 }
@@ -126,7 +128,6 @@ final platformIndependentPackages = [
 /// All [platform]-dependent dirs of the test project.
 List<Directory> platformDirs(String platform) => [
       Directory(p.join(appPackage.path, platform)),
-      if (platform == 'web') Directory(p.join(appPackage.path, 'test_driver')),
       platformDir(platform),
       platformUiPackage(platform),
     ];

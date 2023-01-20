@@ -3,7 +3,7 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src2/core/dart_file.dart';
 import 'package:rapid_cli/src2/core/generator_builder.dart';
 import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/app_package/platform_native_directory_bundle.dart';
+import 'package:rapid_cli/src2/project/app_package/platform_native_directory/platform_native_directory.dart';
 import 'package:rapid_cli/src2/project/project.dart';
 import 'package:recase/recase.dart';
 import 'package:universal_io/io.dart';
@@ -23,12 +23,11 @@ typedef PlatformNativeDirectoryBuilder = PlatformNativeDirectory Function({
 class AppPackage extends ProjectPackage {
   /// {@macro app_package}
   AppPackage({
-    required Project project,
+    required this.project,
     PlatformNativeDirectoryBuilder? platformNativeDirectory,
     Set<MainFile>? mainFiles,
     GeneratorBuilder? generator,
-  })  : _project = project,
-        _generator = generator ?? MasonGenerator.fromBundle {
+  }) : _generator = generator ?? MasonGenerator.fromBundle {
     _platformNativeDirectory = platformNativeDirectory ??
         (({required platform}) =>
             PlatformNativeDirectory(platform, appPackage: this));
@@ -40,17 +39,17 @@ class AppPackage extends ProjectPackage {
         };
   }
 
-  final Project _project;
+  final Project project;
   late final PlatformNativeDirectoryBuilder _platformNativeDirectory;
   late final Set<MainFile> _mainFiles;
   final GeneratorBuilder _generator;
 
   @override
   String get path => p.join(
-        _project.path,
+        project.path,
         'packages',
-        _project.name(),
-        _project.name(),
+        project.name(),
+        project.name(),
       );
 
   Future<void> create({
@@ -64,7 +63,7 @@ class AppPackage extends ProjectPackage {
     required bool windows,
     required Logger logger,
   }) async {
-    final projectName = _project.name();
+    final projectName = project.name();
 
     final generator = await _generator(appPackageBundle);
     await generator.generate(
@@ -140,55 +139,6 @@ class AppPackage extends ProjectPackage {
   }
 }
 
-/// {@template platform_native_directory}
-/// Abstraction of a platform native directory of the app package of a Rapid project.
-///
-/// Location: `packages/<project name>/<project name>/<platform>`
-/// {@endtemplate}
-class PlatformNativeDirectory extends ProjectDirectory {
-  /// {@macro platform_native_directory}
-  PlatformNativeDirectory(
-    this.platform, {
-    required AppPackage appPackage,
-    GeneratorBuilder? generator,
-  })  : _appPackage = appPackage,
-        _generator = generator ?? MasonGenerator.fromBundle,
-        path = p.join(appPackage.path, platform.name);
-
-  final AppPackage _appPackage;
-  final GeneratorBuilder _generator;
-
-  final Platform platform;
-
-  @override
-  final String path;
-
-  Future<void> create({
-    String? description,
-    String? orgName,
-    required Logger logger,
-  }) async {
-    final projectName = _appPackage._project.name();
-
-    final generator = await _generator(platformNativeDirectoryBundle);
-    await generator.generate(
-      DirectoryGeneratorTarget(Directory(path)),
-      vars: <String, dynamic>{
-        'project_name': projectName,
-        if (description != null) 'description': description,
-        if (orgName != null) 'org_name': orgName,
-        'android': platform == Platform.android,
-        'ios': platform == Platform.ios,
-        'linux': platform == Platform.linux,
-        'macos': platform == Platform.macos,
-        'web': platform == Platform.web,
-        'windows': platform == Platform.windows,
-      },
-      logger: logger,
-    );
-  }
-}
-
 /// The environments a Rapid project might run in.
 enum Environment { development, test, production }
 
@@ -220,7 +170,7 @@ class MainFile extends ProjectEntity {
   bool exists() => _dartFile.exists();
 
   void addSetupForPlatform(Platform platform) {
-    final projectName = _appPackage._project.name();
+    final projectName = _appPackage.project.name();
     final platformName = platform.name;
     final envName = env == Environment.development
         ? 'dev'
@@ -280,7 +230,7 @@ class MainFile extends ProjectEntity {
   }
 
   void removeSetupForPlatform(Platform platform) {
-    final projectName = _appPackage._project.name();
+    final projectName = _appPackage.project.name();
     final platformName = platform.name;
 
     _dartFile.removeImport(

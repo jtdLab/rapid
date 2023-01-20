@@ -3,7 +3,8 @@
 
 import 'package:mason/mason.dart';
 
-final platformRoutingPackageBundle = MasonBundle.fromJson(<String, dynamic>{
+final platformRoutingFeaturePackageBundle =
+    MasonBundle.fromJson(<String, dynamic>{
   "files": [
     {
       "path": ".gitignore",
@@ -72,7 +73,7 @@ final platformRoutingPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     }
   ],
   "hooks": [],
-  "name": "platform_routing_package",
+  "name": "platform_routing_feature_package",
   "description":
       "A brick generating a platform routing package of a Rapid project.",
   "version": "0.1.0+1",
@@ -80,7 +81,7 @@ final platformRoutingPackageBundle = MasonBundle.fromJson(<String, dynamic>{
   "readme": {
     "path": "README.md",
     "data":
-        "IyBwbGF0Zm9ybV9yb3V0aW5nX3BhY2thZ2UKClshW1Bvd2VyZWQgYnkgTWFzb25dKGh0dHBzOi8vaW1nLnNoaWVsZHMuaW8vZW5kcG9pbnQ/dXJsPWh0dHBzJTNBJTJGJTJGdGlueXVybC5jb20lMkZtYXNvbi1iYWRnZSldKGh0dHBzOi8vZ2l0aHViLmNvbS9mZWxhbmdlbC9tYXNvbikKCkEgbmV3IGJyaWNrIGNyZWF0ZWQgd2l0aCB0aGUgTWFzb24gQ0xJLgoKX0dlbmVyYXRlZCBieSBbbWFzb25dWzFdIPCfp7FfCgojIyBHZXR0aW5nIFN0YXJ0ZWQg8J+agAoKVGhpcyBpcyBhIHN0YXJ0aW5nIHBvaW50IGZvciBhIG5ldyBicmljay4KQSBmZXcgcmVzb3VyY2VzIHRvIGdldCB5b3Ugc3RhcnRlZCBpZiB0aGlzIGlzIHlvdXIgZmlyc3QgYnJpY2sgdGVtcGxhdGU6CgotIFtPZmZpY2lhbCBNYXNvbiBEb2N1bWVudGF0aW9uXVsyXQotIFtDb2RlIGdlbmVyYXRpb24gd2l0aCBNYXNvbiBCbG9nXVszXQotIFtWZXJ5IEdvb2QgTGl2ZXN0cmVhbTogRmVsaXggQW5nZWxvdiBEZW1vcyBNYXNvbl1bNF0KClsxXTogaHR0cHM6Ly9naXRodWIuY29tL2ZlbGFuZ2VsL21hc29uClsyXTogaHR0cHM6Ly9naXRodWIuY29tL2ZlbGFuZ2VsL21hc29uL3RyZWUvbWFzdGVyL3BhY2thZ2VzL21hc29uX2NsaSNyZWFkbWUKWzNdOiBodHRwczovL3Zlcnlnb29kLnZlbnR1cmVzL2Jsb2cvY29kZS1nZW5lcmF0aW9uLXdpdGgtbWFzb24KWzRdOiBodHRwczovL3lvdXR1LmJlL0c0UFRqQTZ0cFRVCg==",
+        "IyBwbGF0Zm9ybV9yb3V0aW5nX2ZlYXR1cmVfcGFja2FnZQoKWyFbUG93ZXJlZCBieSBNYXNvbl0oaHR0cHM6Ly9pbWcuc2hpZWxkcy5pby9lbmRwb2ludD91cmw9aHR0cHMlM0ElMkYlMkZ0aW55dXJsLmNvbSUyRm1hc29uLWJhZGdlKV0oaHR0cHM6Ly9naXRodWIuY29tL2ZlbGFuZ2VsL21hc29uKQoKQSBuZXcgYnJpY2sgY3JlYXRlZCB3aXRoIHRoZSBNYXNvbiBDTEkuCgpfR2VuZXJhdGVkIGJ5IFttYXNvbl1bMV0g8J+nsV8KCiMjIEdldHRpbmcgU3RhcnRlZCDwn5qACgpUaGlzIGlzIGEgc3RhcnRpbmcgcG9pbnQgZm9yIGEgbmV3IGJyaWNrLgpBIGZldyByZXNvdXJjZXMgdG8gZ2V0IHlvdSBzdGFydGVkIGlmIHRoaXMgaXMgeW91ciBmaXJzdCBicmljayB0ZW1wbGF0ZToKCi0gW09mZmljaWFsIE1hc29uIERvY3VtZW50YXRpb25dWzJdCi0gW0NvZGUgZ2VuZXJhdGlvbiB3aXRoIE1hc29uIEJsb2ddWzNdCi0gW1ZlcnkgR29vZCBMaXZlc3RyZWFtOiBGZWxpeCBBbmdlbG92IERlbW9zIE1hc29uXVs0XQoKWzFdOiBodHRwczovL2dpdGh1Yi5jb20vZmVsYW5nZWwvbWFzb24KWzJdOiBodHRwczovL2dpdGh1Yi5jb20vZmVsYW5nZWwvbWFzb24vdHJlZS9tYXN0ZXIvcGFja2FnZXMvbWFzb25fY2xpI3JlYWRtZQpbM106IGh0dHBzOi8vdmVyeWdvb2QudmVudHVyZXMvYmxvZy9jb2RlLWdlbmVyYXRpb24td2l0aC1tYXNvbgpbNF06IGh0dHBzOi8veW91dHUuYmUvRzRQVGpBNnRwVFUK",
     "type": "text"
   },
   "changelog": {

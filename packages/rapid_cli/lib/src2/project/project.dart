@@ -276,7 +276,7 @@ class Project implements ProjectEntity {
       await platformFeaturePackage.delete(logger: logger);
     }
 
-    await _diPackage.unregisterFeaturePackagesByPlatform(
+    await _diPackage.unregisterCustomFeaturePackagesByPlatform(
       platform,
       logger: logger,
     );

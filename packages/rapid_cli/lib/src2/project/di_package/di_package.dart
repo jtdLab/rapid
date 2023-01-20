@@ -76,30 +76,27 @@ class DiPackage extends ProjectPackage with RebuildMixin {
     );
   }
 
-  Future<void> registerFeaturePackage(
-    PlatformCustomFeaturePackage featurePackage, {
+  Future<void> registerCustomFeaturePackage(
+    PlatformCustomFeaturePackage customFeaturePackage, {
     required Logger logger,
   }) async {
-    final packageName = featurePackage.name;
-    _injectionFile.addPackage(packageName);
+    _injectionFile.addCustomFeaturePackage(customFeaturePackage);
     await rebuild(logger: logger);
   }
 
-  Future<void> unregisterFeaturePackage(
-    PlatformCustomFeaturePackage featurePackage, {
+  Future<void> unregisterCustomFeaturePackage(
+    PlatformCustomFeaturePackage customFeaturePackage, {
     required Logger logger,
   }) async {
-    final packageName = featurePackage.name;
-    final packagePlatform = featurePackage.platform;
-    _injectionFile.removePackage(packageName, packagePlatform);
+    _injectionFile.removeCustomFeaturePackage(customFeaturePackage);
     await rebuild(logger: logger);
   }
 
-  Future<void> unregisterFeaturePackagesByPlatform(
+  Future<void> unregisterCustomFeaturePackagesByPlatform(
     Platform platform, {
     required Logger logger,
   }) async {
-    _injectionFile.removePackagesByPlatform(platform);
+    _injectionFile.removeCustomFeaturePackagesByPlatform(platform);
     await rebuild(logger: logger);
   }
 }
@@ -135,9 +132,13 @@ class InjectionFile extends ProjectEntity {
         functionName: 'configureDependencies',
       );
 
-  /// Adds [package] to this file.
-  void addPackage(String package) {
-    _dartFile.addImport('package:$package/$package.dart');
+  /// Adds [customFeaturePackage] to this file.
+  void addCustomFeaturePackage(
+    PlatformCustomFeaturePackage customFeaturePackage,
+  ) {
+    final packageName = customFeaturePackage.packageName();
+
+    _dartFile.addImport('package:$packageName/$packageName.dart');
 
     final existingExternalPackageModules = _readExternalPackageModules();
 
@@ -147,20 +148,22 @@ class InjectionFile extends ProjectEntity {
       functionName: 'configureDependencies',
       value: {
         ...existingExternalPackageModules,
-        '${package.pascalCase}PackageModule',
+        '${packageName.pascalCase}PackageModule',
       }.toList(),
     );
   }
 
-  /// Removes the package with [name] available on [platform].
-  void removePackage(String name, Platform platform) {
-    final projectName = _diPackage._project.name();
-    final platformName = platform.name;
+  /// Removes [customFeaturePackage] from this file.
+  void removeCustomFeaturePackage(
+    PlatformCustomFeaturePackage customFeaturePackage,
+  ) {
+    final packageName = customFeaturePackage.packageName();
 
-    final import = _dartFile
-        .readImports()
-        .firstWhere((e) => e.contains('${projectName}_${platformName}_$name'));
-    _dartFile.removeImport(import);
+    final imports =
+        _dartFile.readImports().where((e) => e.contains(packageName));
+    for (final import in imports) {
+      _dartFile.removeImport(import);
+    }
 
     final existingExternalPackageModules = _readExternalPackageModules();
 
@@ -169,11 +172,7 @@ class InjectionFile extends ProjectEntity {
       annotation: 'InjectableInit',
       functionName: 'configureDependencies',
       value: existingExternalPackageModules
-          .where(
-            (e) => !e.contains(
-              '${projectName.pascalCase}${platformName.pascalCase}${name.pascalCase}',
-            ),
-          )
+          .where((e) => !e.contains(packageName.pascalCase))
           .toList(),
     );
   }
@@ -181,7 +180,7 @@ class InjectionFile extends ProjectEntity {
   // TODO test
 
   /// Removes all packages with [platform].
-  void removePackagesByPlatform(Platform platform) {
+  void removeCustomFeaturePackagesByPlatform(Platform platform) {
     final projectName = _diPackage._project.name();
     final platformName = platform.name;
 

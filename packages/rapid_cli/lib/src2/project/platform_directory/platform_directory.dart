@@ -23,7 +23,8 @@ class PlatformDirectory extends ProjectDirectory {
           '${project.name()}_${platform.name}',
         ) {
     appFeaturePackage = PlatformAppFeaturePackage(platform, project: project);
-    routingFeaturePackage = PlatformRoutingFeaturePackage(platform, project: project);
+    routingFeaturePackage =
+        PlatformRoutingFeaturePackage(platform, project: project);
   }
 
   final Project _project;

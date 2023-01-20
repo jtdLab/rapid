@@ -5,9 +5,9 @@ import 'package:rapid_cli/src2/core/platform.dart';
 import 'package:rapid_cli/src2/project/project.dart';
 import 'package:universal_io/io.dart';
 
-import 'platform_app_package_bundle.dart';
+import 'platform_app_feature_package_bundle.dart';
 import 'platform_custom_feature_package_bundle.dart';
-import 'platform_routing_package_bundle.dart';
+import 'platform_routing_feature_package_bundle.dart';
 
 /// {@template platform_feature_package}
 /// Base class of a platform feature package of a Rapid project.
@@ -80,7 +80,7 @@ class PlatformAppFeaturePackage extends PlatformFeaturePackage {
   Future<void> create({required Logger logger}) async {
     final projectName = _project.name();
 
-    final generator = await _generator(platformAppPackageBundle);
+    final generator = await _generator(platformAppFeaturePackageBundle);
     await generator.generate(
       DirectoryGeneratorTarget(Directory(path)),
       vars: <String, dynamic>{
@@ -117,7 +117,7 @@ class PlatformRoutingFeaturePackage extends PlatformFeaturePackage {
   Future<void> create({required Logger logger}) async {
     final projectName = _project.name();
 
-    final generator = await _generator(platformRoutingPackageBundle);
+    final generator = await _generator(platformRoutingFeaturePackageBundle);
     await generator.generate(
       DirectoryGeneratorTarget(Directory(path)),
       vars: <String, dynamic>{

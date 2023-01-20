@@ -14,14 +14,12 @@ class MelosFile extends ProjectEntity {
   /// {@macro melos_file}
   MelosFile({
     required Project project,
-  }) : _yamlFile = YamlFile(path: project.path, name: 'melos') {
-    path = _yamlFile.path;
-  }
+  }) : _yamlFile = YamlFile(path: project.path, name: 'melos');
 
   final YamlFile _yamlFile;
 
   @override
-  late final String path;
+  String get path => _yamlFile.path;
 
   @override
   bool exists() => _yamlFile.exists();

@@ -15,13 +15,7 @@ class PlatformDirectory extends ProjectDirectory {
   PlatformDirectory(
     this.platform, {
     required Project project,
-  })  : _project = project,
-        path = p.join(
-          project.path,
-          'packages',
-          project.name(),
-          '${project.name()}_${platform.name}',
-        ) {
+  }) : _project = project {
     appFeaturePackage = PlatformAppFeaturePackage(platform, project: project);
     routingFeaturePackage =
         PlatformRoutingFeaturePackage(platform, project: project);
@@ -32,7 +26,12 @@ class PlatformDirectory extends ProjectDirectory {
   final Platform platform;
 
   @override
-  final String path;
+  String get path => p.join(
+        _project.path,
+        'packages',
+        _project.name(),
+        '${_project.name()}_${platform.name}',
+      );
 
   late final PlatformAppFeaturePackage appFeaturePackage;
 

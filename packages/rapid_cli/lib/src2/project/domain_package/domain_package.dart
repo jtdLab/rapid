@@ -17,19 +17,18 @@ class DomainPackage extends ProjectPackage {
     required Project project,
     GeneratorBuilder? generator,
   })  : _project = project,
-        _generator = generator ?? MasonGenerator.fromBundle,
-        path = p.join(
-          project.path,
-          'packages',
-          project.name(),
-          '${project.name()}_domain',
-        );
+        _generator = generator ?? MasonGenerator.fromBundle;
 
   final Project _project;
   final GeneratorBuilder _generator;
 
   @override
-  final String path;
+  String get path => p.join(
+        _project.path,
+        'packages',
+        _project.name(),
+        '${_project.name()}_domain',
+      );
 
   Future<void> create({
     required Logger logger,

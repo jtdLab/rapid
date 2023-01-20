@@ -20,14 +20,7 @@ abstract class PlatformFeaturePackage extends ProjectPackage {
     this.name,
     this.platform, {
     required Project project,
-  })  : _project = project,
-        path = p.join(
-          project.path,
-          'packages',
-          project.name(),
-          '${project.name()}_${platform.name}',
-          '${project.name()}_${platform.name}_$name',
-        );
+  }) : _project = project;
 
   final Project _project;
 
@@ -35,7 +28,13 @@ abstract class PlatformFeaturePackage extends ProjectPackage {
   final Platform platform;
 
   @override
-  final String path;
+  String get path => p.join(
+        _project.path,
+        'packages',
+        _project.name(),
+        '${_project.name()}_${platform.name}',
+        '${_project.name()}_${platform.name}_$name',
+      );
 
   Future<void> create({required Logger logger});
 

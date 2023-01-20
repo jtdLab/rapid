@@ -28,13 +28,7 @@ class AppPackage extends ProjectPackage {
     Set<MainFile>? mainFiles,
     GeneratorBuilder? generator,
   })  : _project = project,
-        _generator = generator ?? MasonGenerator.fromBundle,
-        path = p.join(
-          project.path,
-          'packages',
-          project.name(),
-          project.name(),
-        ) {
+        _generator = generator ?? MasonGenerator.fromBundle {
     _platformNativeDirectory = platformNativeDirectory ??
         (({required platform}) =>
             PlatformNativeDirectory(platform, appPackage: this));
@@ -52,7 +46,12 @@ class AppPackage extends ProjectPackage {
   final GeneratorBuilder _generator;
 
   @override
-  final String path;
+  String get path => p.join(
+        _project.path,
+        'packages',
+        _project.name(),
+        _project.name(),
+      );
 
   Future<void> create({
     required String description,
@@ -203,19 +202,17 @@ class MainFile extends ProjectEntity {
   MainFile(
     this.env, {
     required AppPackage appPackage,
-  })  : _appPackage = appPackage,
-        _dartFile = DartFile(
-          path: p.join(appPackage.path, 'lib'),
-          name: 'main_${env.name}',
-        ) {
-    path = _dartFile.path;
-  }
+  }) : _appPackage = appPackage;
 
   final AppPackage _appPackage;
-  final DartFile _dartFile;
+
+  DartFile get _dartFile => DartFile(
+        path: p.join(_appPackage.path, 'lib'),
+        name: 'main_${env.name}',
+      );
 
   @override
-  late final String path;
+  String get path => _dartFile.path;
 
   final Environment env;
 

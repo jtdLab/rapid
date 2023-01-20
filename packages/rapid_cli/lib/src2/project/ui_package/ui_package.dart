@@ -17,19 +17,18 @@ class UiPackage extends ProjectPackage {
     required Project project,
     GeneratorBuilder? generator,
   })  : _project = project,
-        _generator = generator ?? MasonGenerator.fromBundle,
-        path = p.join(
-          project.path,
-          'packages',
-          '${project.name()}_ui',
-          '${project.name()}_ui',
-        );
+        _generator = generator ?? MasonGenerator.fromBundle;
 
   final Project _project;
   final GeneratorBuilder _generator;
 
   @override
-  final String path;
+  String get path => p.join(
+        _project.path,
+        'packages',
+        '${_project.name()}_ui',
+        '${_project.name()}_ui',
+      );
 
   Future<void> create({
     required Logger logger,

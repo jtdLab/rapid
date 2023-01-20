@@ -1,14 +1,12 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
-import 'package:rapid_cli/src/commands/create/app_bundle.dart';
-import 'package:universal_io/io.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// The default description.
 const _defaultDescription = 'A Rapid app.';
@@ -29,9 +27,7 @@ class CreateCommand extends Command<int>
     FlutterConfigEnablePlatformCommand? flutterConfigEnableMacos,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWeb,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWindows,
-    MelosBootstrapCommand? melosBootstrap,
-    FlutterFormatFixCommand? flutterFormatFix,
-    GeneratorBuilder? generator,
+    ProjectBuilder? project,
   })  : _logger = logger ?? Logger(),
         _flutterInstalled = flutterInstalled ?? Flutter.installed,
         _melosInstalled = melosInstalled ?? Melos.installed,
@@ -47,9 +43,7 @@ class CreateCommand extends Command<int>
             flutterConfigEnableWeb ?? Flutter.configEnableWeb,
         _flutterConfigEnableWindows =
             flutterConfigEnableWindows ?? Flutter.configEnableWindows,
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
-        _generator = generator ?? MasonGenerator.fromBundle {
+        _project = project ?? (({String path = '.'}) => Project(path: path)) {
     argParser
       ..addSeparator('')
       ..addOutputDirOption(
@@ -111,9 +105,7 @@ class CreateCommand extends Command<int>
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableMacos;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableWeb;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableWindows;
-  final MelosBootstrapCommand _melosBootstrap;
-  final FlutterFormatFixCommand _flutterFormatFix;
-  final GeneratorBuilder _generator;
+  final ProjectBuilder _project;
 
   @override
   String get name => 'create';
@@ -166,30 +158,20 @@ class CreateCommand extends Command<int>
             await _flutterConfigEnableWindows(logger: _logger);
           }
 
-          final generateProgress = _logger.progress('Generating');
-          final generator = await _generator(appBundle);
-          final files = await generator.generate(
-            DirectoryGeneratorTarget(Directory(outputDir)),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'description': description,
-              'org_name': orgName,
-              'example': example,
-              'android': android,
-              'ios': ios,
-              'linux': linux,
-              'macos': macos,
-              'web': web,
-              'windows': windows,
-              'none': !_any
-            },
+          final project = _project(path: outputDir);
+          await project.create(
+            projectName: projectName,
+            description: description,
+            orgName: orgName,
+            example: example,
+            android: android,
+            ios: ios,
+            linux: linux,
+            macos: macos,
+            web: web,
+            windows: windows,
             logger: _logger,
           );
-          generateProgress.complete('Generated ${files.length} file(s)');
-
-          await _melosBootstrap(cwd: outputDir, logger: _logger);
-
-          await _flutterFormatFix(cwd: outputDir, logger: _logger);
 
           _logger
             ..info('\n')

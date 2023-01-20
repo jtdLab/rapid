@@ -26,12 +26,6 @@ class DiPackage extends ProjectPackage with RebuildMixin {
     GeneratorBuilder? generator,
   })  : _project = project,
         _generator = generator ?? MasonGenerator.fromBundle,
-        path = p.join(
-          project.path,
-          'packages',
-          project.name(),
-          '${project.name()}_di',
-        ),
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs {
@@ -43,7 +37,12 @@ class DiPackage extends ProjectPackage with RebuildMixin {
   final GeneratorBuilder _generator;
 
   @override
-  final String path;
+  String get path => p.join(
+        _project.path,
+        'packages',
+        _project.name(),
+        '${_project.name()}_di',
+      );
 
   @override
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
@@ -110,17 +109,17 @@ class InjectionFile extends ProjectEntity {
   /// {@macro injection_file}
   InjectionFile({
     required DiPackage diPackage,
-  })  : _diPackage = diPackage,
-        _dartFile = DartFile(
-            path: p.join(diPackage.path, 'lib', 'src'), name: 'injection') {
-    path = _dartFile.path;
-  }
+  }) : _diPackage = diPackage;
 
   final DiPackage _diPackage;
-  final DartFile _dartFile;
+
+  DartFile get _dartFile => DartFile(
+        path: p.join(_diPackage.path, 'lib', 'src'),
+        name: 'injection',
+      );
 
   @override
-  late final String path;
+  String get path => _dartFile.path;
 
   @override
   bool exists() => _dartFile.exists();

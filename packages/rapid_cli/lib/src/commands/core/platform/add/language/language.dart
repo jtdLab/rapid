@@ -1,9 +1,6 @@
 import 'package:args/command_runner.dart';
-import 'package:collection/collection.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/language/language.dart';
-import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform/core/validate_language.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -12,11 +9,9 @@ import 'package:rapid_cli/src/commands/linux/add/language/language.dart';
 import 'package:rapid_cli/src/commands/macos/add/language/language.dart';
 import 'package:rapid_cli/src/commands/web/add/language/language.dart';
 import 'package:rapid_cli/src/commands/windows/add/language/language.dart';
+import 'package:rapid_cli/src2/cli/cli.dart';
 import 'package:rapid_cli/src2/core/platform.dart';
 import 'package:rapid_cli/src2/project/project.dart';
-import 'package:universal_io/io.dart';
-
-import 'language_bundle.dart';
 
 // TODO share code with the remove lang command
 
@@ -42,22 +37,16 @@ abstract class PlatformAddLanguageCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
-    FlutterGenl10nCommand? flutterGenl10n,
     FlutterFormatFixCommand? flutterFormatFix,
-    GeneratorBuilder? generator,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
-        _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
-        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
-        _generator = generator ?? MasonGenerator.fromBundle;
+        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix;
 
   final Platform _platform;
   final Logger _logger;
   final Project _project;
-  final FlutterGenl10nCommand _flutterGenl10n;
   final FlutterFormatFixCommand _flutterFormatFix;
-  final GeneratorBuilder _generator;
 
   @override
   String get name => 'language';
@@ -81,38 +70,26 @@ abstract class PlatformAddLanguageCommand extends Command<int>
         _logger,
         () async {
           final language = _language;
-          final platformDirectory = _project.platformDirectory(_platform);
-          final features =
-              platformDirectory.getFeatures(exclude: {'app', 'routing'});
-          if (features.isEmpty) {
+
+          final platformDirectory = _project.platformDirectory(
+            platform: _platform,
+          );
+          final customFeatures = platformDirectory.customFeaturePackages();
+          if (customFeatures.isEmpty) {
             _logger.err('No ${_platform.prettyName} features found!\n'
                 'Run "rapid ${_platform.name} add feature" to add your first ${_platform.prettyName} feature.');
 
             return ExitCode.config.code;
           }
 
-          final allFeaturesHaveSameLanguages = EqualitySet.from(
-                  DeepCollectionEquality.unordered(),
-                  features.map((e) => e.supportedLanguages())).length ==
-              1;
-
-          if (allFeaturesHaveSameLanguages) {
-            final allFeaturesHaveSameDefaultLanguage =
-                features.map((e) => e.defaultLanguage()).toSet().length == 1;
-            if (allFeaturesHaveSameDefaultLanguage) {
-              if (!features.first.supportsLanguage(language)) {
-                final generator = await _generator(languageBundle);
-                for (final feature in features) {
-                  await generator.generate(
-                    DirectoryGeneratorTarget(Directory(feature.path)),
-                    vars: <String, dynamic>{
-                      'feature_name': feature.name,
-                      'language': language,
-                    },
+          if (platformDirectory.allFeaturesHaveSameLanguage()) {
+            if (platformDirectory.allFeaturesHaveSameDefaultLanguage()) {
+              if (!customFeatures.first.supportsLanguage(language)) {
+                for (final customFeature in customFeatures) {
+                  await customFeature.addLanguage(
+                    language: language,
                     logger: _logger,
                   );
-
-                  await _flutterGenl10n(cwd: feature.path, logger: _logger);
                 }
 
                 await _flutterFormatFix(logger: _logger);

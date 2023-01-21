@@ -9,7 +9,6 @@ class UiMacosAddWidgetCommand extends UiPlatformAddWidgetCommand {
   UiMacosAddWidgetCommand({
     super.logger,
     required super.project,
-    super.generator,
   }) : super(
           platform: Platform.macos,
         );

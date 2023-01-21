@@ -71,21 +71,11 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
           final name = super.className;
           final dir = super.dir;
 
-          final platformUiPackage = _project.platformUiPackage(_platform);
+          final platformUiPackage =
+              _project.platformUiPackage(platform: _platform);
           final widget = platformUiPackage.widget(name: name, dir: dir);
-
-          final exists = widget.exists();
-          if (exists) {
-            final deletedFiles = widget.delete();
-
-            for (final file in deletedFiles) {
-              _logger.info(file.path);
-            }
-
-            _logger.info('');
-            _logger.info('Deleted ${deletedFiles.length} item(s)');
-            _logger.info('');
-            _logger.success('Removed ${_platform.prettyName} Widget $name.');
+          if (widget.exists()) {
+            widget.delete();
 
             return ExitCode.success.code;
           } else {

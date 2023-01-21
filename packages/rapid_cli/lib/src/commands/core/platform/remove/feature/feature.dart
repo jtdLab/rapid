@@ -36,27 +36,17 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
     required Project project,
     MelosBootstrapCommand? melosBootstrap,
     MelosCleanCommand? melosClean,
-    FlutterPubGetCommand? flutterPubGet,
-    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
         _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _melosClean = melosClean ?? Melos.clean,
-        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs;
+        _melosClean = melosClean ?? Melos.clean;
 
   final Platform _platform;
   final Logger _logger;
   final Project _project;
   final MelosBootstrapCommand _melosBootstrap;
   final MelosCleanCommand _melosClean;
-  final FlutterPubGetCommand _flutterPubGet;
-  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   @override
   String get name => 'feature';
@@ -81,29 +71,37 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
         () async {
           final name = _name;
 
-          final platformDirectory = _project.platformDirectory(_platform);
+          final platformDirectory = _project.platformDirectory(
+            platform: _platform,
+          );
+          final customFeaturePackage = platformDirectory.customFeaturePackage(
+            name: name,
+          );
+          final customFeaturePackageExists = customFeaturePackage.exists();
+          if (customFeaturePackageExists) {
+            final diPackage = _project.diPackage;
+            await diPackage.unregisterCustomFeaturePackage(
+              customFeaturePackage,
+              logger: _logger,
+            );
+            await customFeaturePackage.delete(logger: _logger);
 
-          if (platformDirectory.featureExists(name)) {
-            final feature = platformDirectory.findFeature(name);
-            final featurePackageName = feature.pubspecFile.name();
-            final otherFeatures =
-                platformDirectory.getFeatures(exclude: {name});
-
-            feature.delete();
+            final otherFeaturePackages = [
+              platformDirectory.appFeaturePackage,
+              platformDirectory.routingFeaturePackage,
+              ...platformDirectory.customFeaturePackages(),
+            ];
 
             // TODO HIGH PRIO think about remove from pubspec of other packages that depend on it
             // TODO think about remove the localizations delegate of this feature from the app feature
             // TODO think about remove the feature from di feature and regenerate it
-            final diPackage = _project.diPackage;
-            diPackage.pubspecFile.removeDependency(featurePackageName);
-            for (final otherFeature in otherFeatures) {
-              otherFeature.pubspecFile.removeDependency(featurePackageName);
-            }
 
-            diPackage.injectionFile.removePackage(
-              name,
-              _platform,
-            );
+            final customFeaturePackagName = customFeaturePackage.packageName();
+            for (final otherFeaturePackage in otherFeaturePackages) {
+              otherFeaturePackage.pubspecFile.removeDependency(
+                customFeaturePackagName,
+              );
+            }
 
             // TODO think about remove the feature from routing feature and regenerate it
 
@@ -111,16 +109,9 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
 
             await _melosBootstrap(logger: _logger);
 
-            await _flutterPubGet(cwd: diPackage.path, logger: _logger);
-            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: diPackage.path,
-              logger: _logger,
-            );
             // TODO format if needed ?
 
-            _logger.success(
-              'Removed ${_platform.prettyName} feature $name.',
-            );
+            _logger.success('Removed ${_platform.prettyName} feature $name.');
 
             return ExitCode.success.code;
           } else {

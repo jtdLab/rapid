@@ -53,26 +53,18 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
         _logger,
         () async {
           final name = super.className;
-          final service = _service;
+          final serviceName = _service;
           final dir = super.dir;
 
           final infrastructurePackage = _project.infrastructurePackage;
-
-          final serviceImplementation = infrastructurePackage
-              .serviceImplementation(name: name, service: service, dir: dir);
-
-          final exists = serviceImplementation.exists();
-          if (exists) {
-            final deletedFiles = serviceImplementation.delete();
-
-            for (final file in deletedFiles) {
-              _logger.info(file.path);
-            }
-
-            _logger.info('');
-            _logger.info('Deleted ${deletedFiles.length} item(s)');
-            _logger.info('');
-            _logger.success('Removed Service Implementation $name.');
+          final serviceImplementation =
+              infrastructurePackage.serviceImplementation(
+            name: name,
+            serviceName: serviceName,
+            dir: dir,
+          );
+          if (serviceImplementation.exists()) {
+            await serviceImplementation.create(logger: _logger);
 
             return ExitCode.success.code;
           } else {

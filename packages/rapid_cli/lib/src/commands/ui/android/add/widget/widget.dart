@@ -9,7 +9,6 @@ class UiAndroidAddWidgetCommand extends UiPlatformAddWidgetCommand {
   UiAndroidAddWidgetCommand({
     super.logger,
     required super.project,
-    super.generator,
   }) : super(
           platform: Platform.android,
         );

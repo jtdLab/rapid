@@ -7,14 +7,14 @@ final cubitBundle = MasonBundle.fromJson(<String, dynamic>{
   "files": [
     {
       "path":
-          "packages/{{project_name}}/{{project_name}}_{{platform}}/{{project_name}}_{{platform}}_{{feature_name.snakeCase()}}/lib/src/application/{{name.snakeCase()}}/{{name.snakeCase()}}_cubit.dart",
+          "lib/src/application/{{name.snakeCase()}}/{{name.snakeCase()}}_cubit.dart",
       "data":
           "aW1wb3J0ICdwYWNrYWdlOmJsb2MvYmxvYy5kYXJ0JzsKaW1wb3J0ICdwYWNrYWdlOmZyZWV6ZWRfYW5ub3RhdGlvbi9mcmVlemVkX2Fubm90YXRpb24uZGFydCc7CmltcG9ydCAncGFja2FnZTp7e3Byb2plY3RfbmFtZX19X2RpL3t7cHJvamVjdF9uYW1lfX1fZGkuZGFydCc7CgpwYXJ0ICd7e25hbWUuc25ha2VDYXNlKCl9fV9jdWJpdC5mcmVlemVkLmRhcnQnOwpwYXJ0ICd7e25hbWUuc25ha2VDYXNlKCl9fV9zdGF0ZS5kYXJ0JzsKCkB7e3BsYXRmb3JtfX0KQGluamVjdGFibGUKY2xhc3Mge3tuYW1lLnBhc2NhbENhc2UoKX19Q3ViaXQgZXh0ZW5kcyBDdWJpdDx7e25hbWUucGFzY2FsQ2FzZSgpfX1TdGF0ZT4gewogIHt7bmFtZS5wYXNjYWxDYXNlKCl9fUN1Yml0KCkKICAgICAgOiBzdXBlcigKICAgICAgICAgIC8vIFNldCBpbml0aWFsIHN0YXRlCiAgICAgICAgICBjb25zdCB7e25hbWUucGFzY2FsQ2FzZSgpfX1TdGF0ZS5pbml0aWFsKCksCiAgICAgICAgKTsKCiAgdm9pZCBzdGFydGVkKCkgewogICAgLy8gVE9ETzogaW1wbGVtZW50CiAgICB0aHJvdyBVbmltcGxlbWVudGVkRXJyb3IoKTsKICB9Cn0K",
       "type": "text"
     },
     {
       "path":
-          "packages/{{project_name}}/{{project_name}}_{{platform}}/{{project_name}}_{{platform}}_{{feature_name.snakeCase()}}/lib/src/application/{{name.snakeCase()}}/{{name.snakeCase()}}_state.dart",
+          "lib/src/application/{{name.snakeCase()}}/{{name.snakeCase()}}_state.dart",
       "data":
           "cGFydCBvZiAne3tuYW1lLnNuYWtlQ2FzZSgpfX1fY3ViaXQuZGFydCc7CgpAZnJlZXplZApjbGFzcyB7e25hbWUucGFzY2FsQ2FzZSgpfX1TdGF0ZSB3aXRoIF8ke3tuYW1lLnBhc2NhbENhc2UoKX19U3RhdGUgewogIGNvbnN0IGZhY3Rvcnkge3tuYW1lLnBhc2NhbENhc2UoKX19U3RhdGUuaW5pdGlhbCgpID0gX0luaXRpYWw7Cn0K",
       "type": "text"
@@ -22,7 +22,8 @@ final cubitBundle = MasonBundle.fromJson(<String, dynamic>{
   ],
   "hooks": [],
   "name": "cubit",
-  "description": "A new brick created with the Mason CLI.",
+  "description":
+      "A brick generating a cubit of a platform feature package of a Rapid project.",
   "version": "0.1.0+1",
   "environment": {"mason": ">=0.1.0-dev.39 <0.1.0"},
   "readme": {
@@ -42,28 +43,9 @@ final cubitBundle = MasonBundle.fromJson(<String, dynamic>{
     "type": "text"
   },
   "vars": {
-    "project_name": {
-      "type": "string",
-      "description": "The project name",
-      "default": "my_app",
-      "prompt": "What is the project name?"
-    },
-    "feature_name": {
-      "type": "string",
-      "description": "The feature name",
-      "default": "my_app",
-      "prompt": "What is the project name?"
-    },
-    "name": {
-      "type": "string",
-      "description": "The name of the bloc",
-      "default": "my",
-      "prompt": "What is the name of the bloc?"
-    },
-    "platform": {
-      "type": "string",
-      "description": "The platform of the feature",
-      "prompt": "What is the platform of the feature?"
-    }
+    "project_name": {"type": "string", "description": "The project name"},
+    "feature_name": {"type": "string", "description": "The feature name"},
+    "name": {"type": "string", "description": "The name of the bloc"},
+    "platform": {"type": "string", "description": "The platform of the feature"}
   }
 });

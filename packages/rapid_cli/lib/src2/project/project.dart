@@ -17,6 +17,8 @@ import 'platform_ui_package/platform_ui_package.dart';
 import 'project_bundle.dart';
 import 'ui_package/ui_package.dart';
 
+// TODO think about introduceing ProjectEntityCollection
+
 abstract class ProjectEntity {
   String get path;
 
@@ -107,32 +109,32 @@ class Project implements ProjectEntity {
     MelosBootstrapCommand? melosBootstrap,
     FlutterFormatFixCommand? flutterFormatFix,
     GeneratorBuilder? generator,
-  })  : _generator = generator ?? MasonGenerator.fromBundle,
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix {
+  })  : _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
+        _generator = generator ?? MasonGenerator.fromBundle {
     _melosFile = melosFile ?? MelosFile(project: this);
     _appPackage = appPackage ?? AppPackage(project: this);
-    _diPackage = diPackage ?? DiPackage(project: this);
-    _domainPackage = domainPackage ?? DomainPackage(project: this);
-    _infrastructurePackage =
+    diPackage = diPackage ?? DiPackage(project: this);
+    domainPackage = domainPackage ?? DomainPackage(project: this);
+    infrastructurePackage =
         infrastructurePackage ?? InfrastructurePackage(project: this);
     _loggingPackage = loggingPackage ?? LoggingPackage(project: this);
     platformDirectory = platformDirectory ??
         (({required platform}) => PlatformDirectory(platform, project: this));
     _uiPackage = uiPackage ?? UiPackage(project: this);
-    _platformUiPackage = platformUiPackage ??
+    platformUiPackage = platformUiPackage ??
         (({required platform}) => PlatformUiPackage(platform, project: this));
   }
 
   late final MelosFile _melosFile;
   late final AppPackage _appPackage;
-  late final DiPackage _diPackage;
-  late final DomainPackage _domainPackage;
-  late final InfrastructurePackage _infrastructurePackage;
+  late final DiPackage diPackage;
+  late final DomainPackage domainPackage;
+  late final InfrastructurePackage infrastructurePackage;
   late final LoggingPackage _loggingPackage;
   late final PlatformDirectoryBuilder platformDirectory;
   late final UiPackage _uiPackage;
-  late final PlatformUiPackageBuilder _platformUiPackage;
+  late final PlatformUiPackageBuilder platformUiPackage;
   final MelosBootstrapCommand _melosBootstrap;
   final FlutterFormatFixCommand _flutterFormatFix;
   final GeneratorBuilder _generator;
@@ -146,15 +148,15 @@ class Project implements ProjectEntity {
   bool exists() =>
       _melosFile.exists() &&
       _appPackage.exists() &&
-      _diPackage.exists() &&
-      _domainPackage.exists() &&
-      _infrastructurePackage.exists() &&
+      diPackage.exists() &&
+      domainPackage.exists() &&
+      infrastructurePackage.exists() &&
       _loggingPackage.exists() &&
       _uiPackage.exists();
 
   bool platformIsActivated(Platform platform) {
     final platformDirectory = this.platformDirectory(platform: platform);
-    final platformUiPackage = _platformUiPackage(platform: platform);
+    final platformUiPackage = this.platformUiPackage(platform: platform);
 
     return platformDirectory.exists() || platformUiPackage.exists();
   }
@@ -191,7 +193,7 @@ class Project implements ProjectEntity {
       windows: windows,
       logger: logger,
     );
-    await _diPackage.create(
+    await diPackage.create(
       android: android,
       ios: ios,
       linux: linux,
@@ -200,8 +202,8 @@ class Project implements ProjectEntity {
       windows: windows,
       logger: logger,
     );
-    await _domainPackage.create(logger: logger);
-    await _infrastructurePackage.create(logger: logger);
+    await domainPackage.create(logger: logger);
+    await infrastructurePackage.create(logger: logger);
     await _loggingPackage.create(logger: logger);
     await _uiPackage.create(logger: logger);
 
@@ -228,7 +230,7 @@ class Project implements ProjectEntity {
       );
       await platformHomePagePackage.create(logger: logger);
 
-      final platformUiPackage = _platformUiPackage(platform: platform);
+      final platformUiPackage = this.platformUiPackage(platform: platform);
       await platformUiPackage.create(logger: logger);
     }
 
@@ -253,7 +255,7 @@ class Project implements ProjectEntity {
 
     final homePageFeaturePackage =
         platformDirectory.customFeaturePackage(name: 'home_page');
-    await _diPackage.registerCustomFeaturePackage(
+    await diPackage.registerCustomFeaturePackage(
       homePageFeaturePackage,
       logger: logger,
     );
@@ -267,7 +269,7 @@ class Project implements ProjectEntity {
     );
     await platformHomePagePackage.create(logger: logger);
 
-    final platformUiPackage = _platformUiPackage(platform: platform);
+    final platformUiPackage = this.platformUiPackage(platform: platform);
     await platformUiPackage.create(logger: logger);
   }
 
@@ -281,7 +283,7 @@ class Project implements ProjectEntity {
 
     final customFeaturesPackages = platformDirectory.customFeaturePackages();
     for (final customFeaturePackage in customFeaturesPackages) {
-      await _diPackage.unregisterCustomFeaturePackage(
+      await diPackage.unregisterCustomFeaturePackage(
         customFeaturePackage,
         logger: logger,
       );
@@ -289,7 +291,7 @@ class Project implements ProjectEntity {
 
     await platformDirectory.delete(logger: logger);
 
-    final platformUiPackage = _platformUiPackage(platform: platform);
+    final platformUiPackage = this.platformUiPackage(platform: platform);
     await platformUiPackage.delete(logger: logger);
   }
 }

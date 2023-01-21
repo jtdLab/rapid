@@ -9,7 +9,6 @@ class UiWebAddWidgetCommand extends UiPlatformAddWidgetCommand {
   UiWebAddWidgetCommand({
     super.logger,
     required super.project,
-    super.generator,
   }) : super(
           platform: Platform.web,
         );

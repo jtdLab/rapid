@@ -39,8 +39,8 @@ class PlatformDirectory extends ProjectDirectory {
   late final PlatformRoutingFeaturePackage routingFeaturePackage;
 
   bool allFeaturesHaveSameLanguage() {
-    final featurePackages =
-        customFeaturePackages(); // TODO include app and routing ?
+    // TODO include app and routing ?
+    final featurePackages = customFeaturePackages();
 
     return EqualitySet.from(
           DeepCollectionEquality.unordered(),
@@ -50,8 +50,8 @@ class PlatformDirectory extends ProjectDirectory {
   }
 
   bool allFeaturesHaveSameDefaultLanguage() {
-    final featurePackages =
-        customFeaturePackages(); // TODO include app and routing ?
+    // TODO include app and routing ?
+    final featurePackages = customFeaturePackages();
 
     return featurePackages.map((e) => e.defaultLanguage()).toSet().length == 1;
   }

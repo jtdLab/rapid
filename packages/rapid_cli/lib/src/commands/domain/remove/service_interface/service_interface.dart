@@ -49,21 +49,12 @@ class DomainRemoveServiceInterfaceCommand extends Command<int>
           final dir = super.dir;
 
           final domainPackage = _project.domainPackage;
-          final serviceInterface =
-              domainPackage.serviceInterface(name: name, dir: dir);
-
-          final exists = serviceInterface.exists();
-          if (exists) {
-            final deletedFiles = serviceInterface.delete();
-
-            for (final file in deletedFiles) {
-              _logger.info(file.path);
-            }
-
-            _logger.info('');
-            _logger.info('Deleted ${deletedFiles.length} item(s)');
-            _logger.info('');
-            _logger.success('Removed Service Interface $name.');
+          final serviceInterface = domainPackage.serviceInterface(
+            name: name,
+            dir: dir,
+          );
+          if (serviceInterface.exists()) {
+            serviceInterface.delete();
 
             return ExitCode.success.code;
           } else {

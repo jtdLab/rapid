@@ -3,7 +3,6 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src2/cli/cli.dart';
 import 'package:rapid_cli/src2/core/dart_file.dart';
 import 'package:rapid_cli/src2/core/generator_builder.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
 import 'package:rapid_cli/src2/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src2/project/project.dart';
 import 'package:recase/recase.dart';

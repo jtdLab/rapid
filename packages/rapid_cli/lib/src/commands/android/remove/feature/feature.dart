@@ -6,14 +6,12 @@ import 'package:rapid_cli/src2/core/platform.dart';
 /// {@endtemplate}
 class AndroidRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   /// {@macro android_remove_feature_command}
-  AndroidRemoveFeatureCommand(
-      {super.logger,
-      required super.project,
-      super.melosBootstrap,
-      super.melosClean,
-      super.flutterPubGet,
-      super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs})
-      : super(
+  AndroidRemoveFeatureCommand({
+    super.logger,
+    required super.project,
+    super.melosBootstrap,
+    super.melosClean,
+  }) : super(
           platform: Platform.android,
         );
 }

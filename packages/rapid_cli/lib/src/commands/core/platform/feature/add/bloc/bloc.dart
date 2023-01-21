@@ -1,9 +1,7 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
-import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
@@ -15,9 +13,6 @@ import 'package:rapid_cli/src/commands/windows/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src2/core/platform.dart';
 import 'package:rapid_cli/src2/project/project.dart';
 import 'package:recase/recase.dart';
-import 'package:universal_io/io.dart';
-
-import 'bloc_bundle.dart';
 
 // TODO share code with add cubit command
 
@@ -43,16 +38,9 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
-    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    GeneratorBuilder? generator,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
-        _generator = generator ?? MasonGenerator.fromBundle {
+        _project = project {
     argParser
       ..addSeparator('')
       // TODO add hint that its a dart package nameish string but not the full name of the related package
@@ -66,9 +54,6 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
   final Platform _platform;
   final Logger _logger;
   final Project _project;
-  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
-  final GeneratorBuilder _generator;
 
   @override
   String get name => 'bloc';
@@ -89,43 +74,35 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
         ],
         _logger,
         () async {
-          final projectName = _project.melosFile.name();
           final featureName = _featureName;
           final name = super.className;
 
-          final platformDirectory = _project.platformDirectory(_platform);
-          if (platformDirectory.featureExists(_featureName)) {
-            final feature = platformDirectory.findFeature(_featureName);
+          final platformDirectory = _project.platformDirectory(
+            platform: _platform,
+          );
+          final customFeaturePackage = platformDirectory.customFeaturePackage(
+            name: featureName,
+          );
+          if (customFeaturePackage.exists()) {
+            final bloc = customFeaturePackage.bloc(name: name);
+            if (bloc.exists()) {
+              await bloc.create(logger: _logger);
 
-            // TODO check if bloc exists
+              _logger.success(
+                'Added ${name.pascalCase}Bloc to ${_platform.prettyName} feature $featureName.',
+              );
 
-            final generateProgress = _logger.progress('Generating files');
-            final generator = await _generator(blocBundle);
-            final files = await generator.generate(
-              DirectoryGeneratorTarget(Directory('.')),
-              vars: <String, dynamic>{
-                'project_name': projectName,
-                'feature_name': featureName,
-                'name': name,
-                'platform': _platform.name,
-              },
-              logger: _logger,
-            );
-            generateProgress.complete('Generated ${files.length} file(s)');
+              return ExitCode.success.code;
+            } else {
+              _logger.err(
+                'The bloc $name does already exist in $featureName on ${_platform.prettyName}.',
+              );
 
-            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: feature.path,
-              logger: _logger,
-            );
-
-            _logger.success(
-              'Added ${name.pascalCase}Bloc to ${_platform.prettyName} feature $featureName.',
-            );
-
-            return ExitCode.success.code;
+              return ExitCode.config.code;
+            }
           } else {
             _logger.err(
-              'The feature "$_featureName" does not exist on ${_platform.prettyName}.',
+              'The feature $featureName does not exist on ${_platform.prettyName}.',
             );
 
             return ExitCode.config.code;

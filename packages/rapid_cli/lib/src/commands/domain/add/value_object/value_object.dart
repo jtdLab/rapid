@@ -1,15 +1,11 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
-import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src2/project/project.dart';
 import 'package:recase/recase.dart';
-import 'package:universal_io/io.dart';
-
-import 'value_object_bundle.dart';
 
 // TODO fix the template needs super class from rapid
 
@@ -22,10 +18,8 @@ class DomainAddValueObjectCommand extends Command<int>
   DomainAddValueObjectCommand({
     Logger? logger,
     required Project project,
-    GeneratorBuilder? generator,
   })  : _logger = logger ?? Logger(),
-        _project = project,
-        _generator = generator ?? MasonGenerator.fromBundle {
+        _project = project {
     argParser
       ..addSeparator('')
       ..addOutputDirOption(
@@ -35,7 +29,6 @@ class DomainAddValueObjectCommand extends Command<int>
 
   final Logger _logger;
   final Project _project;
-  final GeneratorBuilder _generator;
 
   @override
   String get name => 'value_object';
@@ -55,28 +48,27 @@ class DomainAddValueObjectCommand extends Command<int>
         [isProjectRoot(_project)],
         _logger,
         () async {
-          final projectName = _project.melosFile.name();
           final name = super.className;
           final outputDir = super.outputDir;
 
-          final generateProgress = _logger.progress('Generating files');
-          final generator = await _generator(valueObjectBundle);
-          final files = await generator.generate(
-            DirectoryGeneratorTarget(Directory(_project.domainPackage.path)),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'name': name,
-              'output_dir': outputDir,
-              // 'type': 'List<T>', // TODO
-              // 'generics': '<T>', // TODO
-            },
-            logger: _logger,
+          final domainPackage = _project.domainPackage;
+          final valueObject = domainPackage.valueObject(
+            name: name,
+            dir: outputDir,
+            // type: 'List<T>', // TODO
+            // generics: '<T>', // TODO
           );
-          generateProgress.complete('Generated ${files.length} file(s)');
+          if (!valueObject.exists()) {
+            await valueObject.create(logger: _logger);
 
-          _logger.success('Added Value Object ${name.pascalCase}.');
+            _logger.success('Added Value Object ${name.pascalCase}.');
 
-          return ExitCode.success.code;
+            return ExitCode.success.code;
+          } else {
+            _logger.err('Value Object $name already exists.');
+
+            return ExitCode.config.code;
+          }
         },
       );
 }

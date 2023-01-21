@@ -22,7 +22,8 @@ final valueObjectBundle = MasonBundle.fromJson(<String, dynamic>{
   ],
   "hooks": [],
   "name": "value_object",
-  "description": "A new brick created with the Mason CLI.",
+  "description":
+      "A brick generating a value object of the domain package of a Rapid project.",
   "version": "0.1.0+1",
   "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {

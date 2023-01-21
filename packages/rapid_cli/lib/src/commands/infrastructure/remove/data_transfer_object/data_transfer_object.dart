@@ -48,29 +48,21 @@ class InfrastructureRemoveDataTransferObjectCommand extends Command<int>
         [isProjectRoot(_project)],
         _logger,
         () async {
-          final name = super.className;
+          // TODO rename the cli arg to entity-name
+          final entityName = super.className;
           final dir = super.dir;
 
           final infrastructurePackage = _project.infrastructurePackage;
-          final dataTransferObject =
-              infrastructurePackage.dataTransferObject(name: name, dir: dir);
-
-          final exists = dataTransferObject.exists();
-          if (exists) {
-            final deletedFiles = dataTransferObject.delete();
-
-            for (final file in deletedFiles) {
-              _logger.info(file.path);
-            }
-
-            _logger.info('');
-            _logger.info('Deleted ${deletedFiles.length} item(s)');
-            _logger.info('');
-            _logger.success('Removed Data Transfer Object $name.');
+          final dataTransferObject = infrastructurePackage.dataTransferObject(
+            entityName: entityName,
+            dir: dir,
+          );
+          if (dataTransferObject.exists()) {
+            await dataTransferObject.create(logger: _logger);
 
             return ExitCode.success.code;
           } else {
-            _logger.err('Data Transfer Object $name not found.');
+            _logger.err('Data Transfer Object $entityName not found.');
 
             return ExitCode.config.code;
           }

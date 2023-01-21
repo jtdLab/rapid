@@ -9,7 +9,6 @@ class UiIosAddWidgetCommand extends UiPlatformAddWidgetCommand {
   UiIosAddWidgetCommand({
     super.logger,
     required super.project,
-    super.generator,
   }) : super(
           platform: Platform.ios,
         );

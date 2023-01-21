@@ -6,6 +6,7 @@ import 'package:rapid_cli/src2/project/project.dart';
 import 'package:universal_io/io.dart';
 
 import 'platform_ui_package_bundle.dart';
+import 'widget_bundle.dart';
 
 /// {@template platform_ui_package}
 /// Abstraction of a platform ui package of a Rapid project.
@@ -18,26 +19,26 @@ class PlatformUiPackage extends ProjectPackage {
     this.platform, {
     required Project project,
     GeneratorBuilder? generator,
-  })  : _project = project,
+  })  : project = project,
         _generator = generator ?? MasonGenerator.fromBundle;
 
-  final Project _project;
+  final Project project;
   final GeneratorBuilder _generator;
 
   final Platform platform;
 
   @override
   String get path => p.join(
-        _project.path,
+        project.path,
         'packages',
-        '${_project.name()}_ui',
-        '${_project.name()}_ui_${platform.name}',
+        '${project.name()}_ui',
+        '${project.name()}_ui_${platform.name}',
       );
 
   Future<void> create({
     required Logger logger,
   }) async {
-    final projectName = _project.name();
+    final projectName = project.name();
 
     final generator = await _generator(platformUiPackageBundle);
     await generator.generate(
@@ -55,17 +56,73 @@ class PlatformUiPackage extends ProjectPackage {
     );
   }
 
-  Future<void> addWidget({
+  Widget widget({
+    required String name,
+    required String dir,
+  }) =>
+      Widget(name: name, dir: dir, platformUiPackage: this);
+}
+
+/// {@template widget}
+/// Abstraction of a widget of a platform ui package of a Rapid project.
+/// {@endtemplate}
+class Widget {
+  /// {@macro widget}
+  Widget({
+    required this.name,
+    required this.dir,
+    required this.platformUiPackage,
+    GeneratorBuilder? generator,
+  })  : _widgetDirectory = Directory(
+          p.join(
+            platformUiPackage.path,
+            'lib',
+            'src',
+            dir,
+            name,
+          ),
+        ),
+        _widgetTestDirectory = Directory(
+          p.join(
+            platformUiPackage.path,
+            'test',
+            'src',
+            dir,
+            name,
+          ),
+        ),
+        _generator = generator ?? MasonGenerator.fromBundle;
+
+  final Directory _widgetDirectory;
+  final Directory _widgetTestDirectory;
+  final GeneratorBuilder _generator;
+
+  final String name;
+  final String dir;
+  final PlatformUiPackage platformUiPackage;
+
+  bool exists() =>
+      _widgetDirectory.existsSync() || _widgetTestDirectory.existsSync();
+
+  Future<void> create({
     required Logger logger,
-  }) {
-    // TODO implement
-    throw UnimplementedError();
+  }) async {
+    final projectName = platformUiPackage.project.name();
+    final generator = await _generator(widgetBundle);
+    await generator.generate(
+      DirectoryGeneratorTarget(Directory(platformUiPackage.path)),
+      vars: <String, dynamic>{
+        'project_name': projectName,
+        'name': name,
+        'output_dir': dir,
+      },
+      logger: logger,
+    );
   }
 
-  Future<void> removeWidget({
-    required Logger logger,
-  }) {
-    // TODO implement
-    throw UnimplementedError();
+  // TODO logger ?
+  void delete() {
+    _widgetDirectory.deleteSync(recursive: true);
+    _widgetTestDirectory.deleteSync(recursive: true);
   }
 }

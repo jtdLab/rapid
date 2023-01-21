@@ -9,7 +9,6 @@ class UiWindowsAddWidgetCommand extends UiPlatformAddWidgetCommand {
   UiWindowsAddWidgetCommand({
     super.logger,
     required super.project,
-    super.generator,
   }) : super(
           platform: Platform.windows,
         );

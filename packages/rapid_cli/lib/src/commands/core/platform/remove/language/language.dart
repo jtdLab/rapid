@@ -69,33 +69,28 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
         _logger,
         () async {
           final language = _language;
-          final platformDirectory = _project.platformDirectory(_platform);
-          final features =
-              platformDirectory.getFeatures(exclude: {'app', 'routing'});
 
-          if (features.isEmpty) {
+          final platformDirectory = _project.platformDirectory(
+            platform: _platform,
+          );
+          final customFeatures = platformDirectory.customFeaturePackages();
+
+          if (customFeatures.isEmpty) {
             _logger.err('No ${_platform.prettyName} features found!\n'
                 'Run "rapid ${_platform.name} add feature" to add your first ${_platform.prettyName} feature.');
 
             return ExitCode.config.code;
           }
 
-          final allFeaturesHaveSameLanguages = EqualitySet.from(
-                  DeepCollectionEquality.unordered(),
-                  features.map((e) => e.supportedLanguages())).length ==
-              1;
-
-          if (allFeaturesHaveSameLanguages) {
-            final allFeaturesHaveSameDefaultLanguage =
-                features.map((e) => e.defaultLanguage()).toSet().length == 1;
-            if (allFeaturesHaveSameDefaultLanguage) {
-              if (features.first.supportsLanguage(language)) {
-                if (features.first.defaultLanguage() != language) {
-                  for (final feature in features) {
-                    final arbFile = feature.findArbFileByLanguage(language);
-                    arbFile.delete();
-
-                    await _flutterGenl10n(cwd: feature.path, logger: _logger);
+          if (platformDirectory.allFeaturesHaveSameLanguage()) {
+            if (platformDirectory.allFeaturesHaveSameDefaultLanguage()) {
+              if (customFeatures.first.supportsLanguage(language)) {
+                if (customFeatures.first.defaultLanguage() != language) {
+                  for (final customFeature in customFeatures) {
+                    await customFeature.removeLanguage(
+                      language: language,
+                      logger: _logger,
+                    );
                   }
 
                   // TODO add hint how to work with localization
@@ -108,8 +103,8 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
                   return ExitCode.config.code;
                 }
               } else {
-                _logger.err(
-                    'The language "$language" is not present.'); // TODO better hint
+                // TODO better hint
+                _logger.err('The language "$language" is not present.');
 
                 return ExitCode.config.code;
               }

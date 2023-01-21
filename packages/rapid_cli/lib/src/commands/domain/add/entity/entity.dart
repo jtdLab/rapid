@@ -1,15 +1,11 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
-import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src2/project/project.dart';
 import 'package:recase/recase.dart';
-import 'package:universal_io/io.dart';
-
-import 'entity_bundle.dart';
 
 /// {@template domain_add_entity_command}
 /// `rapid domain add entity` command adds entity to the domain part of an existing Rapid project.
@@ -20,10 +16,8 @@ class DomainAddEntityCommand extends Command<int>
   DomainAddEntityCommand({
     Logger? logger,
     required Project project,
-    GeneratorBuilder? generator,
   })  : _logger = logger ?? Logger(),
-        _project = project,
-        _generator = generator ?? MasonGenerator.fromBundle {
+        _project = project {
     argParser
       ..addSeparator('')
       ..addOutputDirOption(
@@ -33,7 +27,6 @@ class DomainAddEntityCommand extends Command<int>
 
   final Logger _logger;
   final Project _project;
-  final GeneratorBuilder _generator;
 
   @override
   String get name => 'entity';
@@ -50,26 +43,22 @@ class DomainAddEntityCommand extends Command<int>
         [isProjectRoot(_project)],
         _logger,
         () async {
-          final projectName = _project.name();
           final name = super.className;
           final outputDir = super.outputDir;
 
-          final generateProgress = _logger.progress('Generating files');
-          final generator = await _generator(entityBundle);
-          final files = await generator.generate(
-            DirectoryGeneratorTarget(Directory('.')),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'name': name,
-              'output_dir': outputDir,
-            },
-            logger: _logger,
-          );
-          generateProgress.complete('Generated ${files.length} file(s)');
+          final domainPackage = _project.domainPackage;
+          final entity = domainPackage.entity(name: name, dir: outputDir);
+          if (!entity.exists()) {
+            await entity.create(logger: _logger);
 
-          _logger.success('Added Entity ${name.pascalCase}.');
+            _logger.success('Added Entity ${name.pascalCase}.');
 
-          return ExitCode.success.code;
+            return ExitCode.success.code;
+          } else {
+            _logger.err('Entity $name already exists.');
+
+            return ExitCode.config.code;
+          }
         },
       );
 }

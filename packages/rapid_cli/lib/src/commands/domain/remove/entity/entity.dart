@@ -49,19 +49,8 @@ class DomainRemoveEntityCommand extends Command<int>
 
           final domainPackage = _project.domainPackage;
           final entity = domainPackage.entity(name: name, dir: dir);
-
-          final exists = entity.exists();
-          if (exists) {
-            final deletedFiles = entity.delete();
-
-            for (final file in deletedFiles) {
-              _logger.info(file.path);
-            }
-
-            _logger.info('');
-            _logger.info('Deleted ${deletedFiles.length} item(s)');
-            _logger.info('');
-            _logger.success('Removed Entity $name.');
+          if (entity.exists()) {
+            entity.delete();
 
             return ExitCode.success.code;
           } else {

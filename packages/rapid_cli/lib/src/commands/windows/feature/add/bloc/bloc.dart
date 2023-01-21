@@ -9,8 +9,6 @@ class WindowsFeatureAddBlocCommand extends PlatformFeatureAddBlocCommand {
   WindowsFeatureAddBlocCommand({
     super.logger,
     required super.project,
-    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    super.generator,
   }) : super(
           platform: Platform.windows,
         );

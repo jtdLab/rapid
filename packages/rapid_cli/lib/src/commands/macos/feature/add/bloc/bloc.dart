@@ -9,8 +9,6 @@ class MacosFeatureAddBlocCommand extends PlatformFeatureAddBlocCommand {
   MacosFeatureAddBlocCommand({
     super.logger,
     required super.project,
-    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    super.generator,
   }) : super(
           platform: Platform.macos,
         );

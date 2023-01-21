@@ -2,9 +2,7 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/feature/feature.dart';
-import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/platform/add/feature/feature_bundle.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/ios/add/feature/feature.dart';
@@ -14,7 +12,6 @@ import 'package:rapid_cli/src/commands/web/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/windows/add/feature/feature.dart';
 import 'package:rapid_cli/src2/core/platform.dart';
 import 'package:rapid_cli/src2/project/project.dart';
-import 'package:universal_io/io.dart';
 
 /// The default description.
 const _defaultDescription = 'A Rapid feature.';
@@ -43,22 +40,13 @@ abstract class PlatformAddFeatureCommand extends Command<int>
     required Project project,
     MelosBootstrapCommand? melosBootstrap,
     MelosCleanCommand? melosClean,
-    FlutterPubGetCommand? flutterPubGet,
-    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     FlutterFormatFixCommand? flutterFormatFix,
-    GeneratorBuilder? generator,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
         _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         _melosClean = melosClean ?? Melos.clean,
-        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
-        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
-        _generator = generator ?? MasonGenerator.fromBundle {
+        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix {
     argParser
       ..addSeparator('')
       ..addOption(
@@ -81,12 +69,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   final Project _project;
   final MelosBootstrapCommand _melosBootstrap;
   final MelosCleanCommand _melosClean;
-  final FlutterPubGetCommand _flutterPubGet;
-  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final FlutterFormatFixCommand _flutterFormatFix;
-
-  final GeneratorBuilder _generator;
 
   @override
   String get name => 'feature';
@@ -111,61 +94,49 @@ abstract class PlatformAddFeatureCommand extends Command<int>
         _logger,
         () async {
           // TODO add a application layer to the feature template
+          final name = _name;
+          final description = _description;
+          final routing = _routing;
 
-          final platformDir = _project.platformDirectory(_platform);
-
-          final exists = platformDir.featureExists(name);
-          if (!exists) {
-            final projectName = _project.melosFile.name();
-            final name = _name;
-            final description = _description;
-            final routing = _routing;
-
-            final generateProgress = _logger.progress('Generating files');
-            final generator = await _generator(featureBundle);
-            final files = await generator.generate(
-              DirectoryGeneratorTarget(Directory('.')),
-              vars: <String, dynamic>{
-                'project_name': projectName,
-                'name': name,
-                'description': description,
-                'platform': _platform.name,
-                _platform.name: true
-              },
+          final platformDirectory = _project.platformDirectory(
+            platform: _platform,
+          );
+          final customFeaturePackage = platformDirectory.customFeaturePackage(
+            name: name,
+          );
+          final customFeaturePackageExists = customFeaturePackage.exists();
+          if (!customFeaturePackageExists) {
+            await customFeaturePackage.create(
+              description: description,
               logger: _logger,
             );
-            generateProgress.complete('Generated ${files.length} file(s)');
 
-            final featurePackageName = '${projectName}_${_platform.name}_$name';
+            final customFeaturePackageName = customFeaturePackage.packageName();
 
             // TODO add localizations to app package
 
             if (routing) {
-              final routingFeature = platformDir.findFeature('routing');
+              final routingFeaturePackage =
+                  platformDirectory.routingFeaturePackage;
 
-              routingFeature.pubspecFile.setDependency(featurePackageName);
+              routingFeaturePackage.pubspecFile.setDependency(
+                customFeaturePackageName,
+              );
             }
 
             final diPackage = _project.diPackage;
-            diPackage.pubspecFile.setDependency(featurePackageName);
-            final injectionFile = diPackage.injectionFile;
-            injectionFile.addPackage(featurePackageName);
+            diPackage.registerCustomFeaturePackage(
+              customFeaturePackage,
+              logger: _logger,
+            );
 
             await _melosClean(logger: _logger);
 
             await _melosBootstrap(logger: _logger);
 
-            await _flutterPubGet(cwd: diPackage.path, logger: _logger);
-            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: diPackage.path,
-              logger: _logger,
-            );
-
             await _flutterFormatFix(logger: _logger);
 
-            _logger.success(
-              'Added ${_platform.prettyName} feature $name.',
-            );
+            _logger.success('Added ${_platform.prettyName} feature $name.');
 
             // TODO maybe add hint how to register a page in the routing feature
 

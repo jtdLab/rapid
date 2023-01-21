@@ -9,8 +9,6 @@ class IosFeatureAddCubitCommand extends PlatformFeatureAddCubitCommand {
   IosFeatureAddCubitCommand({
     super.logger,
     required super.project,
-    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    super.generator,
   }) : super(
           platform: Platform.ios,
         );

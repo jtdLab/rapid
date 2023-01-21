@@ -9,9 +9,7 @@ class LinuxAddLanguageCommand extends PlatformAddLanguageCommand {
   LinuxAddLanguageCommand({
     super.logger,
     required super.project,
-    super.flutterGenl10n,
     super.flutterFormatFix,
-    super.generator,
   }) : super(
           platform: Platform.linux,
         );

@@ -9,7 +9,6 @@ class UiLinuxAddWidgetCommand extends UiPlatformAddWidgetCommand {
   UiLinuxAddWidgetCommand({
     super.logger,
     required super.project,
-    super.generator,
   }) : super(
           platform: Platform.linux,
         );

@@ -9,8 +9,6 @@ class WebFeatureAddBlocCommand extends PlatformFeatureAddBlocCommand {
   WebFeatureAddBlocCommand({
     super.logger,
     required super.project,
-    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    super.generator,
   }) : super(
           platform: Platform.web,
         );

@@ -19,6 +19,7 @@ extension PlatformX on Platform {
     }
   }
 
+  // TODO needed ?
   String get flutterConfigName {
     switch (this) {
       case Platform.android:

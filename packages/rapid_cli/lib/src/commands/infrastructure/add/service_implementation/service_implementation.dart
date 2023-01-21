@@ -1,16 +1,12 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
-import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
 import 'package:rapid_cli/src2/project/project.dart';
 import 'package:recase/recase.dart';
-import 'package:universal_io/io.dart';
-
-import 'service_implementation_bundle.dart';
 
 /// {@template infrastructure_add_service_implementation_command}
 /// `rapid infrastructure add service_implementation` command adds service_implementation to the infrastructure part of an existing Rapid project.
@@ -21,10 +17,8 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
   InfrastructureAddServiceImplementationCommand({
     Logger? logger,
     required Project project,
-    GeneratorBuilder? generator,
   })  : _logger = logger ?? Logger(),
-        _project = project,
-        _generator = generator ?? MasonGenerator.fromBundle {
+        _project = project {
     argParser
       ..addSeparator('')
       ..addOption(
@@ -40,7 +34,6 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
 
   final Logger _logger;
   final Project _project;
-  final GeneratorBuilder _generator;
 
   @override
   String get name => 'service_implementation';
@@ -61,30 +54,29 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
         [isProjectRoot(_project)],
         _logger,
         () async {
-          final projectName = _project.melosFile.name();
           final name = super.className;
           final serviceName = _service;
           final outputDir = super.outputDir;
 
-          final generateProgress = _logger.progress('Generating files');
-          // TODO add better templates that remove issues like analyze/testing coverage etc
-          final generator = await _generator(serviceImplementationBundle);
-          final files = await generator.generate(
-            DirectoryGeneratorTarget(Directory('.')),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'name': name,
-              'service_name': serviceName,
-              'output_dir': outputDir,
-            },
-            logger: _logger,
+          final infrastructurePackage = _project.infrastructurePackage;
+          final serviceImplementation =
+              infrastructurePackage.serviceImplementation(
+            name: name,
+            serviceName: serviceName,
+            dir: outputDir,
           );
-          generateProgress.complete('Generated ${files.length} file(s)');
+          if (!serviceImplementation.exists()) {
+            await serviceImplementation.create(logger: _logger);
 
-          // TODO better hint containg related service etc
-          _logger.success('Added Service Implementation ${name.pascalCase}.');
+            // TODO better hint containg related service etc
+            _logger.success('Added Service Implementation ${name.pascalCase}.');
 
-          return ExitCode.success.code;
+            return ExitCode.success.code;
+          } else {
+            _logger.err('Service Implementation $name already exists.');
+
+            return ExitCode.config.code;
+          }
         },
       );
 

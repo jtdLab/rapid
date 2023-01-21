@@ -49,20 +49,12 @@ class DomainRemoveValueObjectCommand extends Command<int>
           final dir = super.dir;
 
           final domainPackage = _project.domainPackage;
-          final valueObject = domainPackage.valueObject(name: name, dir: dir);
-
-          final exists = valueObject.exists();
-          if (exists) {
-            final deletedFiles = valueObject.delete();
-
-            for (final file in deletedFiles) {
-              _logger.info(file.path);
-            }
-
-            _logger.info('');
-            _logger.info('Deleted ${deletedFiles.length} item(s)');
-            _logger.info('');
-            _logger.success('Removed Value Object $name.');
+          final valueObject = domainPackage.valueObject(
+            name: name,
+            dir: dir,
+          );
+          if (valueObject.exists()) {
+            valueObject.delete();
 
             return ExitCode.success.code;
           } else {

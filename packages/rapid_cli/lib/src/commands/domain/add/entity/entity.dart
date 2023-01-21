@@ -5,7 +5,7 @@ import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 import 'package:recase/recase.dart';
 import 'package:universal_io/io.dart';
 
@@ -50,7 +50,7 @@ class DomainAddEntityCommand extends Command<int>
         [isProjectRoot(_project)],
         _logger,
         () async {
-          final projectName = _project.melosFile.name();
+          final projectName = _project.name();
           final name = super.className;
           final outputDir = super.outputDir;
 

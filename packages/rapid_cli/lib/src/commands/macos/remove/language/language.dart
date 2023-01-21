@@ -1,5 +1,5 @@
 import 'package:rapid_cli/src/commands/core/platform/remove/language/language.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
 
 /// {@template macos_remove_language_command}
 /// `rapid macos remove language` command removes a language from the macOS part of an existing Rapid project.

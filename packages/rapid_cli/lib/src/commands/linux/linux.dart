@@ -3,8 +3,8 @@ import 'package:rapid_cli/src/commands/linux/add/add.dart';
 import 'package:rapid_cli/src/commands/linux/feature/feature.dart';
 import 'package:rapid_cli/src/commands/linux/remove/remove.dart';
 import 'package:rapid_cli/src/commands/core/platform/platform.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// {@template linux_command}
 /// `rapid linux` command work with the Linux part of an existing Rapid project.

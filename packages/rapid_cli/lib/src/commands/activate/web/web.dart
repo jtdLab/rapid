@@ -5,7 +5,8 @@ import 'package:rapid_cli/src2/cli/cli.dart';
 import 'package:rapid_cli/src2/core/platform.dart';
 import 'package:rapid_cli/src2/project/project.dart';
 
-import 'web_bundle.dart';
+/// The default description.
+const _defaultDescription = 'A Rapid app.';
 
 /// {@template activate_web_command}
 /// `rapid activate web` command adds support for Web to an existing Rapid project.
@@ -22,7 +23,13 @@ class ActivateWebCommand extends ActivatePlatformCommand with OrgNameGetter {
   }) : super(
           platform: Platform.web,
           flutterConfigEnablePlatform: flutterConfigEnableWeb,
-        );
+        ) {
+    argParser.addOption(
+      'desc',
+      help: 'The description of the project.',
+      defaultsTo: _defaultDescription,
+    );
+  }
 
   @override
   Future<void> activatePlatform(
@@ -30,6 +37,14 @@ class ActivateWebCommand extends ActivatePlatformCommand with OrgNameGetter {
     required Project project,
     required Logger logger,
   }) =>
-      project.activatePlatform(platform,
-          description: 'TODO', logger: logger); // TODO real desc here
+      project.activatePlatform(
+        platform,
+        description: _description,
+        logger: logger,
+      );
+
+  // TODO shareable with create ?
+
+  /// Gets the description for the project specified by the user.
+  String get _description => argResults['desc'] ?? _defaultDescription;
 }

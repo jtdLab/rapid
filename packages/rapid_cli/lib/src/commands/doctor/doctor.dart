@@ -2,8 +2,8 @@ import 'package:args/command_runner.dart';
 import 'package:collection/collection.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 import 'package:tabular/tabular.dart';
 
 /// {@template rapid_doctor}
@@ -35,24 +35,21 @@ class DoctorCommand extends Command<int> {
         _logger,
         () async {
           final platformDirectories = Platform.values
-              .where((e) => _project.isActivated(e))
-              .map((e) => _project.platformDirectory(e));
+              .where((e) => _project.platformIsActivated(e))
+              .map((e) => _project.platformDirectory(platform: e));
 
           var totalIssues = 0;
           var totalPlatformsWithIssues = 0;
           for (final platformDirectory in platformDirectories) {
-            final features =
-                platformDirectory.getFeatures(exclude: {'app', 'routing'});
+            final features = platformDirectory.customFeaturePackages();
 
             if (features.isNotEmpty) {
-              // TODO move to feature ?
-              final allFeaturesHaveSameLanguages = EqualitySet.from(
-                      DeepCollectionEquality.unordered(),
-                      features.map((e) => e.supportedLanguages())).length ==
-                  1;
+              final allFeaturesHaveSameLanguages =
+                  platformDirectory.allFeaturesHaveSameLanguage();
               final allFeaturesHaveSameDefaultLanguage =
-                  features.map((e) => e.defaultLanguage()).toSet().length == 1;
+                  platformDirectory.allFeaturesHaveSameDefaultLanguage();
               final platformName = platformDirectory.platform.prettyName;
+
               _logger.info(
                 '${allFeaturesHaveSameLanguages && allFeaturesHaveSameDefaultLanguage ? '${green.wrap('[✓]')}' : '${yellow.wrap('[!]')}'}'
                 ' $platformName (${features.length} feature(s))',

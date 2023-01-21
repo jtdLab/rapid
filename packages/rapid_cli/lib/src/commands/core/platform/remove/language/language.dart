@@ -11,8 +11,8 @@ import 'package:rapid_cli/src/commands/linux/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/macos/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/web/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/windows/remove/language/language.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// {@template platform_remove_language_command}
 /// Base class for:

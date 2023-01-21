@@ -2,6 +2,7 @@ import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src2/core/generator_builder.dart';
 import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/core/yaml_file.dart';
 import 'package:rapid_cli/src2/project/project.dart';
 import 'package:universal_io/io.dart';
 
@@ -165,6 +166,18 @@ class PlatformCustomFeaturePackage extends PlatformFeaturePackage {
 
   final GeneratorBuilder _generator;
 
+  // TODO
+  Set<String> supportedLanguages() =>
+      _arbFiles().map((e) => e.language).toSet();
+
+  // TODO
+  String defaultLanguage() {
+    final l10nFile = _l10nFile;
+    final templateArbFile = l10nFile.templateArbFile();
+
+    return templateArbFile.split('.').first.split('_').last;
+  }
+
   @override
   Future<void> create({required Logger logger}) async {
     final projectName = _project.name();
@@ -184,5 +197,61 @@ class PlatformCustomFeaturePackage extends PlatformFeaturePackage {
       },
       logger: logger,
     );
+  }
+}
+
+// TODO refactor
+
+/// {@template arb_file}
+/// Abstraction of a arb file of a platform custom feature package of a Rapid project.
+/// {@endtemplate}
+class ArbFile extends ProjectEntity {
+  /// {@macro arb_file}
+  ArbFile({
+    required this.language,
+    required Feature feature,
+  }) : _file = File(
+          p.join(
+            feature.path,
+            'lib',
+            'src',
+            'presentation',
+            'l10n',
+            'arb',
+            '${feature.name}_$language.arb',
+          ),
+        );
+
+  final File _file;
+
+  final String language;
+
+  String get path => _file.path;
+
+  void delete() => _file.deleteSync(recursive: true);
+}
+
+/// Thrown when [L10nFile.templateArbFile] fails to read the `template-arb-file` property.
+class ReadTemplateArbFileFailure implements Exception {}
+
+/// {@template l10n_file}
+/// Abstraction of the l10n file of a platform custom feature package of an existing Rapid project.
+/// {@endtemplate}
+class L10nFile extends ProjectEntity {
+  /// {@macro l10n_file}
+  L10nFile({String path = '.'}) : _file = YamlFile(path: path, name: 'l10n');
+
+  /// The underlying yaml file.
+  final YamlFile _file;
+
+  String get path => _file.path;
+
+  /// The `template-arb-file` property.
+  String templateArbFile() {
+    try {
+      return _file.readValue(['template-arb-file']);
+    } catch (_) {
+      throw ReadTemplateArbFileFailure();
+    }
   }
 }

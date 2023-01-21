@@ -4,7 +4,7 @@ import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// {@template domain_remove_service_interface_command}
 /// `rapid domain remove service_interface` command removes service interface from the domain part of an existing Rapid project.

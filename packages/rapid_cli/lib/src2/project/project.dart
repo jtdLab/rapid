@@ -287,14 +287,7 @@ class Project implements ProjectEntity {
       );
     }
 
-    final platformAppPackage = platformDirectory.appFeaturePackage;
-    await platformAppPackage.delete(logger: logger);
-    final platformRoutingPackage = platformDirectory.routingFeaturePackage;
-    await platformRoutingPackage.delete(logger: logger);
-    final platformFeaturePackages = platformDirectory.customFeaturePackages();
-    for (final platformFeaturePackage in platformFeaturePackages) {
-      await platformFeaturePackage.delete(logger: logger);
-    }
+    await platformDirectory.delete(logger: logger);
 
     final platformUiPackage = _platformUiPackage(platform: platform);
     await platformUiPackage.delete(logger: logger);

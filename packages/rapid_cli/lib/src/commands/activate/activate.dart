@@ -16,7 +16,7 @@ class ActivateCommand extends Command<int> {
   /// {@macro activate_command}
   ActivateCommand({
     Logger? logger,
-    required ProjectBuilder project,
+    required Project project,
   }) {
     addSubcommand(ActivateAndroidCommand(logger: logger, project: project));
     addSubcommand(ActivateIosCommand(logger: logger, project: project));

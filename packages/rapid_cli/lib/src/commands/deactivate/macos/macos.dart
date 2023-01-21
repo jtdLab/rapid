@@ -1,6 +1,6 @@
 import 'package:rapid_cli/src/commands/deactivate/core/platform.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// {@template deactivate_macos_command}
 /// `rapid deactivate macos` command removes support for macOS from an existing Rapid project.
@@ -9,8 +9,6 @@ class DeactivateMacosCommand extends DeactivatePlatformCommand {
   DeactivateMacosCommand({
     super.logger,
     required Project project,
-    super.flutterPubGet,
-    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.macos,
           project: project,

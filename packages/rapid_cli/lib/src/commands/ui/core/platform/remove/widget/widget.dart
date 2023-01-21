@@ -10,8 +10,8 @@ import 'package:rapid_cli/src/commands/ui/linux/remove/widget/widget.dart';
 import 'package:rapid_cli/src/commands/ui/macos/remove/widget/widget.dart';
 import 'package:rapid_cli/src/commands/ui/web/remove/widget/widget.dart';
 import 'package:rapid_cli/src/commands/ui/windows/remove/widget/widget.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// {@template ui_platform_remove_widget_command}
 /// Base class for:

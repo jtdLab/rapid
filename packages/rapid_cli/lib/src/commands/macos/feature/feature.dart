@@ -1,8 +1,8 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/macos/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/feature.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// {@template macos_feature_command}
 /// `rapid macos feature` command work with features of the macOS part of an existing Rapid project.

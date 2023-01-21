@@ -2,7 +2,7 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/infrastructure/remove/data_transfer_object/data_transfer_object.dart';
 import 'package:rapid_cli/src/commands/infrastructure/remove/service_implementation/service_implementation.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// {@template infrastructure_remove_command}
 /// `rapid infrastructure remove` command remove components from the infrastructure part of an existing Rapid project.

@@ -1,8 +1,8 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/linux/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/feature.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// {@template linux_feature_command}
 /// `rapid linux feature` command work with features of the Linux part of an existing Rapid project.

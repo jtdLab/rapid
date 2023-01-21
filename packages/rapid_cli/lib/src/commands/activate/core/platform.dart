@@ -34,15 +34,14 @@ abstract class ActivatePlatformCommand extends Command<int>
   ActivatePlatformCommand({
     required Platform platform,
     Logger? logger,
-    ProjectBuilder? project,
+    required Project project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnablePlatform,
     MelosBootstrapCommand? melosBootstrap,
     MelosCleanCommand? melosClean,
     FlutterFormatFixCommand? flutterFormatFix,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project =
-            (project ?? (({String path = '.'}) => Project(path: path)))(),
+        _project = project,
         _flutterConfigEnablePlatform =
             flutterConfigEnablePlatform ?? Flutter.configEnableAndroid,
         _melosBootstrap = melosBootstrap ?? Melos.bootstrap,

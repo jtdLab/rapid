@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src2/core/platform.dart';
 import 'package:rapid_cli/src2/project/project.dart';
@@ -36,6 +37,24 @@ class PlatformDirectory extends ProjectDirectory {
   late final PlatformAppFeaturePackage appFeaturePackage;
 
   late final PlatformRoutingFeaturePackage routingFeaturePackage;
+
+  bool allFeaturesHaveSameLanguage() {
+    final featurePackages =
+        customFeaturePackages(); // TODO include app and routing ?
+
+    return EqualitySet.from(
+          DeepCollectionEquality.unordered(),
+          featurePackages.map((e) => e.supportedLanguages()),
+        ).length ==
+        1;
+  }
+
+  bool allFeaturesHaveSameDefaultLanguage() {
+    final featurePackages =
+        customFeaturePackages(); // TODO include app and routing ?
+
+    return featurePackages.map((e) => e.defaultLanguage()).toSet().length == 1;
+  }
 
   PlatformCustomFeaturePackage customFeaturePackage({required String name}) =>
       PlatformCustomFeaturePackage(name, platform, project: _project);

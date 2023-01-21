@@ -13,8 +13,7 @@ import 'package:rapid_cli/src/commands/macos/macos.dart';
 import 'package:rapid_cli/src/commands/ui/ui.dart';
 import 'package:rapid_cli/src/commands/web/web.dart';
 import 'package:rapid_cli/src/commands/windows/windows.dart';
-import 'package:rapid_cli/src/project/project.dart';
-import 'package:rapid_cli/src2/project/project.dart' as kuk;
+import 'package:rapid_cli/src2/project/project.dart';
 
 import 'commands/create/create.dart';
 import 'version.dart';
@@ -41,12 +40,7 @@ class RapidCommandRunner extends CommandRunner<int> {
         negatable: false,
       );
     final p = project ?? Project();
-    addCommand(
-      ActivateCommand(
-        logger: _logger,
-        project: ({String path = '.'}) => kuk.Project(path: path),
-      ),
-    );
+    addCommand(ActivateCommand(logger: _logger, project: p));
     addCommand(AndroidCommand(logger: _logger, project: p));
     addCommand(CreateCommand(logger: _logger));
     addCommand(DeactivateCommand(logger: _logger, project: p));

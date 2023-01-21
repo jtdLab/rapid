@@ -3,7 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/domain/remove/entity/entity.dart';
 import 'package:rapid_cli/src/commands/domain/remove/service_interface/service_interface.dart';
 import 'package:rapid_cli/src/commands/domain/remove/value_object/value_object.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// {@template domain_remove_command}
 /// `rapid domain remove` command remove components from the domain part of an existing Rapid project.

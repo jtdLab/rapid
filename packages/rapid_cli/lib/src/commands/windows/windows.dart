@@ -3,8 +3,8 @@ import 'package:rapid_cli/src/commands/windows/add/add.dart';
 import 'package:rapid_cli/src/commands/windows/feature/feature.dart';
 import 'package:rapid_cli/src/commands/windows/remove/remove.dart';
 import 'package:rapid_cli/src/commands/core/platform/platform.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// {@template windows_command}
 /// `rapid windows` command work with the Windows part of an existing Rapid project.

@@ -1,6 +1,5 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src2/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/deactivate/android/android.dart';
@@ -34,23 +33,13 @@ abstract class DeactivatePlatformCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
-    FlutterPubGetCommand? flutterPubGet,
-    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project,
-        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs;
+        _project = project;
 
   final Platform _platform;
   final Logger _logger;
   final Project _project;
-  final FlutterPubGetCommand _flutterPubGet;
-  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   @override
   String get name => _platform.name;
@@ -73,51 +62,11 @@ abstract class DeactivatePlatformCommand extends Command<int>
         ],
         _logger,
         () async {
-          final projectName = _project.melosFile.name();
-
           _logger.info(
             'Deactivating ${lightYellow.wrap(_platform.prettyName)} ...',
           );
 
-          final appPackage = _project.appPackage;
-          final appUpdatePackageProgress = _logger.progress(
-            'Updating package ${appPackage.path} ',
-          );
-          final appPackagePubspec = appPackage.pubspecFile;
-          appPackagePubspec.removeDependencyByPattern(
-            '${projectName}_${_platform.name}',
-          );
-          for (final mainFile in appPackage.mainFiles) {
-            mainFile.removeSetupForPlatform(_platform);
-          }
-          await _flutterPubGet(cwd: appPackage.path, logger: _logger);
-          appPackage.platformDirectory(_platform).deleteSync(recursive: true);
-          if (_platform == Platform.web) {
-            appPackage.testDriverDirectory().deleteSync(recursive: true);
-          }
-          appUpdatePackageProgress.complete();
-
-          final diPackage = _project.diPackage;
-          final diUpdatePackageProgress = _logger.progress(
-            'Updating package ${diPackage.path} ',
-          );
-          final diPackagePubspec = diPackage.pubspecFile;
-          diPackagePubspec.removeDependencyByPattern(
-            '${projectName}_${_platform.name}',
-          );
-          diPackage.injectionFile.removePackagesByPlatform(_platform);
-          await _flutterPubGet(cwd: diPackage.path, logger: _logger);
-          await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-            cwd: diPackage.path,
-            logger: _logger,
-          );
-          diUpdatePackageProgress.complete();
-
-          final platformDirectory = _project.platformDirectory(_platform);
-          platformDirectory.delete();
-
-          final platformUiPackage = _project.platformUiPackage(_platform);
-          platformUiPackage.delete();
+          await _project.deactivatePlatform(_platform, logger: _logger);
 
           _logger.success('${_platform.prettyName} is now deactivated.');
 

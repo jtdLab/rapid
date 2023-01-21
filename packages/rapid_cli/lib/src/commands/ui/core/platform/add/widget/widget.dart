@@ -12,8 +12,8 @@ import 'package:rapid_cli/src/commands/ui/linux/add/widget/widget.dart';
 import 'package:rapid_cli/src/commands/ui/macos/add/widget/widget.dart';
 import 'package:rapid_cli/src/commands/ui/web/add/widget/widget.dart';
 import 'package:rapid_cli/src/commands/ui/windows/add/widget/widget.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 import 'package:universal_io/io.dart';
 
 // TODO add platform specific stuff to the tempalte

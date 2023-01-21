@@ -3,8 +3,8 @@ import 'package:rapid_cli/src/commands/android/add/add.dart';
 import 'package:rapid_cli/src/commands/android/feature/feature.dart';
 import 'package:rapid_cli/src/commands/android/remove/remove.dart';
 import 'package:rapid_cli/src/commands/core/platform/platform.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// {@template android_command}
 /// `rapid android` command work with the Android part of an existing Rapid project.

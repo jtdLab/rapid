@@ -91,11 +91,11 @@ abstract class ActivatePlatformCommand extends Command<int>
           await activatePlatform(_platform, project: _project, logger: _logger);
 
           // TODO can melos bs and clean made scoped or must be here?
-          await _melosClean(logger: _logger);
+          //await _melosClean(logger: _logger);
 
-          await _melosBootstrap(logger: _logger);
+          //await _melosBootstrap(logger: _logger);
 
-          await _flutterFormatFix(logger: _logger);
+          //await _flutterFormatFix(logger: _logger);
 
           _logger.info('${lightYellow.wrap(_platform.prettyName)} activated!');
 

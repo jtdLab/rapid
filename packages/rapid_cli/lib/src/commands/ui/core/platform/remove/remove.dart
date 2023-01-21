@@ -6,7 +6,7 @@ import 'package:rapid_cli/src/commands/ui/linux/remove/remove.dart';
 import 'package:rapid_cli/src/commands/ui/macos/remove/remove.dart';
 import 'package:rapid_cli/src/commands/ui/web/remove/remove.dart';
 import 'package:rapid_cli/src/commands/ui/windows/remove/remove.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 
 /// {@template ui_platform_remove_command}
 /// Base class for:

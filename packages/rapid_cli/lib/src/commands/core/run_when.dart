@@ -1,7 +1,7 @@
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src2/cli/cli.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 class EnvironmentException implements Exception {
   final int exitCode;

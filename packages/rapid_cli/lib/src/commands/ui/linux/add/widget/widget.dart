@@ -1,5 +1,5 @@
 import 'package:rapid_cli/src/commands/ui/core/platform/add/widget/widget.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 
 /// {@template ui_linux_add_widget_command}
 /// `rapid ui linux add widget` command adds a widget to the Linux UI part of an existing Rapid project.

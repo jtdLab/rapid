@@ -10,8 +10,8 @@ import 'package:rapid_cli/src/commands/linux/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/macos/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/web/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/windows/add/feature/feature.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 /// The default description.
 const _defaultDescription = 'A Rapid feature.';

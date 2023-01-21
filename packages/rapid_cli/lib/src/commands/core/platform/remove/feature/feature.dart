@@ -9,8 +9,8 @@ import 'package:rapid_cli/src/commands/linux/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/macos/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/web/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/windows/remove/feature/feature.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template platform_remove_feature_command}
 /// Base class for:
@@ -80,8 +80,8 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
           final customFeaturePackageExists = customFeaturePackage.exists();
           if (customFeaturePackageExists) {
             final diPackage = _project.diPackage;
-            await diPackage.unregisterCustomFeaturePackage(
-              customFeaturePackage,
+            await diPackage.unregisterCustomFeaturePackages(
+              [customFeaturePackage],
               logger: _logger,
             );
             await customFeaturePackage.delete(logger: _logger);

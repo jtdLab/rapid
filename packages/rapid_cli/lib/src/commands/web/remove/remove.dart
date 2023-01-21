@@ -2,8 +2,8 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/web/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/web/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/core/platform/remove/remove.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template web_remove_command}
 /// `rapid web remove` command removes features or languages from the Web part of an existing Rapid project.

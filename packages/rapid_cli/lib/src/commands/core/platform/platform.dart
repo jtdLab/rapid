@@ -9,7 +9,7 @@ import 'package:rapid_cli/src/commands/linux/linux.dart';
 import 'package:rapid_cli/src/commands/macos/macos.dart';
 import 'package:rapid_cli/src/commands/web/web.dart';
 import 'package:rapid_cli/src/commands/windows/windows.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 
 /// {@template platform_command}
 /// Base class for:

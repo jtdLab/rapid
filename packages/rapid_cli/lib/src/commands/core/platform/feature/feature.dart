@@ -6,7 +6,7 @@ import 'package:rapid_cli/src/commands/linux/feature/feature.dart';
 import 'package:rapid_cli/src/commands/macos/feature/feature.dart';
 import 'package:rapid_cli/src/commands/web/feature/feature.dart';
 import 'package:rapid_cli/src/commands/windows/feature/feature.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 
 /// {@template platform_feature_command}
 /// Base class for:

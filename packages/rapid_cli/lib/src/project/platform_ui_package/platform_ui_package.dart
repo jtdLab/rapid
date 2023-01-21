@@ -1,8 +1,8 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src2/core/generator_builder.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/generator_builder.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:universal_io/io.dart';
 
 import 'platform_ui_package_bundle.dart';
@@ -17,10 +17,9 @@ class PlatformUiPackage extends ProjectPackage {
   /// {@macro platform_ui_package}
   PlatformUiPackage(
     this.platform, {
-    required Project project,
+    required this.project,
     GeneratorBuilder? generator,
-  })  : project = project,
-        _generator = generator ?? MasonGenerator.fromBundle;
+  }) : _generator = generator ?? MasonGenerator.fromBundle;
 
   final Project project;
   final GeneratorBuilder _generator;

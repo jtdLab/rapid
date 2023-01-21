@@ -4,7 +4,7 @@ import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:recase/recase.dart';
 
 /// {@template domain_add_service_interface_command}

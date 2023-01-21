@@ -8,7 +8,7 @@ import 'package:rapid_cli/src/commands/ui/linux/linux.dart';
 import 'package:rapid_cli/src/commands/ui/macos/macos.dart';
 import 'package:rapid_cli/src/commands/ui/web/web.dart';
 import 'package:rapid_cli/src/commands/ui/windows/windows.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 
 /// {@template ui_platform_command}
 /// Base class for:

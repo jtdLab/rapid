@@ -1,5 +1,5 @@
 import 'package:rapid_cli/src/commands/core/platform/remove/feature/feature.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 
 /// {@template web_remove_feature_command}
 /// `rapid web remove feature` command removes a feature from the Web part of an existing Rapid project.

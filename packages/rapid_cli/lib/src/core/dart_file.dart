@@ -63,6 +63,8 @@ class DartFile {
 
   String get path => _file.path;
 
+  bool exists() => _file.existsSync();
+
   List<Declaration> _getTopLevelDeclarations(String source) {
     final unit = parseString(content: source).unit;
     return unit.declarations;

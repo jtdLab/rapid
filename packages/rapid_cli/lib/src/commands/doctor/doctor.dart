@@ -1,9 +1,8 @@
 import 'package:args/command_runner.dart';
-import 'package:collection/collection.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:tabular/tabular.dart';
 
 /// {@template rapid_doctor}

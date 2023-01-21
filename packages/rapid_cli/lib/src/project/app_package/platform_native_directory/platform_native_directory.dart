@@ -1,9 +1,9 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src2/core/generator_builder.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/app_package/app_package.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/generator_builder.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/app_package/app_package.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:universal_io/io.dart';
 
 import 'android_native_directory_bundle.dart';

@@ -19,6 +19,24 @@ extension PlatformX on Platform {
     }
   }
 
+  // TODO needed ?
+  String get flutterConfigName {
+    switch (this) {
+      case Platform.android:
+        return 'android';
+      case Platform.ios:
+        return 'ios';
+      case Platform.web:
+        return 'web';
+      case Platform.linux:
+        return 'linux-desktop';
+      case Platform.macos:
+        return 'macos-desktop';
+      case Platform.windows:
+        return 'windows-desktop';
+    }
+  }
+
   String get prettyName {
     switch (this) {
       case Platform.android:

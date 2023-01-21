@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
@@ -65,7 +66,7 @@ class _ProcessOverridesScope extends ProcessOverrides {
 /// Abstraction for running commands via command-line.
 abstract class _Cmd {
   /// Runs the specified [cmd] with the provided [args].
-  static Future<ProcessResult> run(
+  static Future<int> run(
     String cmd,
     List<String> args, {
     bool throwOnError = true,
@@ -73,7 +74,22 @@ abstract class _Cmd {
     required Logger logger,
   }) async {
     logger.detail('Running: $cmd with $args');
-    final runProcess = ProcessOverrides.current?.runProcess ?? Process.run;
+    final process = await Process.start(
+      cmd,
+      args,
+      workingDirectory: workingDirectory,
+      runInShell: true,
+    );
+    process.stdout.listen((event) {
+      logger.detail(utf8.decode(event));
+    });
+    process.stderr.listen((event) {
+      logger.detail(utf8.decode(event));
+    });
+
+    final exitCode = await process.exitCode;
+    return exitCode;
+    /*  final runProcess = ProcessOverrides.current?.runProcess ?? Process.run;
     final result = await runProcess(
       cmd,
       args,
@@ -82,12 +98,13 @@ abstract class _Cmd {
     );
     logger
       ..detail('stdout:\n${result.stdout}')
-      ..detail('stderr:\n${result.stderr}');
+      ..detail('stderr:\n${result.stderr}'); 
 
     if (throwOnError) {
       _throwIfProcessFailed(result, cmd, args);
     }
     return result;
+    */
   }
 
   static void _throwIfProcessFailed(

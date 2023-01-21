@@ -1,6 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 import 'android/android.dart';
 import 'ios/ios.dart';

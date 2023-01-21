@@ -1,8 +1,8 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/ui/core/platform/add/add.dart';
 import 'package:rapid_cli/src/commands/ui/windows/add/widget/widget.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template ui_windows_add_command}
 /// `rapid ui windows add` command adds components to the Windows UI part of an existing Rapid project.

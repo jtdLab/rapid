@@ -6,7 +6,7 @@ import 'package:rapid_cli/src/commands/ui/linux/linux.dart';
 import 'package:rapid_cli/src/commands/ui/macos/macos.dart';
 import 'package:rapid_cli/src/commands/ui/web/web.dart';
 import 'package:rapid_cli/src/commands/ui/windows/windows.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template ui_command}
 /// `rapid ui` command work with the UI part of an existing Rapid project.

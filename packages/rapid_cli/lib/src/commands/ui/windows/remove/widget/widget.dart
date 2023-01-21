@@ -1,5 +1,5 @@
 import 'package:rapid_cli/src/commands/ui/core/platform/remove/widget/widget.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 
 /// {@template ui_windows_remove_widget_command}
 /// `rapid ui windows remove widget` command removes a widget from the Windows UI part of an existing Rapid project.

@@ -1,8 +1,8 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/feature.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template android_feature_command}
 /// `rapid android feature` command work with features of the Android part of an existing Rapid project.

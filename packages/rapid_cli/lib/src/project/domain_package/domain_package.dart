@@ -1,8 +1,8 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src2/core/generator_builder.dart';
-import 'package:rapid_cli/src2/project/domain_package/service_interface_bundle.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/generator_builder.dart';
+import 'package:rapid_cli/src/project/domain_package/service_interface_bundle.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:universal_io/io.dart';
 
 import 'domain_package_bundle.dart';

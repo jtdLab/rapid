@@ -3,8 +3,8 @@ import 'package:rapid_cli/src/commands/ios/add/add.dart';
 import 'package:rapid_cli/src/commands/ios/feature/feature.dart';
 import 'package:rapid_cli/src/commands/ios/remove/remove.dart';
 import 'package:rapid_cli/src/commands/core/platform/platform.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template ios_command}
 /// `rapid ios` command work with the iOS part of an existing Rapid project.

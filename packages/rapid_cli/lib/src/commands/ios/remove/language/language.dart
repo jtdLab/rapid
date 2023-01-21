@@ -1,5 +1,5 @@
 import 'package:rapid_cli/src/commands/core/platform/remove/language/language.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 
 /// {@template ios_remove_language_command}
 /// `rapid ios remove language` command removes a language from the iOS part of an existing Rapid project.
@@ -9,7 +9,6 @@ class IosRemoveLanguageCommand extends PlatformRemoveLanguageCommand {
   IosRemoveLanguageCommand({
     super.logger,
     required super.project,
-    super.flutterGenl10n,
   }) : super(
           platform: Platform.ios,
         );

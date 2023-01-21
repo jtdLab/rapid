@@ -13,7 +13,7 @@ import 'package:rapid_cli/src/commands/macos/macos.dart';
 import 'package:rapid_cli/src/commands/ui/ui.dart';
 import 'package:rapid_cli/src/commands/web/web.dart';
 import 'package:rapid_cli/src/commands/windows/windows.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 import 'commands/create/create.dart';
 import 'version.dart';

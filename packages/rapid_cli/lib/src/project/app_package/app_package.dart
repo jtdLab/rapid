@@ -1,10 +1,10 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src2/core/dart_file.dart';
-import 'package:rapid_cli/src2/core/generator_builder.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/app_package/platform_native_directory/platform_native_directory.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/dart_file.dart';
+import 'package:rapid_cli/src/core/generator_builder.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/app_package/platform_native_directory/platform_native_directory.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:recase/recase.dart';
 import 'package:universal_io/io.dart';
 

@@ -3,7 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/domain/add/entity/entity.dart';
 import 'package:rapid_cli/src/commands/domain/add/service_interface/service_interface.dart';
 import 'package:rapid_cli/src/commands/domain/add/value_object/value_object.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template domain_add_command}
 /// `rapid domain add` command add components to the domain part of an existing Rapid project.

@@ -9,6 +9,7 @@ typedef MelosInstalledCommand = Future<bool> Function({required Logger logger});
 /// Signature for the [Melos.bootstrap] method.
 typedef MelosBootstrapCommand = Future<void> Function({
   String cwd,
+  String? scope,
   required Logger logger,
 });
 
@@ -33,27 +34,50 @@ abstract class Melos {
   }
 
   /// Bootstrap the melos project (`melos bootstrap`).
+  ///
+  /// If scope is provided runs (`melos bootstrap --scope <scope>`) instead.
   static Future<void> bootstrap({
     String cwd = '.',
+    String? scope,
     required Logger logger,
   }) async {
-    final bootstrapProgress = logger.progress(
-      'Running "melos bootstrap" in $cwd ',
-    );
-
-    try {
-      await _Cmd.run(
-        'melos',
-        ['bootstrap'],
-        workingDirectory: cwd,
-        logger: logger,
+    if (scope == null) {
+      final bootstrapProgress = logger.progress(
+        'Running "melos bootstrapp" in $cwd',
       );
-    } catch (_) {
-      bootstrapProgress.fail();
-      return;
-    }
 
-    bootstrapProgress.complete();
+      try {
+        await _Cmd.run(
+          'melos',
+          ['bootstrap'],
+          workingDirectory: cwd,
+          logger: logger,
+        );
+      } catch (_) {
+        bootstrapProgress.fail();
+        return;
+      }
+
+      bootstrapProgress.complete();
+    } else {
+      final bootstrapProgress = logger.progress(
+        'Running "melos bootstrapp --scope $scope" in $cwd',
+      );
+
+      try {
+        await _Cmd.run(
+          'melos',
+          ['bootstrap', '--scope', scope],
+          workingDirectory: cwd,
+          logger: logger,
+        );
+      } catch (_) {
+        bootstrapProgress.fail();
+        return;
+      }
+
+      bootstrapProgress.complete();
+    }
   }
 
   /// Clean the melos project (`melos clean`).
@@ -62,7 +86,7 @@ abstract class Melos {
     required Logger logger,
   }) async {
     final cleanProgress = logger.progress(
-      'Running "melos clean" in $cwd ',
+      'Running "melos clean" in $cwd',
     );
 
     try {

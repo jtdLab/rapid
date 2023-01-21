@@ -7,11 +7,10 @@ import 'package:rapid_cli/src/commands/activate/linux/linux.dart';
 import 'package:rapid_cli/src/commands/activate/macos/macos.dart';
 import 'package:rapid_cli/src/commands/activate/web/web.dart';
 import 'package:rapid_cli/src/commands/activate/windows/windows.dart';
-import 'package:rapid_cli/src/commands/core/generator_builder.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template activate_platform_command}
 /// Base class for:

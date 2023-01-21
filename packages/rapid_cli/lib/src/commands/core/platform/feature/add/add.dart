@@ -7,7 +7,7 @@ import 'package:rapid_cli/src/commands/linux/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/macos/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/web/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/windows/feature/add/add.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 
 /// {@template platform_feature_add_command}
 /// Base class for:

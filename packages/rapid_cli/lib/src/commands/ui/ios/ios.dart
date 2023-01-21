@@ -2,8 +2,8 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/ui/core/platform/platform.dart';
 import 'package:rapid_cli/src/commands/ui/ios/add/add.dart';
 import 'package:rapid_cli/src/commands/ui/ios/remove/remove.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template ui_ios_command}
 /// `rapid ui ios` command work with the iOS UI part of an existing Rapid project.

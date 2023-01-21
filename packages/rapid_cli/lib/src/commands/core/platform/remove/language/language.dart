@@ -1,7 +1,5 @@
 import 'package:args/command_runner.dart';
-import 'package:collection/collection.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform/core/validate_language.dart';
@@ -11,8 +9,8 @@ import 'package:rapid_cli/src/commands/linux/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/macos/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/web/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/windows/remove/language/language.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template platform_remove_language_command}
 /// Base class for:
@@ -36,16 +34,13 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
-    FlutterGenl10nCommand? flutterGenl10n,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project,
-        _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n;
+        _project = project;
 
   final Platform _platform;
   final Logger _logger;
   final Project _project;
-  final FlutterGenl10nCommand _flutterGenl10n;
 
   @override
   String get name => 'language';

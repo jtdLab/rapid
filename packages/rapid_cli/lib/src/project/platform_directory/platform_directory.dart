@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:universal_io/io.dart';
 
 import 'platform_feature_package/platform_feature_package.dart';

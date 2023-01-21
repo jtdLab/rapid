@@ -8,8 +8,8 @@ import 'package:rapid_cli/src/commands/deactivate/linux/linux.dart';
 import 'package:rapid_cli/src/commands/deactivate/macos/macos.dart';
 import 'package:rapid_cli/src/commands/deactivate/web/web.dart';
 import 'package:rapid_cli/src/commands/deactivate/windows/windows.dart';
-import 'package:rapid_cli/src2/core/platform.dart';
-import 'package:rapid_cli/src2/project/project.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template deactivate_platform_command}
 /// Base class for:

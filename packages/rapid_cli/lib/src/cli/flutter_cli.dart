@@ -66,155 +66,78 @@ abstract class Flutter {
     String cwd = '.',
     required Logger logger,
   }) async {
-    final pubGetProgress = logger.progress(
-      'Running "flutter pub get" in $cwd ',
+    await _Cmd.run(
+      'flutter',
+      ['pub', 'get'],
+      workingDirectory: cwd,
+      logger: logger,
     );
-
-    try {
-      await _Cmd.run(
-        'flutter',
-        ['pub', 'get'],
-        workingDirectory: cwd,
-        logger: logger,
-      );
-    } catch (_) {
-      pubGetProgress.fail();
-      return;
-    }
-
-    pubGetProgress.complete();
   }
 
   /// Enable Flutter for Android (`flutter config --enable-android`).
   static Future<void> configEnableAndroid({
     required Logger logger,
   }) async {
-    final configEnableProgress = logger.progress(
-      'Running "flutter config --enable-android"',
+    await _Cmd.run(
+      'flutter',
+      ['config', '--enable-android'],
+      logger: logger,
     );
-
-    try {
-      await _Cmd.run(
-        'flutter',
-        ['config', '--enable-android'],
-        logger: logger,
-      );
-    } catch (_) {
-      configEnableProgress.fail();
-      return;
-    }
-
-    configEnableProgress.complete();
   }
 
   /// Enable Flutter for iOS (`flutter config --enable-ios`).
   static Future<void> configEnableIos({
     required Logger logger,
   }) async {
-    final configEnableProgress = logger.progress(
-      'Running "flutter config --enable-ios"',
+    await _Cmd.run(
+      'flutter',
+      ['config', '--enable-ios'],
+      logger: logger,
     );
-
-    try {
-      await _Cmd.run(
-        'flutter',
-        ['config', '--enable-ios'],
-        logger: logger,
-      );
-    } catch (_) {
-      configEnableProgress.fail();
-      return;
-    }
-
-    configEnableProgress.complete();
   }
 
   /// Enable Flutter for Linux (`flutter config --enable-linux-desktop`).
   static Future<void> configEnableLinux({
     required Logger logger,
   }) async {
-    final configEnableProgress = logger.progress(
-      'Running "flutter config --enable-linux-desktop"',
+    await _Cmd.run(
+      'flutter',
+      ['config', '--enable-linux-desktop'],
+      logger: logger,
     );
-
-    try {
-      await _Cmd.run(
-        'flutter',
-        ['config', '--enable-linux-desktop'],
-        logger: logger,
-      );
-    } catch (_) {
-      configEnableProgress.fail();
-      return;
-    }
-
-    configEnableProgress.complete();
   }
 
   /// Enable Flutter for macOS (`flutter config --enable-macos-desktop`).
   static Future<void> configEnableMacos({
     required Logger logger,
   }) async {
-    final configEnableProgress = logger.progress(
-      'Running "flutter config --enable-macos-desktop"',
+    await _Cmd.run(
+      'flutter',
+      ['config', '--enable-macos-desktop'],
+      logger: logger,
     );
-
-    try {
-      await _Cmd.run(
-        'flutter',
-        ['config', '--enable-macos-desktop'],
-        logger: logger,
-      );
-    } catch (_) {
-      configEnableProgress.fail();
-      return;
-    }
-
-    configEnableProgress.complete();
   }
 
   /// Enable Flutter for Web (`flutter config --enable-web`).
   static Future<void> configEnableWeb({
     required Logger logger,
   }) async {
-    final configEnableProgress = logger.progress(
-      'Running "flutter config --enable-web"',
+    await _Cmd.run(
+      'flutter',
+      ['config', '--enable-web'],
+      logger: logger,
     );
-
-    try {
-      await _Cmd.run(
-        'flutter',
-        ['config', '--enable-web'],
-        logger: logger,
-      );
-    } catch (_) {
-      configEnableProgress.fail();
-      return;
-    }
-
-    configEnableProgress.complete();
   }
 
   /// Enable Flutter for Windows (`flutter config --enable-windows-desktop`).
   static Future<void> configEnableWindows({
     required Logger logger,
   }) async {
-    final configEnableProgress = logger.progress(
-      'Running "flutter config --enable-windows-desktop"',
+    await _Cmd.run(
+      'flutter',
+      ['config', '--enable-windows-desktop'],
+      logger: logger,
     );
-
-    try {
-      await _Cmd.run(
-        'flutter',
-        ['config', '--enable-windows-desktop'],
-        logger: logger,
-      );
-    } catch (_) {
-      configEnableProgress.fail();
-      return;
-    }
-
-    configEnableProgress.complete();
   }
 
   /// Run code generation (`flutter pub run build_runner build --delete-conflicting-outputs`).
@@ -222,23 +145,12 @@ abstract class Flutter {
     String cwd = '.',
     required Logger logger,
   }) async {
-    final buildProgress = logger.progress(
-      'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $cwd ',
+    await _Cmd.run(
+      'flutter',
+      ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs'],
+      workingDirectory: cwd,
+      logger: logger,
     );
-
-    try {
-      await _Cmd.run(
-        'flutter',
-        ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs'],
-        workingDirectory: cwd,
-        logger: logger,
-      );
-    } catch (_) {
-      buildProgress.fail();
-      return;
-    }
-
-    buildProgress.complete();
   }
 
   /// Run localization generation (`flutter gen-l10n`).
@@ -246,23 +158,12 @@ abstract class Flutter {
     String cwd = '.',
     required Logger logger,
   }) async {
-    final genL10nProgress = logger.progress(
-      'Running "flutter gen-l10n" in $cwd ',
+    await _Cmd.run(
+      'flutter',
+      ['gen-l10n'],
+      workingDirectory: cwd,
+      logger: logger,
     );
-
-    try {
-      await _Cmd.run(
-        'flutter',
-        ['gen-l10n'],
-        workingDirectory: cwd,
-        logger: logger,
-      );
-    } catch (_) {
-      genL10nProgress.fail();
-      return;
-    }
-
-    genL10nProgress.complete();
   }
 
   /// Run localization generation (`flutter format --fix`).
@@ -270,22 +171,11 @@ abstract class Flutter {
     String cwd = '.',
     required Logger logger,
   }) async {
-    final formatFixProgress = logger.progress(
-      'Running "flutter format . --fix" in $cwd ',
+    await _Cmd.run(
+      'flutter',
+      ['format', '.', '--fix'],
+      workingDirectory: cwd,
+      logger: logger,
     );
-
-    try {
-      await _Cmd.run(
-        'flutter',
-        ['format', '.', '--fix'], // TODO . ?
-        workingDirectory: cwd,
-        logger: logger,
-      );
-    } catch (_) {
-      formatFixProgress.fail();
-      return;
-    }
-
-    formatFixProgress.complete();
   }
 }

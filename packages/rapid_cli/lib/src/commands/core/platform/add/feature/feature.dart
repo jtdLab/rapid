@@ -105,7 +105,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          melosExists(_project),
+          isProjectRoot(_project),
           platformIsActivated(_platform, _project),
         ],
         _logger,

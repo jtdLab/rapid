@@ -40,6 +40,8 @@ abstract class ProjectPackage extends ProjectEntity {
   @protected
   late final dartPackage = DartPackage(path: path);
 
+  PubspecFile get pubspecFile => dartPackage.pubspecFile;
+
   String packageName() => dartPackage.pubspecFile.name();
 
   @override
@@ -115,7 +117,7 @@ class Project implements ProjectEntity {
     _infrastructurePackage =
         infrastructurePackage ?? InfrastructurePackage(project: this);
     _loggingPackage = loggingPackage ?? LoggingPackage(project: this);
-    _platformDirectory = platformDirectory ??
+    platformDirectory = platformDirectory ??
         (({required platform}) => PlatformDirectory(platform, project: this));
     _uiPackage = uiPackage ?? UiPackage(project: this);
     _platformUiPackage = platformUiPackage ??
@@ -128,7 +130,7 @@ class Project implements ProjectEntity {
   late final DomainPackage _domainPackage;
   late final InfrastructurePackage _infrastructurePackage;
   late final LoggingPackage _loggingPackage;
-  late final PlatformDirectoryBuilder _platformDirectory;
+  late final PlatformDirectoryBuilder platformDirectory;
   late final UiPackage _uiPackage;
   late final PlatformUiPackageBuilder _platformUiPackage;
   final MelosBootstrapCommand _melosBootstrap;
@@ -149,6 +151,13 @@ class Project implements ProjectEntity {
       _infrastructurePackage.exists() &&
       _loggingPackage.exists() &&
       _uiPackage.exists();
+
+  bool platformIsActivated(Platform platform) {
+    final platformDirectory = this.platformDirectory(platform: platform);
+    final platformUiPackage = _platformUiPackage(platform: platform);
+
+    return platformDirectory.exists() || platformUiPackage.exists();
+  }
 
   Future<void> create({
     required String projectName,
@@ -206,7 +215,7 @@ class Project implements ProjectEntity {
     ];
 
     for (final platform in platforms) {
-      final platformDirectory = _platformDirectory(platform: platform);
+      final platformDirectory = this.platformDirectory(platform: platform);
 
       final platformAppPackage = platformDirectory.appFeaturePackage;
       await platformAppPackage.create(logger: logger);
@@ -240,14 +249,19 @@ class Project implements ProjectEntity {
       logger: logger,
     );
 
-    final platformDirectory = _platformDirectory(platform: platform);
+    final platformDirectory = this.platformDirectory(platform: platform);
+
+    final homePageFeaturePackage =
+        platformDirectory.customFeaturePackage(name: 'home_page');
+    await _diPackage.registerCustomFeaturePackage(
+      homePageFeaturePackage,
+      logger: logger,
+    );
 
     final platformAppPackage = platformDirectory.appFeaturePackage;
     await platformAppPackage.create(logger: logger);
-
     final platformRoutingPackage = platformDirectory.routingFeaturePackage;
     await platformRoutingPackage.create(logger: logger);
-
     final platformHomePagePackage = platformDirectory.customFeaturePackage(
       name: 'home_page',
     );
@@ -263,23 +277,24 @@ class Project implements ProjectEntity {
   }) async {
     await _appPackage.removePlatform(platform, logger: logger);
 
-    final platformDirectory = _platformDirectory(platform: platform);
+    final platformDirectory = this.platformDirectory(platform: platform);
+
+    final customFeaturesPackages = platformDirectory.customFeaturePackages();
+    for (final customFeaturePackage in customFeaturesPackages) {
+      await _diPackage.unregisterCustomFeaturePackage(
+        customFeaturePackage,
+        logger: logger,
+      );
+    }
 
     final platformAppPackage = platformDirectory.appFeaturePackage;
     await platformAppPackage.delete(logger: logger);
-
     final platformRoutingPackage = platformDirectory.routingFeaturePackage;
     await platformRoutingPackage.delete(logger: logger);
-
     final platformFeaturePackages = platformDirectory.customFeaturePackages();
     for (final platformFeaturePackage in platformFeaturePackages) {
       await platformFeaturePackage.delete(logger: logger);
     }
-
-    await _diPackage.unregisterCustomFeaturePackagesByPlatform(
-      platform,
-      logger: logger,
-    );
 
     final platformUiPackage = _platformUiPackage(platform: platform);
     await platformUiPackage.delete(logger: logger);

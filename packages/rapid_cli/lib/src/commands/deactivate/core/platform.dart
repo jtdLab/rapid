@@ -1,6 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src2/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/deactivate/android/android.dart';
@@ -9,8 +9,8 @@ import 'package:rapid_cli/src/commands/deactivate/linux/linux.dart';
 import 'package:rapid_cli/src/commands/deactivate/macos/macos.dart';
 import 'package:rapid_cli/src/commands/deactivate/web/web.dart';
 import 'package:rapid_cli/src/commands/deactivate/windows/windows.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// {@template deactivate_platform_command}
 /// Base class for:
@@ -68,7 +68,7 @@ abstract class DeactivatePlatformCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          melosExists(_project),
+          isProjectRoot(_project),
           platformIsActivated(_platform, _project),
         ],
         _logger,

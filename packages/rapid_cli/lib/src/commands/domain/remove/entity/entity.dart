@@ -41,7 +41,7 @@ class DomainRemoveEntityCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [melosExists(_project)],
+        [isProjectRoot(_project)],
         _logger,
         () async {
           final name = super.className;

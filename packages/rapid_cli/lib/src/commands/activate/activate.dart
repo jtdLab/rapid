@@ -1,6 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 import 'android/android.dart';
 import 'ios/ios.dart';
@@ -16,7 +16,7 @@ class ActivateCommand extends Command<int> {
   /// {@macro activate_command}
   ActivateCommand({
     Logger? logger,
-    required Project project,
+    required ProjectBuilder project,
   }) {
     addSubcommand(ActivateAndroidCommand(logger: logger, project: project));
     addSubcommand(ActivateIosCommand(logger: logger, project: project));

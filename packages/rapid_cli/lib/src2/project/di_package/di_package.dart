@@ -79,6 +79,7 @@ class DiPackage extends ProjectPackage with RebuildMixin {
     PlatformCustomFeaturePackage customFeaturePackage, {
     required Logger logger,
   }) async {
+    pubspecFile.setDependency(customFeaturePackage.packageName());
     _injectionFile.addCustomFeaturePackage(customFeaturePackage);
     await rebuild(logger: logger);
   }
@@ -87,15 +88,8 @@ class DiPackage extends ProjectPackage with RebuildMixin {
     PlatformCustomFeaturePackage customFeaturePackage, {
     required Logger logger,
   }) async {
+    pubspecFile.removeDependency(customFeaturePackage.packageName());
     _injectionFile.removeCustomFeaturePackage(customFeaturePackage);
-    await rebuild(logger: logger);
-  }
-
-  Future<void> unregisterCustomFeaturePackagesByPlatform(
-    Platform platform, {
-    required Logger logger,
-  }) async {
-    _injectionFile.removeCustomFeaturePackagesByPlatform(platform);
     await rebuild(logger: logger);
   }
 }
@@ -172,36 +166,6 @@ class InjectionFile extends ProjectEntity {
       functionName: 'configureDependencies',
       value: existingExternalPackageModules
           .where((e) => !e.contains(packageName.pascalCase))
-          .toList(),
-    );
-  }
-
-  // TODO test
-
-  /// Removes all packages with [platform].
-  void removeCustomFeaturePackagesByPlatform(Platform platform) {
-    final projectName = _diPackage._project.name();
-    final platformName = platform.name;
-
-    final imports = _dartFile
-        .readImports()
-        .where((e) => e.contains('${projectName}_$platformName'));
-    for (final import in imports) {
-      _dartFile.removeImport(import);
-    }
-
-    final existingExternalPackageModules = _readExternalPackageModules();
-
-    _dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
-      property: 'externalPackageModules',
-      annotation: 'InjectableInit',
-      functionName: 'configureDependencies',
-      value: existingExternalPackageModules
-          .where(
-            (e) => !e.contains(
-              '${projectName.pascalCase}${platformName.pascalCase}',
-            ),
-          )
           .toList(),
     );
   }

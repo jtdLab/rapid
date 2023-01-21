@@ -1,7 +1,7 @@
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src2/cli/cli.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 class EnvironmentException implements Exception {
   final int exitCode;
@@ -60,10 +60,10 @@ Future<void> melosIsInstalled(
 }
 
 /// Completes when [project] has an existing melos file.
-Future<void> melosExists(Project project) async {
-  final cwdHasMelos = project.melosFile.exists();
+Future<void> isProjectRoot(Project project) async {
+  final isRoot = project.exists();
 
-  if (!cwdHasMelos) {
+  if (!isRoot) {
     throw EnvironmentException(
       ExitCode.noInput.code,
       '''
@@ -75,7 +75,7 @@ Future<void> melosExists(Project project) async {
 
 /// Completes when [platform] is activated in [project].
 Future<void> platformIsActivated(Platform platform, Project project) async {
-  final platformIsActivated = project.isActivated(platform);
+  final platformIsActivated = project.platformIsActivated(platform);
 
   if (!platformIsActivated) {
     throw EnvironmentException(

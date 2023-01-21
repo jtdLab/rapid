@@ -108,6 +108,10 @@ class AppPackage extends ProjectPackage {
     String? orgName,
     required Logger logger,
   }) async {
+    final platformDirectory = project.platformDirectory(platform: platform);
+    final appFeaturePackage = platformDirectory.appFeaturePackage;
+    pubspecFile.setDependency(appFeaturePackage.packageName());
+
     final platformNativeDirectory = _platformNativeDirectory(
       platform: platform,
     );
@@ -127,6 +131,12 @@ class AppPackage extends ProjectPackage {
     Platform platform, {
     required Logger logger,
   }) async {
+    // TODO maybe make get feature/s for platform getter
+    // in project can be used for doctor command
+    final platformDirectory = project.platformDirectory(platform: platform);
+    final appFeaturePackage = platformDirectory.appFeaturePackage;
+    pubspecFile.removeDependency(appFeaturePackage.packageName());
+
     final platformNativeDirectory = _platformNativeDirectory(
       platform: platform,
     );

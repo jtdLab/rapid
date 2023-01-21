@@ -1,12 +1,9 @@
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/activate/core/platform.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
-import 'package:universal_io/io.dart';
-
-import 'android_bundle.dart';
+import 'package:rapid_cli/src2/cli/cli.dart';
+import 'package:rapid_cli/src2/core/platform.dart';
+import 'package:rapid_cli/src2/project/project.dart';
 
 /// {@template activate_android_command}
 /// `rapid activate android` command adds support for Android to an existing Rapid project.
@@ -18,15 +15,11 @@ class ActivateAndroidCommand extends ActivatePlatformCommand
     super.logger,
     required super.project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableAndroid,
-    super.flutterPubGetCommand,
-    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     super.melosBootstrap,
     super.melosClean,
     super.flutterFormatFix,
-    super.generator,
   }) : super(
           platform: Platform.android,
-          platformBundle: androidBundle,
           flutterConfigEnablePlatform: flutterConfigEnableAndroid,
         ) {
     argParser.addOrgNameOption(
@@ -35,20 +28,10 @@ class ActivateAndroidCommand extends ActivatePlatformCommand
   }
 
   @override
-  Future<List<GeneratedFile>> generate({
-    required MasonGenerator generator,
-    required Logger logger,
+  Future<void> activatePlatform(
+    Platform platform, {
     required Project project,
-  }) async {
-    final projectName = project.melosFile.name();
-
-    return generator.generate(
-      DirectoryGeneratorTarget(Directory('.')),
-      vars: {
-        'project_name': projectName,
-        'org_name': orgName,
-      },
-      logger: logger,
-    );
-  }
+    required Logger logger,
+  }) =>
+      project.activatePlatform(platform, orgName: orgName, logger: logger);
 }

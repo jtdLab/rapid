@@ -270,6 +270,13 @@ class Project implements ProjectEntity {
       orgName: orgName,
       logger: logger,
     );
+
+    await Melos.bootstrap(
+      logger: logger,
+      scope:
+          '${_appPackage.packageName()},${diPackage.packageName()},${platformUiPackage.packageName()},'
+          '${platformAppPackage.packageName()},${platformRoutingPackage.packageName()},${platformHomePagePackage.packageName()}',
+    ); // TODO
   }
 
   Future<void> deactivatePlatform(

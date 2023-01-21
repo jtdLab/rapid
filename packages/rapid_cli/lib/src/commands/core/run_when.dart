@@ -59,9 +59,7 @@ Future<void> melosIsInstalled(
   }
 }
 
-// TODO weird name + impl combi
-
-/// Completes when [project] has an existing melos file.
+/// Completes when [project] exists.
 Future<void> isProjectRoot(Project project) async {
   final isRoot = project.exists();
 

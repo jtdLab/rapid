@@ -34,26 +34,16 @@ abstract class ActivatePlatformCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
-    FlutterConfigEnablePlatformCommand? flutterConfigEnablePlatform,
-    MelosBootstrapCommand? melosBootstrap,
-    MelosCleanCommand? melosClean,
-    FlutterFormatFixCommand? flutterFormatFix,
+    required FlutterConfigEnablePlatformCommand flutterConfigEnablePlatform,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
-        _flutterConfigEnablePlatform =
-            flutterConfigEnablePlatform ?? Flutter.configEnableAndroid,
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _melosClean = melosClean ?? Melos.clean,
-        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix;
+        _flutterConfigEnablePlatform = flutterConfigEnablePlatform;
 
   final Platform _platform;
   final Logger _logger;
   final Project _project;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnablePlatform;
-  final MelosBootstrapCommand _melosBootstrap;
-  final MelosCleanCommand _melosClean;
-  final FlutterFormatFixCommand _flutterFormatFix;
 
   @override
   String get name => _platform.name;
@@ -68,8 +58,7 @@ abstract class ActivatePlatformCommand extends Command<int>
   String get description =>
       'Adds support for ${_platform.prettyName} to this project.';
 
-  Future<void> activatePlatform(
-    Platform platform, {
+  Future<void> activatePlatform({
     required Project project,
     required Logger logger,
   });
@@ -88,14 +77,7 @@ abstract class ActivatePlatformCommand extends Command<int>
             'Activating ${lightYellow.wrap(_platform.prettyName)} ...',
           );
 
-          await activatePlatform(_platform, project: _project, logger: _logger);
-
-          // TODO can melos bs and clean made scoped or must be here?
-          //await _melosClean(logger: _logger);
-
-          //await _melosBootstrap(logger: _logger);
-
-          //await _flutterFormatFix(logger: _logger);
+          await activatePlatform(project: _project, logger: _logger);
 
           _logger.info('${lightYellow.wrap(_platform.prettyName)} activated!');
 
@@ -105,7 +87,9 @@ abstract class ActivatePlatformCommand extends Command<int>
 
   /// Completes when [platform] is deactivated in [project].
   Future<void> _platformIsDeactivated(
-      Platform platform, Project project) async {
+    Platform platform,
+    Project project,
+  ) async {
     final platformIsActivated = project.platformIsActivated(platform);
 
     if (platformIsActivated) {

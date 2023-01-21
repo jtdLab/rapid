@@ -1,7 +1,7 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/activate/core/platform.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -17,12 +17,10 @@ class ActivateWebCommand extends ActivatePlatformCommand with OrgNameGetter {
     super.logger,
     required super.project,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWeb,
-    super.melosBootstrap,
-    super.melosClean,
-    super.flutterFormatFix,
   }) : super(
           platform: Platform.web,
-          flutterConfigEnablePlatform: flutterConfigEnableWeb,
+          flutterConfigEnablePlatform:
+              flutterConfigEnableWeb ?? Flutter.configEnableWeb,
         ) {
     argParser.addOption(
       'desc',
@@ -32,13 +30,12 @@ class ActivateWebCommand extends ActivatePlatformCommand with OrgNameGetter {
   }
 
   @override
-  Future<void> activatePlatform(
-    Platform platform, {
+  Future<void> activatePlatform({
     required Project project,
     required Logger logger,
   }) =>
       project.activatePlatform(
-        platform,
+        Platform.web,
         description: _description,
         logger: logger,
       );

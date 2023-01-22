@@ -17,7 +17,8 @@ void main() {
       setUp(() {
         Directory.current = Directory.systemTemp.createTempSync();
 
-        commandRunner = RapidCommandRunner();
+        commandRunner = RapidCom
+        mandRunner();
       });
 
       tearDown(() {
@@ -33,8 +34,8 @@ void main() {
           final name = 'Fake';
           final service = 'FooBar';
           final outputDir = 'foo';
-          await addService(name: service);
-          await addService(name: service, outputDir: outputDir);
+          await addServiceInterface();
+          await addServiceInterface(outputDir: outputDir);
 
           // Act + Assert
           final commandResult = await commandRunner.run(
@@ -93,8 +94,8 @@ void main() {
           final name = 'Fake';
           final service = 'FooBar';
           final outputDir = 'foo';
-          await addService(name: service);
-          await addService(name: service, outputDir: outputDir);
+          await addServiceInterface();
+          await addServiceInterface(outputDir: outputDir);
 
           // Act + Assert
           final commandResult = await commandRunner.run(
@@ -130,9 +131,15 @@ void main() {
 
           verifyDoExist({
             ...platformIndependentPackages,
-            ...serviceImplementationFiles(service: service),
             ...serviceImplementationFiles(
-                service: service, outputDir: outputDir),
+              name: name,
+              serviceName: service,
+            ),
+            ...serviceImplementationFiles(
+              name: name,
+              serviceName: service,
+              outputDir: outputDir,
+            ),
           });
 
           await verifyTestsPassWith100PercentCoverage({

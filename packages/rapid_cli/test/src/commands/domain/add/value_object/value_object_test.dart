@@ -96,7 +96,8 @@ void main() {
 
     test('vo is a valid alias', () {
       // Arrange
-      final command = DomainAddValueObjectCommand(project: project);
+      final command = DomainAddVal
+      ueObjectCommand(project: project);
 
       // Act + Assert
       expect(command.aliases, contains('vo'));

@@ -17,7 +17,8 @@ void main() {
       setUp(() {
         Directory.current = Directory.systemTemp.createTempSync();
 
-        commandRunner = RapidCommandRunner();
+        commandRunner = RapidC
+        ommandRunner();
       });
 
       tearDown(() {
@@ -25,22 +26,35 @@ void main() {
       });
 
       test(
-        'domain add value_object (fast)',
+        'infrastructure remove data_transfer_object (fast)',
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-          final name = 'FooBar';
+
+          final entityName = 'FooBar';
+          final name = '${entityName}Dto';
+
+          final outputDir = 'foo';
+          dataTransferObjectFiles(entity: entityName).create();
+          dataTransferObjectFiles(entity: entityName, outputDir: outputDir)
+              .create();
 
           // Act + Assert
           final commandResult = await commandRunner.run(
-            ['domain', 'add', 'value_object', name],
+            ['infrastructure', 'remove', 'data_transfer_object', name],
           );
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
-          final outputDir = 'foo';
           final commandResultWithOutputDir = await commandRunner.run(
-            ['domain', 'add', 'value_object', name, '--output-dir', outputDir],
+            [
+              'infrastructure',
+              'remove',
+              'data_transfer_object',
+              name,
+              '--dir',
+              outputDir
+            ],
           );
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
@@ -50,30 +64,46 @@ void main() {
 
           verifyDoExist({
             ...platformIndependentPackages,
-            ...valueObjectFiles(name: name),
-            ...valueObjectFiles(name: name, outputDir: outputDir),
+          });
+          verifyDoNotExist({
+            ...dataTransferObjectFiles(entity: entityName),
+            ...dataTransferObjectFiles(
+                entity: entityName, outputDir: outputDir),
           });
         },
         tags: ['fast'],
       );
 
       test(
-        'domain add value_object',
+        'infrastructure remove data_transfer_object',
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-          final name = 'FooBar';
+
+          final entityName = 'FooBar';
+          final name = '${entityName}Dto';
+
+          final outputDir = 'foo';
+          dataTransferObjectFiles(entity: entityName).create();
+          dataTransferObjectFiles(entity: entityName, outputDir: outputDir)
+              .create();
 
           // Act + Assert
           final commandResult = await commandRunner.run(
-            ['domain', 'add', 'value_object', name],
+            ['infrastructure', 'remove', 'data_transfer_object', name],
           );
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
-          final outputDir = 'foo';
           final commandResultWithOutputDir = await commandRunner.run(
-            ['domain', 'add', 'value_object', name, '--output-dir', outputDir],
+            [
+              'infrastructure',
+              'remove',
+              'data_transfer_object',
+              name,
+              '--dir',
+              outputDir
+            ],
           );
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
@@ -83,13 +113,14 @@ void main() {
 
           verifyDoExist({
             ...platformIndependentPackages,
-            ...valueObjectFiles(name: name),
-            ...valueObjectFiles(name: name, outputDir: outputDir),
+          });
+          verifyDoNotExist({
+            ...dataTransferObjectFiles(entity: entityName),
+            ...dataTransferObjectFiles(
+                entity: entityName, outputDir: outputDir),
           });
 
-          await verifyTestsPassWith100PercentCoverage({
-            domainPackage,
-          });
+          // TODO tests ?
         },
       );
     },

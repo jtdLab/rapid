@@ -2,6 +2,7 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/infrastructure/add/service_implementation/service_implementation.dart';
+import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:recase/recase.dart';
@@ -33,8 +34,12 @@ class _MockProject extends Mock implements Project {}
 class _MockInfrastructurePackage extends Mock implements InfrastructurePackage {
 }
 
+class _MockDomainPackage extends Mock implements DomainPackage {}
+
 class _MockServiceImplementation extends Mock implements ServiceImplementation {
 }
+
+class _MockServiceInterface extends Mock implements ServiceInterface {}
 
 class _MockArgResults extends Mock implements ArgResults {}
 
@@ -48,6 +53,8 @@ void main() {
     late Project project;
     late InfrastructurePackage infrastructurePackage;
     late ServiceImplementation serviceImplementation;
+    late DomainPackage domainPackage;
+    late ServiceInterface serviceInterface;
 
     late ArgResults argResults;
     late String name;
@@ -81,9 +88,19 @@ void main() {
           dir: any(named: 'dir'),
         ),
       ).thenReturn(serviceImplementation);
+      domainPackage = _MockDomainPackage();
+      serviceInterface = _MockServiceInterface();
+      when(() => serviceInterface.exists()).thenReturn(true);
+      when(
+        () => domainPackage.serviceInterface(
+          name: any(named: 'name'),
+          dir: any(named: 'dir'),
+        ),
+      ).thenReturn(serviceInterface);
       when(() => project.exists()).thenReturn(true);
       when(() => project.infrastructurePackage)
           .thenReturn(infrastructurePackage);
+      when(() => project.domainPackage).thenReturn(domainPackage);
 
       argResults = _MockArgResults();
       name = 'Fake';
@@ -239,6 +256,19 @@ void main() {
             'Added Service Implementation ${name.pascalCase}${service.pascalCase}Service.'),
       ).called(1);
       expect(result, ExitCode.success.code);
+    });
+
+    test('exits with 78 when service interace does not exist', () async {
+      // Arrange
+      when(() => serviceInterface.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err(
+          'Service Interface I${service}Service does not exist.')).called(1);
+      expect(result, ExitCode.config.code);
     });
 
     test('exits with 78 when service implementation does already exist',

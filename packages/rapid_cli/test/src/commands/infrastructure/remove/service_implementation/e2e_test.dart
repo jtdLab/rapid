@@ -25,22 +25,35 @@ void main() {
       });
 
       test(
-        'domain add value_object (fast)',
+        'infrastructure remove service_implementation (fast)',
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-          final name = 'FooBar';
+
+          final entityName = 'FooBar';
+          final name = '${entityName}Dto';
+
+          final outputDir = 'foo';
+          serviceImplementationFiles(entity: entityName).create();
+          serviceImplementationFiles(entity: entityName, outputDir: outputDir)
+              .create();
 
           // Act + Assert
           final commandResult = await commandRunner.run(
-            ['domain', 'add', 'value_object', name],
+            ['infrastructure', 'remove', 'service_implementation', name],
           );
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
-          final outputDir = 'foo';
           final commandResultWithOutputDir = await commandRunner.run(
-            ['domain', 'add', 'value_object', name, '--output-dir', outputDir],
+            [
+              'infrastructure',
+              'remove',
+              'service_implementation',
+              name,
+              '--dir',
+              outputDir
+            ],
           );
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
@@ -50,30 +63,46 @@ void main() {
 
           verifyDoExist({
             ...platformIndependentPackages,
-            ...valueObjectFiles(name: name),
-            ...valueObjectFiles(name: name, outputDir: outputDir),
+          });
+          verifyDoNotExist({
+            ...serviceImplementationFiles(entity: entityName),
+            ...serviceImplementationFiles(
+                entity: entityName, outputDir: outputDir),
           });
         },
         tags: ['fast'],
       );
 
       test(
-        'domain add value_object',
+        'infrastructure remove service_implementation',
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-          final name = 'FooBar';
+
+          final entityName = 'FooBar';
+          final name = '${entityName}Dto';
+
+          final outputDir = 'foo';
+          serviceImplementationFiles(entity: entityName).create();
+          serviceImplementationFiles(entity: entityName, outputDir: outputDir)
+              .create();
 
           // Act + Assert
           final commandResult = await commandRunner.run(
-            ['domain', 'add', 'value_object', name],
+            ['infrastructure', 'remove', 'service_implementation', name],
           );
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
-          final outputDir = 'foo';
           final commandResultWithOutputDir = await commandRunner.run(
-            ['domain', 'add', 'value_object', name, '--output-dir', outputDir],
+            [
+              'infrastructure',
+              'remove',
+              'service_implementation',
+              name,
+              '--dir',
+              outputDir
+            ],
           );
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
@@ -83,13 +112,14 @@ void main() {
 
           verifyDoExist({
             ...platformIndependentPackages,
-            ...valueObjectFiles(name: name),
-            ...valueObjectFiles(name: name, outputDir: outputDir),
+          });
+          verifyDoNotExist({
+            ...serviceImplementationFiles(entity: entityName),
+            ...serviceImplementationFiles(
+                entity: entityName, outputDir: outputDir),
           });
 
-          await verifyTestsPassWith100PercentCoverage({
-            domainPackage,
-          });
+          // TODO tests ?
         },
       );
     },

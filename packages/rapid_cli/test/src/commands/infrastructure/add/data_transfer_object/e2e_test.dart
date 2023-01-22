@@ -32,8 +32,8 @@ void main() {
 
           final entity = 'FooBar';
           final outputDir = 'foo';
-          await addEntity(name: entity);
-          await addEntity(name: entity, outputDir: outputDir);
+          await addEntity();
+          await addEntity(outputDir: outputDir);
 
           // Act + Assert
           final commandResult = await commandRunner.run(
@@ -82,8 +82,8 @@ void main() {
 
           final entity = 'FooBar';
           final outputDir = 'foo';
-          await addEntity(name: entity);
-          await addEntity(name: entity, outputDir: outputDir);
+          await addEntity();
+          await addEntity(outputDir: outputDir);
 
           // Act + Assert
           final commandResult = await commandRunner.run(

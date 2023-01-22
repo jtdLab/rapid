@@ -82,7 +82,7 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
             }
           } else {
             _logger.err(
-              'Entity $entityName does not exists.',
+              'Entity $entityName does not exist.',
             );
 
             return ExitCode.config.code;

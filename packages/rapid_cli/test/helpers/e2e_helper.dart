@@ -46,17 +46,6 @@ Future<void> setupProjectWithPlatform(Platform platform) async {
   await _runFlutterPubGetInAllDirsWithPubspec();
 }
 
-Future<void> addEntity({required String name, String? outputDir}) async {
-  await copyPath(
-    Directory(p.join(cwd.path, 'fixtures', 'entity', 'lib')).path,
-    p.join(domainPackage.path, 'lib', outputDir ?? ''),
-  );
-  await copyPath(
-    Directory(p.join(cwd.path, 'fixtures', 'entity', 'test')).path,
-    p.join(domainPackage.path, 'test', outputDir ?? ''),
-  );
-}
-
 /// Runs `flutter pub get` recursivly in all dirs with pubspec.yaml
 /// starting from current directory.
 Future<void> _runFlutterPubGetInAllDirsWithPubspec() async {
@@ -88,6 +77,24 @@ void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
     print(entity.path);
     expect(entity.existsSync(), false);
   }
+}
+
+Future<void> addEntity({String? outputDir}) async {
+  await copyPath(
+    Directory(p.join(cwd.path, 'fixtures', 'entity', 'lib')).path,
+    p.join(domainPackage.path, 'lib', outputDir ?? ''),
+  );
+  await copyPath(
+    Directory(p.join(cwd.path, 'fixtures', 'entity', 'test')).path,
+    p.join(domainPackage.path, 'test', outputDir ?? ''),
+  );
+}
+
+Future<void> addServiceInterface({String? outputDir}) async {
+  await copyPath(
+    Directory(p.join(cwd.path, 'fixtures', 'service_interface')).path,
+    p.join(domainPackage.path, 'lib', outputDir ?? ''),
+  );
 }
 
 late String projectName;
@@ -149,6 +156,19 @@ List<Directory> get allPlatformDirs => Platform.values
     .fold(<Directory>[], (prev, curr) => prev + curr).toList();
 
 List<File> entityFiles({
+  required String name,
+  String? outputDir,
+}) =>
+    [
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+          '${name.snakeCase}.dart')),
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+          '${name.snakeCase}.freezed.dart')),
+      File(p.join(domainPackage.path, 'test', outputDir ?? '', name.snakeCase,
+          '${name.snakeCase}_test.dart')),
+    ];
+
+List<File> valueObjectFiles({
   required String name,
   String? outputDir,
 }) =>
@@ -282,8 +302,20 @@ List<File> languageFiles(
     ];
 
 extension IterableX<E extends FileSystemEntity> on Iterable<E> {
+  /// All entities inside this without [iterable].
   Iterable<E> without(Iterable<E> iterable) =>
       where((e) => !iterable.any((element) => e.path == element.path));
+
+  /// Creates all entities inside this.
+  void create() {
+    for (final e in this) {
+      if (e is Directory) {
+        e.createSync(recursive: true);
+      } else {
+        (e as File).createSync(recursive: true);
+      }
+    }
+  }
 }
 
 /// Verifys that tests in [dirs] pass with 100% test coverage.

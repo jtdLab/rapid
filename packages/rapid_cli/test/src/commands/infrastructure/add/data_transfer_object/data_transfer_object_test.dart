@@ -80,7 +80,7 @@ void main() {
           .thenAnswer((_) async {});
       when(
         () => infrastructurePackage.dataTransferObject(
-          entityName: any(named: 'name'),
+          entityName: any(named: 'entityName'),
           dir: any(named: 'dir'),
         ),
       ).thenReturn(dataTransferObject);
@@ -94,7 +94,6 @@ void main() {
         ),
       ).thenReturn(entity);
       when(() => project.exists()).thenReturn(true);
-
       when(() => project.infrastructurePackage)
           .thenReturn(infrastructurePackage);
       when(() => project.domainPackage).thenReturn(domainPackage);
@@ -240,7 +239,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err('Entity $entityName does not exists.')).called(1);
+      verify(() => logger.err('Entity $entityName does not exist.')).called(1);
       expect(result, ExitCode.config.code);
     });
 

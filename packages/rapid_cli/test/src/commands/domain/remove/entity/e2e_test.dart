@@ -25,22 +25,25 @@ void main() {
       });
 
       test(
-        'domain add value_object (fast)',
+        'domain remove entity (fast)',
         () async {
           // Arrange
           await setupProjectNoPlatforms();
+
           final name = 'FooBar';
+          final outputDir = 'foo';
+          entityFiles(name: name).create();
+          entityFiles(name: name, outputDir: outputDir).create();
 
           // Act + Assert
           final commandResult = await commandRunner.run(
-            ['domain', 'add', 'value_object', name],
+            ['domain', 'remove', 'entity', name],
           );
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
-          final outputDir = 'foo';
           final commandResultWithOutputDir = await commandRunner.run(
-            ['domain', 'add', 'value_object', name, '--output-dir', outputDir],
+            ['domain', 'remove', 'entity', name, '--dir', outputDir],
           );
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
@@ -50,30 +53,35 @@ void main() {
 
           verifyDoExist({
             ...platformIndependentPackages,
-            ...valueObjectFiles(name: name),
-            ...valueObjectFiles(name: name, outputDir: outputDir),
+          });
+          verifyDoNotExist({
+            ...entityFiles(name: name),
+            ...entityFiles(name: name, outputDir: outputDir),
           });
         },
         tags: ['fast'],
       );
 
       test(
-        'domain add value_object',
+        'domain remove entity',
         () async {
           // Arrange
           await setupProjectNoPlatforms();
+
           final name = 'FooBar';
+          final outputDir = 'foo';
+          entityFiles(name: name).create();
+          entityFiles(name: name, outputDir: outputDir).create();
 
           // Act + Assert
           final commandResult = await commandRunner.run(
-            ['domain', 'add', 'value_object', name],
+            ['domain', 'remove', 'entity', name],
           );
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
-          final outputDir = 'foo';
           final commandResultWithOutputDir = await commandRunner.run(
-            ['domain', 'add', 'value_object', name, '--output-dir', outputDir],
+            ['domain', 'remove', 'entity', name, '--dir', outputDir],
           );
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
@@ -83,13 +91,13 @@ void main() {
 
           verifyDoExist({
             ...platformIndependentPackages,
-            ...valueObjectFiles(name: name),
-            ...valueObjectFiles(name: name, outputDir: outputDir),
+          });
+          verifyDoNotExist({
+            ...entityFiles(name: name),
+            ...entityFiles(name: name, outputDir: outputDir),
           });
 
-          await verifyTestsPassWith100PercentCoverage({
-            domainPackage,
-          });
+          // TODO tests ?
         },
       );
     },

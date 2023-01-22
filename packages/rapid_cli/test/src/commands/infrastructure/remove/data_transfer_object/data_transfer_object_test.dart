@@ -185,8 +185,8 @@ void main() {
           entityName: name, dir: '.')).called(1);
       verify(() => dataTransferObject.exists()).called(1);
       verify(() => dataTransferObject.delete()).called(1);
-      verify(() => logger.success(
-          'Removed Data Transfer Object ${name.pascalCase}.')).called(1);
+      verify(() => logger.success('Removed Data Transfer Object $name.'))
+          .called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -204,8 +204,8 @@ void main() {
           entityName: name, dir: dir!)).called(1);
       verify(() => dataTransferObject.exists()).called(1);
       verify(() => dataTransferObject.delete()).called(1);
-      verify(() => logger.success(
-          'Removed Data Transfer Object ${name.pascalCase}.')).called(1);
+      verify(() => logger.success('Removed Data Transfer Object $name.'))
+          .called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -217,8 +217,7 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() =>
-              logger.err('Data Transfer Object ${name.pascalCase} not found.'))
+      verify(() => logger.err('Data Transfer Object $name not found.'))
           .called(1);
       expect(result, ExitCode.config.code);
     });

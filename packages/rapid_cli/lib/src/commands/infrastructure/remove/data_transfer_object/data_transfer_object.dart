@@ -61,13 +61,13 @@ class InfrastructureRemoveDataTransferObjectCommand extends Command<int>
             dataTransferObject.delete();
 
             _logger.success(
-              'Removed Data Transfer Object ${name.pascalCase}.',
+              'Removed Data Transfer Object $name.',
             );
 
             return ExitCode.success.code;
           } else {
             _logger.err(
-              'Data Transfer Object ${name.pascalCase} not found.',
+              'Data Transfer Object $name not found.',
             );
 
             return ExitCode.config.code;

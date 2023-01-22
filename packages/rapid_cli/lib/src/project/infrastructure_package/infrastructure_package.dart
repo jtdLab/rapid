@@ -3,6 +3,7 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/project/infrastructure_package/data_transfer_object_bundle.dart';
+import 'package:rapid_cli/src/project/infrastructure_package/service_implementation_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:recase/recase.dart';
 import 'package:universal_io/io.dart';
@@ -111,9 +112,12 @@ class DataTransferObject {
   final String dir;
   final InfrastructurePackage infrastructurePackage;
 
-  bool exists() =>
-      _dataTransferObjectDirectory.existsSync() ||
-      _dataTransferObjectTestDirectory.existsSync();
+  bool exists() {
+    print(_dataTransferObjectDirectory.path);
+    print(_dataTransferObjectTestDirectory.path);
+    return _dataTransferObjectDirectory.existsSync() ||
+        _dataTransferObjectTestDirectory.existsSync();
+  }
 
   Future<void> create({
     required Logger logger,
@@ -193,7 +197,7 @@ class ServiceImplementation {
   }) async {
     final projectName = infrastructurePackage.project.name();
 
-    final generator = await _generator(dataTransferObjectBundle);
+    final generator = await _generator(serviceImplementationBundle);
     await generator.generate(
       DirectoryGeneratorTarget(Directory(infrastructurePackage.path)),
       vars: <String, dynamic>{

@@ -71,11 +71,11 @@ abstract class ActivatePlatformCommand extends Command<int>
         ],
         _logger,
         () async {
-          await _flutterConfigEnablePlatform(logger: _logger);
-
           _logger.info(
             'Activating ${lightYellow.wrap(_platform.prettyName)} ...',
           );
+
+          await _flutterConfigEnablePlatform(logger: _logger);
 
           await activatePlatform(project: _project, logger: _logger);
 

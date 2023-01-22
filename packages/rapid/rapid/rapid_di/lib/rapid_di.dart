@@ -5,4 +5,3 @@ library rapid_di;
 
 export 'src/container.dart';
 export 'src/platform.dart';
-export 'package:injectable/injectable.dart';

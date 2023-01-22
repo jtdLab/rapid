@@ -1,8 +1,5 @@
 part of 'cli.dart';
 
-// TODO here process failures get caught and lead do failing process completion in flutter cli its not
-// decide whats the better approach and add logging to flutter then
-
 /// Signature for the [Melos.installed] method.
 typedef MelosInstalledCommand = Future<bool> Function({required Logger logger});
 
@@ -42,8 +39,8 @@ abstract class Melos {
     required Logger logger,
   }) async {
     if (scope == null) {
-      final bootstrapProgress = logger.progress(
-        'Running "melos bootstrapp" in $cwd',
+      final progress = logger.progress(
+        'Running "melos bootstrap" in $cwd ',
       );
 
       try {
@@ -54,14 +51,14 @@ abstract class Melos {
           logger: logger,
         );
       } catch (_) {
-        bootstrapProgress.fail();
-        return;
+        progress.fail();
+        rethrow;
       }
 
-      bootstrapProgress.complete();
+      progress.complete();
     } else {
-      final bootstrapProgress = logger.progress(
-        'Running "melos bootstrapp --scope $scope" in $cwd',
+      final progress = logger.progress(
+        'Running "melos bootstrap --scope $scope" in $cwd ',
       );
 
       try {
@@ -72,11 +69,11 @@ abstract class Melos {
           logger: logger,
         );
       } catch (_) {
-        bootstrapProgress.fail();
-        return;
+        progress.fail();
+        rethrow;
       }
 
-      bootstrapProgress.complete();
+      progress.complete();
     }
   }
 
@@ -85,8 +82,8 @@ abstract class Melos {
     String cwd = '.',
     required Logger logger,
   }) async {
-    final cleanProgress = logger.progress(
-      'Running "melos clean" in $cwd',
+    final progress = logger.progress(
+      'Running "melos clean" in $cwd ',
     );
 
     try {
@@ -97,10 +94,10 @@ abstract class Melos {
         logger: logger,
       );
     } catch (_) {
-      cleanProgress.fail();
-      return;
+      progress.fail();
+      rethrow;
     }
 
-    cleanProgress.complete();
+    progress.complete();
   }
 }

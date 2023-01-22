@@ -273,15 +273,14 @@ class Project implements ProjectEntity {
       logger: logger,
     );
 
-    // TODO
-    await Melos.bootstrap(
-      logger: logger,
+    await _melosBootstrap(
+      cwd: path,
       scope:
           '${_appPackage.packageName()},${diPackage.packageName()},${platformUiPackage.packageName()},'
           '${platformAppPackage.packageName()},${platformRoutingPackage.packageName()},${platformHomePagePackage.packageName()}',
+      logger: logger,
     );
-    // TODO
-    await Flutter.formatFix(logger: logger);
+    await _flutterFormatFix(cwd: path, logger: logger);
   }
 
   Future<void> deactivatePlatform(
@@ -301,7 +300,11 @@ class Project implements ProjectEntity {
     final platformUiPackage = this.platformUiPackage(platform: platform);
     await platformUiPackage.delete(logger: logger);
 
-    // TODO
-    await Flutter.formatFix(logger: logger);
+    await _melosBootstrap(
+      cwd: path,
+      scope: '${_appPackage.packageName()},${diPackage.packageName()}',
+      logger: logger,
+    );
+    await _flutterFormatFix(cwd: path, logger: logger);
   }
 }

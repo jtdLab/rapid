@@ -18,9 +18,15 @@ typedef RunProcess = Future<ProcessResult> Function(
   bool runInShell,
 });
 
-/// This class facilitates overriding [Process.run].
-/// It should be extended by another class in client code with overrides
-/// that construct a custom implementation.
+/// Signature for [Process.start].
+typedef StartProcess = Future<Process> Function(
+  String executable,
+  List<String> arguments, {
+  String? workingDirectory,
+  bool runInShell,
+});
+
+/// This class facilitates overriding [Process.start] and [Process.run].
 @visibleForTesting
 abstract class ProcessOverrides {
   static final _token = Object();
@@ -41,21 +47,31 @@ abstract class ProcessOverrides {
   /// Runs [body] in a fresh [Zone] using the provided overrides.
   static R runZoned<R>(
     R Function() body, {
+    StartProcess? startProcess,
     RunProcess? runProcess,
   }) {
-    final overrides = _ProcessOverridesScope(runProcess);
+    final overrides = _ProcessOverridesScope(startProcess, runProcess);
     return _asyncRunZoned(body, zoneValues: {_token: overrides});
   }
+
+  /// The method used to start a [Process].
+  StartProcess get startProcess => Process.start;
 
   /// The method used to run a [Process].
   RunProcess get runProcess => Process.run;
 }
 
 class _ProcessOverridesScope extends ProcessOverrides {
-  _ProcessOverridesScope(this._runProcess);
+  _ProcessOverridesScope(this._startProcess, this._runProcess);
 
   final ProcessOverrides? _previous = ProcessOverrides.current;
+  final StartProcess? _startProcess;
   final RunProcess? _runProcess;
+
+  @override
+  StartProcess get startProcess {
+    return _startProcess ?? _previous?.startProcess ?? super.startProcess;
+  }
 
   @override
   RunProcess get runProcess {
@@ -66,56 +82,55 @@ class _ProcessOverridesScope extends ProcessOverrides {
 /// Abstraction for running commands via command-line.
 abstract class _Cmd {
   /// Runs the specified [cmd] with the provided [args].
-  static Future<int> run(
+  static Future<ProcessResult> run(
     String cmd,
     List<String> args, {
     bool throwOnError = true,
     String? workingDirectory,
     required Logger logger,
   }) async {
-    logger.detail('Running: $cmd with $args');
-    final process = await Process.start(
+    final startProcess =
+        ProcessOverrides.current?.startProcess ?? Process.start;
+    final process = await startProcess(
       cmd,
       args,
       workingDirectory: workingDirectory,
       runInShell: true,
     );
+
+    final stdout = <String>[];
+    final stderr = <String>[];
     process.stdout.listen((event) {
-      logger.detail(utf8.decode(event));
+      final msg = utf8.decode(event);
+      stdout.add(msg);
+      logger.detail(msg);
     });
     process.stderr.listen((event) {
-      logger.detail(utf8.decode(event));
+      final msg = utf8.decode(event);
+      stdout.add(msg);
+      logger.detail(red.wrap(msg));
     });
 
     final exitCode = await process.exitCode;
-    return exitCode;
-    /*  final runProcess = ProcessOverrides.current?.runProcess ?? Process.run;
-    final result = await runProcess(
-      cmd,
-      args,
-      workingDirectory: workingDirectory,
-      runInShell: true,
-    );
-    logger
-      ..detail('stdout:\n${result.stdout}')
-      ..detail('stderr:\n${result.stderr}'); 
 
     if (throwOnError) {
-      _throwIfProcessFailed(result, cmd, args);
+      _throwIfProcessFailed(exitCode, stdout, stderr, cmd, args);
     }
-    return result;
-    */
+
+    return ProcessResult(process.pid, exitCode, stdout, stderr);
   }
 
   static void _throwIfProcessFailed(
-    ProcessResult result,
+    int exitCode,
+    List<String> stdout,
+    List<String> stderr,
     String cmd,
     List<String> args,
   ) {
-    if (result.exitCode != 0) {
+    if (exitCode != 0) {
       final values = {
-        'Standard out': result.stdout.toString().trim(),
-        'Standard error': result.stderr.toString().trim()
+        'Stdout:': stdout.join('\n').trim(),
+        'Stderr:': stderr.join('\n').trim(),
       }..removeWhere((k, v) => v.isEmpty);
 
       var message = 'Unknown error';
@@ -123,7 +138,7 @@ abstract class _Cmd {
         message = values.entries.map((e) => '${e.key}\n${e.value}').join('\n');
       }
 
-      throw ProcessException(cmd, args, message, result.exitCode);
+      throw ProcessException(cmd, args, message, exitCode);
     }
   }
 }

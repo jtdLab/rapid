@@ -66,78 +66,155 @@ abstract class Flutter {
     String cwd = '.',
     required Logger logger,
   }) async {
-    await _Cmd.run(
-      'flutter',
-      ['pub', 'get'],
-      workingDirectory: cwd,
-      logger: logger,
+    final progress = logger.progress(
+      'Running "flutter pub get" in $cwd ',
     );
+
+    try {
+      await _Cmd.run(
+        'flutter',
+        ['pub', 'get'],
+        workingDirectory: cwd,
+        logger: logger,
+      );
+    } catch (_) {
+      progress.fail();
+      rethrow;
+    }
+
+    progress.complete();
   }
 
   /// Enable Flutter for Android (`flutter config --enable-android`).
   static Future<void> configEnableAndroid({
     required Logger logger,
   }) async {
-    await _Cmd.run(
-      'flutter',
-      ['config', '--enable-android'],
-      logger: logger,
+    final progress = logger.progress(
+      'Running "flutter config --enable-android"',
     );
+
+    try {
+      await _Cmd.run(
+        'flutter',
+        ['config', '--enable-android'],
+        logger: logger,
+      );
+    } catch (_) {
+      progress.fail();
+      rethrow;
+    }
+
+    progress.complete();
   }
 
   /// Enable Flutter for iOS (`flutter config --enable-ios`).
   static Future<void> configEnableIos({
     required Logger logger,
   }) async {
-    await _Cmd.run(
-      'flutter',
-      ['config', '--enable-ios'],
-      logger: logger,
+    final progress = logger.progress(
+      'Running "flutter config --enable-ios"',
     );
+
+    try {
+      await _Cmd.run(
+        'flutter',
+        ['config', '--enable-ios'],
+        logger: logger,
+      );
+    } catch (_) {
+      progress.fail();
+      rethrow;
+    }
+
+    progress.complete();
   }
 
   /// Enable Flutter for Linux (`flutter config --enable-linux-desktop`).
   static Future<void> configEnableLinux({
     required Logger logger,
   }) async {
-    await _Cmd.run(
-      'flutter',
-      ['config', '--enable-linux-desktop'],
-      logger: logger,
+    final progress = logger.progress(
+      'Running "flutter config --enable-linux-desktop"',
     );
+
+    try {
+      await _Cmd.run(
+        'flutter',
+        ['config', '--enable-linux-desktop'],
+        logger: logger,
+      );
+    } catch (_) {
+      progress.fail();
+      rethrow;
+    }
+
+    progress.complete();
   }
 
   /// Enable Flutter for macOS (`flutter config --enable-macos-desktop`).
   static Future<void> configEnableMacos({
     required Logger logger,
   }) async {
-    await _Cmd.run(
-      'flutter',
-      ['config', '--enable-macos-desktop'],
-      logger: logger,
+    final progress = logger.progress(
+      'Running "flutter config --enable-macos-desktop"',
     );
+
+    try {
+      await _Cmd.run(
+        'flutter',
+        ['config', '--enable-macos-desktop'],
+        logger: logger,
+      );
+    } catch (_) {
+      progress.fail();
+      rethrow;
+    }
+
+    progress.complete();
   }
 
   /// Enable Flutter for Web (`flutter config --enable-web`).
   static Future<void> configEnableWeb({
     required Logger logger,
   }) async {
-    await _Cmd.run(
-      'flutter',
-      ['config', '--enable-web'],
-      logger: logger,
+    final progress = logger.progress(
+      'Running "flutter config --enable-web"',
     );
+
+    try {
+      await _Cmd.run(
+        'flutter',
+        ['config', '--enable-web'],
+        logger: logger,
+      );
+    } catch (_) {
+      progress.fail();
+      rethrow;
+    }
+
+    progress.complete();
   }
 
   /// Enable Flutter for Windows (`flutter config --enable-windows-desktop`).
   static Future<void> configEnableWindows({
     required Logger logger,
   }) async {
-    await _Cmd.run(
-      'flutter',
-      ['config', '--enable-windows-desktop'],
-      logger: logger,
+    final progress = logger.progress(
+      'Running "flutter config --enable-windows-desktop"',
     );
+
+    try {
+      await _Cmd.run(
+        'flutter',
+        ['config', '--enable-windows-desktop'],
+        logger: logger,
+      );
+    } catch (_) {
+      progress.fail();
+      rethrow;
+    }
+
+    progress.complete();
   }
 
   /// Run code generation (`flutter pub run build_runner build --delete-conflicting-outputs`).
@@ -145,12 +222,23 @@ abstract class Flutter {
     String cwd = '.',
     required Logger logger,
   }) async {
-    await _Cmd.run(
-      'flutter',
-      ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs'],
-      workingDirectory: cwd,
-      logger: logger,
+    final progress = logger.progress(
+      'Running "flutter pub run build_runner build --delete-conflicting-outputs" in $cwd ',
     );
+
+    try {
+      await _Cmd.run(
+        'flutter',
+        ['pub', 'run', 'build_runner', 'build', '--delete-conflicting-outputs'],
+        workingDirectory: cwd,
+        logger: logger,
+      );
+    } catch (_) {
+      progress.fail();
+      rethrow;
+    }
+
+    progress.complete();
   }
 
   /// Run localization generation (`flutter gen-l10n`).
@@ -158,12 +246,23 @@ abstract class Flutter {
     String cwd = '.',
     required Logger logger,
   }) async {
-    await _Cmd.run(
-      'flutter',
-      ['gen-l10n'],
-      workingDirectory: cwd,
-      logger: logger,
+    final progress = logger.progress(
+      'Running "flutter gen-l10n" in $cwd ',
     );
+
+    try {
+      await _Cmd.run(
+        'flutter',
+        ['gen-l10n'],
+        workingDirectory: cwd,
+        logger: logger,
+      );
+    } catch (_) {
+      progress.fail();
+      rethrow;
+    }
+
+    progress.complete();
   }
 
   /// Run localization generation (`flutter format --fix`).
@@ -171,11 +270,22 @@ abstract class Flutter {
     String cwd = '.',
     required Logger logger,
   }) async {
-    await _Cmd.run(
-      'flutter',
-      ['format', '.', '--fix'],
-      workingDirectory: cwd,
-      logger: logger,
+    final progress = logger.progress(
+      'Running "flutter format . --fix" in $cwd ',
     );
+
+    try {
+      await _Cmd.run(
+        'flutter',
+        ['format', '.', '--fix'],
+        workingDirectory: cwd,
+        logger: logger,
+      );
+    } catch (_) {
+      progress.fail();
+      rethrow;
+    }
+
+    progress.complete();
   }
 }

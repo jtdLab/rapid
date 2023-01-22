@@ -81,6 +81,8 @@ class DiPackage extends ProjectPackage with RebuildMixin {
     pubspecFile.setDependency(customFeaturePackage.packageName());
     _injectionFile.addCustomFeaturePackage(customFeaturePackage);
 
+    // TODO
+    await Flutter.pubGet(cwd: path, logger: logger);
     await rebuild(logger: logger);
   }
 
@@ -93,6 +95,8 @@ class DiPackage extends ProjectPackage with RebuildMixin {
       _injectionFile.removeCustomFeaturePackage(customFeaturePackage);
     }
 
+    // TODO
+    await Flutter.pubGet(cwd: path, logger: logger);
     await rebuild(logger: logger);
   }
 }

@@ -84,8 +84,9 @@ void Function() withRunnerOnProject(
     when(() => melosFile.exists()).thenReturn(true);
     when(() => melosFile.name()).thenReturn('test_app');
     final project = _MockProject();
-    when(() => project.melosFile).thenReturn(melosFile);
-    when(() => project.isActivated(any())).thenReturn(true);
+    // TODO
+    //when(() => project.melosFile).thenReturn(melosFile);
+    //when(() => project.isActivated(any())).thenReturn(true);
     final progress = _MockProgress();
     final progressLogs = <String>[];
     final commandRunner = RapidCommandRunner(

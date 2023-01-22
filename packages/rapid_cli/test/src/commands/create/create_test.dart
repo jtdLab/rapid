@@ -3,6 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/create/create.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -46,12 +47,8 @@ abstract class _FlutterConfigEnablePlatformCommand {
   Future<void> call({required Logger logger});
 }
 
-abstract class _MelosBootstrapCommand {
-  Future<void> call({String cwd, required Logger logger});
-}
-
-abstract class _FormatFixCommand {
-  Future<void> call({String cwd, required Logger logger});
+abstract class _ProjectBuilder {
+  Project call({String path});
 }
 
 class _MockLogger extends Mock implements Logger {}
@@ -67,17 +64,11 @@ class _MockMelosInstalledCommand extends Mock
 class _MockFlutterConfigEnablePlatformCommand extends Mock
     implements _FlutterConfigEnablePlatformCommand {}
 
-class _MockMelosBootstrapCommand extends Mock
-    implements _MelosBootstrapCommand {}
+class _MockProjectBuilder extends Mock implements _ProjectBuilder {}
 
-class _MockFlutterFormatFixCommand extends Mock implements _FormatFixCommand {}
-
-class _MockMasonGenerator extends Mock implements MasonGenerator {}
+class _MockProject extends Mock implements Project {}
 
 class _MockArgResults extends Mock implements ArgResults {}
-
-class _FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
 
 void main() {
   group('create', () {
@@ -103,25 +94,14 @@ void main() {
 
     late FlutterConfigEnablePlatformCommand flutterConfigEnableWindows;
 
-    late MelosBootstrapCommand melosBootstrap;
-
-    late FlutterFormatFixCommand flutterFormatFix;
-
-    late MasonGenerator generator;
-    final generatedFiles = List.filled(
-      23,
-      const GeneratedFile.created(path: ''),
-    );
+    late ProjectBuilder projectBuilder;
+    late Project project;
 
     late ArgResults argResults;
     late String outputDir;
     late String projectName;
 
     late CreateCommand command;
-
-    setUpAll(() {
-      registerFallbackValue(_FakeDirectoryGeneratorTarget());
-    });
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
@@ -166,24 +146,24 @@ void main() {
       when(() => flutterConfigEnableWindows(logger: logger))
           .thenAnswer((_) async {});
 
-      melosBootstrap = _MockMelosBootstrapCommand();
-      when(() => melosBootstrap(cwd: any(named: 'cwd'), logger: logger))
-          .thenAnswer((_) async {});
-
-      flutterFormatFix = _MockFlutterFormatFixCommand();
-      when(() => flutterFormatFix(cwd: any(named: 'cwd'), logger: logger))
-          .thenAnswer((_) async {});
-
-      generator = _MockMasonGenerator();
-      when(() => generator.id).thenReturn('generator_id');
-      when(() => generator.description).thenReturn('generator description');
+      projectBuilder = _MockProjectBuilder();
+      project = _MockProject();
       when(
-        () => generator.generate(
-          any(),
-          vars: any(named: 'vars'),
-          logger: any(named: 'logger'),
+        () => project.create(
+          projectName: any(named: 'projectName'),
+          description: any(named: 'description'),
+          orgName: any(named: 'orgName'),
+          example: any(named: 'example'),
+          android: any(named: 'android'),
+          ios: any(named: 'ios'),
+          linux: any(named: 'linux'),
+          macos: any(named: 'macos'),
+          web: any(named: 'web'),
+          windows: any(named: 'windows'),
+          logger: logger,
         ),
-      ).thenAnswer((_) async => generatedFiles);
+      ).thenAnswer((_) async {});
+      when(() => projectBuilder(path: any(named: 'path'))).thenReturn(project);
 
       argResults = _MockArgResults();
       projectName = 'test_app';
@@ -192,19 +172,17 @@ void main() {
       when(() => argResults['output-dir']).thenReturn(outputDir);
 
       command = CreateCommand(
-        logger: logger,
-        flutterInstalled: flutterInstalled,
-        melosInstalled: melosInstalled,
-        flutterConfigEnableAndroid: flutterConfigEnableAndroid,
-        flutterConfigEnableIos: flutterConfigEnableIos,
-        flutterConfigEnableLinux: flutterConfigEnableLinux,
-        flutterConfigEnableMacos: flutterConfigEnableMacos,
-        flutterConfigEnableWeb: flutterConfigEnableWeb,
-        flutterConfigEnableWindows: flutterConfigEnableWindows,
-        melosBootstrap: melosBootstrap,
-        flutterFormatFix: flutterFormatFix,
-        generator: (_) async => generator,
-      )..argResultOverrides = argResults;
+          logger: logger,
+          flutterInstalled: flutterInstalled,
+          melosInstalled: melosInstalled,
+          flutterConfigEnableAndroid: flutterConfigEnableAndroid,
+          flutterConfigEnableIos: flutterConfigEnableIos,
+          flutterConfigEnableLinux: flutterConfigEnableLinux,
+          flutterConfigEnableMacos: flutterConfigEnableMacos,
+          flutterConfigEnableWeb: flutterConfigEnableWeb,
+          flutterConfigEnableWindows: flutterConfigEnableWindows,
+          project: projectBuilder)
+        ..argResultOverrides = argResults;
     });
 
     tearDown(() {
@@ -314,38 +292,22 @@ void main() {
       // Assert
       verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => melosInstalled(logger: logger)).called(1);
-      verify(() => logger.progress('Generating')).called(1);
+      verify(() => projectBuilder(path: outputDir)).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              outputDir,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'org_name': 'com.example',
-            'description': 'A Rapid app.',
-            'example': false,
-            'android': false,
-            'ios': false,
-            'linux': false,
-            'macos': false,
-            'web': false,
-            'windows': false,
-            'none': true,
-          },
+        () => project.create(
+          projectName: projectName,
+          description: 'A Rapid app.',
+          orgName: 'com.example',
+          example: false,
+          android: false,
+          ios: false,
+          linux: false,
+          macos: false,
+          web: false,
+          windows: false,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -361,38 +323,22 @@ void main() {
       // Assert
       verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => melosInstalled(logger: logger)).called(1);
-      verify(() => logger.progress('Generating')).called(1);
+      verify(() => projectBuilder(path: outputDir)).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              outputDir,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'org_name': 'com.example',
-            'description': description,
-            'example': false,
-            'android': false,
-            'ios': false,
-            'linux': false,
-            'macos': false,
-            'web': false,
-            'windows': false,
-            'none': true,
-          },
+        () => project.create(
+          projectName: projectName,
+          description: description,
+          orgName: 'com.example',
+          example: false,
+          android: false,
+          ios: false,
+          linux: false,
+          macos: false,
+          web: false,
+          windows: false,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -408,38 +354,22 @@ void main() {
       verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => melosInstalled(logger: logger)).called(1);
       verify(() => flutterConfigEnableAndroid(logger: logger)).called(1);
-      verify(() => logger.progress('Generating')).called(1);
+      verify(() => projectBuilder(path: outputDir)).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              outputDir,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'org_name': 'com.example',
-            'description': 'A Rapid app.',
-            'example': false,
-            'android': true,
-            'ios': false,
-            'linux': false,
-            'macos': false,
-            'web': false,
-            'windows': false,
-            'none': false,
-          },
+        () => project.create(
+          projectName: projectName,
+          description: 'A Rapid app.',
+          orgName: 'com.example',
+          example: false,
+          android: true,
+          ios: false,
+          linux: false,
+          macos: false,
+          web: false,
+          windows: false,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -455,38 +385,22 @@ void main() {
       verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => melosInstalled(logger: logger)).called(1);
       verify(() => flutterConfigEnableIos(logger: logger)).called(1);
-      verify(() => logger.progress('Generating')).called(1);
+      verify(() => projectBuilder(path: outputDir)).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              outputDir,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'org_name': 'com.example',
-            'description': 'A Rapid app.',
-            'example': false,
-            'android': false,
-            'ios': true,
-            'linux': false,
-            'macos': false,
-            'web': false,
-            'windows': false,
-            'none': false,
-          },
+        () => project.create(
+          projectName: projectName,
+          description: 'A Rapid app.',
+          orgName: 'com.example',
+          example: false,
+          android: false,
+          ios: true,
+          linux: false,
+          macos: false,
+          web: false,
+          windows: false,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -502,38 +416,22 @@ void main() {
       verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => melosInstalled(logger: logger)).called(1);
       verify(() => flutterConfigEnableLinux(logger: logger)).called(1);
-      verify(() => logger.progress('Generating')).called(1);
+      verify(() => projectBuilder(path: outputDir)).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              outputDir,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'org_name': 'com.example',
-            'description': 'A Rapid app.',
-            'example': false,
-            'android': false,
-            'ios': false,
-            'linux': true,
-            'macos': false,
-            'web': false,
-            'windows': false,
-            'none': false,
-          },
+        () => project.create(
+          projectName: projectName,
+          description: 'A Rapid app.',
+          orgName: 'com.example',
+          example: false,
+          android: false,
+          ios: false,
+          linux: true,
+          macos: false,
+          web: false,
+          windows: false,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -549,38 +447,22 @@ void main() {
       verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => melosInstalled(logger: logger)).called(1);
       verify(() => flutterConfigEnableMacos(logger: logger)).called(1);
-      verify(() => logger.progress('Generating')).called(1);
+      verify(() => projectBuilder(path: outputDir)).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              outputDir,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'org_name': 'com.example',
-            'description': 'A Rapid app.',
-            'example': false,
-            'android': false,
-            'ios': false,
-            'linux': false,
-            'macos': true,
-            'web': false,
-            'windows': false,
-            'none': false,
-          },
+        () => project.create(
+          projectName: projectName,
+          description: 'A Rapid app.',
+          orgName: 'com.example',
+          example: false,
+          android: false,
+          ios: false,
+          linux: false,
+          macos: true,
+          web: false,
+          windows: false,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -596,38 +478,22 @@ void main() {
       verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => melosInstalled(logger: logger)).called(1);
       verify(() => flutterConfigEnableWeb(logger: logger)).called(1);
-      verify(() => logger.progress('Generating')).called(1);
+      verify(() => projectBuilder(path: outputDir)).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              outputDir,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'org_name': 'com.example',
-            'description': 'A Rapid app.',
-            'example': false,
-            'android': false,
-            'ios': false,
-            'linux': false,
-            'macos': false,
-            'web': true,
-            'windows': false,
-            'none': false,
-          },
+        () => project.create(
+          projectName: projectName,
+          description: 'A Rapid app.',
+          orgName: 'com.example',
+          example: false,
+          android: false,
+          ios: false,
+          linux: false,
+          macos: false,
+          web: true,
+          windows: false,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -643,38 +509,22 @@ void main() {
       verify(() => flutterInstalled(logger: logger)).called(1);
       verify(() => melosInstalled(logger: logger)).called(1);
       verify(() => flutterConfigEnableWindows(logger: logger)).called(1);
-      verify(() => logger.progress('Generating')).called(1);
+      verify(() => projectBuilder(path: outputDir)).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              outputDir,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'org_name': 'com.example',
-            'description': 'A Rapid app.',
-            'example': false,
-            'android': false,
-            'ios': false,
-            'linux': false,
-            'macos': false,
-            'web': false,
-            'windows': true,
-            'none': false,
-          },
+        () => project.create(
+          projectName: projectName,
+          description: 'A Rapid app.',
+          orgName: 'com.example',
+          example: false,
+          android: false,
+          ios: false,
+          linux: false,
+          macos: false,
+          web: false,
+          windows: true,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -702,38 +552,22 @@ void main() {
       verify(() => flutterConfigEnableMacos(logger: logger)).called(1);
       verify(() => flutterConfigEnableWeb(logger: logger)).called(1);
       verify(() => flutterConfigEnableWindows(logger: logger)).called(1);
-      verify(() => logger.progress('Generating')).called(1);
+      verify(() => projectBuilder(path: outputDir)).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              outputDir,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'org_name': 'com.example',
-            'description': 'A Rapid app.',
-            'example': false,
-            'android': true,
-            'ios': true,
-            'linux': true,
-            'macos': true,
-            'web': true,
-            'windows': true,
-            'none': false,
-          },
+        () => project.create(
+          projectName: projectName,
+          description: 'A Rapid app.',
+          orgName: 'com.example',
+          example: false,
+          android: true,
+          ios: true,
+          linux: true,
+          macos: true,
+          web: true,
+          windows: true,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => melosBootstrap(cwd: outputDir, logger: logger)).called(1);
-      verify(() => flutterFormatFix(cwd: outputDir, logger: logger)).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
@@ -836,27 +670,17 @@ void main() {
               // Assert
               expect(result, equals(ExitCode.success.code));
               verify(
-                () => generator.generate(
-                  any(
-                    that: isA<DirectoryGeneratorTarget>().having(
-                      (g) => g.dir.path,
-                      'dir',
-                      outputDir,
-                    ),
-                  ),
-                  vars: <String, dynamic>{
-                    'project_name': projectName,
-                    'org_name': orgName,
-                    'description': 'A Rapid app.',
-                    'example': false,
-                    'android': false,
-                    'ios': false,
-                    'web': false,
-                    'linux': false,
-                    'macos': false,
-                    'windows': false,
-                    'none': true,
-                  },
+                () => project.create(
+                  projectName: projectName,
+                  description: 'A Rapid app.',
+                  orgName: orgName,
+                  example: false,
+                  android: false,
+                  ios: false,
+                  linux: false,
+                  macos: false,
+                  web: false,
+                  windows: false,
                   logger: logger,
                 ),
               ).called(1);

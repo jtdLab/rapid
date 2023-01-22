@@ -174,6 +174,8 @@ class Project implements ProjectEntity {
     required bool windows,
     required Logger logger,
   }) async {
+    logger.info('Creating ...');
+
     final generator = await _generator(projectBundle);
     await generator.generate(
       DirectoryGeneratorTarget(Directory(path)),

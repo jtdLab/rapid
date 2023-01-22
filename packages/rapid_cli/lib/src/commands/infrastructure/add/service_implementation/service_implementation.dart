@@ -43,7 +43,7 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
 
   @override
   String get invocation =>
-      'rapid infrastructure add service_implementation [arguments]';
+      'rapid infrastructure add service_implementation <name> [arguments]';
 
   @override
   String get description =>
@@ -69,11 +69,15 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
             await serviceImplementation.create(logger: _logger);
 
             // TODO better hint containg related service etc
-            _logger.success('Added Service Implementation ${name.pascalCase}.');
+            _logger.success(
+              'Added Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service.',
+            );
 
             return ExitCode.success.code;
           } else {
-            _logger.err('Service Implementation $name already exists.');
+            _logger.err(
+              'Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service already exists.',
+            );
 
             return ExitCode.config.code;
           }

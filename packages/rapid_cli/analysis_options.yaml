@@ -21,6 +21,7 @@ include: package:lints/recommended.yaml
 
 analyzer:
   exclude:
+    - fixtures/entity/**
     - fixtures/project_none/**
     - fixtures/project_android/**
     - fixtures/project_ios/**

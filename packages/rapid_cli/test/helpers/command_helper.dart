@@ -63,6 +63,8 @@ void Function() withRunner(
   });
 }
 
+// TODO refactor
+
 /// Runs [fn] in a test environment with a project.
 ///
 /// This is used to implement negative/positive testing of commands
@@ -84,6 +86,7 @@ void Function() withRunnerOnProject(
     when(() => melosFile.exists()).thenReturn(true);
     when(() => melosFile.name()).thenReturn('test_app');
     final project = _MockProject();
+    when(() => project.exists()).thenReturn(true);
     // TODO
     //when(() => project.melosFile).thenReturn(melosFile);
     //when(() => project.isActivated(any())).thenReturn(true);

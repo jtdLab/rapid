@@ -2,9 +2,9 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/domain/remove/value_object/value_object.dart';
-import 'package:rapid_cli/src/project/domain_package.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -13,7 +13,7 @@ import '../../../../../helpers/helpers.dart';
 const expectedUsage = [
   'Remove a value object from the domain part of an existing Rapid project.\n'
       '\n'
-      'Usage: rapid domain remove value_object [arguments]\n'
+      'Usage: rapid domain remove value_object <name> [arguments]\n'
       '-h, --help    Print this usage information.\n'
       '\n'
       '\n'
@@ -29,34 +29,22 @@ class _MockProgress extends Mock implements Progress {}
 
 class _MockProject extends Mock implements Project {}
 
-class _MockMelosFile extends Mock implements MelosFile {}
-
 class _MockDomainPackage extends Mock implements DomainPackage {}
 
 class _MockValueObject extends Mock implements ValueObject {}
 
-class _MockFileSystemEntity extends Mock implements FileSystemEntity {}
-
 class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
-  group('domain remove value_object', () {
+  group('domain add value_object', () {
     Directory cwd = Directory.current;
 
     late Logger logger;
     late List<String> progressLogs;
 
     late Project project;
-
-    late MelosFile melosFile;
-    const projectName = 'test_app';
     late DomainPackage domainPackage;
     late ValueObject valueObject;
-    late List<FileSystemEntity> deletedEntities;
-    late FileSystemEntity deletedValueObject1;
-    const String deletedValueObject1Path = 'foo/bar/bam';
-    late FileSystemEntity deletedValueObject2;
-    const String deletedValueObject2Path = 'foo/bar/baz';
 
     late ArgResults argResults;
     late String? dir;
@@ -77,27 +65,21 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      melosFile = _MockMelosFile();
-      when(() => melosFile.exists()).thenReturn(true);
-      when(() => melosFile.name()).thenReturn(projectName);
       domainPackage = _MockDomainPackage();
       valueObject = _MockValueObject();
-      deletedValueObject1 = _MockFileSystemEntity();
-      when(() => deletedValueObject1.path).thenReturn(deletedValueObject1Path);
-      deletedValueObject2 = _MockFileSystemEntity();
-      when(() => deletedValueObject2.path).thenReturn(deletedValueObject2Path);
-      deletedEntities = [deletedValueObject1, deletedValueObject2];
-      when(() => valueObject.delete()).thenReturn(deletedEntities);
       when(() => valueObject.exists()).thenReturn(true);
-      when(() => domainPackage.valueObject(
+      when(
+        () => domainPackage.valueObject(
           name: any(named: 'name'),
-          dir: any(named: 'dir'))).thenReturn(valueObject);
-      when(() => project.melosFile).thenReturn(melosFile);
+          dir: any(named: 'dir'),
+        ),
+      ).thenReturn(valueObject);
+      when(() => project.exists()).thenReturn(true);
       when(() => project.domainPackage).thenReturn(domainPackage);
 
       argResults = _MockArgResults();
       dir = null;
-      name = 'FooBar';
+      name = 'FooBarDto';
       when(() => argResults['dir']).thenReturn(dir);
       when(() => argResults.rest).thenReturn([name]);
 
@@ -109,6 +91,14 @@ void main() {
 
     tearDown(() {
       Directory.current = cwd;
+    });
+
+    test('vo is a valid alias', () {
+      // Arrange
+      final command = DomainRemoveValueObjectCommand(project: project);
+
+      // Act + Assert
+      expect(command.aliases, contains('vo'));
     });
 
     test(
@@ -162,16 +152,20 @@ void main() {
     );
 
     test(
-      'throws UsageException when name is not a valid dart class name',
+      'throws UsageException when multiple names are provided',
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
         // Arrange
-        name = '****::_';
-        final expectedErrorMessage = '"$name" is not a valid dart class name.';
+        const expectedErrorMessage = 'Multiple names specified.';
 
         // Act
-        final result =
-            await commandRunner.run(['domain', 'remove', 'value_object', name]);
+        final result = await commandRunner.run([
+          'domain',
+          'remove',
+          'value_object',
+          'name1',
+          'name2',
+        ]);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
@@ -184,15 +178,11 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => domainPackage.valueObject(name: name, dir: '.'));
+      verify(() => domainPackage.valueObject(name: name, dir: '.')).called(1);
       verify(() => valueObject.exists()).called(1);
       verify(() => valueObject.delete()).called(1);
-      verify(() => logger.info(deletedValueObject1Path)).called(1);
-      verify(() => logger.info(deletedValueObject2Path)).called(1);
-      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
+      verify(() => logger.success('Removed Value Object ${name.pascalCase}.'))
           .called(1);
-      verify(() => logger.info('')).called(2);
-      verify(() => logger.success('Removed Value Object $name.')).called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -206,21 +196,30 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => domainPackage.valueObject(name: name, dir: dir!));
+      verify(() => domainPackage.valueObject(name: name, dir: dir!)).called(1);
       verify(() => valueObject.exists()).called(1);
       verify(() => valueObject.delete()).called(1);
-      verify(() => logger.info(deletedValueObject1Path)).called(1);
-      verify(() => logger.info(deletedValueObject2Path)).called(1);
-      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
+      verify(() => logger.success('Removed Value Object ${name.pascalCase}.'))
           .called(1);
-      verify(() => logger.info('')).called(2);
-      verify(() => logger.success('Removed Value Object $name.')).called(1);
       expect(result, ExitCode.success.code);
     });
 
-    test('exits with 66 when melos.yaml does not exist', () async {
+    test('exits with 78 when value object does not exist', () async {
       // Arrange
-      when(() => melosFile.exists()).thenReturn(false);
+      when(() => valueObject.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err('Value Object ${name.pascalCase} not found.'))
+          .called(1);
+      expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 66 when project does not exist', () async {
+      // Arrange
+      when(() => project.exists()).thenReturn(false);
 
       // Act
       final result = await command.run();
@@ -230,20 +229,6 @@ void main() {
  Could not find a melos.yaml.
  This command should be run from the root of your Rapid project.''')).called(1);
       expect(result, ExitCode.noInput.code);
-    });
-
-    test('exits with 78 when the referenced value object does not exist',
-        () async {
-      // Arrange
-      when(() => valueObject.exists()).thenReturn(false);
-
-      // Act
-      final result = await command.run();
-
-      // Assert
-      verifyNever(() => valueObject.delete());
-      verify(() => logger.err('Value Object $name not found.')).called(1);
-      expect(result, ExitCode.config.code);
     });
   });
 }

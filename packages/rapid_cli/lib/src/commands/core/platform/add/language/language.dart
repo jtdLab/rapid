@@ -82,7 +82,7 @@ abstract class PlatformAddLanguageCommand extends Command<int>
             return ExitCode.config.code;
           }
 
-          if (platformDirectory.allFeaturesHaveSameLanguage()) {
+          if (platformDirectory.allFeaturesHaveSameLanguages()) {
             if (platformDirectory.allFeaturesHaveSameDefaultLanguage()) {
               if (!customFeatures.first.supportsLanguage(language)) {
                 for (final customFeature in customFeatures) {

@@ -5,6 +5,7 @@ import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:recase/recase.dart';
 
 /// {@template domain_remove_service_interface_command}
 /// `rapid domain remove service_interface` command removes service interface from the domain part of an existing Rapid project.
@@ -34,7 +35,8 @@ class DomainRemoveServiceInterfaceCommand extends Command<int>
   List<String> get aliases => ['service', 'si'];
 
   @override
-  String get invocation => 'rapid domain remove service_interface [arguments]';
+  String get invocation =>
+      'rapid domain remove service_interface <name> [arguments]';
 
   @override
   String get description =>
@@ -56,9 +58,13 @@ class DomainRemoveServiceInterfaceCommand extends Command<int>
           if (serviceInterface.exists()) {
             serviceInterface.delete();
 
+            // TODO only name sucks
+            _logger.success('Removed Service Interface ${name.pascalCase}.');
+
             return ExitCode.success.code;
           } else {
-            _logger.err('Service Interface $name not found.');
+            // TODO only name sucks
+            _logger.err('Service Interface ${name.pascalCase} not found.');
 
             return ExitCode.config.code;
           }

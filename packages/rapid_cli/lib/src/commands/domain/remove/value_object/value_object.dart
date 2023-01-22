@@ -5,6 +5,7 @@ import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:recase/recase.dart';
 
 /// {@template domain_remove_value_object_command}
 /// `rapid domain remove value_object` command removes value object from the domain part of an existing Rapid project.
@@ -34,7 +35,8 @@ class DomainRemoveValueObjectCommand extends Command<int>
   List<String> get aliases => ['vo'];
 
   @override
-  String get invocation => 'rapid domain remove value_object [arguments]';
+  String get invocation =>
+      'rapid domain remove value_object <name> [arguments]';
 
   @override
   String get description =>
@@ -55,6 +57,8 @@ class DomainRemoveValueObjectCommand extends Command<int>
           );
           if (valueObject.exists()) {
             valueObject.delete();
+
+            _logger.success('Removed Value Object ${name.pascalCase}.');
 
             return ExitCode.success.code;
           } else {

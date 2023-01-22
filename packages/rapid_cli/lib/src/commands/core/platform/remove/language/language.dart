@@ -77,7 +77,7 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
             return ExitCode.config.code;
           }
 
-          if (platformDirectory.allFeaturesHaveSameLanguage()) {
+          if (platformDirectory.allFeaturesHaveSameLanguages()) {
             if (platformDirectory.allFeaturesHaveSameDefaultLanguage()) {
               if (customFeatures.first.supportsLanguage(language)) {
                 if (customFeatures.first.defaultLanguage() != language) {

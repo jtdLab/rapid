@@ -1,8 +1,10 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/project/infrastructure_package/data_transfer_object_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:recase/recase.dart';
 import 'package:universal_io/io.dart';
 
 import 'infrastructure_package_bundle.dart';
@@ -77,6 +79,7 @@ class DataTransferObject {
     required this.entityName,
     required this.dir,
     required this.infrastructurePackage,
+    FlutterFormatFixCommand? flutterFormatFix, // TODO needed ?
     GeneratorBuilder? generator,
   })  : _dataTransferObjectDirectory = Directory(
           p.join(
@@ -84,7 +87,7 @@ class DataTransferObject {
             'lib',
             'src',
             dir,
-            entityName,
+            entityName.snakeCase,
           ),
         ),
         _dataTransferObjectTestDirectory = Directory(
@@ -93,13 +96,15 @@ class DataTransferObject {
             'test',
             'src',
             dir,
-            entityName,
+            entityName.snakeCase,
           ),
         ),
+        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle;
 
   final Directory _dataTransferObjectDirectory;
   final Directory _dataTransferObjectTestDirectory;
+  final FlutterFormatFixCommand _flutterFormatFix;
   final GeneratorBuilder _generator;
 
   final String entityName;
@@ -120,11 +125,13 @@ class DataTransferObject {
       DirectoryGeneratorTarget(Directory(infrastructurePackage.path)),
       vars: <String, dynamic>{
         'project_name': projectName,
-        'name': entityName,
+        'entity_name': entityName,
         'output_dir': dir,
       },
       logger: logger,
     );
+
+    await _flutterFormatFix(cwd: infrastructurePackage.path, logger: logger);
   }
 
   // TODO logger ?
@@ -144,6 +151,7 @@ class ServiceImplementation {
     required this.serviceName,
     required this.dir,
     required this.infrastructurePackage,
+    FlutterFormatFixCommand? flutterFormatFix,
     GeneratorBuilder? generator,
   })  : _serviceImplementationDirectory = Directory(
           p.join(
@@ -151,7 +159,7 @@ class ServiceImplementation {
             'lib',
             'src',
             dir,
-            serviceName,
+            serviceName.snakeCase,
           ),
         ),
         _serviceImplementationTestDirectory = Directory(
@@ -160,13 +168,15 @@ class ServiceImplementation {
             'test',
             'src',
             dir,
-            serviceName,
+            serviceName.snakeCase,
           ),
         ),
+        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle;
 
   final Directory _serviceImplementationDirectory;
   final Directory _serviceImplementationTestDirectory;
+  final FlutterFormatFixCommand _flutterFormatFix;
   final GeneratorBuilder _generator;
 
   final String name;
@@ -194,6 +204,8 @@ class ServiceImplementation {
       },
       logger: logger,
     );
+
+    await _flutterFormatFix(cwd: infrastructurePackage.path, logger: logger);
   }
 
   // TODO logger ?

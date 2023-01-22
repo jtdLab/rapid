@@ -6,6 +6,7 @@ import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:recase/recase.dart';
 
 /// {@template infrastructure_remove_service_implementation_command}
 /// `rapid infrastructure remove service_implementation` command removes service implementation from the infrastructure part of an existing Rapid project.
@@ -41,7 +42,7 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
 
   @override
   String get invocation =>
-      'rapid infrastructure remove service_implementation [arguments]';
+      'rapid infrastructure remove service_implementation <name> [arguments]';
 
   @override
   String get description =>
@@ -64,11 +65,17 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
             dir: dir,
           );
           if (serviceImplementation.exists()) {
-            await serviceImplementation.create(logger: _logger);
+            serviceImplementation.delete();
+
+            _logger.success(
+              'Removed Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service.',
+            );
 
             return ExitCode.success.code;
           } else {
-            _logger.err('Service Implementation $name not found.');
+            _logger.err(
+              'Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service not found.',
+            );
 
             return ExitCode.config.code;
           }

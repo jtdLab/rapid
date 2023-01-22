@@ -4,14 +4,11 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart' hide packageVersion;
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/version.dart';
 import 'package:test/test.dart';
 
 class _MockLogger extends Mock implements Logger {}
-
-class _MockMelosFile extends Mock implements MelosFile {}
 
 class _MockProject extends Mock implements Project {}
 
@@ -47,7 +44,6 @@ void main() {
   group('RapidCommandRunner', () {
     late List<String> printLogs;
     late Logger logger;
-    late MelosFile melosFile;
     late Project project;
 
     late RapidCommandRunner commandRunner;
@@ -68,10 +64,8 @@ void main() {
     setUp(() {
       printLogs = [];
       logger = _MockLogger();
-      melosFile = _MockMelosFile();
-      when(() => melosFile.name()).thenReturn(projectName);
       project = _MockProject();
-      when(() => project.melosFile).thenReturn(melosFile);
+      when(() => project.name()).thenReturn(projectName);
 
       commandRunner = RapidCommandRunner(
         logger: logger,
@@ -164,41 +158,50 @@ void main() {
       });
 
       group('--version', () {
-        test('outputs current version', () async {
-          // Act
-          final result = await commandRunner.run(['--version']);
+        test(
+          'outputs current version',
+          overridePrint(() async {
+            // Act
+            final result = await commandRunner.run(['--version']);
 
-          // Assert
-          expect(result, equals(ExitCode.success.code));
-          verify(() => logger.info(packageVersion)).called(1);
-        });
+            // Assert
+            expect(result, equals(ExitCode.success.code));
+            verify(() => logger.info(packageVersion)).called(1);
+          }),
+        );
       });
 
       group('--verbose', () {
-        test('enables verbose logging', () async {
-          final result = await commandRunner.run(['--verbose']);
-          expect(result, equals(ExitCode.success.code));
+        test(
+          'enables verbose logging',
+          overridePrint(() async {
+            final result = await commandRunner.run(['--verbose']);
+            expect(result, equals(ExitCode.success.code));
 
-          verify(() => logger.detail('Argument information:')).called(1);
-          verify(() => logger.detail('  Top level options:')).called(1);
-          verify(() => logger.detail('  - verbose: true')).called(1);
-          verifyNever(() => logger.detail('    Command options:'));
-        });
+            verify(() => logger.detail('Argument information:')).called(1);
+            verify(() => logger.detail('  Top level options:')).called(1);
+            verify(() => logger.detail('  - verbose: true')).called(1);
+            verifyNever(() => logger.detail('    Command options:'));
+          }),
+        );
 
-        test('enables verbose logging for sub commands', () async {
-          final result = await commandRunner.run([
-            '--verbose',
-            'create',
-            '--help',
-          ]);
-          expect(result, equals(ExitCode.success.code));
+        test(
+          'enables verbose logging for sub commands',
+          overridePrint(() async {
+            final result = await commandRunner.run([
+              '--verbose',
+              'create',
+              '--help',
+            ]);
+            expect(result, equals(ExitCode.success.code));
 
-          verify(() => logger.detail('Argument information:')).called(1);
-          verify(() => logger.detail('  Top level options:')).called(1);
-          verify(() => logger.detail('  - verbose: true')).called(1);
-          verify(() => logger.detail('  Command: create')).called(1);
-          verify(() => logger.detail('    - help: true')).called(1);
-        });
+            verify(() => logger.detail('Argument information:')).called(1);
+            verify(() => logger.detail('  Top level options:')).called(1);
+            verify(() => logger.detail('  - verbose: true')).called(1);
+            verify(() => logger.detail('  Command: create')).called(1);
+            verify(() => logger.detail('    - help: true')).called(1);
+          }),
+        );
       });
     });
   });

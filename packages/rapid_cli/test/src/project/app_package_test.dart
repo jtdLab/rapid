@@ -42,7 +42,7 @@ void main() => runOnPlatform(
 Future<void> runAndroidApp() async {
   configureDependencies(Environment.${env.shortName}, Platform.android);
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: add more android ${env.name} setup here
+  // TODO: add more android ${env.entityName} setup here
 
   final logger = getIt<AbCdLogger>();
   final app = android.App(
@@ -73,7 +73,7 @@ Future<void> runWebApp() async {
   configureDependencies(Environment.${env.shortName}, Platform.web);
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: add more web ${env.name} setup here
+  // TODO: add more web ${env.entityName} setup here
 
   final logger = getIt<AbCdLogger>();
   final app = web.App(
@@ -106,7 +106,7 @@ Future<void> runWebApp() async {
   configureDependencies(Environment.${env.shortName}, Platform.web);
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: add more web ${env.name} setup here
+  // TODO: add more web ${env.entityName} setup here
 
   final logger = getIt<AbCdLogger>();
   final app = web.App(
@@ -120,7 +120,7 @@ Future<void> runWebApp() async {
 Future<void> runAndroidApp() async {
   configureDependencies(Environment.${env.shortName}, Platform.android);
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: add more android ${env.name} setup here
+  // TODO: add more android ${env.entityName} setup here
 
   final logger = getIt<AbCdLogger>();
   final app = android.App(
@@ -309,7 +309,7 @@ void main() {
         // Assert
         expect(
           mainFile.path,
-          '$appPackagePath/lib/main_${environment.name}.dart',
+          '$appPackagePath/lib/main_${environment.entityName}.dart',
         );
       });
     });

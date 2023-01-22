@@ -2,9 +2,9 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/infrastructure/remove/data_transfer_object/data_transfer_object.dart';
-import 'package:rapid_cli/src/project/infrastructure_package.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -13,7 +13,7 @@ import '../../../../../helpers/helpers.dart';
 const expectedUsage = [
   'Remove a data transfer object from the infrastructure part of an existing Rapid project.\n'
       '\n'
-      'Usage: rapid infrastructure remove data_transfer_object [arguments]\n'
+      'Usage: rapid infrastructure remove data_transfer_object <name> [arguments]\n'
       '-h, --help    Print this usage information.\n'
       '\n'
       '\n'
@@ -29,35 +29,23 @@ class _MockProgress extends Mock implements Progress {}
 
 class _MockProject extends Mock implements Project {}
 
-class _MockMelosFile extends Mock implements MelosFile {}
-
 class _MockInfrastructurePackage extends Mock implements InfrastructurePackage {
 }
 
 class _MockDataTransferObject extends Mock implements DataTransferObject {}
 
-class _MockFileSystemEntity extends Mock implements FileSystemEntity {}
-
 class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
-  group('infrastructure remove data_transfer_object', () {
+  group('infrastructure add data_transfer_object', () {
     Directory cwd = Directory.current;
 
     late Logger logger;
     late List<String> progressLogs;
 
     late Project project;
-
-    late MelosFile melosFile;
-    const projectName = 'test_app';
     late InfrastructurePackage infrastructurePackage;
     late DataTransferObject dataTransferObject;
-    late List<FileSystemEntity> deletedEntities;
-    late FileSystemEntity deletedDataTransferObject1;
-    const String deletedDataTransferObject1Path = 'foo/bar/bam';
-    late FileSystemEntity deletedDataTransferObject2;
-    const String deletedDataTransferObject2Path = 'foo/bar/baz';
 
     late ArgResults argResults;
     late String? dir;
@@ -78,27 +66,16 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      melosFile = _MockMelosFile();
-      when(() => melosFile.exists()).thenReturn(true);
-      when(() => melosFile.name()).thenReturn(projectName);
       infrastructurePackage = _MockInfrastructurePackage();
       dataTransferObject = _MockDataTransferObject();
-      deletedDataTransferObject1 = _MockFileSystemEntity();
-      when(() => deletedDataTransferObject1.path)
-          .thenReturn(deletedDataTransferObject1Path);
-      deletedDataTransferObject2 = _MockFileSystemEntity();
-      when(() => deletedDataTransferObject2.path)
-          .thenReturn(deletedDataTransferObject2Path);
-      deletedEntities = [
-        deletedDataTransferObject1,
-        deletedDataTransferObject2
-      ];
-      when(() => dataTransferObject.delete()).thenReturn(deletedEntities);
       when(() => dataTransferObject.exists()).thenReturn(true);
-      when(() => infrastructurePackage.dataTransferObject(
-          name: any(named: 'name'),
-          dir: any(named: 'dir'))).thenReturn(dataTransferObject);
-      when(() => project.melosFile).thenReturn(melosFile);
+      when(
+        () => infrastructurePackage.dataTransferObject(
+          entityName: any(named: 'name'),
+          dir: any(named: 'dir'),
+        ),
+      ).thenReturn(dataTransferObject);
+      when(() => project.exists()).thenReturn(true);
       when(() => project.infrastructurePackage)
           .thenReturn(infrastructurePackage);
 
@@ -178,16 +155,20 @@ void main() {
     );
 
     test(
-      'throws UsageException when name is not a valid dart class name',
+      'throws UsageException when multiple names are provided',
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
         // Arrange
-        name = '****::_';
-        final expectedErrorMessage = '"$name" is not a valid dart class name.';
+        const expectedErrorMessage = 'Multiple names specified.';
 
         // Act
-        final result = await commandRunner
-            .run(['infrastructure', 'remove', 'data_transfer_object', name]);
+        final result = await commandRunner.run([
+          'infrastructure',
+          'remove',
+          'data_transfer_object',
+          'name1',
+          'name2',
+        ]);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
@@ -200,17 +181,12 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(
-          () => infrastructurePackage.dataTransferObject(name: name, dir: '.'));
+      verify(() => infrastructurePackage.dataTransferObject(
+          entityName: name, dir: '.')).called(1);
       verify(() => dataTransferObject.exists()).called(1);
       verify(() => dataTransferObject.delete()).called(1);
-      verify(() => logger.info(deletedDataTransferObject1Path)).called(1);
-      verify(() => logger.info(deletedDataTransferObject2Path)).called(1);
-      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
-          .called(1);
-      verify(() => logger.info('')).called(2);
-      verify(() => logger.success('Removed Data Transfer Object $name.'))
-          .called(1);
+      verify(() => logger.success(
+          'Removed Data Transfer Object ${name.pascalCase}.')).called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -224,23 +200,32 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() =>
-          infrastructurePackage.dataTransferObject(name: name, dir: dir!));
+      verify(() => infrastructurePackage.dataTransferObject(
+          entityName: name, dir: dir!)).called(1);
       verify(() => dataTransferObject.exists()).called(1);
       verify(() => dataTransferObject.delete()).called(1);
-      verify(() => logger.info(deletedDataTransferObject1Path)).called(1);
-      verify(() => logger.info(deletedDataTransferObject2Path)).called(1);
-      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
-          .called(1);
-      verify(() => logger.info('')).called(2);
-      verify(() => logger.success('Removed Data Transfer Object $name.'))
-          .called(1);
+      verify(() => logger.success(
+          'Removed Data Transfer Object ${name.pascalCase}.')).called(1);
       expect(result, ExitCode.success.code);
     });
 
-    test('exits with 66 when melos.yaml does not exist', () async {
+    test('exits with 78 when data transfer object does not exist', () async {
       // Arrange
-      when(() => melosFile.exists()).thenReturn(false);
+      when(() => dataTransferObject.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() =>
+              logger.err('Data Transfer Object ${name.pascalCase} not found.'))
+          .called(1);
+      expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 66 when project does not exist', () async {
+      // Arrange
+      when(() => project.exists()).thenReturn(false);
 
       // Act
       final result = await command.run();
@@ -250,22 +235,6 @@ void main() {
  Could not find a melos.yaml.
  This command should be run from the root of your Rapid project.''')).called(1);
       expect(result, ExitCode.noInput.code);
-    });
-
-    test(
-        'exits with 78 when the referenced data transfer object does not exist',
-        () async {
-      // Arrange
-      when(() => dataTransferObject.exists()).thenReturn(false);
-
-      // Act
-      final result = await command.run();
-
-      // Assert
-      verifyNever(() => dataTransferObject.delete());
-      verify(() => logger.err('Data Transfer Object $name not found.'))
-          .called(1);
-      expect(result, ExitCode.config.code);
     });
   });
 }

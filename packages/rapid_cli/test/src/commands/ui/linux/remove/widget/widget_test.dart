@@ -108,7 +108,8 @@ void main() {
       when(() => platformUiPackage.path).thenReturn(platformUiPackagePath);
       when(() => platformUiPackage.exists()).thenReturn(true);
       when(() => platformUiPackage.widget(
-          name: any(named: 'name'), dir: any(named: 'dir'))).thenReturn(widget);
+          entityName: any(named: 'name'),
+          dir: any(named: 'dir'))).thenReturn(widget);
       when(() => project.melosFile).thenReturn(melosFile);
       when(() => project.isActivated(Platform.linux)).thenReturn(true);
       when(() => project.platformUiPackage(Platform.linux))
@@ -220,7 +221,7 @@ void main() {
 
       // Assert
       verify(() => project.platformUiPackage(Platform.linux));
-      verify(() => platformUiPackage.widget(name: name, dir: '.'));
+      verify(() => platformUiPackage.widget(entityName: name, dir: '.'));
       verify(() => widget.exists()).called(1);
       verify(() => widget.delete()).called(1);
       verify(() => logger.info(deletedEntity1Path)).called(1);
@@ -243,7 +244,7 @@ void main() {
 
       // Assert
       verify(() => project.platformUiPackage(Platform.linux));
-      verify(() => platformUiPackage.widget(name: name, dir: dir!));
+      verify(() => platformUiPackage.widget(entityName: name, dir: dir!));
       verify(() => widget.exists()).called(1);
       verify(() => widget.delete()).called(1);
       verify(() => logger.info(deletedEntity1Path)).called(1);

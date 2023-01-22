@@ -1,6 +1,7 @@
 import 'package:io/io.dart' show copyPath;
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/platform.dart';
+import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -43,6 +44,17 @@ Future<void> setupProjectWithPlatform(Platform platform) async {
   );
 
   await _runFlutterPubGetInAllDirsWithPubspec();
+}
+
+Future<void> addEntity({required String name, String? outputDir}) async {
+  await copyPath(
+    Directory(p.join(cwd.path, 'fixtures', 'entity', 'lib')).path,
+    p.join(domainPackage.path, 'lib', outputDir ?? ''),
+  );
+  await copyPath(
+    Directory(p.join(cwd.path, 'fixtures', 'entity', 'test')).path,
+    p.join(domainPackage.path, 'test', outputDir ?? ''),
+  );
 }
 
 /// Runs `flutter pub get` recursivly in all dirs with pubspec.yaml
@@ -135,6 +147,73 @@ List<Directory> platformDirs(Platform platform) => [
 List<Directory> get allPlatformDirs => Platform.values
     .map((e) => platformDirs(e))
     .fold(<Directory>[], (prev, curr) => prev + curr).toList();
+
+List<File> entityFiles({
+  required String name,
+  String? outputDir,
+}) =>
+    [
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+          '${name.snakeCase}.dart')),
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+          '${name.snakeCase}.freezed.dart')),
+      File(p.join(domainPackage.path, 'test', outputDir ?? '', name.snakeCase,
+          '${name.snakeCase}_test.dart')),
+    ];
+
+List<File> serviceInterfaceFiles({
+  required String name,
+  String? outputDir,
+}) =>
+    [
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+          'i_${name.snakeCase}_service.dart')),
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+          'i_${name.snakeCase}_service.freezed.dart')),
+    ];
+
+List<File> dataTransferObjectFiles({
+  required String entity,
+  String? outputDir,
+}) =>
+    [
+      File(p.join(infrastructurePackage.path, 'lib', 'src', outputDir ?? '',
+          entity.snakeCase, '${entity.snakeCase}_dto.dart')),
+      File(p.join(infrastructurePackage.path, 'lib', 'src', outputDir ?? '',
+          entity.snakeCase, '${entity.snakeCase}_dto.freezed.dart')),
+      File(p.join(infrastructurePackage.path, 'lib', 'src', outputDir ?? '',
+          entity.snakeCase, '${entity.snakeCase}_dto.g.dart')),
+      File(p.join(infrastructurePackage.path, 'test', 'src', outputDir ?? '',
+          entity.snakeCase, '${entity.snakeCase}_dto_test.dart')),
+    ];
+
+List<File> serviceImplementationFiles({
+  required String name,
+  required String serviceName,
+  String? outputDir,
+}) =>
+    [
+      File(
+        p.join(
+          infrastructurePackage.path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          serviceName.snakeCase,
+          '${name.snakeCase}_${serviceName.snakeCase}_service.dart',
+        ),
+      ),
+      File(
+        p.join(
+          infrastructurePackage.path,
+          'test',
+          'src',
+          outputDir ?? '',
+          serviceName.snakeCase,
+          '${name.snakeCase}_${serviceName.snakeCase}_service_test.dart',
+        ),
+      ),
+    ];
 
 // TODO cleaner
 

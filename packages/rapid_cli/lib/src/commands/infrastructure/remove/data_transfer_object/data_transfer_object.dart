@@ -5,6 +5,7 @@ import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:recase/recase.dart';
 
 // TODO maybe introduce super class for dto and service implementation remove
 
@@ -37,7 +38,7 @@ class InfrastructureRemoveDataTransferObjectCommand extends Command<int>
 
   @override
   String get invocation =>
-      'rapid infrastructure remove data_transfer_object [arguments]';
+      'rapid infrastructure remove data_transfer_object <name> [arguments]';
 
   @override
   String get description =>
@@ -48,21 +49,26 @@ class InfrastructureRemoveDataTransferObjectCommand extends Command<int>
         [isProjectRoot(_project)],
         _logger,
         () async {
-          // TODO rename the cli arg to entity-name
-          final entityName = super.className;
+          final name = super.className;
           final dir = super.dir;
 
           final infrastructurePackage = _project.infrastructurePackage;
           final dataTransferObject = infrastructurePackage.dataTransferObject(
-            entityName: entityName,
+            entityName: name,
             dir: dir,
           );
           if (dataTransferObject.exists()) {
-            await dataTransferObject.create(logger: _logger);
+            dataTransferObject.delete();
+
+            _logger.success(
+              'Removed Data Transfer Object ${name.pascalCase}.',
+            );
 
             return ExitCode.success.code;
           } else {
-            _logger.err('Data Transfer Object $entityName not found.');
+            _logger.err(
+              'Data Transfer Object ${name.pascalCase} not found.',
+            );
 
             return ExitCode.config.code;
           }

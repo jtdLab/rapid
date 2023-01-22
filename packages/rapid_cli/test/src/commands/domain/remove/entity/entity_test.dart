@@ -2,9 +2,9 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/domain/remove/entity/entity.dart';
-import 'package:rapid_cli/src/project/domain_package.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -13,7 +13,7 @@ import '../../../../../helpers/helpers.dart';
 const expectedUsage = [
   'Remove an entity from the domain part of an existing Rapid project.\n'
       '\n'
-      'Usage: rapid domain remove entity [arguments]\n'
+      'Usage: rapid domain remove entity <name> [arguments]\n'
       '-h, --help    Print this usage information.\n'
       '\n'
       '\n'
@@ -29,34 +29,22 @@ class _MockProgress extends Mock implements Progress {}
 
 class _MockProject extends Mock implements Project {}
 
-class _MockMelosFile extends Mock implements MelosFile {}
-
 class _MockDomainPackage extends Mock implements DomainPackage {}
 
 class _MockEntity extends Mock implements Entity {}
 
-class _MockFileSystemEntity extends Mock implements FileSystemEntity {}
-
 class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
-  group('domain remove entity', () {
+  group('domain add entity', () {
     Directory cwd = Directory.current;
 
     late Logger logger;
     late List<String> progressLogs;
 
     late Project project;
-
-    late MelosFile melosFile;
-    const projectName = 'test_app';
     late DomainPackage domainPackage;
     late Entity entity;
-    late List<FileSystemEntity> deletedEntities;
-    late FileSystemEntity deletedEntity1;
-    const String deletedEntity1Path = 'foo/bar/bam';
-    late FileSystemEntity deletedEntity2;
-    const String deletedEntity2Path = 'foo/bar/baz';
 
     late ArgResults argResults;
     late String? dir;
@@ -77,21 +65,16 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      melosFile = _MockMelosFile();
-      when(() => melosFile.exists()).thenReturn(true);
-      when(() => melosFile.name()).thenReturn(projectName);
       domainPackage = _MockDomainPackage();
       entity = _MockEntity();
-      deletedEntity1 = _MockFileSystemEntity();
-      when(() => deletedEntity1.path).thenReturn(deletedEntity1Path);
-      deletedEntity2 = _MockFileSystemEntity();
-      when(() => deletedEntity2.path).thenReturn(deletedEntity2Path);
-      deletedEntities = [deletedEntity1, deletedEntity2];
-      when(() => entity.delete()).thenReturn(deletedEntities);
       when(() => entity.exists()).thenReturn(true);
-      when(() => domainPackage.entity(
-          name: any(named: 'name'), dir: any(named: 'dir'))).thenReturn(entity);
-      when(() => project.melosFile).thenReturn(melosFile);
+      when(
+        () => domainPackage.entity(
+          name: any(named: 'name'),
+          dir: any(named: 'dir'),
+        ),
+      ).thenReturn(entity);
+      when(() => project.exists()).thenReturn(true);
       when(() => project.domainPackage).thenReturn(domainPackage);
 
       argResults = _MockArgResults();
@@ -160,16 +143,20 @@ void main() {
     );
 
     test(
-      'throws UsageException when name is not a valid dart class name',
+      'throws UsageException when multiple names are provided',
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
         // Arrange
-        name = '****::_';
-        final expectedErrorMessage = '"$name" is not a valid dart class name.';
+        const expectedErrorMessage = 'Multiple names specified.';
 
         // Act
-        final result =
-            await commandRunner.run(['domain', 'remove', 'entity', name]);
+        final result = await commandRunner.run([
+          'domain',
+          'remove',
+          'entity',
+          'name1',
+          'name2',
+        ]);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
@@ -182,15 +169,11 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => domainPackage.entity(name: name, dir: '.'));
+      verify(() => domainPackage.entity(name: name, dir: '.')).called(1);
       verify(() => entity.exists()).called(1);
       verify(() => entity.delete()).called(1);
-      verify(() => logger.info(deletedEntity1Path)).called(1);
-      verify(() => logger.info(deletedEntity2Path)).called(1);
-      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
+      verify(() => logger.success('Removed Entity ${name.pascalCase}.'))
           .called(1);
-      verify(() => logger.info('')).called(2);
-      verify(() => logger.success('Removed Entity $name.')).called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -204,21 +187,30 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => domainPackage.entity(name: name, dir: dir!));
+      verify(() => domainPackage.entity(name: name, dir: dir!)).called(1);
       verify(() => entity.exists()).called(1);
       verify(() => entity.delete()).called(1);
-      verify(() => logger.info(deletedEntity1Path)).called(1);
-      verify(() => logger.info(deletedEntity2Path)).called(1);
-      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
+      verify(() => logger.success('Removed Entity ${name.pascalCase}.'))
           .called(1);
-      verify(() => logger.info('')).called(2);
-      verify(() => logger.success('Removed Entity $name.')).called(1);
       expect(result, ExitCode.success.code);
     });
 
-    test('exits with 66 when melos.yaml does not exist', () async {
+    test('exits with 78 when entity does not exist', () async {
       // Arrange
-      when(() => melosFile.exists()).thenReturn(false);
+      when(() => entity.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err('Entity ${name.pascalCase} not found.'))
+          .called(1);
+      expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 66 when project does not exist', () async {
+      // Arrange
+      when(() => project.exists()).thenReturn(false);
 
       // Act
       final result = await command.run();
@@ -228,19 +220,6 @@ void main() {
  Could not find a melos.yaml.
  This command should be run from the root of your Rapid project.''')).called(1);
       expect(result, ExitCode.noInput.code);
-    });
-
-    test('exits with 78 when the referenced entity does not exist', () async {
-      // Arrange
-      when(() => entity.exists()).thenReturn(false);
-
-      // Act
-      final result = await command.run();
-
-      // Assert
-      verifyNever(() => entity.delete());
-      verify(() => logger.err('Entity $name not found.')).called(1);
-      expect(result, ExitCode.config.code);
     });
   });
 }

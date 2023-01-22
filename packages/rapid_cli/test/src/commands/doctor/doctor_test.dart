@@ -1,11 +1,9 @@
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/doctor/doctor.dart';
-import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/feature.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
-import 'package:rapid_cli/src/project/platform_directory.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -21,19 +19,25 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
+// TODO fix
+
+abstract class _FakePlatformDirectoryBuilder {
+  PlatformDirectory call({required Platform platform});
+}
+
 class _MockLogger extends Mock implements Logger {}
 
 class _MockProgress extends Mock implements Progress {}
 
 class _MockProject extends Mock implements Project {}
 
-class _MockMelosFile extends Mock implements MelosFile {}
+class _MockPlatformDirectoryBuilder extends Mock
+    implements _FakePlatformDirectoryBuilder {}
 
 class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
-class _MockFeature extends Mock implements Feature {}
-
-class _MockPubspecFile extends Mock implements PubspecFile {}
+class _MockPlatformCustomFeaturePackage extends Mock
+    implements PlatformCustomFeaturePackage {}
 
 void main() {
   group('doctor', () {
@@ -43,34 +47,30 @@ void main() {
     late List<String> progressLogs;
 
     late Project project;
-    late MelosFile melosFile;
-    const projectName = 'my_project';
+    late PlatformDirectoryBuilder platformDirectoryBuilder;
     late PlatformDirectory platformDirectoryAndroid;
-    late List<Feature> featuresAndroid;
+    late List<PlatformCustomFeaturePackage> featuresAndroid;
     late PlatformDirectory platformDirectoryMacos;
-    late List<Feature> featuresMacos;
-    late Feature feature1Macos;
+    late List<PlatformCustomFeaturePackage> featuresMacos;
+    late PlatformCustomFeaturePackage feature1Macos;
     const feature1MacosPath = 'bar/bam/baz';
     late String feature1MacosDefaultLanguage;
     late Set<String> feature1MacosSupportedLanguages;
     const feature1MacosName = 'my_macos_feature_one';
-    late PubspecFile feature1MacosPubspecFile;
     const feature1MacosPackageName = 'feat_macos_one';
-    late Feature feature2Macos;
+    late PlatformCustomFeaturePackage feature2Macos;
     const feature2MacosPath = 'foo/bar/baz';
     late String feature2MacosDefaultLanguage;
     late Set<String> feature2MacosSupportedLanguages;
     const feature2MacosName = 'my_macos_feature_two';
-    late PubspecFile feature2MacosPubspecFile;
     const feature2MacosPackageName = 'feat_macos_two';
     late PlatformDirectory platformDirectoryWeb;
-    late List<Feature> featuresWeb;
-    late Feature feature1Web;
+    late List<PlatformCustomFeaturePackage> featuresWeb;
+    late PlatformCustomFeaturePackage feature1Web;
     const feature1WebPath = 'foo/bom/baz';
     const feature1WebDefaultLanguage = 'fr';
     const feature1WebSupportedLanguages = {'fr'};
     const feature1WebName = 'my_web_feature_one';
-    late PubspecFile feature1WebPubspecFile;
     const feature1WebPackageName = 'feat_web_one';
 
     late DoctorCommand command;
@@ -88,38 +88,30 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      melosFile = _MockMelosFile();
-      when(() => melosFile.exists()).thenReturn(true);
-      when(() => melosFile.name()).thenReturn(projectName);
+      platformDirectoryBuilder = _MockPlatformDirectoryBuilder();
       platformDirectoryAndroid = _MockPlatformDirectory();
       when(() => platformDirectoryAndroid.platform)
           .thenReturn(Platform.android);
       featuresAndroid = [];
-      when(() => platformDirectoryAndroid.getFeatures(
-          exclude: any(named: 'exclude'))).thenReturn(featuresAndroid);
+      when(() => platformDirectoryAndroid.customFeaturePackages())
+          .thenReturn(featuresAndroid);
       platformDirectoryMacos = _MockPlatformDirectory();
-      feature1Macos = _MockFeature();
+      feature1Macos = _MockPlatformCustomFeaturePackage();
       feature1MacosDefaultLanguage = 'de';
       feature1MacosSupportedLanguages = {'de'};
-      feature1MacosPubspecFile = _MockPubspecFile();
-      when(() => feature1MacosPubspecFile.name())
+      when(() => feature1Macos.packageName())
           .thenReturn(feature1MacosPackageName);
-      when(() => feature1Macos.pubspecFile)
-          .thenReturn(feature1MacosPubspecFile);
       when(() => feature1Macos.path).thenReturn(feature1MacosPath);
       when(() => feature1Macos.name).thenReturn(feature1MacosName);
       when(() => feature1Macos.defaultLanguage())
           .thenReturn(feature1MacosDefaultLanguage);
       when(() => feature1Macos.supportedLanguages())
           .thenReturn(feature1MacosSupportedLanguages);
-      feature2Macos = _MockFeature();
+      feature2Macos = _MockPlatformCustomFeaturePackage();
       feature2MacosDefaultLanguage = 'de';
       feature2MacosSupportedLanguages = {'de'};
-      feature2MacosPubspecFile = _MockPubspecFile();
-      when(() => feature2MacosPubspecFile.name())
+      when(() => feature2Macos.packageName())
           .thenReturn(feature2MacosPackageName);
-      when(() => feature2Macos.pubspecFile)
-          .thenReturn(feature2MacosPubspecFile);
       when(() => feature2Macos.path).thenReturn(feature2MacosPath);
       when(() => feature2Macos.name).thenReturn(feature2MacosName);
       when(() => feature2Macos.defaultLanguage())
@@ -128,14 +120,15 @@ void main() {
           .thenReturn(feature2MacosSupportedLanguages);
       featuresMacos = [feature1Macos, feature2Macos];
       when(() => platformDirectoryMacos.platform).thenReturn(Platform.macos);
-      when(() => platformDirectoryMacos.getFeatures(
-          exclude: any(named: 'exclude'))).thenReturn(featuresMacos);
+      when(() => platformDirectoryMacos.customFeaturePackages())
+          .thenReturn(featuresMacos);
+      when(() => platformDirectoryMacos.allFeaturesHaveSameLanguages())
+          .thenReturn(true);
+      when(() => platformDirectoryMacos.allFeaturesHaveSameDefaultLanguage())
+          .thenReturn(true);
       platformDirectoryWeb = _MockPlatformDirectory();
-      feature1Web = _MockFeature();
-      feature1WebPubspecFile = _MockPubspecFile();
-      when(() => feature1WebPubspecFile.name())
-          .thenReturn(feature1WebPackageName);
-      when(() => feature1Web.pubspecFile).thenReturn(feature1WebPubspecFile);
+      feature1Web = _MockPlatformCustomFeaturePackage();
+      when(() => feature1Web.packageName()).thenReturn(feature1WebPackageName);
       when(() => feature1Web.path).thenReturn(feature1WebPath);
       when(() => feature1Web.name).thenReturn(feature1WebName);
       when(() => feature1Web.defaultLanguage())
@@ -144,28 +137,35 @@ void main() {
           .thenReturn(feature1WebSupportedLanguages);
       featuresWeb = [feature1Web];
       when(() => platformDirectoryWeb.platform).thenReturn(Platform.web);
-      when(() =>
-              platformDirectoryWeb.getFeatures(exclude: any(named: 'exclude')))
+      when(() => platformDirectoryWeb.customFeaturePackages())
           .thenReturn(featuresWeb);
-      when(() => project.melosFile).thenReturn(melosFile);
-      when(() => project.isActivated(Platform.android)).thenReturn(true);
-      when(() => project.isActivated(Platform.ios)).thenReturn(false);
-      when(() => project.isActivated(Platform.linux)).thenReturn(false);
-      when(() => project.isActivated(Platform.macos)).thenReturn(true);
-      when(() => project.isActivated(Platform.web)).thenReturn(true);
-      when(() => project.isActivated(Platform.windows)).thenReturn(false);
-      when(() => project.platformDirectory(Platform.android))
+      when(() => platformDirectoryWeb.allFeaturesHaveSameLanguages())
+          .thenReturn(true);
+      when(() => platformDirectoryWeb.allFeaturesHaveSameDefaultLanguage())
+          .thenReturn(true);
+      when(() => project.exists()).thenReturn(true);
+      when(() => project.platformIsActivated(Platform.android))
+          .thenReturn(true);
+      when(() => project.platformIsActivated(Platform.ios)).thenReturn(false);
+      when(() => project.platformIsActivated(Platform.linux)).thenReturn(false);
+      when(() => project.platformIsActivated(Platform.macos)).thenReturn(true);
+      when(() => project.platformIsActivated(Platform.web)).thenReturn(true);
+      when(() => project.platformIsActivated(Platform.windows))
+          .thenReturn(false);
+      when(() => platformDirectoryBuilder(platform: Platform.android))
           .thenReturn(platformDirectoryAndroid);
-      when(() => project.platformDirectory(Platform.ios))
+      when(() => platformDirectoryBuilder(platform: Platform.ios))
           .thenReturn(_MockPlatformDirectory());
-      when(() => project.platformDirectory(Platform.linux))
+      when(() => platformDirectoryBuilder(platform: Platform.linux))
           .thenReturn(_MockPlatformDirectory());
-      when(() => project.platformDirectory(Platform.macos))
+      when(() => platformDirectoryBuilder(platform: Platform.macos))
           .thenReturn(platformDirectoryMacos);
-      when(() => project.platformDirectory(Platform.web))
+      when(() => platformDirectoryBuilder(platform: Platform.web))
           .thenReturn(platformDirectoryWeb);
-      when(() => project.platformDirectory(Platform.windows))
+      when(() => platformDirectoryBuilder(platform: Platform.windows))
           .thenReturn(_MockPlatformDirectory());
+      when(() => project.platformDirectory)
+          .thenReturn(platformDirectoryBuilder);
 
       command = DoctorCommand(
         logger: logger,
@@ -211,24 +211,20 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => project.isActivated(Platform.android)).called(1);
-      verify(() => project.isActivated(Platform.ios)).called(1);
-      verify(() => project.isActivated(Platform.linux)).called(1);
-      verify(() => project.isActivated(Platform.macos)).called(1);
-      verify(() => project.isActivated(Platform.web)).called(1);
-      verify(() => project.isActivated(Platform.windows)).called(1);
-      verify(() => project.platformDirectory(Platform.android)).called(1);
-      verify(() => project.platformDirectory(Platform.macos)).called(1);
-      verify(() => project.platformDirectory(Platform.web)).called(1);
-      verify(() =>
-              platformDirectoryAndroid.getFeatures(exclude: {'app', 'routing'}))
+      verify(() => project.platformIsActivated(Platform.android)).called(1);
+      verify(() => project.platformIsActivated(Platform.ios)).called(1);
+      verify(() => project.platformIsActivated(Platform.linux)).called(1);
+      verify(() => project.platformIsActivated(Platform.macos)).called(1);
+      verify(() => project.platformIsActivated(Platform.web)).called(1);
+      verify(() => project.platformIsActivated(Platform.windows)).called(1);
+      verify(() => project.platformDirectory(platform: Platform.android))
           .called(1);
-      verify(() =>
-              platformDirectoryMacos.getFeatures(exclude: {'app', 'routing'}))
+      verify(() => project.platformDirectory(platform: Platform.macos))
           .called(1);
-      verify(() =>
-              platformDirectoryWeb.getFeatures(exclude: {'app', 'routing'}))
-          .called(1);
+      verify(() => project.platformDirectory(platform: Platform.web)).called(1);
+      verify(() => platformDirectoryAndroid.customFeaturePackages()).called(1);
+      verify(() => platformDirectoryMacos.customFeaturePackages()).called(1);
+      verify(() => platformDirectoryWeb.customFeaturePackages()).called(1);
       verify(() => logger.info('[✓] macOS (2 feature(s))')).called(1);
       verify(
         () => logger.info('''
@@ -267,29 +263,29 @@ void main() {
       feature2MacosSupportedLanguages = {'de', 'en'};
       when(() => feature2Macos.supportedLanguages())
           .thenReturn(feature2MacosSupportedLanguages);
+      when(() => platformDirectoryMacos.allFeaturesHaveSameLanguages())
+          .thenReturn(false);
+      when(() => platformDirectoryMacos.allFeaturesHaveSameDefaultLanguage())
+          .thenReturn(false);
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => project.isActivated(Platform.android)).called(1);
-      verify(() => project.isActivated(Platform.ios)).called(1);
-      verify(() => project.isActivated(Platform.linux)).called(1);
-      verify(() => project.isActivated(Platform.macos)).called(1);
-      verify(() => project.isActivated(Platform.web)).called(1);
-      verify(() => project.isActivated(Platform.windows)).called(1);
-      verify(() => project.platformDirectory(Platform.android)).called(1);
-      verify(() => project.platformDirectory(Platform.macos)).called(1);
-      verify(() => project.platformDirectory(Platform.web)).called(1);
-      verify(() =>
-              platformDirectoryAndroid.getFeatures(exclude: {'app', 'routing'}))
+      verify(() => project.platformIsActivated(Platform.android)).called(1);
+      verify(() => project.platformIsActivated(Platform.ios)).called(1);
+      verify(() => project.platformIsActivated(Platform.linux)).called(1);
+      verify(() => project.platformIsActivated(Platform.macos)).called(1);
+      verify(() => project.platformIsActivated(Platform.web)).called(1);
+      verify(() => project.platformIsActivated(Platform.windows)).called(1);
+      verify(() => project.platformDirectory(platform: Platform.android))
           .called(1);
-      verify(() =>
-              platformDirectoryMacos.getFeatures(exclude: {'app', 'routing'}))
+      verify(() => project.platformDirectory(platform: Platform.macos))
           .called(1);
-      verify(() =>
-              platformDirectoryWeb.getFeatures(exclude: {'app', 'routing'}))
-          .called(1);
+      verify(() => project.platformDirectory(platform: Platform.web)).called(1);
+      verify(() => platformDirectoryAndroid.customFeaturePackages()).called(1);
+      verify(() => platformDirectoryMacos.customFeaturePackages()).called(1);
+      verify(() => platformDirectoryWeb.customFeaturePackages()).called(1);
       verify(() => logger.info('[!] macOS (2 feature(s))')).called(1);
       verify(
         () => logger.info('''
@@ -327,14 +323,11 @@ void main() {
         'completes successfully with correct output when no platform has features',
         () async {
       // Arrange
-      when(() => platformDirectoryAndroid.getFeatures(
-          exclude: any(named: 'exclude'))).thenReturn([]);
-
-      when(() => platformDirectoryMacos.getFeatures(
-          exclude: any(named: 'exclude'))).thenReturn([]);
-      when(() =>
-              platformDirectoryWeb.getFeatures(exclude: any(named: 'exclude')))
+      when(() => platformDirectoryAndroid.customFeaturePackages())
           .thenReturn([]);
+
+      when(() => platformDirectoryMacos.customFeaturePackages()).thenReturn([]);
+      when(() => platformDirectoryWeb.customFeaturePackages()).thenReturn([]);
 
       // Act
       final result = await command.run();
@@ -345,9 +338,9 @@ void main() {
       expect(result, ExitCode.success.code);
     });
 
-    test('exits with 66 when melos.yaml does not exist', () async {
+    test('exits with 66 project does not exist', () async {
       // Arrange
-      when(() => melosFile.exists()).thenReturn(false);
+      when(() => project.exists()).thenReturn(false);
 
       // Act
       final result = await command.run();

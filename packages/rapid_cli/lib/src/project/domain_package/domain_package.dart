@@ -1,8 +1,10 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/project/domain_package/service_interface_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:recase/recase.dart';
 import 'package:universal_io/io.dart';
 
 import 'domain_package_bundle.dart';
@@ -60,6 +62,8 @@ class DomainPackage extends ProjectPackage {
       ValueObject(name: name, dir: dir, domainPackage: this);
 }
 
+// TODO normalize other paths 2 or overkill
+
 /// {@template entity}
 /// Abstraction of an entity of a domain package of a Rapid project.
 /// {@endtemplate}
@@ -69,29 +73,34 @@ class Entity {
     required this.name,
     required this.dir,
     required this.domainPackage,
+    FlutterFormatFixCommand? flutterFormatFix,
     GeneratorBuilder? generator,
   })  : _entityDirectory = Directory(
-          p.join(
-            domainPackage.path,
-            'lib',
-            'src',
-            dir,
-            name,
+          p.normalize(
+            p.join(
+              domainPackage.path,
+              'lib',
+              dir,
+              name.snakeCase,
+            ),
           ),
         ),
         _entityTestDirectory = Directory(
-          p.join(
-            domainPackage.path,
-            'test',
-            'src',
-            dir,
-            name,
+          p.normalize(
+            p.join(
+              domainPackage.path,
+              'test',
+              dir,
+              name.snakeCase,
+            ),
           ),
         ),
+        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle;
 
   final Directory _entityDirectory;
   final Directory _entityTestDirectory;
+  final FlutterFormatFixCommand _flutterFormatFix;
   final GeneratorBuilder _generator;
 
   final String name;
@@ -116,6 +125,8 @@ class Entity {
       },
       logger: logger,
     );
+
+    await _flutterFormatFix(cwd: domainPackage.path, logger: logger);
   }
 
   // TODO logger ?
@@ -134,19 +145,21 @@ class ServiceInterface {
     required this.name,
     required this.dir,
     required this.domainPackage,
+    FlutterFormatFixCommand? flutterFormatFix,
     GeneratorBuilder? generator,
   })  : _serviceInterfaceDirectory = Directory(
           p.join(
             domainPackage.path,
             'lib',
-            'src',
             dir,
-            name,
+            name.snakeCase,
           ),
         ),
+        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle;
 
   final Directory _serviceInterfaceDirectory;
+  final FlutterFormatFixCommand _flutterFormatFix;
   final GeneratorBuilder _generator;
 
   final String name;
@@ -170,6 +183,8 @@ class ServiceInterface {
       },
       logger: logger,
     );
+
+    await _flutterFormatFix(cwd: domainPackage.path, logger: logger);
   }
 
   // TODO logger ?
@@ -187,29 +202,30 @@ class ValueObject {
     required this.name,
     required this.dir,
     required this.domainPackage,
+    FlutterFormatFixCommand? flutterFormatFix,
     GeneratorBuilder? generator,
   })  : _valueObjectDirectory = Directory(
           p.join(
             domainPackage.path,
             'lib',
-            'src',
             dir,
-            name,
+            name.snakeCase,
           ),
         ),
         _valueObjectTestDirectory = Directory(
           p.join(
             domainPackage.path,
             'test',
-            'src',
             dir,
-            name,
+            name.snakeCase,
           ),
         ),
+        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle;
 
   final Directory _valueObjectDirectory;
   final Directory _valueObjectTestDirectory;
+  final FlutterFormatFixCommand _flutterFormatFix;
   final GeneratorBuilder _generator;
 
   final String name;
@@ -237,6 +253,8 @@ class ValueObject {
       },
       logger: logger,
     );
+
+    await _flutterFormatFix(cwd: domainPackage.path, logger: logger);
   }
 
   // TODO logger ?

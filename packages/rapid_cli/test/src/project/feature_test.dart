@@ -49,7 +49,7 @@ void main() {
       when(() => platformDirectory.path).thenReturn(platformDirPath);
       when(() => platformDirectory.project).thenReturn(project);
       feature = Feature(
-        name: featureName,
+        entityName: featureName,
         platformDirectory: platformDirectory,
       );
       Directory(feature.path).createSync(recursive: true);
@@ -215,7 +215,7 @@ void main() {
     group('name', () {
       test('is correct', () {
         // Assert
-        expect(feature.name, featureName);
+        expect(feature.entityName, featureName);
       });
     });
 
@@ -263,7 +263,7 @@ void main() {
       Directory.current = Directory.systemTemp.createTempSync();
 
       feature = _MockFeature();
-      when(() => feature.name).thenReturn(featureName);
+      when(() => feature.entityName).thenReturn(featureName);
       when(() => feature.path).thenReturn(featurePath);
       arbFile = ArbFile(language: language, feature: feature);
       File(arbFile.path).createSync(recursive: true);

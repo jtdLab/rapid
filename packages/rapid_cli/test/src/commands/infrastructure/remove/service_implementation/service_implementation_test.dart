@@ -2,9 +2,9 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/infrastructure/remove/service_implementation/service_implementation.dart';
-import 'package:rapid_cli/src/project/infrastructure_package.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -13,7 +13,7 @@ import '../../../../../helpers/helpers.dart';
 const expectedUsage = [
   'Remove a service implementation from the infrastructure part of an existing Rapid project.\n'
       '\n'
-      'Usage: rapid infrastructure remove service_implementation [arguments]\n'
+      'Usage: rapid infrastructure remove service_implementation <name> [arguments]\n'
       '-h, --help       Print this usage information.\n'
       '\n'
       '\n'
@@ -30,36 +30,24 @@ class _MockProgress extends Mock implements Progress {}
 
 class _MockProject extends Mock implements Project {}
 
-class _MockMelosFile extends Mock implements MelosFile {}
-
 class _MockInfrastructurePackage extends Mock implements InfrastructurePackage {
 }
 
 class _MockServiceImplementation extends Mock implements ServiceImplementation {
 }
 
-class _MockFileSystemEntity extends Mock implements FileSystemEntity {}
-
 class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
-  group('infrastructure remove service_implementation', () {
+  group('infrastructure add service_implementation', () {
     Directory cwd = Directory.current;
 
     late Logger logger;
     late List<String> progressLogs;
 
     late Project project;
-
-    late MelosFile melosFile;
-    const projectName = 'test_app';
     late InfrastructurePackage infrastructurePackage;
     late ServiceImplementation serviceImplementation;
-    late List<FileSystemEntity> deletedEntities;
-    late FileSystemEntity deletedServiceImplementation1;
-    const String deletedServiceImplementation1Path = 'foo/bar/bam';
-    late FileSystemEntity deletedServiceImplementation2;
-    const String deletedServiceImplementation2Path = 'foo/bar/baz';
 
     late ArgResults argResults;
     late String? dir;
@@ -81,28 +69,17 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      melosFile = _MockMelosFile();
-      when(() => melosFile.exists()).thenReturn(true);
-      when(() => melosFile.name()).thenReturn(projectName);
       infrastructurePackage = _MockInfrastructurePackage();
       serviceImplementation = _MockServiceImplementation();
-      deletedServiceImplementation1 = _MockFileSystemEntity();
-      when(() => deletedServiceImplementation1.path)
-          .thenReturn(deletedServiceImplementation1Path);
-      deletedServiceImplementation2 = _MockFileSystemEntity();
-      when(() => deletedServiceImplementation2.path)
-          .thenReturn(deletedServiceImplementation2Path);
-      deletedEntities = [
-        deletedServiceImplementation1,
-        deletedServiceImplementation2
-      ];
-      when(() => serviceImplementation.delete()).thenReturn(deletedEntities);
       when(() => serviceImplementation.exists()).thenReturn(true);
-      when(() => infrastructurePackage.serviceImplementation(
+      when(
+        () => infrastructurePackage.serviceImplementation(
           name: any(named: 'name'),
-          service: any(named: 'service'),
-          dir: any(named: 'dir'))).thenReturn(serviceImplementation);
-      when(() => project.melosFile).thenReturn(melosFile);
+          serviceName: any(named: 'serviceName'),
+          dir: any(named: 'dir'),
+        ),
+      ).thenReturn(serviceImplementation);
+      when(() => project.exists()).thenReturn(true);
       when(() => project.infrastructurePackage)
           .thenReturn(infrastructurePackage);
 
@@ -110,8 +87,8 @@ void main() {
       dir = null;
       name = 'Fake';
       service = 'FooBar';
-      when(() => argResults['dir']).thenReturn(dir);
       when(() => argResults['service']).thenReturn(service);
+      when(() => argResults['dir']).thenReturn(dir);
       when(() => argResults.rest).thenReturn([name]);
 
       command = InfrastructureRemoveServiceImplementationCommand(
@@ -194,16 +171,20 @@ void main() {
     );
 
     test(
-      'throws UsageException when name is not a valid dart class name',
+      'throws UsageException when multiple names are provided',
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
         // Arrange
-        name = '****::_';
-        final expectedErrorMessage = '"$name" is not a valid dart class name.';
+        const expectedErrorMessage = 'Multiple names specified.';
 
         // Act
-        final result = await commandRunner
-            .run(['infrastructure', 'remove', 'service_implementation', name]);
+        final result = await commandRunner.run([
+          'infrastructure',
+          'remove',
+          'service_implementation',
+          'name1',
+          'name2',
+        ]);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
@@ -259,16 +240,14 @@ void main() {
 
       // Assert
       verify(() => infrastructurePackage.serviceImplementation(
-          name: name, service: service, dir: '.'));
+          name: name, serviceName: service, dir: '.')).called(1);
       verify(() => serviceImplementation.exists()).called(1);
       verify(() => serviceImplementation.delete()).called(1);
-      verify(() => logger.info(deletedServiceImplementation1Path)).called(1);
-      verify(() => logger.info(deletedServiceImplementation2Path)).called(1);
-      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
-          .called(1);
-      verify(() => logger.info('')).called(2);
-      verify(() => logger.success('Removed Service Implementation $name.'))
-          .called(1);
+      verify(
+        () => logger.success(
+          'Removed Service Implementation ${name.pascalCase}${service.pascalCase}Service.',
+        ),
+      ).called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -283,22 +262,34 @@ void main() {
 
       // Assert
       verify(() => infrastructurePackage.serviceImplementation(
-          name: name, service: service, dir: dir!));
+          name: name, serviceName: service, dir: dir!)).called(1);
       verify(() => serviceImplementation.exists()).called(1);
       verify(() => serviceImplementation.delete()).called(1);
-      verify(() => logger.info(deletedServiceImplementation1Path)).called(1);
-      verify(() => logger.info(deletedServiceImplementation2Path)).called(1);
-      verify(() => logger.info('Deleted ${deletedEntities.length} item(s)'))
-          .called(1);
-      verify(() => logger.info('')).called(2);
-      verify(() => logger.success('Removed Service Implementation $name.'))
-          .called(1);
+      verify(
+        () => logger.success(
+          'Removed Service Implementation ${name.pascalCase}${service.pascalCase}Service.',
+        ),
+      ).called(1);
       expect(result, ExitCode.success.code);
     });
 
-    test('exits with 66 when melos.yaml does not exist', () async {
+    test('exits with 78 when service implementation does not exist', () async {
       // Arrange
-      when(() => melosFile.exists()).thenReturn(false);
+      when(() => serviceImplementation.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err(
+              'Service Implementation ${name.pascalCase}${service.pascalCase}Service not found.'))
+          .called(1);
+      expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 66 when project does not exist', () async {
+      // Arrange
+      when(() => project.exists()).thenReturn(false);
 
       // Act
       final result = await command.run();
@@ -308,22 +299,6 @@ void main() {
  Could not find a melos.yaml.
  This command should be run from the root of your Rapid project.''')).called(1);
       expect(result, ExitCode.noInput.code);
-    });
-
-    test(
-        'exits with 78 when the referenced service implementation does not exist',
-        () async {
-      // Arrange
-      when(() => serviceImplementation.exists()).thenReturn(false);
-
-      // Act
-      final result = await command.run();
-
-      // Assert
-      verifyNever(() => serviceImplementation.delete());
-      verify(() => logger.err('Service Implementation $name not found.'))
-          .called(1);
-      expect(result, ExitCode.config.code);
     });
   });
 }

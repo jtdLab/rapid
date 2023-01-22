@@ -5,6 +5,7 @@ import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:recase/recase.dart';
 
 // TODO maybe introduce super class for entity, service interface and value object remove
 
@@ -33,7 +34,7 @@ class DomainRemoveEntityCommand extends Command<int>
   String get name => 'entity';
 
   @override
-  String get invocation => 'rapid domain remove entity [arguments]';
+  String get invocation => 'rapid domain remove entity <name> [arguments]';
 
   @override
   String get description =>
@@ -51,6 +52,8 @@ class DomainRemoveEntityCommand extends Command<int>
           final entity = domainPackage.entity(name: name, dir: dir);
           if (entity.exists()) {
             entity.delete();
+
+            _logger.success('Removed Entity ${name.pascalCase}.');
 
             return ExitCode.success.code;
           } else {

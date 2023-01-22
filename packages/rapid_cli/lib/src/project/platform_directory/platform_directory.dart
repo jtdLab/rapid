@@ -38,7 +38,7 @@ class PlatformDirectory extends ProjectDirectory {
 
   late final PlatformRoutingFeaturePackage routingFeaturePackage;
 
-  bool allFeaturesHaveSameLanguage() {
+  bool allFeaturesHaveSameLanguages() {
     // TODO include app and routing ?
     final featurePackages = customFeaturePackages();
 

@@ -2,9 +2,9 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/infrastructure/add/data_transfer_object/data_transfer_object.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
+import 'package:rapid_cli/src/project/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -30,41 +30,35 @@ class _MockProgress extends Mock implements Progress {}
 
 class _MockProject extends Mock implements Project {}
 
-class _MockMelosFile extends Mock implements MelosFile {}
+class _MockInfrastructurePackage extends Mock implements InfrastructurePackage {
+}
 
-class _MockMasonGenerator extends Mock implements MasonGenerator {}
+class _MockDomainPackage extends Mock implements DomainPackage {}
+
+class _MockDataTransferObject extends Mock implements DataTransferObject {}
+
+class _MockEntity extends Mock implements Entity {}
 
 class _MockArgResults extends Mock implements ArgResults {}
 
-class _FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
-
 void main() {
-  group('infrastructure add data_transfer_object', () {
+  group('infrastructure add service_interface', () {
     Directory cwd = Directory.current;
 
     late Logger logger;
     late List<String> progressLogs;
 
     late Project project;
-    late MelosFile melosFile;
-    const projectName = 'test_app';
-
-    late MasonGenerator generator;
-    final generatedFiles = List.filled(
-      23,
-      const GeneratedFile.created(path: ''),
-    );
+    late InfrastructurePackage infrastructurePackage;
+    late DataTransferObject dataTransferObject;
+    late DomainPackage domainPackage;
+    late Entity entity;
 
     late ArgResults argResults;
+    late String entityName;
     late String? outputDir;
-    late String entity;
 
     late InfrastructureAddDataTransferObjectCommand command;
-
-    setUpAll(() {
-      registerFallbackValue(_FakeDirectoryGeneratorTarget());
-    });
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
@@ -79,39 +73,47 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      melosFile = _MockMelosFile();
-      when(() => melosFile.exists()).thenReturn(true);
-      when(() => melosFile.name()).thenReturn(projectName);
-      when(() => project.melosFile).thenReturn(melosFile);
-
-      generator = _MockMasonGenerator();
-      when(() => generator.id).thenReturn('generator_id');
-      when(() => generator.description).thenReturn('generator description');
+      infrastructurePackage = _MockInfrastructurePackage();
+      dataTransferObject = _MockDataTransferObject();
+      when(() => dataTransferObject.exists()).thenReturn(false);
+      when(() => dataTransferObject.create(logger: logger))
+          .thenAnswer((_) async {});
       when(
-        () => generator.generate(
-          any(),
-          vars: any(named: 'vars'),
-          logger: any(named: 'logger'),
+        () => infrastructurePackage.dataTransferObject(
+          entityName: any(named: 'name'),
+          dir: any(named: 'dir'),
         ),
-      ).thenAnswer((_) async => generatedFiles);
+      ).thenReturn(dataTransferObject);
+      domainPackage = _MockDomainPackage();
+      entity = _MockEntity();
+      when(() => entity.exists()).thenReturn(true);
+      when(
+        () => domainPackage.entity(
+          name: any(named: 'name'),
+          dir: any(named: 'dir'),
+        ),
+      ).thenReturn(entity);
+      when(() => project.exists()).thenReturn(true);
+
+      when(() => project.infrastructurePackage)
+          .thenReturn(infrastructurePackage);
+      when(() => project.domainPackage).thenReturn(domainPackage);
 
       argResults = _MockArgResults();
+      entityName = 'FooBar';
       outputDir = null;
-      entity = 'FooBar';
+      when(() => argResults['entity']).thenReturn(entityName);
       when(() => argResults['output-dir']).thenReturn(outputDir);
-      when(() => argResults['entity']).thenReturn(entity);
 
       command = InfrastructureAddDataTransferObjectCommand(
         logger: logger,
         project: project,
-        generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
 
     tearDown(() {
       Directory.current = cwd;
     });
-
     test('dto is a valid alias', () {
       // Arrange
       final command =
@@ -176,9 +178,9 @@ void main() {
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
         // Arrange
-        entity = '****::_';
+        entityName = '****::_';
         final expectedErrorMessage =
-            '"$entity" is not a valid dart class name.';
+            '"$entityName" is not a valid dart class name.';
 
         // Act
         final result = await commandRunner.run([
@@ -186,7 +188,7 @@ void main() {
           'add',
           'data_transfer_object',
           '--entity',
-          entity
+          entityName
         ]);
 
         // Assert
@@ -200,30 +202,13 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.progress('Generating files')).called(1);
-      verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              '.',
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'entity_name': entity,
-            'output_dir': '.',
-          },
-          logger: logger,
-        ),
-      ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => logger.success(
-          'Added Data Transfer Object ${entity.pascalCase}Dto.')).called(1);
+      verify(() => infrastructurePackage.dataTransferObject(
+          entityName: entityName, dir: '.')).called(1);
+      verify(() => dataTransferObject.exists()).called(1);
+      verify(() => dataTransferObject.create(logger: logger)).called(1);
+      verify(() =>
+              logger.success('Added Data Transfer Object ${entityName}Dto.'))
+          .called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -237,36 +222,45 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.progress('Generating files')).called(1);
-      verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              '.',
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'entity_name': entity,
-            'output_dir': outputDir,
-          },
-          logger: logger,
-        ),
-      ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => logger.success(
-          'Added Data Transfer Object ${entity.pascalCase}Dto.')).called(1);
+      verify(() => infrastructurePackage.dataTransferObject(
+          entityName: entityName, dir: outputDir!)).called(1);
+      verify(() => dataTransferObject.exists()).called(1);
+      verify(() => dataTransferObject.create(logger: logger)).called(1);
+      verify(() =>
+              logger.success('Added Data Transfer Object ${entityName}Dto.'))
+          .called(1);
       expect(result, ExitCode.success.code);
     });
 
-    test('exits with 66 when melos.yaml does not exist', () async {
+    test('exits with 78 when entity does not exist', () async {
       // Arrange
-      when(() => melosFile.exists()).thenReturn(false);
+      when(() => entity.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err('Entity $entityName does not exists.')).called(1);
+      expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 78 when data transfer object does already exist',
+        () async {
+      // Arrange
+      when(() => dataTransferObject.exists()).thenReturn(true);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err(
+          'Data Transfer Object ${entityName}Dto already exists.')).called(1);
+      expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 66 when project does not exist', () async {
+      // Arrange
+      when(() => project.exists()).thenReturn(false);
 
       // Act
       final result = await command.run();

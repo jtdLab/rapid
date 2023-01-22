@@ -111,7 +111,7 @@ void main() {
       platformDirectory = _MockPlatformDirectory();
       feature1 = _MockFeature();
       when(() => feature1.path).thenReturn(feature1Path);
-      when(() => feature1.name).thenReturn(feature1Name);
+      when(() => feature1.entityName).thenReturn(feature1Name);
       when(() => feature1.defaultLanguage()).thenReturn(defaultLanguage);
       when(() => feature1.supportedLanguages())
           .thenReturn({defaultLanguage, 'de'});
@@ -120,7 +120,7 @@ void main() {
       when(() => feature1.supportsLanguage('fr')).thenReturn(false);
       feature2 = _MockFeature();
       when(() => feature2.path).thenReturn(feature2Path);
-      when(() => feature2.name).thenReturn(feature2Name);
+      when(() => feature2.entityName).thenReturn(feature2Name);
       when(() => feature2.defaultLanguage()).thenReturn(defaultLanguage);
       when(() => feature2.supportedLanguages())
           .thenReturn({'de', defaultLanguage});

@@ -2,8 +2,7 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/domain/add/value_object/value_object.dart';
-import 'package:rapid_cli/src/project/domain_package.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:recase/recase.dart';
 import 'package:test/test.dart';
@@ -30,16 +29,11 @@ class _MockProgress extends Mock implements Progress {}
 
 class _MockProject extends Mock implements Project {}
 
-class _MockMelosFile extends Mock implements MelosFile {}
-
 class _MockDomainPackage extends Mock implements DomainPackage {}
 
-class _MockMasonGenerator extends Mock implements MasonGenerator {}
+class _MockValueObject extends Mock implements ValueObject {}
 
 class _MockArgResults extends Mock implements ArgResults {}
-
-class _FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
 
 void main() {
   group('domain add value_object', () {
@@ -49,26 +43,14 @@ void main() {
     late List<String> progressLogs;
 
     late Project project;
-    late MelosFile melosFile;
-    const projectName = 'test_app';
     late DomainPackage domainPackage;
-    const domainPackagePath = 'foo/bar/baz';
-
-    late MasonGenerator generator;
-    final generatedFiles = List.filled(
-      23,
-      const GeneratedFile.created(path: ''),
-    );
+    late ValueObject valueObject;
 
     late ArgResults argResults;
     late String? outputDir;
     late String name;
 
     late DomainAddValueObjectCommand command;
-
-    setUpAll(() {
-      registerFallbackValue(_FakeDirectoryGeneratorTarget());
-    });
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
@@ -83,24 +65,18 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      melosFile = _MockMelosFile();
-      when(() => melosFile.exists()).thenReturn(true);
-      when(() => melosFile.name()).thenReturn(projectName);
       domainPackage = _MockDomainPackage();
-      when(() => domainPackage.path).thenReturn(domainPackagePath);
-      when(() => project.melosFile).thenReturn(melosFile);
-      when(() => project.domainPackage).thenReturn(domainPackage);
-
-      generator = _MockMasonGenerator();
-      when(() => generator.id).thenReturn('generator_id');
-      when(() => generator.description).thenReturn('generator description');
+      valueObject = _MockValueObject();
+      when(() => valueObject.exists()).thenReturn(false);
+      when(() => valueObject.create(logger: logger)).thenAnswer((_) async {});
       when(
-        () => generator.generate(
-          any(),
-          vars: any(named: 'vars'),
-          logger: any(named: 'logger'),
+        () => domainPackage.valueObject(
+          name: any(named: 'name'),
+          dir: any(named: 'dir'),
         ),
-      ).thenAnswer((_) async => generatedFiles);
+      ).thenReturn(valueObject);
+      when(() => project.exists()).thenReturn(true);
+      when(() => project.domainPackage).thenReturn(domainPackage);
 
       argResults = _MockArgResults();
       outputDir = null;
@@ -111,7 +87,6 @@ void main() {
       command = DomainAddValueObjectCommand(
         logger: logger,
         project: project,
-        generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
 
@@ -204,28 +179,9 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.progress('Generating files')).called(1);
-      verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              domainPackagePath,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'name': name,
-            'output_dir': '.',
-          },
-          logger: logger,
-        ),
-      ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
+      verify(() => domainPackage.valueObject(name: name, dir: '.')).called(1);
+      verify(() => valueObject.exists()).called(1);
+      verify(() => valueObject.create(logger: logger)).called(1);
       verify(() => logger.success('Added Value Object ${name.pascalCase}.'))
           .called(1);
       expect(result, ExitCode.success.code);
@@ -241,38 +197,30 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.progress('Generating files')).called(1);
-      verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              domainPackagePath,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'name': name,
-            'output_dir': outputDir,
-          },
-          logger: logger,
-        ),
-      ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
+      verify(() => domainPackage.valueObject(name: name, dir: outputDir!))
+          .called(1);
+      verify(() => valueObject.exists()).called(1);
+      verify(() => valueObject.create(logger: logger)).called(1);
       verify(() => logger.success('Added Value Object ${name.pascalCase}.'))
           .called(1);
       expect(result, ExitCode.success.code);
     });
 
-    // TODO cases with generics
-
-    test('exits with 66 when melos.yaml does not exist', () async {
+    test('exits with 78 when value object does already exist', () async {
       // Arrange
-      when(() => melosFile.exists()).thenReturn(false);
+      when(() => valueObject.exists()).thenReturn(true);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err('Value Object $name already exists.')).called(1);
+      expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 66 when project does not exist', () async {
+      // Arrange
+      when(() => project.exists()).thenReturn(false);
 
       // Act
       final result = await command.run();

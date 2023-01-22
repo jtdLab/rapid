@@ -5,7 +5,6 @@ import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 
 // TODO in test template without output dir a path gets a unneccessary dot
 
@@ -58,21 +57,33 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
           final entityName = _entity;
           final outputDir = super.outputDir;
 
-          final infrastructurePackage = _project.infrastructurePackage;
-          final dataTransferObject = infrastructurePackage.dataTransferObject(
-            entityName: entityName,
-            dir: outputDir,
-          );
-          if (!dataTransferObject.exists()) {
-            await dataTransferObject.create(logger: _logger);
-
-            _logger.success(
-              'Added Data Transfer Object ${entityName.pascalCase}Dto.',
+          final domainPackage = _project.domainPackage;
+          final entity = domainPackage.entity(name: entityName, dir: outputDir);
+          if (entity.exists()) {
+            final infrastructurePackage = _project.infrastructurePackage;
+            final dataTransferObject = infrastructurePackage.dataTransferObject(
+              entityName: entityName,
+              dir: outputDir,
             );
+            if (!dataTransferObject.exists()) {
+              await dataTransferObject.create(logger: _logger);
 
-            return ExitCode.success.code;
+              _logger.success(
+                'Added Data Transfer Object ${entityName}Dto.',
+              );
+
+              return ExitCode.success.code;
+            } else {
+              _logger.err(
+                'Data Transfer Object ${entityName}Dto already exists.',
+              );
+
+              return ExitCode.config.code;
+            }
           } else {
-            _logger.err('Data Transfer Object $name already exists.');
+            _logger.err(
+              'Entity $entityName does not exists.',
+            );
 
             return ExitCode.config.code;
           }

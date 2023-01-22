@@ -161,7 +161,7 @@ void main() {
         expect(features, hasLength(2));
         for (int i = 0; i < 2; i++) {
           final feature = features[i];
-          expect(feature.name, featureNames[i]);
+          expect(feature.entityName, featureNames[i]);
           expect(feature.platform, platform);
           expect(
             feature.path,
@@ -194,7 +194,7 @@ void main() {
         expect(features, hasLength(1));
 
         final feature = features.first;
-        expect(feature.name, featureNames.last);
+        expect(feature.entityName, featureNames.last);
         expect(feature.platform, platform);
         expect(
           feature.path,

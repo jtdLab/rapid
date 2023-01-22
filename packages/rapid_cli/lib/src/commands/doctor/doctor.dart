@@ -44,7 +44,7 @@ class DoctorCommand extends Command<int> {
 
             if (features.isNotEmpty) {
               final allFeaturesHaveSameLanguages =
-                  platformDirectory.allFeaturesHaveSameLanguage();
+                  platformDirectory.allFeaturesHaveSameLanguages();
               final allFeaturesHaveSameDefaultLanguage =
                   platformDirectory.allFeaturesHaveSameDefaultLanguage();
               final platformName = platformDirectory.platform.prettyName;
@@ -70,7 +70,7 @@ class DoctorCommand extends Command<int> {
                 data.add([
                   index,
                   feature.name,
-                  feature.pubspecFile.name(),
+                  feature.packageName(),
                   feature.supportedLanguages().enumerate(),
                   feature.defaultLanguage(),
                   feature.path

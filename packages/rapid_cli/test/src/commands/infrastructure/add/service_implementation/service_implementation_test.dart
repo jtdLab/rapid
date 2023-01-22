@@ -2,8 +2,9 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/infrastructure/add/service_implementation/service_implementation.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -12,7 +13,7 @@ import '../../../../../helpers/helpers.dart';
 const expectedUsage = [
   'Add a service implementation to the infrastructure part of an existing Rapid project.\n'
       '\n'
-      'Usage: rapid infrastructure add service_implementation [arguments]\n'
+      'Usage: rapid infrastructure add service_implementation <name> [arguments]\n'
       '-h, --help          Print this usage information.\n'
       '\n'
       '\n'
@@ -29,14 +30,13 @@ class _MockProgress extends Mock implements Progress {}
 
 class _MockProject extends Mock implements Project {}
 
-class _MockMelosFile extends Mock implements MelosFile {}
+class _MockInfrastructurePackage extends Mock implements InfrastructurePackage {
+}
 
-class _MockMasonGenerator extends Mock implements MasonGenerator {}
+class _MockServiceImplementation extends Mock implements ServiceImplementation {
+}
 
 class _MockArgResults extends Mock implements ArgResults {}
-
-class _FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
 
 void main() {
   group('infrastructure add service_implementation', () {
@@ -46,25 +46,15 @@ void main() {
     late List<String> progressLogs;
 
     late Project project;
-    late MelosFile melosFile;
-    const projectName = 'test_app';
-
-    late MasonGenerator generator;
-    final generatedFiles = List.filled(
-      23,
-      const GeneratedFile.created(path: ''),
-    );
+    late InfrastructurePackage infrastructurePackage;
+    late ServiceImplementation serviceImplementation;
 
     late ArgResults argResults;
-    late String? outputDir;
-    const name = 'FooBar';
+    late String name;
     late String service;
+    late String? outputDir;
 
     late InfrastructureAddServiceImplementationCommand command;
-
-    setUpAll(() {
-      registerFallbackValue(_FakeDirectoryGeneratorTarget());
-    });
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
@@ -79,34 +69,33 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      melosFile = _MockMelosFile();
-      when(() => melosFile.exists()).thenReturn(true);
-      when(() => melosFile.name()).thenReturn(projectName);
-      when(() => project.melosFile).thenReturn(melosFile);
-
-      generator = _MockMasonGenerator();
-      when(() => generator.id).thenReturn('generator_id');
-      when(() => generator.description).thenReturn('generator description');
+      infrastructurePackage = _MockInfrastructurePackage();
+      serviceImplementation = _MockServiceImplementation();
+      when(() => serviceImplementation.exists()).thenReturn(false);
+      when(() => serviceImplementation.create(logger: logger))
+          .thenAnswer((_) async {});
       when(
-        () => generator.generate(
-          any(),
-          vars: any(named: 'vars'),
-          logger: any(named: 'logger'),
+        () => infrastructurePackage.serviceImplementation(
+          name: any(named: 'name'),
+          serviceName: any(named: 'serviceName'),
+          dir: any(named: 'dir'),
         ),
-      ).thenAnswer((_) async => generatedFiles);
+      ).thenReturn(serviceImplementation);
+      when(() => project.exists()).thenReturn(true);
+      when(() => project.infrastructurePackage)
+          .thenReturn(infrastructurePackage);
 
       argResults = _MockArgResults();
-      outputDir = null;
+      name = 'Fake';
       service = 'FooBar';
-      when(() => argResults['output-dir']).thenReturn(outputDir);
+      outputDir = null;
       when(() => argResults['service']).thenReturn(service);
-
+      when(() => argResults['output-dir']).thenReturn(outputDir);
       when(() => argResults.rest).thenReturn([name]);
 
       command = InfrastructureAddServiceImplementationCommand(
         logger: logger,
         project: project,
-        generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
 
@@ -131,7 +120,6 @@ void main() {
       // Act + Assert
       expect(command.aliases, contains('si'));
     });
-
     test(
       'help',
       withRunner((commandRunner, logger, printLogs) async {
@@ -166,48 +154,6 @@ void main() {
     });
 
     test(
-      'throws UsageException when name is missing',
-      withRunnerOnProject(
-          (commandRunner, logger, melosFile, project, printLogs) async {
-        // Arrange
-        const expectedErrorMessage = 'No option specified for the name.';
-
-        // Act
-        final result = await commandRunner.run([
-          'infrastructure',
-          'add',
-          'service_implementation',
-        ]);
-
-        // Assert
-        expect(result, equals(ExitCode.usage.code));
-        verify(() => logger.err(expectedErrorMessage)).called(1);
-      }),
-    );
-
-    test(
-      'throws UsageException when multiple names are provided',
-      withRunnerOnProject(
-          (commandRunner, logger, melosFile, project, printLogs) async {
-        // Arrange
-        const expectedErrorMessage = 'Multiple names specified.';
-
-        // Act
-        final result = await commandRunner.run([
-          'infrastructure',
-          'add',
-          'service_implementation',
-          'name1',
-          'name2',
-        ]);
-
-        // Assert
-        expect(result, equals(ExitCode.usage.code));
-        verify(() => logger.err(expectedErrorMessage)).called(1);
-      }),
-    );
-
-    test(
       'throws UsageException when service is missing',
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
@@ -216,7 +162,7 @@ void main() {
 
         // Act
         final result = await commandRunner
-            .run(['infrastructure', 'add', 'service_implementation', 'FooBar']);
+            .run(['infrastructure', 'add', 'service_implementation', name]);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
@@ -238,7 +184,7 @@ void main() {
           'infrastructure',
           'add',
           'service_implementation',
-          'FooBar',
+          name,
           '--service',
           service
         ]);
@@ -254,30 +200,17 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.progress('Generating files')).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              '.',
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'name': name,
-            'service_name': service,
-            'output_dir': '.',
-          },
-          logger: logger,
+        () => infrastructurePackage.serviceImplementation(
+          name: name,
+          serviceName: service,
+          dir: '.',
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => logger.success('Added Service Implementation $name.'))
+      verify(() => serviceImplementation.exists()).called(1);
+      verify(() => serviceImplementation.create(logger: logger)).called(1);
+      verify(() => logger.success(
+              'Added Service Implementation ${name.pascalCase}${service.pascalCase}Service.'))
           .called(1);
       expect(result, ExitCode.success.code);
     });
@@ -292,37 +225,40 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.progress('Generating files')).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              '.',
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'name': name,
-            'service_name': service,
-            'output_dir': outputDir,
-          },
-          logger: logger,
+        () => infrastructurePackage.serviceImplementation(
+          name: name,
+          serviceName: service,
+          dir: outputDir!,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => logger.success('Added Service Implementation $name.'))
-          .called(1);
+      verify(() => serviceImplementation.exists()).called(1);
+      verify(() => serviceImplementation.create(logger: logger)).called(1);
+      verify(
+        () => logger.success(
+            'Added Service Implementation ${name.pascalCase}${service.pascalCase}Service.'),
+      ).called(1);
       expect(result, ExitCode.success.code);
     });
 
-    test('exits with 66 when melos.yaml does not exist', () async {
+    test('exits with 78 when service implementation does already exist',
+        () async {
       // Arrange
-      when(() => melosFile.exists()).thenReturn(false);
+      when(() => serviceImplementation.exists()).thenReturn(true);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err(
+              'Service Implementation ${name.pascalCase}${service.pascalCase}Service already exists.'))
+          .called(1);
+      expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 66 when project does not exist', () async {
+      // Arrange
+      when(() => project.exists()).thenReturn(false);
 
       // Act
       final result = await command.run();

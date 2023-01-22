@@ -58,11 +58,12 @@ class DomainAddServiceInterfaceCommand extends Command<int>
           if (!serviceInterface.exists()) {
             await serviceInterface.create(logger: _logger);
 
-            _logger.success('Added Service Interface ${name.pascalCase}.');
+            _logger.success('Added Service Interface I${name}Service.');
 
             return ExitCode.success.code;
           } else {
-            _logger.err('Service Interface $name already exists.');
+            // TODO only name is not enough
+            _logger.err('Service Interface I${name}Service already exists.');
 
             return ExitCode.config.code;
           }

@@ -1,6 +1,7 @@
 @Tags(['e2e'])
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -25,10 +26,35 @@ void main() {
       });
 
       test(
+        'deactivate web (fast)',
+        () async {
+          // Arrange
+          await setupProjectWithPlatform(Platform.web);
+
+          // Act
+          final commandResult = await commandRunner.run(
+            ['deactivate', 'web'],
+          );
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+
+          verifyDoExist({
+            ...platformIndependentPackages,
+          });
+          verifyDoNotExist(allPlatformDirs);
+        },
+        tags: ['fast'],
+      );
+
+      test(
         'deactivate web',
         () async {
           // Arrange
-          await setupProjectWithPlatform('web');
+          await setupProjectWithPlatform(Platform.web);
 
           // Act
           final commandResult = await commandRunner.run(

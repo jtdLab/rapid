@@ -44,27 +44,16 @@ void main() {
 
           verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDirs('macos'),
-            featurePackage('app', 'macos'),
-            featurePackage('home_page', 'macos'),
-            featurePackage('routing', 'macos'),
+            ...platformDirs(Platform.macos),
+            featurePackage('app', Platform.macos),
+            featurePackage('home_page', Platform.macos),
+            featurePackage('routing', Platform.macos),
           });
-          verifyDoNotExist(allPlatformDirs.without(platformDirs('macos')));
-
-          verifyDoNotHaveTests({
-            domainPackage,
-            infrastructurePackage,
-            featurePackage('routing', 'macos'),
-            // TODO home page should be tested and not excluded in future
-            featurePackage('home_page', 'macos'),
-          });
-          await verifyTestsPassWith100PercentCoverage({
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
-            featurePackage('app', 'macos'),
-            platformUiPackage('macos'),
-          });
+          verifyDoNotExist(
+            allPlatformDirs.without(platformDirs(Platform.macos)),
+          );
         },
+        tags: ['fast'],
       );
 
       test(
@@ -86,25 +75,26 @@ void main() {
 
           verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDirs('macos'),
-            featurePackage('app', 'macos'),
-            featurePackage('home_page', 'macos'),
-            featurePackage('routing', 'macos'),
+            ...platformDirs(Platform.macos),
+            featurePackage('app', Platform.macos),
+            featurePackage('home_page', Platform.macos),
+            featurePackage('routing', Platform.macos),
           });
-          verifyDoNotExist(allPlatformDirs.without(platformDirs('macos')));
+          verifyDoNotExist(
+              allPlatformDirs.without(platformDirs(Platform.macos)));
 
           verifyDoNotHaveTests({
             domainPackage,
             infrastructurePackage,
-            featurePackage('routing', 'macos'),
+            featurePackage('routing', Platform.macos),
             // TODO home page should be tested and not excluded in future
-            featurePackage('home_page', 'macos'),
+            featurePackage('home_page', Platform.macos),
           });
           await verifyTestsPassWith100PercentCoverage({
             ...platformIndependentPackages
                 .without({domainPackage, infrastructurePackage}),
-            featurePackage('app', 'macos'),
-            platformUiPackage('macos'),
+            featurePackage('app', Platform.macos),
+            platformUiPackage(Platform.macos),
           });
 
           final failedIntegrationTests = await runFlutterIntegrationTest(

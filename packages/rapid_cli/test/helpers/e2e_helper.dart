@@ -34,9 +34,9 @@ Future<void> setupProjectNoPlatforms() async {
   await _runFlutterPubGetInAllDirsWithPubspec();
 }
 
-/// Set up a Rapid test project in the cwd with ALL platforms activated.
-Future<void> setupProjectWithPlatform(String platform) async {
-  projectName = 'project_$platform';
+/// Set up a Rapid test project in the cwd with [platform] activated.
+Future<void> setupProjectWithPlatform(Platform platform) async {
+  projectName = 'project_${platform.name}';
   await copyPath(
     Directory(p.join(cwd.path, 'fixtures/$projectName')).path,
     Directory.current.path,
@@ -100,20 +100,20 @@ final loggingPackage =
     Directory(p.join('packages', projectName, '${projectName}_logging'));
 
 /// The directory of [platform] containing platform specific features.
-Directory platformDir(String platform) =>
-    Directory(p.join('packages', projectName, '${projectName}_$platform'));
+Directory platformDir(Platform platform) => Directory(
+    p.join('packages', projectName, '${projectName}_${platform.name}'));
 
 /// The platform-independent ui package.
 final uiPackage =
     Directory(p.join('packages', '${projectName}_ui', '${projectName}_ui'));
 
 /// The package of [feature] on platform.
-Directory featurePackage(String feature, String platform) => Directory(
-    p.join(platformDir(platform).path, '${projectName}_${platform}_$feature'));
+Directory featurePackage(String feature, Platform platform) => Directory(p.join(
+    platformDir(platform).path, '${projectName}_${platform.name}_$feature'));
 
 /// The ui package of [platform].
-Directory platformUiPackage(String platform) => Directory(
-    p.join('packages', '${projectName}_ui', '${projectName}_ui_$platform'));
+Directory platformUiPackage(Platform platform) => Directory(p.join(
+    'packages', '${projectName}_ui', '${projectName}_ui_${platform.name}'));
 
 /// All platform independent packages.
 final platformIndependentPackages = [
@@ -126,30 +126,32 @@ final platformIndependentPackages = [
 ];
 
 /// All [platform]-dependent dirs of the test project.
-List<Directory> platformDirs(String platform) => [
-      Directory(p.join(appPackage.path, platform)),
+List<Directory> platformDirs(Platform platform) => [
+      Directory(p.join(appPackage.path, platform.name)),
       platformDir(platform),
       platformUiPackage(platform),
     ];
 
-List<Directory> get allPlatformDirs =>
-    ['android', 'ios', 'linux', 'macos', 'web', 'windows']
-        .map((e) => platformDirs(e))
-        .fold(<Directory>[], (prev, curr) => prev + curr).toList();
+List<Directory> get allPlatformDirs => Platform.values
+    .map((e) => platformDirs(e))
+    .fold(<Directory>[], (prev, curr) => prev + curr).toList();
 
 // TODO cleaner
 
 /// All source files a feature requires to support [languages].
 List<File> languageFiles(
-        String feature, String platform, List<String> languages) =>
+  String feature,
+  Platform platform,
+  List<String> languages,
+) =>
     [
       for (final language in languages) ...[
         File(
           p.join(
             'packages',
             projectName,
-            '${projectName}_$platform',
-            '${projectName}_${platform}_$feature',
+            '${projectName}_${platform.name}',
+            '${projectName}_${platform.name}_$feature',
             'lib',
             'src',
             'presentation',
@@ -162,13 +164,13 @@ List<File> languageFiles(
           p.join(
             'packages',
             projectName,
-            '${projectName}_$platform',
-            '${projectName}_${platform}_$feature',
+            '${projectName}_${platform.name}',
+            '${projectName}_${platform.name}_$feature',
             'lib',
             'src',
             'presentation',
             'l10n',
-            '${projectName}_${platform}_${feature}_localizations_$language.dart',
+            '${projectName}_${platform.name}_${feature}_localizations_$language.dart',
           ),
         ),
       ],
@@ -176,21 +178,21 @@ List<File> languageFiles(
         p.join(
           'packages',
           projectName,
-          '${projectName}_$platform',
-          '${projectName}_${platform}_$feature',
+          '${projectName}_${platform.name}',
+          '${projectName}_${platform.name}_$feature',
           'lib',
           'src',
           'presentation',
           'l10n',
-          '${projectName}_${platform}_${feature}_localizations.dart',
+          '${projectName}_${platform.name}_${feature}_localizations.dart',
         ),
       ),
       File(
         p.join(
           'packages',
           projectName,
-          '${projectName}_$platform',
-          '${projectName}_${platform}_$feature',
+          '${projectName}_${platform.name}',
+          '${projectName}_${platform.name}_$feature',
           'lib',
           'src',
           'presentation',

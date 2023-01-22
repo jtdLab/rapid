@@ -33,11 +33,8 @@ jobs:
       - name: Setup Melos
         run: flutter pub global activate melos
 
-      - name: Setup Lcov Utils
-        run: flutter pub global activate test_cov_console
-
       - name: Install Flutter dependencies
         run: flutter pub get
 
       - name: Run E2E Tests
-        run: flutter test -j 1 --run-skipped -t e2e -x android,ios,linux,macos,web,windows
+        run: flutter test -j 1 --run-skipped -t e2e,fast -x android,ios,linux,macos,web,windows

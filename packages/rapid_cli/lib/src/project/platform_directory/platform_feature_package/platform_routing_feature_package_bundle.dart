@@ -49,7 +49,7 @@ final platformRoutingFeaturePackageBundle =
     },
     {
       "path":
-          "lib/{{project_name}}_{{#android}}android{{/android}}{{#ios}}iOS{{/ios}}{{#linux}}linux{{/linux}}{{#macos}}macos{{/macos}}{{#web}}web{{/web}}{{#windows}}windows{{/windows}}_routing.dart",
+          "lib/{{project_name}}_{{#android}}android{{/android}}{{#ios}}ios{{/ios}}{{#linux}}linux{{/linux}}{{#macos}}macos{{/macos}}{{#web}}web{{/web}}{{#windows}}windows{{/windows}}_routing.dart",
       "data":
           "Ly8gVE9ETyBkb2M6Cnt7I2FuZHJvaWR9fWxpYnJhcnkge3twcm9qZWN0X25hbWV9fV9hbmRyb2lkX3JvdXRpbmc7e3svYW5kcm9pZH19e3sjaW9zfX1saWJyYXJ5IHt7cHJvamVjdF9uYW1lfX1faW9zX3JvdXRpbmc7e3svaW9zfX17eyNsaW51eH19bGlicmFyeSB7e3Byb2plY3RfbmFtZX19X2xpbnV4X3JvdXRpbmc7e3svbGludXh9fXt7I21hY29zfX1saWJyYXJ5IHt7cHJvamVjdF9uYW1lfX1fbWFjb3Nfcm91dGluZzt7ey9tYWNvc319e3sjd2VifX1saWJyYXJ5IHt7cHJvamVjdF9uYW1lfX1fd2ViX3JvdXRpbmc7e3svd2VifX17eyN3aW5kb3dzfX1saWJyYXJ5IHt7cHJvamVjdF9uYW1lfX1fd2luZG93c19yb3V0aW5nO3t7L3dpbmRvd3N9fQoKZXhwb3J0ICdzcmMvaW5qZWN0aW9uLmRhcnQnOwpleHBvcnQgJ3NyYy9pbmplY3Rpb24ubW9kdWxlLmRhcnQnOwpleHBvcnQgJ3NyYy9yb3V0ZXIuZGFydCc7CmV4cG9ydCAncGFja2FnZTphdXRvX3JvdXRlL2F1dG9fcm91dGUuZGFydCc7Cg==",
       "type": "text"

@@ -1,6 +1,7 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file.dart';
@@ -54,9 +55,13 @@ class PlatformAppFeaturePackage extends PlatformFeaturePackage {
     required super.project,
     GeneratorBuilder? generator,
   })  : _generator = generator ?? MasonGenerator.fromBundle,
-        super('app', platform);
+        super('app', platform) {
+    localizationsFile = LocalizationsFile(platformAppFeaturePackage: this);
+  }
 
   final GeneratorBuilder _generator;
+
+  late LocalizationsFile localizationsFile;
 
   Future<void> create({required Logger logger}) async {
     final projectName = project.name();
@@ -75,6 +80,111 @@ class PlatformAppFeaturePackage extends PlatformFeaturePackage {
       },
       logger: logger,
     );
+  }
+
+  Future<void> registerCustomFeaturePackage(
+    PlatformCustomFeaturePackage customFeaturePackage, {
+    required Logger logger,
+  }) async {
+    pubspecFile.setDependency(customFeaturePackage.packageName());
+    localizationsFile.addLocalizationsDelegate(customFeaturePackage);
+  }
+
+  Future<void> unregisterCustomFeaturePackage(
+    PlatformCustomFeaturePackage customFeaturePackage, {
+    required Logger logger,
+  }) async {
+    pubspecFile.removeDependency(customFeaturePackage.packageName());
+    localizationsFile.removeLocalizationsDelegate(customFeaturePackage);
+  }
+}
+
+class LocalizationsFile extends ProjectEntity {
+  LocalizationsFile({
+    required this.platformAppFeaturePackage,
+  }) : _dartFile = DartFile(
+          path: p.join(
+            platformAppFeaturePackage.path,
+            'lib',
+            'src',
+            'presentation',
+          ),
+          name: 'localizations',
+        );
+
+  final DartFile _dartFile;
+
+  final PlatformAppFeaturePackage platformAppFeaturePackage;
+
+  @override
+  String get path => _dartFile.path;
+
+  @override
+  bool exists() => _dartFile.exists();
+
+  void addLocalizationsDelegate(
+    PlatformCustomFeaturePackage customFeaturePackage,
+  ) {
+    final packageName = customFeaturePackage.packageName();
+    _dartFile.addImport('package:$packageName/$packageName.dart');
+
+    final newDelegate = '${packageName.pascalCase}Localizations.delegate';
+    final existingDelegates =
+        _dartFile.readTopLevelIterableVar(name: 'localizationsDelegates');
+
+    if (!existingDelegates.contains(newDelegate)) {
+      _dartFile.setTopLevelIterableVar(
+        name: 'localizationsDelegates',
+        value: [
+          newDelegate,
+          ...existingDelegates,
+        ],
+      );
+    }
+  }
+
+  void removeLocalizationsDelegate(
+    PlatformCustomFeaturePackage customFeaturePackage,
+  ) {
+    final packageName = customFeaturePackage.packageName();
+    _dartFile.removeImport('package:$packageName/$packageName.dart');
+
+    final delegate = '${packageName.pascalCase}Localizations.delegate';
+    final existingDelegates =
+        _dartFile.readTopLevelIterableVar(name: 'localizationsDelegates');
+
+    if (existingDelegates.contains(delegate)) {
+      _dartFile.setTopLevelIterableVar(
+        name: 'localizationsDelegates',
+        value: existingDelegates..remove(delegate),
+      );
+    }
+  }
+
+  void addSupportedLanguage(String language) {
+    final locale = 'Locale($language)';
+    final existingLocales =
+        _dartFile.readTopLevelIterableVar(name: 'supportedLocales');
+
+    if (!existingLocales.contains(locale)) {
+      _dartFile.setTopLevelIterableVar(
+        name: 'supportedLocales',
+        value: [locale, ...existingLocales],
+      );
+    }
+  }
+
+  void removeSupportedLanguage(String language) {
+    final locale = 'Locale($language)';
+    final existingLocales =
+        _dartFile.readTopLevelIterableVar(name: 'supportedLocales');
+
+    if (existingLocales.contains(locale)) {
+      _dartFile.setTopLevelIterableVar(
+        name: 'supportedLocales',
+        value: existingLocales..remove(locale),
+      );
+    }
   }
 }
 

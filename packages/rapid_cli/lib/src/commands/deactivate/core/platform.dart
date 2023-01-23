@@ -58,7 +58,11 @@ abstract class DeactivatePlatformCommand extends Command<int>
   Future<int> run() => runWhen(
         [
           isProjectRoot(_project),
-          platformIsActivated(_platform, _project),
+          platformIsActivated(
+            _platform,
+            _project,
+            '${_platform.prettyName} is already deactivated.',
+          ),
         ],
         _logger,
         () async {

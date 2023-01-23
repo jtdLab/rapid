@@ -92,9 +92,11 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
               ...platformDirectory.customFeaturePackages(),
             ];
 
-            // TODO HIGH PRIO think about remove from pubspec of other packages that depend on it
-            // TODO think about remove the localizations delegate of this feature from the app feature
-            // TODO think about remove the feature from di feature and regenerate it
+            final appFeaturePackage = platformDirectory.appFeaturePackage;
+            await appFeaturePackage.registerCustomFeaturePackage(
+              customFeaturePackage,
+              logger: _logger,
+            );
 
             final customFeaturePackagName = customFeaturePackage.packageName();
             for (final otherFeaturePackage in otherFeaturePackages) {

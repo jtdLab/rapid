@@ -257,6 +257,40 @@ class DartFile {
     return functions;
   }
 
+  /// Reads the values of a iterable stored in the top-level variable [name].
+  List<String> readTopLevelIterableVar({required String name}) {
+    final contents = _read();
+
+    final declarations = _getTopLevelDeclarations(contents);
+
+    final topLevelVariables =
+        declarations.whereType<TopLevelVariableDeclaration>();
+
+    final topLevelVariable = topLevelVariables.firstWhere(
+      (e) => e.childEntities.any(
+        (e) =>
+            e is VariableDeclarationList &&
+            e.childEntities.any(
+              (e) => e is VariableDeclaration && e.name.lexeme == name,
+            ),
+      ),
+    );
+
+    final variableDeclaration = topLevelVariable.childEntities
+        .whereType<VariableDeclarationList>()
+        .first
+        .childEntities
+        .whereType<VariableDeclaration>()
+        .first;
+
+    final listLiteral =
+        variableDeclaration.childEntities.whereType<ListLiteral>().first;
+
+    return listLiteral.elements
+        .map((e) => contents.substring(e.offset, e.end))
+        .toList();
+  }
+
   /// Reads the [property] of the [annotation] the function with [functionName] is annotated with.
   ///
   /// The property must be list of Type in source file.
@@ -406,6 +440,49 @@ class DartFile {
 
       _write(output);
     }
+  }
+
+  /// Sets the values of a iterable stored in a top-level variable [name].
+  void setTopLevelIterableVar({
+    required String name,
+    required List<String> value,
+  }) {
+    final contents = _read();
+
+    final declarations = _getTopLevelDeclarations(contents);
+
+    final topLevelVariables =
+        declarations.whereType<TopLevelVariableDeclaration>();
+
+    final topLevelVariable = topLevelVariables.firstWhere(
+      (e) => e.childEntities.any(
+        (e) =>
+            e is VariableDeclarationList &&
+            e.childEntities.any(
+              (e) => e is VariableDeclaration && e.name.lexeme == name,
+            ),
+      ),
+    );
+
+    final variableDeclaration = topLevelVariable.childEntities
+        .whereType<VariableDeclarationList>()
+        .first
+        .childEntities
+        .whereType<VariableDeclaration>()
+        .first;
+
+    final listLiteral =
+        variableDeclaration.childEntities.whereType<ListLiteral>().first;
+
+    final listText = '[${value.join(',')}${value.isEmpty ? '' : ','}]';
+
+    final output = contents.replaceRange(
+      listLiteral.offset,
+      listLiteral.end,
+      listText,
+    );
+
+    _write(output);
   }
 
   /// Sets the [property] of the [annotation] the function with [functionName] is annotated with to [value].

@@ -55,28 +55,6 @@ abstract class ProjectPackage extends ProjectEntity {
   }
 }
 
-mixin BootstrapMixin on ProjectPackage {
-  @protected
-  MelosBootstrapCommand get melosBootstrap;
-
-  Future<void> bootstrap({required Logger logger}) async {
-    await melosBootstrap(cwd: path, scope: packageName(), logger: logger);
-  }
-}
-
-mixin RebuildMixin on ProjectPackage {
-  @protected
-  FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      get flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
-
-  Future<void> rebuild({required Logger logger}) async {
-    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-      cwd: path,
-      logger: logger,
-    );
-  }
-}
-
 /// Signature for method that returns the [PlatformDirectory] for [platform].
 typedef PlatformDirectoryBuilder = PlatformDirectory Function({
   required Platform platform,

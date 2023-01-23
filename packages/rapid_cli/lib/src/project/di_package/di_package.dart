@@ -1,6 +1,5 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
@@ -15,19 +14,14 @@ import 'di_package_bundle.dart';
 ///
 /// Location: `packages/<project name>/<project name>_di`
 /// {@endtemplate}
-class DiPackage extends ProjectPackage with RebuildMixin {
+class DiPackage extends ProjectPackage {
   /// {@macro di_package}
   DiPackage({
     required Project project,
     InjectionFile? injectionFile,
-    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     GeneratorBuilder? generator,
   })  : _project = project,
-        _generator = generator ?? MasonGenerator.fromBundle,
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs {
+        _generator = generator ?? MasonGenerator.fromBundle {
     _injectionFile = injectionFile ?? InjectionFile(diPackage: this);
   }
 
@@ -42,10 +36,6 @@ class DiPackage extends ProjectPackage with RebuildMixin {
         _project.name(),
         '${_project.name()}_di',
       );
-
-  @override
-  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   Future<void> create({
     required bool android,
@@ -80,10 +70,6 @@ class DiPackage extends ProjectPackage with RebuildMixin {
   }) async {
     pubspecFile.setDependency(customFeaturePackage.packageName());
     _injectionFile.addCustomFeaturePackage(customFeaturePackage);
-
-    // TODO
-    await Flutter.pubGet(cwd: path, logger: logger);
-    await rebuild(logger: logger);
   }
 
   Future<void> unregisterCustomFeaturePackages(
@@ -94,10 +80,6 @@ class DiPackage extends ProjectPackage with RebuildMixin {
       pubspecFile.removeDependency(customFeaturePackage.packageName());
       _injectionFile.removeCustomFeaturePackage(customFeaturePackage);
     }
-
-    // TODO
-    await Flutter.pubGet(cwd: path, logger: logger);
-    await rebuild(logger: logger);
   }
 }
 

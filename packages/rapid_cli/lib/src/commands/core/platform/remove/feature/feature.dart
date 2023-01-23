@@ -84,32 +84,48 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
               [customFeaturePackage],
               logger: _logger,
             );
-            await customFeaturePackage.delete(logger: _logger);
+
+            final appFeaturePackage = platformDirectory.appFeaturePackage;
+            await appFeaturePackage.unregisterCustomFeaturePackage(
+              customFeaturePackage,
+              logger: _logger,
+            );
 
             final otherFeaturePackages = [
               platformDirectory.appFeaturePackage,
               platformDirectory.routingFeaturePackage,
               ...platformDirectory.customFeaturePackages(),
-            ];
+            ]..removeWhere(
+                (e) => e.packageName() == customFeaturePackage.packageName(),
+              );
 
-            final appFeaturePackage = platformDirectory.appFeaturePackage;
-            await appFeaturePackage.registerCustomFeaturePackage(
-              customFeaturePackage,
-              logger: _logger,
-            );
-
-            final customFeaturePackagName = customFeaturePackage.packageName();
             for (final otherFeaturePackage in otherFeaturePackages) {
               otherFeaturePackage.pubspecFile.removeDependency(
-                customFeaturePackagName,
+                customFeaturePackage.packageName(),
               );
             }
 
+            await customFeaturePackage.delete(logger: _logger);
+
             // TODO think about remove the feature from routing feature and regenerate it
 
-            await _melosClean(logger: _logger);
+            // await _melosClean(logger: _logger);
 
-            await _melosBootstrap(logger: _logger);
+            await _melosBootstrap(
+              logger: _logger,
+              scope:
+                  '${diPackage.packageName()},${appFeaturePackage.packageName()},${otherFeaturePackages.map((e) => e.packageName()).join(',')}',
+            );
+
+            await Flutter.pubGet(
+              cwd: diPackage.path,
+              logger: _logger,
+            );
+
+            await Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: diPackage.path,
+              logger: _logger,
+            );
 
             // TODO format if needed ?
 

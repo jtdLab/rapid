@@ -52,7 +52,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
       ..addOption(
         'desc',
         help:
-            'The description of this new feature.', // TODO rename to the might be the cas in other descriptions too
+            'The description of this new feature.', // TODO rename to the might be the case in other descriptions too
         defaultsTo: _defaultDescription,
       )
       // TODO maybe add a option to specify features that want a dependency before melos bs runs
@@ -93,7 +93,6 @@ abstract class PlatformAddFeatureCommand extends Command<int>
         ],
         _logger,
         () async {
-          // TODO add a application layer to the feature template
           final name = _name;
           final description = _description;
           final routing = _routing;
@@ -111,28 +110,41 @@ abstract class PlatformAddFeatureCommand extends Command<int>
               logger: _logger,
             );
 
-            final customFeaturePackageName = customFeaturePackage.packageName();
-
-            // TODO add localizations to app package
-
-            if (routing) {
-              final routingFeaturePackage =
-                  platformDirectory.routingFeaturePackage;
-
-              routingFeaturePackage.pubspecFile.setDependency(
-                customFeaturePackageName,
-              );
-            }
-
-            final diPackage = _project.diPackage;
-            diPackage.registerCustomFeaturePackage(
+            final appFeaturePackage = platformDirectory.appFeaturePackage;
+            await appFeaturePackage.registerCustomFeaturePackage(
               customFeaturePackage,
               logger: _logger,
             );
 
-            await _melosClean(logger: _logger);
+            final routingFeaturePackage =
+                platformDirectory.routingFeaturePackage;
+            if (routing) {
+              routingFeaturePackage.pubspecFile.setDependency(
+                customFeaturePackage.packageName(),
+              );
+            }
 
-            await _melosBootstrap(logger: _logger);
+            final diPackage = _project.diPackage;
+            await diPackage.registerCustomFeaturePackage(
+              customFeaturePackage,
+              logger: _logger,
+            );
+
+            await _melosBootstrap(
+              logger: _logger,
+              scope:
+                  '${customFeaturePackage.packageName()},${diPackage.packageName()},${appFeaturePackage.packageName()}${routing ? ',${routingFeaturePackage.packageName()}' : ''}',
+            );
+
+            await Flutter.pubGet(
+              cwd: diPackage.path,
+              logger: _logger,
+            );
+
+            await Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: diPackage.path,
+              logger: _logger,
+            );
 
             await _flutterFormatFix(logger: _logger);
 

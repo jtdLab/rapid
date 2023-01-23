@@ -1,5 +1,5 @@
 name: rapid_di
-description: Dependency Injection for Rapid apps
+description: Dependency Injection for Rapid apps.
 version: 1.0.0
 
 environment:

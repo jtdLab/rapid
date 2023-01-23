@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -85,8 +86,13 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
           );
           if (customFeaturePackage.exists()) {
             final bloc = customFeaturePackage.bloc(name: name);
-            if (bloc.exists()) {
+            if (!bloc.exists()) {
               await bloc.create(logger: _logger);
+
+              await Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs(
+                cwd: customFeaturePackage.path,
+                logger: _logger,
+              );
 
               _logger.success(
                 'Added ${name.pascalCase}Bloc to ${_platform.prettyName} feature $featureName.',

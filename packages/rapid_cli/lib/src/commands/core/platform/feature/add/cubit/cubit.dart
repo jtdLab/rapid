@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -82,8 +83,13 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
           );
           if (customFeaturePackage.exists()) {
             final cubit = customFeaturePackage.cubit(name: name);
-            if (cubit.exists()) {
+            if (!cubit.exists()) {
               await cubit.create(logger: _logger);
+
+              await Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs(
+                cwd: customFeaturePackage.path,
+                logger: _logger,
+              );
 
               _logger.success(
                 'Added ${name.pascalCase}Cubit to ${_platform.prettyName} feature $featureName.',

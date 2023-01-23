@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -8,6 +9,9 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'package:recase/recase.dart';
 
 // TODO fix the template needs super class from rapid
+
+/// The default type.
+const _defaultType = 'String';
 
 /// {@template domain_add_value_object_command}
 /// `rapid domain add value_object` command adds value object to the domain part of an existing Rapid project.
@@ -24,6 +28,12 @@ class DomainAddValueObjectCommand extends Command<int>
       ..addSeparator('')
       ..addOutputDirOption(
         help: 'The output directory relative to <domain_package>/lib/ .',
+      )
+      ..addOption(
+        'type',
+        help: 'The type that gets wrapped by this value object.\n'
+            'Generics get escaped via "#" e.g Tuple<#A, #B, String>.',
+        defaultsTo: _defaultType,
       );
   }
 
@@ -50,16 +60,25 @@ class DomainAddValueObjectCommand extends Command<int>
         () async {
           final name = super.className;
           final outputDir = super.outputDir;
+          final type = _type;
+          final generics = _generics;
 
           final domainPackage = _project.domainPackage;
           final valueObject = domainPackage.valueObject(
             name: name,
             dir: outputDir,
-            // type: 'List<T>', // TODO
-            // generics: '<T>', // TODO
           );
           if (!valueObject.exists()) {
-            await valueObject.create(logger: _logger);
+            await valueObject.create(
+              type: type,
+              generics: generics,
+              logger: _logger,
+            );
+
+            await Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: domainPackage.path,
+              logger: _logger,
+            );
 
             _logger.success('Added Value Object ${name.pascalCase}.');
 
@@ -71,4 +90,36 @@ class DomainAddValueObjectCommand extends Command<int>
           }
         },
       );
+
+  String get _type => argResults['type']?.replaceAll('#', '') ?? _defaultType;
+
+  String get _generics {
+    final raw = argResults['type'] as String? ?? _defaultType;
+    StringBuffer buffer = StringBuffer();
+    buffer.write('<');
+
+    final generics = raw
+        .replaceAll(' ', '')
+        .split(RegExp('[,<>]'))
+        .where((element) => element.startsWith('#'))
+        .map((element) => element.replaceAll('#', ''))
+        .toList();
+
+    for (int i = 0; i < generics.length; i++) {
+      buffer.write(generics[i]);
+      if (i != generics.length - 1) {
+        buffer.write(', ');
+      }
+    }
+
+    buffer.write('>');
+
+    final string = buffer.toString();
+
+    if (string == '<>') {
+      return '';
+    }
+
+    return buffer.toString();
+  }
 }

@@ -491,11 +491,15 @@ class Bloc {
       _blocDirectory.existsSync() || _blocTestDirectory.existsSync();
 
   Future<void> create({required Logger logger}) async {
+    final projectName = platformFeaturePackage.project.name();
+
     final generator = await _generator(blocBundle);
     await generator.generate(
       DirectoryGeneratorTarget(Directory(platformFeaturePackage.path)),
       vars: <String, dynamic>{
+        'project_name': projectName,
         'name': name,
+        'platform': platformFeaturePackage.platform.name,
       },
       logger: logger,
     );
@@ -547,11 +551,15 @@ class Cubit {
       _cubitDirectory.existsSync() || _cubitTestDirectory.existsSync();
 
   Future<void> create({required Logger logger}) async {
+    final projectName = platformFeaturePackage.project.name();
+
     final generator = await _generator(cubitBundle);
     await generator.generate(
       DirectoryGeneratorTarget(Directory(platformFeaturePackage.path)),
       vars: <String, dynamic>{
+        'project_name': projectName,
         'name': name,
+        'platform': platformFeaturePackage.platform.name,
       },
       logger: logger,
     );

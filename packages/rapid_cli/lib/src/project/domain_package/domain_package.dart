@@ -58,8 +58,15 @@ class DomainPackage extends ProjectPackage {
   }) =>
       ServiceInterface(name: name, dir: dir, domainPackage: this);
 
-  ValueObject valueObject({required String name, required String dir}) =>
-      ValueObject(name: name, dir: dir, domainPackage: this);
+  ValueObject valueObject({
+    required String name,
+    required String dir,
+  }) =>
+      ValueObject(
+        name: name,
+        dir: dir,
+        domainPackage: this,
+      );
 }
 
 // TODO normalize other paths 2 or overkill
@@ -237,6 +244,8 @@ class ValueObject {
       _valueObjectTestDirectory.existsSync();
 
   Future<void> create({
+    required String type,
+    required String generics,
     required Logger logger,
   }) async {
     final projectName = domainPackage.project.name();
@@ -248,8 +257,8 @@ class ValueObject {
         'project_name': projectName,
         'name': name,
         'output_dir': dir,
-        //'type': 88, // TODO
-        // 'generics': 88,
+        'type': type,
+        'generics': generics,
       },
       logger: logger,
     );

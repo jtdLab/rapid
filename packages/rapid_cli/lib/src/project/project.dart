@@ -342,15 +342,13 @@ class Project implements ProjectEntity {
     final customFeaturesPackages = platformDirectory.customFeaturePackages();
     final platformUiPackage = this.platformUiPackage(platform: platform);
     await platformUiPackage.delete(logger: logger);
-    await platformDirectory.delete(logger: logger);
-
-    deleteProgress.complete();
-
-    // TODO logg inside method
     await diPackage.unregisterCustomFeaturePackages(
       customFeaturesPackages,
       logger: logger,
     );
+    await platformDirectory.delete(logger: logger);
+
+    deleteProgress.complete();
 
     await _melosBootstrap(
       cwd: path,

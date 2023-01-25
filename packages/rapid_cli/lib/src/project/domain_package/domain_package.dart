@@ -209,6 +209,8 @@ class ValueObject {
     required this.name,
     required this.dir,
     required this.domainPackage,
+    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     FlutterFormatFixCommand? flutterFormatFix,
     GeneratorBuilder? generator,
   })  : _valueObjectDirectory = Directory(
@@ -227,11 +229,16 @@ class ValueObject {
             name.snakeCase,
           ),
         ),
+        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
         _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle;
 
   final Directory _valueObjectDirectory;
   final Directory _valueObjectTestDirectory;
+  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final FlutterFormatFixCommand _flutterFormatFix;
   final GeneratorBuilder _generator;
 
@@ -263,6 +270,10 @@ class ValueObject {
       logger: logger,
     );
 
+    await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+      cwd: domainPackage.path,
+      logger: logger,
+    );
     await _flutterFormatFix(cwd: domainPackage.path, logger: logger);
   }
 

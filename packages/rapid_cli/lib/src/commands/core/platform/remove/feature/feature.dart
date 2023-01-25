@@ -64,78 +64,31 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          isProjectRoot(_project),
+          projectExists(_project),
           platformIsActivated(_platform, _project),
         ],
         _logger,
         () async {
           final name = _name;
 
-          final platformDirectory = _project.platformDirectory(
-            platform: _platform,
-          );
-          final customFeaturePackage = platformDirectory.customFeaturePackage(
-            name: name,
-          );
-          final customFeaturePackageExists = customFeaturePackage.exists();
-          if (customFeaturePackageExists) {
-            final diPackage = _project.diPackage;
-            await diPackage.unregisterCustomFeaturePackages(
-              [customFeaturePackage],
+          try {
+            await _project.removeFeature(
+              name: name,
+              platform: _platform,
               logger: _logger,
             );
 
-            final appFeaturePackage = platformDirectory.appFeaturePackage;
-            await appFeaturePackage.unregisterCustomFeaturePackage(
-              customFeaturePackage,
-              logger: _logger,
-            );
-
-            final otherFeaturePackages = [
-              platformDirectory.appFeaturePackage,
-              platformDirectory.routingFeaturePackage,
-              ...platformDirectory.customFeaturePackages(),
-            ]..removeWhere(
-                (e) => e.packageName() == customFeaturePackage.packageName(),
-              );
-
-            for (final otherFeaturePackage in otherFeaturePackages) {
-              otherFeaturePackage.pubspecFile.removeDependency(
-                customFeaturePackage.packageName(),
-              );
-            }
-
-            await customFeaturePackage.delete(logger: _logger);
-
-            // TODO think about remove the feature from routing feature and regenerate it
-
-            // await _melosClean(logger: _logger);
-
-            await _melosBootstrap(
-              logger: _logger,
-              scope:
-                  '${diPackage.packageName()},${appFeaturePackage.packageName()},${otherFeaturePackages.map((e) => e.packageName()).join(',')}',
-            );
-
-            await Flutter.pubGet(
-              cwd: diPackage.path,
-              logger: _logger,
-            );
-
-            await Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: diPackage.path,
-              logger: _logger,
-            );
-
-            // TODO format if needed ?
-
-            _logger.success('Removed ${_platform.prettyName} feature $name.');
+            _logger
+              ..info('')
+              ..success('Removed ${_platform.prettyName} feature $name.');
 
             return ExitCode.success.code;
-          } else {
-            _logger.err(
-              'The feature "$name" does not exist on ${_platform.prettyName}.',
-            );
+          } on FeatureDoesNotExist {
+            _logger
+              ..info('')
+              ..err(
+                'The feature "$name" does not exist on ${_platform.prettyName}.',
+              );
 
             return ExitCode.config.code;
           }

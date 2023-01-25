@@ -1,6 +1,5 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -55,7 +54,7 @@ class DomainAddValueObjectCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [isProjectRoot(_project)],
+        [projectExists(_project)],
         _logger,
         () async {
           final name = super.className;
@@ -63,28 +62,24 @@ class DomainAddValueObjectCommand extends Command<int>
           final type = _type;
           final generics = _generics;
 
-          final domainPackage = _project.domainPackage;
-          final valueObject = domainPackage.valueObject(
-            name: name,
-            dir: outputDir,
-          );
-          if (!valueObject.exists()) {
-            await valueObject.create(
+          try {
+            await _project.addValueObject(
+              name: name,
+              outputDir: outputDir,
               type: type,
               generics: generics,
               logger: _logger,
             );
 
-            await Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: domainPackage.path,
-              logger: _logger,
-            );
-
-            _logger.success('Added Value Object ${name.pascalCase}.');
+            _logger
+              ..info('')
+              ..success('Added Value Object ${name.pascalCase}.');
 
             return ExitCode.success.code;
-          } else {
-            _logger.err('Value Object $name already exists.');
+          } on ValueObjectAlreadyExists {
+            _logger
+              ..info('')
+              ..err('Value Object $name already exists.');
 
             return ExitCode.config.code;
           }

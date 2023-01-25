@@ -65,7 +65,7 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          isProjectRoot(_project),
+          projectExists(_project),
           platformIsActivated(_platform, _project),
         ],
         _logger,
@@ -73,17 +73,23 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
           final name = super.className;
           final outputDir = super.outputDir;
 
-          final platformUiPackage =
-              _project.platformUiPackage(platform: _platform);
-          final widget = platformUiPackage.widget(name: name, dir: outputDir);
-          if (!widget.exists()) {
-            await widget.create(logger: _logger);
+          try {
+            await _project.addWidget(
+              name: name,
+              outputDir: outputDir,
+              platform: _platform,
+              logger: _logger,
+            );
 
-            _logger.success('Added ${_platform.prettyName} Widget $name.');
+            _logger
+              ..info('')
+              ..success('Added ${_platform.prettyName} Widget $name.');
 
             return ExitCode.success.code;
-          } else {
-            _logger.err('${_platform.prettyName} Widget $name already exists.');
+          } on WidgetAlreadyExists {
+            _logger
+              ..info('')
+              ..err('${_platform.prettyName} Widget $name already exists.');
 
             return ExitCode.config.code;
           }

@@ -48,7 +48,7 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      when(() => project.deactivatePlatform(Platform.linux, logger: logger))
+      when(() => project.removePlatform(Platform.linux, logger: logger))
           .thenAnswer((_) async {});
       when(() => project.exists()).thenReturn(true);
       when(() => project.platformIsActivated(Platform.linux)).thenReturn(true);
@@ -111,7 +111,7 @@ void main() {
       // Assert
       verify(() => project.platformIsActivated(Platform.linux)).called(1);
       verify(() => logger.info('Deactivating Linux ...')).called(1);
-      verify(() => project.deactivatePlatform(Platform.linux, logger: logger))
+      verify(() => project.removePlatform(Platform.linux, logger: logger))
           .called(1);
       verify(() => logger.success('Linux is now deactivated.')).called(1);
       expect(result, ExitCode.success.code);

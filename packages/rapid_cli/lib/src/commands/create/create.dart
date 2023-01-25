@@ -139,6 +139,21 @@ class CreateCommand extends Command<int>
           final web = _web;
           final windows = _windows;
 
+          final project = _project(path: outputDir);
+          await project.create(
+            projectName: projectName,
+            description: description,
+            orgName: orgName,
+            example: example,
+            android: android,
+            ios: ios,
+            linux: linux,
+            macos: macos,
+            web: web,
+            windows: windows,
+            logger: _logger,
+          );
+
           if (android) {
             await _flutterConfigEnableAndroid(logger: _logger);
           }
@@ -157,21 +172,6 @@ class CreateCommand extends Command<int>
           if (windows) {
             await _flutterConfigEnableWindows(logger: _logger);
           }
-
-          final project = _project(path: outputDir);
-          await project.create(
-            projectName: projectName,
-            description: description,
-            orgName: orgName,
-            example: example,
-            android: android,
-            ios: ios,
-            linux: linux,
-            macos: macos,
-            web: web,
-            windows: windows,
-            logger: _logger,
-          );
 
           _logger
             ..info('\n')

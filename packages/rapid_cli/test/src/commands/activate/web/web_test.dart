@@ -56,7 +56,7 @@ void main() {
 
       project = _MockProject();
       when(
-        () => project.activatePlatform(
+        () => project.addPlatform(
           Platform.web,
           description: any(named: 'description'),
           orgName: any(named: 'orgName'),
@@ -121,7 +121,7 @@ void main() {
       verify(() => logger.info('Activating Web ...')).called(1);
       verify(() => flutterConfigEnableWeb(logger: logger)).called(1);
       verify(
-        () => project.activatePlatform(
+        () => project.addPlatform(
           Platform.web,
           description: 'A Rapid app.',
           logger: logger,
@@ -144,7 +144,7 @@ void main() {
       verify(() => logger.info('Activating Web ...')).called(1);
       verify(() => flutterConfigEnableWeb(logger: logger)).called(1);
       verify(
-        () => project.activatePlatform(
+        () => project.addPlatform(
           Platform.web,
           description: desc,
           logger: logger,

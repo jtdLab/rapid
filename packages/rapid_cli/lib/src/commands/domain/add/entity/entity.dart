@@ -40,22 +40,28 @@ class DomainAddEntityCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [isProjectRoot(_project)],
+        [projectExists(_project)],
         _logger,
         () async {
           final name = super.className;
           final outputDir = super.outputDir;
 
-          final domainPackage = _project.domainPackage;
-          final entity = domainPackage.entity(name: name, dir: outputDir);
-          if (!entity.exists()) {
-            await entity.create(logger: _logger);
+          try {
+            await _project.addEntity(
+              name: name,
+              outputDir: outputDir,
+              logger: _logger,
+            );
 
-            _logger.success('Added Entity ${name.pascalCase}.');
+            _logger
+              ..info('')
+              ..success('Added Entity ${name.pascalCase}.');
 
             return ExitCode.success.code;
-          } else {
-            _logger.err('Entity $name already exists.');
+          } on EntityAlreadyExists {
+            _logger
+              ..info('')
+              ..err('Entity $name already exists.');
 
             return ExitCode.config.code;
           }

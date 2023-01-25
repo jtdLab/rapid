@@ -50,32 +50,34 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [isProjectRoot(_project)],
+        [projectExists(_project)],
         _logger,
         () async {
           final name = super.className;
           final serviceName = _service;
           final dir = super.dir;
 
-          final infrastructurePackage = _project.infrastructurePackage;
-          final serviceImplementation =
-              infrastructurePackage.serviceImplementation(
-            name: name,
-            serviceName: serviceName,
-            dir: dir,
-          );
-          if (serviceImplementation.exists()) {
-            serviceImplementation.delete();
-
-            _logger.success(
-              'Removed Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service.',
+          try {
+            await _project.removeServiceImplementation(
+              name: name,
+              serviceName: serviceName,
+              dir: dir,
+              logger: _logger,
             );
+
+            _logger
+              ..info('')
+              ..success(
+                'Removed Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service.',
+              );
 
             return ExitCode.success.code;
-          } else {
-            _logger.err(
-              'Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service not found.',
-            );
+          } on DataTransferObjectDoesNotExist {
+            _logger
+              ..info('')
+              ..err(
+                'Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service not found.',
+              );
 
             return ExitCode.config.code;
           }

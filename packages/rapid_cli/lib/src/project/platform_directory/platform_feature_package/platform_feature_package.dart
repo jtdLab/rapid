@@ -223,18 +223,18 @@ class PlatformRoutingFeaturePackage extends PlatformFeaturePackage {
     );
   }
 
-  Future<void> registerFeature({
-    required PlatformCustomFeaturePackage feature,
+  Future<void> registerCustomFeaturePackage(
+    PlatformCustomFeaturePackage customFeaturePackage, {
     required Logger logger,
   }) async {
-    pubspecFile.setDependency(feature.packageName());
+    pubspecFile.setDependency(customFeaturePackage.packageName());
   }
 
-  Future<void> unregisterFeature({
-    required PlatformCustomFeaturePackage feature,
+  Future<void> unregisterCustomFeaturePackage(
+    PlatformCustomFeaturePackage customFeaturePackage, {
     required Logger logger,
   }) async {
-    pubspecFile.removeDependency(feature.packageName());
+    pubspecFile.removeDependency(customFeaturePackage.packageName());
   }
 }
 
@@ -317,6 +317,7 @@ class PlatformCustomFeaturePackage extends PlatformFeaturePackage {
     if (!arbFile.exists()) {
       await arbFile.create(logger: logger);
     }
+
     await _flutterGenl10n(cwd: path, logger: logger);
   }
 

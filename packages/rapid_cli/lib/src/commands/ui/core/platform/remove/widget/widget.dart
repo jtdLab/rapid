@@ -63,7 +63,7 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          isProjectRoot(_project),
+          projectExists(_project),
           platformIsActivated(_platform, _project),
         ],
         _logger,
@@ -71,15 +71,23 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
           final name = super.className;
           final dir = super.dir;
 
-          final platformUiPackage =
-              _project.platformUiPackage(platform: _platform);
-          final widget = platformUiPackage.widget(name: name, dir: dir);
-          if (widget.exists()) {
-            widget.delete();
+          try {
+            await _project.removeWidget(
+              name: name,
+              dir: dir,
+              platform: _platform,
+              logger: _logger,
+            );
+
+            _logger
+              ..info('')
+              ..success('Removed ${_platform.prettyName} Widget $name.');
 
             return ExitCode.success.code;
-          } else {
-            _logger.err('${_platform.prettyName} Widget $name not found.');
+          } on WidgetAlreadyExists {
+            _logger
+              ..info('')
+              ..err('${_platform.prettyName} Widget $name not found.');
 
             return ExitCode.config.code;
           }

@@ -6,7 +6,7 @@ typedef MelosInstalledCommand = Future<bool> Function({required Logger logger});
 /// Signature for the [Melos.bootstrap] method.
 typedef MelosBootstrapCommand = Future<void> Function({
   String cwd,
-  String? scope,
+  List<String>? scope,
   required Logger logger,
 });
 
@@ -32,10 +32,10 @@ abstract class Melos {
 
   /// Bootstrap the melos project (`melos bootstrap`).
   ///
-  /// If scope is provided runs (`melos bootstrap --scope <scope>`) instead.
+  /// If [scope] is provided runs (`melos bootstrap --scope item1,item2,...`) instead.
   static Future<void> bootstrap({
     String cwd = '.',
-    String? scope,
+    List<String>? scope,
     required Logger logger,
   }) async {
     if (scope == null) {
@@ -57,14 +57,16 @@ abstract class Melos {
 
       progress.complete();
     } else {
+      final scopeString = scope.join(',');
+
       final progress = logger.progress(
-        'Running "melos bootstrap --scope $scope" in $cwd ',
+        'Running "melos bootstrap --scope $scopeString" in $cwd ',
       );
 
       try {
         await _Cmd.run(
           'melos',
-          ['bootstrap', '--scope', scope],
+          ['bootstrap', '--scope', scopeString],
           workingDirectory: cwd,
           logger: logger,
         );

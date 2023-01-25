@@ -1,6 +1,5 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -67,7 +66,7 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          isProjectRoot(_project),
+          projectExists(_project),
           platformIsActivated(_platform, _project),
         ],
         _logger,
@@ -75,38 +74,35 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
           final featureName = _featureName;
           final name = super.className;
 
-          final platformDirectory = _project.platformDirectory(
-            platform: _platform,
-          );
-          final customFeaturePackage = platformDirectory.customFeaturePackage(
-            name: featureName,
-          );
-          if (customFeaturePackage.exists()) {
-            final cubit = customFeaturePackage.cubit(name: name);
-            if (!cubit.exists()) {
-              await cubit.create(logger: _logger);
+          try {
+            await _project.addCubit(
+              name: name,
+              featureName: featureName,
+              platform: _platform,
+              logger: _logger,
+            );
 
-              await Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs(
-                cwd: customFeaturePackage.path,
-                logger: _logger,
-              );
-
-              _logger.success(
+            _logger
+              ..info('')
+              ..success(
                 'Added ${name.pascalCase}Cubit to ${_platform.prettyName} feature $featureName.',
               );
 
-              return ExitCode.success.code;
-            } else {
-              _logger.err(
-                'The cubit $name does already exist in $featureName on ${_platform.prettyName}.',
+            return ExitCode.success.code;
+          } on FeatureDoesNotExist {
+            _logger
+              ..info('')
+              ..err(
+                'The feature $featureName does not exist on ${_platform.prettyName}.',
               );
 
-              return ExitCode.config.code;
-            }
-          } else {
-            _logger.err(
-              'The feature $featureName does not exist on ${_platform.prettyName}.',
-            );
+            return ExitCode.config.code;
+          } on CubitAlreadyExists {
+            _logger
+              ..info('')
+              ..err(
+                'The cubit $name does already exist in $featureName on ${_platform.prettyName}.',
+              );
 
             return ExitCode.config.code;
           }

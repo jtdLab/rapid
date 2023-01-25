@@ -58,64 +58,70 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          isProjectRoot(_project),
+          projectExists(_project),
           platformIsActivated(_platform, _project),
         ],
         _logger,
         () async {
           final language = _language;
 
-          final platformDirectory = _project.platformDirectory(
-            platform: _platform,
-          );
-          final customFeatures = platformDirectory.customFeaturePackages();
+          try {
+            await _project.removeLanguage(
+              language,
+              platform: _platform,
+              logger: _logger,
+            );
 
-          if (customFeatures.isEmpty) {
-            _logger.err('No ${_platform.prettyName} features found!\n'
-                'Run "rapid ${_platform.name} add feature" to add your first ${_platform.prettyName} feature.');
+            _logger
+              ..info('')
+              ..success(
+                'Removed $language from the ${_platform.prettyName} part of your project.',
+              );
+
+            return ExitCode.success.code;
+          } on NoFeaturesFound {
+            _logger
+              ..info('')
+              ..err(
+                'No ${_platform.prettyName} features found!\n'
+                'Run "rapid ${_platform.name} add feature" to add your first ${_platform.prettyName} feature.',
+              );
 
             return ExitCode.config.code;
-          }
-
-          if (platformDirectory.allFeaturesHaveSameLanguages()) {
-            if (platformDirectory.allFeaturesHaveSameDefaultLanguage()) {
-              if (customFeatures.first.supportsLanguage(language)) {
-                if (customFeatures.first.defaultLanguage() != language) {
-                  for (final customFeature in customFeatures) {
-                    await customFeature.removeLanguage(
-                      language: language,
-                      logger: _logger,
-                    );
-                  }
-
-                  // TODO add hint how to work with localization
-                  return ExitCode.success.code;
-                } else {
-                  _logger.err(
-                      'Can not remove language "$language" because it is the default language.');
-                  // TODO add hint how to change default language
-
-                  return ExitCode.config.code;
-                }
-              } else {
-                // TODO better hint
-                _logger.err('The language "$language" is not present.');
-
-                return ExitCode.config.code;
-              }
-            } else {
-              _logger.err(
-                  'The ${_platform.prettyName} part of your project is corrupted.\n'
-                  'Because not all features have the same default language.\n\n'
-                  'Run "rapid doctor" to see which features are affected.');
-
-              return ExitCode.config.code;
-            }
-          } else {
-            _logger.err(
+          } on FeaturesHaveDiffrentLanguages {
+            _logger
+              ..info('')
+              ..err(
                 'The ${_platform.prettyName} part of your project is corrupted.\n'
                 'Because not all features support the same languages.\n\n'
-                'Run "rapid doctor" to see which features are affected.');
+                'Run "rapid doctor" to see which features are affected.',
+              );
+
+            return ExitCode.config.code;
+          } on FeaturesHaveDiffrentDefaultLanguage {
+            _logger
+              ..info('')
+              ..err(
+                'The ${_platform.prettyName} part of your project is corrupted.\n'
+                'Because not all features have the same default language.\n\n'
+                'Run "rapid doctor" to see which features are affected.',
+              );
+
+            return ExitCode.config.code;
+          } on FeaturesDoNotSupportLanguage {
+            // TODO better hint
+            _logger
+              ..info('')
+              ..err('The language "$language" is not present.');
+
+            return ExitCode.config.code;
+          } on UnableToRemoveDefaultLanguage {
+            // TODO add hint how to change default language
+            _logger
+              ..info('')
+              ..err(
+                'Can not remove language "$language" because it is the default language.',
+              );
 
             return ExitCode.config.code;
           }

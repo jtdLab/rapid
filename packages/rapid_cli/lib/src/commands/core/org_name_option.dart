@@ -35,6 +35,7 @@ mixin OrgNameGetter on OverridableArgResults {
   /// Returns [name] when valid.
   String _validateOrgName(String name) {
     final isValid = _isValidOrgName(name);
+
     if (!isValid) {
       throw UsageException(
         '"$name" is not a valid org name.\n\n'

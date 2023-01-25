@@ -57,7 +57,7 @@ abstract class DeactivatePlatformCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          isProjectRoot(_project),
+          projectExists(_project),
           platformIsActivated(
             _platform,
             _project,
@@ -66,13 +66,11 @@ abstract class DeactivatePlatformCommand extends Command<int>
         ],
         _logger,
         () async {
-          _logger.info(
-            'Deactivating ${lightYellow.wrap(_platform.prettyName)} ...',
-          );
+          await _project.removePlatform(_platform, logger: _logger);
 
-          await _project.deactivatePlatform(_platform, logger: _logger);
-
-          _logger.success('${_platform.prettyName} is now deactivated.');
+          _logger
+            ..info('')
+            ..success('${_platform.prettyName} is now deactivated.');
 
           return ExitCode.success.code;
         },

@@ -44,27 +44,30 @@ class DomainRemoveServiceInterfaceCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [isProjectRoot(_project)],
+        [projectExists(_project)],
         _logger,
         () async {
           final name = super.className;
           final dir = super.dir;
 
-          final domainPackage = _project.domainPackage;
-          final serviceInterface = domainPackage.serviceInterface(
-            name: name,
-            dir: dir,
-          );
-          if (serviceInterface.exists()) {
-            serviceInterface.delete();
+          try {
+            await _project.removeServiceInterface(
+              name: name,
+              dir: dir,
+              logger: _logger,
+            );
 
             // TODO only name sucks
-            _logger.success('Removed Service Interface ${name.pascalCase}.');
+            _logger
+              ..info('')
+              ..success('Removed Service Interface ${name.pascalCase}.');
 
             return ExitCode.success.code;
-          } else {
+          } on ServiceInterfaceDoesNotExist {
             // TODO only name sucks
-            _logger.err('Service Interface ${name.pascalCase} not found.');
+            _logger
+              ..info('')
+              ..err('Service Interface ${name.pascalCase} not found.');
 
             return ExitCode.config.code;
           }

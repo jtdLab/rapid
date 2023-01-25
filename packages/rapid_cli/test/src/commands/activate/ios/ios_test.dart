@@ -56,7 +56,7 @@ void main() {
 
       project = _MockProject();
       when(
-        () => project.activatePlatform(
+        () => project.addPlatform(
           Platform.ios,
           description: any(named: 'description'),
           orgName: any(named: 'orgName'),
@@ -129,7 +129,7 @@ void main() {
       verify(() => logger.info('Activating iOS ...')).called(1);
       verify(() => flutterConfigEnableIos(logger: logger)).called(1);
       verify(
-        () => project.activatePlatform(
+        () => project.addPlatform(
           Platform.ios,
           orgName: 'com.example',
           logger: logger,
@@ -153,7 +153,7 @@ void main() {
       verify(() => logger.info('Activating iOS ...')).called(1);
       verify(() => flutterConfigEnableIos(logger: logger)).called(1);
       verify(
-        () => project.activatePlatform(
+        () => project.addPlatform(
           Platform.ios,
           orgName: orgName,
           logger: logger,

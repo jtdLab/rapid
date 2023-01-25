@@ -91,7 +91,7 @@ void main() {
       test('completes when the process succeeds', () async {
         await ProcessOverrides.runZoned(
           () => expectLater(
-            Melos.bootstrap(scope: 'foo', logger: logger),
+            Melos.bootstrap(scope: ['foo'], logger: logger),
             completes,
           ),
           startProcess: startProcess,
@@ -107,7 +107,7 @@ void main() {
             .thenAnswer((_) async => ExitCode.software.code);
         await ProcessOverrides.runZoned(
           () => expectLater(
-            Melos.bootstrap(scope: 'foo', logger: logger),
+            Melos.bootstrap(scope: ['foo'], logger: logger),
             throwsException,
           ),
           startProcess: startProcess,

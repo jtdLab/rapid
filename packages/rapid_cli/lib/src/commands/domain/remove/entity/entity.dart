@@ -42,22 +42,28 @@ class DomainRemoveEntityCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [isProjectRoot(_project)],
+        [projectExists(_project)],
         _logger,
         () async {
           final name = super.className;
           final dir = super.dir;
 
-          final domainPackage = _project.domainPackage;
-          final entity = domainPackage.entity(name: name, dir: dir);
-          if (entity.exists()) {
-            entity.delete();
+          try {
+            await _project.removeEntity(
+              name: name,
+              dir: dir,
+              logger: _logger,
+            );
 
-            _logger.success('Removed Entity ${name.pascalCase}.');
+            _logger
+              ..info('')
+              ..success('Removed Entity ${name.pascalCase}.');
 
             return ExitCode.success.code;
-          } else {
-            _logger.err('Entity $name not found.');
+          } on EntityDoesNotExist {
+            _logger
+              ..info('')
+              ..err('Entity $name not found.');
 
             return ExitCode.config.code;
           }

@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:universal_io/io.dart';

@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/language/language.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform/core/validate_language.dart';
@@ -9,7 +10,6 @@ import 'package:rapid_cli/src/commands/linux/add/language/language.dart';
 import 'package:rapid_cli/src/commands/macos/add/language/language.dart';
 import 'package:rapid_cli/src/commands/web/add/language/language.dart';
 import 'package:rapid_cli/src/commands/windows/add/language/language.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -64,56 +64,59 @@ abstract class PlatformAddLanguageCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          isProjectRoot(_project),
+          projectExists(_project),
           platformIsActivated(_platform, _project),
         ],
         _logger,
         () async {
           final language = _language;
 
-          final platformDirectory = _project.platformDirectory(
-            platform: _platform,
-          );
-          final customFeatures = platformDirectory.customFeaturePackages();
-          if (customFeatures.isEmpty) {
-            _logger.err('No ${_platform.prettyName} features found!\n'
-                'Run "rapid ${_platform.name} add feature" to add your first ${_platform.prettyName} feature.');
+          try {
+            await _project.addLanguage(
+              language,
+              platform: _platform,
+              logger: _logger,
+            );
+
+            // TODO add hint how to work with localization
+            _logger
+              ..info('')
+              ..success(
+                'Added $language to the ${_platform.prettyName} part of your project.',
+              );
+
+            return ExitCode.success.code;
+          } on NoFeaturesFound {
+            _logger
+              ..info('')
+              ..err(
+                'No ${_platform.prettyName} features found!\n'
+                'Run "rapid ${_platform.name} add feature" to add your first ${_platform.prettyName} feature.',
+              );
 
             return ExitCode.config.code;
-          }
+          } on FeaturesHaveDiffrentLanguages {
+            _logger
+              ..info('')
+              ..err(
+                  'The ${_platform.prettyName} part of your project is corrupted.\n'
+                  'Because not all features support the same languages.\n\n'
+                  'Run "rapid doctor" to see which features are affected.');
 
-          if (platformDirectory.allFeaturesHaveSameLanguages()) {
-            if (platformDirectory.allFeaturesHaveSameDefaultLanguage()) {
-              if (!customFeatures.first.supportsLanguage(language)) {
-                for (final customFeature in customFeatures) {
-                  await customFeature.addLanguage(
-                    language: language,
-                    logger: _logger,
-                  );
-                }
-
-                await _flutterFormatFix(logger: _logger);
-
-                // TODO add hint how to work with localization
-                return ExitCode.success.code;
-              }
-
-              _logger.err('The language "$language" is already present.');
-
-              return ExitCode.config.code;
-            } else {
-              _logger.err(
+            return ExitCode.config.code;
+          } on FeaturesHaveDiffrentDefaultLanguage {
+            _logger
+              ..info('')
+              ..err(
                   'The ${_platform.prettyName} part of your project is corrupted.\n'
                   'Because not all features have the same default language.\n\n'
                   'Run "rapid doctor" to see which features are affected.');
 
-              return ExitCode.config.code;
-            }
-          } else {
-            _logger.err(
-                'The ${_platform.prettyName} part of your project is corrupted.\n'
-                'Because not all features support the same languages.\n\n'
-                'Run "rapid doctor" to see which features are affected.');
+            return ExitCode.config.code;
+          } on FeaturesAlreadySupportLanguage {
+            _logger
+              ..info('')
+              ..err('The language "$language" is already present.');
 
             return ExitCode.config.code;
           }

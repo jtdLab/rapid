@@ -5,7 +5,6 @@ import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 
 // TODO maybe introduce super class for dto and service implementation remove
 
@@ -46,29 +45,28 @@ class InfrastructureRemoveDataTransferObjectCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [isProjectRoot(_project)],
+        [projectExists(_project)],
         _logger,
         () async {
           final name = super.className;
           final dir = super.dir;
 
-          final infrastructurePackage = _project.infrastructurePackage;
-          final dataTransferObject = infrastructurePackage.dataTransferObject(
-            entityName: name,
-            dir: dir,
-          );
-          if (dataTransferObject.exists()) {
-            dataTransferObject.delete();
-
-            _logger.success(
-              'Removed Data Transfer Object $name.',
+          try {
+            await _project.removeDataTransferObject(
+              name: name,
+              dir: dir,
+              logger: _logger,
             );
+
+            _logger
+              ..info('')
+              ..success('Removed Data Transfer Object $name.');
 
             return ExitCode.success.code;
-          } else {
-            _logger.err(
-              'Data Transfer Object $name not found.',
-            );
+          } on DataTransferObjectDoesNotExist {
+            _logger
+              ..info('')
+              ..err('Data Transfer Object $name not found.');
 
             return ExitCode.config.code;
           }

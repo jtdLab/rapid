@@ -40,12 +40,19 @@ abstract class PlatformAddFeatureCommand extends Command<int>
     required Project project,
     MelosBootstrapCommand? melosBootstrap,
     MelosCleanCommand? melosClean,
+    FlutterPubGetCommand? flutterPubGet,
+    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     FlutterFormatFixCommand? flutterFormatFix,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
         _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         _melosClean = melosClean ?? Melos.clean,
+        _flutterPubGetCommand = flutterPubGet ?? Flutter.pubGet,
+        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
         _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix {
     argParser
       ..addSeparator('')
@@ -69,6 +76,9 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   final Project _project;
   final MelosBootstrapCommand _melosBootstrap;
   final MelosCleanCommand _melosClean;
+  final FlutterPubGetCommand _flutterPubGetCommand;
+  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final FlutterFormatFixCommand _flutterFormatFix;
 
   @override
@@ -88,7 +98,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          isProjectRoot(_project),
+          projectExists(_project),
           platformIsActivated(_platform, _project),
         ],
         _logger,
@@ -97,67 +107,27 @@ abstract class PlatformAddFeatureCommand extends Command<int>
           final description = _description;
           final routing = _routing;
 
-          final platformDirectory = _project.platformDirectory(
-            platform: _platform,
-          );
-          final customFeaturePackage = platformDirectory.customFeaturePackage(
-            name: name,
-          );
-          final customFeaturePackageExists = customFeaturePackage.exists();
-          if (!customFeaturePackageExists) {
-            await customFeaturePackage.create(
+          try {
+            await _project.addFeature(
+              name: name,
               description: description,
+              routing: routing,
+              platform: _platform,
               logger: _logger,
             );
-
-            final appFeaturePackage = platformDirectory.appFeaturePackage;
-            await appFeaturePackage.registerCustomFeaturePackage(
-              customFeaturePackage,
-              logger: _logger,
-            );
-
-            final routingFeaturePackage =
-                platformDirectory.routingFeaturePackage;
-            if (routing) {
-              routingFeaturePackage.pubspecFile.setDependency(
-                customFeaturePackage.packageName(),
-              );
-            }
-
-            final diPackage = _project.diPackage;
-            await diPackage.registerCustomFeaturePackage(
-              customFeaturePackage,
-              logger: _logger,
-            );
-
-            await _melosBootstrap(
-              logger: _logger,
-              scope:
-                  '${customFeaturePackage.packageName()},${diPackage.packageName()},${appFeaturePackage.packageName()}${routing ? ',${routingFeaturePackage.packageName()}' : ''}',
-            );
-
-            await Flutter.pubGet(
-              cwd: diPackage.path,
-              logger: _logger,
-            );
-
-            await Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: diPackage.path,
-              logger: _logger,
-            );
-
-            await _flutterFormatFix(logger: _logger);
-
-            _logger.success('Added ${_platform.prettyName} feature $name.');
-
-            // TODO maybe add hint how to register a page in the routing feature
+            // TODO add hint how to register a page in the routing feature
+            _logger
+              ..info('')
+              ..success('Added ${_platform.prettyName} feature $name.');
 
             return ExitCode.success.code;
-          } else {
+          } on FeatureAlreadyExists {
             // TODO test
-            _logger.err(
-              'The feature "$name" does not exist on ${_platform.prettyName}.',
-            );
+            _logger
+              ..info('')
+              ..err(
+                'The feature "$name" does not exist on ${_platform.prettyName}.',
+              );
 
             return ExitCode.config.code;
           }

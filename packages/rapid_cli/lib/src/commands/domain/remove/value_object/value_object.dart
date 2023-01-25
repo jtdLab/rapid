@@ -44,25 +44,28 @@ class DomainRemoveValueObjectCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [isProjectRoot(_project)],
+        [projectExists(_project)],
         _logger,
         () async {
           final name = super.className;
           final dir = super.dir;
 
-          final domainPackage = _project.domainPackage;
-          final valueObject = domainPackage.valueObject(
-            name: name,
-            dir: dir,
-          );
-          if (valueObject.exists()) {
-            valueObject.delete();
+          try {
+            await _project.removeValueObject(
+              name: name,
+              dir: dir,
+              logger: _logger,
+            );
 
-            _logger.success('Removed Value Object ${name.pascalCase}.');
+            _logger
+              ..info('')
+              ..success('Removed Value Object ${name.pascalCase}.');
 
             return ExitCode.success.code;
-          } else {
-            _logger.err('Value Object $name not found.');
+          } on ValueObjectDoesNotExist {
+            _logger
+              ..info('')
+              ..err('Value Object $name not found.');
 
             return ExitCode.config.code;
           }

@@ -5,7 +5,6 @@ import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 
 /// {@template domain_add_service_interface_command}
 /// `rapid domain add service_interface` command adds service_interface to the domain part of an existing Rapid project.
@@ -44,26 +43,29 @@ class DomainAddServiceInterfaceCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [isProjectRoot(_project)],
+        [projectExists(_project)],
         _logger,
         () async {
           final name = super.className;
           final outputDir = super.outputDir;
 
-          final domainPackage = _project.domainPackage;
-          final serviceInterface = domainPackage.serviceInterface(
-            name: name,
-            dir: outputDir,
-          );
-          if (!serviceInterface.exists()) {
-            await serviceInterface.create(logger: _logger);
+          try {
+            await _project.addServiceInterface(
+              name: name,
+              outputDir: outputDir,
+              logger: _logger,
+            );
 
-            _logger.success('Added Service Interface I${name}Service.');
+            _logger
+              ..info('')
+              ..success('Added Service Interface I${name}Service.');
 
             return ExitCode.success.code;
-          } else {
+          } on ServiceInterfaceAlreadyExists {
             // TODO only name is not enough
-            _logger.err('Service Interface I${name}Service already exists.');
+            _logger
+              ..info('')
+              ..err('Service Interface I${name}Service already exists.');
 
             return ExitCode.config.code;
           }

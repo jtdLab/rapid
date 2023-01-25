@@ -51,39 +51,40 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [isProjectRoot(_project)],
+        [projectExists(_project)],
         _logger,
         () async {
           final entityName = _entity;
           final outputDir = super.outputDir;
 
-          final domainPackage = _project.domainPackage;
-          final entity = domainPackage.entity(name: entityName, dir: outputDir);
-          if (entity.exists()) {
-            final infrastructurePackage = _project.infrastructurePackage;
-            final dataTransferObject = infrastructurePackage.dataTransferObject(
+          try {
+            await _project.addDataTransferObject(
               entityName: entityName,
-              dir: outputDir,
+              outputDir: outputDir,
+              logger: _logger,
             );
-            if (!dataTransferObject.exists()) {
-              await dataTransferObject.create(logger: _logger);
 
-              _logger.success(
+            _logger
+              ..info('')
+              ..success(
                 'Added Data Transfer Object ${entityName}Dto.',
               );
 
-              return ExitCode.success.code;
-            } else {
-              _logger.err(
-                'Data Transfer Object ${entityName}Dto already exists.',
+            return ExitCode.success.code;
+          } on EntityDoesNotExist {
+            _logger
+              ..info('')
+              ..err(
+                'Entity $entityName does not exist.',
               );
 
-              return ExitCode.config.code;
-            }
-          } else {
-            _logger.err(
-              'Entity $entityName does not exist.',
-            );
+            return ExitCode.config.code;
+          } on DataTransferObjectAlreadyExists {
+            _logger
+              ..info('')
+              ..err(
+                'Data Transfer Object ${entityName}Dto already exists.',
+              );
 
             return ExitCode.config.code;
           }

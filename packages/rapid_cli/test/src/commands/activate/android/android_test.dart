@@ -56,7 +56,7 @@ void main() {
 
       project = _MockProject();
       when(
-        () => project.activatePlatform(
+        () => project.addPlatform(
           Platform.android,
           description: any(named: 'description'),
           orgName: any(named: 'orgName'),
@@ -132,7 +132,7 @@ void main() {
       verify(() => logger.info('Activating Android ...')).called(1);
       verify(() => flutterConfigEnableAndroid(logger: logger)).called(1);
       verify(
-        () => project.activatePlatform(
+        () => project.addPlatform(
           Platform.android,
           orgName: 'com.example',
           logger: logger,
@@ -156,7 +156,7 @@ void main() {
       verify(() => logger.info('Activating Android ...')).called(1);
       verify(() => flutterConfigEnableAndroid(logger: logger)).called(1);
       verify(
-        () => project.activatePlatform(
+        () => project.addPlatform(
           Platform.android,
           orgName: orgName,
           logger: logger,

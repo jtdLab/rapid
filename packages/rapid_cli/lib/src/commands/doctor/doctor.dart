@@ -30,7 +30,7 @@ class DoctorCommand extends Command<int> {
 
   @override
   Future<int> run() => runWhen(
-        [isProjectRoot(_project)],
+        [projectExists(_project)],
         _logger,
         () async {
           final platformDirectories = Platform.values

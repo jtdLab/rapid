@@ -1,6 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/app_package.dart';
+import 'package:rapid_cli/src/project/app_package/app_package.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';

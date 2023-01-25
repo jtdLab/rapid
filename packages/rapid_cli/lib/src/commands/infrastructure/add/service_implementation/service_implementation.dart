@@ -51,45 +51,44 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [isProjectRoot(_project)],
+        [projectExists(_project)],
         _logger,
         () async {
           final name = super.className;
           final serviceName = _service;
           final outputDir = super.outputDir;
 
-          final domainPackage = _project.domainPackage;
-          final serviceInterface =
-              domainPackage.serviceInterface(name: serviceName, dir: outputDir);
-          if (serviceInterface.exists()) {
-            final infrastructurePackage = _project.infrastructurePackage;
-            final serviceImplementation =
-                infrastructurePackage.serviceImplementation(
+          try {
+            _project.addServiceImplementation(
               name: name,
               serviceName: serviceName,
-              dir: outputDir,
+              outputDir: outputDir,
+              logger: _logger,
             );
-            if (!serviceImplementation.exists()) {
-              await serviceImplementation.create(logger: _logger);
 
-              // Move component name to the component as a getter
-              // TODO better hint containg related service etc
-              _logger.success(
+            // Move component name to the component as a getter
+            // TODO better hint containg related service etc
+            _logger
+              ..info('')
+              ..success(
                 'Added Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service.',
               );
 
-              return ExitCode.success.code;
-            } else {
-              _logger.err(
-                'Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service already exists.',
+            return ExitCode.success.code;
+          } on ServiceInterfaceDoesNotExist {
+            _logger
+              ..info('')
+              ..err(
+                'Service Interface I${serviceName}Service does not exist.',
               );
 
-              return ExitCode.config.code;
-            }
-          } else {
-            _logger.err(
-              'Service Interface I${serviceName}Service does not exist.',
-            );
+            return ExitCode.config.code;
+          } on ServiceImplementationAlreadyExists {
+            _logger
+              ..info('')
+              ..err(
+                'Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service already exists.',
+              );
 
             return ExitCode.config.code;
           }

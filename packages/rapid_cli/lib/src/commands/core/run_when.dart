@@ -22,7 +22,10 @@ Future<int> runWhen(
   try {
     await Future.wait(when);
   } on EnvironmentException catch (e) {
-    logger.err(e.message);
+    logger
+      ..info('')
+      ..err(e.message);
+
     return e.exitCode;
   }
 
@@ -60,15 +63,13 @@ Future<void> melosIsInstalled(
 }
 
 /// Completes when [project] exists.
-Future<void> isProjectRoot(Project project) async {
-  final isRoot = project.exists();
+Future<void> projectExists(Project project) async {
+  final exists = project.exists();
 
-  if (!isRoot) {
+  if (!exists) {
     throw EnvironmentException(
       ExitCode.noInput.code,
-      '''
- Could not find a melos.yaml.
- This command should be run from the root of your Rapid project.''',
+      'This command should be run from the root of an existing Rapid project.',
     );
   }
 }

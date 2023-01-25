@@ -56,7 +56,7 @@ void main() {
 
       project = _MockProject();
       when(
-        () => project.activatePlatform(
+        () => project.addPlatform(
           Platform.macos,
           description: any(named: 'description'),
           orgName: any(named: 'orgName'),
@@ -137,7 +137,7 @@ void main() {
       verify(() => logger.info('Activating macOS ...')).called(1);
       verify(() => flutterConfigEnableMacos(logger: logger)).called(1);
       verify(
-        () => project.activatePlatform(
+        () => project.addPlatform(
           Platform.macos,
           orgName: 'com.example',
           logger: logger,
@@ -161,7 +161,7 @@ void main() {
       verify(() => logger.info('Activating macOS ...')).called(1);
       verify(() => flutterConfigEnableMacos(logger: logger)).called(1);
       verify(
-        () => project.activatePlatform(
+        () => project.addPlatform(
           Platform.macos,
           orgName: orgName,
           logger: logger,

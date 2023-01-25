@@ -48,7 +48,7 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      when(() => project.deactivatePlatform(Platform.windows, logger: logger))
+      when(() => project.removePlatform(Platform.windows, logger: logger))
           .thenAnswer((_) async {});
       when(() => project.exists()).thenReturn(true);
       when(() => project.platformIsActivated(Platform.windows))
@@ -107,7 +107,7 @@ void main() {
       // Assert
       verify(() => project.platformIsActivated(Platform.windows)).called(1);
       verify(() => logger.info('Deactivating Windows ...')).called(1);
-      verify(() => project.deactivatePlatform(Platform.windows, logger: logger))
+      verify(() => project.removePlatform(Platform.windows, logger: logger))
           .called(1);
       verify(() => logger.success('Windows is now deactivated.')).called(1);
       expect(result, ExitCode.success.code);

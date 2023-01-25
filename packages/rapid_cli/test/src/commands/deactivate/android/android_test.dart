@@ -48,7 +48,7 @@ void main() {
       when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      when(() => project.deactivatePlatform(Platform.android, logger: logger))
+      when(() => project.removePlatform(Platform.android, logger: logger))
           .thenAnswer((_) async {});
       when(() => project.exists()).thenReturn(true);
       when(() => project.platformIsActivated(Platform.android))
@@ -107,7 +107,7 @@ void main() {
       // Assert
       verify(() => project.platformIsActivated(Platform.android)).called(1);
       verify(() => logger.info('Deactivating Android ...')).called(1);
-      verify(() => project.deactivatePlatform(Platform.android, logger: logger))
+      verify(() => project.removePlatform(Platform.android, logger: logger))
           .called(1);
       verify(() => logger.success('Android is now deactivated.')).called(1);
       expect(result, ExitCode.success.code);

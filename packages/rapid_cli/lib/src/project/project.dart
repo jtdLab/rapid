@@ -326,6 +326,17 @@ class Project implements ProjectEntity {
       ],
       logger: logger,
     );
+
+    await _flutterPubGet(
+      cwd: diPackage.path,
+      logger: logger,
+    );
+
+    await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+      cwd: diPackage.path,
+      logger: logger,
+    );
+
     await _flutterFormatFix(cwd: path, logger: logger);
   }
 
@@ -356,6 +367,16 @@ class Project implements ProjectEntity {
         _appPackage.packageName(),
         diPackage.packageName(),
       ],
+      logger: logger,
+    );
+
+    await _flutterPubGet(
+      cwd: diPackage.path,
+      logger: logger,
+    );
+
+    await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+      cwd: diPackage.path,
       logger: logger,
     );
 

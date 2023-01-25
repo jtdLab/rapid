@@ -31,7 +31,6 @@ void main() {
           // Arrange
           await setupProjectWithPlatform(Platform.linux);
 
-
           // Act
           final commandResult = await commandRunner.run(
             ['deactivate', 'linux'],

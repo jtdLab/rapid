@@ -24,5 +24,5 @@ do
     cd ..
 done
 
-flutter format . --fix
+dart format . --fix
 flutter analyze .

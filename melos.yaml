@@ -34,9 +34,9 @@ scripts:
        - Requires `node` (can be installed via Brew on macOS).
 
   format:
-    run: melos exec -- "flutter format . --fix"
+    run: melos exec -- "dart format . --fix"
     description: Format the project
 
   analyze:
     run: melos exec -- "flutter analyze"
-    description: Format the project
+    description: Analyze the project

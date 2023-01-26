@@ -130,14 +130,14 @@ class Project implements ProjectEntity {
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    FlutterFormatFixCommand? flutterFormatFix,
+    DartFormatFixCommand? dartFormatFix,
     GeneratorBuilder? generator,
   })  : _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
-        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle {
     _melosFile = melosFile ?? MelosFile(project: this);
     _appPackage = appPackage ?? AppPackage(project: this);
@@ -166,7 +166,7 @@ class Project implements ProjectEntity {
   final FlutterPubGetCommand _flutterPubGet;
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
       _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
-  final FlutterFormatFixCommand _flutterFormatFix;
+  final DartFormatFixCommand _dartFormatFix;
   final GeneratorBuilder _generator;
 
   @override
@@ -269,7 +269,7 @@ class Project implements ProjectEntity {
     generateProgress.complete();
 
     await _melosBootstrap(cwd: path, logger: logger);
-    await _flutterFormatFix(cwd: path, logger: logger);
+    await _dartFormatFix(cwd: path, logger: logger);
   }
 
   Future<void> addPlatform(
@@ -337,7 +337,7 @@ class Project implements ProjectEntity {
       logger: logger,
     );
 
-    await _flutterFormatFix(cwd: path, logger: logger);
+    await _dartFormatFix(cwd: path, logger: logger);
   }
 
   Future<void> removePlatform(
@@ -380,7 +380,7 @@ class Project implements ProjectEntity {
       logger: logger,
     );
 
-    await _flutterFormatFix(cwd: path, logger: logger);
+    await _dartFormatFix(cwd: path, logger: logger);
   }
 
   Future<void> addFeature({
@@ -446,7 +446,7 @@ class Project implements ProjectEntity {
         logger: logger,
       );
 
-      await _flutterFormatFix(logger: logger);
+      await _dartFormatFix(logger: logger);
     }
   }
 
@@ -553,7 +553,7 @@ class Project implements ProjectEntity {
       );
     }
 
-    await _flutterFormatFix(logger: logger);
+    await _dartFormatFix(logger: logger);
   }
 
   Future<void> removeLanguage(

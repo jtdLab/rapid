@@ -5,6 +5,7 @@ import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:universal_io/io.dart';
 
+part 'dart_cli.dart';
 part 'flutter_cli.dart';
 part 'melos_cli.dart';
 

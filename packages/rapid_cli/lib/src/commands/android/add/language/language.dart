@@ -9,7 +9,7 @@ class AndroidAddLanguageCommand extends PlatformAddLanguageCommand {
   AndroidAddLanguageCommand({
     super.logger,
     required super.project,
-    super.flutterFormatFix,
+    super.dartFormatFix,
   }) : super(
           platform: Platform.android,
         );

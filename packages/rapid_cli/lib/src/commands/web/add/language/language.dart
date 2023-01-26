@@ -9,7 +9,7 @@ class WebAddLanguageCommand extends PlatformAddLanguageCommand {
   WebAddLanguageCommand({
     super.logger,
     required super.project,
-    super.flutterFormatFix,
+    super.dartFormatFix,
   }) : super(
           platform: Platform.web,
         );

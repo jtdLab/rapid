@@ -80,7 +80,7 @@ class DataTransferObject {
     required this.entityName,
     required this.dir,
     required this.infrastructurePackage,
-    FlutterFormatFixCommand? flutterFormatFix, // TODO needed ?
+    DartFormatFixCommand? dartFormatFix, // TODO needed ?
     GeneratorBuilder? generator,
   })  : _dataTransferObjectDirectory = Directory(
           p.join(
@@ -100,12 +100,12 @@ class DataTransferObject {
             entityName.snakeCase,
           ),
         ),
-        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle;
 
   final Directory _dataTransferObjectDirectory;
   final Directory _dataTransferObjectTestDirectory;
-  final FlutterFormatFixCommand _flutterFormatFix;
+  final DartFormatFixCommand _dartFormatFix;
   final GeneratorBuilder _generator;
 
   final String entityName;
@@ -135,7 +135,7 @@ class DataTransferObject {
       logger: logger,
     );
 
-    await _flutterFormatFix(cwd: infrastructurePackage.path, logger: logger);
+    await _dartFormatFix(cwd: infrastructurePackage.path, logger: logger);
   }
 
   // TODO logger ?
@@ -155,7 +155,7 @@ class ServiceImplementation {
     required this.serviceName,
     required this.dir,
     required this.infrastructurePackage,
-    FlutterFormatFixCommand? flutterFormatFix,
+    DartFormatFixCommand? dartFormatFix,
     GeneratorBuilder? generator,
   })  : _serviceImplementationDirectory = Directory(
           p.join(
@@ -175,12 +175,12 @@ class ServiceImplementation {
             serviceName.snakeCase,
           ),
         ),
-        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle;
 
   final Directory _serviceImplementationDirectory;
   final Directory _serviceImplementationTestDirectory;
-  final FlutterFormatFixCommand _flutterFormatFix;
+  final DartFormatFixCommand _dartFormatFix;
   final GeneratorBuilder _generator;
 
   final String name;
@@ -209,7 +209,7 @@ class ServiceImplementation {
       logger: logger,
     );
 
-    await _flutterFormatFix(cwd: infrastructurePackage.path, logger: logger);
+    await _dartFormatFix(cwd: infrastructurePackage.path, logger: logger);
   }
 
   // TODO logger ?

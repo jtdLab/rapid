@@ -353,7 +353,7 @@ Future<void> verifyNoAnalyzerIssues() async {
 
 /// Verify that no formatting issues are found in current directory.
 Future<void> verifyNoFormattingIssues() async {
-  final formatIssues = await _runFlutterFormat();
+  final formatIssues = await _runDartFormat();
   expect(formatIssues, 0);
 }
 
@@ -510,14 +510,14 @@ Future<int> _runFlutterAnalyze({
   return int.parse(match.group(1)!);
 }
 
-/// Run `flutter format --set-exit-if-changed` in [cwd].
+/// Run `dart format --set-exit-if-changed` in [cwd].
 ///
 /// Returns the amount of formatting issues.
-Future<int> _runFlutterFormat({
+Future<int> _runDartFormat({
   String cwd = '.',
 }) async {
   final result = await Process.run(
-    'flutter',
+    'dart',
     ['format', '.', '--set-exit-if-changed'],
     workingDirectory: cwd,
     runInShell: true,

@@ -80,7 +80,7 @@ class Entity {
     required this.name,
     required this.dir,
     required this.domainPackage,
-    FlutterFormatFixCommand? flutterFormatFix,
+    DartFormatFixCommand? dartFormatFix,
     GeneratorBuilder? generator,
   })  : _entityDirectory = Directory(
           p.normalize(
@@ -102,12 +102,12 @@ class Entity {
             ),
           ),
         ),
-        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle;
 
   final Directory _entityDirectory;
   final Directory _entityTestDirectory;
-  final FlutterFormatFixCommand _flutterFormatFix;
+  final DartFormatFixCommand _dartFormatFix;
   final GeneratorBuilder _generator;
 
   final String name;
@@ -133,7 +133,7 @@ class Entity {
       logger: logger,
     );
 
-    await _flutterFormatFix(cwd: domainPackage.path, logger: logger);
+    await _dartFormatFix(cwd: domainPackage.path, logger: logger);
   }
 
   // TODO logger ?
@@ -152,7 +152,7 @@ class ServiceInterface {
     required this.name,
     required this.dir,
     required this.domainPackage,
-    FlutterFormatFixCommand? flutterFormatFix,
+    DartFormatFixCommand? dartFormatFix,
     GeneratorBuilder? generator,
   })  : _serviceInterfaceDirectory = Directory(
           p.join(
@@ -162,11 +162,11 @@ class ServiceInterface {
             name.snakeCase,
           ),
         ),
-        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle;
 
   final Directory _serviceInterfaceDirectory;
-  final FlutterFormatFixCommand _flutterFormatFix;
+  final DartFormatFixCommand _dartFormatFix;
   final GeneratorBuilder _generator;
 
   final String name;
@@ -191,7 +191,7 @@ class ServiceInterface {
       logger: logger,
     );
 
-    await _flutterFormatFix(cwd: domainPackage.path, logger: logger);
+    await _dartFormatFix(cwd: domainPackage.path, logger: logger);
   }
 
   // TODO logger ?
@@ -211,7 +211,7 @@ class ValueObject {
     required this.domainPackage,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    FlutterFormatFixCommand? flutterFormatFix,
+    DartFormatFixCommand? dartFormatFix,
     GeneratorBuilder? generator,
   })  : _valueObjectDirectory = Directory(
           p.join(
@@ -232,14 +232,14 @@ class ValueObject {
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
-        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle;
 
   final Directory _valueObjectDirectory;
   final Directory _valueObjectTestDirectory;
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
       _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
-  final FlutterFormatFixCommand _flutterFormatFix;
+  final DartFormatFixCommand _dartFormatFix;
   final GeneratorBuilder _generator;
 
   final String name;
@@ -274,7 +274,7 @@ class ValueObject {
       cwd: domainPackage.path,
       logger: logger,
     );
-    await _flutterFormatFix(cwd: domainPackage.path, logger: logger);
+    await _dartFormatFix(cwd: domainPackage.path, logger: logger);
   }
 
   // TODO logger ?

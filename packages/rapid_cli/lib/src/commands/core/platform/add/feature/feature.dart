@@ -43,7 +43,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    FlutterFormatFixCommand? flutterFormatFix,
+    DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
@@ -53,7 +53,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
-        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix {
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
       ..addSeparator('')
       ..addOption(
@@ -79,7 +79,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   final FlutterPubGetCommand _flutterPubGetCommand;
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
       _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
-  final FlutterFormatFixCommand _flutterFormatFix;
+  final DartFormatFixCommand _dartFormatFix;
 
   @override
   String get name => 'feature';

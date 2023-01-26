@@ -26,7 +26,7 @@ abstract class _FlutterGenl10nCommand {
   Future<void> call({String cwd, required Logger logger});
 }
 
-abstract class _FlutterFormatFixCommand {
+abstract class _DartFormatFixCommand {
   Future<void> call({String cwd, required Logger logger});
 }
 
@@ -45,8 +45,7 @@ class _MockFeature extends Mock implements Feature {}
 class _MockFlutterGenl10nCommand extends Mock
     implements _FlutterGenl10nCommand {}
 
-class _MockFlutterFormatFixCommand extends Mock
-    implements _FlutterFormatFixCommand {}
+class _MockDartFormatFixCommand extends Mock implements _DartFormatFixCommand {}
 
 class _MockMasonGenerator extends Mock implements MasonGenerator {}
 
@@ -76,7 +75,7 @@ void main() {
 
     late FlutterGenl10nCommand flutterGenl10n;
 
-    late FlutterFormatFixCommand flutterFormatFix;
+    late DartFormatFixCommand dartFormatFix;
 
     late MasonGenerator generator;
     final generatedFiles = List.filled(
@@ -139,8 +138,8 @@ void main() {
       when(() => flutterGenl10n(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
-      flutterFormatFix = _MockFlutterFormatFixCommand();
-      when(() => flutterFormatFix(cwd: any(named: 'cwd'), logger: logger))
+      dartFormatFix = _MockDartFormatFixCommand();
+      when(() => dartFormatFix(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       generator = _MockMasonGenerator();
@@ -162,7 +161,7 @@ void main() {
         logger: logger,
         project: project,
         flutterGenl10n: flutterGenl10n,
-        flutterFormatFix: flutterFormatFix,
+        dartFormatFix: dartFormatFix,
         generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
@@ -307,7 +306,7 @@ void main() {
         ),
       ).called(1);
       verify(() => flutterGenl10n(cwd: feature2Path, logger: logger)).called(1);
-      verify(() => flutterFormatFix(logger: logger)).called(1);
+      verify(() => dartFormatFix(logger: logger)).called(1);
       expect(result, ExitCode.success.code);
     });
 

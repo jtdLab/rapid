@@ -358,35 +358,5 @@ void main() {
         verify(() => progress.fail()).called(1);
       });
     });
-
-    group('.formatFix', () {
-      test('completes when the process succeeds', () async {
-        await ProcessOverrides.runZoned(
-          () => expectLater(
-            Flutter.formatFix(logger: logger),
-            completes,
-          ),
-          startProcess: startProcess,
-        );
-        verify(() => logger.progress('Running "flutter format . --fix" in . '))
-            .called(1);
-        verify(() => progress.complete()).called(1);
-      });
-
-      test('throws when process fails', () async {
-        when(() => process.exitCode)
-            .thenAnswer((_) async => ExitCode.software.code);
-        await ProcessOverrides.runZoned(
-          () => expectLater(
-            Flutter.formatFix(logger: logger),
-            throwsException,
-          ),
-          startProcess: startProcess,
-        );
-        verify(() => logger.progress('Running "flutter format . --fix" in . '))
-            .called(1);
-        verify(() => progress.fail()).called(1);
-      });
-    });
   });
 }

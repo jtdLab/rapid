@@ -41,12 +41,6 @@ typedef FlutterGenl10nCommand = Future<void> Function({
   required Logger logger,
 });
 
-/// Signature for the [Flutter.formatFix] method.
-typedef FlutterFormatFixCommand = Future<void> Function({
-  String cwd,
-  required Logger logger,
-});
-
 /// Flutter CLI
 abstract class Flutter {
   /// Determine whether flutter is installed.
@@ -254,30 +248,6 @@ abstract class Flutter {
       await _Cmd.run(
         'flutter',
         ['gen-l10n'],
-        workingDirectory: cwd,
-        logger: logger,
-      );
-    } catch (_) {
-      progress.fail();
-      rethrow;
-    }
-
-    progress.complete();
-  }
-
-  /// Run localization generation (`flutter format --fix`).
-  static Future<void> formatFix({
-    String cwd = '.',
-    required Logger logger,
-  }) async {
-    final progress = logger.progress(
-      'Running "flutter format . --fix" in $cwd ',
-    );
-
-    try {
-      await _Cmd.run(
-        'flutter',
-        ['format', '.', '--fix'],
         workingDirectory: cwd,
         logger: logger,
       );

@@ -11,7 +11,7 @@ class WebAddFeatureCommand extends PlatformAddFeatureCommand {
     required super.project,
     super.melosBootstrap,
     super.melosClean,
-    super.flutterFormatFix,
+    super.dartFormatFix,
   }) : super(
           platform: Platform.web,
         );

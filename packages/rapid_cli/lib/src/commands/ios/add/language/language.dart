@@ -9,7 +9,7 @@ class IosAddLanguageCommand extends PlatformAddLanguageCommand {
   IosAddLanguageCommand({
     super.logger,
     required super.project,
-    super.flutterFormatFix,
+    super.dartFormatFix,
   }) : super(
           platform: Platform.ios,
         );

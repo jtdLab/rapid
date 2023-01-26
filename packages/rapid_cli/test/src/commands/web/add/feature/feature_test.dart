@@ -33,7 +33,7 @@ abstract class _MelosCleanCommand {
   Future<void> call({String cwd, required Logger logger});
 }
 
-abstract class _FlutterFormatFixCommand {
+abstract class _DartFormatFixCommand {
   Future<void> call({String cwd, required Logger logger});
 }
 
@@ -50,8 +50,7 @@ class _MockMelosBootstrapCommand extends Mock
 
 class _MockMelosCleanCommand extends Mock implements _MelosCleanCommand {}
 
-class _MockFlutterFormatFixCommand extends Mock
-    implements _FlutterFormatFixCommand {}
+class _MockDartFormatFixCommand extends Mock implements _DartFormatFixCommand {}
 
 class _MockMasonGenerator extends Mock implements MasonGenerator {}
 
@@ -75,7 +74,7 @@ void main() {
 
     late MelosCleanCommand melosClean;
 
-    late FlutterFormatFixCommand flutterFormatFix;
+    late DartFormatFixCommand dartFormatFix;
 
     late MasonGenerator generator;
     final generatedFiles = List.filled(
@@ -119,8 +118,8 @@ void main() {
       when(() => melosClean(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
-      flutterFormatFix = _MockFlutterFormatFixCommand();
-      when(() => flutterFormatFix(cwd: any(named: 'cwd'), logger: logger))
+      dartFormatFix = _MockDartFormatFixCommand();
+      when(() => dartFormatFix(cwd: any(named: 'cwd'), logger: logger))
           .thenAnswer((_) async {});
 
       generator = _MockMasonGenerator();
@@ -143,7 +142,7 @@ void main() {
         project: project,
         melosBootstrap: melosBootstrap,
         melosClean: melosClean,
-        flutterFormatFix: flutterFormatFix,
+        dartFormatFix: dartFormatFix,
         generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
@@ -283,7 +282,7 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
       verify(() => melosBootstrap(logger: logger)).called(1);
-      verify(() => flutterFormatFix(logger: logger)).called(1);
+      verify(() => dartFormatFix(logger: logger)).called(1);
       verify(() => logger.success('Added Web feature $featureName.')).called(1);
       expect(result, ExitCode.success.code);
     });
@@ -327,7 +326,7 @@ void main() {
       verify(() => logger.progress('Running "melos bootstrap" in . '))
           .called(1);
       verify(() => melosBootstrap(logger: logger)).called(1);
-      verify(() => flutterFormatFix(logger: logger)).called(1);
+      verify(() => dartFormatFix(logger: logger)).called(1);
       verify(() => logger.success('Added Web feature $featureName.')).called(1);
       expect(result, ExitCode.success.code);
     });

@@ -37,16 +37,16 @@ abstract class PlatformAddLanguageCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
-    FlutterFormatFixCommand? flutterFormatFix,
+    DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
-        _flutterFormatFix = flutterFormatFix ?? Flutter.formatFix;
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix;
 
   final Platform _platform;
   final Logger _logger;
   final Project _project;
-  final FlutterFormatFixCommand _flutterFormatFix;
+  final DartFormatFixCommand _dartFormatFix;
 
   @override
   String get name => 'language';

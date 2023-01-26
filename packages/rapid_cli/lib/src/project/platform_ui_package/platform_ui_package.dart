@@ -107,6 +107,8 @@ class Widget {
     required Logger logger,
   }) async {
     final projectName = platformUiPackage.project.name();
+    final platform = platformUiPackage.platform;
+
     final generator = await _generator(widgetBundle);
     await generator.generate(
       DirectoryGeneratorTarget(Directory(platformUiPackage.path)),
@@ -114,6 +116,12 @@ class Widget {
         'project_name': projectName,
         'name': name,
         'output_dir': dir,
+        'android': platform == Platform.android,
+        'ios': platform == Platform.ios,
+        'linux': platform == Platform.linux,
+        'macos': platform == Platform.macos,
+        'web': platform == Platform.web,
+        'windows': platform == Platform.windows,
       },
       logger: logger,
     );

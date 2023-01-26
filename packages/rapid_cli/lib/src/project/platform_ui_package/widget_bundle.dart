@@ -9,14 +9,14 @@ final widgetBundle = MasonBundle.fromJson(<String, dynamic>{
       "path":
           "lib/src/{{{output_dir}}}/{{name.snakeCase()}}/{{name.snakeCase()}}.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvY3VwZXJ0aW5vLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6e3twcm9qZWN0X25hbWUuc25ha2VDYXNlKCl9fV91aV9pb3Mvc3JjL3t7bmFtZS5zbmFrZUNhc2UoKX19L3t7bmFtZS5zbmFrZUNhc2UoKX19X3RoZW1lLmRhcnQnOwoKY2xhc3Mge3twcm9qZWN0X25hbWUucGFzY2FsQ2FzZSgpfX17e25hbWUucGFzY2FsQ2FzZSgpfX0gZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIGZpbmFsIHt7cHJvamVjdF9uYW1lLnBhc2NhbENhc2UoKX19e3tuYW1lLnBhc2NhbENhc2UoKX19VGhlbWU/IHRoZW1lOwoKICBjb25zdCB7e3Byb2plY3RfbmFtZS5wYXNjYWxDYXNlKCl9fXt7bmFtZS5wYXNjYWxDYXNlKCl9fSh7CiAgICBzdXBlci5rZXksCiAgICB0aGlzLnRoZW1lLAogIH0pOwoKICBAb3ZlcnJpZGUKICBXaWRnZXQgYnVpbGQoQnVpbGRDb250ZXh0IGNvbnRleHQpIHsKICAgIGZpbmFsIGJhY2tncm91bmRDb2xvciA9IHRoZW1lPy5iYWNrZ3JvdW5kQ29sb3IgPz8gY29udGV4dC5iYWNrZ3JvdW5kQ29sb3I7CgogICAgLy8gVE9ETzogaW1wbGVtZW50CiAgICByZXR1cm4gQ29udGFpbmVyKAogICAgICBjb2xvcjogYmFja2dyb3VuZENvbG9yLAogICAgKTsKICB9Cn0K",
+          "e3sjYW5kcm9pZH19aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7e3svYW5kcm9pZH19e3sjaW9zfX1pbXBvcnQgJ3BhY2thZ2U6Zmx1dHRlci9jdXBlcnRpbm8uZGFydCc7e3svaW9zfX17eyNsaW51eH19aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7e3svbGludXh9fXt7I21hY29zfX1pbXBvcnQgJ3BhY2thZ2U6Zmx1dHRlci9jdXBlcnRpbm8uZGFydCc7e3svbWFjb3N9fXt7I3dlYn19aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7e3svd2VifX17eyN3aW5kb3dzfX1pbXBvcnQgJ3BhY2thZ2U6Zmx1ZW50X3VpL2ZsdWVudF91aS5kYXJ0Jzt7ey93aW5kb3dzfX1pbXBvcnQgJ3BhY2thZ2U6e3twcm9qZWN0X25hbWUuc25ha2VDYXNlKCl9fV91aV97eyNhbmRyb2lkfX1hbmRyb2lke3svYW5kcm9pZH19e3sjaW9zfX1pb3N7ey9pb3N9fXt7I2xpbnV4fX1saW51eHt7L2xpbnV4fX17eyNtYWNvc319bWFjb3N7ey9tYWNvc319e3sjd2VifX13ZWJ7ey93ZWJ9fXt7I3dpbmRvd3N9fXdpbmRvd3N7ey93aW5kb3dzfX0vc3JjL3t7bmFtZS5zbmFrZUNhc2UoKX19L3t7bmFtZS5zbmFrZUNhc2UoKX19X3RoZW1lLmRhcnQnOwoKY2xhc3Mge3twcm9qZWN0X25hbWUucGFzY2FsQ2FzZSgpfX17e25hbWUucGFzY2FsQ2FzZSgpfX0gZXh0ZW5kcyBTdGF0ZWxlc3NXaWRnZXQgewogIGZpbmFsIHt7cHJvamVjdF9uYW1lLnBhc2NhbENhc2UoKX19e3tuYW1lLnBhc2NhbENhc2UoKX19VGhlbWU/IHRoZW1lOwoKICBjb25zdCB7e3Byb2plY3RfbmFtZS5wYXNjYWxDYXNlKCl9fXt7bmFtZS5wYXNjYWxDYXNlKCl9fSh7CiAgICBzdXBlci5rZXksCiAgICB0aGlzLnRoZW1lLAogIH0pOwoKICBAb3ZlcnJpZGUKICBXaWRnZXQgYnVpbGQoQnVpbGRDb250ZXh0IGNvbnRleHQpIHsKICAgIGZpbmFsIGJhY2tncm91bmRDb2xvciA9IHRoZW1lPy5iYWNrZ3JvdW5kQ29sb3IgPz8gY29udGV4dC5iYWNrZ3JvdW5kQ29sb3I7CgogICAgLy8gVE9ETzogaW1wbGVtZW50CiAgICByZXR1cm4gQ29udGFpbmVyKAogICAgICBjb2xvcjogYmFja2dyb3VuZENvbG9yLAogICAgKTsKICB9Cn0K",
       "type": "text"
     },
     {
       "path":
           "lib/src/{{{output_dir}}}/{{name.snakeCase()}}/{{name.snakeCase()}}_theme.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvY3VwZXJ0aW5vLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6Zmx1dHRlci9tYXRlcmlhbC5kYXJ0JyBzaG93IFRoZW1lLCBUaGVtZUV4dGVuc2lvbjsKaW1wb3J0ICdwYWNrYWdlOnRoZW1lX3RhaWxvcl9hbm5vdGF0aW9uL3RoZW1lX3RhaWxvcl9hbm5vdGF0aW9uLmRhcnQnOwoKcGFydCAne3tuYW1lLnNuYWtlQ2FzZSgpfX1fdGhlbWUudGFpbG9yLmRhcnQnOwoKQHRhaWxvcgpjbGFzcyBfJHt7cHJvamVjdF9uYW1lLnBhc2NhbENhc2UoKX19e3tuYW1lLnBhc2NhbENhc2UoKX19VGhlbWUgewogIHN0YXRpYyBMaXN0PENvbG9yPiBiYWNrZ3JvdW5kQ29sb3IgPSBbCiAgICBDdXBlcnRpbm9Db2xvcnMuYmxhY2ssCiAgICBDdXBlcnRpbm9Db2xvcnMud2hpdGUsCiAgXTsKfQo=",
+          "e3sjYW5kcm9pZH19aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7e3svYW5kcm9pZH19e3sjaW9zfX1pbXBvcnQgJ3BhY2thZ2U6Zmx1dHRlci9jdXBlcnRpbm8uZGFydCc7aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCcgc2hvdyBUaGVtZSwgVGhlbWVFeHRlbnNpb247e3svaW9zfX17eyNsaW51eH19aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7e3svbGludXh9fXt7I21hY29zfX1pbXBvcnQgJ3BhY2thZ2U6Zmx1dHRlci9jdXBlcnRpbm8uZGFydCc7aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCcgc2hvdyBUaGVtZSwgVGhlbWVFeHRlbnNpb247e3svbWFjb3N9fXt7I3dlYn19aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCc7e3svd2VifX17eyN3aW5kb3dzfX1pbXBvcnQgJ3BhY2thZ2U6Zmx1dHRlci9tYXRlcmlhbC5kYXJ0Jzt7ey93aW5kb3dzfX1pbXBvcnQgJ3BhY2thZ2U6dGhlbWVfdGFpbG9yX2Fubm90YXRpb24vdGhlbWVfdGFpbG9yX2Fubm90YXRpb24uZGFydCc7CgpwYXJ0ICd7e25hbWUuc25ha2VDYXNlKCl9fV90aGVtZS50YWlsb3IuZGFydCc7CgpAdGFpbG9yCmNsYXNzIF8ke3twcm9qZWN0X25hbWUucGFzY2FsQ2FzZSgpfX17e25hbWUucGFzY2FsQ2FzZSgpfX1UaGVtZSB7CiAgc3RhdGljIExpc3Q8Q29sb3I+IGJhY2tncm91bmRDb2xvciA9IFsKe3sjYW5kcm9pZH19CiAgICBDb2xvcnMuYmxhY2ssCiAgICBDb2xvcnMud2hpdGUsCnt7L2FuZHJvaWR9fQp7eyNpb3N9fQogICAgQ3VwZXJ0aW5vQ29sb3JzLmJsYWNrLAogICAgQ3VwZXJ0aW5vQ29sb3JzLndoaXRlLAp7ey9pb3N9fQp7eyNsaW51eH19CiAgICBDb2xvcnMuYmxhY2ssCiAgICBDb2xvcnMud2hpdGUsCnt7L2xpbnV4fX0Ke3sjbWFjb3N9fQogICAgQ3VwZXJ0aW5vQ29sb3JzLmJsYWNrLAogICAgQ3VwZXJ0aW5vQ29sb3JzLndoaXRlLAp7ey9tYWNvc319Cnt7I3dlYn19CiAgICBDb2xvcnMuYmxhY2ssCiAgICBDb2xvcnMud2hpdGUsCnt7L3dlYn19Cnt7I3dpbmRvd3N9fQogICAgQ29sb3JzLmJsYWNrLAogICAgQ29sb3JzLndoaXRlLAp7ey93aW5kb3dzfX0KICBdOwp9Cg==",
       "type": "text"
     },
     {
@@ -52,6 +52,12 @@ final widgetBundle = MasonBundle.fromJson(<String, dynamic>{
   "vars": {
     "project_name": {"type": "string"},
     "name": {"type": "string"},
-    "output_dir": {"type": "string"}
+    "output_dir": {"type": "string"},
+    "android": {"type": "boolean", "description": "Wheter is Android widget"},
+    "ios": {"type": "boolean", "description": "Wheter is iOS widget"},
+    "web": {"type": "boolean", "description": "Wheter is Web widget"},
+    "linux": {"type": "boolean", "description": "Wheter is Linux widget"},
+    "macos": {"type": "boolean", "description": "Wheter is macOS widget"},
+    "windows": {"type": "boolean", "description": "Wheter is Windows widget"}
   }
 });

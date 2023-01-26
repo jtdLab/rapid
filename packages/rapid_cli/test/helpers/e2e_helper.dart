@@ -351,6 +351,12 @@ Future<void> verifyNoAnalyzerIssues() async {
   expect(analyzerIssues, 0);
 }
 
+/// Verify that [amount] analyzer issues are found in current directory.
+Future<void> verifyHasAnalyzerIssues(int amount) async {
+  final analyzerIssues = await _runFlutterAnalyze();
+  expect(analyzerIssues, amount);
+}
+
 /// Verify that no formatting issues are found in current directory.
 Future<void> verifyNoFormattingIssues() async {
   final formatIssues = await _runDartFormat();

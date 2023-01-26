@@ -30,11 +30,11 @@ class _MockProgress extends Mock implements Progress {}
 
 class _MockProject extends Mock implements Project {}
 
-class _MockInfrastructurePackage extends Mock implements InfrastructurePackage {
-}
+class _MockInfrastructurePackage extends Mock
+    implements InfrastructurePackage {}
 
-class _MockServiceImplementation extends Mock implements ServiceImplementation {
-}
+class _MockServiceImplementation extends Mock
+    implements ServiceImplementation {}
 
 class _MockArgResults extends Mock implements ArgResults {}
 

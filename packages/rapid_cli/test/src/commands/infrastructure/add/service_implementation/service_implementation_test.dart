@@ -31,13 +31,13 @@ class _MockProgress extends Mock implements Progress {}
 
 class _MockProject extends Mock implements Project {}
 
-class _MockInfrastructurePackage extends Mock implements InfrastructurePackage {
-}
+class _MockInfrastructurePackage extends Mock
+    implements InfrastructurePackage {}
 
 class _MockDomainPackage extends Mock implements DomainPackage {}
 
-class _MockServiceImplementation extends Mock implements ServiceImplementation {
-}
+class _MockServiceImplementation extends Mock
+    implements ServiceImplementation {}
 
 class _MockServiceInterface extends Mock implements ServiceInterface {}
 

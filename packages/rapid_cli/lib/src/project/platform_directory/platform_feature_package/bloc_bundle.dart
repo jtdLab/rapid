@@ -4,7 +4,29 @@
 import 'package:mason/mason.dart';
 
 final blocBundle = MasonBundle.fromJson(<String, dynamic>{
-  "files": [],
+  "files": [
+    {
+      "path":
+          "lib/src/application/{{name.snakeCase()}}/{{name.snakeCase()}}_bloc.dart",
+      "data":
+          "aW1wb3J0ICdwYWNrYWdlOmJsb2MvYmxvYy5kYXJ0JzsKaW1wb3J0ICdwYWNrYWdlOmZyZWV6ZWRfYW5ub3RhdGlvbi9mcmVlemVkX2Fubm90YXRpb24uZGFydCc7CmltcG9ydCAncGFja2FnZTppbmplY3RhYmxlL2luamVjdGFibGUuZGFydCc7CmltcG9ydCAncGFja2FnZTpyYXBpZF9kaS9yYXBpZF9kaS5kYXJ0JzsKCnBhcnQgJ3t7bmFtZS5zbmFrZUNhc2UoKX19X2Jsb2MuZnJlZXplZC5kYXJ0JzsKcGFydCAne3tuYW1lLnNuYWtlQ2FzZSgpfX1fZXZlbnQuZGFydCc7CnBhcnQgJ3t7bmFtZS5zbmFrZUNhc2UoKX19X3N0YXRlLmRhcnQnOwoKQHt7cGxhdGZvcm19fQpAaW5qZWN0YWJsZQpjbGFzcyB7e25hbWUucGFzY2FsQ2FzZSgpfX1CbG9jIGV4dGVuZHMgQmxvYzx7e25hbWUucGFzY2FsQ2FzZSgpfX1FdmVudCwge3tuYW1lLnBhc2NhbENhc2UoKX19U3RhdGU+IHsKICB7e25hbWUucGFzY2FsQ2FzZSgpfX1CbG9jKCkKICAgICAgOiBzdXBlcigKICAgICAgICAgIC8vIFNldCBpbml0aWFsIHN0YXRlCiAgICAgICAgICBjb25zdCB7e25hbWUucGFzY2FsQ2FzZSgpfX1TdGF0ZS5pbml0aWFsKCksCiAgICAgICAgKSB7CiAgICAvLyBSZWdpc3RlciBoYW5kbGVycwogICAgb248X1N0YXJ0ZWQ+KAogICAgICAoZXZlbnQsIGVtaXQpIGFzeW5jID0+IF9oYW5kbGVTdGFydGVkKGV2ZW50LCBlbWl0KSwKICAgICk7CiAgfQoKICAvLy8gSGFuZGxlIGluY29taW5nIFtfU3RhcnRlZF0gZXZlbnQuCiAgdm9pZCBfaGFuZGxlU3RhcnRlZCgKICAgIF9TdGFydGVkIGV2ZW50LAogICAgRW1pdHRlcjx7e25hbWUucGFzY2FsQ2FzZSgpfX1TdGF0ZT4gZW1pdCwKICApIHsKICAgIC8vIFRPRE86IGltcGxlbWVudAogICAgdGhyb3cgVW5pbXBsZW1lbnRlZEVycm9yKCk7CiAgfQp9Cg==",
+      "type": "text"
+    },
+    {
+      "path":
+          "lib/src/application/{{name.snakeCase()}}/{{name.snakeCase()}}_event.dart",
+      "data":
+          "cGFydCBvZiAne3tuYW1lLnNuYWtlQ2FzZSgpfX1fYmxvYy5kYXJ0JzsKCkBmcmVlemVkCmNsYXNzIHt7bmFtZS5wYXNjYWxDYXNlKCl9fUV2ZW50IHdpdGggXyR7e25hbWUucGFzY2FsQ2FzZSgpfX1FdmVudCB7CiAgY29uc3QgZmFjdG9yeSB7e25hbWUucGFzY2FsQ2FzZSgpfX1FdmVudC5zdGFydGVkKCkgPSBfU3RhcnRlZDsKfQo=",
+      "type": "text"
+    },
+    {
+      "path":
+          "lib/src/application/{{name.snakeCase()}}/{{name.snakeCase()}}_state.dart",
+      "data":
+          "cGFydCBvZiAne3tuYW1lLnNuYWtlQ2FzZSgpfX1fYmxvYy5kYXJ0JzsKCkBmcmVlemVkCmNsYXNzIHt7bmFtZS5wYXNjYWxDYXNlKCl9fVN0YXRlIHdpdGggXyR7e25hbWUucGFzY2FsQ2FzZSgpfX1TdGF0ZSB7CiAgY29uc3QgZmFjdG9yeSB7e25hbWUucGFzY2FsQ2FzZSgpfX1TdGF0ZS5pbml0aWFsKCkgPSBfSW5pdGlhbDsKfQo=",
+      "type": "text"
+    }
+  ],
   "hooks": [],
   "name": "bloc",
   "description":

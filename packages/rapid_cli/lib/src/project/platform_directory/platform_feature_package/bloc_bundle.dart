@@ -25,6 +25,12 @@ final blocBundle = MasonBundle.fromJson(<String, dynamic>{
       "data":
           "cGFydCBvZiAne3tuYW1lLnNuYWtlQ2FzZSgpfX1fYmxvYy5kYXJ0JzsKCkBmcmVlemVkCmNsYXNzIHt7bmFtZS5wYXNjYWxDYXNlKCl9fVN0YXRlIHdpdGggXyR7e25hbWUucGFzY2FsQ2FzZSgpfX1TdGF0ZSB7CiAgY29uc3QgZmFjdG9yeSB7e25hbWUucGFzY2FsQ2FzZSgpfX1TdGF0ZS5pbml0aWFsKCkgPSBfSW5pdGlhbDsKfQo=",
       "type": "text"
+    },
+    {
+      "path": "test/src/application/kuh/{{name.snakeCase()}}_bloc_test.dart",
+      "data":
+          "aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXJfdGVzdC9mbHV0dGVyX3Rlc3QuZGFydCc7CmltcG9ydCAncGFja2FnZTp7e3Byb2plY3RfbmFtZS5zbmFrZUNhc2UoKX19X3t7cGxhdGZvcm19fV97e2ZlYXR1cmVfbmFtZX19L3NyYy9hcHBsaWNhdGlvbi97e25hbWUuc25ha2VDYXNlKCl9fS97e25hbWUuc25ha2VDYXNlKCl9fV9ibG9jLmRhcnQnOwoKdm9pZCBtYWluKCkgewogIGdyb3VwKCd7e25hbWUucGFzY2FsQ2FzZSgpfX1CbG9jJywgKCkgewogICAgbGF0ZSB7e25hbWUucGFzY2FsQ2FzZSgpfX1CbG9jIHVuZGVyVGVzdDsKCiAgICB7e25hbWUucGFzY2FsQ2FzZSgpfX1CbG9jIHt7bmFtZS5jYW1lbENhc2UoKX19QmxvYygpID0+IHt7bmFtZS5wYXNjYWxDYXNlKCl9fUJsb2MoKTsKCiAgICB0ZXN0KCdoYXMgaW5pdGlhbCBzdGF0ZSBJbml0aWFsJywgKCkgewogICAgICAvLyBBY3QKICAgICAgdW5kZXJUZXN0ID0ge3tuYW1lLmNhbWVsQ2FzZSgpfX1CbG9jKCk7CgogICAgICAvLyBBc3NlcnQKICAgICAgZXhwZWN0KHVuZGVyVGVzdC5zdGF0ZSwgY29uc3Qge3tuYW1lLnBhc2NhbENhc2UoKX19U3RhdGUuaW5pdGlhbCgpKTsKICAgIH0pOwoKICAgIGdyb3VwKCdzdGFydGVkJywgKCkgewogICAgICAvLyBUT0RPOiB1c2UgaHR0cHM6Ly9wdWIuZGV2L3BhY2thZ2VzL2Jsb2NfdGVzdCB0byB2ZXJpZnkgY29ycmVjdCBzdGF0ZXMgZ2V0IGVtaXR0ZWQKICAgIH0pOwogIH0pOwp9Cg==",
+      "type": "text"
     }
   ],
   "hooks": [],
@@ -51,6 +57,10 @@ final blocBundle = MasonBundle.fromJson(<String, dynamic>{
   },
   "vars": {
     "project_name": {"type": "string", "description": "The project name"},
+    "feature_name": {
+      "type": "string",
+      "description": "The name of the feature"
+    },
     "name": {"type": "string", "description": "The name of the bloc"},
     "platform": {"type": "string", "description": "The platform of the feature"}
   }

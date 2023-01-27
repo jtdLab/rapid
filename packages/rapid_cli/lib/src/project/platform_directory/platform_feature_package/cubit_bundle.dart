@@ -18,6 +18,12 @@ final cubitBundle = MasonBundle.fromJson(<String, dynamic>{
       "data":
           "cGFydCBvZiAne3tuYW1lLnNuYWtlQ2FzZSgpfX1fY3ViaXQuZGFydCc7CgpAZnJlZXplZApjbGFzcyB7e25hbWUucGFzY2FsQ2FzZSgpfX1TdGF0ZSB3aXRoIF8ke3tuYW1lLnBhc2NhbENhc2UoKX19U3RhdGUgewogIGNvbnN0IGZhY3Rvcnkge3tuYW1lLnBhc2NhbENhc2UoKX19U3RhdGUuaW5pdGlhbCgpID0gX0luaXRpYWw7Cn0K",
       "type": "text"
+    },
+    {
+      "path": "test/{{name.snakeCase()}}_cubit_test.dart",
+      "data":
+          "aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXJfdGVzdC9mbHV0dGVyX3Rlc3QuZGFydCc7CmltcG9ydCAncGFja2FnZTp7e3Byb2plY3RfbmFtZS5zbmFrZUNhc2UoKX19X3t7cGxhdGZvcm19fV97e2ZlYXR1cmVfbmFtZX19L3NyYy9hcHBsaWNhdGlvbi97e25hbWUuc25ha2VDYXNlKCl9fS97e25hbWUuc25ha2VDYXNlKCl9fV9jdWJpdC5kYXJ0JzsKCnZvaWQgbWFpbigpIHsKICBncm91cCgne3tuYW1lLnBhc2NhbENhc2UoKX19Q3ViaXQnLCAoKSB7CiAgICBsYXRlIHt7bmFtZS5wYXNjYWxDYXNlKCl9fUN1Yml0IHVuZGVyVGVzdDsKCiAgICB7e25hbWUucGFzY2FsQ2FzZSgpfX1DdWJpdCB7e25hbWUuY2FtZWxDYXNlKCl9fUN1Yml0KCkgPT4ge3tuYW1lLnBhc2NhbENhc2UoKX19Q3ViaXQoKTsKCiAgICB0ZXN0KCdoYXMgaW5pdGlhbCBzdGF0ZSBJbml0aWFsJywgKCkgewogICAgICAvLyBBY3QKICAgICAgdW5kZXJUZXN0ID0ge3tuYW1lLmNhbWVsQ2FzZSgpfX1DdWJpdCgpOwoKICAgICAgLy8gQXNzZXJ0CiAgICAgIGV4cGVjdCh1bmRlclRlc3Quc3RhdGUsIGNvbnN0IHt7bmFtZS5wYXNjYWxDYXNlKCl9fVN0YXRlLmluaXRpYWwoKSk7CiAgICB9KTsKCiAgICBncm91cCgnc3RhcnRlZCcsICgpIHsKICAgICAgLy8gVE9ETzogdXNlIGh0dHBzOi8vcHViLmRldi9wYWNrYWdlcy9jdWJpdF90ZXN0IHRvIHZlcmlmeSBjb3JyZWN0IHN0YXRlcyBnZXQgZW1pdHRlZAogICAgfSk7CiAgfSk7Cn0K",
+      "type": "text"
     }
   ],
   "hooks": [],
@@ -44,6 +50,10 @@ final cubitBundle = MasonBundle.fromJson(<String, dynamic>{
   },
   "vars": {
     "project_name": {"type": "string", "description": "The project name"},
+    "feature_name": {
+      "type": "string",
+      "description": "The name of the feature"
+    },
     "name": {"type": "string", "description": "The name of the bloc"},
     "platform": {"type": "string", "description": "The platform of the feature"}
   }

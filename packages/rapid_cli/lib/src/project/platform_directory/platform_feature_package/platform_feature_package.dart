@@ -5,11 +5,11 @@ import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/bloc_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:recase/recase.dart';
 import 'package:universal_io/io.dart';
 
+import 'bloc_bundle.dart';
 import 'cubit_bundle.dart';
 import 'platform_app_feature_package_bundle.dart';
 import 'platform_custom_feature_package_bundle.dart';
@@ -493,6 +493,8 @@ class Bloc {
 
   Future<void> create({required Logger logger}) async {
     final projectName = platformFeaturePackage.project.name();
+    final platform = platformFeaturePackage.platform.name;
+    final featureName = platformFeaturePackage.name;
 
     final generator = await _generator(blocBundle);
     await generator.generate(
@@ -500,7 +502,8 @@ class Bloc {
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
-        'platform': platformFeaturePackage.platform.name,
+        'platform': platform,
+        'feature_name': featureName,
       },
       logger: logger,
     );
@@ -553,6 +556,8 @@ class Cubit {
 
   Future<void> create({required Logger logger}) async {
     final projectName = platformFeaturePackage.project.name();
+    final platform = platformFeaturePackage.platform.name;
+    final featureName = platformFeaturePackage.name;
 
     final generator = await _generator(cubitBundle);
     await generator.generate(
@@ -560,7 +565,8 @@ class Cubit {
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
-        'platform': platformFeaturePackage.platform.name,
+        'platform': platform,
+        'feature_name': featureName,
       },
       logger: logger,
     );

@@ -31,6 +31,9 @@ const expectedUsage = [
       '    --macos         Wheter the new project supports the macOS platform.\n'
       '    --web           Wheter the new project supports the Web platform.\n'
       '    --windows       Wheter the new project supports the Windows platform.\n'
+      '    --mobile        Wheter the new project supports the Android and iOS platforms.\n'
+      '    --desktop       Wheter the new project supports the Linux, macOS and Windows platforms.\n'
+      '    --all           Wheter the new project supports all platforms.\n'
       '\n'
       'Run "rapid help" to see global options.'
 ];
@@ -539,6 +542,107 @@ void main() {
       when(() => argResults['macos']).thenReturn(true);
       when(() => argResults['web']).thenReturn(true);
       when(() => argResults['windows']).thenReturn(true);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => flutterInstalled(logger: logger)).called(1);
+      verify(() => melosInstalled(logger: logger)).called(1);
+      verify(() => flutterConfigEnableAndroid(logger: logger)).called(1);
+      verify(() => flutterConfigEnableIos(logger: logger)).called(1);
+      verify(() => flutterConfigEnableLinux(logger: logger)).called(1);
+      verify(() => flutterConfigEnableMacos(logger: logger)).called(1);
+      verify(() => flutterConfigEnableWeb(logger: logger)).called(1);
+      verify(() => flutterConfigEnableWindows(logger: logger)).called(1);
+      verify(() => projectBuilder(path: outputDir)).called(1);
+      verify(
+        () => project.create(
+          projectName: projectName,
+          description: 'A Rapid app.',
+          orgName: 'com.example',
+          example: false,
+          android: true,
+          ios: true,
+          linux: true,
+          macos: true,
+          web: true,
+          windows: true,
+          logger: logger,
+        ),
+      ).called(1);
+      verify(() => logger.success('Created a Rapid App!')).called(1);
+      expect(result, equals(ExitCode.success.code));
+    });
+
+    test('completes successfully with correct output w/ --mobile', () async {
+      // Arrange
+      when(() => argResults['mobile']).thenReturn(true);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => flutterInstalled(logger: logger)).called(1);
+      verify(() => melosInstalled(logger: logger)).called(1);
+      verify(() => flutterConfigEnableAndroid(logger: logger)).called(1);
+      verify(() => flutterConfigEnableIos(logger: logger)).called(1);
+      verify(() => projectBuilder(path: outputDir)).called(1);
+      verify(
+        () => project.create(
+          projectName: projectName,
+          description: 'A Rapid app.',
+          orgName: 'com.example',
+          example: false,
+          android: true,
+          ios: true,
+          linux: false,
+          macos: false,
+          web: false,
+          windows: false,
+          logger: logger,
+        ),
+      ).called(1);
+      verify(() => logger.success('Created a Rapid App!')).called(1);
+      expect(result, equals(ExitCode.success.code));
+    });
+
+    test('completes successfully with correct output w/ --desktop', () async {
+      // Arrange
+      when(() => argResults['desktop']).thenReturn(true);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => flutterInstalled(logger: logger)).called(1);
+      verify(() => melosInstalled(logger: logger)).called(1);
+      verify(() => flutterConfigEnableLinux(logger: logger)).called(1);
+      verify(() => flutterConfigEnableMacos(logger: logger)).called(1);
+      verify(() => flutterConfigEnableWindows(logger: logger)).called(1);
+      verify(() => projectBuilder(path: outputDir)).called(1);
+      verify(
+        () => project.create(
+          projectName: projectName,
+          description: 'A Rapid app.',
+          orgName: 'com.example',
+          example: false,
+          android: false,
+          ios: false,
+          linux: true,
+          macos: true,
+          web: false,
+          windows: true,
+          logger: logger,
+        ),
+      ).called(1);
+      verify(() => logger.success('Created a Rapid App!')).called(1);
+      expect(result, equals(ExitCode.success.code));
+    });
+
+    test('completes successfully with correct output w/ --all', () async {
+      // Arrange
+      when(() => argResults['all']).thenReturn(true);
 
       // Act
       final result = await command.run();

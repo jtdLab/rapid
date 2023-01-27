@@ -93,6 +93,22 @@ class CreateCommand extends Command<int>
         'windows',
         help: 'Wheter the new project supports the Windows platform.',
         negatable: false,
+      )
+      ..addFlag(
+        'mobile',
+        help: 'Wheter the new project supports the Android and iOS platforms.',
+        negatable: false,
+      )
+      ..addFlag(
+        'desktop',
+        help:
+            'Wheter the new project supports the Linux, macOS and Windows platforms.',
+        negatable: false,
+      )
+      ..addFlag(
+        'all',
+        help: 'Wheter the new project supports all platforms.',
+        negatable: false,
       );
   }
 
@@ -132,12 +148,12 @@ class CreateCommand extends Command<int>
           final description = _description;
           final orgName = super.orgName;
           final example = _example;
-          final android = _android;
-          final ios = _ios;
-          final linux = _linux;
-          final macos = _macos;
-          final web = _web;
-          final windows = _windows;
+          final android = _android || _mobile || _all;
+          final ios = _ios || _mobile || _all;
+          final linux = _linux || _desktop || _all;
+          final macos = _macos || _desktop || _all;
+          final web = _web || _all;
+          final windows = _windows || _desktop || _all;
 
           final project = _project(path: outputDir);
           await project.create(
@@ -192,43 +208,31 @@ class CreateCommand extends Command<int>
   bool get _example => argResults['example'] ?? false;
 
   /// Whether the user specified that the project supports Android.
-  ///
-  /// Defaults to `false` when the user did not specify any platform.
-  bool get _android => _any ? (argResults['android'] ?? false) : false;
+  bool get _android => (argResults['android'] ?? false);
 
   /// Whether the user specified that the project supports iOS.
-  ///
-  /// Defaults to `false` when the user did not specify any platform.
-  bool get _ios => _any ? (argResults['ios'] ?? false) : false;
+  bool get _ios => (argResults['ios'] ?? false);
 
   /// Whether the user specified that the project supports Linux.
-  ///
-  /// Defaults to `false` when the user did not specify any platform.
-  bool get _linux => _any ? (argResults['linux'] ?? false) : false;
+  bool get _linux => (argResults['linux'] ?? false);
 
   /// Whether the user specified that the project supports macOS.
-  ///
-  /// Defaults to `false` when the user did not specify any platform.
-  bool get _macos => _any ? (argResults['macos'] ?? false) : false;
+  bool get _macos => (argResults['macos'] ?? false);
 
   /// Whether the user specified that the project supports Web.
-  ///
-  /// Defaults to `false` when the user did not specify any platform.
-  bool get _web => _any ? (argResults['web'] ?? false) : false;
+  bool get _web => (argResults['web'] ?? false);
 
   /// Whether the user specified that the project supports Windows.
-  ///
-  /// Defaults to `false` when the user did not specify any platform.
-  bool get _windows => _any ? (argResults['windows'] ?? false) : false;
+  bool get _windows => (argResults['windows'] ?? false);
 
-  /// Whether the user specified that the project supports any platform.
-  bool get _any =>
-      (argResults['android'] ?? false) ||
-      (argResults['ios'] ?? false) ||
-      (argResults['linux'] ?? false) ||
-      (argResults['macos'] ?? false) ||
-      (argResults['web'] ?? false) ||
-      (argResults['windows'] ?? false);
+  /// Whether the user specified that the project supports mobile platforms.
+  bool get _mobile => (argResults['mobile'] ?? false);
+
+  /// Whether the user specified that the project supports desktop platforms.
+  bool get _desktop => (argResults['desktop'] ?? false);
+
+  /// Whether the user specified that the project supports all platforms.
+  bool get _all => (argResults['all'] ?? false);
 
   /// Validates whether [args] contains ONLY a valid project name.
   ///

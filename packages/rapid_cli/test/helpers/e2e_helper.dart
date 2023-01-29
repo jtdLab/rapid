@@ -325,7 +325,6 @@ Future<void> verifyTestsPassWith100PercentCoverage(
   Iterable<Directory> dirs,
 ) async {
   for (final dir in dirs) {
-    print(dir.path);
     final testResult = await _runFlutterTest(cwd: dir.path);
 
     expect(testResult.failedTests, 0);
@@ -388,6 +387,7 @@ Future<TestResult> _runFlutterTest({
   required String cwd,
   bool coverage = true,
 }) async {
+  print('Run "flutter test${coverage ? ' --coverage' : ''}" in $cwd');
   final testResult = await Process.run(
     'flutter',
     ['test', if (coverage) '--coverage'],
@@ -407,6 +407,32 @@ Future<TestResult> _runFlutterTest({
 
   double? totalCoverage;
   if (coverage) {
+    await Process.run(
+      'remove_from_coverage',
+      [
+        '-f',
+        p.join('coverage', 'lcov.info'),
+        '-r',
+        '.freezed.dart\$',
+        '-r',
+        '.g.dart\$',
+        '-r',
+        '.config.dart\$',
+        '-r',
+        '.module.dart\$',
+        '-r',
+        '_localizations.dart\$',
+        '-r',
+        '_localizations_[a-z]+.dart\$',
+        '-r',
+        '.gr.dart\$',
+        '-r',
+        '.tailor.dart\$',
+      ],
+      workingDirectory: cwd,
+      runInShell: true,
+    );
+
     final coverageResult = await Process.run(
       'test_cov_console',
       ['-t'],
@@ -495,6 +521,7 @@ Future<int> runFlutterIntegrationTest({
 Future<int> _runFlutterAnalyze({
   String cwd = '.',
 }) async {
+  print('Run "flutter analyze" in $cwd');
   final result = await Process.run(
     'flutter',
     ['analyze'],
@@ -522,6 +549,7 @@ Future<int> _runFlutterAnalyze({
 Future<int> _runDartFormat({
   String cwd = '.',
 }) async {
+  print('Run "dart format . --set-exit-if-changed" in $cwd');
   final result = await Process.run(
     'dart',
     ['format', '.', '--set-exit-if-changed'],

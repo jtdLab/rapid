@@ -34,7 +34,7 @@ jobs:
         run: flutter pub global activate melos
 
       - name: Setup Lcov Utils
-        run: flutter pub global activate test_cov_console
+        run: flutter pub global activate test_cov_console && flutter pub global activate remove_from_coverage
 
       - name: Install Flutter dependencies
         run: flutter pub get
@@ -104,7 +104,7 @@ jobs:
         run: flutter pub global activate melos
 
       - name: Setup Lcov Utils
-        run: flutter pub global activate test_cov_console
+        run: flutter pub global activate test_cov_console && flutter pub global activate remove_from_coverage
 
       - name: Install Flutter dependencies
         run: flutter pub get
@@ -155,7 +155,7 @@ jobs:
         run: flutter pub global activate melos
 
       - name: Setup Lcov Utils
-        run: flutter pub global activate test_cov_console
+        run: flutter pub global activate test_cov_console && flutter pub global activate remove_from_coverage
 
       - name: Install Flutter dependencies
         run: flutter pub get
@@ -193,7 +193,7 @@ jobs:
         run: flutter pub global activate melos
 
       - name: Setup Lcov Utils
-        run: flutter pub global activate test_cov_console
+        run: flutter pub global activate test_cov_console && flutter pub global activate remove_from_coverage
 
       - name: Install Flutter dependencies
         run: flutter pub get
@@ -230,7 +230,7 @@ jobs:
         run: flutter pub global activate melos
 
       - name: Setup Lcov Utils
-        run: flutter pub global activate test_cov_console
+        run: flutter pub global activate test_cov_console && flutter pub global activate remove_from_coverage
 
       - name: Install Flutter dependencies
         run: flutter pub get
@@ -265,7 +265,7 @@ jobs:
         run: flutter pub global activate melos
 
       - name: Setup Lcov Utils
-        run: flutter pub global activate test_cov_console
+        run: flutter pub global activate test_cov_console && flutter pub global activate remove_from_coverage
 
       - name: Install Flutter dependencies
         run: flutter pub get
@@ -299,7 +299,7 @@ jobs:
         run: flutter pub global activate melos
 
       - name: Setup Lcov Utils
-        run: flutter pub global activate test_cov_console
+        run: flutter pub global activate test_cov_console && flutter pub global activate remove_from_coverage
 
       - name: Install Flutter dependencies
         run: flutter pub get

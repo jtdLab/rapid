@@ -1,0 +1,8 @@
+# melos_managed_dependency_overrides: project_none_domain,project_none_infrastructure,project_none_logging
+dependency_overrides:
+  project_none_domain:
+    path: ../project_none_domain
+  project_none_infrastructure:
+    path: ../project_none_infrastructure
+  project_none_logging:
+    path: ../project_none_logging

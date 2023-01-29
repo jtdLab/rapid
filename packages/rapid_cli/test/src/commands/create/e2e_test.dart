@@ -569,6 +569,50 @@ void main() {
         );
 
         test(
+          '--mobile',
+          () async {
+            // Act
+            final commandResult = await commandRunner.run(
+              ['create', projectName, '--mobile'],
+            );
+
+            // Assert
+            expect(commandResult, equals(ExitCode.success.code));
+
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs(Platform.android),
+              ...platformDirs(Platform.ios),
+              featurePackage('app', Platform.android),
+              featurePackage('app', Platform.ios),
+              featurePackage('home_page', Platform.android),
+              featurePackage('home_page', Platform.ios),
+              featurePackage('routing', Platform.android),
+              featurePackage('routing', Platform.ios),
+            });
+            verifyDoNotExist(
+              allPlatformDirs.without({
+                ...platformDirs(Platform.android),
+                ...platformDirs(Platform.ios)
+              }),
+            );
+            await verifyTestsPassWith100PercentCoverage({
+              ...platformIndependentPackages
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', Platform.android),
+              featurePackage('home_page', Platform.android),
+              platformUiPackage(Platform.android),
+              featurePackage('app', Platform.ios),
+              featurePackage('home_page', Platform.ios),
+              platformUiPackage(Platform.ios),
+            });
+          },
+        );
+
+        test(
           '--desktop (fast)',
           () async {
             // Act
@@ -606,6 +650,58 @@ void main() {
             );
           },
           tags: ['fast'],
+        );
+
+        test(
+          '--desktop',
+          () async {
+            // Act
+            final commandResult = await commandRunner.run(
+              ['create', projectName, '--desktop'],
+            );
+
+            // Assert
+            expect(commandResult, equals(ExitCode.success.code));
+
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs(Platform.linux),
+              ...platformDirs(Platform.macos),
+              ...platformDirs(Platform.windows),
+              featurePackage('app', Platform.linux),
+              featurePackage('app', Platform.macos),
+              featurePackage('app', Platform.windows),
+              featurePackage('home_page', Platform.linux),
+              featurePackage('home_page', Platform.macos),
+              featurePackage('home_page', Platform.windows),
+              featurePackage('routing', Platform.linux),
+              featurePackage('routing', Platform.macos),
+              featurePackage('routing', Platform.windows),
+            });
+            verifyDoNotExist(
+              allPlatformDirs.without({
+                ...platformDirs(Platform.linux),
+                ...platformDirs(Platform.macos),
+                ...platformDirs(Platform.windows),
+              }),
+            );
+            await verifyTestsPassWith100PercentCoverage({
+              ...platformIndependentPackages
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', Platform.linux),
+              featurePackage('home_page', Platform.linux),
+              platformUiPackage(Platform.linux),
+              featurePackage('app', Platform.macos),
+              featurePackage('home_page', Platform.macos),
+              platformUiPackage(Platform.macos),
+              featurePackage('app', Platform.windows),
+              featurePackage('home_page', Platform.windows),
+              platformUiPackage(Platform.windows),
+            });
+          },
         );
 
         test(
@@ -662,8 +758,84 @@ void main() {
           },
           tags: ['fast'],
         );
+
+        test(
+          '--all',
+          () async {
+            // Act
+            final commandResult = await commandRunner.run(
+              ['create', projectName, '--all'],
+            );
+
+            // Assert
+            expect(commandResult, equals(ExitCode.success.code));
+
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+
+            verifyDoExist({
+              ...platformIndependentPackages,
+              ...platformDirs(Platform.android),
+              ...platformDirs(Platform.ios),
+              ...platformDirs(Platform.linux),
+              ...platformDirs(Platform.macos),
+              ...platformDirs(Platform.web),
+              ...platformDirs(Platform.windows),
+              featurePackage('app', Platform.android),
+              featurePackage('app', Platform.ios),
+              featurePackage('app', Platform.linux),
+              featurePackage('app', Platform.macos),
+              featurePackage('app', Platform.web),
+              featurePackage('app', Platform.windows),
+              featurePackage('home_page', Platform.android),
+              featurePackage('home_page', Platform.ios),
+              featurePackage('home_page', Platform.linux),
+              featurePackage('home_page', Platform.macos),
+              featurePackage('home_page', Platform.web),
+              featurePackage('home_page', Platform.windows),
+              featurePackage('routing', Platform.android),
+              featurePackage('routing', Platform.ios),
+              featurePackage('routing', Platform.linux),
+              featurePackage('routing', Platform.macos),
+              featurePackage('routing', Platform.web),
+              featurePackage('routing', Platform.windows),
+            });
+            verifyDoNotExist(
+              allPlatformDirs.without({
+                ...platformDirs(Platform.android),
+                ...platformDirs(Platform.ios),
+                ...platformDirs(Platform.linux),
+                ...platformDirs(Platform.macos),
+                ...platformDirs(Platform.web),
+                ...platformDirs(Platform.windows),
+              }),
+            );
+            await verifyTestsPassWith100PercentCoverage({
+              ...platformIndependentPackages
+                  .without({domainPackage, infrastructurePackage}),
+              featurePackage('app', Platform.android),
+              featurePackage('home_page', Platform.android),
+              platformUiPackage(Platform.android),
+              featurePackage('app', Platform.ios),
+              featurePackage('home_page', Platform.ios),
+              platformUiPackage(Platform.ios),
+              featurePackage('app', Platform.linux),
+              featurePackage('home_page', Platform.linux),
+              platformUiPackage(Platform.linux),
+              featurePackage('app', Platform.macos),
+              featurePackage('home_page', Platform.macos),
+              platformUiPackage(Platform.macos),
+              featurePackage('app', Platform.web),
+              featurePackage('home_page', Platform.web),
+              platformUiPackage(Platform.web),
+              featurePackage('app', Platform.windows),
+              featurePackage('home_page', Platform.windows),
+              platformUiPackage(Platform.windows),
+            });
+          },
+        );
       });
     },
-    timeout: const Timeout(Duration(minutes: 6)),
+    timeout: const Timeout(Duration(minutes: 16)),
   );
 }

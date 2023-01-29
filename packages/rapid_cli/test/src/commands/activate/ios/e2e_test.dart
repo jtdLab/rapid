@@ -84,13 +84,12 @@ void main() {
             domainPackage,
             infrastructurePackage,
             featurePackage('routing', Platform.ios),
-            // TODO home page should be tested and not excluded in future
-            featurePackage('home_page', Platform.ios),
           });
           await verifyTestsPassWith100PercentCoverage({
             ...platformIndependentPackages
                 .without({domainPackage, infrastructurePackage}),
             featurePackage('app', Platform.ios),
+            featurePackage('home_page', Platform.ios),
             platformUiPackage(Platform.ios),
           });
 

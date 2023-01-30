@@ -1,0 +1,29 @@
+name: project_android_di
+description: Dependency injection of Project Android.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ">=2.19.0 <3.0.0"
+
+dependencies:
+  rapid_di:
+    git:
+      url: https://github.com/jtdLab/rapid.git
+      path: packages/rapid/rapid/rapid_di
+  get_it: ^7.2.0
+  injectable: ^2.1.0
+  project_android_logging:
+  project_android_infrastructure:
+  project_android_android_home_page:
+  
+  
+  
+  
+  
+
+dev_dependencies:
+  lints: ^2.0.1
+  test: ^1.22.2
+  build_runner: ^2.3.2
+  injectable_generator: ^2.1.3

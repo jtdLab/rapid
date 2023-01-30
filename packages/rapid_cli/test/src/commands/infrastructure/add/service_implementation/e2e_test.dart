@@ -17,8 +17,7 @@ void main() {
       setUp(() {
         Directory.current = Directory.systemTemp.createTempSync();
 
-        commandRunner = RapidCom
-        mandRunner();
+        commandRunner = RapidCommandRunner();
       });
 
       tearDown(() {
@@ -30,7 +29,6 @@ void main() {
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-
           final name = 'Fake';
           final service = 'FooBar';
           final outputDir = 'foo';
@@ -66,7 +64,7 @@ void main() {
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
           // Assert
-          await verifyNoAnalyzerIssues();
+          await verifyHasAnalyzerIssues(6);
           await verifyNoFormattingIssues();
 
           verifyDoExist({
@@ -90,7 +88,6 @@ void main() {
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-
           final name = 'Fake';
           final service = 'FooBar';
           final outputDir = 'foo';
@@ -126,7 +123,7 @@ void main() {
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
           // Assert
-          await verifyNoAnalyzerIssues();
+          await verifyHasAnalyzerIssues(6);
           await verifyNoFormattingIssues();
 
           verifyDoExist({

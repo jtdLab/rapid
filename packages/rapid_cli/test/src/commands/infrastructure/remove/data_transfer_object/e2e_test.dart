@@ -17,8 +17,7 @@ void main() {
       setUp(() {
         Directory.current = Directory.systemTemp.createTempSync();
 
-        commandRunner = RapidC
-        ommandRunner();
+        commandRunner = RapidCommandRunner();
       });
 
       tearDown(() {
@@ -30,10 +29,8 @@ void main() {
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-
           final entityName = 'FooBar';
           final name = '${entityName}Dto';
-
           final outputDir = 'foo';
           dataTransferObjectFiles(entity: entityName).create();
           dataTransferObjectFiles(entity: entityName, outputDir: outputDir)
@@ -79,10 +76,8 @@ void main() {
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-
           final entityName = 'FooBar';
           final name = '${entityName}Dto';
-
           final outputDir = 'foo';
           dataTransferObjectFiles(entity: entityName).create();
           dataTransferObjectFiles(entity: entityName, outputDir: outputDir)
@@ -120,7 +115,9 @@ void main() {
                 entity: entityName, outputDir: outputDir),
           });
 
-          // TODO tests ?
+          await verifyDoNotHaveTests({
+            infrastructurePackage,
+          });
         },
       );
     },

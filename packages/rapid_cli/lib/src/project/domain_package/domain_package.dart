@@ -140,6 +140,16 @@ class Entity {
   void delete() {
     _entityDirectory.deleteSync(recursive: true);
     _entityTestDirectory.deleteSync(recursive: true);
+
+    final directoryParent = _entityDirectory.parent;
+    if (directoryParent.listSync().isEmpty) {
+      directoryParent.deleteSync();
+    }
+
+    final testDirectoryParent = _entityTestDirectory.parent;
+    if (testDirectoryParent.listSync().isEmpty) {
+      testDirectoryParent.deleteSync();
+    }
   }
 }
 
@@ -197,6 +207,10 @@ class ServiceInterface {
   // TODO logger ?
   void delete() {
     _serviceInterfaceDirectory.deleteSync(recursive: true);
+    final directoryParent = _serviceInterfaceDirectory.parent;
+    if (directoryParent.listSync().isEmpty) {
+      directoryParent.deleteSync();
+    }
   }
 }
 
@@ -281,5 +295,14 @@ class ValueObject {
   void delete() {
     _valueObjectDirectory.deleteSync(recursive: true);
     _valueObjectTestDirectory.deleteSync(recursive: true);
+    final directoryParent = _valueObjectDirectory.parent;
+    if (directoryParent.listSync().isEmpty) {
+      directoryParent.deleteSync();
+    }
+
+    final testDirectoryParent = _valueObjectTestDirectory.parent;
+    if (testDirectoryParent.listSync().isEmpty) {
+      testDirectoryParent.deleteSync();
+    }
   }
 }

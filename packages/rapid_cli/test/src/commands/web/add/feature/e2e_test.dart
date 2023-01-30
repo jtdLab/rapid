@@ -1,10 +1,7 @@
-void main() {
-  // TODO impl
-}
-
-/* @Tags(['e2e'])
+@Tags(['e2e'])
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -33,7 +30,7 @@ void main() {
         () async {
           // Arrange
           const featureName = 'my_feature';
-          await setupProjectWithPlatform('web');
+          await setupProjectWithPlatform(Platform.web);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -46,8 +43,37 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('web');
-          final featureDir = featurePackage(featureName, 'web');
+          final platformDependentDirs = platformDirs(Platform.web);
+          final featureDir = featurePackage(featureName, Platform.web);
+          verifyDoExist([
+            ...platformIndependentPackages,
+            ...platformDependentDirs,
+            featureDir,
+          ]);
+        },
+        tags: ['fast'],
+      );
+
+      test(
+        'web add feature',
+        () async {
+          // Arrange
+          const featureName = 'my_feature';
+          await setupProjectWithPlatform(Platform.web);
+
+          // Act
+          final commandResult = await commandRunner.run(
+            ['web', 'add', 'feature', featureName],
+          );
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+
+          final platformDependentDirs = platformDirs(Platform.web);
+          final featureDir = featurePackage(featureName, Platform.web);
           verifyDoExist([
             ...platformIndependentPackages,
             ...platformDependentDirs,
@@ -65,4 +91,3 @@ void main() {
     timeout: const Timeout(Duration(minutes: 4)),
   );
 }
- */

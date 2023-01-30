@@ -155,6 +155,80 @@ List<Directory> get allPlatformDirs => Platform.values
     .map((e) => platformDirs(e))
     .fold(<Directory>[], (prev, curr) => prev + curr).toList();
 
+List<File> blocFiles({
+  required String name,
+  required String featureName,
+  required Platform platform,
+  String? outputDir,
+}) =>
+    [
+      File(p.join(
+          featurePackage(featureName, platform).path,
+          'lib',
+          'src',
+          'application',
+          outputDir ?? '',
+          name.snakeCase,
+          '${name.snakeCase}_bloc.dart')),
+      File(p.join(
+          featurePackage(featureName, platform).path,
+          'lib',
+          'src',
+          'application',
+          outputDir ?? '',
+          name.snakeCase,
+          '${name.snakeCase}_bloc.freezed.dart')),
+      File(p.join(
+          featurePackage(featureName, platform).path,
+          'lib',
+          'src',
+          'application',
+          outputDir ?? '',
+          name.snakeCase,
+          '${name.snakeCase}_event.dart')),
+      File(p.join(
+          featurePackage(featureName, platform).path,
+          'lib',
+          'src',
+          'application',
+          outputDir ?? '',
+          name.snakeCase,
+          '${name.snakeCase}_state.dart')),
+    ];
+
+List<File> cubitFiles({
+  required String name,
+  required String featureName,
+  required Platform platform,
+  String? outputDir,
+}) =>
+    [
+      File(p.join(
+          featurePackage(featureName, platform).path,
+          'lib',
+          'src',
+          'application',
+          outputDir ?? '',
+          name.snakeCase,
+          '${name.snakeCase}_cubit.dart')),
+      File(p.join(
+          featurePackage(featureName, platform).path,
+          'lib',
+          'src',
+          'application',
+          outputDir ?? '',
+          name.snakeCase,
+          '${name.snakeCase}_cubit.freezed.dart')),
+      File(p.join(
+          featurePackage(featureName, platform).path,
+          'lib',
+          'src',
+          'application',
+          outputDir ?? '',
+          name.snakeCase,
+          '${name.snakeCase}_state.dart')),
+    ];
+
 List<File> entityFiles({
   required String name,
   String? outputDir,
@@ -318,18 +392,28 @@ extension IterableX<E extends FileSystemEntity> on Iterable<E> {
   }
 }
 
-/// Verifys that tests in [dirs] pass with 100% test coverage.
+/// Verifys that tests in [dirs] pass with 100 % test coverage.
 ///
 /// Runs `flutter test --coverage` in every provided dir.
 Future<void> verifyTestsPassWith100PercentCoverage(
   Iterable<Directory> dirs,
 ) async {
   for (final dir in dirs) {
-    final testResult = await _runFlutterTest(cwd: dir.path);
-
-    expect(testResult.failedTests, 0);
-    expect(testResult.coverage, 100);
+    verifyTestsPass(dir);
   }
+}
+
+/// Verifys that tests in [dir] pass with [expectedFailedTests] failed tests
+/// and [expectedCoverage] % test coverage.
+Future<void> verifyTestsPass(
+  Directory dir, {
+  int expectedFailedTests = 0,
+  double expectedCoverage = 100,
+}) async {
+  final testResult = await _runFlutterTest(cwd: dir.path);
+
+  expect(testResult.failedTests, expectedFailedTests);
+  expect(testResult.coverage, expectedCoverage);
 }
 
 /// Verifys that no element in [dirs] has a test directory.
@@ -338,9 +422,21 @@ Future<void> verifyDoNotHaveTests(
 ) async {
   for (final dir in dirs) {
     print(dir.path);
-    final hasTestDir = dir.listSync().any((e) => p.basename(e.path) == 'test');
 
-    expect(hasTestDir, false);
+    late bool hasNoTests;
+    final testDir = Directory(p.join(dir.path, 'test'));
+    if (testDir.existsSync() && testDir.listSync().isEmpty) {
+      hasNoTests = true;
+    } else {
+      final testSrcDir = Directory(p.join(dir.path, 'test', 'src'));
+      if (testSrcDir.existsSync() && testSrcDir.listSync().isEmpty) {
+        hasNoTests = true;
+      } else {
+        hasNoTests = false;
+      }
+    }
+
+    expect(hasNoTests, true);
   }
 }
 

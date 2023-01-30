@@ -29,7 +29,6 @@ void main() {
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-
           final entity = 'FooBar';
           final outputDir = 'foo';
           await addEntity();
@@ -79,7 +78,6 @@ void main() {
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-
           final entity = 'FooBar';
           final outputDir = 'foo';
           await addEntity();

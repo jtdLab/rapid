@@ -29,11 +29,10 @@ void main() {
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-
           final name = 'FooBar';
-          final outputDir = 'foo';
+          final dir = 'foo';
           serviceInterfaceFiles(name: name).create();
-          serviceInterfaceFiles(name: name, outputDir: outputDir).create();
+          serviceInterfaceFiles(name: name, outputDir: dir).create();
 
           // Act + Assert
           final commandResult = await commandRunner.run(
@@ -43,7 +42,7 @@ void main() {
 
           // Act + Assert
           final commandResultWithOutputDir = await commandRunner.run(
-            ['domain', 'remove', 'service_interface', name, '--dir', outputDir],
+            ['domain', 'remove', 'service_interface', name, '--dir', dir],
           );
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
@@ -56,7 +55,7 @@ void main() {
           });
           verifyDoNotExist({
             ...serviceInterfaceFiles(name: name),
-            ...serviceInterfaceFiles(name: name, outputDir: outputDir),
+            ...serviceInterfaceFiles(name: name, outputDir: dir),
           });
         },
         tags: ['fast'],
@@ -67,11 +66,10 @@ void main() {
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-
           final name = 'FooBar';
-          final outputDir = 'foo';
+          final dir = 'foo';
           serviceInterfaceFiles(name: name).create();
-          serviceInterfaceFiles(name: name, outputDir: outputDir).create();
+          serviceInterfaceFiles(name: name, outputDir: dir).create();
 
           // Act + Assert
           final commandResult = await commandRunner.run(
@@ -81,7 +79,7 @@ void main() {
 
           // Act + Assert
           final commandResultWithOutputDir = await commandRunner.run(
-            ['domain', 'remove', 'service_interface', name, '--dir', outputDir],
+            ['domain', 'remove', 'service_interface', name, '--dir', dir],
           );
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
@@ -94,10 +92,12 @@ void main() {
           });
           verifyDoNotExist({
             ...serviceInterfaceFiles(name: name),
-            ...serviceInterfaceFiles(name: name, outputDir: outputDir),
+            ...serviceInterfaceFiles(name: name, outputDir: dir),
           });
 
-          // TODO tests ?
+          await verifyDoNotHaveTests({
+            domainPackage,
+          });
         },
       );
     },

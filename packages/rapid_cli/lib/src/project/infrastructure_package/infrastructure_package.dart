@@ -142,6 +142,16 @@ class DataTransferObject {
   void delete() {
     _dataTransferObjectDirectory.deleteSync(recursive: true);
     _dataTransferObjectTestDirectory.deleteSync(recursive: true);
+
+    final directoryParent = _dataTransferObjectDirectory.parent;
+    if (directoryParent.listSync().isEmpty) {
+      directoryParent.deleteSync();
+    }
+
+    final testDirectoryParent = _dataTransferObjectTestDirectory.parent;
+    if (testDirectoryParent.listSync().isEmpty) {
+      testDirectoryParent.deleteSync();
+    }
   }
 }
 
@@ -226,5 +236,15 @@ class ServiceImplementation {
     ///           _logger.success('Removed Entity $name.');
     _serviceImplementationDirectory.deleteSync(recursive: true);
     _serviceImplementationTestDirectory.deleteSync(recursive: true);
+
+    final directoryParent = _serviceImplementationDirectory.parent;
+    if (directoryParent.listSync().isEmpty) {
+      directoryParent.deleteSync();
+    }
+
+    final testDirectoryParent = _serviceImplementationTestDirectory.parent;
+    if (testDirectoryParent.listSync().isEmpty) {
+      testDirectoryParent.deleteSync();
+    }
   }
 }

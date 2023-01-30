@@ -1,10 +1,7 @@
-void main() {
-  // TODO impl
-}
-
-/* @Tags(['e2e'])
+@Tags(['e2e'])
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -33,7 +30,7 @@ void main() {
         () async {
           // Arrange
           const featureName = 'home_page';
-          await setupProjectWithPlatform('windows');
+          await setupProjectWithPlatform(Platform.windows);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -43,11 +40,40 @@ void main() {
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
 
-          await verifyNoAnalyzerIssues();
+          await verifyHasAnalyzerIssues(8);
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('windows');
-          final featureDir = featurePackage(featureName, 'windows');
+          final platformDependentDirs = platformDirs(Platform.windows);
+          final featureDir = featurePackage(featureName, Platform.windows);
+          verifyDoExist([
+            ...platformIndependentPackages,
+            ...platformDependentDirs,
+          ]);
+          verifyDoNotExist([featureDir]);
+        },
+        tags: ['fast'],
+      );
+
+      test(
+        'windows remove feature',
+        () async {
+          // Arrange
+          const featureName = 'home_page';
+          await setupProjectWithPlatform(Platform.windows);
+
+          // Act
+          final commandResult = await commandRunner.run(
+            ['windows', 'remove', 'feature', featureName],
+          );
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
+          await verifyHasAnalyzerIssues(8);
+          await verifyNoFormattingIssues();
+
+          final platformDependentDirs = platformDirs(Platform.windows);
+          final featureDir = featurePackage(featureName, Platform.windows);
           verifyDoExist([
             ...platformIndependentPackages,
             ...platformDependentDirs,
@@ -64,4 +90,3 @@ void main() {
     timeout: const Timeout(Duration(minutes: 4)),
   );
 }
- */

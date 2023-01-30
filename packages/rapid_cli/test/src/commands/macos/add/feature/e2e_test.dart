@@ -1,10 +1,7 @@
-void main() {
-  // TODO impl
-}
-
-/* @Tags(['e2e'])
+@Tags(['e2e'])
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -33,7 +30,7 @@ void main() {
         () async {
           // Arrange
           const featureName = 'my_feature';
-          await setupProjectWithPlatform('macos');
+          await setupProjectWithPlatform(Platform.macos);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -46,8 +43,37 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('macos');
-          final featureDir = featurePackage(featureName, 'macos');
+          final platformDependentDirs = platformDirs(Platform.macos);
+          final featureDir = featurePackage(featureName, Platform.macos);
+          verifyDoExist([
+            ...platformIndependentPackages,
+            ...platformDependentDirs,
+            featureDir,
+          ]);
+        },
+        tags: ['fast'],
+      );
+
+      test(
+        'macos add feature',
+        () async {
+          // Arrange
+          const featureName = 'my_feature';
+          await setupProjectWithPlatform(Platform.macos);
+
+          // Act
+          final commandResult = await commandRunner.run(
+            ['macos', 'add', 'feature', featureName],
+          );
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+
+          final platformDependentDirs = platformDirs(Platform.macos);
+          final featureDir = featurePackage(featureName, Platform.macos);
           verifyDoExist([
             ...platformIndependentPackages,
             ...platformDependentDirs,
@@ -65,4 +91,3 @@ void main() {
     timeout: const Timeout(Duration(minutes: 4)),
   );
 }
- */

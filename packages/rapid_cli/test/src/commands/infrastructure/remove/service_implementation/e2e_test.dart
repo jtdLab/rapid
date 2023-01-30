@@ -29,18 +29,25 @@ void main() {
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-
-          final entityName = 'FooBar';
-          final name = '${entityName}Dto';
-
+          final name = 'Fake';
+          final serviceName = 'FooBar';
           final outputDir = 'foo';
-          serviceImplementationFiles(entity: entityName).create();
-          serviceImplementationFiles(entity: entityName, outputDir: outputDir)
+          serviceImplementationFiles(name: name, serviceName: serviceName)
+              .create();
+          serviceImplementationFiles(
+                  name: name, serviceName: serviceName, outputDir: outputDir)
               .create();
 
           // Act + Assert
           final commandResult = await commandRunner.run(
-            ['infrastructure', 'remove', 'service_implementation', name],
+            [
+              'infrastructure',
+              'remove',
+              'service_implementation',
+              name,
+              '--service',
+              serviceName,
+            ],
           );
           expect(commandResult, equals(ExitCode.success.code));
 
@@ -51,6 +58,8 @@ void main() {
               'remove',
               'service_implementation',
               name,
+              '--service',
+              serviceName,
               '--dir',
               outputDir
             ],
@@ -65,9 +74,9 @@ void main() {
             ...platformIndependentPackages,
           });
           verifyDoNotExist({
-            ...serviceImplementationFiles(entity: entityName),
+            ...serviceImplementationFiles(name: name, serviceName: serviceName),
             ...serviceImplementationFiles(
-                entity: entityName, outputDir: outputDir),
+                name: name, serviceName: serviceName, outputDir: outputDir),
           });
         },
         tags: ['fast'],
@@ -78,18 +87,25 @@ void main() {
         () async {
           // Arrange
           await setupProjectNoPlatforms();
-
-          final entityName = 'FooBar';
-          final name = '${entityName}Dto';
-
+          final name = 'Fake';
+          final serviceName = 'FooBar';
           final outputDir = 'foo';
-          serviceImplementationFiles(entity: entityName).create();
-          serviceImplementationFiles(entity: entityName, outputDir: outputDir)
+          serviceImplementationFiles(name: name, serviceName: serviceName)
+              .create();
+          serviceImplementationFiles(
+                  name: name, serviceName: serviceName, outputDir: outputDir)
               .create();
 
           // Act + Assert
           final commandResult = await commandRunner.run(
-            ['infrastructure', 'remove', 'service_implementation', name],
+            [
+              'infrastructure',
+              'remove',
+              'service_implementation',
+              name,
+              '--service',
+              serviceName,
+            ],
           );
           expect(commandResult, equals(ExitCode.success.code));
 
@@ -100,6 +116,8 @@ void main() {
               'remove',
               'service_implementation',
               name,
+              '--service',
+              serviceName,
               '--dir',
               outputDir
             ],
@@ -114,12 +132,14 @@ void main() {
             ...platformIndependentPackages,
           });
           verifyDoNotExist({
-            ...serviceImplementationFiles(entity: entityName),
+            ...serviceImplementationFiles(name: name, serviceName: serviceName),
             ...serviceImplementationFiles(
-                entity: entityName, outputDir: outputDir),
+                name: name, serviceName: serviceName, outputDir: outputDir),
           });
 
-          // TODO tests ?
+          await verifyDoNotHaveTests({
+            infrastructurePackage,
+          });
         },
       );
     },

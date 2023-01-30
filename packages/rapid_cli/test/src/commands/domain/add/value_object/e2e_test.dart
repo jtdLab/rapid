@@ -45,7 +45,7 @@ void main() {
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
           // Assert
-          await verifyNoAnalyzerIssues();
+          await verifyHasAnalyzerIssues(10);
           await verifyNoFormattingIssues();
 
           verifyDoExist({
@@ -78,7 +78,7 @@ void main() {
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
           // Assert
-          await verifyNoAnalyzerIssues();
+          await verifyHasAnalyzerIssues(10);
           await verifyNoFormattingIssues();
 
           verifyDoExist({

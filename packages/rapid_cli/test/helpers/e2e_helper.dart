@@ -379,10 +379,7 @@ List<File> languageFiles(
       for (final language in languages) ...[
         File(
           p.join(
-            'packages',
-            projectName,
-            '${projectName}_${platform.name}',
-            '${projectName}_${platform.name}_$feature',
+            featurePackage(feature, platform).path,
             'lib',
             'src',
             'presentation',
@@ -393,10 +390,7 @@ List<File> languageFiles(
         ),
         File(
           p.join(
-            'packages',
-            projectName,
-            '${projectName}_${platform.name}',
-            '${projectName}_${platform.name}_$feature',
+            featurePackage(feature, platform).path,
             'lib',
             'src',
             'presentation',
@@ -405,32 +399,6 @@ List<File> languageFiles(
           ),
         ),
       ],
-      File(
-        p.join(
-          'packages',
-          projectName,
-          '${projectName}_${platform.name}',
-          '${projectName}_${platform.name}_$feature',
-          'lib',
-          'src',
-          'presentation',
-          'l10n',
-          '${projectName}_${platform.name}_${feature}_localizations.dart',
-        ),
-      ),
-      File(
-        p.join(
-          'packages',
-          projectName,
-          '${projectName}_${platform.name}',
-          '${projectName}_${platform.name}_$feature',
-          'lib',
-          'src',
-          'presentation',
-          'l10n',
-          'l10n.dart',
-        ),
-      ),
     ];
 
 extension IterableX<E extends FileSystemEntity> on Iterable<E> {

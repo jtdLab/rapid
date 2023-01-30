@@ -1,3 +1,99 @@
+@Tags(['e2e'])
+import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/command_runner.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:test/test.dart';
+import 'package:universal_io/io.dart';
+
+import '../../../../../helpers/e2e_helper.dart';
+
 void main() {
-  // TODO impl
+  group(
+    'E2E',
+    () {
+      cwd = Directory.current;
+
+      late RapidCommandRunner commandRunner;
+
+      setUp(() {
+        Directory.current = Directory.systemTemp.createTempSync();
+
+        commandRunner = RapidCommandRunner();
+      });
+
+      tearDown(() {
+        Directory.current = cwd;
+      });
+
+      test(
+        'ios remove language (fast)',
+        () async {
+          // Arrange
+          const language = 'fr';
+          await setupProjectWithPlatform(Platform.ios);
+          languageFiles('home_page', Platform.ios, [language]).create();
+
+          // Act
+          final commandResult = await commandRunner.run(
+            ['ios', 'remove', 'language', language],
+          );
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+
+          final platformDependentDirs = platformDirs(Platform.ios);
+          verifyDoExist([
+            ...platformIndependentPackages,
+            ...platformDependentDirs,
+            ...languageFiles('home_page', Platform.ios, ['en']),
+          ]);
+          verifyDoNotExist({
+            ...languageFiles('home_page', Platform.ios, ['fr']),
+          });
+        },
+        tags: ['fast'],
+      );
+
+      test(
+        'ios remove language',
+        () async {
+          // Arrange
+          const language = 'fr';
+          await setupProjectWithPlatform(Platform.ios);
+          languageFiles('home_page', Platform.ios, [language]).create();
+
+          // Act
+          final commandResult = await commandRunner.run(
+            ['ios', 'remove', 'language', language],
+          );
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+
+          final platformDependentDirs = platformDirs(Platform.ios);
+          verifyDoExist([
+            ...platformIndependentPackages,
+            ...platformDependentDirs,
+            ...languageFiles('home_page', Platform.ios, ['en']),
+          ]);
+          verifyDoNotExist({
+            ...languageFiles('home_page', Platform.ios, ['fr']),
+          });
+
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentPackages,
+            featurePackage('app', Platform.ios),
+            featurePackage('home_page', Platform.ios),
+          ]);
+        },
+      );
+    },
+    timeout: const Timeout(Duration(minutes: 4)),
+  );
 }

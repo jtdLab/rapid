@@ -113,8 +113,6 @@ class DataTransferObject {
   final InfrastructurePackage infrastructurePackage;
 
   bool exists() {
-    print(_dataTransferObjectDirectory.path);
-    print(_dataTransferObjectTestDirectory.path);
     return _dataTransferObjectDirectory.existsSync() ||
         _dataTransferObjectTestDirectory.existsSync();
   }

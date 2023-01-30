@@ -65,6 +65,8 @@ class DartFile {
 
   bool exists() => _file.existsSync();
 
+  void delete() => _file.deleteSync(recursive: true);
+
   List<Declaration> _getTopLevelDeclarations(String source) {
     final unit = parseString(content: source).unit;
     return unit.declarations;

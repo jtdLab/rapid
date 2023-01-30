@@ -64,6 +64,7 @@ class PlatformDirectory extends ProjectDirectory {
     final dir = Directory(path);
     final subDirs = dir.listSync().whereType<Directory>();
     return subDirs
+        .where((e) => !e.path.endsWith('routing') && !e.path.endsWith('app'))
         .map(
           (e) => PlatformCustomFeaturePackage(
             p

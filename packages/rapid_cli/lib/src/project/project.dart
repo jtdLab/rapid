@@ -579,7 +579,7 @@ class Project implements ProjectEntity {
     }
 
     if (!customFeatures.first.supportsLanguage(language)) {
-      throw FeaturesAlreadySupportLanguage();
+      throw FeaturesDoNotSupportLanguage();
     }
 
     if (customFeatures.first.defaultLanguage() == language) {

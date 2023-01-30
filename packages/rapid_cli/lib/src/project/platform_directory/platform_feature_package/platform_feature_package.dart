@@ -238,6 +238,9 @@ class PlatformRoutingFeaturePackage extends PlatformFeaturePackage {
   }
 }
 
+typedef LanguageLocalizationsFileBuilder = LanguageLocalizationsFile Function(
+    {required String language});
+
 /// {@template platform_custom_feature_package}
 /// Abstraction of a platform custom feature package of a Rapid project.
 ///
@@ -249,16 +252,21 @@ class PlatformCustomFeaturePackage extends PlatformFeaturePackage {
     super.name,
     super.platform, {
     required super.project,
+    LanguageLocalizationsFileBuilder? languageLocalizationsFile,
     FlutterGenl10nCommand? flutterGenl10n,
     GeneratorBuilder? generator,
   })  : _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
         _generator = generator ?? MasonGenerator.fromBundle {
+    _languageLocalizationsFile = languageLocalizationsFile ??
+        (({required String language}) =>
+            LanguageLocalizationsFile(language, platformFeaturePackage: this));
     _l10nFile = L10nFile(platformFeaturePackage: this);
     _arbDirectory = ArbDirectory(platformFeaturePackage: this);
   }
 
   late final L10nFile _l10nFile;
   late final ArbDirectory _arbDirectory;
+  late final LanguageLocalizationsFileBuilder _languageLocalizationsFile;
   final FlutterGenl10nCommand _flutterGenl10n;
   final GeneratorBuilder _generator;
 
@@ -330,7 +338,12 @@ class PlatformCustomFeaturePackage extends PlatformFeaturePackage {
       arbFile.delete();
     }
 
-    // TODO maybe manualy delete old generated dart files
+    final languageLocalizationsFile =
+        _languageLocalizationsFile(language: language);
+
+    if (languageLocalizationsFile.exists()) {
+      languageLocalizationsFile.delete();
+    }
 
     await _flutterGenl10n(cwd: path, logger: logger);
   }
@@ -369,6 +382,41 @@ class L10nFile extends ProjectEntity {
   }
 }
 
+/// {@template language_localizations_file}
+// TODO doc update
+/// Abstraction of the l10n file of a platform custom feature package of an existing Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_<feature name>/l10n.yaml`
+/// {@endtemplate}
+class LanguageLocalizationsFile extends ProjectEntity {
+  /// {@macro language_localizations_file}
+  LanguageLocalizationsFile(
+    String language, {
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) : _dartFile = DartFile(
+          path: p.join(
+            platformFeaturePackage.path,
+            'lib',
+            'src',
+            'presentation',
+            'l10n',
+          ),
+          name:
+              '${platformFeaturePackage.packageName()}_localizations_$language',
+        );
+
+  /// The underlying dart file.
+  final DartFile _dartFile;
+
+  @override
+  String get path => _dartFile.path;
+
+  @override
+  bool exists() => _dartFile.exists();
+
+  void delete() => _dartFile.delete();
+}
+
 /// {@template arb_directory}
 /// Abstraction of the arb directory of a platform custom feature package of a Rapid project.
 ///
@@ -399,7 +447,7 @@ class ArbDirectory extends ProjectDirectory {
         .where((e) => e.path.endsWith('.arb'))
         .map(
           (e) => ArbFile(
-            language: e.path.split('.').first.split('_').last,
+            language: p.basenameWithoutExtension(e.path).split('_').last,
             arbDirectory: this,
           ),
         )

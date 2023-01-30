@@ -1,10 +1,7 @@
-void main() {
-  // TODO impl
-}
-
-/* @Tags(['e2e'])
+@Tags(['e2e'])
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -33,7 +30,7 @@ void main() {
         () async {
           // Arrange
           const language = 'fr';
-          await setupProjectWithPlatform('android');
+          await setupProjectWithPlatform(Platform.android);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -46,18 +43,45 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs('android');
-          final langFiles =
-              languageFiles('home_page', 'android', ['en', language]);
+          final platformDependentDirs = platformDirs(Platform.android);
           verifyDoExist([
             ...platformIndependentPackages,
             ...platformDependentDirs,
-            ...langFiles,
+            ...languageFiles('home_page', Platform.android, ['en', language]),
+          ]);
+        },
+        tags: ['fast'],
+      );
+
+      test(
+        'android add language',
+        () async {
+          // Arrange
+          const language = 'fr';
+          await setupProjectWithPlatform(Platform.android);
+
+          // Act
+          final commandResult = await commandRunner.run(
+            ['android', 'add', 'language', language],
+          );
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+
+          final platformDependentDirs = platformDirs(Platform.android);
+          verifyDoExist([
+            ...platformIndependentPackages,
+            ...platformDependentDirs,
+            ...languageFiles('home_page', Platform.android, ['en', language]),
           ]);
 
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackages,
-            ...platformDependentDirs,
+            featurePackage('app', Platform.android),
+            featurePackage('home_page', Platform.android),
           ]);
         },
       );
@@ -65,4 +89,3 @@ void main() {
     timeout: const Timeout(Duration(minutes: 4)),
   );
 }
- */

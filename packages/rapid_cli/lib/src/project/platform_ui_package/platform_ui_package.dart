@@ -3,6 +3,7 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:recase/recase.dart';
 import 'package:universal_io/io.dart';
 
 import 'platform_ui_package_bundle.dart';
@@ -78,7 +79,7 @@ class Widget {
             'lib',
             'src',
             dir,
-            name,
+            name.snakeCase,
           ),
         ),
         _widgetTestDirectory = Directory(
@@ -87,7 +88,7 @@ class Widget {
             'test',
             'src',
             dir,
-            name,
+            name.snakeCase,
           ),
         ),
         _generator = generator ?? MasonGenerator.fromBundle;
@@ -127,9 +128,19 @@ class Widget {
     );
   }
 
-  // TODO logger ?
+  // TODO logger ? check if dir exists before deleting other components need this check 2
   void delete() {
     _widgetDirectory.deleteSync(recursive: true);
     _widgetTestDirectory.deleteSync(recursive: true);
+
+    final directoryParent = _widgetDirectory.parent;
+    if (directoryParent.listSync().isEmpty) {
+      directoryParent.deleteSync();
+    }
+
+    final testDirectoryParent = _widgetTestDirectory.parent;
+    if (testDirectoryParent.listSync().isEmpty) {
+      testDirectoryParent.deleteSync();
+    }
   }
 }

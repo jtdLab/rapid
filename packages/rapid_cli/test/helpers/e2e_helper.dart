@@ -309,6 +309,64 @@ List<File> serviceImplementationFiles({
       ),
     ];
 
+List<File> widgetFiles({
+  required String name,
+  String? outputDir,
+  required Platform platform,
+}) =>
+    [
+      File(
+        p.join(
+          platformUiPackage(platform).path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          name.snakeCase,
+          '${name.snakeCase}_theme.dart',
+        ),
+      ),
+      File(
+        p.join(
+          platformUiPackage(platform).path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          name.snakeCase,
+          '${name.snakeCase}_theme.tailor.dart',
+        ),
+      ),
+      File(
+        p.join(
+          platformUiPackage(platform).path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          name.snakeCase,
+          '${name.snakeCase}.dart',
+        ),
+      ),
+      File(
+        p.join(
+          platformUiPackage(platform).path,
+          'test',
+          'src',
+          outputDir ?? '',
+          name.snakeCase,
+          '${name.snakeCase}_theme_test.dart',
+        ),
+      ),
+      File(
+        p.join(
+          platformUiPackage(platform).path,
+          'test',
+          'src',
+          outputDir ?? '',
+          name.snakeCase,
+          '${name.snakeCase}_test.dart',
+        ),
+      ),
+    ];
+
 // TODO cleaner
 
 /// All source files a feature requires to support [languages].

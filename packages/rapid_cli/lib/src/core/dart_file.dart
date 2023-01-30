@@ -474,7 +474,8 @@ class DartFile {
     final listLiteral =
         variableDeclaration.childEntities.whereType<ListLiteral>().first;
 
-    final listText = '[${value.join(',')}${value.isEmpty ? '' : ','}]';
+    final listText =
+        '${listLiteral.typeArguments}[${value.join(',')}${value.isEmpty ? '' : ','}]';
 
     final output = contents.replaceRange(
       listLiteral.offset,

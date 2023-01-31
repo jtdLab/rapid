@@ -24,8 +24,10 @@ class ActivateWebCommand extends ActivatePlatformCommand with OrgNameGetter {
         _flutterConfigEnableWeb =
             flutterConfigEnableWeb ?? Flutter.configEnableWeb,
         super(platform: Platform.web) {
-    argParser.addOrgNameOption(
-      help: 'The organization for the native Web project.',
+    argParser.addOption(
+      'desc',
+      help: 'The description for the native Web project.',
+      defaultsTo: _defaultDescription,
     );
   }
 

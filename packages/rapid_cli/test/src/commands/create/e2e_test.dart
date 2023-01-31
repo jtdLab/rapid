@@ -455,7 +455,6 @@ void main() {
           tags: ['web'],
         );
 
-        // TODO fails because of https://github.com/felangel/mason/issues/676
         test(
           '--windows (fast)',
           () async {
@@ -484,7 +483,6 @@ void main() {
           tags: ['fast'],
         );
 
-        // TODO fails because of https://github.com/felangel/mason/issues/676
         test(
           '--windows',
           () async {

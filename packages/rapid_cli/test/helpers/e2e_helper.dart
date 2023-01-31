@@ -4,6 +4,7 @@ import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 import 'package:universal_io/io.dart' as io;
+import 'package:mason/mason.dart';
 
 /// The directory `flutter/dart test` was called from.
 ///
@@ -590,7 +591,7 @@ Future<TestResult> _runFlutterTest({
     );
   }
 
-  if (stderr.isEmpty &&
+  if (!stderr.contains('Some tests failed') &&
       (stdout.contains('All tests passed') ||
           stdout.contains(RegExp(r'[1-9][0-9]* tests passed')))) {
     return TestResult(0, totalCoverage);
@@ -653,7 +654,7 @@ Future<int> runFlutterIntegrationTest({
     throw TestDirNotFound();
   }
 
-  if (stderr.isEmpty &&
+  if (!stderr.contains('Some tests failed') &&
       (stdout.contains('All tests passed') ||
           stdout.contains(RegExp(r'[1-9][0-9]* tests passed')))) {
     return 0;

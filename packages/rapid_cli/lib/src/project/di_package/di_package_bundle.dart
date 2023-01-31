@@ -63,7 +63,7 @@ final diPackageBundle = MasonBundle.fromJson(<String, dynamic>{
   "name": "di_package",
   "description": "A brick generating the di package of a Rapid project.",
   "version": "0.1.0+1",
-  "environment": {"mason": ">=0.1.0-dev.39 <0.1.0"},
+  "environment": {"mason": ">=0.1.0-dev.41 <0.1.0"},
   "readme": {
     "path": "README.md",
     "data":

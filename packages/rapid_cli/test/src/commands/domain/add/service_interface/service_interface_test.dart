@@ -4,7 +4,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/domain/add/service_interface/service_interface.dart';
 import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 

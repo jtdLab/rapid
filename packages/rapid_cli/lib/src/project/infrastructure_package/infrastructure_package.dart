@@ -5,7 +5,6 @@ import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/project/infrastructure_package/data_transfer_object_bundle.dart';
 import 'package:rapid_cli/src/project/infrastructure_package/service_implementation_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 import 'package:universal_io/io.dart';
 
 import 'infrastructure_package_bundle.dart';

@@ -8,7 +8,6 @@ import 'package:rapid_cli/src/project/feature.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
 import 'package:rapid_cli/src/project/platform_directory.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 

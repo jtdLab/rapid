@@ -1,7 +1,6 @@
 import 'package:io/io.dart' show copyPath;
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 import 'package:universal_io/io.dart' as io;

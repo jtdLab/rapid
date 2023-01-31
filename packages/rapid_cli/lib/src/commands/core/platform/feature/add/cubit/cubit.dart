@@ -12,7 +12,6 @@ import 'package:rapid_cli/src/commands/web/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/windows/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 
 /// {@template platform_feature_add_cubit_command}
 /// Base class for:

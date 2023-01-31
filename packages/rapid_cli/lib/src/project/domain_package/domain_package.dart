@@ -4,7 +4,6 @@ import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/project/domain_package/service_interface_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 import 'package:universal_io/io.dart';
 
 import 'domain_package_bundle.dart';

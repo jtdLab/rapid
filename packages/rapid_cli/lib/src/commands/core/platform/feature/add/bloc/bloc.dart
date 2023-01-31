@@ -12,7 +12,6 @@ import 'package:rapid_cli/src/commands/web/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/windows/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:recase/recase.dart';
 
 // TODO share code with add cubit command
 

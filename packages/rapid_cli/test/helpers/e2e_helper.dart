@@ -593,7 +593,7 @@ Future<TestResult> _runFlutterTest({
 
   if (!stderr.contains('Some tests failed') &&
       (stdout.contains('All tests passed') ||
-          stdout.contains(RegExp(r'[1-9][0-9]* tests passed')))) {
+          stdout.contains(RegExp(r'[1-9][0-9]* tests? passed')))) {
     return TestResult(0, totalCoverage);
   }
 
@@ -656,7 +656,7 @@ Future<int> runFlutterIntegrationTest({
 
   if (!stderr.contains('Some tests failed') &&
       (stdout.contains('All tests passed') ||
-          stdout.contains(RegExp(r'[1-9][0-9]* tests passed')))) {
+          stdout.contains(RegExp(r'[1-9][0-9]* tests? passed')))) {
     return 0;
   }
 

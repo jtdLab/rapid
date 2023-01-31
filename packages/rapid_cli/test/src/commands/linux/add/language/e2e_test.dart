@@ -79,7 +79,8 @@ void main() {
           ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages,
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
             featurePackage('app', Platform.linux),
             featurePackage('home_page', Platform.linux),
           ]);

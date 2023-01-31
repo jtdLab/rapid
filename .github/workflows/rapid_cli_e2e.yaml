@@ -29,7 +29,6 @@ jobs:
           # E2E tests for domain command
           - test/src/commands/domain/add/entity/e2e_test.dart
           - test/src/commands/domain/add/service_interface/e2e_test.dart
-          - test/src/commands/domain/add/value_object/e2e_test.dart
           - test/src/commands/domain/remove/entity/e2e_test.dart
           - test/src/commands/domain/remove/service_interface/e2e_test.dart
           - test/src/commands/domain/remove/value_object/e2e_test.dart

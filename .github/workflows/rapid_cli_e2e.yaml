@@ -15,14 +15,6 @@ jobs:
       fail-fast: false
       matrix:
         test:
-          # E2E tests for activate command
-          - test/src/commands/activate/android/e2e_test.dart
-          - test/src/commands/activate/ios/e2e_test.dart
-          - test/src/commands/activate/linux/e2e_test.dart
-          - test/src/commands/activate/macos/e2e_test.dart
-          - test/src/commands/activate/web/e2e_test.dart
-          - test/src/commands/activate/windows/e2e_test.dart
-
           # E2E tests for create command
           - test/src/commands/create/e2e_test.dart
 

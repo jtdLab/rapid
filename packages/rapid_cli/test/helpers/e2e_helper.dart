@@ -98,6 +98,19 @@ Future<void> addServiceInterface({String? outputDir}) async {
   );
 }
 
+Future<void> addFeature(String name, {required Platform platform}) async {
+  final pubspecFile = File(
+    p.join(
+      platformDir(platform).path,
+      'project_${platform.name}_${platform.name}_$name',
+      'pubspec.yaml',
+    ),
+  );
+
+  await pubspecFile.create(recursive: true);
+  await pubspecFile.writeAsString('name: $name');
+}
+
 late String projectName;
 
 /// The app package containing all setup.
@@ -578,13 +591,15 @@ Future<TestResult> _runFlutterTest({
     );
   }
 
-  // TODO on windows the test command says "N tests passed"
-  if (stderr.isEmpty || stdout.contains('All tests passed')) {
+  if (stderr.isEmpty &&
+      (stdout.contains('All tests passed') ||
+          stdout.contains(RegExp(r'[1-9][0-9]* tests passed')))) {
     return TestResult(0, totalCoverage);
   }
 
   final regExp = RegExp(r'-([0-9]+): Some tests failed');
-  final match = regExp.firstMatch(stderr)!;
+  final match = regExp.firstMatch(stderr) ?? regExp.firstMatch(stdout)!;
+
   return TestResult(int.parse(match.group(1)!), totalCoverage);
 }
 
@@ -639,12 +654,15 @@ Future<int> runFlutterIntegrationTest({
     throw TestDirNotFound();
   }
 
-  if (stderr.isEmpty || stdout.contains('All tests passed')) {
+  if (stderr.isEmpty &&
+      (stdout.contains('All tests passed') ||
+          stdout.contains(RegExp(r'[1-9][0-9]* tests passed')))) {
     return 0;
   }
 
   final regExp = RegExp(r'-([0-9]+): Some tests failed');
-  final match = regExp.firstMatch(stderr)!;
+  final match = regExp.firstMatch(stderr) ?? regExp.firstMatch(stdout)!;
+
   return int.parse(match.group(1)!);
 }
 

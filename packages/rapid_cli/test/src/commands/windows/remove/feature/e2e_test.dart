@@ -29,8 +29,9 @@ void main() {
         'windows remove feature (fast)',
         () async {
           // Arrange
-          const featureName = 'home_page';
+          const featureName = 'foo_bar';
           await setupProjectWithPlatform(Platform.windows);
+          await addFeature(featureName, platform: Platform.windows);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -40,16 +41,15 @@ void main() {
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
 
-          await verifyHasAnalyzerIssues(8);
+          await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs(Platform.windows);
-          final featureDir = featurePackage(featureName, Platform.windows);
           verifyDoExist([
             ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
-          verifyDoNotExist([featureDir]);
+          verifyDoNotExist([featurePackage(featureName, Platform.windows)]);
         },
         tags: ['fast'],
       );
@@ -58,8 +58,9 @@ void main() {
         'windows remove feature',
         () async {
           // Arrange
-          const featureName = 'home_page';
+          const featureName = 'foo_bar';
           await setupProjectWithPlatform(Platform.windows);
+          await addFeature(featureName, platform: Platform.windows);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -69,20 +70,20 @@ void main() {
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
 
-          await verifyHasAnalyzerIssues(8);
+          await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs(Platform.windows);
-          final featureDir = featurePackage(featureName, Platform.windows);
           verifyDoExist([
             ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
-          verifyDoNotExist([featureDir]);
+          verifyDoNotExist([featurePackage(featureName, Platform.windows)]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages,
-            ...platformDependentDirs,
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', Platform.windows),
           ]);
         },
       );

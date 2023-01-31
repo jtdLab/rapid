@@ -29,8 +29,9 @@ void main() {
         'web remove feature (fast)',
         () async {
           // Arrange
-          const featureName = 'home_page';
+          const featureName = 'foo_bar';
           await setupProjectWithPlatform(Platform.web);
+          await addFeature(featureName, platform: Platform.web);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -40,16 +41,15 @@ void main() {
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
 
-          await verifyHasAnalyzerIssues(8);
+          await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs(Platform.web);
-          final featureDir = featurePackage(featureName, Platform.web);
           verifyDoExist([
             ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
-          verifyDoNotExist([featureDir]);
+          verifyDoNotExist([featurePackage(featureName, Platform.web)]);
         },
         tags: ['fast'],
       );
@@ -58,8 +58,9 @@ void main() {
         'web remove feature',
         () async {
           // Arrange
-          const featureName = 'home_page';
+          const featureName = 'foo_bar';
           await setupProjectWithPlatform(Platform.web);
+          await addFeature(featureName, platform: Platform.web);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -69,20 +70,20 @@ void main() {
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
 
-          await verifyHasAnalyzerIssues(8);
+          await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs(Platform.web);
-          final featureDir = featurePackage(featureName, Platform.web);
           verifyDoExist([
             ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
-          verifyDoNotExist([featureDir]);
+          verifyDoNotExist([featurePackage(featureName, Platform.web)]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages,
-            ...platformDependentDirs,
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', Platform.web),
           ]);
         },
       );

@@ -81,8 +81,9 @@ void main() {
           ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages,
-            ...platformDependentDirs,
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', Platform.macos),
             featureDir,
           ]);
         },

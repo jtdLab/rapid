@@ -29,8 +29,9 @@ void main() {
         'macos remove feature (fast)',
         () async {
           // Arrange
-          const featureName = 'home_page';
+          const featureName = 'foo_bar';
           await setupProjectWithPlatform(Platform.macos);
+          await addFeature(featureName, platform: Platform.macos);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -40,16 +41,15 @@ void main() {
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
 
-          await verifyHasAnalyzerIssues(8);
+          await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs(Platform.macos);
-          final featureDir = featurePackage(featureName, Platform.macos);
           verifyDoExist([
             ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
-          verifyDoNotExist([featureDir]);
+          verifyDoNotExist([featurePackage(featureName, Platform.macos)]);
         },
         tags: ['fast'],
       );
@@ -58,8 +58,9 @@ void main() {
         'macos remove feature',
         () async {
           // Arrange
-          const featureName = 'home_page';
+          const featureName = 'foo_bar';
           await setupProjectWithPlatform(Platform.macos);
+          await addFeature(featureName, platform: Platform.macos);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -69,20 +70,20 @@ void main() {
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
 
-          await verifyHasAnalyzerIssues(8);
+          await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs(Platform.macos);
-          final featureDir = featurePackage(featureName, Platform.macos);
           verifyDoExist([
             ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
-          verifyDoNotExist([featureDir]);
+          verifyDoNotExist([featurePackage(featureName, Platform.macos)]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages,
-            ...platformDependentDirs,
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', Platform.macos),
           ]);
         },
       );

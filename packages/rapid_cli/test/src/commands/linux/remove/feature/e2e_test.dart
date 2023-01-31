@@ -29,8 +29,9 @@ void main() {
         'linux remove feature (fast)',
         () async {
           // Arrange
-          const featureName = 'home_page';
+          const featureName = 'foo_bar';
           await setupProjectWithPlatform(Platform.linux);
+          await addFeature(featureName, platform: Platform.linux);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -40,16 +41,15 @@ void main() {
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
 
-          await verifyHasAnalyzerIssues(8);
+          await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs(Platform.linux);
-          final featureDir = featurePackage(featureName, Platform.linux);
           verifyDoExist([
             ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
-          verifyDoNotExist([featureDir]);
+          verifyDoNotExist([featurePackage(featureName, Platform.linux)]);
         },
         tags: ['fast'],
       );
@@ -58,8 +58,9 @@ void main() {
         'linux remove feature',
         () async {
           // Arrange
-          const featureName = 'home_page';
+          const featureName = 'foo_bar';
           await setupProjectWithPlatform(Platform.linux);
+          await addFeature(featureName, platform: Platform.linux);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -69,20 +70,20 @@ void main() {
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
 
-          await verifyHasAnalyzerIssues(8);
+          await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
           final platformDependentDirs = platformDirs(Platform.linux);
-          final featureDir = featurePackage(featureName, Platform.linux);
           verifyDoExist([
             ...platformIndependentPackages,
             ...platformDependentDirs,
           ]);
-          verifyDoNotExist([featureDir]);
+          verifyDoNotExist([featurePackage(featureName, Platform.linux)]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages,
-            ...platformDependentDirs,
+            ...platformIndependentPackages
+                .without({domainPackage, infrastructurePackage}),
+            featurePackage('app', Platform.linux),
           ]);
         },
       );

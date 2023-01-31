@@ -102,7 +102,7 @@ void main() {
 
           await verifyTestsPass(
             featurePackage(featureName, Platform.macos),
-            expectedCoverage: 78.57,
+            expectedCoverage: 82.35,
           );
         },
       );

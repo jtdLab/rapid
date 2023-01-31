@@ -95,7 +95,7 @@ void main() {
             ...entityFiles(name: name, outputDir: dir),
           });
 
-          await verifyDoNotHaveTests({
+          verifyDoNotHaveTests({
             domainPackage,
           });
         },

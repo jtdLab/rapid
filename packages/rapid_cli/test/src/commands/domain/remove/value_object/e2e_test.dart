@@ -95,7 +95,7 @@ void main() {
             ...valueObjectFiles(name: name, outputDir: dir),
           });
 
-          await verifyDoNotHaveTests({
+          verifyDoNotHaveTests({
             domainPackage,
           });
         },

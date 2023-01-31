@@ -137,7 +137,7 @@ void main() {
                 name: name, serviceName: serviceName, outputDir: outputDir),
           });
 
-          await verifyDoNotHaveTests({
+          verifyDoNotHaveTests({
             infrastructurePackage,
           });
         },

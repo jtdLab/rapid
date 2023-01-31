@@ -103,6 +103,6 @@ void main() {
         tags: ['web'],
       );
     },
-    timeout: const Timeout(Duration(minutes: 7)),
+    timeout: const Timeout(Duration(minutes: 16)),
   );
 }

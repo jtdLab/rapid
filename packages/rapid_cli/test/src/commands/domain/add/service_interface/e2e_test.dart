@@ -101,7 +101,7 @@ void main() {
             ...serviceInterfaceFiles(name: name, outputDir: outputDir),
           });
 
-          await verifyDoNotHaveTests({
+          verifyDoNotHaveTests({
             domainPackage,
           });
         },

@@ -4,6 +4,7 @@ import 'package:rapid_cli/src/core/platform.dart';
 import 'package:recase/recase.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
+import 'package:universal_io/io.dart' as io;
 
 /// The directory `flutter/dart test` was called from.
 ///
@@ -66,7 +67,7 @@ Future<void> _runFlutterPubGetInAllDirsWithPubspec() async {
 /// Verifys wheter ALL [entities] exist on disk.
 void verifyDoExist(Iterable<FileSystemEntity> entities) {
   for (final entity in entities) {
-    print(entity.path);
+    print('Verify does exist ${entity.path}');
     expect(entity.existsSync(), true);
   }
 }
@@ -74,7 +75,7 @@ void verifyDoExist(Iterable<FileSystemEntity> entities) {
 /// Verifys wheter NONE of [entities] exist on disk.
 void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
   for (final entity in entities) {
-    print(entity.path);
+    print('Verify does NOT exist ${entity.path}');
     expect(entity.existsSync(), false);
   }
 }
@@ -367,9 +368,7 @@ List<File> widgetFiles({
       ),
     ];
 
-// TODO cleaner
-
-/// All source files a feature requires to support [languages].
+/// Source files a feature requires to support [languages].
 List<File> languageFiles(
   String feature,
   Platform platform,
@@ -425,7 +424,7 @@ Future<void> verifyTestsPassWith100PercentCoverage(
   Iterable<Directory> dirs,
 ) async {
   for (final dir in dirs) {
-    verifyTestsPass(dir);
+    await verifyTestsPass(dir);
   }
 }
 
@@ -442,24 +441,35 @@ Future<void> verifyTestsPass(
   expect(testResult.coverage, expectedCoverage);
 }
 
-/// Verifys that no element in [dirs] has a test directory.
-Future<void> verifyDoNotHaveTests(
+/// Verifys that no element in [dirs] has a test directory with test files in it.
+///
+/// This passes if no test dir or only empty test/ or only empty test/src exists.
+void verifyDoNotHaveTests(
   Iterable<Directory> dirs,
-) async {
+) {
   for (final dir in dirs) {
-    print(dir.path);
+    print('Verify does NOT have tests ${dir.path}');
 
     late bool hasNoTests;
     final testDir = Directory(p.join(dir.path, 'test'));
-    if (testDir.existsSync() && testDir.listSync().isEmpty) {
-      hasNoTests = true;
-    } else {
-      final testSrcDir = Directory(p.join(dir.path, 'test', 'src'));
-      if (testSrcDir.existsSync() && testSrcDir.listSync().isEmpty) {
+    if (testDir.existsSync()) {
+      final testDirSubEntities = testDir.listSync();
+      if (testDirSubEntities.isEmpty) {
         hasNoTests = true;
       } else {
-        hasNoTests = false;
+        if (testDirSubEntities.length == 1) {
+          final testSrcDir = Directory(p.join(dir.path, 'test', 'src'));
+          if (testSrcDir.existsSync() && testSrcDir.listSync().isEmpty) {
+            hasNoTests = true;
+          } else {
+            hasNoTests = false;
+          }
+        } else {
+          hasNoTests = false;
+        }
       }
+    } else {
+      hasNoTests = true;
     }
 
     expect(hasNoTests, true);
@@ -520,7 +530,7 @@ Future<TestResult> _runFlutterTest({
   final String stderr = testResult.stderr;
   final String stdout = testResult.stdout;
 
-  print(stderr);
+  io.stderr.writeln(stderr);
   print(stdout);
 
   if (stderr.contains('Test directory "test" not found')) {
@@ -568,6 +578,7 @@ Future<TestResult> _runFlutterTest({
     );
   }
 
+  // TODO on windows the test command says "N tests passed"
   if (stderr.isEmpty || stdout.contains('All tests passed')) {
     return TestResult(0, totalCoverage);
   }
@@ -621,7 +632,7 @@ Future<int> runFlutterIntegrationTest({
   final String stderr = testResult.stderr;
   final String stdout = testResult.stdout;
 
-  print(stderr);
+  io.stderr.writeln(stderr);
   print(stdout);
 
   if (stderr.contains('Test directory "test" not found')) {
@@ -653,7 +664,7 @@ Future<int> _runFlutterAnalyze({
 
   final String stderr = result.stderr;
   final String stdout = result.stdout;
-  print(stderr);
+  io.stderr.writeln(stderr);
   print(stdout);
 
   if (stderr.isEmpty) {
@@ -681,7 +692,7 @@ Future<int> _runDartFormat({
 
   final String stderr = result.stderr;
   final String stdout = result.stdout;
-  print(stderr);
+  io.stderr.writeln(stderr);
   print(stdout);
 
   if (stderr.isEmpty) {

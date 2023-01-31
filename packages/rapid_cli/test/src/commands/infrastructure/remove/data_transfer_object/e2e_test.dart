@@ -115,7 +115,7 @@ void main() {
                 entity: entityName, outputDir: outputDir),
           });
 
-          await verifyDoNotHaveTests({
+          verifyDoNotHaveTests({
             infrastructurePackage,
           });
         },

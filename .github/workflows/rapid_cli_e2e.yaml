@@ -11,6 +11,100 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          # E2E tests for activate command
+          - test/src/commands/activate/android/e2e_test.dart
+          - test/src/commands/activate/ios/e2e_test.dart
+          - test/src/commands/activate/linux/e2e_test.dart
+          - test/src/commands/activate/macos/e2e_test.dart
+          - test/src/commands/activate/web/e2e_test.dart
+          - test/src/commands/activate/windows/e2e_test.dart
+
+          # E2E tests for create command
+          - test/src/commands/create/e2e_test.dart
+
+          # E2E tests for deactivate command
+          - test/src/commands/deactivate/android/e2e_test.dart
+          - test/src/commands/deactivate/ios/e2e_test.dart
+          - test/src/commands/deactivate/linux/e2e_test.dart
+          - test/src/commands/deactivate/macos/e2e_test.dart
+          - test/src/commands/deactivate/web/e2e_test.dart
+          - test/src/commands/deactivate/windows/e2e_test.dart
+
+          # E2E tests for domain command
+          - test/src/commands/domain/add/entity/e2e_test.dart
+          - test/src/commands/domain/add/service_interface/e2e_test.dart
+          - test/src/commands/domain/add/value_object/e2e_test.dart
+          - test/src/commands/domain/remove/entity/e2e_test.dart
+          - test/src/commands/domain/remove/service_interface/e2e_test.dart
+          - test/src/commands/domain/remove/value_object/e2e_test.dart
+
+          # E2E tests for infrastructure command
+          - test/src/commands/infrastructure/add/data_transfer_object/e2e_test.dart
+          - test/src/commands/infrastructure/add/service_implementation/e2e_test.dart
+          - test/src/commands/infrastructure/remove/data_transfer_object/e2e_test.dart
+          - test/src/commands/infrastructure/remove/service_implementation/e2e_test.dart
+
+          # E2E tests for ui command
+          - test/src/commands/ui/android/add/widget/e2e_test.dart
+          - test/src/commands/ui/android/remove/widget/e2e_test.dart
+          - test/src/commands/ui/ios/add/widget/e2e_test.dart
+          - test/src/commands/ui/ios/remove/widget/e2e_test.dart
+          - test/src/commands/ui/linux/add/widget/e2e_test.dart
+          - test/src/commands/ui/linux/remove/widget/e2e_test.dart
+          - test/src/commands/ui/macos/add/widget/e2e_test.dart
+          - test/src/commands/ui/macos/remove/widget/e2e_test.dart
+          - test/src/commands/ui/web/add/widget/e2e_test.dart
+          - test/src/commands/ui/web/remove/widget/e2e_test.dart
+          - test/src/commands/ui/windows/add/widget/e2e_test.dart
+          - test/src/commands/ui/windows/remove/widget/e2e_test.dart
+
+          # E2E tests for platform command
+          - test/src/commands/android/add/feature/e2e_test.dart
+          - test/src/commands/android/add/language/e2e_test.dart
+          - test/src/commands/android/feature/add/bloc/e2e_test.dart
+          - test/src/commands/android/feature/add/cubit/e2e_test.dart
+          - test/src/commands/android/remove/feature/e2e_test.dart
+          - test/src/commands/android/remove/language/e2e_test.dart
+
+          - test/src/commands/ios/add/feature/e2e_test.dart
+          - test/src/commands/ios/add/language/e2e_test.dart
+          - test/src/commands/ios/feature/add/bloc/e2e_test.dart
+          - test/src/commands/ios/feature/add/cubit/e2e_test.dart
+          - test/src/commands/ios/remove/feature/e2e_test.dart
+          - test/src/commands/ios/remove/language/e2e_test.dart
+
+          - test/src/commands/linux/add/feature/e2e_test.dart
+          - test/src/commands/linux/add/language/e2e_test.dart
+          - test/src/commands/linux/feature/add/bloc/e2e_test.dart
+          - test/src/commands/linux/feature/add/cubit/e2e_test.dart
+          - test/src/commands/linux/remove/feature/e2e_test.dart
+          - test/src/commands/linux/remove/language/e2e_test.dart
+
+          - test/src/commands/macos/add/feature/e2e_test.dart
+          - test/src/commands/macos/add/language/e2e_test.dart
+          - test/src/commands/macos/feature/add/bloc/e2e_test.dart
+          - test/src/commands/macos/feature/add/cubit/e2e_test.dart
+          - test/src/commands/macos/remove/feature/e2e_test.dart
+          - test/src/commands/macos/remove/language/e2e_test.dart
+
+          - test/src/commands/web/add/feature/e2e_test.dart
+          - test/src/commands/web/add/language/e2e_test.dart
+          - test/src/commands/web/feature/add/bloc/e2e_test.dart
+          - test/src/commands/web/feature/add/cubit/e2e_test.dart
+          - test/src/commands/web/remove/feature/e2e_test.dart
+          - test/src/commands/web/remove/language/e2e_test.dart
+
+          - test/src/commands/windows/add/feature/e2e_test.dart
+          - test/src/commands/windows/add/language/e2e_test.dart
+          - test/src/commands/windows/feature/add/bloc/e2e_test.dart
+          - test/src/commands/windows/feature/add/cubit/e2e_test.dart
+          - test/src/commands/windows/remove/feature/e2e_test.dart
+          - test/src/commands/windows/remove/language/e2e_test.dart
+
     steps:
       - uses: actions/checkout@v3
 
@@ -40,7 +134,7 @@ jobs:
         run: flutter pub get
 
       - name: Run E2E Tests
-        run: flutter test -j 1 --run-skipped -t e2e -x android,ios,linux,macos,web,windows
+        run: flutter test ${{ matrix.test }} -j 1 --run-skipped -t e2e -x android,ios,linux,macos,web,windows
 
   e2e-android:
     defaults:
@@ -54,6 +148,31 @@ jobs:
     #   matrix:
     #     api-level:
     #       - 29
+
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          # E2E tests for activate command
+          - test/src/commands/activate/android/e2e_test.dart
+
+          # E2E tests for create command
+          - test/src/commands/create/e2e_test.dart
+
+          # E2E tests for deactivate command
+          - test/src/commands/deactivate/android/e2e_test.dart
+
+          # E2E tests for ui command
+          - test/src/commands/ui/android/add/widget/e2e_test.dart
+          - test/src/commands/ui/android/remove/widget/e2e_test.dart
+
+          # E2E tests for platform command
+          - test/src/commands/android/add/feature/e2e_test.dart
+          - test/src/commands/android/add/language/e2e_test.dart
+          - test/src/commands/android/feature/add/bloc/e2e_test.dart
+          - test/src/commands/android/feature/add/cubit/e2e_test.dart
+          - test/src/commands/android/remove/feature/e2e_test.dart
+          - test/src/commands/android/remove/language/e2e_test.dart
 
     steps:
       - uses: actions/checkout@v3
@@ -128,6 +247,31 @@ jobs:
 
     runs-on: macos-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          # E2E tests for activate command
+          - test/src/commands/activate/ios/e2e_test.dart
+
+          # E2E tests for create command
+          - test/src/commands/create/e2e_test.dart
+
+          # E2E tests for deactivate command
+          - test/src/commands/deactivate/ios/e2e_test.dart
+
+          # E2E tests for ui command
+          - test/src/commands/ui/ios/add/widget/e2e_test.dart
+          - test/src/commands/ui/ios/remove/widget/e2e_test.dart
+
+          # E2E tests for platform command
+          - test/src/commands/ios/add/feature/e2e_test.dart
+          - test/src/commands/ios/add/language/e2e_test.dart
+          - test/src/commands/ios/feature/add/bloc/e2e_test.dart
+          - test/src/commands/ios/feature/add/cubit/e2e_test.dart
+          - test/src/commands/ios/remove/feature/e2e_test.dart
+          - test/src/commands/ios/remove/language/e2e_test.dart
+
     steps:
       - uses: actions/checkout@v3
       # Setup Git to clone private Repos (this step should not be needed when rapid is public)
@@ -170,6 +314,31 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          # E2E tests for activate command
+          - test/src/commands/activate/linux/e2e_test.dart
+
+          # E2E tests for create command
+          - test/src/commands/create/e2e_test.dart
+
+          # E2E tests for deactivate command
+          - test/src/commands/deactivate/linux/e2e_test.dart
+
+          # E2E tests for ui command
+          - test/src/commands/ui/linux/add/widget/e2e_test.dart
+          - test/src/commands/ui/linux/remove/widget/e2e_test.dart
+
+          # E2E tests for platform command
+          - test/src/commands/linux/add/feature/e2e_test.dart
+          - test/src/commands/linux/add/language/e2e_test.dart
+          - test/src/commands/linux/feature/add/bloc/e2e_test.dart
+          - test/src/commands/linux/feature/add/cubit/e2e_test.dart
+          - test/src/commands/linux/remove/feature/e2e_test.dart
+          - test/src/commands/linux/remove/language/e2e_test.dart
+
     steps:
       - uses: actions/checkout@v3
 
@@ -211,6 +380,31 @@ jobs:
 
     runs-on: macos-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          # E2E tests for activate command
+          - test/src/commands/activate/macos/e2e_test.dart
+
+          # E2E tests for create command
+          - test/src/commands/create/e2e_test.dart
+
+          # E2E tests for deactivate command
+          - test/src/commands/deactivate/macos/e2e_test.dart
+
+          # E2E tests for ui command
+          - test/src/commands/ui/macos/add/widget/e2e_test.dart
+          - test/src/commands/ui/macos/remove/widget/e2e_test.dart
+
+          # E2E tests for platform command
+          - test/src/commands/macos/add/feature/e2e_test.dart
+          - test/src/commands/macos/add/language/e2e_test.dart
+          - test/src/commands/macos/feature/add/bloc/e2e_test.dart
+          - test/src/commands/macos/feature/add/cubit/e2e_test.dart
+          - test/src/commands/macos/remove/feature/e2e_test.dart
+          - test/src/commands/macos/remove/language/e2e_test.dart
+
     steps:
       - uses: actions/checkout@v3
       # Setup Git to clone private Repos (this step should not be needed when rapid is public)
@@ -244,6 +438,31 @@ jobs:
         working-directory: packages/rapid_cli
 
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          # E2E tests for activate command
+          - test/src/commands/activate/web/e2e_test.dart
+
+          # E2E tests for create command
+          - test/src/commands/create/e2e_test.dart
+
+          # E2E tests for deactivate command
+          - test/src/commands/deactivate/web/e2e_test.dart
+
+          # E2E tests for ui command
+          - test/src/commands/ui/web/add/widget/e2e_test.dart
+          - test/src/commands/ui/web/remove/widget/e2e_test.dart
+
+          # E2E tests for platform command
+          - test/src/commands/web/add/feature/e2e_test.dart
+          - test/src/commands/web/add/language/e2e_test.dart
+          - test/src/commands/web/feature/add/bloc/e2e_test.dart
+          - test/src/commands/web/feature/add/cubit/e2e_test.dart
+          - test/src/commands/web/remove/feature/e2e_test.dart
+          - test/src/commands/web/remove/language/e2e_test.dart
 
     steps:
       - uses: actions/checkout@v3
@@ -279,6 +498,31 @@ jobs:
         working-directory: packages/rapid_cli
 
     runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        test:
+          # E2E tests for activate command
+          - test/src/commands/activate/windows/e2e_test.dart
+
+          # E2E tests for create command
+          - test/src/commands/create/e2e_test.dart
+
+          # E2E tests for deactivate command
+          - test/src/commands/deactivate/windows/e2e_test.dart
+
+          # E2E tests for ui command
+          - test/src/commands/ui/windows/add/widget/e2e_test.dart
+          - test/src/commands/ui/windows/remove/widget/e2e_test.dart
+
+          # E2E tests for platform command
+          - test/src/commands/windows/add/feature/e2e_test.dart
+          - test/src/commands/windows/add/language/e2e_test.dart
+          - test/src/commands/windows/feature/add/bloc/e2e_test.dart
+          - test/src/commands/windows/feature/add/cubit/e2e_test.dart
+          - test/src/commands/windows/remove/feature/e2e_test.dart
+          - test/src/commands/windows/remove/language/e2e_test.dart
 
     steps:
       - uses: actions/checkout@v3

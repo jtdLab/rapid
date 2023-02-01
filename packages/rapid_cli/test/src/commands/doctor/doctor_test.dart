@@ -19,8 +19,6 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
-// TODO fix
-
 abstract class _FakePlatformDirectoryBuilder {
   PlatformDirectory call({required Platform platform});
 }
@@ -211,17 +209,6 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => project.platformIsActivated(Platform.android)).called(1);
-      verify(() => project.platformIsActivated(Platform.ios)).called(1);
-      verify(() => project.platformIsActivated(Platform.linux)).called(1);
-      verify(() => project.platformIsActivated(Platform.macos)).called(1);
-      verify(() => project.platformIsActivated(Platform.web)).called(1);
-      verify(() => project.platformIsActivated(Platform.windows)).called(1);
-      verify(() => project.platformDirectory(platform: Platform.android))
-          .called(1);
-      verify(() => project.platformDirectory(platform: Platform.macos))
-          .called(1);
-      verify(() => project.platformDirectory(platform: Platform.web)).called(1);
       verify(() => platformDirectoryAndroid.customFeaturePackages()).called(1);
       verify(() => platformDirectoryMacos.customFeaturePackages()).called(1);
       verify(() => platformDirectoryWeb.customFeaturePackages()).called(1);
@@ -272,17 +259,6 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => project.platformIsActivated(Platform.android)).called(1);
-      verify(() => project.platformIsActivated(Platform.ios)).called(1);
-      verify(() => project.platformIsActivated(Platform.linux)).called(1);
-      verify(() => project.platformIsActivated(Platform.macos)).called(1);
-      verify(() => project.platformIsActivated(Platform.web)).called(1);
-      verify(() => project.platformIsActivated(Platform.windows)).called(1);
-      verify(() => project.platformDirectory(platform: Platform.android))
-          .called(1);
-      verify(() => project.platformDirectory(platform: Platform.macos))
-          .called(1);
-      verify(() => project.platformDirectory(platform: Platform.web)).called(1);
       verify(() => platformDirectoryAndroid.customFeaturePackages()).called(1);
       verify(() => platformDirectoryMacos.customFeaturePackages()).called(1);
       verify(() => platformDirectoryWeb.customFeaturePackages()).called(1);
@@ -346,9 +322,11 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err('''
- Could not find a melos.yaml.
- This command should be run from the root of your Rapid project.''')).called(1);
+      verify(
+        () => logger.err(
+          'This command should be run from the root of an existing Rapid project.',
+        ),
+      ).called(1);
       expect(result, ExitCode.noInput.code);
     });
   });

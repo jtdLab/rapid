@@ -35,7 +35,8 @@ class DoctorCommand extends Command<int> {
         () async {
           final platformDirectories = Platform.values
               .where((e) => _project.platformIsActivated(e))
-              .map((e) => _project.platformDirectory(platform: e));
+              .map((e) => _project.platformDirectory(platform: e))
+              .toList();
 
           var totalIssues = 0;
           var totalPlatformsWithIssues = 0;

@@ -192,9 +192,8 @@ class CreateCommand extends Command<int>
           }
 
           _logger
-            ..info('\n')
-            ..success('Created a Rapid App!')
-            ..info('\n');
+            ..info('')
+            ..success('Created a Rapid App!');
 
           return ExitCode.success.code;
         },

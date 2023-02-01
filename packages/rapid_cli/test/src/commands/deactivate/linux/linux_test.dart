@@ -118,6 +118,7 @@ void main() {
       verify(() => logger.err(
               'This command should be run from the root of an existing Rapid project.'))
           .called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.noInput.code);
     });
 
@@ -131,6 +132,7 @@ void main() {
       // Assert
       verify(() => project.platformIsActivated(Platform.linux)).called(1);
       verify(() => logger.err('Linux is already deactivated.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
     });
   });

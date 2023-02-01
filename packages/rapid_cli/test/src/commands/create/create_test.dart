@@ -301,6 +301,7 @@ void main() {
         ),
       ).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -332,6 +333,7 @@ void main() {
         ),
       ).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -363,6 +365,7 @@ void main() {
         ),
       ).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -394,6 +397,7 @@ void main() {
         ),
       ).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -425,6 +429,7 @@ void main() {
         ),
       ).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -456,6 +461,7 @@ void main() {
         ),
       ).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -487,6 +493,7 @@ void main() {
         ),
       ).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -518,6 +525,7 @@ void main() {
         ),
       ).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -561,6 +569,7 @@ void main() {
         ),
       ).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -593,6 +602,7 @@ void main() {
         ),
       ).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -626,6 +636,7 @@ void main() {
         ),
       ).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -662,6 +673,7 @@ void main() {
         ),
       ).called(1);
       verify(() => logger.success('Created a Rapid App!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, equals(ExitCode.success.code));
     });
 
@@ -675,6 +687,7 @@ void main() {
 
       // Assert
       verify(() => logger.err('Flutter not installed.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.unavailable.code);
     });
 
@@ -687,6 +700,7 @@ void main() {
 
       // Assert
       verify(() => logger.err('Melos not installed.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.unavailable.code);
     });
 
@@ -700,7 +714,7 @@ void main() {
 
             // Act
             final result = await commandRunner.run(
-              ['create', 'my_project', '--org', orgName],
+              ['create', 'my_project', '--org-name', orgName],
             );
 
             // Assert
@@ -730,6 +744,7 @@ void main() {
                   '(ex. com.example)',
                 ),
               ).called(1);
+              verify(() => logger.info('')).called(1);
             });
 
         test(

@@ -19,8 +19,6 @@ const expectedUsage = [
 
 class _MockLogger extends Mock implements Logger {}
 
-class _MockProgress extends Mock implements Progress {}
-
 class _MockProject extends Mock implements Project {}
 
 void main() {
@@ -28,8 +26,6 @@ void main() {
     Directory cwd = Directory.current;
 
     late Logger logger;
-    late Progress progress;
-    late List<String> progressLogs;
 
     late Project project;
 
@@ -39,13 +35,6 @@ void main() {
       Directory.current = Directory.systemTemp.createTempSync();
 
       logger = _MockLogger();
-      progress = _MockProgress();
-      progressLogs = <String>[];
-      when(() => progress.complete(any())).thenAnswer((_) {
-        final message = _.positionalArguments.elementAt(0) as String?;
-        if (message != null) progressLogs.add(message);
-      });
-      when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
       when(() => project.removePlatform(Platform.linux, logger: logger))
@@ -114,6 +103,7 @@ void main() {
       verify(() => project.removePlatform(Platform.linux, logger: logger))
           .called(1);
       verify(() => logger.success('Linux is now deactivated.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -125,9 +115,9 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err('''
- Could not find a melos.yaml.
- This command should be run from the root of your Rapid project.''')).called(1);
+      verify(() => logger.err(
+              'This command should be run from the root of an existing Rapid project.'))
+          .called(1);
       expect(result, ExitCode.noInput.code);
     });
 

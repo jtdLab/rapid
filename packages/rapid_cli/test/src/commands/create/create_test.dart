@@ -56,8 +56,6 @@ abstract class _ProjectBuilder {
 
 class _MockLogger extends Mock implements Logger {}
 
-class _MockProgress extends Mock implements Progress {}
-
 class _MockFlutterInstalledCommand extends Mock
     implements _FlutterInstalledCommand {}
 

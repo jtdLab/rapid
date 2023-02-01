@@ -66,6 +66,8 @@ abstract class DeactivatePlatformCommand extends Command<int>
         ],
         _logger,
         () async {
+          _logger.info('Deactivating ${_platform.prettyName} ...');
+
           await _project.removePlatform(_platform, logger: _logger);
 
           _logger

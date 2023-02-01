@@ -151,7 +151,7 @@ void main() {
     );
 
     test(
-      'throws UsageException when invalid name is provided',
+      'throws UsageException when name is not a valid dart class name',
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
         // Arrange

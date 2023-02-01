@@ -51,6 +51,8 @@ class InfrastructureRemoveDataTransferObjectCommand extends Command<int>
           final name = super.className;
           final dir = super.dir;
 
+          _logger.info('Removing Data Transfer Object ...');
+
           try {
             await _project.removeDataTransferObject(
               name: name,

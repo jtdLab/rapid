@@ -57,6 +57,8 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
           final entityName = _entity;
           final outputDir = super.outputDir;
 
+          _logger.info('Adding Data Transfer Object ...');
+
           try {
             await _project.addDataTransferObject(
               entityName: entityName,

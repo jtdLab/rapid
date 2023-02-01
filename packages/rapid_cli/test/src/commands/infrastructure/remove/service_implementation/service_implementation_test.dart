@@ -2,7 +2,6 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/infrastructure/remove/service_implementation/service_implementation.dart';
-import 'package:rapid_cli/src/project/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -25,15 +24,7 @@ const expectedUsage = [
 
 class _MockLogger extends Mock implements Logger {}
 
-class _MockProgress extends Mock implements Progress {}
-
 class _MockProject extends Mock implements Project {}
-
-class _MockInfrastructurePackage extends Mock
-    implements InfrastructurePackage {}
-
-class _MockServiceImplementation extends Mock
-    implements ServiceImplementation {}
 
 class _MockArgResults extends Mock implements ArgResults {}
 
@@ -42,11 +33,8 @@ void main() {
     Directory cwd = Directory.current;
 
     late Logger logger;
-    late List<String> progressLogs;
 
     late Project project;
-    late InfrastructurePackage infrastructurePackage;
-    late ServiceImplementation serviceImplementation;
 
     late ArgResults argResults;
     late String? dir;
@@ -59,28 +47,17 @@ void main() {
       Directory.current = Directory.systemTemp.createTempSync();
 
       logger = _MockLogger();
-      final progress = _MockProgress();
-      progressLogs = <String>[];
-      when(() => progress.complete(any())).thenAnswer((_) {
-        final message = _.positionalArguments.elementAt(0) as String?;
-        if (message != null) progressLogs.add(message);
-      });
-      when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      infrastructurePackage = _MockInfrastructurePackage();
-      serviceImplementation = _MockServiceImplementation();
-      when(() => serviceImplementation.exists()).thenReturn(true);
       when(
-        () => infrastructurePackage.serviceImplementation(
+        () => project.removeServiceImplementation(
           name: any(named: 'name'),
           serviceName: any(named: 'serviceName'),
           dir: any(named: 'dir'),
+          logger: logger,
         ),
-      ).thenReturn(serviceImplementation);
+      ).thenAnswer((_) async {});
       when(() => project.exists()).thenReturn(true);
-      when(() => project.infrastructurePackage)
-          .thenReturn(infrastructurePackage);
 
       argResults = _MockArgResults();
       dir = null;
@@ -166,6 +143,7 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -188,6 +166,30 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
+      }),
+    );
+
+    test(
+      'throws UsageException when name is not a valid dart class name',
+      withRunnerOnProject(
+          (commandRunner, logger, melosFile, project, printLogs) async {
+        // Arrange
+        const name = 'name1';
+        const expectedErrorMessage = '"$name" is not a valid dart class name.';
+
+        // Act
+        final result = await commandRunner.run([
+          'infrastructure',
+          'remove',
+          'service_implementation',
+          name,
+        ]);
+
+        // Assert
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -205,6 +207,7 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -230,6 +233,7 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -238,15 +242,22 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => infrastructurePackage.serviceImplementation(
-          name: name, serviceName: service, dir: '.')).called(1);
-      verify(() => serviceImplementation.exists()).called(1);
-      verify(() => serviceImplementation.delete()).called(1);
+      verify(() => logger.info('Removing Service Implementation ...'))
+          .called(1);
+      verify(
+        () => project.removeServiceImplementation(
+          name: name,
+          serviceName: service,
+          dir: '.',
+          logger: logger,
+        ),
+      ).called(1);
       verify(
         () => logger.success(
           'Removed Service Implementation ${name.pascalCase}${service.pascalCase}Service.',
         ),
       ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -260,29 +271,46 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => infrastructurePackage.serviceImplementation(
-          name: name, serviceName: service, dir: dir!)).called(1);
-      verify(() => serviceImplementation.exists()).called(1);
-      verify(() => serviceImplementation.delete()).called(1);
+      verify(() => logger.info('Removing Service Implementation ...'))
+          .called(1);
+      verify(
+        () => project.removeServiceImplementation(
+          name: name,
+          serviceName: service,
+          dir: dir!,
+          logger: logger,
+        ),
+      ).called(1);
       verify(
         () => logger.success(
           'Removed Service Implementation ${name.pascalCase}${service.pascalCase}Service.',
         ),
       ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
     });
 
     test('exits with 78 when service implementation does not exist', () async {
       // Arrange
-      when(() => serviceImplementation.exists()).thenReturn(false);
+      when(
+        () => project.removeServiceImplementation(
+          name: any(named: 'name'),
+          serviceName: any(named: 'serviceName'),
+          dir: any(named: 'dir'),
+          logger: logger,
+        ),
+      ).thenThrow(ServiceImplementationDoesNotExist());
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err(
-              'Service Implementation ${name.pascalCase}${service.pascalCase}Service not found.'))
-          .called(1);
+      verify(
+        () => logger.err(
+          'Service Implementation ${name.pascalCase}${service.pascalCase}Service not found.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
     });
 
@@ -294,9 +322,12 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err('''
- Could not find a melos.yaml.
- This command should be run from the root of your Rapid project.''')).called(1);
+      verify(
+        () => logger.err(
+          'This command should be run from the root of an existing Rapid project.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.noInput.code);
     });
   });

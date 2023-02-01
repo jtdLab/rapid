@@ -56,6 +56,8 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
           final serviceName = _service;
           final dir = super.dir;
 
+          _logger.info('Removing Service Implementation ...');
+
           try {
             await _project.removeServiceImplementation(
               name: name,
@@ -71,7 +73,7 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
               );
 
             return ExitCode.success.code;
-          } on DataTransferObjectDoesNotExist {
+          } on ServiceImplementationDoesNotExist {
             _logger
               ..info('')
               ..err(

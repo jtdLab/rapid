@@ -57,6 +57,8 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
           final serviceName = _service;
           final outputDir = super.outputDir;
 
+          _logger.info('Adding Service Implementation ...');
+
           try {
             _project.addServiceImplementation(
               name: name,

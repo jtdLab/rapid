@@ -78,8 +78,6 @@ void main() {
     final cwd = Directory.current;
 
     late Logger logger;
-    late List<String> progressLogs;
-    late Progress progress;
 
     late FlutterInstalledCommand flutterInstalled;
 
@@ -110,13 +108,6 @@ void main() {
       Directory.current = Directory.systemTemp.createTempSync();
 
       logger = _MockLogger();
-      progress = _MockProgress();
-      progressLogs = <String>[];
-      when(() => progress.complete(any())).thenAnswer((_) {
-        final message = _.positionalArguments.elementAt(0) as String?;
-        if (message != null) progressLogs.add(message);
-      });
-      when(() => logger.progress(any())).thenReturn(progress);
 
       flutterInstalled = _MockFlutterInstalledCommand();
       when(() => flutterInstalled(logger: logger))
@@ -175,17 +166,17 @@ void main() {
       when(() => argResults['output-dir']).thenReturn(outputDir);
 
       command = CreateCommand(
-          logger: logger,
-          flutterInstalled: flutterInstalled,
-          melosInstalled: melosInstalled,
-          flutterConfigEnableAndroid: flutterConfigEnableAndroid,
-          flutterConfigEnableIos: flutterConfigEnableIos,
-          flutterConfigEnableLinux: flutterConfigEnableLinux,
-          flutterConfigEnableMacos: flutterConfigEnableMacos,
-          flutterConfigEnableWeb: flutterConfigEnableWeb,
-          flutterConfigEnableWindows: flutterConfigEnableWindows,
-          project: projectBuilder)
-        ..argResultOverrides = argResults;
+        logger: logger,
+        flutterInstalled: flutterInstalled,
+        melosInstalled: melosInstalled,
+        flutterConfigEnableAndroid: flutterConfigEnableAndroid,
+        flutterConfigEnableIos: flutterConfigEnableIos,
+        flutterConfigEnableLinux: flutterConfigEnableLinux,
+        flutterConfigEnableMacos: flutterConfigEnableMacos,
+        flutterConfigEnableWeb: flutterConfigEnableWeb,
+        flutterConfigEnableWindows: flutterConfigEnableWindows,
+        project: projectBuilder,
+      )..argResultOverrides = argResults;
     });
 
     tearDown(() {

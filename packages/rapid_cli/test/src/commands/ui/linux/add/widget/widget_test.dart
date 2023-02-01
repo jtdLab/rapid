@@ -3,8 +3,6 @@ import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/ui/linux/add/widget/widget.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
-import 'package:rapid_cli/src/project/platform_ui_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -26,39 +24,17 @@ const expectedUsage = [
 
 class _MockLogger extends Mock implements Logger {}
 
-class _MockProgress extends Mock implements Progress {}
-
 class _MockProject extends Mock implements Project {}
 
-class _MockMelosFile extends Mock implements MelosFile {}
-
-class _MockPlatformUiPackage extends Mock implements PlatformUiPackage {}
-
-class _MockMasonGenerator extends Mock implements MasonGenerator {}
-
 class _MockArgResults extends Mock implements ArgResults {}
-
-class _FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
 
 void main() {
   group('ui linux add widget', () {
     Directory cwd = Directory.current;
 
     late Logger logger;
-    late List<String> progressLogs;
 
     late Project project;
-    late MelosFile melosFile;
-    const projectName = 'test_app';
-    late PlatformUiPackage platformUiPackage;
-    const platformUiPackagePath = 'foo/bar/baz';
-
-    late MasonGenerator generator;
-    final generatedFiles = List.filled(
-      23,
-      const GeneratedFile.created(path: ''),
-    );
 
     late ArgResults argResults;
     late String? outputDir;
@@ -66,43 +42,22 @@ void main() {
 
     late UiLinuxAddWidgetCommand command;
 
-    setUpAll(() {
-      registerFallbackValue(_FakeDirectoryGeneratorTarget());
-    });
-
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
       logger = _MockLogger();
-      final progress = _MockProgress();
-      progressLogs = <String>[];
-      when(() => progress.complete(any())).thenAnswer((_) {
-        final message = _.positionalArguments.elementAt(0) as String?;
-        if (message != null) progressLogs.add(message);
-      });
-      when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      melosFile = _MockMelosFile();
-      when(() => melosFile.exists()).thenReturn(true);
-      when(() => melosFile.name()).thenReturn(projectName);
-      platformUiPackage = _MockPlatformUiPackage();
-      when(() => platformUiPackage.path).thenReturn(platformUiPackagePath);
-      when(() => project.melosFile).thenReturn(melosFile);
-      when(() => project.isActivated(Platform.linux)).thenReturn(true);
-      when(() => project.platformUiPackage(Platform.linux))
-          .thenReturn(platformUiPackage);
-
-      generator = _MockMasonGenerator();
-      when(() => generator.id).thenReturn('generator_id');
-      when(() => generator.description).thenReturn('generator description');
+      when(() => project.exists()).thenReturn(true);
+      when(() => project.platformIsActivated(Platform.linux)).thenReturn(true);
       when(
-        () => generator.generate(
-          any(),
-          vars: any(named: 'vars'),
-          logger: any(named: 'logger'),
+        () => project.addWidget(
+          name: any(named: 'name'),
+          outputDir: any(named: 'outputDir'),
+          platform: Platform.linux,
+          logger: logger,
         ),
-      ).thenAnswer((_) async => generatedFiles);
+      ).thenAnswer((_) async {});
 
       argResults = _MockArgResults();
       outputDir = null;
@@ -113,7 +68,6 @@ void main() {
       command = UiLinuxAddWidgetCommand(
         logger: logger,
         project: project,
-        generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
 
@@ -168,6 +122,7 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -184,13 +139,38 @@ void main() {
           'linux',
           'add',
           'widget',
-          'name1',
-          'name2',
+          'Name1',
+          'Name2',
         ]);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
+      }),
+    );
+
+    test(
+      'throws UsageException when invalid name is provided',
+      withRunnerOnProject(
+          (commandRunner, logger, melosFile, project, printLogs) async {
+        // Arrange
+        const name = 'name1';
+        const expectedErrorMessage = '"$name" is not a valid dart class name.';
+
+        // Act
+        final result = await commandRunner.run([
+          'ui',
+          'linux',
+          'add',
+          'widget',
+          name,
+        ]);
+
+        // Assert
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -199,30 +179,17 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.progress('Generating files')).called(1);
+      verify(() => logger.info('Adding Linux Widget ...')).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              platformUiPackagePath,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'name': name,
-            'output_dir': '.',
-          },
+        () => project.addWidget(
+          name: name,
+          outputDir: '.',
+          platform: Platform.linux,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => logger.success('Added Linux Widget ${name.pascalCase}.'))
-          .called(1);
+      verify(() => logger.success('Added Linux Widget $name.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -236,56 +203,47 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.progress('Generating files')).called(1);
+      verify(() => logger.info('Adding Linux Widget ...')).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              platformUiPackagePath,
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'name': name,
-            'output_dir': outputDir,
-          },
+        () => project.addWidget(
+          name: name,
+          outputDir: outputDir!,
+          platform: Platform.linux,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => logger.success('Added Linux Widget ${name.pascalCase}.'))
-          .called(1);
+      verify(() => logger.success('Added Linux Widget $name.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
     });
 
-    test('exits with 66 when melos.yaml does not exist', () async {
+    test('exits with 66 when project does not exist', () async {
       // Arrange
-      when(() => melosFile.exists()).thenReturn(false);
+      when(() => project.exists()).thenReturn(false);
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err('''
- Could not find a melos.yaml.
- This command should be run from the root of your Rapid project.''')).called(1);
+      verify(
+        () => logger.err(
+          'This command should be run from the root of an existing Rapid project.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.noInput.code);
     });
 
     test('exits with 78 when Linux is not activated', () async {
       // Arrange
-      when(() => project.isActivated(Platform.linux)).thenReturn(false);
+      when(() => project.platformIsActivated(Platform.linux)).thenReturn(false);
 
       // Act
       final result = await command.run();
 
       // Assert
       verify(() => logger.err('Linux is not activated.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
     });
   });

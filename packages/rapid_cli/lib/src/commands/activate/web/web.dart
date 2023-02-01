@@ -45,6 +45,8 @@ class ActivateWebCommand extends ActivatePlatformCommand with OrgNameGetter {
         () async {
           final description = _description;
 
+          _logger.info('Activating ${platform.prettyName} ...');
+
           await _project.addPlatform(
             platform,
             description: description,

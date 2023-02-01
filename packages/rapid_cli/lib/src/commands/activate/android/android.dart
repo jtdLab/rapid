@@ -41,6 +41,8 @@ class ActivateAndroidCommand extends ActivatePlatformCommand
         () async {
           final orgName = this.orgName;
 
+          _logger.info('Activating ${platform.prettyName} ...');
+
           await _project.addPlatform(
             platform,
             orgName: orgName,

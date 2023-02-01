@@ -40,6 +40,8 @@ class ActivateMacosCommand extends ActivatePlatformCommand with OrgNameGetter {
         () async {
           final orgName = this.orgName;
 
+          _logger.info('Activating ${platform.prettyName} ...');
+
           await _project.addPlatform(
             platform,
             orgName: orgName,

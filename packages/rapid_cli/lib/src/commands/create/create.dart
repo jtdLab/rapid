@@ -155,6 +155,8 @@ class CreateCommand extends Command<int>
           final web = _web || _all;
           final windows = _windows || _desktop || _all;
 
+          _logger.info('Creating Rapid project ...');
+
           final project = _project(path: outputDir);
           await project.create(
             projectName: projectName,

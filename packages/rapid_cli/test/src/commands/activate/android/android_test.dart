@@ -138,7 +138,8 @@ void main() {
           logger: logger,
         ),
       ).called(1);
-      verify(() => logger.info('Android activated!')).called(1);
+      verify(() => logger.success('Android activated!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -162,7 +163,8 @@ void main() {
           logger: logger,
         ),
       ).called(1);
-      verify(() => logger.info('Android activated!')).called(1);
+      verify(() => logger.success('Android activated!')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -174,9 +176,11 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err('''
- Could not find a melos.yaml.
- This command should be run from the root of your Rapid project.''')).called(1);
+      verify(
+        () => logger.err(
+          'This command should be run from the root of an existing Rapid project.',
+        ),
+      ).called(1);
       expect(result, ExitCode.noInput.code);
     });
 

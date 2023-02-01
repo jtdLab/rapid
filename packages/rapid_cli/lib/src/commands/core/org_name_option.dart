@@ -16,7 +16,6 @@ extension OrgNameOption on ArgParser {
     addOption(
       'org-name',
       help: help,
-      aliases: ['org'], // TODO nake abbrev
       defaultsTo: _defaultOrgName,
     );
   }

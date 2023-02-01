@@ -66,12 +66,18 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
   Future<int> run() => runWhen(
         [
           projectExists(_project),
-          platformIsActivated(_platform, _project),
+          platformIsActivated(
+            _platform,
+            _project,
+            '${_platform.prettyName} is not activated.', // TODO good ?
+          ),
         ],
         _logger,
         () async {
           final name = super.className;
           final outputDir = super.outputDir;
+
+          _logger.info('Adding ${_platform.prettyName} Widget ...');
 
           try {
             await _project.addWidget(

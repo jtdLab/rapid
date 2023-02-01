@@ -704,6 +704,7 @@ void main() {
       expect(result, ExitCode.unavailable.code);
     });
 
+    // TODO testing this way good?
     group('org-name', () {
       group('--org', () {
         test(
@@ -768,7 +769,7 @@ void main() {
       });
 
       group('valid --org-name', () {
-        void Function() verifyOrgNameIsValid2(String orgName) => () async {
+        void Function() verifyOrgNameIsValid(String orgName) => () async {
               // Arrange
               when(() => argResults['org-name']).thenReturn(orgName);
 
@@ -796,32 +797,32 @@ void main() {
 
         test(
           'alphanumeric with three parts',
-          verifyOrgNameIsValid2('com.example.app'),
+          verifyOrgNameIsValid('com.example.app'),
         );
 
         test(
           'less than three parts',
-          verifyOrgNameIsValid2('com.example'),
+          verifyOrgNameIsValid('com.example'),
         );
 
         test(
           'containing a hyphen',
-          verifyOrgNameIsValid2('com.example.bad-app'),
+          verifyOrgNameIsValid('com.example.bad-app'),
         );
 
         test(
           'more than three parts',
-          verifyOrgNameIsValid2('com.example.app.identifier'),
+          verifyOrgNameIsValid('com.example.app.identifier'),
         );
 
         test(
           'single char parts',
-          verifyOrgNameIsValid2('c.e.a'),
+          verifyOrgNameIsValid('c.e.a'),
         );
 
         test(
           'containing an underscore',
-          verifyOrgNameIsValid2('com.example.bad_app'),
+          verifyOrgNameIsValid('com.example.bad_app'),
         );
       });
     });

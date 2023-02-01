@@ -64,12 +64,18 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
   Future<int> run() => runWhen(
         [
           projectExists(_project),
-          platformIsActivated(_platform, _project),
+          platformIsActivated(
+            _platform,
+            _project,
+            '${_platform.prettyName} is not activated.',
+          ) // TODO good ?
         ],
         _logger,
         () async {
           final name = super.className;
           final dir = super.dir;
+
+          _logger.info('Removing ${_platform.prettyName} Widget ...');
 
           try {
             await _project.removeWidget(

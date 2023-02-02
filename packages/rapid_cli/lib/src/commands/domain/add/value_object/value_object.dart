@@ -99,10 +99,10 @@ class DomainAddValueObjectCommand extends Command<int>
         .split(RegExp('[,<>]'))
         .where((element) => element.startsWith('#'))
         .map((element) => element.replaceAll('#', ''))
-        .toList();
+        .toSet();
 
     for (int i = 0; i < generics.length; i++) {
-      buffer.write(generics[i]);
+      buffer.write(generics.elementAt(i));
       if (i != generics.length - 1) {
         buffer.write(', ');
       }

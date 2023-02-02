@@ -17,6 +17,9 @@ const expectedUsage = [
       '\n'
       '-o, --output-dir    The output directory relative to <domain_package>/lib/ .\n'
       '                    (defaults to ".")\n'
+      '    --type          The type that gets wrapped by this value object.\n'
+      '                    Generics get escaped via "#" e.g Tuple<#A, #B, String>.\n'
+      '                    (defaults to "String")\n'
       '\n'
       'Run "rapid help" to see global options.'
 ];
@@ -37,6 +40,7 @@ void main() {
 
     late ArgResults argResults;
     late String? outputDir;
+    late String? type;
     late String name;
 
     late DomainAddValueObjectCommand command;
@@ -51,12 +55,15 @@ void main() {
         () => project.addValueObject(
           name: any(named: 'name'),
           outputDir: any(named: 'outputDir'),
+          type: any(named: 'type'),
+          generics: any(named: 'generics'),
           logger: logger,
         ),
       ).thenAnswer((_) async {});
       when(() => project.exists()).thenReturn(true);
 
       argResults = _MockArgResults();
+      outputDir = null;
       outputDir = null;
       name = 'FooBar';
       when(() => argResults['output-dir']).thenReturn(outputDir);
@@ -187,6 +194,8 @@ void main() {
         () => project.addValueObject(
           name: name,
           outputDir: '.',
+          type: 'String',
+          generics: '',
           logger: logger,
         ),
       ).called(1);
@@ -210,6 +219,86 @@ void main() {
         () => project.addValueObject(
           name: name,
           outputDir: outputDir!,
+          type: 'String',
+          generics: '',
+          logger: logger,
+        ),
+      ).called(1);
+      verify(() => logger.success('Added Value Object $name.')).called(1);
+      verify(() => logger.info('')).called(1);
+      expect(result, ExitCode.success.code);
+    });
+
+    test(
+        'completes successfully with correct output with custom type without generics',
+        () async {
+      // Arrange
+      type = 'int';
+      when(() => argResults['type']).thenReturn(type);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.info('Adding Value Object ...')).called(1);
+      verify(
+        () => project.addValueObject(
+          name: name,
+          outputDir: '.',
+          type: type!,
+          generics: '',
+          logger: logger,
+        ),
+      ).called(1);
+      verify(() => logger.success('Added Value Object $name.')).called(1);
+      verify(() => logger.info('')).called(1);
+      expect(result, ExitCode.success.code);
+    });
+
+    test(
+        'completes successfully with correct output with custom type with generics',
+        () async {
+      // Arrange
+      type = 'Pair<#A, int>';
+      when(() => argResults['type']).thenReturn(type);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.info('Adding Value Object ...')).called(1);
+      verify(
+        () => project.addValueObject(
+          name: name,
+          outputDir: '.',
+          type: 'Pair<A, int>',
+          generics: '<A>',
+          logger: logger,
+        ),
+      ).called(1);
+      verify(() => logger.success('Added Value Object $name.')).called(1);
+      verify(() => logger.info('')).called(1);
+      expect(result, ExitCode.success.code);
+    });
+
+    test(
+        'completes successfully with correct output with custom type with nested generics',
+        () async {
+      // Arrange
+      type = 'Pair<#A, Triple<#B, #A, #C>>';
+      when(() => argResults['type']).thenReturn(type);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.info('Adding Value Object ...')).called(1);
+      verify(
+        () => project.addValueObject(
+          name: name,
+          outputDir: '.',
+          type: 'Pair<A, Triple<B, A, C>>',
+          generics: '<A, B, C>',
           logger: logger,
         ),
       ).called(1);
@@ -224,6 +313,8 @@ void main() {
         () => project.addValueObject(
           name: any(named: 'name'),
           outputDir: any(named: 'outputDir'),
+          type: any(named: 'type'),
+          generics: any(named: 'generics'),
           logger: logger,
         ),
       ).thenThrow(ValueObjectAlreadyExists());

@@ -1,9 +1,9 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
+import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/ios/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/linux/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/macos/remove/feature/feature.dart';
@@ -34,19 +34,13 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
-    MelosBootstrapCommand? melosBootstrap,
-    MelosCleanCommand? melosClean,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project,
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _melosClean = melosClean ?? Melos.clean;
+        _project = project;
 
   final Platform _platform;
   final Logger _logger;
   final Project _project;
-  final MelosBootstrapCommand _melosBootstrap;
-  final MelosCleanCommand _melosClean;
 
   @override
   String get name => 'feature';
@@ -65,11 +59,17 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
   Future<int> run() => runWhen(
         [
           projectExists(_project),
-          platformIsActivated(_platform, _project),
+          platformIsActivated(
+            _platform,
+            _project,
+            'iOS is not activated.',
+          ),
         ],
         _logger,
         () async {
           final name = _name;
+
+          _logger.info('Removing Feature ...');
 
           try {
             await _project.removeFeature(
@@ -112,6 +112,16 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
       throw UsageException('Multiple names specified.', usage);
     }
 
-    return args.first;
+    final name = args.first;
+    final isValid = isValidPackageName(name);
+    if (!isValid) {
+      throw UsageException(
+        '"$name" is not a valid package name.\n\n'
+        'See https://dart.dev/tools/pub/pubspec#name for more information.',
+        usage,
+      );
+    }
+
+    return name;
   }
 }

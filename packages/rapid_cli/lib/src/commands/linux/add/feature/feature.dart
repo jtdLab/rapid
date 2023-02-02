@@ -9,9 +9,6 @@ class LinuxAddFeatureCommand extends PlatformAddFeatureCommand {
   LinuxAddFeatureCommand({
     super.logger,
     required super.project,
-    super.melosBootstrap,
-    super.melosClean,
-    super.dartFormatFix,
   }) : super(
           platform: Platform.linux,
         );

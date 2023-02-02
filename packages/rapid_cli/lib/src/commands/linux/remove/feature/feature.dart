@@ -9,8 +9,6 @@ class LinuxRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   LinuxRemoveFeatureCommand({
     super.logger,
     required super.project,
-    super.melosBootstrap,
-    super.melosClean,
   }) : super(
           platform: Platform.linux,
         );

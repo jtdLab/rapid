@@ -9,7 +9,6 @@ class LinuxAddLanguageCommand extends PlatformAddLanguageCommand {
   LinuxAddLanguageCommand({
     super.logger,
     required super.project,
-    super.dartFormatFix,
   }) : super(
           platform: Platform.linux,
         );

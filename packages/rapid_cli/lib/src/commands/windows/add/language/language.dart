@@ -9,7 +9,6 @@ class WindowsAddLanguageCommand extends PlatformAddLanguageCommand {
   WindowsAddLanguageCommand({
     super.logger,
     required super.project,
-    super.dartFormatFix,
   }) : super(
           platform: Platform.windows,
         );

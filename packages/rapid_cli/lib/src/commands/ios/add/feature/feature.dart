@@ -9,9 +9,6 @@ class IosAddFeatureCommand extends PlatformAddFeatureCommand {
   IosAddFeatureCommand({
     super.logger,
     required super.project,
-    super.melosBootstrap,
-    super.melosClean,
-    super.dartFormatFix,
   }) : super(
           platform: Platform.ios,
         );

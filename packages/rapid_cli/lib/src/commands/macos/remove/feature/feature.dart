@@ -9,8 +9,6 @@ class MacosRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   MacosRemoveFeatureCommand({
     super.logger,
     required super.project,
-    super.melosBootstrap,
-    super.melosClean,
   }) : super(
           platform: Platform.macos,
         );

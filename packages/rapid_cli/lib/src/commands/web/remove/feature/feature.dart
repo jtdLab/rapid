@@ -9,8 +9,6 @@ class WebRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   WebRemoveFeatureCommand({
     super.logger,
     required super.project,
-    super.melosBootstrap,
-    super.melosClean,
   }) : super(
           platform: Platform.web,
         );

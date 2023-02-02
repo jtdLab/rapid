@@ -9,8 +9,6 @@ class IosRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   IosRemoveFeatureCommand({
     super.logger,
     required super.project,
-    super.melosBootstrap,
-    super.melosClean,
   }) : super(
           platform: Platform.ios,
         );

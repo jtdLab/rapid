@@ -9,8 +9,6 @@ class WindowsRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   WindowsRemoveFeatureCommand({
     super.logger,
     required super.project,
-    super.melosBootstrap,
-    super.melosClean,
   }) : super(
           platform: Platform.windows,
         );

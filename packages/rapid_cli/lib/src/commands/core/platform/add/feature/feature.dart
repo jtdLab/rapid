@@ -1,6 +1,5 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -38,22 +37,9 @@ abstract class PlatformAddFeatureCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
-    MelosBootstrapCommand? melosBootstrap,
-    MelosCleanCommand? melosClean,
-    FlutterPubGetCommand? flutterPubGet,
-    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project,
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _melosClean = melosClean ?? Melos.clean,
-        _flutterPubGetCommand = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
-        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
+        _project = project {
     argParser
       ..addSeparator('')
       ..addOption(
@@ -74,12 +60,6 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   final Platform _platform;
   final Logger _logger;
   final Project _project;
-  final MelosBootstrapCommand _melosBootstrap;
-  final MelosCleanCommand _melosClean;
-  final FlutterPubGetCommand _flutterPubGetCommand;
-  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
-  final DartFormatFixCommand _dartFormatFix;
 
   @override
   String get name => 'feature';
@@ -99,13 +79,19 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   Future<int> run() => runWhen(
         [
           projectExists(_project),
-          platformIsActivated(_platform, _project),
+          platformIsActivated(
+            _platform,
+            _project,
+            'iOS is not activated.',
+          ),
         ],
         _logger,
         () async {
           final name = _name;
           final description = _description;
           final routing = _routing;
+
+          _logger.info('Adding Feature ...');
 
           try {
             await _project.addFeature(

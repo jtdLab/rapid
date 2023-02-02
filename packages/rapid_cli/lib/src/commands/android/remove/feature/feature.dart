@@ -9,8 +9,6 @@ class AndroidRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   AndroidRemoveFeatureCommand({
     super.logger,
     required super.project,
-    super.melosBootstrap,
-    super.melosClean,
   }) : super(
           platform: Platform.android,
         );

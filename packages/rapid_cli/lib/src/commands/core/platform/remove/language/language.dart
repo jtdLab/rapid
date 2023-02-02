@@ -59,11 +59,17 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
   Future<int> run() => runWhen(
         [
           projectExists(_project),
-          platformIsActivated(_platform, _project),
+          platformIsActivated(
+            _platform,
+            _project,
+            '${_platform.prettyName} is not activated.',
+          ),
         ],
         _logger,
         () async {
           final language = _language;
+
+          _logger.info('Removing language ...');
 
           try {
             await _project.removeLanguage(
@@ -88,22 +94,22 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
               );
 
             return ExitCode.config.code;
-          } on FeaturesHaveDiffrentLanguages {
-            _logger
-              ..info('')
-              ..err(
-                'The ${_platform.prettyName} part of your project is corrupted.\n'
-                'Because not all features support the same languages.\n\n'
-                'Run "rapid doctor" to see which features are affected.',
-              );
-
-            return ExitCode.config.code;
           } on FeaturesHaveDiffrentDefaultLanguage {
             _logger
               ..info('')
               ..err(
                 'The ${_platform.prettyName} part of your project is corrupted.\n'
                 'Because not all features have the same default language.\n\n'
+                'Run "rapid doctor" to see which features are affected.',
+              );
+
+            return ExitCode.config.code;
+          } on FeaturesHaveDiffrentLanguages {
+            _logger
+              ..info('')
+              ..err(
+                'The ${_platform.prettyName} part of your project is corrupted.\n'
+                'Because not all features support the same languages.\n\n'
                 'Run "rapid doctor" to see which features are affected.',
               );
 

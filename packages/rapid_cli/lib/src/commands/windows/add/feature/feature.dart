@@ -9,9 +9,6 @@ class WindowsAddFeatureCommand extends PlatformAddFeatureCommand {
   WindowsAddFeatureCommand({
     super.logger,
     required super.project,
-    super.melosBootstrap,
-    super.melosClean,
-    super.dartFormatFix,
   }) : super(
           platform: Platform.windows,
         );

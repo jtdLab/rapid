@@ -9,9 +9,6 @@ class WebAddFeatureCommand extends PlatformAddFeatureCommand {
   WebAddFeatureCommand({
     super.logger,
     required super.project,
-    super.melosBootstrap,
-    super.melosClean,
-    super.dartFormatFix,
   }) : super(
           platform: Platform.web,
         );

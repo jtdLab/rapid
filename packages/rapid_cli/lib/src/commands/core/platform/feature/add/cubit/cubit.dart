@@ -66,12 +66,18 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
   Future<int> run() => runWhen(
         [
           projectExists(_project),
-          platformIsActivated(_platform, _project),
+          platformIsActivated(
+            _platform,
+            _project,
+            '${_platform.prettyName} is not activated.',
+          ),
         ],
         _logger,
         () async {
           final featureName = _featureName;
           final name = super.className;
+
+          _logger.info('Adding Cubit ...');
 
           try {
             await _project.addCubit(

@@ -37,16 +37,13 @@ abstract class PlatformAddLanguageCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
-    DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project,
-        _dartFormatFix = dartFormatFix ?? Dart.formatFix;
+        _project = project;
 
   final Platform _platform;
   final Logger _logger;
   final Project _project;
-  final DartFormatFixCommand _dartFormatFix;
 
   @override
   String get name => 'language';
@@ -65,11 +62,17 @@ abstract class PlatformAddLanguageCommand extends Command<int>
   Future<int> run() => runWhen(
         [
           projectExists(_project),
-          platformIsActivated(_platform, _project),
+          platformIsActivated(
+            _platform,
+            _project,
+            '${_platform.prettyName} is not activated.',
+          ),
         ],
         _logger,
         () async {
           final language = _language;
+
+          _logger.info('Adding Language ...');
 
           try {
             await _project.addLanguage(

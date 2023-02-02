@@ -345,6 +345,30 @@ import 'package:aaa/aaa.dart';
 void main() {}
 ''';
 
+const dartFileWithTopLevelListEmpty = '''
+final someList = [];
+''';
+
+const dartFileWithTopLevelListEmptyWithGenerics = '''
+final someList = <dynamic>[];
+''';
+
+const dartFileWithTopLevelList = '''
+final someList = [
+  'A',
+  3,
+  true,
+];
+''';
+
+const dartFileWithTopLevelListWithGenerics = '''
+final someList = <dynamic>[
+  'A',
+  3,
+  true,
+];
+''';
+
 void main() {
   group('DartFile', () {
     final cwd = Directory.current;
@@ -370,11 +394,37 @@ void main() {
     });
 
     group('exists', () {
-      // TODO
+      test('returns true when underlying file exists', () {
+        // Act
+        final exists = dartFile.exists();
+
+        // Assert
+        expect(exists, true);
+      });
+
+      test('returns true when underlying file does not exist', () {
+        // Arrange
+        File(dartFile.path).deleteSync(recursive: true);
+
+        // Act
+        final exists = dartFile.exists();
+
+        // Assert
+        expect(exists, false);
+      });
     });
 
     group('delete', () {
-      // TODO
+      test('deletes the file', () {
+        // Arrange
+        final file = File(dartFile.path);
+
+        // Act
+        dartFile.delete();
+
+        // Assert
+        expect(file.existsSync(), false);
+      });
     });
 
     group('addImport', () {
@@ -684,8 +734,42 @@ void main() {
       });
     });
 
-    group('readTopLevelIterableVar', () {
-      // TODO
+    group('readTopLevelListVar', () {
+      test('returns empty list when list is empty', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithTopLevelListEmpty);
+
+        // Act
+        final list = dartFile.readTopLevelListVar(name: 'someList');
+
+        // Assert
+        expect(list, isEmpty);
+      });
+
+      test('returns list with values as string', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithTopLevelList);
+
+        // Act
+        final list = dartFile.readTopLevelListVar(name: 'someList');
+
+        // Assert
+        expect(list, ['\'A\'', '3', 'true']);
+      });
+
+      test('returns list with values as string when list has generics', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(dartFileWithTopLevelListWithGenerics);
+
+        // Act
+        final list = dartFile.readTopLevelListVar(name: 'someList');
+
+        // Assert
+        expect(list, ['\'A\'', '3', 'true']);
+      });
     });
 
     group('readTypeListFromAnnotationParamOfTopLevelFunction', () {
@@ -1001,8 +1085,78 @@ void main() {
       });
     });
 
-    group('setTopLevelIterableVar', () {
-      // TODO
+    group('setTopLevelListVar', () {
+      test('sets list correctly', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+          dartFileWithTopLevelListEmpty,
+        );
+
+        // Act
+        dartFile.setTopLevelListVar(
+          name: 'someList',
+          value: ['\'A\'', '3', 'true'],
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithTopLevelList);
+      });
+
+      test('sets list correctly (generics)', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+          dartFileWithTopLevelListEmptyWithGenerics,
+        );
+
+        // Act
+        dartFile.setTopLevelListVar(
+          name: 'someList',
+          value: ['\'A\'', '3', 'true'],
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithTopLevelListWithGenerics);
+      });
+
+      test('sets list to be empty correctly', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+          dartFileWithTopLevelList,
+        );
+
+        // Act
+        dartFile.setTopLevelListVar(
+          name: 'someList',
+          value: [],
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithTopLevelListEmpty);
+      });
+
+      test('sets list to be empty correctly (generics)', () {
+        // Arrange
+        final file = File(dartFile.path);
+        file.writeAsStringSync(
+          dartFileWithTopLevelListWithGenerics,
+        );
+
+        // Act
+        dartFile.setTopLevelListVar(
+          name: 'someList',
+          value: [],
+        );
+
+        // Assert
+        final contents = file.readAsStringSync();
+        expect(contents, dartFileWithTopLevelListEmptyWithGenerics);
+      });
     });
 
     group('setTypeListOfAnnotationParamOfTopLevelFunction', () {
@@ -1026,7 +1180,7 @@ void main() {
         expect(contents, dartFileWithAnnotatedTopLevelFunction);
       });
 
-      test('sets type list correctly when some types already exist', () {
+      test('sets type list correctly when some types already exists', () {
         // Arrange
         final file = File(dartFile.path);
         file.writeAsStringSync(dartFileWithAnnotatedTopLevelFunction);

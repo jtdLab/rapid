@@ -259,8 +259,8 @@ class DartFile {
     return functions;
   }
 
-  /// Reads the values of a iterable stored in the top-level variable [name].
-  List<String> readTopLevelIterableVar({required String name}) {
+  /// Reads the values of a list stored in the top-level variable [name].
+  List<String> readTopLevelListVar({required String name}) {
     final contents = _read();
 
     final declarations = _getTopLevelDeclarations(contents);
@@ -444,8 +444,8 @@ class DartFile {
     }
   }
 
-  /// Sets the values of a iterable stored in a top-level variable [name].
-  void setTopLevelIterableVar({
+  /// Sets the values of a list stored in a top-level variable [name].
+  void setTopLevelListVar({
     required String name,
     required List<String> value,
   }) {
@@ -477,7 +477,7 @@ class DartFile {
         variableDeclaration.childEntities.whereType<ListLiteral>().first;
 
     final listText =
-        '${listLiteral.typeArguments}[${value.join(',')}${value.isEmpty ? '' : ','}]';
+        '${listLiteral.typeArguments ?? ''}[${value.join(',')}${value.isEmpty ? '' : ','}]';
 
     final output = contents.replaceRange(
       listLiteral.offset,

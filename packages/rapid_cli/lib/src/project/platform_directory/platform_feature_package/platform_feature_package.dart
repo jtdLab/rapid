@@ -129,10 +129,10 @@ class LocalizationsFile extends ProjectEntity {
 
     final newDelegate = '${packageName.pascalCase}Localizations.delegate';
     final existingDelegates =
-        _dartFile.readTopLevelIterableVar(name: 'localizationsDelegates');
+        _dartFile.readTopLevelListVar(name: 'localizationsDelegates');
 
     if (!existingDelegates.contains(newDelegate)) {
-      _dartFile.setTopLevelIterableVar(
+      _dartFile.setTopLevelListVar(
         name: 'localizationsDelegates',
         value: [
           newDelegate,
@@ -150,10 +150,10 @@ class LocalizationsFile extends ProjectEntity {
 
     final delegate = '${packageName.pascalCase}Localizations.delegate';
     final existingDelegates =
-        _dartFile.readTopLevelIterableVar(name: 'localizationsDelegates');
+        _dartFile.readTopLevelListVar(name: 'localizationsDelegates');
 
     if (existingDelegates.contains(delegate)) {
-      _dartFile.setTopLevelIterableVar(
+      _dartFile.setTopLevelListVar(
         name: 'localizationsDelegates',
         value: existingDelegates..remove(delegate),
       );
@@ -163,10 +163,10 @@ class LocalizationsFile extends ProjectEntity {
   void addSupportedLanguage(String language) {
     final locale = 'Locale($language)';
     final existingLocales =
-        _dartFile.readTopLevelIterableVar(name: 'supportedLocales');
+        _dartFile.readTopLevelListVar(name: 'supportedLocales');
 
     if (!existingLocales.contains(locale)) {
-      _dartFile.setTopLevelIterableVar(
+      _dartFile.setTopLevelListVar(
         name: 'supportedLocales',
         value: [locale, ...existingLocales],
       );
@@ -176,10 +176,10 @@ class LocalizationsFile extends ProjectEntity {
   void removeSupportedLanguage(String language) {
     final locale = 'Locale($language)';
     final existingLocales =
-        _dartFile.readTopLevelIterableVar(name: 'supportedLocales');
+        _dartFile.readTopLevelListVar(name: 'supportedLocales');
 
     if (existingLocales.contains(locale)) {
-      _dartFile.setTopLevelIterableVar(
+      _dartFile.setTopLevelListVar(
         name: 'supportedLocales',
         value: existingLocales..remove(locale),
       );

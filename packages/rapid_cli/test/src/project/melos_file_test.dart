@@ -1,4 +1,6 @@
+import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
@@ -10,16 +12,26 @@ const melosWithoutName = '''
 some: value
 ''';
 
+class _MockProject extends Mock implements Project {}
+
 void main() {
   group('MelosFile', () {
     final cwd = Directory.current;
+
+    late Project project;
+    late String projectPath;
 
     late MelosFile melosFile;
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      melosFile = MelosFile();
+      project = _MockProject();
+      projectPath = 'foo/bar';
+      when(() => project.path).thenReturn(projectPath);
+
+      melosFile = MelosFile(project: project);
+
       File(melosFile.path).createSync(recursive: true);
     });
 
@@ -30,7 +42,7 @@ void main() {
     group('path', () {
       test('is correct', () {
         // Assert
-        expect(melosFile.path, 'melos.yaml');
+        expect(melosFile.path, '$projectPath/melos.yaml');
       });
     });
 

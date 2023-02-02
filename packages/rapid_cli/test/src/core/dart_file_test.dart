@@ -369,6 +369,14 @@ void main() {
       });
     });
 
+    group('exists', () {
+      // TODO
+    });
+
+    group('delete', () {
+      // TODO
+    });
+
     group('addImport', () {
       test('adds dart import correctly', () {
         // Arrange
@@ -650,8 +658,8 @@ void main() {
       });
     });
 
-    group('returns names of top level functions', () {
-      test('returns correct imports', () {
+    group('readTopLevelFunctionNames', () {
+      test('returns names of top level functions', () {
         // Arrange
         final file = File(dartFile.path);
         file.writeAsStringSync(dartFileWithTopLevelFunctions);
@@ -674,6 +682,10 @@ void main() {
         // Assert
         expect(imports, isEmpty);
       });
+    });
+
+    group('readTopLevelIterableVar', () {
+      // TODO
     });
 
     group('readTypeListFromAnnotationParamOfTopLevelFunction', () {
@@ -987,6 +999,10 @@ void main() {
         final contents = file.readAsStringSync();
         expect(contents, emptyDartFile);
       });
+    });
+
+    group('setTopLevelIterableVar', () {
+      // TODO
     });
 
     group('setTypeListOfAnnotationParamOfTopLevelFunction', () {

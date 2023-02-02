@@ -2,6 +2,7 @@ import 'package:args/command_runner.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/add/cubit/cubit.dart';
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/ios/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/linux/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/macos/feature/add/add.dart';

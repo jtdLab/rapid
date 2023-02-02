@@ -1,10 +1,8 @@
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/linux/add/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -25,125 +23,56 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
-abstract class _MelosBootstrapCommand {
-  Future<void> call({String cwd, required Logger logger});
-}
-
-abstract class _MelosCleanCommand {
-  Future<void> call({String cwd, required Logger logger});
-}
-
-abstract class _DartFormatFixCommand {
-  Future<void> call({String cwd, required Logger logger});
-}
-
 class _MockLogger extends Mock implements Logger {}
-
-class _MockProgress extends Mock implements Progress {}
 
 class _MockProject extends Mock implements Project {}
 
-class _MockMelosFile extends Mock implements MelosFile {}
-
-class _MockMelosBootstrapCommand extends Mock
-    implements _MelosBootstrapCommand {}
-
-class _MockMelosCleanCommand extends Mock implements _MelosCleanCommand {}
-
-class _MockDartFormatFixCommand extends Mock implements _DartFormatFixCommand {}
-
-class _MockMasonGenerator extends Mock implements MasonGenerator {}
-
 class _MockArgResults extends Mock implements ArgResults {}
-
-class _FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
 
 void main() {
   group('linux add feature', () {
     Directory cwd = Directory.current;
 
     late Logger logger;
-    late List<String> progressLogs;
 
     late Project project;
-    late MelosFile melosFile;
-    const projectName = 'test_app';
-
-    late MelosBootstrapCommand melosBootstrap;
-
-    late MelosCleanCommand melosClean;
-
-    late DartFormatFixCommand dartFormatFix;
-
-    late MasonGenerator generator;
-    final generatedFiles = List.filled(
-      23,
-      const GeneratedFile.created(path: ''),
-    );
 
     late ArgResults argResults;
-    late String featureName;
+    late String? description;
+    late bool routing;
+    late String name;
 
     late LinuxAddFeatureCommand command;
-
-    setUpAll(() {
-      registerFallbackValue(_FakeDirectoryGeneratorTarget());
-    });
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
       logger = _MockLogger();
-      final progress = _MockProgress();
-      progressLogs = <String>[];
-      when(() => progress.complete(any())).thenAnswer((_) {
-        final message = _.positionalArguments.elementAt(0) as String?;
-        if (message != null) progressLogs.add(message);
-      });
-      when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      melosFile = _MockMelosFile();
-      when(() => melosFile.exists()).thenReturn(true);
-      when(() => melosFile.name()).thenReturn(projectName);
-      when(() => project.melosFile).thenReturn(melosFile);
-      when(() => project.isActivated(Platform.linux)).thenReturn(true);
-
-      melosBootstrap = _MockMelosBootstrapCommand();
-      when(() => melosBootstrap(cwd: any(named: 'cwd'), logger: logger))
-          .thenAnswer((_) async {});
-
-      melosClean = _MockMelosCleanCommand();
-      when(() => melosClean(cwd: any(named: 'cwd'), logger: logger))
-          .thenAnswer((_) async {});
-
-      dartFormatFix = _MockDartFormatFixCommand();
-      when(() => dartFormatFix(cwd: any(named: 'cwd'), logger: logger))
-          .thenAnswer((_) async {});
-
-      generator = _MockMasonGenerator();
-      when(() => generator.id).thenReturn('generator_id');
-      when(() => generator.description).thenReturn('generator description');
       when(
-        () => generator.generate(
-          any(),
-          vars: any(named: 'vars'),
-          logger: any(named: 'logger'),
+        () => project.addFeature(
+          name: any(named: 'name'),
+          description: any(named: 'description'),
+          routing: any(named: 'routing'),
+          platform: Platform.linux,
+          logger: logger,
         ),
-      ).thenAnswer((_) async => generatedFiles);
+      ).thenAnswer((_) async {});
+      when(() => project.exists()).thenReturn(true);
+      when(() => project.platformIsActivated(Platform.linux)).thenReturn(true);
 
       argResults = _MockArgResults();
-      featureName = 'my_cool_feature';
-      when(() => argResults.rest).thenReturn([featureName]);
+      description = null;
+      when(() => argResults['desc']).thenReturn(description);
+      routing = false;
+      when(() => argResults['routing']).thenReturn(routing);
+      name = 'my_cool_feature';
+      when(() => argResults.rest).thenReturn([name]);
 
       command = LinuxAddFeatureCommand(
         logger: logger,
         project: project,
-        melosBootstrap: melosBootstrap,
-        melosClean: melosClean,
-        dartFormatFix: dartFormatFix,
-        generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
 
@@ -205,6 +134,7 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -222,28 +152,29 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
     // TODO more test cases for invalid patterns
     test(
-      'throws UsageException when name is invalid',
+      'throws UsageException when name is invalid package name',
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
         // Arrange
-        featureName = 'My Feature';
-        final expectedErrorMessage =
-            '"$featureName" is not a valid package name.\n\n'
+        name = 'My Feature';
+        final expectedErrorMessage = '"$name" is not a valid package name.\n\n'
             'See https://dart.dev/tools/pub/pubspec#name for more information.';
 
         // Act
         final result = await commandRunner.run(
-          ['linux', 'add', 'feature', featureName],
+          ['linux', 'add', 'feature', name],
         );
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -252,111 +183,97 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => project.isActivated(Platform.linux)).called(1);
-      verify(() => logger.progress('Generating files')).called(1);
+      verify(() => logger.info('Adding Feature ...')).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              '.',
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'name': featureName,
-            'description': 'A Rapid feature.',
-            'platform': 'linux',
-            'linux': true
-          },
+        () => project.addFeature(
+          name: name,
+          description: 'A Rapid feature.',
+          routing: false,
+          platform: Platform.linux,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => logger.progress('Running "melos clean" in . ')).called(1);
-      verify(() => melosClean(logger: logger)).called(1);
-      verify(() => logger.progress('Running "melos bootstrap" in . '))
-          .called(1);
-      verify(() => melosBootstrap(logger: logger)).called(1);
-      verify(() => dartFormatFix(logger: logger)).called(1);
-      verify(() => logger.success('Added Linux feature $featureName.'))
-          .called(1);
+      verify(() => logger.success('Added Linux feature $name.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
     });
 
     test('completes successfully with correct output w/ --desc', () async {
       // Arrange
-      final description = 'My cool description.';
+      description = 'My cool description.';
       when(() => argResults['desc']).thenReturn(description);
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => project.isActivated(Platform.linux)).called(1);
-      verify(() => logger.progress('Generating files')).called(1);
+      verify(() => logger.info('Adding Feature ...')).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              '.',
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'name': featureName,
-            'description': description,
-            'platform': 'linux',
-            'linux': true
-          },
+        () => project.addFeature(
+          name: name,
+          description: description!,
+          routing: false,
+          platform: Platform.linux,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => logger.progress('Running "melos clean" in . ')).called(1);
-      verify(() => melosClean(logger: logger)).called(1);
-      verify(() => logger.progress('Running "melos bootstrap" in . '))
-          .called(1);
-      verify(() => melosBootstrap(logger: logger)).called(1);
-      verify(() => dartFormatFix(logger: logger)).called(1);
-      verify(() => logger.success('Added Linux feature $featureName.'))
-          .called(1);
+      verify(() => logger.success('Added Linux feature $name.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
     });
 
-    test('exits with 66 when melos.yaml does not exist', () async {
+    test('completes successfully with correct output w/ --routing', () async {
       // Arrange
-      when(() => melosFile.exists()).thenReturn(false);
+      routing = true;
+      when(() => argResults['routing']).thenReturn(routing);
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err('''
- Could not find a melos.yaml.
- This command should be run from the root of your Rapid project.''')).called(1);
-      expect(result, ExitCode.noInput.code);
+      verify(() => logger.info('Adding Feature ...')).called(1);
+      verify(
+        () => project.addFeature(
+          name: name,
+          description: 'A Rapid feature.',
+          routing: routing,
+          platform: Platform.linux,
+          logger: logger,
+        ),
+      ).called(1);
+      verify(() => logger.success('Added Linux feature $name.')).called(1);
+      verify(() => logger.info('')).called(1);
+      expect(result, ExitCode.success.code);
     });
 
     test('exits with 78 when Linux is not activated', () async {
       // Arrange
-      when(() => project.isActivated(Platform.linux)).thenReturn(false);
+      when(() => project.platformIsActivated(Platform.linux)).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // AssertØÏ
+      verify(() => logger.err('Linux is not activated.')).called(1);
+      verify(() => logger.info('')).called(1);
+      expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 66 when project does not exist', () async {
+      // Arrange
+      when(() => project.exists()).thenReturn(false);
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err('Linux is not activated.')).called(1);
-      expect(result, ExitCode.config.code);
+      verify(
+        () => logger.err(
+          'This command should be run from the root of an existing Rapid project.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
+      expect(result, ExitCode.noInput.code);
     });
   });
 }

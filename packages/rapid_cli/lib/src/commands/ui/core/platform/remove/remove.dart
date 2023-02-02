@@ -1,4 +1,5 @@
 import 'package:args/command_runner.dart';
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/ui/android/remove/remove.dart';
 import 'package:rapid_cli/src/commands/ui/core/platform/remove/widget/widget.dart';
 import 'package:rapid_cli/src/commands/ui/ios/remove/remove.dart';

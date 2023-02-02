@@ -6,6 +6,7 @@ import 'package:rapid_cli/src/commands/activate/macos/macos.dart';
 import 'package:rapid_cli/src/commands/activate/web/web.dart';
 import 'package:rapid_cli/src/commands/activate/windows/windows.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 
 /// {@template activate_platform_command}

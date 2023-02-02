@@ -3,6 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/ios/feature/add/cubit/cubit.dart';

@@ -2,6 +2,7 @@ import 'package:args/command_runner.dart';
 import 'package:rapid_cli/src/commands/android/add/add.dart';
 import 'package:rapid_cli/src/commands/core/platform/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/platform/add/language/language.dart';
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/ios/add/add.dart';
 import 'package:rapid_cli/src/commands/linux/add/add.dart';
 import 'package:rapid_cli/src/commands/macos/add/add.dart';

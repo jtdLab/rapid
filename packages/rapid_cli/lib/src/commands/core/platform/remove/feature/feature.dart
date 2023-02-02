@@ -2,6 +2,7 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/android/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/ios/remove/feature/feature.dart';
@@ -62,7 +63,7 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
           platformIsActivated(
             _platform,
             _project,
-            'iOS is not activated.',
+            '${_platform.prettyName} is not activated.',
           ),
         ],
         _logger,

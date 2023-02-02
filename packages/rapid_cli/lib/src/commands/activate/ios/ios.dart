@@ -6,6 +6,7 @@ import 'package:rapid_cli/src/commands/core/org_name_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 
 /// {@template activate_ios_command}
 /// `rapid activate ios` command adds support for iOS to an existing Rapid project.

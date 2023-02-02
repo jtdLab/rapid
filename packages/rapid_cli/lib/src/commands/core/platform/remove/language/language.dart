@@ -3,6 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/android/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform/core/validate_language.dart';
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ios/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/linux/remove/language/language.dart';

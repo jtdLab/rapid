@@ -4,6 +4,7 @@ import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform/add/add.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/platform/remove/remove.dart';
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/ios/ios.dart';
 import 'package:rapid_cli/src/commands/linux/linux.dart';
 import 'package:rapid_cli/src/commands/macos/macos.dart';

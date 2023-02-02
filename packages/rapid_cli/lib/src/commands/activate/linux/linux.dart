@@ -3,6 +3,7 @@ import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/activate/core/platform.dart';
 import 'package:rapid_cli/src/commands/activate/core/platform_is_deactivated.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';

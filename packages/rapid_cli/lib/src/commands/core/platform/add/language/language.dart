@@ -1,9 +1,9 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/language/language.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform/core/validate_language.dart';
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ios/add/language/language.dart';
 import 'package:rapid_cli/src/commands/linux/add/language/language.dart';

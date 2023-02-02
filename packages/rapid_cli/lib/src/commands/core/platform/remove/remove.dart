@@ -2,6 +2,7 @@ import 'package:args/command_runner.dart';
 import 'package:rapid_cli/src/commands/android/remove/remove.dart';
 import 'package:rapid_cli/src/commands/core/platform/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/platform/remove/language/language.dart';
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/ios/remove/remove.dart';
 import 'package:rapid_cli/src/commands/linux/remove/remove.dart';
 import 'package:rapid_cli/src/commands/macos/remove/remove.dart';

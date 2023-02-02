@@ -1,12 +1,8 @@
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/feature.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
-import 'package:rapid_cli/src/project/platform_directory.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -26,120 +22,53 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
-abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
-  Future<void> call({String cwd, required Logger logger});
-}
-
 class _MockLogger extends Mock implements Logger {}
-
-class _MockProgress extends Mock implements Progress {}
 
 class _MockProject extends Mock implements Project {}
 
-class _MockMelosFile extends Mock implements MelosFile {}
-
-class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
-
-class _MockFeature extends Mock implements Feature {}
-
-class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-    extends Mock
-    implements _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
-
-class _MockMasonGenerator extends Mock implements MasonGenerator {}
-
 class _MockArgResults extends Mock implements ArgResults {}
-
-class _FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
 
 void main() {
   group('android feature add bloc', () {
     Directory cwd = Directory.current;
 
     late Logger logger;
-    late List<String> progressLogs;
 
     late Project project;
-    late MelosFile melosFile;
-    const projectName = 'test_app';
-    late PlatformDirectory platformDirectory;
-    late Feature feature;
-    const featurePath = 'foo/bar/baz';
-
-    late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
-
-    late MasonGenerator generator;
-    final generatedFiles = List.filled(
-      23,
-      const GeneratedFile.created(path: ''),
-    );
 
     late ArgResults argResults;
     late String featureName;
-    late String blocName;
+    late String name;
 
     late AndroidFeatureAddBlocCommand command;
-
-    setUpAll(() {
-      registerFallbackValue(_FakeDirectoryGeneratorTarget());
-    });
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
       logger = _MockLogger();
-      final progress = _MockProgress();
-      progressLogs = <String>[];
-      when(() => progress.complete(any())).thenAnswer((_) {
-        final message = _.positionalArguments.elementAt(0) as String?;
-        if (message != null) progressLogs.add(message);
-      });
-      when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      melosFile = _MockMelosFile();
-      when(() => melosFile.exists()).thenReturn(true);
-      when(() => melosFile.name()).thenReturn(projectName);
-      platformDirectory = _MockPlatformDirectory();
-      feature = _MockFeature();
-      when(() => feature.path).thenReturn(featurePath);
-      when(() => platformDirectory.featureExists(any())).thenReturn(true);
-      when(() => platformDirectory.findFeature(any())).thenReturn(feature);
-      when(() => project.melosFile).thenReturn(melosFile);
-      when(() => project.platformDirectory(Platform.android))
-          .thenReturn(platformDirectory);
-      when(() => project.isActivated(Platform.android)).thenReturn(true);
-
-      flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-          MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
-      when(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: any(named: 'cwd'), logger: logger)).thenAnswer((_) async {});
-
-      generator = _MockMasonGenerator();
-      when(() => generator.id).thenReturn('generator_id');
-      when(() => generator.description).thenReturn('generator description');
       when(
-        () => generator.generate(
-          any(),
-          vars: any(named: 'vars'),
-          logger: any(named: 'logger'),
+        () => project.addBloc(
+          name: any(named: 'name'),
+          featureName: any(named: 'featureName'),
+          platform: Platform.android,
+          logger: logger,
         ),
-      ).thenAnswer((_) async => generatedFiles);
+      ).thenAnswer((_) async {});
+      when(() => project.exists()).thenReturn(true);
+      when(() => project.platformIsActivated(Platform.android))
+          .thenReturn(true);
 
       argResults = _MockArgResults();
       featureName = 'my_cool_feature';
-      blocName = 'FooBar';
+      name = 'FooBar';
       when(() => argResults['feature-name']).thenReturn(featureName);
-      when(() => argResults.rest).thenReturn([blocName]);
+      when(() => argResults.rest).thenReturn([name]);
 
       command = AndroidFeatureAddBlocCommand(
         logger: logger,
         project: project,
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-        generator: (_) async => generator,
       )..argResultOverrides = argResults;
     });
 
@@ -200,6 +129,7 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -225,17 +155,17 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
     test(
-      'throws UsageException when name is invalid',
+      'throws UsageException when name is not a valid dart class name',
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
         // Arrange
-        blocName = '_*fff';
-        final expectedErrorMessage =
-            '"$blocName" is not a valid dart class name.';
+        name = '_*fff';
+        final expectedErrorMessage = '"$name" is not a valid dart class name.';
 
         // Act
         final result = await commandRunner.run([
@@ -243,7 +173,7 @@ void main() {
           'feature',
           'add',
           'bloc',
-          blocName,
+          name,
           '--feature-name',
           featureName
         ]);
@@ -251,6 +181,7 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -269,11 +200,12 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
     test(
-      'throws UsageException when --feature-name is invalid',
+      'throws UsageException when --feature-name is not a valid package name',
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
         // Arrange
@@ -296,6 +228,7 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -304,78 +237,102 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => project.isActivated(Platform.android)).called(1);
-      verify(() => project.platformDirectory(Platform.android)).called(1);
-      verify(() => platformDirectory.featureExists(featureName)).called(1);
-      verify(() => platformDirectory.findFeature(featureName)).called(1);
-      verify(() => logger.progress('Generating files')).called(1);
+      verify(() => logger.info('Adding Bloc ...')).called(1);
       verify(
-        () => generator.generate(
-          any(
-            that: isA<DirectoryGeneratorTarget>().having(
-              (g) => g.dir.path,
-              'dir',
-              '.',
-            ),
-          ),
-          vars: <String, dynamic>{
-            'project_name': projectName,
-            'feature_name': featureName,
-            'name': blocName,
-            'platform': 'android',
-          },
+        () => project.addBloc(
+          name: name,
+          featureName: featureName,
+          platform: Platform.android,
           logger: logger,
         ),
       ).called(1);
-      expect(
-        progressLogs,
-        equals(['Generated ${generatedFiles.length} file(s)']),
-      );
-      verify(() => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-          cwd: featurePath, logger: logger)).called(1);
-      verify(() => logger.success(
-              'Added ${blocName.pascalCase}Bloc to Android feature $featureName.'))
-          .called(1);
+      verify(
+        () => logger.success(
+          'Added ${name.pascalCase}Bloc to Android feature $featureName.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
-    });
-
-    test('exits with 66 when melos.yaml does not exist', () async {
-      // Arrange
-      when(() => melosFile.exists()).thenReturn(false);
-
-      // Act
-      final result = await command.run();
-
-      // Assert
-      verify(() => logger.err('''
- Could not find a melos.yaml.
- This command should be run from the root of your Rapid project.''')).called(1);
-      expect(result, ExitCode.noInput.code);
     });
 
     test('exits with 78 when the feature does not exists', () async {
       // Arrange
-      when(() => platformDirectory.featureExists(any())).thenReturn(false);
+      when(
+        () => project.addBloc(
+          name: any(named: 'name'),
+          featureName: any(named: 'featureName'),
+          platform: Platform.android,
+          logger: logger,
+        ),
+      ).thenThrow(FeatureDoesNotExist());
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err(
-          'The feature "$featureName" does not exist on Android.')).called(1);
+      verify(
+        () => logger.err(
+          'The feature $featureName does not exist on Android.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
+      expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 78 when the bloc already exists for the feature',
+        () async {
+      // Arrange
+      when(
+        () => project.addBloc(
+          name: any(named: 'name'),
+          featureName: any(named: 'featureName'),
+          platform: Platform.android,
+          logger: logger,
+        ),
+      ).thenThrow(BlocAlreadyExists());
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(
+        () => logger.err(
+          'The bloc $name does already exist in $featureName on Android.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
     });
 
     test('exits with 78 when Android is not activated', () async {
       // Arrange
-      when(() => project.isActivated(Platform.android)).thenReturn(false);
+      when(() => project.platformIsActivated(Platform.android))
+          .thenReturn(false);
 
       // Act
       final result = await command.run();
 
       // Assert
       verify(() => logger.err('Android is not activated.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 66 when project does not exist', () async {
+      // Arrange
+      when(() => project.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(
+        () => logger.err(
+          'This command should be run from the root of an existing Rapid project.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
+      expect(result, ExitCode.noInput.code);
     });
   });
 }

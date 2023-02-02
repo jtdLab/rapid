@@ -1,12 +1,8 @@
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/macos/remove/language/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/feature.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
-import 'package:rapid_cli/src/project/platform_directory.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -22,26 +18,9 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
-abstract class _FlutterGenl10nCommand {
-  Future<void> call({String cwd, required Logger logger});
-}
-
 class _MockLogger extends Mock implements Logger {}
 
-class _MockProgress extends Mock implements Progress {}
-
 class _MockProject extends Mock implements Project {}
-
-class _MockMelosFile extends Mock implements MelosFile {}
-
-class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
-
-class _MockFeature extends Mock implements Feature {}
-
-class _MockArbFile extends Mock implements ArbFile {}
-
-class _MockFlutterGenl10nCommand extends Mock
-    implements _FlutterGenl10nCommand {}
 
 class _MockArgResults extends Mock implements ArgResults {}
 
@@ -50,21 +29,8 @@ void main() {
     Directory cwd = Directory.current;
 
     late Logger logger;
-    late List<String> progressLogs;
 
     late Project project;
-    late MelosFile melosFile;
-    late PlatformDirectory platformDirectory;
-    late List<Feature> features;
-    const defaultLanguage = 'en';
-    late Feature feature1;
-    late ArbFile feature1ArbFileDe;
-    const feature1Path = 'foo/bar/one';
-    late Feature feature2;
-    late ArbFile feature2ArbFileDe;
-    const feature2Path = 'foo/bar/two';
-
-    late FlutterGenl10nCommand flutterGenl10n;
 
     late ArgResults argResults;
     late String language;
@@ -75,51 +41,17 @@ void main() {
       Directory.current = Directory.systemTemp.createTempSync();
 
       logger = _MockLogger();
-      final progress = _MockProgress();
-      progressLogs = <String>[];
-      when(() => progress.complete(any())).thenAnswer((_) {
-        final message = _.positionalArguments.elementAt(0) as String?;
-        if (message != null) progressLogs.add(message);
-      });
-      when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      melosFile = _MockMelosFile();
-      when(() => melosFile.exists()).thenReturn(true);
-      platformDirectory = _MockPlatformDirectory();
-      feature1 = _MockFeature();
-      feature1ArbFileDe = _MockArbFile();
-      when(() => feature1.findArbFileByLanguage('de'))
-          .thenReturn(feature1ArbFileDe);
-      when(() => feature1.defaultLanguage()).thenReturn(defaultLanguage);
-      when(() => feature1.supportedLanguages())
-          .thenReturn({defaultLanguage, 'de'});
-      when(() => feature1.supportsLanguage(defaultLanguage)).thenReturn(true);
-      when(() => feature1.supportsLanguage('de')).thenReturn(true);
-      when(() => feature1.supportsLanguage('fr')).thenReturn(false);
-      when(() => feature1.path).thenReturn(feature1Path);
-      feature2 = _MockFeature();
-      feature2ArbFileDe = _MockArbFile();
-      when(() => feature2.findArbFileByLanguage('de'))
-          .thenReturn(feature2ArbFileDe);
-      when(() => feature2.defaultLanguage()).thenReturn(defaultLanguage);
-      when(() => feature2.supportedLanguages())
-          .thenReturn({'de', defaultLanguage});
-      when(() => feature2.supportsLanguage(defaultLanguage)).thenReturn(true);
-      when(() => feature2.supportsLanguage('de')).thenReturn(true);
-      when(() => feature2.supportsLanguage('fr')).thenReturn(false);
-      when(() => feature2.path).thenReturn(feature2Path);
-      features = [feature1, feature2];
-      when(() => platformDirectory.getFeatures(exclude: any(named: 'exclude')))
-          .thenReturn(features);
-      when(() => project.isActivated(Platform.macos)).thenReturn(true);
-      when(() => project.melosFile).thenReturn(melosFile);
-      when(() => project.platformDirectory(Platform.macos))
-          .thenReturn(platformDirectory);
-
-      flutterGenl10n = _MockFlutterGenl10nCommand();
-      when(() => flutterGenl10n(cwd: any(named: 'cwd'), logger: logger))
-          .thenAnswer((_) async {});
+      when(
+        () => project.removeLanguage(
+          any(),
+          platform: Platform.macos,
+          logger: logger,
+        ),
+      ).thenAnswer((_) async {});
+      when(() => project.exists()).thenReturn(true);
+      when(() => project.platformIsActivated(Platform.macos)).thenReturn(true);
 
       argResults = _MockArgResults();
       language = 'de';
@@ -128,7 +60,6 @@ void main() {
       command = MacosRemoveLanguageCommand(
         logger: logger,
         project: project,
-        flutterGenl10n: flutterGenl10n,
       )..argResultOverrides = argResults;
     });
 
@@ -189,6 +120,7 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -206,6 +138,7 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -225,6 +158,7 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -233,46 +167,44 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => project.isActivated(Platform.macos)).called(1);
-      verify(() => project.platformDirectory(Platform.macos)).called(1);
-      verify(() => platformDirectory.getFeatures(exclude: {'app', 'routing'}))
-          .called(1);
-      verify(() => feature1.findArbFileByLanguage(language)).called(1);
-      verify(() => feature1ArbFileDe.delete()).called(1);
-      verify(() => flutterGenl10n(cwd: feature1Path, logger: logger)).called(1);
-      verify(() => feature2.findArbFileByLanguage(language)).called(1);
-      verify(() => feature2ArbFileDe.delete()).called(1);
-      verify(() => flutterGenl10n(cwd: feature2Path, logger: logger)).called(1);
+      verify(() => logger.info('Removing language ...')).called(1);
+      verify(
+        () => project.removeLanguage(
+          language,
+          platform: Platform.macos,
+          logger: logger,
+        ),
+      ).called(1);
+      verify(
+        () => logger.success(
+          'Removed $language from the macOS part of your project.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
-    });
-
-    test('exits with 66 when melos.yaml does not exist', () async {
-      // Arrange
-      when(() => melosFile.exists()).thenReturn(false);
-
-      // Act
-      final result = await command.run();
-
-      // Assert
-      verify(() => logger.err('''
- Could not find a melos.yaml.
- This command should be run from the root of your Rapid project.''')).called(1);
-      expect(result, ExitCode.noInput.code);
     });
 
     test('exits with 78 when no macOS features exist', () async {
       // Arrange
-      features = [];
-      when(() => platformDirectory.getFeatures(exclude: any(named: 'exclude')))
-          .thenReturn(features);
+      when(
+        () => project.removeLanguage(
+          any(),
+          platform: Platform.macos,
+          logger: logger,
+        ),
+      ).thenThrow(NoFeaturesFound());
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err('No macOS features found!\n'
-              'Run "rapid macos add feature" to add your first macOS feature.'))
-          .called(1);
+      verify(
+        () => logger.err(
+          'No macOS features found!\n'
+          'Run "rapid macos add feature" to add your first macOS feature.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
     });
 
@@ -280,87 +212,129 @@ void main() {
         'exits with 78 when some macOS features have different default languages',
         () async {
       // Arrange
-      when(() => feature1.defaultLanguage()).thenReturn('de');
-      features = [feature1, feature2];
+      when(
+        () => project.removeLanguage(
+          any(),
+          platform: Platform.macos,
+          logger: logger,
+        ),
+      ).thenThrow(FeaturesHaveDiffrentDefaultLanguage());
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err('The macOS part of your project is corrupted.\n'
+      verify(
+        () => logger.err(
+          'The macOS part of your project is corrupted.\n'
           'Because not all features have the same default language.\n\n'
-          'Run "rapid doctor" to see which features are affected.')).called(1);
+          'Run "rapid doctor" to see which features are affected.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
     });
 
     test('exits with 78 when some macOS features have different languages',
         () async {
       // Arrange
-      when(() => feature1.supportedLanguages())
-          .thenReturn({defaultLanguage, 'de'});
-      when(() => feature2.supportedLanguages())
-          .thenReturn({defaultLanguage, 'fr'});
-      features = [feature1, feature2];
+      when(
+        () => project.removeLanguage(
+          any(),
+          platform: Platform.macos,
+          logger: logger,
+        ),
+      ).thenThrow(FeaturesHaveDiffrentLanguages());
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err('The macOS part of your project is corrupted.\n'
+      verify(
+        () => logger.err(
+          'The macOS part of your project is corrupted.\n'
           'Because not all features support the same languages.\n\n'
-          'Run "rapid doctor" to see which features are affected.')).called(1);
+          'Run "rapid doctor" to see which features are affected.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
     });
 
     test('exits with 78 when language is the default language of all features',
         () async {
       // Arrange
-      language = defaultLanguage;
-      when(() => argResults.rest).thenReturn([language]);
+      when(
+        () => project.removeLanguage(
+          any(),
+          platform: Platform.macos,
+          logger: logger,
+        ),
+      ).thenThrow(UnableToRemoveDefaultLanguage());
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => project.isActivated(Platform.macos)).called(1);
-      verify(() => project.platformDirectory(Platform.macos)).called(1);
-      verify(() => platformDirectory.getFeatures(exclude: {'app', 'routing'}))
-          .called(1);
-      verify(() => logger.err(
-              'Can not remove language "$language" because it is the default language.'))
-          .called(1);
+      verify(
+        () => logger.err(
+          'Can not remove language "$language" because it is the default language.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
     });
 
     test('exits with 78 when language is not present in all features',
         () async {
       // Arrange
-      language = 'fr';
-      when(() => argResults.rest).thenReturn([language]);
+      when(
+        () => project.removeLanguage(
+          any(),
+          platform: Platform.macos,
+          logger: logger,
+        ),
+      ).thenThrow(FeaturesDoNotSupportLanguage());
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() => project.isActivated(Platform.macos)).called(1);
-      verify(() => project.platformDirectory(Platform.macos)).called(1);
-      verify(() => platformDirectory.getFeatures(exclude: {'app', 'routing'}))
-          .called(1);
-      verify(() => logger.err('The language "$language" is not present.'))
-          .called(1);
+      verify(
+        () => logger.err('The language "$language" is not present.'),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
     });
 
     test('exits with 78 when macOS is not activated', () async {
       // Arrange
-      when(() => project.isActivated(Platform.macos)).thenReturn(false);
+      when(() => project.platformIsActivated(Platform.macos)).thenReturn(false);
 
       // Act
       final result = await command.run();
 
       // Assert
       verify(() => logger.err('macOS is not activated.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 66 when project does not exist', () async {
+      // Arrange
+      when(() => project.exists()).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(
+        () => logger.err(
+          'This command should be run from the root of an existing Rapid project.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
+      expect(result, ExitCode.noInput.code);
     });
   });
 }

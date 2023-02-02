@@ -47,6 +47,8 @@ class DomainRemoveEntityCommand extends Command<int>
           final name = super.className;
           final dir = super.dir;
 
+          _logger.info('Removing Entity ...');
+
           try {
             await _project.removeEntity(
               name: name,

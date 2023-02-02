@@ -61,6 +61,8 @@ class DomainAddValueObjectCommand extends Command<int>
           final type = _type;
           final generics = _generics;
 
+          _logger.info('Adding Value Object ...');
+
           try {
             await _project.addValueObject(
               name: name,

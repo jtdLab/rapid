@@ -2,7 +2,6 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/domain/add/value_object/value_object.dart';
-import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -24,13 +23,7 @@ const expectedUsage = [
 
 class _MockLogger extends Mock implements Logger {}
 
-class _MockProgress extends Mock implements Progress {}
-
 class _MockProject extends Mock implements Project {}
-
-class _MockDomainPackage extends Mock implements DomainPackage {}
-
-class _MockValueObject extends Mock implements ValueObject {}
 
 class _MockArgResults extends Mock implements ArgResults {}
 
@@ -39,11 +32,8 @@ void main() {
     Directory cwd = Directory.current;
 
     late Logger logger;
-    late List<String> progressLogs;
 
     late Project project;
-    late DomainPackage domainPackage;
-    late ValueObject valueObject;
 
     late ArgResults argResults;
     late String? outputDir;
@@ -55,27 +45,16 @@ void main() {
       Directory.current = Directory.systemTemp.createTempSync();
 
       logger = _MockLogger();
-      final progress = _MockProgress();
-      progressLogs = <String>[];
-      when(() => progress.complete(any())).thenAnswer((_) {
-        final message = _.positionalArguments.elementAt(0) as String?;
-        if (message != null) progressLogs.add(message);
-      });
-      when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      domainPackage = _MockDomainPackage();
-      valueObject = _MockValueObject();
-      when(() => valueObject.exists()).thenReturn(false);
-      when(() => valueObject.create(logger: logger)).thenAnswer((_) async {});
       when(
-        () => domainPackage.valueObject(
+        () => project.addValueObject(
           name: any(named: 'name'),
-          dir: any(named: 'dir'),
+          outputDir: any(named: 'outputDir'),
+          logger: logger,
         ),
-      ).thenReturn(valueObject);
+      ).thenAnswer((_) async {});
       when(() => project.exists()).thenReturn(true);
-      when(() => project.domainPackage).thenReturn(domainPackage);
 
       argResults = _MockArgResults();
       outputDir = null;
@@ -148,6 +127,7 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -170,6 +150,30 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
+      }),
+    );
+
+    test(
+      'throws UsageException when name is not a valid dart class name',
+      withRunnerOnProject(
+          (commandRunner, logger, melosFile, project, printLogs) async {
+        // Arrange
+        const name = 'name1';
+        const expectedErrorMessage = '"$name" is not a valid dart class name.';
+
+        // Act
+        final result = await commandRunner.run([
+          'domain',
+          'add',
+          'value_object',
+          name,
+        ]);
+
+        // Assert
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -178,11 +182,16 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => domainPackage.valueObject(name: name, dir: '.')).called(1);
-      verify(() => valueObject.exists()).called(1);
-      verify(() => valueObject.create(logger: logger)).called(1);
-      verify(() => logger.success('Added Value Object ${name.pascalCase}.'))
-          .called(1);
+      verify(() => logger.info('Adding Value Object ...')).called(1);
+      verify(
+        () => project.addValueObject(
+          name: name,
+          outputDir: '.',
+          logger: logger,
+        ),
+      ).called(1);
+      verify(() => logger.success('Added Value Object $name.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -196,24 +205,35 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => domainPackage.valueObject(name: name, dir: outputDir!))
-          .called(1);
-      verify(() => valueObject.exists()).called(1);
-      verify(() => valueObject.create(logger: logger)).called(1);
-      verify(() => logger.success('Added Value Object ${name.pascalCase}.'))
-          .called(1);
+      verify(() => logger.info('Adding Value Object ...')).called(1);
+      verify(
+        () => project.addValueObject(
+          name: name,
+          outputDir: outputDir!,
+          logger: logger,
+        ),
+      ).called(1);
+      verify(() => logger.success('Added Value Object $name.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
     });
 
     test('exits with 78 when value object does already exist', () async {
       // Arrange
-      when(() => valueObject.exists()).thenReturn(true);
+      when(
+        () => project.addValueObject(
+          name: any(named: 'name'),
+          outputDir: any(named: 'outputDir'),
+          logger: logger,
+        ),
+      ).thenThrow(ValueObjectAlreadyExists());
 
       // Act
       final result = await command.run();
 
       // Assert
       verify(() => logger.err('Value Object $name already exists.')).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
     });
 
@@ -225,9 +245,12 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err('''
- Could not find a melos.yaml.
- This command should be run from the root of your Rapid project.''')).called(1);
+      verify(
+        () => logger.err(
+          'This command should be run from the root of an existing Rapid project.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.noInput.code);
     });
   });

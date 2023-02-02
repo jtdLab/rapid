@@ -188,7 +188,7 @@ void main() {
       ).called(1);
       verify(
         () => logger.success(
-          'Added Service Implementation ${name.pascalCase}${service.pascalCase}Service.',
+          'Added Service Implementation $name${service}Service.',
         ),
       ).called(1);
       verify(() => logger.info('')).called(1);
@@ -216,7 +216,7 @@ void main() {
       ).called(1);
       verify(
         () => logger.success(
-          'Added Service Implementation ${name.pascalCase}${service.pascalCase}Service.',
+          'Added Service Implementation $name${service}Service.',
         ),
       ).called(1);
       verify(() => logger.info('')).called(1);
@@ -265,7 +265,7 @@ void main() {
       // Assert
       verify(
         () => logger.err(
-          'Service Implementation ${name.pascalCase}${service.pascalCase}Service already exists.',
+          'Service Implementation $name${service}Service already exists.',
         ),
       ).called(1);
       verify(() => logger.info('')).called(1);

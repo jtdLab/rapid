@@ -49,6 +49,8 @@ class DomainRemoveValueObjectCommand extends Command<int>
           final name = super.className;
           final dir = super.dir;
 
+          _logger.info('Removing Value Object ...');
+
           try {
             await _project.removeValueObject(
               name: name,

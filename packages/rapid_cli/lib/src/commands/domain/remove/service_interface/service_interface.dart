@@ -49,6 +49,8 @@ class DomainRemoveServiceInterfaceCommand extends Command<int>
           final name = super.className;
           final dir = super.dir;
 
+          _logger.info('Removing Service Interface ...');
+
           try {
             await _project.removeServiceInterface(
               name: name,

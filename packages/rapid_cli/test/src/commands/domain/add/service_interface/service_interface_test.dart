@@ -2,7 +2,6 @@ import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/domain/add/service_interface/service_interface.dart';
-import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -24,13 +23,7 @@ const expectedUsage = [
 
 class _MockLogger extends Mock implements Logger {}
 
-class _MockProgress extends Mock implements Progress {}
-
 class _MockProject extends Mock implements Project {}
-
-class _MockDomainPackage extends Mock implements DomainPackage {}
-
-class _MockServiceInterface extends Mock implements ServiceInterface {}
 
 class _MockArgResults extends Mock implements ArgResults {}
 
@@ -39,11 +32,8 @@ void main() {
     Directory cwd = Directory.current;
 
     late Logger logger;
-    late List<String> progressLogs;
 
     late Project project;
-    late DomainPackage domainPackage;
-    late ServiceInterface serviceInterface;
 
     late ArgResults argResults;
     late String? outputDir;
@@ -55,28 +45,16 @@ void main() {
       Directory.current = Directory.systemTemp.createTempSync();
 
       logger = _MockLogger();
-      final progress = _MockProgress();
-      progressLogs = <String>[];
-      when(() => progress.complete(any())).thenAnswer((_) {
-        final message = _.positionalArguments.elementAt(0) as String?;
-        if (message != null) progressLogs.add(message);
-      });
-      when(() => logger.progress(any())).thenReturn(progress);
 
       project = _MockProject();
-      domainPackage = _MockDomainPackage();
-      serviceInterface = _MockServiceInterface();
-      when(() => serviceInterface.exists()).thenReturn(false);
-      when(() => serviceInterface.create(logger: logger))
-          .thenAnswer((_) async {});
       when(
-        () => domainPackage.serviceInterface(
+        () => project.addServiceInterface(
           name: any(named: 'name'),
-          dir: any(named: 'dir'),
+          outputDir: any(named: 'outputDir'),
+          logger: logger,
         ),
-      ).thenReturn(serviceInterface);
+      ).thenAnswer((_) async {});
       when(() => project.exists()).thenReturn(true);
-      when(() => project.domainPackage).thenReturn(domainPackage);
 
       argResults = _MockArgResults();
       outputDir = null;
@@ -157,6 +135,7 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -179,6 +158,30 @@ void main() {
         // Assert
         expect(result, equals(ExitCode.usage.code));
         verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
+      }),
+    );
+
+    test(
+      'throws UsageException when name is not a valid dart class name',
+      withRunnerOnProject(
+          (commandRunner, logger, melosFile, project, printLogs) async {
+        // Arrange
+        const name = 'name1';
+        const expectedErrorMessage = '"$name" is not a valid dart class name.';
+
+        // Act
+        final result = await commandRunner.run([
+          'domain',
+          'add',
+          'service_interface',
+          name,
+        ]);
+
+        // Assert
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+        verify(() => logger.info('')).called(1);
       }),
     );
 
@@ -187,12 +190,17 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => domainPackage.serviceInterface(name: name, dir: '.'))
-          .called(1);
-      verify(() => serviceInterface.exists()).called(1);
-      verify(() => serviceInterface.create(logger: logger)).called(1);
+      verify(() => logger.info('Adding Service Interface ...')).called(1);
+      verify(
+        () => project.addServiceInterface(
+          name: name,
+          outputDir: '.',
+          logger: logger,
+        ),
+      ).called(1);
       verify(() => logger.success('Added Service Interface IFooBarService.'))
           .called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
     });
 
@@ -206,26 +214,40 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => domainPackage.serviceInterface(name: name, dir: outputDir!))
-          .called(1);
-      verify(() => serviceInterface.exists()).called(1);
-      verify(() => serviceInterface.create(logger: logger)).called(1);
+      verify(() => logger.info('Adding Service Interface ...')).called(1);
+      verify(
+        () => project.addServiceInterface(
+          name: name,
+          outputDir: outputDir!,
+          logger: logger,
+        ),
+      ).called(1);
       verify(() => logger.success('Added Service Interface IFooBarService.'))
           .called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.success.code);
     });
 
     test('exits with 78 when service interface does already exist', () async {
       // Arrange
-      when(() => serviceInterface.exists()).thenReturn(true);
+      when(
+        () => project.addServiceInterface(
+          name: any(named: 'name'),
+          outputDir: any(named: 'outputDir'),
+          logger: logger,
+        ),
+      ).thenThrow(ServiceInterfaceAlreadyExists());
 
       // Act
       final result = await command.run();
 
       // Assert
-      verify(() =>
-              logger.err('Service Interface IFooBarService already exists.'))
-          .called(1);
+      verify(
+        () => logger.err(
+          'Service Interface IFooBarService already exists.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
     });
 
@@ -237,9 +259,12 @@ void main() {
       final result = await command.run();
 
       // Assert
-      verify(() => logger.err('''
- Could not find a melos.yaml.
- This command should be run from the root of your Rapid project.''')).called(1);
+      verify(
+        () => logger.err(
+          'This command should be run from the root of an existing Rapid project.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
       expect(result, ExitCode.noInput.code);
     });
   });

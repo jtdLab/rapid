@@ -254,7 +254,7 @@ void main() {
       ).called(1);
       verify(
         () => logger.success(
-          'Removed Service Implementation ${name.pascalCase}${service.pascalCase}Service.',
+          'Removed Service Implementation $name${service}Service.',
         ),
       ).called(1);
       verify(() => logger.info('')).called(1);
@@ -283,7 +283,7 @@ void main() {
       ).called(1);
       verify(
         () => logger.success(
-          'Removed Service Implementation ${name.pascalCase}${service.pascalCase}Service.',
+          'Removed Service Implementation $name${service}Service.',
         ),
       ).called(1);
       verify(() => logger.info('')).called(1);
@@ -307,7 +307,7 @@ void main() {
       // Assert
       verify(
         () => logger.err(
-          'Service Implementation ${name.pascalCase}${service.pascalCase}Service not found.',
+          'Service Implementation $name${service}Service not found.',
         ),
       ).called(1);
       verify(() => logger.info('')).called(1);

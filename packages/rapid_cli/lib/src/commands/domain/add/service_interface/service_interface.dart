@@ -49,6 +49,8 @@ class DomainAddServiceInterfaceCommand extends Command<int>
           final name = super.className;
           final outputDir = super.outputDir;
 
+          _logger.info('Adding Service Interface ...');
+
           try {
             await _project.addServiceInterface(
               name: name,

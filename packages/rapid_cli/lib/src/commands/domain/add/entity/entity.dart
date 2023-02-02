@@ -45,6 +45,8 @@ class DomainAddEntityCommand extends Command<int>
           final name = super.className;
           final outputDir = super.outputDir;
 
+          _logger.info('Adding Entity ...');
+
           try {
             await _project.addEntity(
               name: name,

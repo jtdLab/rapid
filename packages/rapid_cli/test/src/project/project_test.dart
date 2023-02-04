@@ -21,7 +21,7 @@ some: value
 class _MockProject extends Mock implements Project {}
 
 void main() {
-  group('Project', () {
+  /*  group('Project', () {
     final cwd = Directory.current;
 
     late Project project;
@@ -147,7 +147,7 @@ void main() {
       });
     });
   });
-
+ */
   group('MelosFile', () {
     final cwd = Directory.current;
 

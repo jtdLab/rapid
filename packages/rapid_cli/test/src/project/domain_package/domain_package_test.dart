@@ -1,11 +1,19 @@
 import 'package:test/test.dart';
 
 void main() {
-  group('DomainPackage', () {});
+  group('DomainPackage', () {
+    // TODO
+  });
 
-  group('Entity', () {});
+  group('Entity', () {
+    // TODO
+  });
 
-  group('ServiceInterface', () {});
+  group('ServiceInterface', () {
+    // TODO
+  });
 
-  group('ValueObject', () {});
+  group('ValueObject', () {
+    // TODO
+  });
 }

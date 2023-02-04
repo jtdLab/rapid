@@ -2,12 +2,17 @@ import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/dart_file.dart';
+import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:rapid_cli/src/core/directory.dart';
+import 'package:rapid_cli/src/core/file.dart';
+import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:universal_io/io.dart';
+import 'package:universal_io/io.dart' as io;
 
+import 'arb_file_bundle.dart';
 import 'bloc_bundle.dart';
 import 'cubit_bundle.dart';
 import 'platform_app_feature_package_bundle.dart';
@@ -19,27 +24,27 @@ import 'platform_routing_feature_package_bundle.dart';
 ///
 /// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_<feature name>`
 /// {@endtemplate}
-abstract class PlatformFeaturePackage extends ProjectPackage {
+abstract class PlatformFeaturePackage extends DartPackage {
   /// {@macro platform_feature_package}
   PlatformFeaturePackage(
     this.name,
     this.platform, {
     required this.project,
-  });
+    super.pubspecFile,
+  }) : super(
+          path: p.join(
+            project.path,
+            'packages',
+            project.name(),
+            '${project.name()}_${platform.name}',
+            '${project.name()}_${platform.name}_$name',
+          ),
+        );
 
   final Project project;
 
   final String name;
   final Platform platform;
-
-  @override
-  String get path => p.join(
-        project.path,
-        'packages',
-        project.name(),
-        '${project.name()}_${platform.name}',
-        '${project.name()}_${platform.name}_$name',
-      );
 }
 
 /// {@template platform_app_feature_package}
@@ -52,10 +57,13 @@ class PlatformAppFeaturePackage extends PlatformFeaturePackage {
   PlatformAppFeaturePackage(
     Platform platform, {
     required super.project,
+    super.pubspecFile,
+    LocalizationsFile? localizationsFile,
     GeneratorBuilder? generator,
   })  : _generator = generator ?? MasonGenerator.fromBundle,
         super('app', platform) {
-    localizationsFile = LocalizationsFile(platformAppFeaturePackage: this);
+    this.localizationsFile =
+        localizationsFile ?? LocalizationsFile(platformAppFeaturePackage: this);
   }
 
   final GeneratorBuilder _generator;
@@ -67,7 +75,7 @@ class PlatformAppFeaturePackage extends PlatformFeaturePackage {
 
     final generator = await _generator(platformAppFeaturePackageBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(path)),
+      DirectoryGeneratorTarget(io.Directory(path)),
       vars: <String, dynamic>{
         'project_name': projectName,
         'android': platform == Platform.android,
@@ -98,10 +106,10 @@ class PlatformAppFeaturePackage extends PlatformFeaturePackage {
   }
 }
 
-class LocalizationsFile extends ProjectEntity {
+class LocalizationsFile extends DartFile {
   LocalizationsFile({
     required this.platformAppFeaturePackage,
-  }) : _dartFile = DartFile(
+  }) : super(
           path: p.join(
             platformAppFeaturePackage.path,
             'lib',
@@ -111,28 +119,20 @@ class LocalizationsFile extends ProjectEntity {
           name: 'localizations',
         );
 
-  final DartFile _dartFile;
-
   final PlatformAppFeaturePackage platformAppFeaturePackage;
-
-  @override
-  String get path => _dartFile.path;
-
-  @override
-  bool exists() => _dartFile.exists();
 
   void addLocalizationsDelegate(
     PlatformCustomFeaturePackage customFeaturePackage,
   ) {
     final packageName = customFeaturePackage.packageName();
-    _dartFile.addImport('package:$packageName/$packageName.dart');
+    addImport('package:$packageName/$packageName.dart');
 
     final newDelegate = '${packageName.pascalCase}Localizations.delegate';
     final existingDelegates =
-        _dartFile.readTopLevelListVar(name: 'localizationsDelegates');
+        readTopLevelListVar(name: 'localizationsDelegates');
 
     if (!existingDelegates.contains(newDelegate)) {
-      _dartFile.setTopLevelListVar(
+      setTopLevelListVar(
         name: 'localizationsDelegates',
         value: [
           newDelegate,
@@ -146,14 +146,14 @@ class LocalizationsFile extends ProjectEntity {
     PlatformCustomFeaturePackage customFeaturePackage,
   ) {
     final packageName = customFeaturePackage.packageName();
-    _dartFile.removeImport('package:$packageName/$packageName.dart');
+    removeImport('package:$packageName/$packageName.dart');
 
     final delegate = '${packageName.pascalCase}Localizations.delegate';
     final existingDelegates =
-        _dartFile.readTopLevelListVar(name: 'localizationsDelegates');
+        readTopLevelListVar(name: 'localizationsDelegates');
 
     if (existingDelegates.contains(delegate)) {
-      _dartFile.setTopLevelListVar(
+      setTopLevelListVar(
         name: 'localizationsDelegates',
         value: existingDelegates..remove(delegate),
       );
@@ -162,11 +162,10 @@ class LocalizationsFile extends ProjectEntity {
 
   void addSupportedLanguage(String language) {
     final locale = 'Locale($language)';
-    final existingLocales =
-        _dartFile.readTopLevelListVar(name: 'supportedLocales');
+    final existingLocales = readTopLevelListVar(name: 'supportedLocales');
 
     if (!existingLocales.contains(locale)) {
-      _dartFile.setTopLevelListVar(
+      setTopLevelListVar(
         name: 'supportedLocales',
         value: [locale, ...existingLocales],
       );
@@ -175,11 +174,10 @@ class LocalizationsFile extends ProjectEntity {
 
   void removeSupportedLanguage(String language) {
     final locale = 'Locale($language)';
-    final existingLocales =
-        _dartFile.readTopLevelListVar(name: 'supportedLocales');
+    final existingLocales = readTopLevelListVar(name: 'supportedLocales');
 
     if (existingLocales.contains(locale)) {
-      _dartFile.setTopLevelListVar(
+      setTopLevelListVar(
         name: 'supportedLocales',
         value: existingLocales..remove(locale),
       );
@@ -197,6 +195,7 @@ class PlatformRoutingFeaturePackage extends PlatformFeaturePackage {
   PlatformRoutingFeaturePackage(
     Platform platform, {
     required super.project,
+    super.pubspecFile,
     GeneratorBuilder? generator,
   })  : _generator = generator ?? MasonGenerator.fromBundle,
         super('routing', platform);
@@ -208,7 +207,7 @@ class PlatformRoutingFeaturePackage extends PlatformFeaturePackage {
 
     final generator = await _generator(platformRoutingFeaturePackageBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(path)),
+      DirectoryGeneratorTarget(io.Directory(path)),
       vars: <String, dynamic>{
         'project_name': projectName,
         'android': platform == Platform.android,
@@ -237,8 +236,9 @@ class PlatformRoutingFeaturePackage extends PlatformFeaturePackage {
   }
 }
 
-typedef LanguageLocalizationsFileBuilder = LanguageLocalizationsFile Function(
-    {required String language});
+typedef LanguageLocalizationsFileBuilder = LanguageLocalizationsFile Function({
+  required String language,
+});
 
 /// {@template platform_custom_feature_package}
 /// Abstraction of a platform custom feature package of a Rapid project.
@@ -251,16 +251,18 @@ class PlatformCustomFeaturePackage extends PlatformFeaturePackage {
     super.name,
     super.platform, {
     required super.project,
+    L10nFile? l10nFile,
+    ArbDirectory? arbDirectory,
     LanguageLocalizationsFileBuilder? languageLocalizationsFile,
     FlutterGenl10nCommand? flutterGenl10n,
     GeneratorBuilder? generator,
   })  : _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
         _generator = generator ?? MasonGenerator.fromBundle {
+    _l10nFile = l10nFile ?? L10nFile(platformFeaturePackage: this);
+    _arbDirectory = arbDirectory ?? ArbDirectory(platformFeaturePackage: this);
     _languageLocalizationsFile = languageLocalizationsFile ??
         (({required String language}) =>
             LanguageLocalizationsFile(language, platformFeaturePackage: this));
-    _l10nFile = L10nFile(platformFeaturePackage: this);
-    _arbDirectory = ArbDirectory(platformFeaturePackage: this);
   }
 
   late final L10nFile _l10nFile;
@@ -290,7 +292,7 @@ class PlatformCustomFeaturePackage extends PlatformFeaturePackage {
 
     final generator = await _generator(platformCustomFeaturePackageBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(path)),
+      DirectoryGeneratorTarget(io.Directory(path)),
       vars: <String, dynamic>{
         'name': name,
         'description': description ?? 'The ${name.titleCase} feature',
@@ -323,9 +325,8 @@ class PlatformCustomFeaturePackage extends PlatformFeaturePackage {
     final arbFile = _arbDirectory.arbFile(language: language);
     if (!arbFile.exists()) {
       await arbFile.create(logger: logger);
+      await _flutterGenl10n(cwd: path, logger: logger);
     }
-
-    await _flutterGenl10n(cwd: path, logger: logger);
   }
 
   Future<void> removeLanguage({
@@ -334,17 +335,14 @@ class PlatformCustomFeaturePackage extends PlatformFeaturePackage {
   }) async {
     final arbFile = _arbDirectory.arbFile(language: language);
     if (arbFile.exists()) {
-      arbFile.delete();
+      arbFile.delete(logger: logger);
+
+      final languageLocalizationsFile =
+          _languageLocalizationsFile(language: language);
+      if (languageLocalizationsFile.exists()) {
+        languageLocalizationsFile.delete(logger: logger);
+      }
     }
-
-    final languageLocalizationsFile =
-        _languageLocalizationsFile(language: language);
-
-    if (languageLocalizationsFile.exists()) {
-      languageLocalizationsFile.delete();
-    }
-
-    await _flutterGenl10n(cwd: path, logger: logger);
   }
 }
 
@@ -356,25 +354,19 @@ class ReadTemplateArbFileFailure implements Exception {}
 ///
 /// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_<feature name>/l10n.yaml`
 /// {@endtemplate}
-class L10nFile extends ProjectEntity {
+class L10nFile extends YamlFile {
   /// {@macro l10n_file}
   L10nFile({
     required PlatformFeaturePackage platformFeaturePackage,
-  }) : _yamlFile = YamlFile(path: platformFeaturePackage.path, name: 'l10n');
-
-  /// The underlying yaml file.
-  final YamlFile _yamlFile;
-
-  @override
-  String get path => _yamlFile.path;
-
-  @override
-  bool exists() => _yamlFile.exists();
+  }) : super(
+          path: platformFeaturePackage.path,
+          name: 'l10n',
+        );
 
   /// The `template-arb-file` property.
   String templateArbFile() {
     try {
-      return _yamlFile.readValue(['template-arb-file']);
+      return readValue(['template-arb-file']);
     } catch (_) {
       throw ReadTemplateArbFileFailure();
     }
@@ -387,12 +379,12 @@ class L10nFile extends ProjectEntity {
 ///
 /// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_<feature name>/l10n.yaml`
 /// {@endtemplate}
-class LanguageLocalizationsFile extends ProjectEntity {
+class LanguageLocalizationsFile extends DartFile {
   /// {@macro language_localizations_file}
   LanguageLocalizationsFile(
     String language, {
     required PlatformFeaturePackage platformFeaturePackage,
-  }) : _dartFile = DartFile(
+  }) : super(
           path: p.join(
             platformFeaturePackage.path,
             'lib',
@@ -403,17 +395,6 @@ class LanguageLocalizationsFile extends ProjectEntity {
           name:
               '${platformFeaturePackage.packageName()}_localizations_$language',
         );
-
-  /// The underlying dart file.
-  final DartFile _dartFile;
-
-  @override
-  String get path => _dartFile.path;
-
-  @override
-  bool exists() => _dartFile.exists();
-
-  void delete() => _dartFile.delete();
 }
 
 /// {@template arb_directory}
@@ -421,32 +402,31 @@ class LanguageLocalizationsFile extends ProjectEntity {
 ///
 /// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_<feature name>/lib/src/presentation/l10n/arb`
 /// {@endtemplate}
-class ArbDirectory extends ProjectDirectory {
+class ArbDirectory extends Directory {
   /// {@macro arb_directory}
   ArbDirectory({
     required this.platformFeaturePackage,
-  });
+  }) : super(
+          path: p.join(
+            platformFeaturePackage.path,
+            'lib',
+            'src',
+            'presentation',
+            'l10n',
+            'arb',
+          ),
+        );
 
   final PlatformFeaturePackage platformFeaturePackage;
 
-  @override
-  String get path => p.join(
-        platformFeaturePackage.path,
-        'lib',
-        'src',
-        'presentation',
-        'l10n',
-        'arb',
-      );
-
   List<ArbFile> arbFiles() {
-    final arbFiles = directory
-        .listSync()
+    final arbFiles = list()
         .whereType<File>()
-        .where((e) => e.path.endsWith('.arb'))
+        .where((e) => e.extension == 'arb')
+        .where((e) => e.name != null)
         .map(
           (e) => ArbFile(
-            language: p.basenameWithoutExtension(e.path).split('_').last,
+            language: e.name!.split('_').last,
             arbDirectory: this,
           ),
         )
@@ -465,78 +445,72 @@ class ArbDirectory extends ProjectDirectory {
 ///
 /// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_<feature name>/lib/src/presentation/l10n/arb/<feature name>_<language>.arb`
 /// {@endtemplate}
-class ArbFile extends ProjectEntity {
+class ArbFile extends File {
   /// {@macro arb_file}
   ArbFile({
     required this.language,
     required this.arbDirectory,
-  }) : _file = File(
-          p.join(
-            arbDirectory.path,
-            '${arbDirectory.platformFeaturePackage.name}_$language.arb',
-          ),
+    GeneratorBuilder? generator,
+  })  : _generator = generator ?? MasonGenerator.fromBundle,
+        super(
+          path: arbDirectory.path,
+          name: '${arbDirectory.platformFeaturePackage.name}_$language',
+          extension: 'arb',
         );
 
-  final File _file;
+  final GeneratorBuilder _generator;
 
   final ArbDirectory arbDirectory;
   final String language;
 
-  @override
-  String get path => _file.path;
-
-  @override
-  bool exists() => _file.existsSync();
-
   Future<void> create({required Logger logger}) async {
-    _file.createSync(recursive: true);
-    _file.writeAsStringSync('''
-{
-  "@@locale": "$language"
-}''');
+    final generator = await _generator(arbFileBundle);
+    await generator.generate(
+      DirectoryGeneratorTarget(io.Directory(arbDirectory.path)),
+      vars: <String, dynamic>{
+        'feature_name': arbDirectory.platformFeaturePackage.name,
+        'language': language,
+      },
+      logger: logger,
+    );
   }
-
-  void delete() => _file.deleteSync(recursive: true); // TODO logger ?
 }
 
 /// {@template bloc}
 /// Abstraction of a bloc of a platform custom feature package of a Rapid project.
 /// {@endtemplate}
-class Bloc {
+class Bloc extends FileSystemEntityCollection {
   /// {@macro bloc}
   Bloc({
     required this.name,
     required this.platformFeaturePackage,
     GeneratorBuilder? generator,
-  })  : _blocDirectory = Directory(
-          p.join(
-            platformFeaturePackage.path,
-            'lib',
-            'src',
-            'application',
-            name,
+  })  : _generator = generator ?? MasonGenerator.fromBundle,
+        super([
+          Directory(
+            path: p.join(
+              platformFeaturePackage.path,
+              'lib',
+              'src',
+              'application',
+              name,
+            ),
           ),
-        ),
-        _blocTestDirectory = Directory(
-          p.join(
-            platformFeaturePackage.path,
-            'test',
-            'src',
-            'application',
-            name,
+          Directory(
+            path: p.join(
+              platformFeaturePackage.path,
+              'test',
+              'src',
+              'application',
+              name,
+            ),
           ),
-        ),
-        _generator = generator ?? MasonGenerator.fromBundle;
+        ]);
 
-  final Directory _blocDirectory;
-  final Directory _blocTestDirectory;
   final GeneratorBuilder _generator;
 
   final String name;
   final PlatformFeaturePackage platformFeaturePackage;
-
-  bool exists() =>
-      _blocDirectory.existsSync() || _blocTestDirectory.existsSync();
 
   Future<void> create({required Logger logger}) async {
     final projectName = platformFeaturePackage.project.name();
@@ -545,7 +519,7 @@ class Bloc {
 
     final generator = await _generator(blocBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(platformFeaturePackage.path)),
+      DirectoryGeneratorTarget(io.Directory(platformFeaturePackage.path)),
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
@@ -555,51 +529,43 @@ class Bloc {
       logger: logger,
     );
   }
-
-  void delete() {
-    _blocDirectory.deleteSync(recursive: true);
-    _blocTestDirectory.deleteSync(recursive: true);
-  }
 }
 
 /// {@template cubit}
 /// Abstraction of a cubit of a platform custom feature package of a Rapid project.
 /// {@endtemplate}
-class Cubit {
+class Cubit extends FileSystemEntityCollection {
   /// {@macro cubit}
   Cubit({
     required this.name,
     required this.platformFeaturePackage,
     GeneratorBuilder? generator,
-  })  : _cubitDirectory = Directory(
-          p.join(
-            platformFeaturePackage.path,
-            'lib',
-            'src',
-            'application',
-            name,
+  })  : _generator = generator ?? MasonGenerator.fromBundle,
+        super([
+          Directory(
+            path: p.join(
+              platformFeaturePackage.path,
+              'lib',
+              'src',
+              'application',
+              name,
+            ),
           ),
-        ),
-        _cubitTestDirectory = Directory(
-          p.join(
-            platformFeaturePackage.path,
-            'test',
-            'src',
-            'application',
-            name,
+          Directory(
+            path: p.join(
+              platformFeaturePackage.path,
+              'test',
+              'src',
+              'application',
+              name,
+            ),
           ),
-        ),
-        _generator = generator ?? MasonGenerator.fromBundle;
+        ]);
 
-  final Directory _cubitDirectory;
-  final Directory _cubitTestDirectory;
   final GeneratorBuilder _generator;
 
   final String name;
   final PlatformFeaturePackage platformFeaturePackage;
-
-  bool exists() =>
-      _cubitDirectory.existsSync() || _cubitTestDirectory.existsSync();
 
   Future<void> create({required Logger logger}) async {
     final projectName = platformFeaturePackage.project.name();
@@ -608,7 +574,7 @@ class Cubit {
 
     final generator = await _generator(cubitBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(platformFeaturePackage.path)),
+      DirectoryGeneratorTarget(io.Directory(platformFeaturePackage.path)),
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
@@ -617,10 +583,5 @@ class Cubit {
       },
       logger: logger,
     );
-  }
-
-  void delete() {
-    _cubitDirectory.deleteSync(recursive: true);
-    _cubitTestDirectory.deleteSync(recursive: true);
   }
 }

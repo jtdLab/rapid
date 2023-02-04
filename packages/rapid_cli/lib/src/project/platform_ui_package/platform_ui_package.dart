@@ -1,9 +1,12 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:rapid_cli/src/core/directory.dart';
+import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:universal_io/io.dart';
+import 'package:universal_io/io.dart' as io;
 
 import 'platform_ui_package_bundle.dart';
 import 'widget_bundle.dart';
@@ -13,26 +16,26 @@ import 'widget_bundle.dart';
 ///
 /// Location: `packages/<project name>_ui/<project name>_ui_<platform>`
 /// {@endtemplate}
-class PlatformUiPackage extends ProjectPackage {
+class PlatformUiPackage extends DartPackage {
   /// {@macro platform_ui_package}
   PlatformUiPackage(
     this.platform, {
     required this.project,
     GeneratorBuilder? generator,
-  }) : _generator = generator ?? MasonGenerator.fromBundle;
+  })  : _generator = generator ?? MasonGenerator.fromBundle,
+        super(
+          path: p.join(
+            project.path,
+            'packages',
+            '${project.name()}_ui',
+            '${project.name()}_ui_${platform.name}',
+          ),
+        );
 
-  final Project project;
   final GeneratorBuilder _generator;
 
   final Platform platform;
-
-  @override
-  String get path => p.join(
-        project.path,
-        'packages',
-        '${project.name()}_ui',
-        '${project.name()}_ui_${platform.name}',
-      );
+  final Project project;
 
   Future<void> create({
     required Logger logger,
@@ -41,7 +44,7 @@ class PlatformUiPackage extends ProjectPackage {
 
     final generator = await _generator(platformUiPackageBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(path)),
+      DirectoryGeneratorTarget(io.Directory(path)),
       vars: <String, dynamic>{
         'project_name': projectName,
         'android': platform == Platform.android,
@@ -65,43 +68,44 @@ class PlatformUiPackage extends ProjectPackage {
 /// {@template widget}
 /// Abstraction of a widget of a platform ui package of a Rapid project.
 /// {@endtemplate}
-class Widget {
+class Widget extends FileSystemEntityCollection {
   /// {@macro widget}
   Widget({
     required this.name,
     required this.dir,
     required this.platformUiPackage,
+    Directory? widgetDirectory,
+    Directory? widgetTestDirectory,
     GeneratorBuilder? generator,
-  })  : _widgetDirectory = Directory(
-          p.join(
-            platformUiPackage.path,
-            'lib',
-            'src',
-            dir,
-            name.snakeCase,
-          ),
-        ),
-        _widgetTestDirectory = Directory(
-          p.join(
-            platformUiPackage.path,
-            'test',
-            'src',
-            dir,
-            name.snakeCase,
-          ),
-        ),
-        _generator = generator ?? MasonGenerator.fromBundle;
+  })  : _generator = generator ?? MasonGenerator.fromBundle,
+        super([
+          widgetDirectory ??
+              Directory(
+                path: p.join(
+                  platformUiPackage.path,
+                  'lib',
+                  'src',
+                  dir,
+                  name.snakeCase,
+                ),
+              ),
+          widgetTestDirectory ??
+              Directory(
+                path: p.join(
+                  platformUiPackage.path,
+                  'test',
+                  'src',
+                  dir,
+                  name.snakeCase,
+                ),
+              ),
+        ]);
 
-  final Directory _widgetDirectory;
-  final Directory _widgetTestDirectory;
   final GeneratorBuilder _generator;
 
   final String name;
   final String dir;
   final PlatformUiPackage platformUiPackage;
-
-  bool exists() =>
-      _widgetDirectory.existsSync() || _widgetTestDirectory.existsSync();
 
   Future<void> create({
     required Logger logger,
@@ -111,7 +115,7 @@ class Widget {
 
     final generator = await _generator(widgetBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(platformUiPackage.path)),
+      DirectoryGeneratorTarget(io.Directory(platformUiPackage.path)),
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
@@ -125,21 +129,5 @@ class Widget {
       },
       logger: logger,
     );
-  }
-
-  // TODO logger ? check if dir exists before deleting other components need this check 2
-  void delete() {
-    _widgetDirectory.deleteSync(recursive: true);
-    _widgetTestDirectory.deleteSync(recursive: true);
-
-    final directoryParent = _widgetDirectory.parent;
-    if (directoryParent.listSync().isEmpty) {
-      directoryParent.deleteSync();
-    }
-
-    final testDirectoryParent = _widgetTestDirectory.parent;
-    if (testDirectoryParent.listSync().isEmpty) {
-      testDirectoryParent.deleteSync();
-    }
   }
 }

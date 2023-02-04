@@ -1,6 +1,8 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/dart_file.dart';
+import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:rapid_cli/src/core/environment.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/app_package/platform_native_directory/platform_native_directory.dart';
@@ -19,14 +21,23 @@ typedef PlatformNativeDirectoryBuilder = PlatformNativeDirectory Function({
 ///
 /// Location: `packages/<project name>/<project name>`
 /// {@endtemplate}
-class AppPackage extends ProjectPackage {
+class AppPackage extends DartPackage {
   /// {@macro app_package}
   AppPackage({
     required this.project,
+    super.pubspecFile,
     PlatformNativeDirectoryBuilder? platformNativeDirectory,
     Set<MainFile>? mainFiles,
     GeneratorBuilder? generator,
-  }) : _generator = generator ?? MasonGenerator.fromBundle {
+  })  : _generator = generator ?? MasonGenerator.fromBundle,
+        super(
+          path: p.join(
+            project.path,
+            'packages',
+            project.name(),
+            project.name(),
+          ),
+        ) {
     _platformNativeDirectory = platformNativeDirectory ??
         (({required platform}) =>
             PlatformNativeDirectory(platform, appPackage: this));
@@ -38,18 +49,11 @@ class AppPackage extends ProjectPackage {
         };
   }
 
-  final Project project;
   late final PlatformNativeDirectoryBuilder _platformNativeDirectory;
   late final Set<MainFile> _mainFiles;
   final GeneratorBuilder _generator;
 
-  @override
-  String get path => p.join(
-        project.path,
-        'packages',
-        project.name(),
-        project.name(),
-      );
+  final Project project;
 
   Future<void> create({
     required String description,
@@ -130,8 +134,6 @@ class AppPackage extends ProjectPackage {
     Platform platform, {
     required Logger logger,
   }) async {
-    // TODO maybe make get feature/s for platform getter
-    // in project can be used for doctor command
     final platformDirectory = project.platformDirectory(platform: platform);
     final appFeaturePackage = platformDirectory.appFeaturePackage;
     pubspecFile.removeDependency(appFeaturePackage.packageName());
@@ -139,7 +141,7 @@ class AppPackage extends ProjectPackage {
     final platformNativeDirectory = _platformNativeDirectory(
       platform: platform,
     );
-    await platformNativeDirectory.delete(logger: logger);
+    platformNativeDirectory.delete(logger: logger);
 
     final mainFiles = _mainFiles;
     for (final mainFile in mainFiles) {
@@ -148,66 +150,55 @@ class AppPackage extends ProjectPackage {
   }
 }
 
-/// The environments a Rapid project might run in.
-enum Environment { development, test, production }
-
 /// {@template main_file}
 /// Abstraction of a main file in the app package of a Rapid project.
 ///
 /// Location: `packages/<project name>/<project name>/lib/main_<env>.dart`
 /// {@endtemplate}
-class MainFile extends ProjectEntity {
+class MainFile extends DartFile {
   /// {@macro main_file}
   MainFile(
-    this.env, {
+    this.environment, {
     required AppPackage appPackage,
-  }) : _appPackage = appPackage;
+  })  : _appPackage = appPackage,
+        super(
+          path: p.join(appPackage.path, 'lib'),
+          name: 'main_${environment.name}',
+        );
 
   final AppPackage _appPackage;
 
-  DartFile get _dartFile => DartFile(
-        path: p.join(_appPackage.path, 'lib'),
-        name: 'main_${env.name}',
-      );
-
-  @override
-  String get path => _dartFile.path;
-
-  final Environment env;
-
-  @override
-  bool exists() => _dartFile.exists();
+  final Environment environment;
 
   void addSetupForPlatform(Platform platform) {
     final projectName = _appPackage.project.name();
     final platformName = platform.name;
-    final envName = env == Environment.development
+    final envName = environment == Environment.development
         ? 'dev'
-        : env == Environment.test
+        : environment == Environment.test
             ? 'test'
             : 'prod';
 
-    final imports = _dartFile.readImports();
+    final imports = readImports();
     if (imports.length == 1 && imports.first == 'package:rapid/rapid.dart') {
-      _dartFile.addImport('package:flutter/widgets.dart');
-      _dartFile.addImport('package:${projectName}_di/${projectName}_di.dart');
-      _dartFile.addImport(
-          'package:${projectName}_logging/${projectName}_logging.dart');
-      _dartFile.addImport('bootstrap.dart');
-      _dartFile.addImport('router_observer.dart');
+      addImport('package:flutter/widgets.dart');
+      addImport('package:${projectName}_di/${projectName}_di.dart');
+      addImport('package:${projectName}_logging/${projectName}_logging.dart');
+      addImport('bootstrap.dart');
+      addImport('router_observer.dart');
     }
 
-    _dartFile.addImport(
+    addImport(
       'package:${projectName}_${platformName}_app/${projectName}_${platformName}_app.dart',
       alias: platformName,
     );
 
     if (platform == Platform.web) {
-      _dartFile.addImport('package:url_strategy/url_strategy.dart');
+      addImport('package:url_strategy/url_strategy.dart');
     }
 
     final functionName = 'run${platformName.pascalCase}App';
-    _dartFile.addTopLevelFunction(
+    addTopLevelFunction(
       Method(
         (m) => m
           ..returns = refer('Future<void>')
@@ -217,7 +208,7 @@ class MainFile extends ProjectEntity {
             'configureDependencies(Environment.$envName, Platform.$platformName);',
             if (platform == Platform.web) 'setPathUrlStrategy();',
             'WidgetsFlutterBinding.ensureInitialized();',
-            '  // TODO: add more $platformName ${env.name} setup here',
+            '  // TODO: add more $platformName ${environment.name} setup here',
             '',
             'final logger = getIt<${projectName.pascalCase}Logger>();',
             'final app = $platformName.App(',
@@ -230,7 +221,7 @@ class MainFile extends ProjectEntity {
       ),
     );
 
-    _dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
+    addNamedParamToMethodCallInTopLevelFunctionBody(
       paramName: platformName,
       paramValue: functionName,
       functionName: 'main',
@@ -242,31 +233,30 @@ class MainFile extends ProjectEntity {
     final projectName = _appPackage.project.name();
     final platformName = platform.name;
 
-    _dartFile.removeImport(
+    removeImport(
       'package:${projectName}_${platformName}_app/${projectName}_${platformName}_app.dart',
     );
 
     if (platform == Platform.web) {
-      _dartFile.removeImport('package:url_strategy/url_strategy.dart');
+      removeImport('package:url_strategy/url_strategy.dart');
     }
 
-    _dartFile.removeTopLevelFunction('run${platformName.pascalCase}App');
+    removeTopLevelFunction('run${platformName.pascalCase}App');
 
-    _dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+    removeNamedParamFromMethodCallInTopLevelFunctionBody(
       paramName: platformName,
       functionName: 'main',
       functionToCallName: 'runOnPlatform',
     );
 
-    final functions = _dartFile.readTopLevelFunctionNames();
+    final functions = readTopLevelFunctionNames();
     if (functions.length == 1 && functions.first == 'main') {
-      _dartFile.removeImport('package:flutter/widgets.dart');
-      _dartFile
-          .removeImport('package:${projectName}_di/${projectName}_di.dart');
-      _dartFile.removeImport(
+      removeImport('package:flutter/widgets.dart');
+      removeImport('package:${projectName}_di/${projectName}_di.dart');
+      removeImport(
           'package:${projectName}_logging/${projectName}_logging.dart');
-      _dartFile.removeImport('bootstrap.dart');
-      _dartFile.removeImport('router_observer.dart');
+      removeImport('bootstrap.dart');
+      removeImport('router_observer.dart');
     }
 
     // TODO improvment remove unesessary imports if possible

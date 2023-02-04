@@ -5,8 +5,8 @@ import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:code_builder/code_builder.dart' show DartEmitter, Method;
 import 'package:dart_style/dart_style.dart';
-import 'package:path/path.dart' as p;
-import 'package:universal_io/io.dart';
+
+import 'file.dart';
 
 export 'package:code_builder/code_builder.dart';
 
@@ -51,39 +51,27 @@ final _importRegExp = RegExp('import \'([a-z_/.:]+)\'( as [a-z]+)?;');
 /// {@template dart_file}
 /// Abstraction of a dart file.
 /// {@endtemplate}
-class DartFile {
+class DartFile extends File {
   /// {@macro dart_file}
   DartFile({
-    String path = '.',
-    required String name,
-  }) : _file = File(p.normalize(p.join(path, '$name.dart')));
-
-  /// The underlying file
-  final File _file;
-
-  String get path => _file.path;
-
-  bool exists() => _file.existsSync();
-
-  void delete() => _file.deleteSync(recursive: true);
+    super.path,
+    required String super.name,
+  }) : super(extension: 'dart');
 
   List<Declaration> _getTopLevelDeclarations(String source) {
     final unit = parseString(content: source).unit;
     return unit.declarations;
   }
 
-  /// Reads the contents of the underlying file.
-  String _read() => _file.readAsStringSync();
-
   /// Formates and writes [contents] to the underlying file.
-  void _write(String contents) =>
-      _file.writeAsStringSync(DartFormatter().format(contents), flush: true);
+  @override
+  void write(String contents) => super.write(DartFormatter().format(contents));
 
   /// Adds [import] with an optional [alias].
   ///
   /// Hint: The imports get sorted after adding
   void addImport(String import, {String? alias}) {
-    final contents = _read();
+    final contents = read();
 
     final existingImports =
         contents.split('\n').where((line) => _importRegExp.hasMatch(line));
@@ -117,7 +105,7 @@ class DartFile {
           )
           .join('\n'),
     );
-    _write(output);
+    write(output);
   }
 
   /// Adds parameter with [paramName] to the [index]-th call to function with [functionToCallName] inside
@@ -160,7 +148,7 @@ class DartFile {
     required String functionToCallName,
     int index = 0,
   }) {
-    final contents = _read();
+    final contents = read();
 
     final declarations = _getTopLevelDeclarations(contents);
     final topLevelFunctions = declarations.whereType<FunctionDeclaration>();
@@ -207,13 +195,13 @@ class DartFile {
       final insertion = '$paramName: $paramValue,';
       final output = contents.replaceRange(insertPos, insertPos, insertion);
 
-      _write(output);
+      write(output);
     }
   }
 
   /// Adds [function] as a top-level function.
   void addTopLevelFunction(Method function) {
-    final contents = _read();
+    final contents = read();
 
     final declarations = _getTopLevelDeclarations(contents);
     final exists = declarations
@@ -227,13 +215,13 @@ class DartFile {
           '\n\n${function.accept(DartEmitter(useNullSafetySyntax: true))}';
       final output = contents.replaceRange(insertPos, insertPos, insertion);
 
-      _write(output);
+      write(output);
     }
   }
 
   /// Returns all [import]s.
   List<String> readImports() {
-    final contents = _read();
+    final contents = read();
 
     final regExp =
         RegExp('import \'([a-z0-9_:./]+)\'( as [a-z]+)?;' r'[\s]{1}');
@@ -248,7 +236,7 @@ class DartFile {
 
   /// Returns a list with the names of all top-level functions.
   List<String> readTopLevelFunctionNames() {
-    final contents = _read();
+    final contents = read();
 
     final declarations = _getTopLevelDeclarations(contents);
     final functions = declarations
@@ -261,7 +249,7 @@ class DartFile {
 
   /// Reads the values of a list stored in the top-level variable [name].
   List<String> readTopLevelListVar({required String name}) {
-    final contents = _read();
+    final contents = read();
 
     final declarations = _getTopLevelDeclarations(contents);
 
@@ -301,7 +289,7 @@ class DartFile {
     required String annotation,
     required String functionName,
   }) {
-    final contents = _read();
+    final contents = read();
 
     final declarations = _getTopLevelDeclarations(contents);
 
@@ -325,7 +313,7 @@ class DartFile {
 
   /// Removes [import]
   void removeImport(String import) {
-    final contents = _read();
+    final contents = read();
 
     final regExp = RegExp(
       r"import[\s]+\'" + import + r"\'([\s]+as[\s]+[a-z]+)?;" + r"[\s]{1}",
@@ -336,7 +324,7 @@ class DartFile {
     }
     final output = contents.replaceRange(match.start, match.end, '');
 
-    _write(output);
+    write(output);
   }
 
   /// Removes parameter with [paramName] from the [index]-th call to function with [functionToCallName] inside
@@ -375,7 +363,7 @@ class DartFile {
     required String functionToCallName,
     int index = 0,
   }) {
-    final contents = _read();
+    final contents = read();
 
     final declarations = _getTopLevelDeclarations(contents);
     final topLevelFunctions = declarations.whereType<FunctionDeclaration>();
@@ -423,13 +411,13 @@ class DartFile {
       final output =
           contents.replaceRange(argument.offset, argument.end + 1, '');
 
-      _write(output);
+      write(output);
     }
   }
 
   /// Removes the top-level function with [name].
   void removeTopLevelFunction(String name) {
-    final contents = _read();
+    final contents = read();
 
     final declarations = _getTopLevelDeclarations(contents);
     final exists = declarations
@@ -440,7 +428,7 @@ class DartFile {
           .firstWhere((e) => e is FunctionDeclaration && e.name.lexeme == name);
       final output = contents.replaceRange(function.offset, function.end, '');
 
-      _write(output);
+      write(output);
     }
   }
 
@@ -449,7 +437,7 @@ class DartFile {
     required String name,
     required List<String> value,
   }) {
-    final contents = _read();
+    final contents = read();
 
     final declarations = _getTopLevelDeclarations(contents);
 
@@ -485,7 +473,7 @@ class DartFile {
       listText,
     );
 
-    _write(output);
+    write(output);
   }
 
   /// Sets the [property] of the [annotation] the function with [functionName] is annotated with to [value].
@@ -517,7 +505,7 @@ class DartFile {
     required String functionName,
     required List<String> value,
   }) {
-    final contents = _read();
+    final contents = read();
 
     final declarations = _getTopLevelDeclarations(contents);
 
@@ -535,6 +523,6 @@ class DartFile {
     final output = contents.replaceRange(start, end,
         '$property: [${value.join(',')}${value.isEmpty ? '' : ','}]');
 
-    _write(output);
+    write(output);
   }
 }

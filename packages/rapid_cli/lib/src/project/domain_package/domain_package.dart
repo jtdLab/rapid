@@ -1,10 +1,13 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:rapid_cli/src/core/directory.dart';
+import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/project/domain_package/service_interface_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:universal_io/io.dart';
+import 'package:universal_io/io.dart' as io;
 
 import 'domain_package_bundle.dart';
 import 'entity_bundle.dart';
@@ -15,23 +18,23 @@ import 'value_object_bundle.dart';
 ///
 /// Location: `packages/<project name>/<project name>_domain`
 /// {@endtemplate}
-class DomainPackage extends ProjectPackage {
+class DomainPackage extends DartPackage {
   /// {@macro domain_package}
   DomainPackage({
     required this.project,
     GeneratorBuilder? generator,
-  }) : _generator = generator ?? MasonGenerator.fromBundle;
+  })  : _generator = generator ?? MasonGenerator.fromBundle,
+        super(
+          path: p.join(
+            project.path,
+            'packages',
+            project.name(),
+            '${project.name()}_domain',
+          ),
+        );
 
   final Project project;
   final GeneratorBuilder _generator;
-
-  @override
-  String get path => p.join(
-        project.path,
-        'packages',
-        project.name(),
-        '${project.name()}_domain',
-      );
 
   Future<void> create({
     required Logger logger,
@@ -40,7 +43,7 @@ class DomainPackage extends ProjectPackage {
 
     final generator = await _generator(domainPackageBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(path)),
+      DirectoryGeneratorTarget(io.Directory(path)),
       vars: <String, dynamic>{
         'project_name': projectName,
       },
@@ -73,7 +76,7 @@ class DomainPackage extends ProjectPackage {
 /// {@template entity}
 /// Abstraction of an entity of a domain package of a Rapid project.
 /// {@endtemplate}
-class Entity {
+class Entity extends FileSystemEntityCollection {
   /// {@macro entity}
   Entity({
     required this.name,
@@ -81,40 +84,37 @@ class Entity {
     required this.domainPackage,
     DartFormatFixCommand? dartFormatFix,
     GeneratorBuilder? generator,
-  })  : _entityDirectory = Directory(
-          p.normalize(
-            p.join(
-              domainPackage.path,
-              'lib',
-              dir,
-              name.snakeCase,
+  })  : _dartFormatFix = dartFormatFix ?? Dart.formatFix,
+        _generator = generator ?? MasonGenerator.fromBundle,
+        super([
+          Directory(
+            path: p.normalize(
+              p.join(
+                domainPackage.path,
+                'lib',
+                dir,
+                name.snakeCase,
+              ),
             ),
           ),
-        ),
-        _entityTestDirectory = Directory(
-          p.normalize(
-            p.join(
-              domainPackage.path,
-              'test',
-              dir,
-              name.snakeCase,
+          Directory(
+            path: p.normalize(
+              p.join(
+                domainPackage.path,
+                'test',
+                dir,
+                name.snakeCase,
+              ),
             ),
           ),
-        ),
-        _dartFormatFix = dartFormatFix ?? Dart.formatFix,
-        _generator = generator ?? MasonGenerator.fromBundle;
+        ]);
 
-  final Directory _entityDirectory;
-  final Directory _entityTestDirectory;
   final DartFormatFixCommand _dartFormatFix;
   final GeneratorBuilder _generator;
 
   final String name;
   final String dir;
   final DomainPackage domainPackage;
-
-  bool exists() =>
-      _entityDirectory.existsSync() || _entityTestDirectory.existsSync();
 
   Future<void> create({
     required Logger logger,
@@ -123,7 +123,7 @@ class Entity {
 
     final generator = await _generator(entityBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(domainPackage.path)),
+      DirectoryGeneratorTarget(io.Directory(domainPackage.path)),
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
@@ -134,28 +134,12 @@ class Entity {
 
     await _dartFormatFix(cwd: domainPackage.path, logger: logger);
   }
-
-  // TODO logger ?
-  void delete() {
-    _entityDirectory.deleteSync(recursive: true);
-    _entityTestDirectory.deleteSync(recursive: true);
-
-    final directoryParent = _entityDirectory.parent;
-    if (directoryParent.listSync().isEmpty) {
-      directoryParent.deleteSync();
-    }
-
-    final testDirectoryParent = _entityTestDirectory.parent;
-    if (testDirectoryParent.listSync().isEmpty) {
-      testDirectoryParent.deleteSync();
-    }
-  }
 }
 
 /// {@template service_interface}
 /// Abstraction of an service interface of a domain package of a Rapid project.
 /// {@endtemplate}
-class ServiceInterface {
+class ServiceInterface extends FileSystemEntityCollection {
   /// {@macro service_interface}
   ServiceInterface({
     required this.name,
@@ -163,26 +147,25 @@ class ServiceInterface {
     required this.domainPackage,
     DartFormatFixCommand? dartFormatFix,
     GeneratorBuilder? generator,
-  })  : _serviceInterfaceDirectory = Directory(
-          p.join(
-            domainPackage.path,
-            'lib',
-            dir,
-            name.snakeCase,
+  })  : _dartFormatFix = dartFormatFix ?? Dart.formatFix,
+        _generator = generator ?? MasonGenerator.fromBundle,
+        super([
+          Directory(
+            path: p.join(
+              domainPackage.path,
+              'lib',
+              dir,
+              name.snakeCase,
+            ),
           ),
-        ),
-        _dartFormatFix = dartFormatFix ?? Dart.formatFix,
-        _generator = generator ?? MasonGenerator.fromBundle;
+        ]);
 
-  final Directory _serviceInterfaceDirectory;
   final DartFormatFixCommand _dartFormatFix;
   final GeneratorBuilder _generator;
 
   final String name;
   final String dir;
   final DomainPackage domainPackage;
-
-  bool exists() => _serviceInterfaceDirectory.existsSync();
 
   Future<void> create({
     required Logger logger,
@@ -191,7 +174,7 @@ class ServiceInterface {
 
     final generator = await _generator(serviceInterfaceBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(domainPackage.path)),
+      DirectoryGeneratorTarget(io.Directory(domainPackage.path)),
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
@@ -202,21 +185,12 @@ class ServiceInterface {
 
     await _dartFormatFix(cwd: domainPackage.path, logger: logger);
   }
-
-  // TODO logger ?
-  void delete() {
-    _serviceInterfaceDirectory.deleteSync(recursive: true);
-    final directoryParent = _serviceInterfaceDirectory.parent;
-    if (directoryParent.listSync().isEmpty) {
-      directoryParent.deleteSync();
-    }
-  }
 }
 
 /// {@template value_object}
 /// Abstraction of an value object of a domain package of a Rapid project.
 /// {@endtemplate}
-class ValueObject {
+class ValueObject extends FileSystemEntityCollection {
   /// {@macro value_object}
   ValueObject({
     required this.name,
@@ -226,30 +200,30 @@ class ValueObject {
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     DartFormatFixCommand? dartFormatFix,
     GeneratorBuilder? generator,
-  })  : _valueObjectDirectory = Directory(
-          p.join(
-            domainPackage.path,
-            'lib',
-            dir,
-            name.snakeCase,
-          ),
-        ),
-        _valueObjectTestDirectory = Directory(
-          p.join(
-            domainPackage.path,
-            'test',
-            dir,
-            name.snakeCase,
-          ),
-        ),
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+  })  : _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
         _dartFormatFix = dartFormatFix ?? Dart.formatFix,
-        _generator = generator ?? MasonGenerator.fromBundle;
+        _generator = generator ?? MasonGenerator.fromBundle,
+        super([
+          Directory(
+            path: p.join(
+              domainPackage.path,
+              'lib',
+              dir,
+              name.snakeCase,
+            ),
+          ),
+          Directory(
+            path: p.join(
+              domainPackage.path,
+              'test',
+              dir,
+              name.snakeCase,
+            ),
+          ),
+        ]);
 
-  final Directory _valueObjectDirectory;
-  final Directory _valueObjectTestDirectory;
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
       _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final DartFormatFixCommand _dartFormatFix;
@@ -258,10 +232,6 @@ class ValueObject {
   final String name;
   final String dir;
   final DomainPackage domainPackage;
-
-  bool exists() =>
-      _valueObjectDirectory.existsSync() ||
-      _valueObjectTestDirectory.existsSync();
 
   Future<void> create({
     required String type,
@@ -272,7 +242,7 @@ class ValueObject {
 
     final generator = await _generator(valueObjectBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(domainPackage.path)),
+      DirectoryGeneratorTarget(io.Directory(domainPackage.path)),
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
@@ -288,20 +258,5 @@ class ValueObject {
       logger: logger,
     );
     await _dartFormatFix(cwd: domainPackage.path, logger: logger);
-  }
-
-  // TODO logger ?
-  void delete() {
-    _valueObjectDirectory.deleteSync(recursive: true);
-    _valueObjectTestDirectory.deleteSync(recursive: true);
-    final directoryParent = _valueObjectDirectory.parent;
-    if (directoryParent.listSync().isEmpty) {
-      directoryParent.deleteSync();
-    }
-
-    final testDirectoryParent = _valueObjectTestDirectory.parent;
-    if (testDirectoryParent.listSync().isEmpty) {
-      testDirectoryParent.deleteSync();
-    }
   }
 }

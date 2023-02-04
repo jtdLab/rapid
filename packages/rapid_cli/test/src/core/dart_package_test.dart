@@ -1,3 +1,5 @@
+import 'package:mason/mason.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -75,6 +77,8 @@ const pubspecWithoutName = '''
 some: value
 ''';
 
+class _MockLogger extends Mock implements Logger {}
+
 void main() {
   group('DartPackage', () {
     final cwd = Directory.current;
@@ -94,12 +98,18 @@ void main() {
     });
 
     group('delete', () {
+      late Logger logger;
+
+      setUp(() {
+        logger = _MockLogger();
+      });
+
       test('deletes the directory', () {
         // Arrange
         final directory = Directory(dartPackage.path);
 
         // Act
-        dartPackage.delete();
+        dartPackage.delete(logger: logger);
 
         // Assert
         expect(directory.existsSync(), false);
@@ -176,7 +186,7 @@ void main() {
         file.writeAsStringSync(pubspecWithName);
 
         // Act + Assert
-        expect(pubspecFile.name(), 'foo_bar');
+        expect(pubspecFile.readName(), 'foo_bar');
       });
 
       test('throws when name is not present', () {
@@ -185,7 +195,7 @@ void main() {
         file.writeAsStringSync(pubspecWithoutName);
 
         // Act + Assert
-        expect(() => pubspecFile.name(), throwsA(isA<ReadNameFailure>()));
+        expect(() => pubspecFile.readName(), throwsA(isA<ReadNameFailure>()));
       });
     });
 

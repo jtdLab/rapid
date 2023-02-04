@@ -1,232 +1,276 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
-import 'package:rapid_cli/src/project/platform_directory.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
-class _MockMelosFile extends Mock implements MelosFile {}
-
 class _MockProject extends Mock implements Project {}
+
+class _MockPlatformCustomFeaturePackage extends Mock
+    implements PlatformCustomFeaturePackage {}
 
 void main() {
   group('PlatformDirectory', () {
     final cwd = Directory.current;
 
-    const projectName = 'foo_bar';
-    late MelosFile melosFile;
     late Project project;
+    const projectPath = 'foo/bar';
+    const projectName = 'foo_bar';
+
     const platform = Platform.android;
-    late PlatformDirectory platformDirectory;
+
+    late List<PlatformCustomFeaturePackage>? customFeaturePackages;
+
+    late PlatformDirectory underTest;
+
+    PlatformDirectory platformDirectory() => PlatformDirectory(
+          platform,
+          project: project,
+        )..customFeaturePackagesOverrides = customFeaturePackages;
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      melosFile = _MockMelosFile();
-      when(() => melosFile.name()).thenReturn(projectName);
       project = _MockProject();
-      when(() => project.melosFile).thenReturn(melosFile);
-      platformDirectory = PlatformDirectory(
-        platform: platform,
-        project: project,
-      );
-      Directory(platformDirectory.path).createSync(recursive: true);
+      when(() => project.path).thenReturn(projectPath);
+      when(() => project.name()).thenReturn(projectName);
+
+      customFeaturePackages = null;
+
+      underTest = platformDirectory();
+
+      Directory(underTest.path).createSync(recursive: true);
     });
 
     tearDown(() {
       Directory.current = cwd;
     });
 
-    group('delete', () {
-      test('deletes the directory', () {
-        // Arrange
-        final directory = Directory(platformDirectory.path);
-
-        // Act
-        platformDirectory.delete();
-
+    group('path', () {
+      test('is correct', () {
         // Assert
-        expect(directory.existsSync(), false);
-      });
-    });
-
-    group('exists', () {
-      test('returns true when the directory exists', () {
-        // Act
-        final exists = platformDirectory.exists();
-
-        // Assert
-        expect(exists, true);
-      });
-
-      test('returns false when the directory does not exists', () {
-        // Arrange
-        Directory(platformDirectory.path).deleteSync(recursive: true);
-
-        // Act
-        final exists = platformDirectory.exists();
-
-        // Assert
-        expect(exists, false);
-      });
-    });
-
-    group('featureExists', () {
-      test('returns true when the requested feature exists', () {
-        // Arrange
-        final featureName = 'existing_feature';
-        Directory(p.join(platformDirectory.path,
-                '${projectName}_${platform.name}_$featureName'))
-            .createSync(recursive: true);
-
-        // Act
-        final exists = platformDirectory.featureExists(featureName);
-
-        // Assert
-        expect(exists, true);
-      });
-
-      test('returns false when the requested package does not exist', () {
-        // Arrange
-        final featureName = 'not_existing_feature';
-
-        // Act
-        final exists = platformDirectory.featureExists(featureName);
-
-        // Assert
-        expect(exists, false);
-      });
-    });
-
-    group('findFeature', () {
-      test(
-          'returns a dart package with correct path when the requested feature exists',
-          () {
-        // Arrange
-        final featureName = 'existing_feature';
-        final path = p.join(platformDirectory.path,
-            '${projectName}_${platform.name}_$featureName');
-        Directory(path).createSync(recursive: true);
-
-        // Act
-        final package = platformDirectory.findFeature(featureName);
-
-        // Assert
-        expect(package.path, path);
-      });
-
-      test('throws FeatureNotFound when the requested package does not exist',
-          () {
-        // Arrange
-        final featureName = 'not_existing_feature';
-
-        // Act & Assert
         expect(
-          () => platformDirectory.findFeature(featureName),
-          throwsA(isA<FeatureNotFound>()),
+          underTest.path,
+          '$projectPath/packages/$projectName/${projectName}_${platform.name}',
         );
       });
     });
 
-    group('getFeatures', () {
+    group('appFeaturePackage', () {
+      test('returns platform app featuere package with correct path', () {
+        // Act
+        final appFeaturePackage = underTest.appFeaturePackage;
+
+        // Assert
+        expect(
+          appFeaturePackage.path,
+          '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_app',
+        );
+      });
+    });
+
+    group('routingFeaturePackage', () {
+      test('returns platform app featuere package with correct path', () {
+        // Act
+        final routingFeaturePackage = underTest.routingFeaturePackage;
+
+        // Assert
+        expect(
+          routingFeaturePackage.path,
+          '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_routing',
+        );
+      });
+    });
+
+    group('allFeaturesHaveSameLanguages', () {
+      test('returns true when all custom feature packages have same language',
+          () {
+        // Arrange
+        final feature1 = _MockPlatformCustomFeaturePackage();
+        when(() => feature1.supportedLanguages()).thenReturn({'en', 'de'});
+        final feature2 = _MockPlatformCustomFeaturePackage();
+        when(() => feature2.supportedLanguages()).thenReturn({'de', 'en'});
+
+        customFeaturePackages = [feature1, feature2];
+        underTest = platformDirectory();
+
+        // Act
+        final allFeaturesHaveSameLanguages =
+            underTest.allFeaturesHaveSameLanguages();
+
+        // Assert
+        expect(allFeaturesHaveSameLanguages, true);
+      });
+
+      test(
+          'returns false when NOT all custom feature packages have same language',
+          () {
+        // Arrange
+        final feature1 = _MockPlatformCustomFeaturePackage();
+        when(() => feature1.supportedLanguages()).thenReturn({'fr', 'de'});
+        final feature2 = _MockPlatformCustomFeaturePackage();
+        when(() => feature2.supportedLanguages()).thenReturn({'de', 'en'});
+
+        customFeaturePackages = [feature1, feature2];
+        underTest = platformDirectory();
+
+        // Act
+        final allFeaturesHaveSameLanguages =
+            underTest.allFeaturesHaveSameLanguages();
+
+        // Assert
+        expect(allFeaturesHaveSameLanguages, false);
+      });
+    });
+
+    group('allFeaturesHaveSameDefaultLanguage', () {
+      test(
+          'returns true when all custom feature packages have same default language',
+          () {
+        // Arrange
+        final feature1 = _MockPlatformCustomFeaturePackage();
+        when(() => feature1.defaultLanguage()).thenReturn('fr');
+        final feature2 = _MockPlatformCustomFeaturePackage();
+        when(() => feature2.defaultLanguage()).thenReturn('fr');
+
+        customFeaturePackages = [feature1, feature2];
+        underTest = platformDirectory();
+
+        // Act
+        final allFeaturesHaveSameDefaultLanguage =
+            underTest.allFeaturesHaveSameDefaultLanguage();
+
+        // Assert
+        expect(allFeaturesHaveSameDefaultLanguage, true);
+      });
+
+      test(
+          'returns false when NOT all custom feature packages have same default language',
+          () {
+        // Arrange
+        final feature1 = _MockPlatformCustomFeaturePackage();
+        when(() => feature1.defaultLanguage()).thenReturn('en');
+        final feature2 = _MockPlatformCustomFeaturePackage();
+        when(() => feature2.defaultLanguage()).thenReturn('fr');
+
+        customFeaturePackages = [feature1, feature2];
+        underTest = platformDirectory();
+
+        // Act
+        final allFeaturesHaveSameDefaultLanguage =
+            underTest.allFeaturesHaveSameDefaultLanguage();
+
+        // Assert
+        expect(allFeaturesHaveSameDefaultLanguage, false);
+      });
+    });
+
+    group('customFeaturePackage', () {
+      test('returns a custom feature package with correct path', () {
+        // Arrange
+        final featureName = 'my_feat';
+        final path = p.join(
+          underTest.path,
+          '${projectName}_${platform.name}_$featureName',
+        );
+        Directory(path).createSync(recursive: true);
+
+        // Act
+        final customFeaturePackage =
+            underTest.customFeaturePackage(name: featureName);
+
+        // Assert
+        expect(customFeaturePackage.path, path);
+      });
+    });
+
+    group('customFeaturePackages', () {
       test('returns empty list when platform directory has no sub directories',
           () {
         // Act
-        final features = platformDirectory.getFeatures();
+        final features = underTest.customFeaturePackages();
 
         // Assert
         expect(features, isEmpty);
       });
 
       test(
-          'returns list with features when platform directory has sub directories',
+          'returns list with custom feature packages when platform directory has sub directories',
           () {
         // Arrange
-        const featureNames = ['my_feat_a', 'my_feat_b'];
-        for (final featureName in featureNames) {
+        const customFeaturePackageNames = ['my_feat_a', 'my_feat_b'];
+        for (final featureName in customFeaturePackageNames) {
           Directory(
             p.join(
-              platformDirectory.path,
+              underTest.path,
               '${projectName}_${platform.name}_$featureName',
             ),
           ).createSync(recursive: true);
         }
 
         // Act
-        final features = platformDirectory.getFeatures();
+        final customFeaturePackages = underTest.customFeaturePackages();
 
         // Assert
-        expect(features, hasLength(2));
+        expect(customFeaturePackages, hasLength(2));
         for (int i = 0; i < 2; i++) {
-          final feature = features[i];
-          expect(feature.entityName, featureNames[i]);
-          expect(feature.platform, platform);
+          final customFeaturePackage = customFeaturePackages[i];
+          expect(customFeaturePackage.name, customFeaturePackageNames[i]);
+          expect(customFeaturePackage.platform, platform);
           expect(
-            feature.path,
+            customFeaturePackage.path,
             p.join(
-              platformDirectory.path,
-              '${projectName}_${platform.name}_${featureNames[i]}',
+              underTest.path,
+              '${projectName}_${platform.name}_${customFeaturePackageNames[i]}',
             ),
           );
         }
       });
 
-      test('excludes features correctly', () {
+      test('ignores app and routing feature packages', () {
         // Arrange
-        const excludedFeature = 'my_feat_a';
-        const featureNames = [excludedFeature, 'my_feat_b'];
-        for (final featureName in featureNames) {
+        const customFeaturePackageNames = ['my_feat_a', 'my_feat_b'];
+        for (final featureName in customFeaturePackageNames) {
           Directory(
             p.join(
-              platformDirectory.path,
+              underTest.path,
               '${projectName}_${platform.name}_$featureName',
             ),
           ).createSync(recursive: true);
         }
+        Directory(
+          p.join(
+            underTest.path,
+            '${projectName}_${platform.name}_app',
+          ),
+        ).createSync(recursive: true);
+        Directory(
+          p.join(
+            underTest.path,
+            '${projectName}_${platform.name}_routing',
+          ),
+        ).createSync(recursive: true);
 
         // Act
-        final features =
-            platformDirectory.getFeatures(exclude: {excludedFeature});
+        final customFeaturePackages = underTest.customFeaturePackages();
 
         // Assert
-        expect(features, hasLength(1));
-
-        final feature = features.first;
-        expect(feature.entityName, featureNames.last);
-        expect(feature.platform, platform);
-        expect(
-          feature.path,
-          p.join(
-            platformDirectory.path,
-            '${projectName}_${platform.name}_${featureNames.last}',
-          ),
-        );
-      });
-    });
-
-    group('path', () {
-      test('is correct', () {
-        // Assert
-        expect(
-          platformDirectory.path,
-          'packages/$projectName/${projectName}_${platform.name}',
-        );
-      });
-    });
-
-    group('platform', () {
-      test('is correct', () {
-        // Assert
-        expect(platformDirectory.platform, platform);
-      });
-    });
-
-    group('project', () {
-      test('is correct', () {
-        // Assert
-        expect(platformDirectory.project, project);
+        expect(customFeaturePackages, hasLength(2));
+        for (int i = 0; i < 2; i++) {
+          final customFeaturePackage = customFeaturePackages[i];
+          expect(customFeaturePackage.name, customFeaturePackageNames[i]);
+          expect(customFeaturePackage.platform, platform);
+          expect(
+            customFeaturePackage.path,
+            p.join(
+              underTest.path,
+              '${projectName}_${platform.name}_${customFeaturePackageNames[i]}',
+            ),
+          );
+        }
       });
     });
   });

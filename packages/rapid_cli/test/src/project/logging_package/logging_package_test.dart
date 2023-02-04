@@ -1,3 +1,7 @@
+import 'package:test/test.dart';
+
 void main() {
-  // TODO
+  group('LoggingPackage', () {
+    // TODO
+  });
 }

@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 
 void main() {
-  group('UiPackage', () {
+  group('File', () {
     // TODO
   });
 }

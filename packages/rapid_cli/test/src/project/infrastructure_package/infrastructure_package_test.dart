@@ -1,9 +1,15 @@
 import 'package:test/test.dart';
 
 void main() {
-  group('InfrastructurePackage', () {});
+  group('InfrastructurePackage', () {
+    // TODO
+  });
 
-  group('DataTransferObject', () {});
+  group('DataTransferObject', () {
+    // TODO
+  });
 
-  group('ServiceImplementation', () {});
+  group('ServiceImplementation', () {
+    // TODO
+  });
 }

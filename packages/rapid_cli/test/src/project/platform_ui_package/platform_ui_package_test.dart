@@ -1,3 +1,11 @@
+import 'package:test/test.dart';
+
 void main() {
-  // TODO
+  group('PlatformUiPackage', () {
+    // TODO
+  });
+
+  group('Widget', () {
+    // TODO
+  });
 }

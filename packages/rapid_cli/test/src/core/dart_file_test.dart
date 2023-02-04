@@ -1,3 +1,5 @@
+import 'package:mason/mason.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -369,6 +371,8 @@ final someList = <dynamic>[
 ];
 ''';
 
+class _MockLogger extends Mock implements Logger {}
+
 void main() {
   group('DartFile', () {
     final cwd = Directory.current;
@@ -415,12 +419,18 @@ void main() {
     });
 
     group('delete', () {
+      late Logger logger;
+
+      setUp(() {
+        logger = _MockLogger();
+      });
+
       test('deletes the file', () {
         // Arrange
         final file = File(dartFile.path);
 
         // Act
-        dartFile.delete();
+        dartFile.delete(logger: logger);
 
         // Assert
         expect(file.existsSync(), false);

@@ -84,7 +84,7 @@ void Function() withRunnerOnProject(
     final logger = _MockLogger();
     final melosFile = _MockMelosFile();
     when(() => melosFile.exists()).thenReturn(true);
-    when(() => melosFile.name()).thenReturn('test_app');
+    when(() => melosFile.readName()).thenReturn('test_app');
     final project = _MockProject();
     when(() => project.exists()).thenReturn(true);
     when(() => project.platformIsActivated(any())).thenReturn(true);

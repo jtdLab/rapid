@@ -1,7 +1,12 @@
+import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:rapid_cli/src/core/environment.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/app_package/app_package.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/app_package/platform_native_directory/platform_native_directory.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -42,7 +47,7 @@ void main() => runOnPlatform(
 Future<void> runAndroidApp() async {
   configureDependencies(Environment.${env.shortName}, Platform.android);
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: add more android ${env.entityName} setup here
+  // TODO: add more android ${env.name} setup here
 
   final logger = getIt<AbCdLogger>();
   final app = android.App(
@@ -73,7 +78,7 @@ Future<void> runWebApp() async {
   configureDependencies(Environment.${env.shortName}, Platform.web);
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: add more web ${env.entityName} setup here
+  // TODO: add more web ${env.name} setup here
 
   final logger = getIt<AbCdLogger>();
   final app = web.App(
@@ -106,7 +111,7 @@ Future<void> runWebApp() async {
   configureDependencies(Environment.${env.shortName}, Platform.web);
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: add more web ${env.entityName} setup here
+  // TODO: add more web ${env.name} setup here
 
   final logger = getIt<AbCdLogger>();
   final app = web.App(
@@ -120,7 +125,7 @@ Future<void> runWebApp() async {
 Future<void> runAndroidApp() async {
   configureDependencies(Environment.${env.shortName}, Platform.android);
   WidgetsFlutterBinding.ensureInitialized();
-  // TODO: add more android ${env.entityName} setup here
+  // TODO: add more android ${env.name} setup here
 
   final logger = getIt<AbCdLogger>();
   final app = android.App(
@@ -132,9 +137,42 @@ Future<void> runAndroidApp() async {
 }
 ''';
 
-class _MockMelosFile extends Mock implements MelosFile {}
+abstract class _PlatformDirectoryBuilder {
+  PlatformDirectory call({required Platform platform});
+}
+
+abstract class _PlatformNativeDirectoryBuilder {
+  PlatformNativeDirectory call({required Platform platform});
+}
+
+class _MockLogger extends Mock implements Logger {}
 
 class _MockProject extends Mock implements Project {}
+
+class _MockPlatformDirectoryBuilder extends Mock
+    implements _PlatformDirectoryBuilder {}
+
+class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
+
+class _MockPlatformAppFeaturePackage extends Mock
+    implements PlatformAppFeaturePackage {}
+
+class _MockPubspecFile extends Mock implements PubspecFile {}
+
+class _MockPlatformNativeDirectoryBuilder extends Mock
+    implements _PlatformNativeDirectoryBuilder {}
+
+class _MockPlatformNativeDirectory extends Mock
+    implements PlatformNativeDirectory {}
+
+class _MockMainFile extends Mock implements MainFile {}
+
+class _MockMasonGenerator extends Mock implements MasonGenerator {}
+
+class _FakeLogger extends Fake implements Logger {}
+
+class _FakeDirectoryGeneratorTarget extends Fake
+    implements DirectoryGeneratorTarget {}
 
 class _MockAppPackage extends Mock implements AppPackage {}
 
@@ -142,134 +180,272 @@ void main() {
   group('AppPackage', () {
     final cwd = Directory.current;
 
-    const projectName = 'foo_bar';
-    late MelosFile melosFile;
     late Project project;
+    const projectPath = 'foo/bar';
+    const projectName = 'foo_bar';
+    late PlatformDirectoryBuilder platformDirectoryBuilder;
+    late PlatformDirectory platformDirectory;
+    late PlatformAppFeaturePackage appFeaturePackage;
+    const appFeaturePackagePackageName = 'my_app_feature';
+
+    late PubspecFile pubspecFile;
+    const appPackagePackageName = 'my_app_package';
+
+    late PlatformNativeDirectoryBuilder platformNativeDirectoryBuilder;
+    late PlatformNativeDirectory platformNativeDirectory;
+
+    late Set<MainFile> mainFiles;
+    late MainFile mainFile1;
+    late MainFile mainFile2;
+
+    late MasonGenerator generator;
+    final generatedFiles = List.filled(
+      23,
+      const GeneratedFile.created(path: ''),
+    );
+
     late AppPackage appPackage;
+
+    setUpAll(() {
+      registerFallbackValue(_FakeLogger());
+      registerFallbackValue(_FakeDirectoryGeneratorTarget());
+      registerFallbackValue(Platform.android);
+    });
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      melosFile = _MockMelosFile();
-      when(() => melosFile.name()).thenReturn(projectName);
       project = _MockProject();
-      when(() => project.melosFile).thenReturn(melosFile);
-      appPackage = AppPackage(project: project);
-      Directory(appPackage.path).createSync(recursive: true);
+      platformDirectoryBuilder = _MockPlatformDirectoryBuilder();
+      platformDirectory = _MockPlatformDirectory();
+      appFeaturePackage = _MockPlatformAppFeaturePackage();
+      when(() => appFeaturePackage.packageName())
+          .thenReturn(appFeaturePackagePackageName);
+      when(() => platformDirectory.appFeaturePackage)
+          .thenReturn(appFeaturePackage);
+      when(() => platformDirectoryBuilder(platform: any(named: 'platform')))
+          .thenReturn(platformDirectory);
+
+      when(() => project.path).thenReturn(projectPath);
+      when(() => project.name()).thenReturn(projectName);
+      when(() => project.platformDirectory)
+          .thenReturn(platformDirectoryBuilder);
+
+      pubspecFile = _MockPubspecFile();
+      when(() => pubspecFile.name).thenReturn(appPackagePackageName);
+
+      platformNativeDirectoryBuilder = _MockPlatformNativeDirectoryBuilder();
+      platformNativeDirectory = _MockPlatformNativeDirectory();
+      when(
+        () => platformNativeDirectory.create(
+          description: any(named: 'description'),
+          orgName: any(named: 'orgName'),
+          logger: any(named: 'logger'),
+        ),
+      ).thenAnswer((_) async {});
+      when(
+        () => platformNativeDirectoryBuilder(platform: any(named: 'platform')),
+      ).thenReturn(platformNativeDirectory);
+
+      mainFile1 = _MockMainFile();
+      mainFile2 = _MockMainFile();
+      mainFiles = {mainFile1, mainFile2};
+
+      generator = _MockMasonGenerator();
+      when(() => generator.id).thenReturn('generator_id');
+      when(() => generator.description).thenReturn('generator description');
+      when(
+        () => generator.generate(
+          any(),
+          vars: any(named: 'vars'),
+          logger: any(named: 'logger'),
+        ),
+      ).thenAnswer((_) async => generatedFiles);
+
+      appPackage = AppPackage(
+        project: project,
+        pubspecFile: pubspecFile,
+        platformNativeDirectory: platformNativeDirectoryBuilder,
+        mainFiles: mainFiles,
+        generator: (_) async => generator,
+      );
     });
 
     tearDown(() {
       Directory.current = cwd;
     });
 
-    group('mainFiles', () {
-      test(
-          'returns correct three main files with env development, test and production',
-          () {
-        // Act
-        final mainFiles = appPackage.mainFiles;
-
-        // Assert
-        expect(mainFiles, hasLength(3));
-        final mainFileDev = mainFiles.first;
-        expect(mainFileDev.env, Environment.development);
-        expect(mainFileDev.path,
-            'packages/$projectName/$projectName/lib/main_development.dart');
-        final mainFileTest = mainFiles.elementAt(1);
-        expect(mainFileTest.env, Environment.test);
-        expect(mainFileTest.path,
-            'packages/$projectName/$projectName/lib/main_test.dart');
-        final mainFileProd = mainFiles.last;
-        expect(mainFileProd.env, Environment.production);
-        expect(mainFileProd.path,
-            'packages/$projectName/$projectName/lib/main_production.dart');
-      });
-    });
-
     group('path', () {
       test('is correct', () {
         // Assert
-        expect(appPackage.path, 'packages/$projectName/$projectName');
+        expect(
+          appPackage.path,
+          '$projectPath/packages/$projectName/$projectName',
+        );
       });
     });
 
-    group('platformDirectory', () {
+    group('create', () {
+      late String description;
+      late String orgName;
+      late bool android;
+      late bool ios;
+      late bool linux;
+      late bool macos;
+      late bool web;
+      late bool windows;
+      late Logger logger;
+
+      setUp(() {
+        description = 'some desc';
+        orgName = 'com.ex.org';
+        android = true;
+        ios = false;
+        linux = true;
+        macos = false;
+        web = false;
+        windows = true;
+        logger = _MockLogger();
+      });
+
+      test('completes successfully with correct output', () async {
+        // Act
+        await appPackage.create(
+          description: description,
+          orgName: orgName,
+          android: android,
+          ios: ios,
+          linux: linux,
+          macos: macos,
+          web: web,
+          windows: windows,
+          logger: logger,
+        );
+
+        // Assert
+        verify(
+          () => generator.generate(
+            any(
+              that: isA<DirectoryGeneratorTarget>().having(
+                (g) => g.dir.path,
+                'dir',
+                '$projectPath/packages/$projectName/$projectName',
+              ),
+            ),
+            vars: <String, dynamic>{
+              'project_name': projectName,
+              'description': description,
+              'android': android,
+              'ios': ios,
+              'linux': linux,
+              'macos': macos,
+              'web': web,
+              'windows': windows,
+              'none': false,
+            },
+            logger: logger,
+          ),
+        ).called(1);
+        verify(() => platformNativeDirectoryBuilder(platform: Platform.android))
+            .called(1);
+        verify(() => platformNativeDirectoryBuilder(platform: Platform.linux))
+            .called(1);
+        verify(() => platformNativeDirectoryBuilder(platform: Platform.windows))
+            .called(1);
+        verifyNever(
+            () => platformNativeDirectoryBuilder(platform: Platform.ios));
+        verifyNever(
+            () => platformNativeDirectoryBuilder(platform: Platform.macos));
+        verifyNever(
+            () => platformNativeDirectoryBuilder(platform: Platform.web));
+        verify(
+          () => platformNativeDirectory.create(
+            description: description,
+            orgName: orgName,
+            logger: logger,
+          ),
+        ).called(3);
+        verifyNever(
+          () => platformNativeDirectory.create(
+            description: description,
+            orgName: orgName,
+            logger: logger,
+          ),
+        );
+      });
+    });
+
+    group('addPlatform', () {
       late Platform platform;
+      late String? description;
+      late String? orgName;
+      late Logger logger;
 
-      test('returns directory with correct path (android)', () {
-        // Arrange
+      setUp(() {
         platform = Platform.android;
-
-        // Assert
-        expect(
-          appPackage.platformDirectory(platform).path,
-          'packages/$projectName/$projectName/android',
-        );
+        description = 'some desc';
+        orgName = 'com.ex.org';
+        logger = _MockLogger();
       });
 
-      test('returns directory with correct path (ios)', () {
-        // Arrange
-        platform = Platform.ios;
+      test('completes successfully with correct output', () async {
+        // Act
+        await appPackage.addPlatform(
+          platform,
+          description: description,
+          orgName: orgName,
+          logger: logger,
+        );
 
         // Assert
-        expect(
-          appPackage.platformDirectory(platform).path,
-          'packages/$projectName/$projectName/ios',
-        );
-      });
-
-      test('returns directory with correct path (linux)', () {
-        // Arrange
-        platform = Platform.linux;
-
-        // Assert
-        expect(
-          appPackage.platformDirectory(platform).path,
-          'packages/$projectName/$projectName/linux',
-        );
-      });
-
-      test('returns directory with correct path (macos)', () {
-        // Arrange
-        platform = Platform.macos;
-
-        // Assert
-        expect(
-          appPackage.platformDirectory(platform).path,
-          'packages/$projectName/$projectName/macos',
-        );
-      });
-
-      test('returns directory with correct path (web)', () {
-        // Arrange
-        platform = Platform.web;
-
-        // Assert
-        expect(
-          appPackage.platformDirectory(platform).path,
-          'packages/$projectName/$projectName/web',
-        );
-      });
-
-      test('returns directory with correct path (windows)', () {
-        // Arrange
-        platform = Platform.windows;
-
-        // Assert
-        expect(
-          appPackage.platformDirectory(platform).path,
-          'packages/$projectName/$projectName/windows',
-        );
+        verify(() => project.platformDirectory(platform: platform)).called(1);
+        verify(() => pubspecFile.setDependency(appFeaturePackagePackageName))
+            .called(1);
+        verify(() => platformNativeDirectoryBuilder(platform: platform))
+            .called(1);
+        verify(
+          () => platformNativeDirectory.create(
+            description: description,
+            orgName: orgName,
+            logger: logger,
+          ),
+        ).called(1);
+        verify(() => mainFile1.addSetupForPlatform(platform)).called(1);
+        verify(() => mainFile2.addSetupForPlatform(platform)).called(1);
+        // TODO assert logging
       });
     });
 
-    group('testDriverDirectory', () {
-      test('returns directory with correct path', () {
-        // Assert
-        expect(
-          appPackage.testDriverDirectory().path,
-          'packages/$projectName/$projectName/test_driver',
+    group('removePlatform', () {
+      late Platform platform;
+      late Logger logger;
+
+      setUp(() {
+        platform = Platform.android;
+        logger = _MockLogger();
+      });
+
+      test('completes successfully with correct output', () async {
+        // Act
+        await appPackage.removePlatform(
+          platform,
+          logger: logger,
         );
+
+        // Assert
+        verify(() => project.platformDirectory(platform: platform)).called(1);
+        verify(() => pubspecFile.removeDependency(appFeaturePackagePackageName))
+            .called(1);
+        verify(() => platformNativeDirectoryBuilder(platform: platform))
+            .called(1);
+        verify(
+          () => platformNativeDirectory.delete(
+            logger: logger,
+          ),
+        ).called(1);
+        verify(() => mainFile1.removeSetupForPlatform(platform)).called(1);
+        verify(() => mainFile2.removeSetupForPlatform(platform)).called(1);
+        // TODO assert logging
       });
     });
   });
@@ -277,26 +453,31 @@ void main() {
   group('MainFile', () {
     final cwd = Directory.current;
 
-    const projectName = 'ab_cd';
-    late MelosFile melosFile;
-    late Project project;
-    const appPackagePath = 'foo/bar/baz';
-    late AppPackage appPackage;
     late Environment environment;
+
+    late AppPackage appPackage;
+    const appPackagePath = 'foo/bar/baz';
+    late Project project;
+    const projectName = 'ab_cd';
+
     late MainFile mainFile;
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      melosFile = _MockMelosFile();
-      when(() => melosFile.name()).thenReturn(projectName);
-      project = _MockProject();
-      when(() => project.melosFile).thenReturn(melosFile);
+      environment = Environment.development;
+
       appPackage = _MockAppPackage();
+      project = _MockProject();
+      when(() => project.name()).thenReturn(projectName);
       when(() => appPackage.path).thenReturn(appPackagePath);
       when(() => appPackage.project).thenReturn(project);
-      environment = Environment.development;
-      mainFile = MainFile(environment, appPackage: appPackage);
+
+      mainFile = MainFile(
+        environment,
+        appPackage: appPackage,
+      );
+
       File(mainFile.path).createSync(recursive: true);
     });
 
@@ -309,7 +490,7 @@ void main() {
         // Assert
         expect(
           mainFile.path,
-          '$appPackagePath/lib/main_${environment.entityName}.dart',
+          '$appPackagePath/lib/main_${environment.name}.dart',
         );
       });
     });

@@ -1,7 +1,8 @@
+import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/project/di_package/di_package.dart';
-import 'package:rapid_cli/src/project/melos_file.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
@@ -78,62 +79,209 @@ void configureDependencies(String environment, String platform) => getIt.init(
     );
 ''';
 
-class _MockMelosFile extends Mock implements MelosFile {}
-
 class _MockProject extends Mock implements Project {}
+
+class _MockPubspecFile extends Mock implements PubspecFile {}
+
+class _MockInjectionFile extends Mock implements InjectionFile {}
+
+class _MockMasonGenerator extends Mock implements MasonGenerator {}
+
+class _MockLogger extends Mock implements Logger {}
+
+class _MockPlatformCustomFeaturePackage extends Mock
+    implements PlatformCustomFeaturePackage {}
 
 class _MockDiPackage extends Mock implements DiPackage {}
 
+class _FakeDirectoryGeneratorTarget extends Fake
+    implements DirectoryGeneratorTarget {}
+
 void main() {
   group('DiPackage', () {
-    final cwd = Directory.current;
-
-    const projectName = 'foo_bar';
-    late MelosFile melosFile;
     late Project project;
+    const projectName = 'foo_bar';
+    const projectPath = 'foo/bar';
+
+    late PubspecFile pubspecFile;
+
+    late InjectionFile injectionFile;
+
+    late MasonGenerator generator;
+    final generatedFiles = List.filled(
+      23,
+      const GeneratedFile.created(path: ''),
+    );
+
     late DiPackage diPackage;
 
+    setUpAll(() {
+      registerFallbackValue(_FakeDirectoryGeneratorTarget());
+    });
+
     setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync();
-
-      melosFile = _MockMelosFile();
-      when(() => melosFile.name()).thenReturn(projectName);
       project = _MockProject();
-      when(() => project.melosFile).thenReturn(melosFile);
-      diPackage = DiPackage(project: project);
+      when(() => project.name()).thenReturn(projectName);
+      when(() => project.path).thenReturn(projectPath);
+
+      pubspecFile = _MockPubspecFile();
+
+      injectionFile = _MockInjectionFile();
+
+      generator = _MockMasonGenerator();
+      when(() => generator.id).thenReturn('generator_id');
+      when(() => generator.description).thenReturn('generator description');
+      when(
+        () => generator.generate(
+          any(),
+          vars: any(named: 'vars'),
+          logger: any(named: 'logger'),
+        ),
+      ).thenAnswer((_) async => generatedFiles);
+
+      diPackage = DiPackage(
+        project: project,
+        pubspecFile: pubspecFile,
+        injectionFile: injectionFile,
+        generator: (_) async => generator,
+      );
+
       Directory(diPackage.path).createSync(recursive: true);
-    });
-
-    tearDown(() {
-      Directory.current = cwd;
-    });
-
-    group('injectionFile', () {
-      test('returns correct injection file', () {
-        // Act
-        final injectionFile = diPackage.injectionFile;
-
-        // Assert
-        expect(injectionFile.path,
-            'packages/$projectName/${projectName}_di/lib/src/injection.dart');
-      });
     });
 
     group('path', () {
       test('is correct', () {
         // Assert
-        expect(diPackage.path, 'packages/$projectName/${projectName}_di');
+        expect(
+          diPackage.path,
+          '$projectPath/packages/$projectName/${projectName}_di',
+        );
       });
     });
 
-    group('pubspecFile', () {
-      test('returns correct pubspec file', () {
+    group('create', () {
+      late bool android;
+      late bool ios;
+      late bool linux;
+      late bool macos;
+      late bool web;
+      late bool windows;
+      late Logger logger;
+
+      setUp(() {
+        android = true;
+        ios = false;
+        linux = true;
+        macos = false;
+        web = false;
+        windows = true;
+        logger = _MockLogger();
+      });
+
+      test('completes successfully with correct output', () async {
         // Act
-        final pubspecFile = diPackage.pubspecFile;
+        await diPackage.create(
+          android: android,
+          ios: ios,
+          linux: linux,
+          macos: macos,
+          web: web,
+          windows: windows,
+          logger: logger,
+        );
 
         // Assert
-        expect(pubspecFile.path,
-            'packages/$projectName/${projectName}_di/pubspec.yaml');
+        verify(
+          () => generator.generate(
+            any(
+              that: isA<DirectoryGeneratorTarget>().having(
+                (g) => g.dir.path,
+                'dir',
+                '$projectPath/packages/$projectName/${projectName}_di',
+              ),
+            ),
+            vars: <String, dynamic>{
+              'project_name': projectName,
+              'android': android,
+              'ios': ios,
+              'linux': linux,
+              'macos': macos,
+              'web': web,
+              'windows': windows,
+            },
+            logger: logger,
+          ),
+        ).called(1);
+      });
+    });
+
+    group('registerCustomFeaturePackage', () {
+      late PlatformCustomFeaturePackage customFeaturePackage;
+      const customFeaturePackageName = 'my_feature';
+      late Logger logger;
+
+      setUp(() {
+        customFeaturePackage = _MockPlatformCustomFeaturePackage();
+        when(() => customFeaturePackage.packageName())
+            .thenReturn(customFeaturePackageName);
+        logger = _MockLogger();
+      });
+
+      test('completes successfully with correct output', () async {
+        // Act
+        await diPackage.registerCustomFeaturePackage(
+          customFeaturePackage,
+          logger: logger,
+        );
+
+        // Assert
+        verify(() => pubspecFile.setDependency(customFeaturePackageName));
+        verify(
+          () => injectionFile.addCustomFeaturePackage(customFeaturePackage),
+        );
+      });
+    });
+
+    group('unregisterCustomFeaturePackage', () {
+      late List<PlatformCustomFeaturePackage> customFeaturePackages;
+      late PlatformCustomFeaturePackage customFeaturePackage1;
+      const customFeaturePackageName1 = 'my_feature1';
+      late PlatformCustomFeaturePackage customFeaturePackage2;
+      const customFeaturePackageName2 = 'my_feature2';
+
+      late Logger logger;
+
+      setUp(() {
+        customFeaturePackage1 = _MockPlatformCustomFeaturePackage();
+        when(() => customFeaturePackage1.packageName())
+            .thenReturn(customFeaturePackageName1);
+        customFeaturePackage2 = _MockPlatformCustomFeaturePackage();
+        when(() => customFeaturePackage2.packageName())
+            .thenReturn(customFeaturePackageName2);
+        customFeaturePackages = [
+          customFeaturePackage1,
+          customFeaturePackage2,
+        ];
+
+        logger = _MockLogger();
+      });
+
+      test('completes successfully with correct output', () async {
+        // Act
+        await diPackage.unregisterCustomFeaturePackages(
+          customFeaturePackages,
+          logger: logger,
+        );
+
+        // Assert
+        verify(() => pubspecFile.removeDependency(customFeaturePackageName1));
+        verify(
+          () => injectionFile.removeCustomFeaturePackage(customFeaturePackage1),
+        );
+        verify(() => pubspecFile.removeDependency(customFeaturePackageName2));
+        verify(
+          () => injectionFile.removeCustomFeaturePackage(customFeaturePackage2),
+        );
       });
     });
   });
@@ -141,24 +289,19 @@ void main() {
   group('InjectionFile', () {
     final cwd = Directory.current;
 
-    const projectName = 'kuk_abc';
-    late MelosFile melosFile;
-    late Project project;
-    const diPackagePath = 'foo/bar/baz';
     late DiPackage diPackage;
+    const diPackagePath = 'foo/bar/baz';
+
     late InjectionFile injectionFile;
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      melosFile = _MockMelosFile();
-      when(() => melosFile.name()).thenReturn(projectName);
-      project = _MockProject();
-      when(() => project.melosFile).thenReturn(melosFile);
       diPackage = _MockDiPackage();
       when(() => diPackage.path).thenReturn(diPackagePath);
-      when(() => diPackage.project).thenReturn(project);
+
       injectionFile = InjectionFile(diPackage: diPackage);
+
       File(injectionFile.path).createSync(recursive: true);
     });
 
@@ -176,14 +319,24 @@ void main() {
       });
     });
 
-    group('addPackage', () {
+    group('addCustomFeaturePackage', () {
+      late PlatformCustomFeaturePackage customFeaturePackage;
+      late String customFeaturePackageName;
+
+      setUp(() {
+        customFeaturePackage = _MockPlatformCustomFeaturePackage();
+      });
+
       test('add import and external package module correctly', () {
         // Arrange
+        customFeaturePackageName = 'kuk_abc_android_home_page';
+        when(() => customFeaturePackage.packageName())
+            .thenReturn(customFeaturePackageName);
         final file = File(injectionFile.path);
         file.writeAsStringSync(injectionFileWithInitialPackages);
 
         // Act
-        injectionFile.addPackage('kuk_abc_android_home_page');
+        injectionFile.addCustomFeaturePackage(customFeaturePackage);
 
         // Assert
         final contents = file.readAsStringSync();
@@ -191,14 +344,18 @@ void main() {
       });
 
       test(
-          'add import and external package module correctly when packages exist',
+          'add import and external package module correctly when package does not exists',
           () {
         // Arrange
+        customFeaturePackageName = 'kuk_abc_web_my_page';
+        when(() => customFeaturePackage.packageName())
+            .thenReturn(customFeaturePackageName);
+
         final file = File(injectionFile.path);
         file.writeAsStringSync(injectionFileWithPackages);
 
         // Act
-        injectionFile.addPackage('kuk_abc_web_my_page');
+        injectionFile.addCustomFeaturePackage(customFeaturePackage);
 
         // Assert
         final contents = file.readAsStringSync();
@@ -207,11 +364,15 @@ void main() {
 
       test('does nothing when package already exists', () {
         // Arrange
+        customFeaturePackageName = 'kuk_abc_web_my_page';
+        when(() => customFeaturePackage.packageName())
+            .thenReturn(customFeaturePackageName);
+
         final file = File(injectionFile.path);
         file.writeAsStringSync(injectionFileWithMorePackages);
 
         // Act
-        injectionFile.addPackage('kuk_abc_web_my_page');
+        injectionFile.addCustomFeaturePackage(customFeaturePackage);
 
         // Assert
         final contents = file.readAsStringSync();
@@ -219,14 +380,25 @@ void main() {
       });
     });
 
-    group('removePackagesByPlatform', () {
+    group('removeCustomFeaturePackage', () {
+      late PlatformCustomFeaturePackage customFeaturePackage;
+      late String customFeaturePackageName;
+
+      setUp(() {
+        customFeaturePackage = _MockPlatformCustomFeaturePackage();
+      });
+
       test('remove import and external package module correctly', () {
         // Arrange
+        customFeaturePackageName = 'kuk_abc_android_home_page';
+        when(() => customFeaturePackage.packageName())
+            .thenReturn(customFeaturePackageName);
+
         final file = File(injectionFile.path);
         file.writeAsStringSync(injectionFileWithPackages);
 
         // Act
-        injectionFile.removePackagesByPlatform(Platform.android);
+        injectionFile.removeCustomFeaturePackage(customFeaturePackage);
 
         // Assert
         final contents = file.readAsStringSync();
@@ -237,28 +409,36 @@ void main() {
           'remove import and external package module correctly when packages exist',
           () {
         // Arrange
+        customFeaturePackageName = 'kuk_abc_web_my_page';
+        when(() => customFeaturePackage.packageName())
+            .thenReturn(customFeaturePackageName);
+
         final file = File(injectionFile.path);
         file.writeAsStringSync(injectionFileWithMorePackages);
 
         // Act
-        injectionFile.removePackagesByPlatform(Platform.web);
+        injectionFile.removeCustomFeaturePackage(customFeaturePackage);
 
         // Assert
         final contents = file.readAsStringSync();
         expect(contents, injectionFileWithPackages);
       });
 
-      test('does nothing when package already exists', () {
+      test('does nothing when package does not exist', () {
         // Arrange
+        customFeaturePackageName = 'kuk_abc_web_my_page';
+        when(() => customFeaturePackage.packageName())
+            .thenReturn(customFeaturePackageName);
+
         final file = File(injectionFile.path);
-        file.writeAsStringSync(injectionFileWithInitialPackages);
+        file.writeAsStringSync(injectionFileWithPackages);
 
         // Act
-        injectionFile.removePackagesByPlatform(Platform.web);
+        injectionFile.removeCustomFeaturePackage(customFeaturePackage);
 
         // Assert
         final contents = file.readAsStringSync();
-        expect(contents, injectionFileWithInitialPackages);
+        expect(contents, injectionFileWithPackages);
       });
     });
   });

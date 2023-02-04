@@ -1,11 +1,14 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:rapid_cli/src/core/directory.dart';
+import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/project/infrastructure_package/data_transfer_object_bundle.dart';
 import 'package:rapid_cli/src/project/infrastructure_package/service_implementation_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:universal_io/io.dart';
+import 'package:universal_io/io.dart' as io;
 
 import 'infrastructure_package_bundle.dart';
 
@@ -14,23 +17,23 @@ import 'infrastructure_package_bundle.dart';
 ///
 /// Location: `packages/<project name>/<project name>_infrastructure`
 /// {@endtemplate}
-class InfrastructurePackage extends ProjectPackage {
+class InfrastructurePackage extends DartPackage {
   /// {@macro infrastructure_package}
   InfrastructurePackage({
     required this.project,
     GeneratorBuilder? generator,
-  }) : _generator = generator ?? MasonGenerator.fromBundle;
+  })  : _generator = generator ?? MasonGenerator.fromBundle,
+        super(
+          path: p.join(
+            project.path,
+            'packages',
+            project.name(),
+            '${project.name()}_infrastructure',
+          ),
+        );
 
   final Project project;
   final GeneratorBuilder _generator;
-
-  @override
-  String get path => p.join(
-        project.path,
-        'packages',
-        project.name(),
-        '${project.name()}_infrastructure',
-      );
 
   Future<void> create({
     required Logger logger,
@@ -39,7 +42,7 @@ class InfrastructurePackage extends ProjectPackage {
 
     final generator = await _generator(infrastructurePackageBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(path)),
+      DirectoryGeneratorTarget(io.Directory(path)),
       vars: <String, dynamic>{
         'project_name': projectName,
       },
@@ -73,7 +76,7 @@ class InfrastructurePackage extends ProjectPackage {
 /// {@template data_transfer_object}
 /// Abstraction of a data transfer object of a infrastructure package of a Rapid project.
 /// {@endtemplate}
-class DataTransferObject {
+class DataTransferObject extends FileSystemEntityCollection {
   /// {@macro data_transfer_object}
   DataTransferObject({
     required this.entityName,
@@ -81,40 +84,35 @@ class DataTransferObject {
     required this.infrastructurePackage,
     DartFormatFixCommand? dartFormatFix, // TODO needed ?
     GeneratorBuilder? generator,
-  })  : _dataTransferObjectDirectory = Directory(
-          p.join(
-            infrastructurePackage.path,
-            'lib',
-            'src',
-            dir,
-            entityName.snakeCase,
+  })  : _dartFormatFix = dartFormatFix ?? Dart.formatFix,
+        _generator = generator ?? MasonGenerator.fromBundle,
+        super([
+          Directory(
+            path: p.join(
+              infrastructurePackage.path,
+              'lib',
+              'src',
+              dir,
+              entityName.snakeCase,
+            ),
           ),
-        ),
-        _dataTransferObjectTestDirectory = Directory(
-          p.join(
-            infrastructurePackage.path,
-            'test',
-            'src',
-            dir,
-            entityName.snakeCase,
+          Directory(
+            path: p.join(
+              infrastructurePackage.path,
+              'test',
+              'src',
+              dir,
+              entityName.snakeCase,
+            ),
           ),
-        ),
-        _dartFormatFix = dartFormatFix ?? Dart.formatFix,
-        _generator = generator ?? MasonGenerator.fromBundle;
+        ]);
 
-  final Directory _dataTransferObjectDirectory;
-  final Directory _dataTransferObjectTestDirectory;
   final DartFormatFixCommand _dartFormatFix;
   final GeneratorBuilder _generator;
 
   final String entityName;
   final String dir;
   final InfrastructurePackage infrastructurePackage;
-
-  bool exists() {
-    return _dataTransferObjectDirectory.existsSync() ||
-        _dataTransferObjectTestDirectory.existsSync();
-  }
 
   Future<void> create({
     required Logger logger,
@@ -123,7 +121,7 @@ class DataTransferObject {
 
     final generator = await _generator(dataTransferObjectBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(infrastructurePackage.path)),
+      DirectoryGeneratorTarget(io.Directory(infrastructurePackage.path)),
       vars: <String, dynamic>{
         'project_name': projectName,
         'entity_name': entityName,
@@ -134,28 +132,12 @@ class DataTransferObject {
 
     await _dartFormatFix(cwd: infrastructurePackage.path, logger: logger);
   }
-
-  // TODO logger ?
-  void delete() {
-    _dataTransferObjectDirectory.deleteSync(recursive: true);
-    _dataTransferObjectTestDirectory.deleteSync(recursive: true);
-
-    final directoryParent = _dataTransferObjectDirectory.parent;
-    if (directoryParent.listSync().isEmpty) {
-      directoryParent.deleteSync();
-    }
-
-    final testDirectoryParent = _dataTransferObjectTestDirectory.parent;
-    if (testDirectoryParent.listSync().isEmpty) {
-      testDirectoryParent.deleteSync();
-    }
-  }
 }
 
 /// {@template service_implementation}
 /// Abstraction of a service implementation of a infrastructure package of a Rapid project.
 /// {@endtemplate}
-class ServiceImplementation {
+class ServiceImplementation extends FileSystemEntityCollection {
   /// {@macro service_implementation}
   ServiceImplementation({
     required this.name,
@@ -164,29 +146,29 @@ class ServiceImplementation {
     required this.infrastructurePackage,
     DartFormatFixCommand? dartFormatFix,
     GeneratorBuilder? generator,
-  })  : _serviceImplementationDirectory = Directory(
-          p.join(
-            infrastructurePackage.path,
-            'lib',
-            'src',
-            dir,
-            serviceName.snakeCase,
+  })  : _dartFormatFix = dartFormatFix ?? Dart.formatFix,
+        _generator = generator ?? MasonGenerator.fromBundle,
+        super([
+          Directory(
+            path: p.join(
+              infrastructurePackage.path,
+              'lib',
+              'src',
+              dir,
+              serviceName.snakeCase,
+            ),
           ),
-        ),
-        _serviceImplementationTestDirectory = Directory(
-          p.join(
-            infrastructurePackage.path,
-            'test',
-            'src',
-            dir,
-            serviceName.snakeCase,
+          Directory(
+            path: p.join(
+              infrastructurePackage.path,
+              'test',
+              'src',
+              dir,
+              serviceName.snakeCase,
+            ),
           ),
-        ),
-        _dartFormatFix = dartFormatFix ?? Dart.formatFix,
-        _generator = generator ?? MasonGenerator.fromBundle;
+        ]);
 
-  final Directory _serviceImplementationDirectory;
-  final Directory _serviceImplementationTestDirectory;
   final DartFormatFixCommand _dartFormatFix;
   final GeneratorBuilder _generator;
 
@@ -195,10 +177,6 @@ class ServiceImplementation {
   final String dir;
   final InfrastructurePackage infrastructurePackage;
 
-  bool exists() =>
-      _serviceImplementationDirectory.existsSync() ||
-      _serviceImplementationTestDirectory.existsSync();
-
   Future<void> create({
     required Logger logger,
   }) async {
@@ -206,7 +184,7 @@ class ServiceImplementation {
 
     final generator = await _generator(serviceImplementationBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(Directory(infrastructurePackage.path)),
+      DirectoryGeneratorTarget(io.Directory(infrastructurePackage.path)),
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
@@ -217,31 +195,5 @@ class ServiceImplementation {
     );
 
     await _dartFormatFix(cwd: infrastructurePackage.path, logger: logger);
-  }
-
-  // TODO logger ?
-  void delete() {
-    /// final deletedFiles = entity.delete();
-    ///
-    ///           for (final file in deletedFiles) {
-    ///             _logger.info(file.path);
-    ///           }
-    ///
-    ///           _logger.info('');
-    ///           _logger.info('Deleted ${deletedFiles.length} item(s)');
-    ///           _logger.info('');
-    ///           _logger.success('Removed Entity $name.');
-    _serviceImplementationDirectory.deleteSync(recursive: true);
-    _serviceImplementationTestDirectory.deleteSync(recursive: true);
-
-    final directoryParent = _serviceImplementationDirectory.parent;
-    if (directoryParent.listSync().isEmpty) {
-      directoryParent.deleteSync();
-    }
-
-    final testDirectoryParent = _serviceImplementationTestDirectory.parent;
-    if (testDirectoryParent.listSync().isEmpty) {
-      testDirectoryParent.deleteSync();
-    }
   }
 }

@@ -1,61 +1,52 @@
-import 'package:path/path.dart' as p;
-import 'package:universal_io/io.dart';
 import 'package:yaml/yaml.dart';
 
+import 'directory.dart';
 import 'yaml_file.dart';
-
-/// Thrown when [PubspecFile.name] fails to read the `name` property.
-class ReadNameFailure implements Exception {}
 
 /// {@template dart_package}
 /// Abstraction of a dart package.
 /// {@endtemplate}
-class DartPackage {
+class DartPackage extends Directory {
   /// {@macro dart_package}
-  DartPackage({String path = '.'}) : _directory = Directory(p.normalize(path));
+  DartPackage({
+    super.path,
+    PubspecFile? pubspecFile,
+  }) : _pubspecFile = pubspecFile;
 
-  /// The underlying directory.
-  final Directory _directory;
+  final PubspecFile? _pubspecFile;
 
-  void delete() => _directory.deleteSync(recursive: true);
+  /// The pubspec file of the dart package.
+  late final PubspecFile pubspecFile = _pubspecFile ?? PubspecFile(path: path);
 
-  bool exists() => _directory.existsSync();
-
-  String get path => _directory.path;
-
-  /// The pubspec file of this dart package.
-  late final PubspecFile pubspecFile = PubspecFile(path: path);
+  /// The name of the dart package.
+  String packageName() => pubspecFile.readName();
 }
+
+/// Thrown when [PubspecFile.readName] fails to read the `name` property.
+class ReadNameFailure implements Exception {}
 
 /// {@template pubspec_file}
 /// Abstraction of the pubspec file of a dart package.
 /// {@endtemplate}
-class PubspecFile {
+class PubspecFile extends YamlFile {
   /// {@macro pubspec_file}
-  PubspecFile({String path = '.'})
-      : _file = YamlFile(path: path, name: 'pubspec');
+  PubspecFile({super.path}) : super(name: 'pubspec');
 
-  /// The underlying yaml file.
-  final YamlFile _file;
-
-  String get path => _file.path;
-
-  /// The `name` property.
-  String name() {
+  /// The `name` property of the pubspec file.
+  String readName() {
     try {
-      return _file.readValue(['name']);
+      return readValue(['name']);
     } catch (_) {
       throw ReadNameFailure();
     }
   }
 
-  /// Removes dependency with [name].
-  void removeDependency(String name) =>
-      _file.removeValue(['dependencies', name]);
+  /// Removes dependency with [name] from the pubspec file.
+  void removeDependency(String name) => removeValue(['dependencies', name]);
 
-  /// Removes dependencies that match [pattern].
+  /// Removes dependencies that match [pattern] from the pubspec file.
   void removeDependencyByPattern(String pattern) {
-    final dependencies = _file.readValue(['dependencies']);
+    final dependencies = readValue(['dependencies']);
 
     for (final dependency in (dependencies as YamlMap)
         .entries
@@ -65,7 +56,7 @@ class PubspecFile {
     }
   }
 
-  /// Adds dependency with [name] and an optional [version].
+  /// Adds dependency with [name] and an optional [version] to the pubspec file.
   ///
   /// If dependency with [name] already exists its version is set to [version].
   ///
@@ -76,5 +67,5 @@ class PubspecFile {
   ///   my_dependency:
   /// ```
   void setDependency(String name, {String? version}) =>
-      _file.setValue(['dependencies', name], version, blankIfValueNull: true);
+      setValue(['dependencies', name], version, blankIfValueNull: true);
 }

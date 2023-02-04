@@ -1,7 +1,10 @@
-import 'package:path/path.dart' as p;
-import 'package:universal_io/io.dart';
+import 'package:meta/meta.dart';
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
+
+import 'file.dart';
+
+// TODO make methods protected or move all yaml files into same library
 
 /// Thrown when [YamlFile.removeValue] is called with [path] that does not reference a value.
 class InvalidPath implements Exception {}
@@ -9,33 +12,20 @@ class InvalidPath implements Exception {}
 /// {@template yaml_file}
 /// Abstraction of a yaml file.
 /// {@endtemplate}
-class YamlFile {
+class YamlFile extends File {
   /// {@macro yaml_file}
   YamlFile({
-    String path = '.',
-    required String name,
-  }) : _file = File(p.normalize(p.join(path, '$name.yaml')));
-
-  /// The underlying file
-  final File _file;
-
-  /// Reads the contents of the underlying file.
-  String _read() => _file.readAsStringSync();
-
-  /// Writes [contents] to the underlying file.
-  void _write(String contents) =>
-      _file.writeAsStringSync(contents, flush: true);
-
-  String get path => _file.path;
-
-  bool exists() => _file.existsSync();
+    super.path,
+    required String super.name,
+  }) : super(extension: 'yaml');
 
   /// Reads the value at [path].
+  @protected
   T readValue<T extends Object?>(Iterable<Object?> path) {
     assert(path.isNotEmpty);
     assert(path.length < 5);
 
-    final contents = _read();
+    final contents = read();
 
     try {
       final yaml = loadYaml(contents);
@@ -55,8 +45,9 @@ class YamlFile {
   }
 
   /// Removes the value at [path].
+  @protected
   void removeValue(Iterable<Object?> path) {
-    final contents = _read();
+    final contents = read();
 
     try {
       final editor = YamlEditor(contents);
@@ -64,7 +55,7 @@ class YamlFile {
       // TODO in nested paths the removing leads to a empty set "{}" instead of blank field
       final output = editor.toString();
 
-      _write(output);
+      write(output);
     } catch (_) {}
   }
 
@@ -80,12 +71,13 @@ class YamlFile {
   /// ```yaml
   /// my_value:
   /// ```
+  @protected
   void setValue<T extends Object?>(
     Iterable<Object?> path,
     T? value, {
     bool blankIfValueNull = false,
   }) {
-    final contents = _read();
+    final contents = read();
 
     final editor = YamlEditor(contents);
     editor.update(path, value);
@@ -96,6 +88,6 @@ class YamlFile {
           output.replaceAll(replacement, replacement.replaceAll(' null', ''));
     }
 
-    _write(output);
+    write(output);
   }
 }

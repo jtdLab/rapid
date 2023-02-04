@@ -21,15 +21,7 @@ include: package:lints/recommended.yaml
 
 analyzer:
   exclude:
-    - fixtures/entity/**
-    - fixtures/service_interface/**
-    - fixtures/project_none/**
-    - fixtures/project_android/**
-    - fixtures/project_ios/**
-    - fixtures/project_linux/**
-    - fixtures/project_macos/**
-    - fixtures/project_web/**
-    - fixtures/project_windows/**
+    - test/e2e/fixtures/**
 
 # For more information about the core and recommended set of lints, see
 # https://dart.dev/go/core-lints

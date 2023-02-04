@@ -5,7 +5,7 @@ import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:universal_io/io.dart';
+import 'dart:io';
 
 import 'di_package_bundle.dart';
 

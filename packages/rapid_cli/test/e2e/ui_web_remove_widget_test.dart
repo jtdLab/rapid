@@ -3,7 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'package:universal_io/io.dart';
+import 'dart:io';
 
 import 'common.dart';
 

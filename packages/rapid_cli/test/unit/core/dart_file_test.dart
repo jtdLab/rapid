@@ -1,7 +1,7 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:test/test.dart';
-import 'package:universal_io/io.dart';
+import 'dart:io';
 
 import '../mocks.dart';
 

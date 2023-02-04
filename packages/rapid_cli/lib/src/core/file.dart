@@ -1,7 +1,8 @@
+import 'dart:io' as io;
+
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
-import 'package:universal_io/io.dart' as io;
 
 import 'directory.dart';
 import 'file_system_entity.dart';

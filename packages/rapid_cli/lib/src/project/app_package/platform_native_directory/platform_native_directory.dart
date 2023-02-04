@@ -1,10 +1,11 @@
+import 'dart:io' as io;
+
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/app_package/app_package.dart';
-import 'package:universal_io/io.dart' as io;
 
 import 'android_native_directory_bundle.dart';
 import 'ios_native_directory_bundle.dart';

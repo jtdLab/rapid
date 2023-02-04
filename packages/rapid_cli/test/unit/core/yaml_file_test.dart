@@ -1,6 +1,6 @@
 import 'package:rapid_cli/src/core/yaml_file.dart';
 import 'package:test/test.dart';
-import 'package:universal_io/io.dart';
+import 'dart:io';
 
 const yamlFileWithBlankValue = '''
 a:

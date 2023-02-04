@@ -4,7 +4,7 @@ import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:test/test.dart';
-import 'package:universal_io/io.dart';
+import 'dart:io';
 
 import '../mocks.dart';
 

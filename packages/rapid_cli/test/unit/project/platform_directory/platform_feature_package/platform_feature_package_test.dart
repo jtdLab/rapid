@@ -6,7 +6,7 @@ import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
-import 'package:universal_io/io.dart';
+import 'dart:io';
 
 import '../../../mocks.dart';
 
@@ -1486,7 +1486,7 @@ void main() {
 /// import 'package:rapid_cli/src/project/platform_directory.dart';
 /// import 'package:rapid_cli/src/project/project.dart';
 /// import 'package:test/test.dart';
-/// import 'package:universal_io/io.dart';
+/// import 'dart:io';
 ///
 /// const l10nWithTemplateArbFile = '''
 /// template-arb-file: foo_bar

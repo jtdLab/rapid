@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
-import 'package:universal_io/io.dart';
+import 'dart:io';
 
 part 'dart_cli.dart';
 part 'flutter_cli.dart';

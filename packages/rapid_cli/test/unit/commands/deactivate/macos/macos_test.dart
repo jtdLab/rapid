@@ -4,7 +4,7 @@ import 'package:rapid_cli/src/commands/deactivate/macos/macos.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
-import 'package:universal_io/io.dart';
+import 'dart:io';
 
 import '../../../common.dart';
 import '../../../mocks.dart';

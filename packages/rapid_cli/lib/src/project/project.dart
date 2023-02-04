@@ -1,3 +1,5 @@
+import 'dart:io' as io;
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
@@ -6,7 +8,6 @@ import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file.dart';
 import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
-import 'package:universal_io/io.dart' as io;
 
 import 'app_package/app_package.dart';
 import 'di_package/di_package.dart';

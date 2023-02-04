@@ -1,11 +1,15 @@
+import 'dart:io';
+import 'dart:io' as io;
+
 import 'package:io/io.dart' show copyPath;
+import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'package:universal_io/io.dart';
-import 'package:universal_io/io.dart' as io;
-import 'package:mason/mason.dart';
 
+/* String tempPath = p.join(Directory.current.path, '.dart_tool', 'test', 'tmp');
+String fixturesPath = p.join(Directory.current.path, 'test', 'e2e', 'fixtures');
+ */
 /// The directory `flutter/dart test` was called from.
 ///
 /// **IMPORTANT**: This should be the rapid_cli package.

@@ -1,11 +1,12 @@
+import 'dart:io' as io;
+
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/file.dart';
-import 'package:universal_io/io.dart' as io;
 
 import 'file_system_entity.dart';
 
-// TODO more protected
+// TODO more protectedØØ
 
 /// {@template directory}
 /// Abstraction of a directory.

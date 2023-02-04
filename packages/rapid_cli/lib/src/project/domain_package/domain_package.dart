@@ -1,3 +1,5 @@
+import 'dart:io' as io;
+
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
@@ -7,7 +9,6 @@ import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/project/domain_package/service_interface_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:universal_io/io.dart' as io;
 
 import 'domain_package_bundle.dart';
 import 'entity_bundle.dart';

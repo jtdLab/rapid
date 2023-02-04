@@ -7,6 +7,7 @@ import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../helpers/helpers.dart';
+import '../../../mocks.dart';
 
 const expectedUsage = [
   'Removes support for Web from this project.\n'
@@ -16,10 +17,6 @@ const expectedUsage = [
       '\n'
       'Run "rapid help" to see global options.'
 ];
-
-class _MockLogger extends Mock implements Logger {}
-
-class _MockProject extends Mock implements Project {}
 
 void main() {
   group('deactivate web', () {
@@ -34,9 +31,9 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      logger = _MockLogger();
+      logger = MockLogger();
 
-      project = _MockProject();
+      project = MockProject();
       when(() => project.removePlatform(Platform.web, logger: logger))
           .thenAnswer((_) async {});
       when(() => project.exists()).thenReturn(true);

@@ -9,6 +9,7 @@ import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../helpers/helpers.dart';
+import '../../mocks.dart';
 
 const expectedUsage = [
   'Show information about an existing Rapid project.\n'
@@ -18,24 +19,6 @@ const expectedUsage = [
       '\n'
       'Run "rapid help" to see global options.'
 ];
-
-abstract class _FakePlatformDirectoryBuilder {
-  PlatformDirectory call({required Platform platform});
-}
-
-class _MockLogger extends Mock implements Logger {}
-
-class _MockProgress extends Mock implements Progress {}
-
-class _MockProject extends Mock implements Project {}
-
-class _MockPlatformDirectoryBuilder extends Mock
-    implements _FakePlatformDirectoryBuilder {}
-
-class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
-
-class _MockPlatformCustomFeaturePackage extends Mock
-    implements PlatformCustomFeaturePackage {}
 
 void main() {
   group('doctor', () {
@@ -76,8 +59,8 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      logger = _MockLogger();
-      final progress = _MockProgress();
+      logger = MockLogger();
+      final progress = MockProgress();
       progressLogs = <String>[];
       when(() => progress.complete(any())).thenAnswer((_) {
         final message = _.positionalArguments.elementAt(0) as String?;
@@ -85,16 +68,16 @@ void main() {
       });
       when(() => logger.progress(any())).thenReturn(progress);
 
-      project = _MockProject();
-      platformDirectoryBuilder = _MockPlatformDirectoryBuilder();
-      platformDirectoryAndroid = _MockPlatformDirectory();
+      project = MockProject();
+      platformDirectoryBuilder = MockPlatformDirectoryBuilder();
+      platformDirectoryAndroid = MockPlatformDirectory();
       when(() => platformDirectoryAndroid.platform)
           .thenReturn(Platform.android);
       featuresAndroid = [];
       when(() => platformDirectoryAndroid.customFeaturePackages())
           .thenReturn(featuresAndroid);
-      platformDirectoryMacos = _MockPlatformDirectory();
-      feature1Macos = _MockPlatformCustomFeaturePackage();
+      platformDirectoryMacos = MockPlatformDirectory();
+      feature1Macos = MockPlatformCustomFeaturePackage();
       feature1MacosDefaultLanguage = 'de';
       feature1MacosSupportedLanguages = {'de'};
       when(() => feature1Macos.packageName())
@@ -105,7 +88,7 @@ void main() {
           .thenReturn(feature1MacosDefaultLanguage);
       when(() => feature1Macos.supportedLanguages())
           .thenReturn(feature1MacosSupportedLanguages);
-      feature2Macos = _MockPlatformCustomFeaturePackage();
+      feature2Macos = MockPlatformCustomFeaturePackage();
       feature2MacosDefaultLanguage = 'de';
       feature2MacosSupportedLanguages = {'de'};
       when(() => feature2Macos.packageName())
@@ -124,8 +107,8 @@ void main() {
           .thenReturn(true);
       when(() => platformDirectoryMacos.allFeaturesHaveSameDefaultLanguage())
           .thenReturn(true);
-      platformDirectoryWeb = _MockPlatformDirectory();
-      feature1Web = _MockPlatformCustomFeaturePackage();
+      platformDirectoryWeb = MockPlatformDirectory();
+      feature1Web = MockPlatformCustomFeaturePackage();
       when(() => feature1Web.packageName()).thenReturn(feature1WebPackageName);
       when(() => feature1Web.path).thenReturn(feature1WebPath);
       when(() => feature1Web.name).thenReturn(feature1WebName);
@@ -153,15 +136,15 @@ void main() {
       when(() => platformDirectoryBuilder(platform: Platform.android))
           .thenReturn(platformDirectoryAndroid);
       when(() => platformDirectoryBuilder(platform: Platform.ios))
-          .thenReturn(_MockPlatformDirectory());
+          .thenReturn(MockPlatformDirectory());
       when(() => platformDirectoryBuilder(platform: Platform.linux))
-          .thenReturn(_MockPlatformDirectory());
+          .thenReturn(MockPlatformDirectory());
       when(() => platformDirectoryBuilder(platform: Platform.macos))
           .thenReturn(platformDirectoryMacos);
       when(() => platformDirectoryBuilder(platform: Platform.web))
           .thenReturn(platformDirectoryWeb);
       when(() => platformDirectoryBuilder(platform: Platform.windows))
-          .thenReturn(_MockPlatformDirectory());
+          .thenReturn(MockPlatformDirectory());
       when(() => project.platformDirectory)
           .thenReturn(platformDirectoryBuilder);
 

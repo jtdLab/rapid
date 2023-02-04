@@ -8,6 +8,7 @@ import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../../helpers/helpers.dart';
+import '../../../../mocks.dart';
 
 const expectedUsage = [
   'Removes a feature from the Android part of an existing Rapid project.\n'
@@ -17,12 +18,6 @@ const expectedUsage = [
       '\n'
       'Run "rapid help" to see global options.'
 ];
-
-class _MockLogger extends Mock implements Logger {}
-
-class _MockProject extends Mock implements Project {}
-
-class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
   group('android remove feature', () {
@@ -40,9 +35,9 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      logger = _MockLogger();
+      logger = MockLogger();
 
-      project = _MockProject();
+      project = MockProject();
       when(
         () => project.removeFeature(
           name: any(named: 'name'),
@@ -54,7 +49,7 @@ void main() {
       when(() => project.platformIsActivated(Platform.android))
           .thenReturn(true);
 
-      argResults = _MockArgResults();
+      argResults = MockArgResults();
       name = 'my_new_feature';
       when(() => argResults.rest).thenReturn([name]);
 

@@ -7,6 +7,8 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
+import '../../mocks.dart';
+
 const injectionFileWithInitialPackages = '''
 import 'package:injectable/injectable.dart';
 import 'package:kuk_abc_infrastructure/kuk_abc_infrastructure.dart';
@@ -79,24 +81,6 @@ void configureDependencies(String environment, String platform) => getIt.init(
     );
 ''';
 
-class _MockProject extends Mock implements Project {}
-
-class _MockPubspecFile extends Mock implements PubspecFile {}
-
-class _MockInjectionFile extends Mock implements InjectionFile {}
-
-class _MockMasonGenerator extends Mock implements MasonGenerator {}
-
-class _MockLogger extends Mock implements Logger {}
-
-class _MockPlatformCustomFeaturePackage extends Mock
-    implements PlatformCustomFeaturePackage {}
-
-class _MockDiPackage extends Mock implements DiPackage {}
-
-class _FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
-
 void main() {
   group('DiPackage', () {
     late Project project;
@@ -116,19 +100,19 @@ void main() {
     late DiPackage diPackage;
 
     setUpAll(() {
-      registerFallbackValue(_FakeDirectoryGeneratorTarget());
+      registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
     setUp(() {
-      project = _MockProject();
+      project = MockProject();
       when(() => project.name()).thenReturn(projectName);
       when(() => project.path).thenReturn(projectPath);
 
-      pubspecFile = _MockPubspecFile();
+      pubspecFile = MockPubspecFile();
 
-      injectionFile = _MockInjectionFile();
+      injectionFile = MockInjectionFile();
 
-      generator = _MockMasonGenerator();
+      generator = MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
       when(
@@ -175,7 +159,7 @@ void main() {
         macos = false;
         web = false;
         windows = true;
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('completes successfully with correct output', () async {
@@ -221,10 +205,10 @@ void main() {
       late Logger logger;
 
       setUp(() {
-        customFeaturePackage = _MockPlatformCustomFeaturePackage();
+        customFeaturePackage = MockPlatformCustomFeaturePackage();
         when(() => customFeaturePackage.packageName())
             .thenReturn(customFeaturePackageName);
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('completes successfully with correct output', () async {
@@ -252,10 +236,10 @@ void main() {
       late Logger logger;
 
       setUp(() {
-        customFeaturePackage1 = _MockPlatformCustomFeaturePackage();
+        customFeaturePackage1 = MockPlatformCustomFeaturePackage();
         when(() => customFeaturePackage1.packageName())
             .thenReturn(customFeaturePackageName1);
-        customFeaturePackage2 = _MockPlatformCustomFeaturePackage();
+        customFeaturePackage2 = MockPlatformCustomFeaturePackage();
         when(() => customFeaturePackage2.packageName())
             .thenReturn(customFeaturePackageName2);
         customFeaturePackages = [
@@ -263,7 +247,7 @@ void main() {
           customFeaturePackage2,
         ];
 
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('completes successfully with correct output', () async {
@@ -297,7 +281,7 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      diPackage = _MockDiPackage();
+      diPackage = MockDiPackage();
       when(() => diPackage.path).thenReturn(diPackagePath);
 
       injectionFile = InjectionFile(diPackage: diPackage);
@@ -324,7 +308,7 @@ void main() {
       late String customFeaturePackageName;
 
       setUp(() {
-        customFeaturePackage = _MockPlatformCustomFeaturePackage();
+        customFeaturePackage = MockPlatformCustomFeaturePackage();
       });
 
       test('add import and external package module correctly', () {
@@ -385,7 +369,7 @@ void main() {
       late String customFeaturePackageName;
 
       setUp(() {
-        customFeaturePackage = _MockPlatformCustomFeaturePackage();
+        customFeaturePackage = MockPlatformCustomFeaturePackage();
       });
 
       test('remove import and external package module correctly', () {

@@ -8,9 +8,7 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/version.dart';
 import 'package:test/test.dart';
 
-class _MockLogger extends Mock implements Logger {}
-
-class _MockProject extends Mock implements Project {}
+import 'mocks.dart';
 
 const expectedUsage = [
   'Rapid Command Line Interface\n'
@@ -63,8 +61,8 @@ void main() {
 
     setUp(() {
       printLogs = [];
-      logger = _MockLogger();
-      project = _MockProject();
+      logger = MockLogger();
+      project = MockProject();
       when(() => project.name()).thenReturn(projectName);
 
       commandRunner = RapidCommandRunner(

@@ -9,6 +9,7 @@ import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../helpers/helpers.dart';
+import '../../../mocks.dart';
 
 const expectedUsage = [
   'Adds support for Android to this project.\n'
@@ -20,19 +21,6 @@ const expectedUsage = [
       '\n'
       'Run "rapid help" to see global options.'
 ];
-
-abstract class _FlutterConfigEnablePlatformCommand {
-  Future<void> call({required Logger logger});
-}
-
-class _MockLogger extends Mock implements Logger {}
-
-class _MockProject extends Mock implements Project {}
-
-class MockFlutterConfigEnablePlatformCommand extends Mock
-    implements _FlutterConfigEnablePlatformCommand {}
-
-class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
   group('activate android', () {
@@ -52,9 +40,9 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      logger = _MockLogger();
+      logger = MockLogger();
 
-      project = _MockProject();
+      project = MockProject();
       when(
         () => project.addPlatform(
           Platform.android,
@@ -71,7 +59,7 @@ void main() {
       when(() => flutterConfigEnableAndroid(logger: logger))
           .thenAnswer((_) async {});
 
-      argResults = _MockArgResults();
+      argResults = MockArgResults();
 
       command = ActivateAndroidCommand(
         logger: logger,

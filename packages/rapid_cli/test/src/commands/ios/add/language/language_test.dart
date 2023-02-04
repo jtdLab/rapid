@@ -8,6 +8,7 @@ import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../../helpers/helpers.dart';
+import '../../../../mocks.dart';
 
 const expectedUsage = [
   'Add a language to the iOS part of an existing Rapid project.\n'
@@ -17,12 +18,6 @@ const expectedUsage = [
       '\n'
       'Run "rapid help" to see global options.'
 ];
-
-class _MockLogger extends Mock implements Logger {}
-
-class _MockProject extends Mock implements Project {}
-
-class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
   group('ios add language', () {
@@ -40,9 +35,9 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      logger = _MockLogger();
+      logger = MockLogger();
 
-      project = _MockProject();
+      project = MockProject();
       when(
         () => project.addLanguage(
           any(),
@@ -53,7 +48,7 @@ void main() {
       when(() => project.exists()).thenReturn(true);
       when(() => project.platformIsActivated(Platform.ios)).thenReturn(true);
 
-      argResults = _MockArgResults();
+      argResults = MockArgResults();
       language = 'fr';
       when(() => argResults.rest).thenReturn([language]);
 

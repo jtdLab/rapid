@@ -8,6 +8,7 @@ import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../../helpers/helpers.dart';
+import '../../../../mocks.dart';
 
 const expectedUsage = [
   'Add a feature to the Web part of an existing Rapid project.\n'
@@ -22,12 +23,6 @@ const expectedUsage = [
       '\n'
       'Run "rapid help" to see global options.'
 ];
-
-class _MockLogger extends Mock implements Logger {}
-
-class _MockProject extends Mock implements Project {}
-
-class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
   group('web add feature', () {
@@ -47,9 +42,9 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      logger = _MockLogger();
+      logger = MockLogger();
 
-      project = _MockProject();
+      project = MockProject();
       when(
         () => project.addFeature(
           name: any(named: 'name'),
@@ -62,7 +57,7 @@ void main() {
       when(() => project.exists()).thenReturn(true);
       when(() => project.platformIsActivated(Platform.web)).thenReturn(true);
 
-      argResults = _MockArgResults();
+      argResults = MockArgResults();
       description = null;
       when(() => argResults['desc']).thenReturn(description);
       routing = false;

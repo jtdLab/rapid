@@ -1,26 +1,7 @@
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:test/test.dart';
-import 'package:universal_io/io.dart';
 
-class _FakeProcess {
-  Future<Process> start(
-    String command,
-    List<String> args, {
-    bool runInShell = false,
-    String? workingDirectory,
-  }) {
-    throw UnimplementedError();
-  }
-
-  Future<ProcessResult> run(
-    String command,
-    List<String> args, {
-    bool runInShell = false,
-    String? workingDirectory,
-  }) {
-    throw UnimplementedError();
-  }
-}
+import '../mocks.dart';
 
 void main() {
   group('ProcessOverrides', () {
@@ -40,7 +21,7 @@ void main() {
       });
 
       test('uses custom Process.start when specified', () {
-        final process = _FakeProcess();
+        final process = FakeProcess();
         ProcessOverrides.runZoned(
           () {
             final overrides = ProcessOverrides.current;
@@ -51,7 +32,7 @@ void main() {
       });
 
       test('uses custom Process.run when specified', () {
-        final process = _FakeProcess();
+        final process = FakeProcess();
         ProcessOverrides.runZoned(
           () {
             final overrides = ProcessOverrides.current;
@@ -64,7 +45,7 @@ void main() {
       test(
           'uses current Process.start when not specified '
           'and zone already contains a Process.start', () {
-        final process = _FakeProcess();
+        final process = FakeProcess();
         ProcessOverrides.runZoned(
           () {
             ProcessOverrides.runZoned(() {
@@ -79,7 +60,7 @@ void main() {
       test(
           'uses current Process.run when not specified '
           'and zone already contains a Process.run', () {
-        final process = _FakeProcess();
+        final process = FakeProcess();
         ProcessOverrides.runZoned(
           () {
             ProcessOverrides.runZoned(() {
@@ -94,10 +75,10 @@ void main() {
       test(
           'uses nested Process.start when specified '
           'and zone already contains a Process.start', () {
-        final rootProcess = _FakeProcess();
+        final rootProcess = FakeProcess();
         ProcessOverrides.runZoned(
           () {
-            final nestedProcess = _FakeProcess();
+            final nestedProcess = FakeProcess();
             final overrides = ProcessOverrides.current;
             expect(overrides!.startProcess, equals(rootProcess.start));
             ProcessOverrides.runZoned(
@@ -115,10 +96,10 @@ void main() {
       test(
           'uses nested Process.run when specified '
           'and zone already contains a Process.run', () {
-        final rootProcess = _FakeProcess();
+        final rootProcess = FakeProcess();
         ProcessOverrides.runZoned(
           () {
-            final nestedProcess = _FakeProcess();
+            final nestedProcess = FakeProcess();
             final overrides = ProcessOverrides.current;
             expect(overrides!.runProcess, equals(rootProcess.run));
             ProcessOverrides.runZoned(

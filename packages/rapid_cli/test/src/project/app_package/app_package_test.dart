@@ -11,6 +11,8 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
+import '../../mocks.dart';
+
 extension on Environment {
   String get shortName {
     switch (this) {
@@ -137,45 +139,6 @@ Future<void> runAndroidApp() async {
 }
 ''';
 
-abstract class _PlatformDirectoryBuilder {
-  PlatformDirectory call({required Platform platform});
-}
-
-abstract class _PlatformNativeDirectoryBuilder {
-  PlatformNativeDirectory call({required Platform platform});
-}
-
-class _MockLogger extends Mock implements Logger {}
-
-class _MockProject extends Mock implements Project {}
-
-class _MockPlatformDirectoryBuilder extends Mock
-    implements _PlatformDirectoryBuilder {}
-
-class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
-
-class _MockPlatformAppFeaturePackage extends Mock
-    implements PlatformAppFeaturePackage {}
-
-class _MockPubspecFile extends Mock implements PubspecFile {}
-
-class _MockPlatformNativeDirectoryBuilder extends Mock
-    implements _PlatformNativeDirectoryBuilder {}
-
-class _MockPlatformNativeDirectory extends Mock
-    implements PlatformNativeDirectory {}
-
-class _MockMainFile extends Mock implements MainFile {}
-
-class _MockMasonGenerator extends Mock implements MasonGenerator {}
-
-class _FakeLogger extends Fake implements Logger {}
-
-class _FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
-
-class _MockAppPackage extends Mock implements AppPackage {}
-
 void main() {
   group('AppPackage', () {
     final cwd = Directory.current;
@@ -207,18 +170,18 @@ void main() {
     late AppPackage appPackage;
 
     setUpAll(() {
-      registerFallbackValue(_FakeLogger());
-      registerFallbackValue(_FakeDirectoryGeneratorTarget());
+      registerFallbackValue(FakeLogger());
+      registerFallbackValue(FakeDirectoryGeneratorTarget());
       registerFallbackValue(Platform.android);
     });
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      project = _MockProject();
-      platformDirectoryBuilder = _MockPlatformDirectoryBuilder();
-      platformDirectory = _MockPlatformDirectory();
-      appFeaturePackage = _MockPlatformAppFeaturePackage();
+      project = MockProject();
+      platformDirectoryBuilder = MockPlatformDirectoryBuilder();
+      platformDirectory = MockPlatformDirectory();
+      appFeaturePackage = MockPlatformAppFeaturePackage();
       when(() => appFeaturePackage.packageName())
           .thenReturn(appFeaturePackagePackageName);
       when(() => platformDirectory.appFeaturePackage)
@@ -231,11 +194,11 @@ void main() {
       when(() => project.platformDirectory)
           .thenReturn(platformDirectoryBuilder);
 
-      pubspecFile = _MockPubspecFile();
+      pubspecFile = MockPubspecFile();
       when(() => pubspecFile.name).thenReturn(appPackagePackageName);
 
-      platformNativeDirectoryBuilder = _MockPlatformNativeDirectoryBuilder();
-      platformNativeDirectory = _MockPlatformNativeDirectory();
+      platformNativeDirectoryBuilder = MockPlatformNativeDirectoryBuilder();
+      platformNativeDirectory = MockPlatformNativeDirectory();
       when(
         () => platformNativeDirectory.create(
           description: any(named: 'description'),
@@ -247,11 +210,11 @@ void main() {
         () => platformNativeDirectoryBuilder(platform: any(named: 'platform')),
       ).thenReturn(platformNativeDirectory);
 
-      mainFile1 = _MockMainFile();
-      mainFile2 = _MockMainFile();
+      mainFile1 = MockMainFile();
+      mainFile2 = MockMainFile();
       mainFiles = {mainFile1, mainFile2};
 
-      generator = _MockMasonGenerator();
+      generator = MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
       when(
@@ -305,7 +268,7 @@ void main() {
         macos = false;
         web = false;
         windows = true;
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('completes successfully with correct output', () async {
@@ -385,7 +348,7 @@ void main() {
         platform = Platform.android;
         description = 'some desc';
         orgName = 'com.ex.org';
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('completes successfully with correct output', () async {
@@ -422,7 +385,7 @@ void main() {
 
       setUp(() {
         platform = Platform.android;
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('completes successfully with correct output', () async {
@@ -467,8 +430,8 @@ void main() {
 
       environment = Environment.development;
 
-      appPackage = _MockAppPackage();
-      project = _MockProject();
+      appPackage = MockAppPackage();
+      project = MockProject();
       when(() => project.name()).thenReturn(projectName);
       when(() => appPackage.path).thenReturn(appPackagePath);
       when(() => appPackage.project).thenReturn(project);

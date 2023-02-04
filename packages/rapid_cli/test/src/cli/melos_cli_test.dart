@@ -6,42 +6,27 @@ import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
-abstract class _StartProcess {
-  Future<Process> call(
-    String command,
-    List<String> args, {
-    bool runInShell = false,
-    String? workingDirectory,
-  });
-}
-
-class _MockLogger extends Mock implements Logger {}
-
-class _MockProgress extends Mock implements Progress {}
-
-class _MockStartProcess extends Mock implements _StartProcess {}
-
-class _MockProcess extends Mock implements Process {}
+import '../mocks.dart';
 
 void main() {
   group('Melos', () {
     late Logger logger;
     late Progress progress;
     late List<String> progressLogs;
-    late _StartProcess startProcess;
+    late StartProcess startProcess;
     late Process process;
 
     setUp(() {
-      logger = _MockLogger();
-      progress = _MockProgress();
+      logger = MockLogger();
+      progress = MockProgress();
       progressLogs = <String>[];
       when(() => progress.complete(any())).thenAnswer((_) {
         final message = _.positionalArguments.elementAt(0) as String?;
         if (message != null) progressLogs.add(message);
       });
       when(() => logger.progress(any())).thenReturn(progress);
-      startProcess = _MockStartProcess();
-      process = _MockProcess();
+      startProcess = MockStartProcess();
+      process = MockProcess();
       when(() => process.pid).thenReturn(88);
       when(() => process.stdout).thenAnswer((_) => Stream.empty());
       when(() => process.stderr).thenAnswer((_) => Stream.empty());

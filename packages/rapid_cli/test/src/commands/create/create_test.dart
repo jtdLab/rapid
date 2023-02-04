@@ -8,6 +8,7 @@ import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../helpers/helpers.dart';
+import '../../mocks.dart';
 
 const expectedUsage = [
   'Create a new Rapid project.\n'
@@ -37,39 +38,6 @@ const expectedUsage = [
       '\n'
       'Run "rapid help" to see global options.'
 ];
-
-abstract class _FlutterInstalledCommand {
-  Future<bool> call({required Logger logger});
-}
-
-abstract class _MelosInstalledCommand {
-  Future<bool> call({required Logger logger});
-}
-
-abstract class _FlutterConfigEnablePlatformCommand {
-  Future<void> call({required Logger logger});
-}
-
-abstract class _ProjectBuilder {
-  Project call({String path});
-}
-
-class _MockLogger extends Mock implements Logger {}
-
-class _MockFlutterInstalledCommand extends Mock
-    implements _FlutterInstalledCommand {}
-
-class _MockMelosInstalledCommand extends Mock
-    implements _MelosInstalledCommand {}
-
-class _MockFlutterConfigEnablePlatformCommand extends Mock
-    implements _FlutterConfigEnablePlatformCommand {}
-
-class _MockProjectBuilder extends Mock implements _ProjectBuilder {}
-
-class _MockProject extends Mock implements Project {}
-
-class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
   group('create', () {
@@ -105,41 +73,41 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      logger = _MockLogger();
+      logger = MockLogger();
 
-      flutterInstalled = _MockFlutterInstalledCommand();
+      flutterInstalled = MockFlutterInstalledCommand();
       when(() => flutterInstalled(logger: logger))
           .thenAnswer((_) async => true);
 
-      melosInstalled = _MockMelosInstalledCommand();
+      melosInstalled = MockMelosInstalledCommand();
       when(() => melosInstalled(logger: logger)).thenAnswer((_) async => true);
 
-      flutterConfigEnableAndroid = _MockFlutterConfigEnablePlatformCommand();
+      flutterConfigEnableAndroid = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableAndroid(logger: logger))
           .thenAnswer((_) async {});
 
-      flutterConfigEnableIos = _MockFlutterConfigEnablePlatformCommand();
+      flutterConfigEnableIos = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableIos(logger: logger))
           .thenAnswer((_) async {});
 
-      flutterConfigEnableWeb = _MockFlutterConfigEnablePlatformCommand();
+      flutterConfigEnableWeb = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableWeb(logger: logger))
           .thenAnswer((_) async {});
 
-      flutterConfigEnableLinux = _MockFlutterConfigEnablePlatformCommand();
+      flutterConfigEnableLinux = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableLinux(logger: logger))
           .thenAnswer((_) async {});
 
-      flutterConfigEnableMacos = _MockFlutterConfigEnablePlatformCommand();
+      flutterConfigEnableMacos = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableMacos(logger: logger))
           .thenAnswer((_) async {});
 
-      flutterConfigEnableWindows = _MockFlutterConfigEnablePlatformCommand();
+      flutterConfigEnableWindows = MockFlutterConfigEnablePlatformCommand();
       when(() => flutterConfigEnableWindows(logger: logger))
           .thenAnswer((_) async {});
 
-      projectBuilder = _MockProjectBuilder();
-      project = _MockProject();
+      projectBuilder = MockProjectBuilder();
+      project = MockProject();
       when(
         () => project.create(
           projectName: any(named: 'projectName'),
@@ -157,7 +125,7 @@ void main() {
       ).thenAnswer((_) async {});
       when(() => projectBuilder(path: any(named: 'path'))).thenReturn(project);
 
-      argResults = _MockArgResults();
+      argResults = MockArgResults();
       projectName = 'test_app';
       outputDir = '.';
       when(() => argResults.rest).thenReturn([projectName]);

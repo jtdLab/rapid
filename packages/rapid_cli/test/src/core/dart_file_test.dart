@@ -1,8 +1,9 @@
 import 'package:mason/mason.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
+
+import '../mocks.dart';
 
 const dartFileWith2ImportsPerType = '''
 import 'dart:aaa';
@@ -371,8 +372,6 @@ final someList = <dynamic>[
 ];
 ''';
 
-class _MockLogger extends Mock implements Logger {}
-
 void main() {
   group('DartFile', () {
     final cwd = Directory.current;
@@ -422,7 +421,7 @@ void main() {
       late Logger logger;
 
       setUp(() {
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('deletes the file', () {

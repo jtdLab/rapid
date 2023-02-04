@@ -1,8 +1,9 @@
 import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
+
+import '../mocks.dart';
 
 const projectName = 'foo_bar';
 
@@ -17,8 +18,6 @@ name: foo_bar
 const melosWithoutName = '''
 some: value
 ''';
-
-class _MockProject extends Mock implements Project {}
 
 void main() {
   /*  group('Project', () {
@@ -159,7 +158,7 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      project = _MockProject();
+      project = MockProject();
       when(() => project.path).thenReturn(projectPath);
 
       melosFile = MelosFile(project: project);

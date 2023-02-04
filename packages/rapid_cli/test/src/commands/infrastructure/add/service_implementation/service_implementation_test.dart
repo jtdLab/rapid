@@ -7,6 +7,7 @@ import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../../helpers/helpers.dart';
+import '../../../../mocks.dart';
 
 const expectedUsage = [
   'Add a service implementation to the infrastructure part of an existing Rapid project.\n'
@@ -21,12 +22,6 @@ const expectedUsage = [
       '\n'
       'Run "rapid help" to see global options.'
 ];
-
-class _MockLogger extends Mock implements Logger {}
-
-class _MockProject extends Mock implements Project {}
-
-class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
   group('infrastructure add service_implementation', () {
@@ -46,9 +41,9 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      logger = _MockLogger();
+      logger = MockLogger();
 
-      project = _MockProject();
+      project = MockProject();
       when(() => project.exists()).thenReturn(true);
       when(
         () => project.addServiceImplementation(
@@ -59,7 +54,7 @@ void main() {
         ),
       ).thenAnswer((_) async {});
 
-      argResults = _MockArgResults();
+      argResults = MockArgResults();
       name = 'Fake';
       service = 'FooBar';
       outputDir = null;

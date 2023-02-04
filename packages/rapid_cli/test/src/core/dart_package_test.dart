@@ -1,8 +1,9 @@
 import 'package:mason/mason.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
+
+import '../mocks.dart';
 
 const pubspecWithDependencies = '''
 name: foo_bar
@@ -77,8 +78,6 @@ const pubspecWithoutName = '''
 some: value
 ''';
 
-class _MockLogger extends Mock implements Logger {}
-
 void main() {
   group('DartPackage', () {
     final cwd = Directory.current;
@@ -101,7 +100,7 @@ void main() {
       late Logger logger;
 
       setUp(() {
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('deletes the directory', () {

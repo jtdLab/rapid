@@ -7,10 +7,7 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
-class _MockProject extends Mock implements Project {}
-
-class _MockPlatformCustomFeaturePackage extends Mock
-    implements PlatformCustomFeaturePackage {}
+import '../../mocks.dart';
 
 void main() {
   group('PlatformDirectory', () {
@@ -34,7 +31,7 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      project = _MockProject();
+      project = MockProject();
       when(() => project.path).thenReturn(projectPath);
       when(() => project.name()).thenReturn(projectName);
 
@@ -89,9 +86,9 @@ void main() {
       test('returns true when all custom feature packages have same language',
           () {
         // Arrange
-        final feature1 = _MockPlatformCustomFeaturePackage();
+        final feature1 = MockPlatformCustomFeaturePackage();
         when(() => feature1.supportedLanguages()).thenReturn({'en', 'de'});
-        final feature2 = _MockPlatformCustomFeaturePackage();
+        final feature2 = MockPlatformCustomFeaturePackage();
         when(() => feature2.supportedLanguages()).thenReturn({'de', 'en'});
 
         customFeaturePackages = [feature1, feature2];
@@ -109,9 +106,9 @@ void main() {
           'returns false when NOT all custom feature packages have same language',
           () {
         // Arrange
-        final feature1 = _MockPlatformCustomFeaturePackage();
+        final feature1 = MockPlatformCustomFeaturePackage();
         when(() => feature1.supportedLanguages()).thenReturn({'fr', 'de'});
-        final feature2 = _MockPlatformCustomFeaturePackage();
+        final feature2 = MockPlatformCustomFeaturePackage();
         when(() => feature2.supportedLanguages()).thenReturn({'de', 'en'});
 
         customFeaturePackages = [feature1, feature2];
@@ -131,9 +128,9 @@ void main() {
           'returns true when all custom feature packages have same default language',
           () {
         // Arrange
-        final feature1 = _MockPlatformCustomFeaturePackage();
+        final feature1 = MockPlatformCustomFeaturePackage();
         when(() => feature1.defaultLanguage()).thenReturn('fr');
-        final feature2 = _MockPlatformCustomFeaturePackage();
+        final feature2 = MockPlatformCustomFeaturePackage();
         when(() => feature2.defaultLanguage()).thenReturn('fr');
 
         customFeaturePackages = [feature1, feature2];
@@ -151,9 +148,9 @@ void main() {
           'returns false when NOT all custom feature packages have same default language',
           () {
         // Arrange
-        final feature1 = _MockPlatformCustomFeaturePackage();
+        final feature1 = MockPlatformCustomFeaturePackage();
         when(() => feature1.defaultLanguage()).thenReturn('en');
-        final feature2 = _MockPlatformCustomFeaturePackage();
+        final feature2 = MockPlatformCustomFeaturePackage();
         when(() => feature2.defaultLanguage()).thenReturn('fr');
 
         customFeaturePackages = [feature1, feature2];

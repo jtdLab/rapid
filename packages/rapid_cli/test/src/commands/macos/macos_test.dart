@@ -1,10 +1,10 @@
 import 'package:mason/mason.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/macos/macos.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 
 import '../../../helpers/helpers.dart';
+import '../../mocks.dart';
 
 const expectedUsage = [
   'Work with the macOS part of an existing Rapid project.\n'
@@ -20,14 +20,12 @@ const expectedUsage = [
       'Run "rapid help" to see global options.'
 ];
 
-class _MockProject extends Mock implements Project {}
-
 void main() {
   group('macos', () {
     late Project project;
 
     setUp(() {
-      project = _MockProject();
+      project = MockProject();
     });
 
     test('m is a valid alias', () {

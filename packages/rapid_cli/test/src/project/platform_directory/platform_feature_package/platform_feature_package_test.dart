@@ -8,55 +8,7 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
-abstract class _FlutterGenl10nCommand {
-  Future<void> call({
-    required String cwd,
-    required Logger logger,
-  });
-}
-
-abstract class _LanguageLocalizationsFileBuilder {
-  LanguageLocalizationsFile call({required String language});
-}
-
-class _MockProject extends Mock implements Project {}
-
-class _MockPubspecFile extends Mock implements PubspecFile {}
-
-class _MockLocalizationsFile extends Mock implements LocalizationsFile {}
-
-class _MockMasonGenerator extends Mock implements MasonGenerator {}
-
-class _MockLogger extends Mock implements Logger {}
-
-class _MockPlatformCustomFeaturePackage extends Mock
-    implements PlatformCustomFeaturePackage {}
-
-class _MockPlatformAppFeaturePackage extends Mock
-    implements PlatformAppFeaturePackage {}
-
-class _MockL10nFile extends Mock implements L10nFile {}
-
-class _MockArbDirectory extends Mock implements ArbDirectory {}
-
-class _MockLanguageLocalizationsFileBuilder extends Mock
-    implements _LanguageLocalizationsFileBuilder {}
-
-class _MockLanguageLocalizationsFile extends Mock
-    implements LanguageLocalizationsFile {}
-
-class _MockFlutterGenL10nCommand extends Mock
-    implements _FlutterGenl10nCommand {}
-
-class _MockPlatformFeaturePackage extends Mock
-    implements PlatformFeaturePackage {}
-
-class _MockArbFile extends Mock implements ArbFile {}
-
-class _FakeLogger extends Fake implements Logger {}
-
-class _FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
+import '../../../mocks.dart';
 
 void main() {
   group('PlatformAppFeaturePackage', () {
@@ -88,22 +40,22 @@ void main() {
         );
 
     setUpAll(() {
-      registerFallbackValue(_FakeLogger());
-      registerFallbackValue(_FakeDirectoryGeneratorTarget());
+      registerFallbackValue(FakeLogger());
+      registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
     setUp(() {
       platform = Platform.android;
 
-      project = _MockProject();
+      project = MockProject();
       when(() => project.path).thenReturn(projectPath);
       when(() => project.name()).thenReturn(projectName);
 
-      pubspecFile = _MockPubspecFile();
+      pubspecFile = MockPubspecFile();
 
-      localizationsFile = _MockLocalizationsFile();
+      localizationsFile = MockLocalizationsFile();
 
-      generator = _MockMasonGenerator();
+      generator = MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
       when(
@@ -141,7 +93,7 @@ void main() {
       late Logger logger;
 
       setUp(() {
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('completes successfully with correct output (android)', () async {
@@ -355,11 +307,11 @@ void main() {
       late Logger logger;
 
       setUp(() {
-        customFeaturePackage = _MockPlatformCustomFeaturePackage();
+        customFeaturePackage = MockPlatformCustomFeaturePackage();
         customFeaturePackageName = 'foo_bar';
         when(() => customFeaturePackage.packageName())
             .thenReturn(customFeaturePackageName);
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('register custom feature package correctly', () async {
@@ -385,11 +337,11 @@ void main() {
       late Logger logger;
 
       setUp(() {
-        customFeaturePackage = _MockPlatformCustomFeaturePackage();
+        customFeaturePackage = MockPlatformCustomFeaturePackage();
         customFeaturePackageName = 'foo_bar';
         when(() => customFeaturePackage.packageName())
             .thenReturn(customFeaturePackageName);
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('unregister custom feature package correctly', () async {
@@ -421,7 +373,7 @@ void main() {
         );
 
     setUp(() {
-      platformAppFeaturePackage = _MockPlatformAppFeaturePackage();
+      platformAppFeaturePackage = MockPlatformAppFeaturePackage();
       when(() => platformAppFeaturePackage.path)
           .thenReturn(platformAppFeaturePackagePath);
 
@@ -481,20 +433,20 @@ void main() {
         );
 
     setUpAll(() {
-      registerFallbackValue(_FakeLogger());
-      registerFallbackValue(_FakeDirectoryGeneratorTarget());
+      registerFallbackValue(FakeLogger());
+      registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
     setUp(() {
       platform = Platform.android;
 
-      project = _MockProject();
+      project = MockProject();
       when(() => project.path).thenReturn(projectPath);
       when(() => project.name()).thenReturn(projectName);
 
-      pubspecFile = _MockPubspecFile();
+      pubspecFile = MockPubspecFile();
 
-      generator = _MockMasonGenerator();
+      generator = MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
       when(
@@ -522,7 +474,7 @@ void main() {
       late Logger logger;
 
       setUp(() {
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('completes successfully with correct output (android)', () async {
@@ -736,11 +688,11 @@ void main() {
       late Logger logger;
 
       setUp(() {
-        customFeaturePackage = _MockPlatformCustomFeaturePackage();
+        customFeaturePackage = MockPlatformCustomFeaturePackage();
         customFeaturePackageName = 'foo_bar';
         when(() => customFeaturePackage.packageName())
             .thenReturn(customFeaturePackageName);
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('register custom feature package correctly', () async {
@@ -761,11 +713,11 @@ void main() {
       late Logger logger;
 
       setUp(() {
-        customFeaturePackage = _MockPlatformCustomFeaturePackage();
+        customFeaturePackage = MockPlatformCustomFeaturePackage();
         customFeaturePackageName = 'foo_bar';
         when(() => customFeaturePackage.packageName())
             .thenReturn(customFeaturePackageName);
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('unregister custom feature package correctly', () async {
@@ -820,8 +772,8 @@ void main() {
         );
 
     setUpAll(() {
-      registerFallbackValue(_FakeLogger());
-      registerFallbackValue(_FakeDirectoryGeneratorTarget());
+      registerFallbackValue(FakeLogger());
+      registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
     setUp(() {
@@ -829,15 +781,15 @@ void main() {
 
       platform = Platform.android;
 
-      project = _MockProject();
+      project = MockProject();
       when(() => project.path).thenReturn(projectPath);
       when(() => project.name()).thenReturn(projectName);
 
-      l10nFile = _MockL10nFile();
+      l10nFile = MockL10nFile();
 
-      arbDirectory = _MockArbDirectory();
+      arbDirectory = MockArbDirectory();
 
-      generator = _MockMasonGenerator();
+      generator = MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
       when(
@@ -848,16 +800,15 @@ void main() {
         ),
       ).thenAnswer((_) async => generatedFiles);
 
-      languageLocalizationsFileBuilder =
-          _MockLanguageLocalizationsFileBuilder();
-      languageLocalizationsFile = _MockLanguageLocalizationsFile();
+      languageLocalizationsFileBuilder = MockLanguageLocalizationsFileBuilder();
+      languageLocalizationsFile = MockLanguageLocalizationsFile();
       when(
         () => languageLocalizationsFileBuilder(
           language: any(named: 'language'),
         ),
       ).thenReturn(languageLocalizationsFile);
 
-      flutterGenl10n = _MockFlutterGenL10nCommand();
+      flutterGenl10n = MockFlutterGenL10nCommand();
       when(
         () => flutterGenl10n(
           cwd: any(named: 'cwd'),
@@ -885,9 +836,9 @@ void main() {
       const arbFile2Language = 'fr';
 
       setUp(() {
-        arbFile1 = _MockArbFile();
+        arbFile1 = MockArbFile();
         when(() => arbFile1.language).thenReturn(arbFile1Language);
-        arbFile2 = _MockArbFile();
+        arbFile2 = MockArbFile();
         when(() => arbFile2.language).thenReturn(arbFile2Language);
         when(() => arbDirectory.arbFiles()).thenReturn([arbFile1, arbFile2]);
       });
@@ -907,7 +858,7 @@ void main() {
       const arbFile1Language = 'de';
 
       setUp(() {
-        arbFile1 = _MockArbFile();
+        arbFile1 = MockArbFile();
         when(() => arbFile1.language).thenReturn(arbFile1Language);
         when(() => arbDirectory.arbFiles()).thenReturn([arbFile1]);
       });
@@ -952,7 +903,7 @@ void main() {
 
       setUp(() {
         description = null;
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('completes successfully with correct output (android)', () async {
@@ -1253,7 +1204,7 @@ void main() {
       late Logger logger;
 
       setUp(() {
-        arbFile = _MockArbFile();
+        arbFile = MockArbFile();
         language = 'de';
         when(() => arbFile.exists()).thenReturn(false);
         when(() => arbFile.create(logger: any(named: 'logger')))
@@ -1261,7 +1212,7 @@ void main() {
         when(() => arbDirectory.arbFile(language: language))
             .thenReturn(arbFile);
 
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('completes successfully with correct output', () async {
@@ -1309,7 +1260,7 @@ void main() {
       late Logger logger;
 
       setUp(() {
-        arbFile = _MockArbFile();
+        arbFile = MockArbFile();
         language = 'de';
         when(() => arbFile.exists()).thenReturn(true);
         when(() => arbFile.create(logger: any(named: 'logger')))
@@ -1319,7 +1270,7 @@ void main() {
 
         when(() => languageLocalizationsFile.exists()).thenReturn(true);
 
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('completes successfully with correct output', () async {
@@ -1366,7 +1317,7 @@ void main() {
     setUp(() {
       language = 'de';
 
-      platformFeaturePackage = _MockPlatformFeaturePackage();
+      platformFeaturePackage = MockPlatformFeaturePackage();
       when(() => platformFeaturePackage.packageName())
           .thenReturn(platformFeaturePackagePackagName);
       when(() => platformFeaturePackage.path)
@@ -1392,7 +1343,7 @@ void main() {
       late Logger logger;
 
       setUp(() {
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test('removes the underlying file', () {
@@ -1545,13 +1496,13 @@ void main() {
 /// some: value
 /// ''';
 ///
-/// class _MockMelosFile extends Mock implements MelosFile {}
+/// class MockMelosFile extends Mock implements MelosFile {}
 ///
-/// class _MockProject extends Mock implements Project {}
+/// class MockProject extends Mock implements Project {}
 ///
-/// class _MockPlatformDirectory extends Mock implements PlatformDirectory {}
+/// class MockPlatformDirectory extends Mock implements PlatformDirectory {}
 ///
-/// class _MockFeature extends Mock implements Feature {}
+/// class MockFeature extends Mock implements Feature {}
 ///
 /// void main() {
 ///   group('Feature', () {
@@ -1569,11 +1520,11 @@ void main() {
 ///     setUp(() {
 ///       Directory.current = Directory.systemTemp.createTempSync();
 ///
-///       melosFile = _MockMelosFile();
+///       melosFile = MockMelosFile();
 ///       when(() => melosFile.readName()).thenReturn(projectName);
-///       project = _MockProject();
+///       project = MockProject();
 ///       when(() => project.melosFile).thenReturn(melosFile);
-///       platformDirectory = _MockPlatformDirectory();
+///       platformDirectory = MockPlatformDirectory();
 ///       when(() => platformDirectory.platform).thenReturn(platform);
 ///       when(() => platformDirectory.path).thenReturn(platformDirPath);
 ///       when(() => platformDirectory.project).thenReturn(project);
@@ -1791,7 +1742,7 @@ void main() {
 ///     setUp(() {
 ///       Directory.current = Directory.systemTemp.createTempSync();
 ///
-///       feature = _MockFeature();
+///       feature = MockFeature();
 ///       when(() => feature.entityName).thenReturn(featureName);
 ///       when(() => feature.path).thenReturn(featurePath);
 ///       arbFile = ArbFile(language: language, feature: feature);
@@ -1879,4 +1830,3 @@ void main() {
 ///   });
 /// }
 ///
-

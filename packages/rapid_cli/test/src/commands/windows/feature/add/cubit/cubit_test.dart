@@ -8,6 +8,7 @@ import 'package:test/test.dart';
 import 'package:universal_io/io.dart';
 
 import '../../../../../../helpers/helpers.dart';
+import '../../../../../mocks.dart';
 
 const expectedUsage = [
   'Adds a cubit to a feature of the Windows part of an existing Rapid project.\n'
@@ -21,12 +22,6 @@ const expectedUsage = [
       '\n'
       'Run "rapid help" to see global options.'
 ];
-
-class _MockLogger extends Mock implements Logger {}
-
-class _MockProject extends Mock implements Project {}
-
-class _MockArgResults extends Mock implements ArgResults {}
 
 void main() {
   group('windows feature add cubit', () {
@@ -45,9 +40,9 @@ void main() {
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
 
-      logger = _MockLogger();
+      logger = MockLogger();
 
-      project = _MockProject();
+      project = MockProject();
       when(
         () => project.addCubit(
           name: any(named: 'name'),
@@ -60,7 +55,7 @@ void main() {
       when(() => project.platformIsActivated(Platform.windows))
           .thenReturn(true);
 
-      argResults = _MockArgResults();
+      argResults = MockArgResults();
       featureName = 'my_cool_feature';
       name = 'FooBar';
       when(() => argResults['feature-name']).thenReturn(featureName);

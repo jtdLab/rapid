@@ -13,24 +13,7 @@ import 'package:rapid_cli/src/project/app_package/platform_native_directory/wind
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 
-abstract class _GeneratorBuilder {
-  Future<MasonGenerator> call(MasonBundle bundle);
-}
-
-class _MockAppPackage extends Mock implements AppPackage {}
-
-class _MockProject extends Mock implements Project {}
-
-class _MockGeneratorBuilder extends Mock implements _GeneratorBuilder {}
-
-class _MockMasonGenerator extends Mock implements MasonGenerator {}
-
-class _MockLogger extends Mock implements Logger {}
-
-class _FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
-
-class _FakeMasonBundle extends Fake implements MasonBundle {}
+import '../../../mocks.dart';
 
 void main() {
   group('PlatformNativeDirectory', () {
@@ -58,21 +41,21 @@ void main() {
         );
 
     setUpAll(() {
-      registerFallbackValue(_FakeDirectoryGeneratorTarget());
-      registerFallbackValue(_FakeMasonBundle());
+      registerFallbackValue(FakeDirectoryGeneratorTarget());
+      registerFallbackValue(FakeMasonBundle());
     });
 
     setUp(() {
       platform = Platform.android;
 
-      appPackage = _MockAppPackage();
-      project = _MockProject();
+      appPackage = MockAppPackage();
+      project = MockProject();
       when(() => project.name()).thenReturn(projectName);
       when(() => appPackage.path).thenReturn(appPackagePath);
       when(() => appPackage.project).thenReturn(project);
 
-      generatorBuilder = _MockGeneratorBuilder();
-      generator = _MockMasonGenerator();
+      generatorBuilder = MockGeneratorBuilder();
+      generator = MockMasonGenerator();
       when(() => generator.id).thenReturn('generator_id');
       when(() => generator.description).thenReturn('generator description');
       when(
@@ -112,7 +95,7 @@ void main() {
       setUp(() {
         description = null;
         orgName = null;
-        logger = _MockLogger();
+        logger = MockLogger();
       });
 
       test(

@@ -6,13 +6,7 @@ import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
-class _MockLogger extends Mock implements Logger {}
-
-class _MockMelosFile extends Mock implements MelosFile {}
-
-class _MockProject extends Mock implements Project {}
-
-class _MockProgress extends Mock implements Progress {}
+import '../src/mocks.dart';
 
 void Function() _overridePrint(void Function(List<String>) fn) {
   return () {
@@ -44,9 +38,9 @@ void Function() withRunner(
       fn,
 ) {
   return _overridePrint((printLogs) async {
-    final logger = _MockLogger();
+    final logger = MockLogger();
 
-    final progress = _MockProgress();
+    final progress = MockProgress();
     final progressLogs = <String>[];
     final commandRunner = RapidCommandRunner(
       logger: logger,
@@ -80,17 +74,17 @@ void Function() withRunnerOnProject(
 ) {
   return _overridePrint((printLogs) async {
     registerFallbackValue(Platform.android);
-    final logger = _MockLogger();
-    final melosFile = _MockMelosFile();
+    final logger = MockLogger();
+    final melosFile = MockMelosFile();
     when(() => melosFile.exists()).thenReturn(true);
     when(() => melosFile.readName()).thenReturn('test_app');
-    final project = _MockProject();
+    final project = MockProject();
     when(() => project.exists()).thenReturn(true);
     when(() => project.platformIsActivated(any())).thenReturn(true);
     // TODO
     //when(() => project.melosFile).thenReturn(melosFile);
     //when(() => project.isActivated(any())).thenReturn(true);
-    final progress = _MockProgress();
+    final progress = MockProgress();
     final progressLogs = <String>[];
     final commandRunner = RapidCommandRunner(
       logger: logger,

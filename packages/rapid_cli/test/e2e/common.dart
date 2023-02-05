@@ -7,6 +7,29 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
+// TODO use later
+/* String tempPath = p.join(Directory.current.path, '.dart_tool', 'test', 'tmp');
+String fixturesPath = p.join(Directory.current.path, 'test', 'e2e', 'fixtures');
+
+Directory getTempDir() {
+  final dir = Directory(tempPath);
+  if (dir.existsSync()) {
+    dir.deleteSync(recursive: true);
+  }
+  dir.createSync(recursive: true);
+  return dir;
+}
+
+class FixtureNotFound implements Exception {}
+
+Directory getFixture(String name) {
+  final dir = Directory(p.join(fixturesPath, name));
+  if (dir.existsSync()) {
+    return dir;
+  }
+  throw FixtureNotFound();
+} */
+
 /* String tempPath = p.join(Directory.current.path, '.dart_tool', 'test', 'tmp');
 String fixturesPath = p.join(Directory.current.path, 'test', 'e2e', 'fixtures');
  */

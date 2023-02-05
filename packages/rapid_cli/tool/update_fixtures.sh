@@ -3,7 +3,7 @@
 # Run from packages/rapid_cli
 
 # Generates fresh fixtures projects used for e2e testing.
-cd fixtures
+cd test/e2e/fixtures
 
 echo "Generating fixture project without a platform activated ..."
 rm -r project_none

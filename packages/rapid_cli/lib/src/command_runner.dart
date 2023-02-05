@@ -39,7 +39,7 @@ class RapidCommandRunner extends CommandRunner<int> {
         help: 'Enable verbose logging.',
         negatable: false,
       );
-    final p = project ?? Project();
+    final p = project ?? Project(); // TODO need to pass down
     addCommand(ActivateCommand(logger: _logger, project: p));
     addCommand(AndroidCommand(logger: _logger, project: p));
     addCommand(CreateCommand(logger: _logger));

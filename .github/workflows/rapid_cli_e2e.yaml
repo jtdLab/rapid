@@ -16,85 +16,85 @@ jobs:
       matrix:
         test:
           # E2E tests for create command
-          - test/src/commands/create/e2e_test.dart
+          - test/e2e/create_test.dart
 
           # E2E tests for deactivate command
-          - test/src/commands/deactivate/android/e2e_test.dart
-          - test/src/commands/deactivate/ios/e2e_test.dart
-          - test/src/commands/deactivate/linux/e2e_test.dart
-          - test/src/commands/deactivate/macos/e2e_test.dart
-          - test/src/commands/deactivate/web/e2e_test.dart
-          - test/src/commands/deactivate/windows/e2e_test.dart
+          - test/e2e/deactivate_android_test.dart
+          - test/e2e/deactivate_ios_test.dart
+          - test/e2e/deactivate_linux_test.dart
+          - test/e2e/deactivate_macos_test.dart
+          - test/e2e/deactivate_web_test.dart
+          - test/e2e/deactivate_windows_test.dart
 
           # E2E tests for domain command
-          - test/src/commands/domain/add/entity/e2e_test.dart
-          - test/src/commands/domain/add/service_interface/e2e_test.dart
-          - test/src/commands/domain/remove/entity/e2e_test.dart
-          - test/src/commands/domain/remove/service_interface/e2e_test.dart
-          - test/src/commands/domain/remove/value_object/e2e_test.dart
+          - test/e2e/domain_add_entity_test.dart
+          - test/e2e/domain_add_service_interface_test.dart
+          - test/e2e/domain_remove_entity_test.dart
+          - test/e2e/domain_remove_service_interface_test.dart
+          - test/e2e/domain_remove_value_object_test.dart
 
           # E2E tests for infrastructure command
-          - test/src/commands/infrastructure/add/data_transfer_object/e2e_test.dart
-          - test/src/commands/infrastructure/add/service_implementation/e2e_test.dart
-          - test/src/commands/infrastructure/remove/data_transfer_object/e2e_test.dart
-          - test/src/commands/infrastructure/remove/service_implementation/e2e_test.dart
+          - test/e2e/infrastructure_add_data_transfer_object_test.dart
+          - test/e2e/infrastructure_add_service_implementation_test.dart
+          - test/e2e/infrastructure_remove_data_transfer_object_test.dart
+          - test/e2e/infrastructure_remove_service_implementation_test.dart
 
           # E2E tests for ui command
-          - test/src/commands/ui/android/add/widget/e2e_test.dart
-          - test/src/commands/ui/android/remove/widget/e2e_test.dart
-          - test/src/commands/ui/ios/add/widget/e2e_test.dart
-          - test/src/commands/ui/ios/remove/widget/e2e_test.dart
-          - test/src/commands/ui/linux/add/widget/e2e_test.dart
-          - test/src/commands/ui/linux/remove/widget/e2e_test.dart
-          - test/src/commands/ui/macos/add/widget/e2e_test.dart
-          - test/src/commands/ui/macos/remove/widget/e2e_test.dart
-          - test/src/commands/ui/web/add/widget/e2e_test.dart
-          - test/src/commands/ui/web/remove/widget/e2e_test.dart
-          - test/src/commands/ui/windows/add/widget/e2e_test.dart
-          - test/src/commands/ui/windows/remove/widget/e2e_test.dart
+          - test/e2e/ui_android_add_widget_test.dart
+          - test/e2e/ui_android_remove_widget_test.dart
+          - test/e2e/ui_ios_add_widget_test.dart
+          - test/e2e/ui_ios_remove_widget_test.dart
+          - test/e2e/ui_linux_add_widget_test.dart
+          - test/e2e/ui_linux_remove_widget_test.dart
+          - test/e2e/ui_macos_add_widget_test.dart
+          - test/e2e/ui_macos_remove_widget_test.dart
+          - test/e2e/ui_web_add_widget_test.dart
+          - test/e2e/ui_web_remove_widget_test.dart
+          - test/e2e/ui_windows_add_widget_test.dart
+          - test/e2e/ui_windows_remove_widget_test.dart
 
           # E2E tests for platform command
-          - test/src/commands/android/add/feature/e2e_test.dart
-          - test/src/commands/android/add/language/e2e_test.dart
-          - test/src/commands/android/feature/add/bloc/e2e_test.dart
-          - test/src/commands/android/feature/add/cubit/e2e_test.dart
-          - test/src/commands/android/remove/feature/e2e_test.dart
-          - test/src/commands/android/remove/language/e2e_test.dart
+          - test/e2e/android_add_feature_test.dart
+          - test/e2e/android_add_language_test.dart
+          - test/e2e/android_feature_add_bloc_test.dart
+          - test/e2e/android_feature_add_cubit_test.dart
+          - test/e2e/android_remove_feature_test.dart
+          - test/e2e/android_remove_language_test.dart
 
-          - test/src/commands/ios/add/feature/e2e_test.dart
-          - test/src/commands/ios/add/language/e2e_test.dart
-          - test/src/commands/ios/feature/add/bloc/e2e_test.dart
-          - test/src/commands/ios/feature/add/cubit/e2e_test.dart
-          - test/src/commands/ios/remove/feature/e2e_test.dart
-          - test/src/commands/ios/remove/language/e2e_test.dart
+          - test/e2e/ios_add_feature_test.dart
+          - test/e2e/ios_add_language_test.dart
+          - test/e2e/ios_feature_add_bloc_test.dart
+          - test/e2e/ios_feature_add_cubit_test.dart
+          - test/e2e/ios_remove_feature_test.dart
+          - test/e2e/ios_remove_language_test.dart
 
-          - test/src/commands/linux/add/feature/e2e_test.dart
-          - test/src/commands/linux/add/language/e2e_test.dart
-          - test/src/commands/linux/feature/add/bloc/e2e_test.dart
-          - test/src/commands/linux/feature/add/cubit/e2e_test.dart
-          - test/src/commands/linux/remove/feature/e2e_test.dart
-          - test/src/commands/linux/remove/language/e2e_test.dart
+          - test/e2e/linux_add_feature_test.dart
+          - test/e2e/linux_add_language_test.dart
+          - test/e2e/linux_feature_add_bloc_test.dart
+          - test/e2e/linux_feature_add_cubit_test.dart
+          - test/e2e/linux_remove_feature_test.dart
+          - test/e2e/linux_remove_language_test.dart
 
-          - test/src/commands/macos/add/feature/e2e_test.dart
-          - test/src/commands/macos/add/language/e2e_test.dart
-          - test/src/commands/macos/feature/add/bloc/e2e_test.dart
-          - test/src/commands/macos/feature/add/cubit/e2e_test.dart
-          - test/src/commands/macos/remove/feature/e2e_test.dart
-          - test/src/commands/macos/remove/language/e2e_test.dart
+          - test/e2e/macos_add_feature_test.dart
+          - test/e2e/macos_add_language_test.dartØØ
+          - test/e2e/macos_feature_add_bloc_test.dart
+          - test/e2e/macos_feature_add_cubit_test.dart
+          - test/e2e/macos_remove_feature_test.dart
+          - test/e2e/macos_remove_language_test.dart
 
-          - test/src/commands/web/add/feature/e2e_test.dart
-          - test/src/commands/web/add/language/e2e_test.dart
-          - test/src/commands/web/feature/add/bloc/e2e_test.dart
-          - test/src/commands/web/feature/add/cubit/e2e_test.dart
-          - test/src/commands/web/remove/feature/e2e_test.dart
-          - test/src/commands/web/remove/language/e2e_test.dart
+          - test/e2e/web_add_feature_test.dart
+          - test/e2e/web_add_language_test.dart
+          - test/e2e/web_feature_add_bloc_test.dart
+          - test/e2e/web_feature_add_cubit_test.dart
+          - test/e2e/web_remove_feature_test.dart
+          - test/e2e/web_remove_language_test.dart
 
-          - test/src/commands/windows/add/feature/e2e_test.dart
-          - test/src/commands/windows/add/language/e2e_test.dart
-          - test/src/commands/windows/feature/add/bloc/e2e_test.dart
-          - test/src/commands/windows/feature/add/cubit/e2e_test.dart
-          - test/src/commands/windows/remove/feature/e2e_test.dart
-          - test/src/commands/windows/remove/language/e2e_test.dart
+          - test/e2e/windows_add_feature_test.dart
+          - test/e2e/windows_add_language_test.dart
+          - test/e2e/windows_feature_add_bloc_test.dart
+          - test/e2e/windows_feature_add_cubit_test.dart
+          - test/e2e/windows_remove_feature_test.dart
+          - test/e2e/windows_remove_language_test.dart
 
     steps:
       - uses: actions/checkout@v3
@@ -145,10 +145,10 @@ jobs:
       matrix:
         test:
           # E2E tests for activate command
-          - test/src/commands/activate/android/e2e_test.dart
+          - test/e2e/activate_android_test.dart
 
           # E2E tests for create command
-          - test/src/commands/create/e2e_test.dart
+          - test/e2e/create_test.dart
 
     steps:
       - uses: actions/checkout@v3
@@ -228,10 +228,10 @@ jobs:
       matrix:
         test:
           # E2E tests for activate command
-          - test/src/commands/activate/ios/e2e_test.dart
+          - test/e2e/activate_ios_test.dart
 
           # E2E tests for create command
-          - test/src/commands/create/e2e_test.dart
+          - test/e2e/create_test.dart
 
     steps:
       - uses: actions/checkout@v3
@@ -280,10 +280,10 @@ jobs:
       matrix:
         test:
           # E2E tests for activate command
-          - test/src/commands/activate/linux/e2e_test.dart
+          - test/e2e/activate_linux_test.dart
 
           # E2E tests for create command
-          - test/src/commands/create/e2e_test.dart
+          - test/e2e/create_test.dart
 
     steps:
       - uses: actions/checkout@v3
@@ -331,10 +331,10 @@ jobs:
       matrix:
         test:
           # E2E tests for activate command
-          - test/src/commands/activate/macos/e2e_test.dart
+          - test/e2e/activate_macos_test.dart
 
           # E2E tests for create command
-          - test/src/commands/create/e2e_test.dart
+          - test/e2e/create_test.dart
 
     steps:
       - uses: actions/checkout@v3
@@ -375,10 +375,10 @@ jobs:
       matrix:
         test:
           # E2E tests for activate command
-          - test/src/commands/activate/web/e2e_test.dart
+          - test/e2e/activate_web_test.dart
 
           # E2E tests for create command
-          - test/src/commands/create/e2e_test.dart
+          - test/e2e/create_test.dart
 
     steps:
       - uses: actions/checkout@v3
@@ -420,10 +420,10 @@ jobs:
       matrix:
         test:
           # E2E tests for activate command
-          - test/src/commands/activate/windows/e2e_test.dart
+          - test/e2e/activate_windows_test.dart
 
           # E2E tests for create command
-          - test/src/commands/create/e2e_test.dart
+          - test/e2e/create_test.dart
 
     steps:
       - uses: actions/checkout@v3

@@ -33,7 +33,7 @@ late Directory cwd;
 Future<void> setupProjectNoPlatforms() async {
   projectName = 'project_none';
   await copyPath(
-    Directory(p.join(cwd.path, 'fixtures/$projectName')).path,
+    p.join(cwd.path, 'test', 'e2e', 'fixtures', projectName),
     Directory.current.path,
   );
 
@@ -44,7 +44,7 @@ Future<void> setupProjectNoPlatforms() async {
 Future<void> setupProjectWithPlatform(Platform platform) async {
   projectName = 'project_${platform.name}';
   await copyPath(
-    Directory(p.join(cwd.path, 'fixtures/$projectName')).path,
+    p.join(cwd.path, 'test', 'e2e', 'fixtures', projectName),
     Directory.current.path,
   );
 
@@ -86,18 +86,18 @@ void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
 
 Future<void> addEntity({String? outputDir}) async {
   await copyPath(
-    Directory(p.join(cwd.path, 'fixtures', 'entity', 'lib')).path,
+    p.join(cwd.path, 'test', 'e2e', 'fixtures', 'entity', 'lib'),
     p.join(domainPackage.path, 'lib', outputDir ?? ''),
   );
   await copyPath(
-    Directory(p.join(cwd.path, 'fixtures', 'entity', 'test')).path,
+    p.join(cwd.path, 'test', 'e2e', 'fixtures', 'entity', 'test'),
     p.join(domainPackage.path, 'test', outputDir ?? ''),
   );
 }
 
 Future<void> addServiceInterface({String? outputDir}) async {
   await copyPath(
-    Directory(p.join(cwd.path, 'fixtures', 'service_interface')).path,
+    p.join(cwd.path, 'test', 'e2e', 'fixtures', 'service_interface'),
     p.join(domainPackage.path, 'lib', outputDir ?? ''),
   );
 }

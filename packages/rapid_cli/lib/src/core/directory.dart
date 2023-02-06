@@ -30,8 +30,8 @@ class Directory extends FileSystemEntity {
   @override
   bool exists() => _directory.existsSync();
 
-  List<FileSystemEntity> list() => _directory
-      .listSync(recursive: true)
+  List<FileSystemEntity> list({bool recursive = false}) => _directory
+      .listSync(recursive: recursive)
       .map(
         (e) => e is io.File
             ? File(

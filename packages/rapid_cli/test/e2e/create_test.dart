@@ -11,7 +11,7 @@ void main() {
   group(
     'E2E',
     () {
-      final cwd = Directory.current;
+      cwd = Directory.current;
 
       late RapidCommandRunner commandRunner;
 

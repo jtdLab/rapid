@@ -85,7 +85,7 @@ jobs:
           - test/e2e/linux_remove_language_test.dart
 
           - test/e2e/macos_add_feature_test.dart
-          - test/e2e/macos_add_language_test.dartØØ
+          - test/e2e/macos_add_language_test.dart
           - test/e2e/macos_feature_add_bloc_test.dart
           - test/e2e/macos_feature_add_cubit_test.dart
           - test/e2e/macos_remove_feature_test.dart

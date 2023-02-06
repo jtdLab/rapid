@@ -29,7 +29,7 @@ void main() {
         'activate macos (fast)',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
 
           // Act
           final commandResult = await commandRunner.run(
@@ -60,7 +60,7 @@ void main() {
         'activate macos',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
 
           // Act
           final commandResult = await commandRunner.run(

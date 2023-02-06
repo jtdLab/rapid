@@ -66,6 +66,7 @@ import 'common.dart';
   );
 }
  */
+
 void main() {
   group(
     'E2E',
@@ -88,7 +89,7 @@ void main() {
         'activate android (fast)',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
 
           // Act
           final commandResult = await commandRunner.run(
@@ -119,7 +120,7 @@ void main() {
         'activate android',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
 
           // Act
           final commandResult = await commandRunner.run(

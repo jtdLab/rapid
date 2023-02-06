@@ -29,7 +29,7 @@ void main() {
         'web feature add bloc (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.web);
+          await setupProject(Platform.web);
           final name = 'FooBar';
           final featureName = 'home_page';
 
@@ -68,7 +68,7 @@ void main() {
         'web feature add bloc',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.web);
+          await setupProject(Platform.web);
           final name = 'FooBar';
           final featureName = 'home_page';
 

@@ -30,7 +30,7 @@ void main() {
         () async {
           // Arrange
           const language = 'fr';
-          await setupProjectWithPlatform(Platform.ios);
+          await setupProject(Platform.ios);
           languageFiles('home_page', Platform.ios, [language]).create();
 
           // Act
@@ -62,7 +62,7 @@ void main() {
         () async {
           // Arrange
           const language = 'fr';
-          await setupProjectWithPlatform(Platform.ios);
+          await setupProject(Platform.ios);
           languageFiles('home_page', Platform.ios, [language]).create();
 
           // Act

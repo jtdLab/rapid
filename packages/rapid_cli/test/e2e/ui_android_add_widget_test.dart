@@ -29,7 +29,7 @@ void main() {
         'ui android add widget (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.android);
+          await setupProject(Platform.android);
           final name = 'FooBar';
 
           // Act + Assert
@@ -63,7 +63,7 @@ void main() {
         'ui android add widget',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.android);
+          await setupProject(Platform.android);
           final name = 'FooBar';
 
           // Act + Assert

@@ -30,7 +30,7 @@ void main() {
         () async {
           // Arrange
           const language = 'fr';
-          await setupProjectWithPlatform(Platform.windows);
+          await setupProject(Platform.windows);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -58,7 +58,7 @@ void main() {
         () async {
           // Arrange
           const language = 'fr';
-          await setupProjectWithPlatform(Platform.windows);
+          await setupProject(Platform.windows);
 
           // Act
           final commandResult = await commandRunner.run(

@@ -29,7 +29,7 @@ void main() {
         'deactivate ios (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.ios);
+          await setupProject(Platform.ios);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -54,7 +54,7 @@ void main() {
         'deactivate ios',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.ios);
+          await setupProject(Platform.ios);
 
           // Act
           final commandResult = await commandRunner.run(

@@ -30,7 +30,7 @@ void main() {
         () async {
           // Arrange
           const language = 'fr';
-          await setupProjectWithPlatform(Platform.web);
+          await setupProject(Platform.web);
           languageFiles('home_page', Platform.web, [language]).create();
 
           // Act
@@ -62,7 +62,7 @@ void main() {
         () async {
           // Arrange
           const language = 'fr';
-          await setupProjectWithPlatform(Platform.web);
+          await setupProject(Platform.web);
           languageFiles('home_page', Platform.web, [language]).create();
 
           // Act

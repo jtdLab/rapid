@@ -30,7 +30,7 @@ void main() {
         () async {
           // Arrange
           const language = 'fr';
-          await setupProjectWithPlatform(Platform.android);
+          await setupProject(Platform.android);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -58,7 +58,7 @@ void main() {
         () async {
           // Arrange
           const language = 'fr';
-          await setupProjectWithPlatform(Platform.android);
+          await setupProject(Platform.android);
 
           // Act
           final commandResult = await commandRunner.run(

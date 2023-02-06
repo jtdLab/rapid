@@ -29,7 +29,7 @@ void main() {
         'ui macos add widget (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.macos);
+          await setupProject(Platform.macos);
           final name = 'FooBar';
 
           // Act + Assert
@@ -63,7 +63,7 @@ void main() {
         'ui macos add widget',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.macos);
+          await setupProject(Platform.macos);
           final name = 'FooBar';
 
           // Act + Assert

@@ -28,7 +28,7 @@ void main() {
         'infrastructure remove data_transfer_object (fast)',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final entityName = 'FooBar';
           final name = '${entityName}Dto';
           final outputDir = 'foo';
@@ -75,7 +75,7 @@ void main() {
         'infrastructure remove data_transfer_object',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final entityName = 'FooBar';
           final name = '${entityName}Dto';
           final outputDir = 'foo';

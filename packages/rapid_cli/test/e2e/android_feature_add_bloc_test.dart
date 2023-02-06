@@ -29,7 +29,7 @@ void main() {
         'android feature add bloc (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.android);
+          await setupProject(Platform.android);
           final name = 'FooBar';
           final featureName = 'home_page';
 
@@ -68,7 +68,7 @@ void main() {
         'android feature add bloc',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.android);
+          await setupProject(Platform.android);
           final name = 'FooBar';
           final featureName = 'home_page';
 

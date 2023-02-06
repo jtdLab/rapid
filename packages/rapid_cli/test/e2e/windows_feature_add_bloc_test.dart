@@ -29,7 +29,7 @@ void main() {
         'windows feature add bloc (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.windows);
+          await setupProject(Platform.windows);
           final name = 'FooBar';
           final featureName = 'home_page';
 
@@ -68,7 +68,7 @@ void main() {
         'windows feature add bloc',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.windows);
+          await setupProject(Platform.windows);
           final name = 'FooBar';
           final featureName = 'home_page';
 

@@ -29,7 +29,7 @@ void main() {
         'ui android remove widget (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.android);
+          await setupProject(Platform.android);
           final name = 'FooBar';
           final dir = 'foo';
           widgetFiles(name: name, platform: Platform.android).create();
@@ -68,7 +68,7 @@ void main() {
         'ui android remove widget',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.android);
+          await setupProject(Platform.android);
           final name = 'FooBar';
           final dir = 'foo';
           widgetFiles(name: name, platform: Platform.android).create();

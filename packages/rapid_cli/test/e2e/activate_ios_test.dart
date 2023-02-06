@@ -29,7 +29,7 @@ void main() {
         'activate ios (fast)',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
 
           // Act
           final commandResult = await commandRunner.run(
@@ -58,7 +58,7 @@ void main() {
         'activate ios',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
 
           // Act
           final commandResult = await commandRunner.run(

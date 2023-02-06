@@ -29,7 +29,7 @@ void main() {
         'ui linux remove widget (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.linux);
+          await setupProject(Platform.linux);
           final name = 'FooBar';
           final dir = 'foo';
           widgetFiles(name: name, platform: Platform.linux).create();
@@ -68,7 +68,7 @@ void main() {
         'ui linux remove widget',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.linux);
+          await setupProject(Platform.linux);
           final name = 'FooBar';
           final dir = 'foo';
           widgetFiles(name: name, platform: Platform.linux).create();

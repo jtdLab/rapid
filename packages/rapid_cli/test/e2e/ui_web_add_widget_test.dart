@@ -29,7 +29,7 @@ void main() {
         'ui web add widget (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.web);
+          await setupProject(Platform.web);
           final name = 'FooBar';
 
           // Act + Assert
@@ -63,7 +63,7 @@ void main() {
         'ui web add widget',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.web);
+          await setupProject(Platform.web);
           final name = 'FooBar';
 
           // Act + Assert

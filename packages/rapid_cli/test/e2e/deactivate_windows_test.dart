@@ -29,7 +29,7 @@ void main() {
         'deactivate windows (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.windows);
+          await setupProject(Platform.windows);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -54,7 +54,7 @@ void main() {
         'deactivate windows',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.windows);
+          await setupProject(Platform.windows);
 
           // Act
           final commandResult = await commandRunner.run(

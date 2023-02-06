@@ -29,7 +29,7 @@ void main() {
         'deactivate linux (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.linux);
+          await setupProject(Platform.linux);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -54,7 +54,7 @@ void main() {
         'deactivate linux',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.linux);
+          await setupProject(Platform.linux);
 
           // Act
           final commandResult = await commandRunner.run(

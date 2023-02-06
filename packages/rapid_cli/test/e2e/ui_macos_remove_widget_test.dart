@@ -29,7 +29,7 @@ void main() {
         'ui macos remove widget (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.macos);
+          await setupProject(Platform.macos);
           final name = 'FooBar';
           final dir = 'foo';
           widgetFiles(name: name, platform: Platform.macos).create();
@@ -68,7 +68,7 @@ void main() {
         'ui macos remove widget',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.macos);
+          await setupProject(Platform.macos);
           final name = 'FooBar';
           final dir = 'foo';
           widgetFiles(name: name, platform: Platform.macos).create();

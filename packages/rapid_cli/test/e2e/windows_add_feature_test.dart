@@ -30,7 +30,7 @@ void main() {
         () async {
           // Arrange
           const featureName = 'my_feature';
-          await setupProjectWithPlatform(Platform.windows);
+          await setupProject(Platform.windows);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -59,7 +59,7 @@ void main() {
         () async {
           // Arrange
           const featureName = 'my_feature';
-          await setupProjectWithPlatform(Platform.windows);
+          await setupProject(Platform.windows);
 
           // Act
           final commandResult = await commandRunner.run(

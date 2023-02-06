@@ -29,7 +29,7 @@ void main() {
         'deactivate android (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.android);
+          await setupProject(Platform.android);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -54,7 +54,7 @@ void main() {
         'deactivate android',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.android);
+          await setupProject(Platform.android);
 
           // Act
           final commandResult = await commandRunner.run(

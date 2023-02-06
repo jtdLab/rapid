@@ -28,7 +28,7 @@ void main() {
         'domain remove entity (fast)',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final name = 'FooBar';
           final dir = 'foo';
           entityFiles(name: name).create();
@@ -65,7 +65,7 @@ void main() {
         'domain remove entity',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final name = 'FooBar';
           final dir = 'foo';
           entityFiles(name: name).create();

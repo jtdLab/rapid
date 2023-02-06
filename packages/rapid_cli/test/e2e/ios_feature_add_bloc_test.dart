@@ -29,7 +29,7 @@ void main() {
         'ios feature add bloc (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.ios);
+          await setupProject(Platform.ios);
           final name = 'FooBar';
           final featureName = 'home_page';
 
@@ -68,7 +68,7 @@ void main() {
         'ios feature add bloc',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.ios);
+          await setupProject(Platform.ios);
           final name = 'FooBar';
           final featureName = 'home_page';
 

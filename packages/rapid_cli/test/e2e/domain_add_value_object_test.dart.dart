@@ -28,7 +28,7 @@ void main() {
         'domain add value_object (fast)',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final name = 'FooBar';
 
           // Act + Assert

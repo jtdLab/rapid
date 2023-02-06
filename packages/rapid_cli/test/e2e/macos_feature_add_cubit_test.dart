@@ -29,7 +29,7 @@ void main() {
         'macos feature add cubit (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.macos);
+          await setupProject(Platform.macos);
           final name = 'FooBar';
           final featureName = 'home_page';
 
@@ -68,7 +68,7 @@ void main() {
         'macos feature add cubit',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.macos);
+          await setupProject(Platform.macos);
           final name = 'FooBar';
           final featureName = 'home_page';
 

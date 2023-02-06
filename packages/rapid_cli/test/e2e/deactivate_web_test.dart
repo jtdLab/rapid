@@ -29,7 +29,7 @@ void main() {
         'deactivate web (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.web);
+          await setupProject(Platform.web);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -54,7 +54,7 @@ void main() {
         'deactivate web',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.web);
+          await setupProject(Platform.web);
 
           // Act
           final commandResult = await commandRunner.run(

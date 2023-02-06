@@ -29,7 +29,7 @@ void main() {
         'deactivate macos (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.macos);
+          await setupProject(Platform.macos);
 
           // Act
           final commandResult = await commandRunner.run(
@@ -54,7 +54,7 @@ void main() {
         'deactivate macos',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.macos);
+          await setupProject(Platform.macos);
 
           // Act
           final commandResult = await commandRunner.run(

@@ -29,7 +29,7 @@ void main() {
         'ui windows add widget (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.windows);
+          await setupProject(Platform.windows);
           final name = 'FooBar';
 
           // Act + Assert
@@ -63,7 +63,7 @@ void main() {
         'ui windows add widget',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.windows);
+          await setupProject(Platform.windows);
           final name = 'FooBar';
 
           // Act + Assert

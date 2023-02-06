@@ -28,7 +28,7 @@ void main() {
         'infrastructure remove service_implementation (fast)',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final name = 'Fake';
           final serviceName = 'FooBar';
           final outputDir = 'foo';
@@ -86,7 +86,7 @@ void main() {
         'infrastructure remove service_implementation',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final name = 'Fake';
           final serviceName = 'FooBar';
           final outputDir = 'foo';

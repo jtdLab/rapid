@@ -29,7 +29,7 @@ void main() {
         'ui web remove widget (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.web);
+          await setupProject(Platform.web);
           final name = 'FooBar';
           final dir = 'foo';
           widgetFiles(name: name, platform: Platform.web).create();
@@ -67,7 +67,7 @@ void main() {
         'ui web remove widget',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.web);
+          await setupProject(Platform.web);
           final name = 'FooBar';
           final dir = 'foo';
           widgetFiles(name: name, platform: Platform.web).create();

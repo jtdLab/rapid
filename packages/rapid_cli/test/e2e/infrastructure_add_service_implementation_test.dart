@@ -28,7 +28,7 @@ void main() {
         'infrastructure add service_implementation (fast)',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final name = 'Fake';
           final service = 'FooBar';
           final outputDir = 'foo';
@@ -87,7 +87,7 @@ void main() {
         'infrastructure add service_implementation',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final name = 'Fake';
           final service = 'FooBar';
           final outputDir = 'foo';

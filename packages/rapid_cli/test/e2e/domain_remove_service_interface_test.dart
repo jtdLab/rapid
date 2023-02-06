@@ -28,7 +28,7 @@ void main() {
         'domain remove service_interface (fast)',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final name = 'FooBar';
           final dir = 'foo';
           serviceInterfaceFiles(name: name).create();
@@ -65,7 +65,7 @@ void main() {
         'domain remove service_interface',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final name = 'FooBar';
           final dir = 'foo';
           serviceInterfaceFiles(name: name).create();

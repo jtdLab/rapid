@@ -29,7 +29,7 @@ void main() {
         'ui windows remove widget (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.windows);
+          await setupProject(Platform.windows);
           final name = 'FooBar';
           final dir = 'foo';
           widgetFiles(name: name, platform: Platform.windows).create();
@@ -68,7 +68,7 @@ void main() {
         'ui windows remove widget',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.windows);
+          await setupProject(Platform.windows);
           final name = 'FooBar';
           final dir = 'foo';
           widgetFiles(name: name, platform: Platform.windows).create();

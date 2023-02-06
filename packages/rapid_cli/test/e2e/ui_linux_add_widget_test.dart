@@ -29,7 +29,7 @@ void main() {
         'ui linux add widget (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.linux);
+          await setupProject(Platform.linux);
           final name = 'FooBar';
 
           // Act + Assert
@@ -63,7 +63,7 @@ void main() {
         'ui linux add widget',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.linux);
+          await setupProject(Platform.linux);
           final name = 'FooBar';
 
           // Act + Assert

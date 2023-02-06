@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:io' as io;
 
 import 'package:io/io.dart' show copyPath;
 import 'package:mason/mason.dart';
@@ -7,32 +6,6 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
-// TODO use later
-/* String tempPath = p.join(Directory.current.path, '.dart_tool', 'test', 'tmp');
-String fixturesPath = p.join(Directory.current.path, 'test', 'e2e', 'fixtures');
-
-Directory getTempDir() {
-  final dir = Directory(tempPath);
-  if (dir.existsSync()) {
-    dir.deleteSync(recursive: true);
-  }
-  dir.createSync(recursive: true);
-  return dir;
-}
-
-class FixtureNotFound implements Exception {}
-
-Directory getFixture(String name) {
-  final dir = Directory(p.join(fixturesPath, name));
-  if (dir.existsSync()) {
-    return dir;
-  }
-  throw FixtureNotFound();
-} */
-
-/* String tempPath = p.join(Directory.current.path, '.dart_tool', 'test', 'tmp');
-String fixturesPath = p.join(Directory.current.path, 'test', 'e2e', 'fixtures');
- */
 /// The directory `flutter/dart test` was called from.
 ///
 /// **IMPORTANT**: This should be the rapid_cli package.
@@ -52,31 +25,40 @@ String fixturesPath = p.join(Directory.current.path, 'test', 'e2e', 'fixtures');
 /// ```
 late Directory cwd;
 
-/// Set up a Rapid test project in the cwd with NO platforms activated.
-Future<void> setupProjectNoPlatforms() async {
-  projectName = 'project_none';
+String tempPath = p.join(cwd.path, '.dart_tool', 'test', 'tmp');
+String fixturesPath = p.join(cwd.path, 'test', 'e2e', 'fixtures');
+
+Directory getTempDir() {
+  final dir = Directory(tempPath);
+  if (dir.existsSync()) {
+    dir.deleteSync(recursive: true);
+  }
+  dir.createSync(recursive: true);
+  return dir;
+}
+
+class FixtureNotFound implements Exception {}
+
+Directory _getFixture(String name) {
+  final dir = Directory(p.join(fixturesPath, name));
+  if (dir.existsSync()) {
+    return dir;
+  }
+  throw FixtureNotFound();
+}
+
+/// Set up a Rapid test project in the cwd with [activatedPlatform] platform activated.
+///
+/// If [activatedPlatform] is null NO platform will be activated.
+Future<void> setupProject([Platform? activatedPlatform]) async {
+  projectName = activatedPlatform != null
+      ? 'project_${activatedPlatform.name}'
+      : 'project_none';
   await copyPath(
-    p.join(cwd.path, 'test', 'e2e', 'fixtures', projectName),
+    _getFixture(projectName).path,
     Directory.current.path,
   );
 
-  await _runFlutterPubGetInAllDirsWithPubspec();
-}
-
-/// Set up a Rapid test project in the cwd with [platform] activated.
-Future<void> setupProjectWithPlatform(Platform platform) async {
-  projectName = 'project_${platform.name}';
-  await copyPath(
-    p.join(cwd.path, 'test', 'e2e', 'fixtures', projectName),
-    Directory.current.path,
-  );
-
-  await _runFlutterPubGetInAllDirsWithPubspec();
-}
-
-/// Runs `flutter pub get` recursivly in all dirs with pubspec.yaml
-/// starting from current directory.
-Future<void> _runFlutterPubGetInAllDirsWithPubspec() async {
   final dirsWithPubspec = Directory.current
       .listSync(recursive: true)
       .where((e) => e is File && e.path.endsWith('pubspec.yaml'))
@@ -91,36 +73,20 @@ Future<void> _runFlutterPubGetInAllDirsWithPubspec() async {
   }
 }
 
-/// Verifys wheter ALL [entities] exist on disk.
-void verifyDoExist(Iterable<FileSystemEntity> entities) {
-  for (final entity in entities) {
-    print('Verify does exist ${entity.path}');
-    expect(entity.existsSync(), true);
-  }
-}
-
-/// Verifys wheter NONE of [entities] exist on disk.
-void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
-  for (final entity in entities) {
-    print('Verify does NOT exist ${entity.path}');
-    expect(entity.existsSync(), false);
-  }
-}
-
 Future<void> addEntity({String? outputDir}) async {
   await copyPath(
-    p.join(cwd.path, 'test', 'e2e', 'fixtures', 'entity', 'lib'),
+    p.join(fixturesPath, 'entity', 'lib'),
     p.join(domainPackage.path, 'lib', outputDir ?? ''),
   );
   await copyPath(
-    p.join(cwd.path, 'test', 'e2e', 'fixtures', 'entity', 'test'),
+    p.join(fixturesPath, 'entity', 'test'),
     p.join(domainPackage.path, 'test', outputDir ?? ''),
   );
 }
 
 Future<void> addServiceInterface({String? outputDir}) async {
   await copyPath(
-    p.join(cwd.path, 'test', 'e2e', 'fixtures', 'service_interface'),
+    p.join(fixturesPath, 'service_interface'),
     p.join(domainPackage.path, 'lib', outputDir ?? ''),
   );
 }
@@ -457,6 +423,24 @@ extension IterableX<E extends FileSystemEntity> on Iterable<E> {
   }
 }
 
+/// Verifys wheter ALL [entities] exist on disk.
+void verifyDoExist(Iterable<FileSystemEntity> entities) {
+  for (final entity in entities) {
+    _println('Verify does exist ${entity.path}\n');
+
+    expect(entity.existsSync(), true);
+  }
+}
+
+/// Verifys wheter NONE of [entities] exist on disk.
+void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
+  for (final entity in entities) {
+    _println('Verify does NOT exist ${entity.path}\n');
+
+    expect(entity.existsSync(), false);
+  }
+}
+
 /// Verifys that tests in [dirs] pass with 100 % test coverage.
 ///
 /// Runs `flutter test --coverage` in every provided dir.
@@ -488,7 +472,7 @@ void verifyDoNotHaveTests(
   Iterable<Directory> dirs,
 ) {
   for (final dir in dirs) {
-    print('Verify does NOT have tests ${dir.path}');
+    _println('Verify does NOT have tests ${dir.path}\n');
 
     late bool hasNoTests;
     final testDir = Directory(p.join(dir.path, 'test'));
@@ -559,20 +543,17 @@ Future<TestResult> _runFlutterTest({
   required String cwd,
   bool coverage = true,
 }) async {
-  print('Run "flutter test${coverage ? ' --coverage' : ''}" in $cwd');
-  final testResult = await Process.run(
+  _println('Run "flutter test${coverage ? ' --coverage' : ''}" in $cwd\n');
+
+  final result = await Process.run(
     'flutter',
     ['test', if (coverage) '--coverage'],
     workingDirectory: cwd,
     runInShell: true,
   );
 
-  final String stderr = testResult.stderr;
-  final String stdout = testResult.stdout;
-
-  io.stderr.writeln(stderr);
-  print(stdout);
-
+  final String stderr = result.stderr;
+  final String stdout = result.stdout;
   if (stderr.contains('Test directory "test" not found')) {
     throw TestDirNotFound();
   }
@@ -624,9 +605,10 @@ Future<TestResult> _runFlutterTest({
     return TestResult(0, totalCoverage);
   }
 
+  _printSummary(result);
+
   final regExp = RegExp(r'-([0-9]+): Some tests failed');
   final match = regExp.firstMatch(stderr) ?? regExp.firstMatch(stdout)!;
-
   return TestResult(int.parse(match.group(1)!), totalCoverage);
 }
 
@@ -639,7 +621,7 @@ Future<int> runFlutterIntegrationTest({
   String pathToTests = '.',
   required Platform platform,
 }) async {
-  late final ProcessResult testResult;
+  late final ProcessResult result;
   if (platform == Platform.web) {
     await Process.start(
       'chromedriver',
@@ -647,7 +629,7 @@ Future<int> runFlutterIntegrationTest({
       workingDirectory: cwd,
       runInShell: true,
     );
-    testResult = await Process.run(
+    result = await Process.run(
       'flutter',
       [
         'drive',
@@ -663,7 +645,7 @@ Future<int> runFlutterIntegrationTest({
     );
   } else {
     final device = platform == Platform.ios ? _iosDevice : platform.name;
-    testResult = await Process.run(
+    result = await Process.run(
       'flutter',
       ['test', pathToTests, '-d', device],
       workingDirectory: cwd,
@@ -671,12 +653,8 @@ Future<int> runFlutterIntegrationTest({
     );
   }
 
-  final String stderr = testResult.stderr;
-  final String stdout = testResult.stdout;
-
-  io.stderr.writeln(stderr);
-  print(stdout);
-
+  final String stderr = result.stderr;
+  final String stdout = result.stdout;
   if (stderr.contains('Test directory "test" not found')) {
     throw TestDirNotFound();
   }
@@ -687,9 +665,10 @@ Future<int> runFlutterIntegrationTest({
     return 0;
   }
 
+  _printSummary(result);
+
   final regExp = RegExp(r'-([0-9]+): Some tests failed');
   final match = regExp.firstMatch(stderr) ?? regExp.firstMatch(stdout)!;
-
   return int.parse(match.group(1)!);
 }
 
@@ -699,7 +678,8 @@ Future<int> runFlutterIntegrationTest({
 Future<int> _runFlutterAnalyze({
   String cwd = '.',
 }) async {
-  print('Run "flutter analyze" in $cwd');
+  _println('Run "flutter analyze" in $cwd\n');
+
   final result = await Process.run(
     'flutter',
     ['analyze'],
@@ -708,26 +688,25 @@ Future<int> _runFlutterAnalyze({
   );
 
   final String stderr = result.stderr;
-  final String stdout = result.stdout;
-  io.stderr.writeln(stderr);
-  print(stdout);
-
   if (stderr.isEmpty) {
     return 0;
   }
+
+  _printSummary(result);
 
   final regExp = RegExp(r'([0-9]+) issues? found');
   final match = regExp.firstMatch(stderr)!;
   return int.parse(match.group(1)!);
 }
 
-/// Run `dart format --set-exit-if-changed` in [cwd].
+/// Run `dart format . --set-exit-if-changed` in [cwd].
 ///
-/// Returns the amount of formatting issues.
+/// Returns the exit code of the process.
 Future<int> _runDartFormat({
   String cwd = '.',
 }) async {
-  print('Run "dart format . --set-exit-if-changed" in $cwd');
+  _println('Run "dart format . --set-exit-if-changed" in $cwd\n');
+
   final result = await Process.run(
     'dart',
     ['format', '.', '--set-exit-if-changed'],
@@ -735,16 +714,49 @@ Future<int> _runDartFormat({
     runInShell: true,
   );
 
-  final String stderr = result.stderr;
+  _printSummary(result);
+
+  return result.exitCode;
+}
+
+void _printSummary(ProcessResult result) {
+  final exitCode = result.exitCode;
   final String stdout = result.stdout;
-  io.stderr.writeln(stderr);
-  print(stdout);
+  final String stderr = result.stderr;
 
-  if (stderr.isEmpty) {
-    return 0;
+  if (exitCode == 0) {
+    _println('Exited with 0.');
+  } else {
+    if (stdout.isNotEmpty) {
+      _println(stdout.trimTrailingNewLines());
+    }
+    if (stderr.isNotEmpty) {
+      _errPrintln('${stderr.trimTrailingNewLines()}\n');
+    }
+    _errPrintln('Exited with ${result.exitCode}.');
   }
+}
 
-  final regExp = RegExp(r'Formatted [0-9]+ files \(([0-9]+) changed\)');
-  final match = regExp.firstMatch(stdout)!;
-  return int.parse(match.group(1)!);
+final _verbose = bool.fromEnvironment('verbose', defaultValue: true);
+
+void _println(String? object) => _verbose ? stdout.writeln(object) : null;
+
+void _errPrintln(String? object) => _verbose ? stderr.writeln(object) : null;
+
+extension on String {
+  String trimTrailingNewLines() {
+    final regExp = RegExp('[\n]+');
+    final matches = regExp.allMatches(this);
+    if (matches.isEmpty) {
+      return this;
+    }
+
+    final lastMatch = matches.last;
+    final start = lastMatch.start;
+    if (substring(start).split('').every((e) => e == '\n')) {
+      return substring(0, start);
+    }
+
+    return this;
+  }
 }

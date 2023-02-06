@@ -29,7 +29,7 @@ void main() {
         'ui ios add widget (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.ios);
+          await setupProject(Platform.ios);
           final name = 'FooBar';
 
           // Act + Assert
@@ -63,7 +63,7 @@ void main() {
         'ui ios add widget',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.ios);
+          await setupProject(Platform.ios);
           final name = 'FooBar';
 
           // Act + Assert

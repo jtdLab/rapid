@@ -28,7 +28,7 @@ void main() {
         'infrastructure add data_transfer_object (fast)',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final entity = 'FooBar';
           final outputDir = 'foo';
           await addEntity();
@@ -77,7 +77,7 @@ void main() {
         'infrastructure add data_transfer_object',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final entity = 'FooBar';
           final outputDir = 'foo';
           await addEntity();

@@ -30,7 +30,7 @@ void main() {
         () async {
           // Arrange
           const featureName = 'foo_bar';
-          await setupProjectWithPlatform(Platform.web);
+          await setupProject(Platform.web);
           await addFeature(featureName, platform: Platform.web);
 
           // Act
@@ -59,7 +59,7 @@ void main() {
         () async {
           // Arrange
           const featureName = 'foo_bar';
-          await setupProjectWithPlatform(Platform.web);
+          await setupProject(Platform.web);
           await addFeature(featureName, platform: Platform.web);
 
           // Act

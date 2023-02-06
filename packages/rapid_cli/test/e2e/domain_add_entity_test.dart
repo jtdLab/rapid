@@ -28,7 +28,7 @@ void main() {
         'domain add entity (fast)',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final name = 'FooBar';
 
           // Act + Assert
@@ -61,7 +61,7 @@ void main() {
         'domain add entity',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final name = 'FooBar';
 
           // Act + Assert

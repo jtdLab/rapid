@@ -30,7 +30,7 @@ void main() {
         () async {
           // Arrange
           const featureName = 'foo_bar';
-          await setupProjectWithPlatform(Platform.macos);
+          await setupProject(Platform.macos);
           await addFeature(featureName, platform: Platform.macos);
 
           // Act
@@ -59,7 +59,7 @@ void main() {
         () async {
           // Arrange
           const featureName = 'foo_bar';
-          await setupProjectWithPlatform(Platform.macos);
+          await setupProject(Platform.macos);
           await addFeature(featureName, platform: Platform.macos);
 
           // Act

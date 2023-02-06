@@ -29,7 +29,7 @@ void main() {
         'ui ios remove widget (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.ios);
+          await setupProject(Platform.ios);
           final name = 'FooBar';
           final dir = 'foo';
           widgetFiles(name: name, platform: Platform.ios).create();
@@ -67,7 +67,7 @@ void main() {
         'ui ios remove widget',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.ios);
+          await setupProject(Platform.ios);
           final name = 'FooBar';
           final dir = 'foo';
           widgetFiles(name: name, platform: Platform.ios).create();

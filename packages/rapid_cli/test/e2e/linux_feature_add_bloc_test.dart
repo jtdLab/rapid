@@ -29,7 +29,7 @@ void main() {
         'linux feature add bloc (fast)',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.linux);
+          await setupProject(Platform.linux);
           final name = 'FooBar';
           final featureName = 'home_page';
 
@@ -68,7 +68,7 @@ void main() {
         'linux feature add bloc',
         () async {
           // Arrange
-          await setupProjectWithPlatform(Platform.linux);
+          await setupProject(Platform.linux);
           final name = 'FooBar';
           final featureName = 'home_page';
 

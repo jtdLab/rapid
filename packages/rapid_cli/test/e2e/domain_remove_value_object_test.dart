@@ -28,7 +28,7 @@ void main() {
         'domain remove value_object (fast)',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final name = 'FooBar';
           final dir = 'foo';
           valueObjectFiles(name: name).create();
@@ -65,7 +65,7 @@ void main() {
         'domain remove value_object',
         () async {
           // Arrange
-          await setupProjectNoPlatforms();
+          await setupProject();
           final name = 'FooBar';
           final dir = 'foo';
           valueObjectFiles(name: name).create();

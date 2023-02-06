@@ -2,6 +2,7 @@ import 'dart:io' as io;
 
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
@@ -77,8 +78,10 @@ class Widget extends FileSystemEntityCollection {
     required this.platformUiPackage,
     Directory? widgetDirectory,
     Directory? widgetTestDirectory,
+    DartFormatFixCommand? dartFormatFix,
     GeneratorBuilder? generator,
-  })  : _generator = generator ?? MasonGenerator.fromBundle,
+  })  : _dartFormatFix = dartFormatFix ?? Dart.formatFix,
+        _generator = generator ?? MasonGenerator.fromBundle,
         super([
           widgetDirectory ??
               Directory(
@@ -102,6 +105,7 @@ class Widget extends FileSystemEntityCollection {
               ),
         ]);
 
+  final DartFormatFixCommand _dartFormatFix;
   final GeneratorBuilder _generator;
 
   final String name;
@@ -130,5 +134,7 @@ class Widget extends FileSystemEntityCollection {
       },
       logger: logger,
     );
+
+    await _dartFormatFix(cwd: platformUiPackage.path, logger: logger);
   }
 }

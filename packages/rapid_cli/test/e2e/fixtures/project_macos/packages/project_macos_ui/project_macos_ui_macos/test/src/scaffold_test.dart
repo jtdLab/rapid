@@ -14,7 +14,7 @@ void main() {
       theme = const ProjectMacosScaffoldTheme(backgroundColor: backgroundColor);
       children = [
         ContentArea(
-          builder: (context, scrollController) => Container(),
+          builder: (context) => Container(),
         )
       ];
     });

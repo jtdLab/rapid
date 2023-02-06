@@ -36,8 +36,8 @@ class Directory extends FileSystemEntity {
         (e) => e is io.File
             ? File(
                 path: p.dirname(e.path),
-                name: p.basenameWithoutExtension(path),
-                extension: p.extension(e.path),
+                name: p.basenameWithoutExtension(e.path),
+                extension: p.extension(e.path).replaceAll('.', ''),
               )
             : Directory(path: e.path),
       )

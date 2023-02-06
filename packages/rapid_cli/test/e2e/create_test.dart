@@ -20,7 +20,7 @@ void main() {
       });
 
       setUp(() {
-        Directory.current = Directory.systemTemp.createTempSync();
+        Directory.current = getTempDir();
 
         commandRunner = RapidCommandRunner();
       });

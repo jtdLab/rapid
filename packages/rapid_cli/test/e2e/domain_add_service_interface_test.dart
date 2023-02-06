@@ -15,7 +15,7 @@ void main() {
       late RapidCommandRunner commandRunner;
 
       setUp(() {
-        Directory.current = Directory.systemTemp.createTempSync();
+        Directory.current = getTempDir();
 
         commandRunner = RapidCommandRunner();
       });

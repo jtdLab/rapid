@@ -76,33 +76,29 @@ class Widget extends FileSystemEntityCollection {
     required this.name,
     required this.dir,
     required this.platformUiPackage,
-    Directory? widgetDirectory,
-    Directory? widgetTestDirectory,
     DartFormatFixCommand? dartFormatFix,
     GeneratorBuilder? generator,
   })  : _dartFormatFix = dartFormatFix ?? Dart.formatFix,
         _generator = generator ?? MasonGenerator.fromBundle,
         super([
-          widgetDirectory ??
-              Directory(
-                path: p.join(
-                  platformUiPackage.path,
-                  'lib',
-                  'src',
-                  dir,
-                  name.snakeCase,
-                ),
-              ),
-          widgetTestDirectory ??
-              Directory(
-                path: p.join(
-                  platformUiPackage.path,
-                  'test',
-                  'src',
-                  dir,
-                  name.snakeCase,
-                ),
-              ),
+          Directory(
+            path: p.join(
+              platformUiPackage.path,
+              'lib',
+              'src',
+              dir,
+              name.snakeCase,
+            ),
+          ),
+          Directory(
+            path: p.join(
+              platformUiPackage.path,
+              'test',
+              'src',
+              dir,
+              name.snakeCase,
+            ),
+          ),
         ]);
 
   final DartFormatFixCommand _dartFormatFix;

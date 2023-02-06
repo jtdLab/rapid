@@ -1,12 +1,25 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 import 'mocks.dart';
+
+String tempPath = p.join('.dart_tool', 'test', 'tmp');
+
+Directory getTempDir() {
+  final dir = Directory(tempPath);
+  if (dir.existsSync()) {
+    dir.deleteSync(recursive: true);
+  }
+  dir.createSync(recursive: true);
+  return dir;
+}
 
 void Function() _overridePrint(void Function(List<String>) fn) {
   return () {

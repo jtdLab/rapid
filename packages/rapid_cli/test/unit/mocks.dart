@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
@@ -8,8 +10,8 @@ import 'package:rapid_cli/src/project/app_package/platform_native_directory/plat
 import 'package:rapid_cli/src/project/di_package/di_package.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
+import 'package:rapid_cli/src/project/platform_ui_package/platform_ui_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'dart:io';
 
 // Mocks
 
@@ -137,6 +139,17 @@ class MockArbFile extends Mock implements ArbFile {}
 
 class MockMelosFile extends Mock implements MelosFile {}
 
+class MockPlatformUiPackage extends Mock implements PlatformUiPackage {}
+
+abstract class _DartFormatFixCommand {
+  Future<void> call({
+    String cwd,
+    required Logger logger,
+  });
+}
+
+class MockDartFormatFixCommand extends Mock implements _DartFormatFixCommand {}
+
 // Fakes
 
 class FakeProcess {
@@ -165,3 +178,93 @@ class FakeDirectoryGeneratorTarget extends Fake
 class FakeMasonBundle extends Fake implements MasonBundle {}
 
 class FakeLogger extends Fake implements Logger {}
+
+// Common Mock Setups
+
+MockProject getProject() {
+  final project = MockProject();
+  when(() => project.path).thenReturn('some/path');
+  when(() => project.name()).thenReturn('some name');
+
+  return project;
+}
+
+MockMasonGenerator getMasonGenerator() {
+  final generator = MockMasonGenerator();
+  when(() => generator.id).thenReturn('some id');
+  when(() => generator.description).thenReturn('some description');
+  when(
+    () => generator.generate(
+      any(),
+      vars: any(named: 'vars'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer(
+    (_) async => List.filled(
+      2,
+      const GeneratedFile.created(path: ''),
+    ),
+  );
+
+  return generator;
+}
+
+MockGeneratorBuilder getGeneratorBuilder() {
+  final generatorBuilder = MockGeneratorBuilder();
+  when(() => generatorBuilder(any())).thenAnswer(
+    (_) async => getMasonGenerator(),
+  );
+
+  return generatorBuilder;
+}
+
+MockDartFormatFixCommand getDartFormatFix() {
+  final dartFormatFix = MockDartFormatFixCommand();
+  when(
+    () => dartFormatFix(
+      cwd: any(named: 'cwd'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+
+  return dartFormatFix;
+}
+
+MockAppPackage getAppPackage() {
+  final appPackage = MockAppPackage();
+  when(() => appPackage.path).thenReturn('some/path');
+  final project = getProject();
+  when(() => appPackage.project).thenReturn(project);
+
+  return appPackage;
+}
+
+MockPubspecFile getPubspecFile() {
+  final pubspecFile = MockPubspecFile();
+
+  return pubspecFile;
+}
+
+MockInjectionFile getInjectionFile() {
+  final injectionFile = MockInjectionFile();
+
+  return injectionFile;
+}
+
+MockDiPackage getDiPackage() {
+  final diPackage = MockDiPackage();
+
+  return diPackage;
+}
+
+MockPlatformCustomFeaturePackage getPlatformCustomFeaturePackage() {
+  final platformCustomFeaturePackage = MockPlatformCustomFeaturePackage();
+
+  return platformCustomFeaturePackage;
+}
+
+MockPlatformUiPackage getPlatformUiPackage() {
+  final platformUiPackage = MockPlatformUiPackage();
+
+  return platformUiPackage;
+}

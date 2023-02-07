@@ -226,7 +226,7 @@ void main() {
       test('add import and external package module correctly', () {
         // Arrange
         final diPackage = getDiPackage();
-        when(() => diPackage.path).thenReturn(tempPath);
+        when(() => diPackage.path).thenReturn(getTempDir().path);
         final injectionFile = _getInjectionFile(diPackage: diPackage);
         final file = File(injectionFile.path)
           ..createSync(recursive: true)
@@ -245,7 +245,7 @@ void main() {
       test('do nothing when package already exists', () {
         // Arrange
         final diPackage = getDiPackage();
-        when(() => diPackage.path).thenReturn(tempPath);
+        when(() => diPackage.path).thenReturn(getTempDir().path);
         final injectionFile = _getInjectionFile(diPackage: diPackage);
         final file = File(injectionFile.path)
           ..createSync(recursive: true)
@@ -266,7 +266,7 @@ void main() {
       test('remove import and external package module correctly', () {
         // Arrange
         final diPackage = getDiPackage();
-        when(() => diPackage.path).thenReturn(tempPath);
+        when(() => diPackage.path).thenReturn(getTempDir().path);
         final injectionFile = _getInjectionFile(diPackage: diPackage);
         final file = File(injectionFile.path)
           ..createSync(recursive: true)
@@ -285,7 +285,7 @@ void main() {
       test('do nothing when package does not exist', () {
         // Arrange
         final diPackage = getDiPackage();
-        when(() => diPackage.path).thenReturn(tempPath);
+        when(() => diPackage.path).thenReturn(getTempDir().path);
         final injectionFile = _getInjectionFile(diPackage: diPackage);
         final file = File(injectionFile.path)
           ..createSync(recursive: true)

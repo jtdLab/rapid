@@ -856,8 +856,6 @@ class MelosFile extends YamlFile {
     try {
       return readValue(['name']);
     } catch (_) {
-      print(_);
-      print(path);
       throw ReadNameFailure();
     }
   }

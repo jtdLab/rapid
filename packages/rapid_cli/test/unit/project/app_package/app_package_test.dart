@@ -432,7 +432,7 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -465,7 +465,7 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -497,7 +497,7 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -533,7 +533,7 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -568,7 +568,7 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -598,7 +598,7 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -631,7 +631,7 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -665,7 +665,7 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,

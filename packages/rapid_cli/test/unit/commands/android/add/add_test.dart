@@ -13,8 +13,8 @@ const expectedUsage = [
       '-h, --help    Print this usage information.\n'
       '\n'
       'Available subcommands:\n'
-      '  feature    Adds a feature to the Android part of an existing Rapid project.\n'
-      '  language   Adds a language to the Android part of an existing Rapid project.\n'
+      '  feature    Add a feature to the Android part of an existing Rapid project.\n'
+      '  language   Add a language to the Android part of an existing Rapid project.\n'
       '\n'
       'Run "rapid help" to see global options.'
 ];

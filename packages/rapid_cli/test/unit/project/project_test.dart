@@ -1,8 +1,10 @@
+import 'dart:io';
+
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
+import '../common.dart';
 import '../mocks.dart';
 
 const projectName = 'foo_bar';
@@ -18,6 +20,10 @@ name: foo_bar
 const melosWithoutName = '''
 some: value
 ''';
+
+MelosFile _getMelosFile({required Project project}) {
+  return MelosFile(project: project);
+}
 
 void main() {
   /*  group('Project', () {
@@ -148,70 +154,61 @@ void main() {
   });
  */
   group('MelosFile', () {
-    final cwd = Directory.current;
+    test('.path', () {
+      // Arrange
+      final project = getProject();
+      when(() => project.path).thenReturn('project/path');
+      final melosFile = _getMelosFile(project: project);
 
-    late Project project;
-    const projectPath = 'foo/bar';
-
-    late MelosFile melosFile;
-
-    setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync();
-
-      project = MockProject();
-      when(() => project.path).thenReturn(projectPath);
-
-      melosFile = MelosFile(project: project);
-
-      File(melosFile.path).createSync(recursive: true);
+      // Act + Assert
+      expect(melosFile.path, 'project/path/melos.yaml');
     });
 
-    tearDown(() {
-      Directory.current = cwd;
-    });
-
-    group('path', () {
-      test('is correct', () {
-        // Assert
-        expect(melosFile.path, '$projectPath/melos.yaml');
-      });
-    });
-
-    group('exists', () {
+    group('.exists', () {
       test('returns true when the file exists', () {
-        // Act
-        final exists = melosFile.exists();
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn(getTempDir().path);
+        final melosFile = _getMelosFile(project: project);
+        File(melosFile.path).createSync(recursive: true);
 
-        // Assert
-        expect(exists, true);
+        // Act + Assert
+        expect(melosFile.exists(), true);
       });
 
       test('returns false when the file does not exists', () {
         // Arrange
-        File(melosFile.path).deleteSync(recursive: true);
+        final project = getProject();
+        when(() => project.path).thenReturn(getTempDir().path);
+        final melosFile = _getMelosFile(project: project);
 
-        // Act
-        final exists = melosFile.exists();
-
-        // Assert
-        expect(exists, false);
+        // Act + Assert
+        expect(melosFile.exists(), false);
       });
     });
 
-    group('name', () {
+    group('.name', () {
       test('returns name', () {
         // Arrange
-        final file = File(melosFile.path);
-        file.writeAsStringSync(melosWithName);
+        final project = getProject();
+        when(() => project.path).thenReturn(getTempDir().path);
+        final melosFile = _getMelosFile(project: project);
+        File(melosFile.path)
+          ..createSync(recursive: true)
+          ..writeAsStringSync(melosWithName);
 
         // Act + Assert
         expect(melosFile.readName(), 'foo_bar');
       });
 
-      test('throws when name is not present', () {
+      test('throws read name failure when name is not present', () {
         // Arrange
-        final file = File(melosFile.path);
-        file.writeAsStringSync(melosWithoutName);
+        final project = getProject();
+        when(() => project.path).thenReturn(getTempDir().path);
+        final melosFile = _getMelosFile(project: project);
+        File(melosFile.path)
+          ..createSync(recursive: true)
+          ..writeAsStringSync(melosWithoutName);
 
         // Act + Assert
         expect(() => melosFile.readName(), throwsA(isA<ReadNameFailure>()));

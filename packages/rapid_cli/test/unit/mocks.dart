@@ -259,6 +259,7 @@ MockDiPackage getDiPackage() {
 
 MockPlatformCustomFeaturePackage getPlatformCustomFeaturePackage() {
   final platformCustomFeaturePackage = MockPlatformCustomFeaturePackage();
+  when(() => platformCustomFeaturePackage.name).thenReturn('some_feature_name');
 
   return platformCustomFeaturePackage;
 }

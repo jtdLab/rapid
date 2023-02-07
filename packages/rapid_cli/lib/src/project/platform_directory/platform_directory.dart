@@ -65,19 +65,21 @@ class PlatformDirectory extends DartPackage {
   List<PlatformCustomFeaturePackage>? customFeaturePackagesOverrides;
 
   List<PlatformCustomFeaturePackage> customFeaturePackages() =>
-      customFeaturePackagesOverrides ??
-      list()
-          .whereType<Directory>()
-          .where((e) => !e.path.endsWith('routing') && !e.path.endsWith('app'))
-          .map(
-            // TODO mayb add ofDir constructor to platfor custom feature package
-            (e) => PlatformCustomFeaturePackage(
-              p
-                  .basename(e.path)
-                  .replaceAll('${_project.name()}_${platform.name}_', ''),
-              platform,
-              project: _project,
-            ),
-          )
-          .toList();
+      (customFeaturePackagesOverrides ??
+          list()
+              .whereType<Directory>()
+              .where(
+                  (e) => !e.path.endsWith('routing') && !e.path.endsWith('app'))
+              .map(
+                // TODO mayb add ofDir constructor to platfor custom feature package
+                (e) => PlatformCustomFeaturePackage(
+                  p
+                      .basename(e.path)
+                      .replaceAll('${_project.name()}_${platform.name}_', ''),
+                  platform,
+                  project: _project,
+                ),
+              )
+              .toList())
+        ..sort((a, b) => a.name.compareTo(b.name));
 }

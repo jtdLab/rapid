@@ -184,7 +184,7 @@ class FakeLogger extends Fake implements Logger {}
 MockProject getProject() {
   final project = MockProject();
   when(() => project.path).thenReturn('some/path');
-  when(() => project.name()).thenReturn('some name');
+  when(() => project.name()).thenReturn('some_name');
 
   return project;
 }
@@ -267,4 +267,55 @@ MockPlatformUiPackage getPlatformUiPackage() {
   final platformUiPackage = MockPlatformUiPackage();
 
   return platformUiPackage;
+}
+
+MockPlatformNativeDirectory getPlatformNativeDirectory() {
+  final platformNativeDirectory = MockPlatformNativeDirectory();
+  when(
+    () => platformNativeDirectory.create(
+      description: any(named: 'description'),
+      orgName: any(named: 'orgName'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+
+  return platformNativeDirectory;
+}
+
+MockPlatformNativeDirectoryBuilder getPlatfromNativeDirectoryBuilder() {
+  final platformNativeDirectoryBuilder = MockPlatformNativeDirectoryBuilder();
+  final platformNativeDirectory = getPlatformNativeDirectory();
+  when(
+    () => platformNativeDirectoryBuilder(platform: any(named: 'platform')),
+  ).thenReturn(platformNativeDirectory);
+
+  return platformNativeDirectoryBuilder;
+}
+
+MockPlatformDirectory getPlatformDirectory() {
+  final platformDirectory = MockPlatformDirectory();
+
+  return platformDirectory;
+}
+
+MockPlatformDirectoryBuilder getPlatfromDirectoryBuilder() {
+  final platformDirectoryBuilder = MockPlatformDirectoryBuilder();
+  final platformDirectory = getPlatformDirectory();
+  when(
+    () => platformDirectoryBuilder(platform: any(named: 'platform')),
+  ).thenReturn(platformDirectory);
+
+  return platformDirectoryBuilder;
+}
+
+MockMainFile getMainFile() {
+  final mainFile = MockMainFile();
+
+  return mainFile;
+}
+
+MockPlatformAppFeaturePackage getPlatformAppFeaturePackage() {
+  final appFeaturePackage = MockPlatformAppFeaturePackage();
+
+  return appFeaturePackage;
 }

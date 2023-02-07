@@ -1,30 +1,17 @@
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/environment.dart';
+import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/app_package/app_package.dart';
-import 'package:rapid_cli/src/project/app_package/platform_native_directory/platform_native_directory.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
+import '../../common.dart';
 import '../../mocks.dart';
-
-extension on Environment {
-  String get shortName {
-    switch (this) {
-      case Environment.development:
-        return 'dev';
-      case Environment.test:
-        return 'test';
-      case Environment.production:
-        return 'prod';
-    }
-  }
-}
 
 const mainFileNoSetup = '''
 import 'package:rapid/rapid.dart';
@@ -139,149 +126,87 @@ Future<void> runAndroidApp() async {
 }
 ''';
 
+AppPackage _getAppPackage({
+  required Project project,
+  PubspecFile? pubspecFile,
+  PlatformNativeDirectoryBuilder? platformNativeDirectoryBuilder,
+  Set<MainFile>? mainFiles,
+  GeneratorBuilder? generator,
+}) {
+  return AppPackage(
+    project: project,
+    pubspecFile: pubspecFile ?? getPubspecFile(),
+    platformNativeDirectory: platformNativeDirectoryBuilder ??
+        getPlatfromNativeDirectoryBuilder().call,
+    mainFiles: mainFiles ?? {},
+    generator: generator ?? (_) async => getMasonGenerator(),
+  );
+}
+
+MainFile _getMainFile(
+  Environment environment, {
+  required AppPackage appPackage,
+}) {
+  return MainFile(
+    environment,
+    appPackage: appPackage,
+  );
+}
+
 void main() {
   group('AppPackage', () {
-    final cwd = Directory.current;
-
-    late Project project;
-    const projectPath = 'foo/bar';
-    const projectName = 'foo_bar';
-    late PlatformDirectoryBuilder platformDirectoryBuilder;
-    late PlatformDirectory platformDirectory;
-    late PlatformAppFeaturePackage appFeaturePackage;
-    const appFeaturePackagePackageName = 'my_app_feature';
-
-    late PubspecFile pubspecFile;
-    const appPackagePackageName = 'my_app_package';
-
-    late PlatformNativeDirectoryBuilder platformNativeDirectoryBuilder;
-    late PlatformNativeDirectory platformNativeDirectory;
-
-    late Set<MainFile> mainFiles;
-    late MainFile mainFile1;
-    late MainFile mainFile2;
-
-    late MasonGenerator generator;
-    final generatedFiles = List.filled(
-      23,
-      const GeneratedFile.created(path: ''),
-    );
-
-    late AppPackage appPackage;
-
     setUpAll(() {
       registerFallbackValue(FakeLogger());
       registerFallbackValue(FakeDirectoryGeneratorTarget());
       registerFallbackValue(Platform.android);
     });
 
-    setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync();
+    test('.path', () {
+      // Arrange
+      final project = getProject();
+      when(() => project.path).thenReturn('project/path');
+      when(() => project.name()).thenReturn('my_project');
+      final appPackage = _getAppPackage(project: project);
 
-      project = MockProject();
-      platformDirectoryBuilder = MockPlatformDirectoryBuilder();
-      platformDirectory = MockPlatformDirectory();
-      appFeaturePackage = MockPlatformAppFeaturePackage();
-      when(() => appFeaturePackage.packageName())
-          .thenReturn(appFeaturePackagePackageName);
-      when(() => platformDirectory.appFeaturePackage)
-          .thenReturn(appFeaturePackage);
-      when(() => platformDirectoryBuilder(platform: any(named: 'platform')))
-          .thenReturn(platformDirectory);
-
-      when(() => project.path).thenReturn(projectPath);
-      when(() => project.name()).thenReturn(projectName);
-      when(() => project.platformDirectory)
-          .thenReturn(platformDirectoryBuilder);
-
-      pubspecFile = MockPubspecFile();
-      when(() => pubspecFile.name).thenReturn(appPackagePackageName);
-
-      platformNativeDirectoryBuilder = MockPlatformNativeDirectoryBuilder();
-      platformNativeDirectory = MockPlatformNativeDirectory();
-      when(
-        () => platformNativeDirectory.create(
-          description: any(named: 'description'),
-          orgName: any(named: 'orgName'),
-          logger: any(named: 'logger'),
-        ),
-      ).thenAnswer((_) async {});
-      when(
-        () => platformNativeDirectoryBuilder(platform: any(named: 'platform')),
-      ).thenReturn(platformNativeDirectory);
-
-      mainFile1 = MockMainFile();
-      mainFile2 = MockMainFile();
-      mainFiles = {mainFile1, mainFile2};
-
-      generator = MockMasonGenerator();
-      when(() => generator.id).thenReturn('generator_id');
-      when(() => generator.description).thenReturn('generator description');
-      when(
-        () => generator.generate(
-          any(),
-          vars: any(named: 'vars'),
-          logger: any(named: 'logger'),
-        ),
-      ).thenAnswer((_) async => generatedFiles);
-
-      appPackage = AppPackage(
-        project: project,
-        pubspecFile: pubspecFile,
-        platformNativeDirectory: platformNativeDirectoryBuilder,
-        mainFiles: mainFiles,
-        generator: (_) async => generator,
+      // Assert
+      expect(
+        appPackage.path,
+        'project/path/packages/my_project/my_project',
       );
     });
 
-    tearDown(() {
-      Directory.current = cwd;
-    });
-
-    group('path', () {
-      test('is correct', () {
-        // Assert
-        expect(
-          appPackage.path,
-          '$projectPath/packages/$projectName/$projectName',
-        );
-      });
-    });
-
-    group('create', () {
-      late String description;
-      late String orgName;
-      late bool android;
-      late bool ios;
-      late bool linux;
-      late bool macos;
-      late bool web;
-      late bool windows;
-      late Logger logger;
-
-      setUp(() {
-        description = 'some desc';
-        orgName = 'com.ex.org';
-        android = true;
-        ios = false;
-        linux = true;
-        macos = false;
-        web = false;
-        windows = true;
-        logger = MockLogger();
-      });
-
+    group('.create()', () {
       test('completes successfully with correct output', () async {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformNativeDirectory = getPlatformNativeDirectory();
+        final platformNativeDirectoryBuilder =
+            getPlatfromNativeDirectoryBuilder();
+        when(
+          () => platformNativeDirectoryBuilder(
+            platform: any(named: 'platform'),
+          ),
+        ).thenReturn(platformNativeDirectory);
+        final generator = getMasonGenerator();
+        final appPackage = _getAppPackage(
+          project: project,
+          platformNativeDirectoryBuilder: platformNativeDirectoryBuilder,
+          generator: (_) async => generator,
+        );
+
         // Act
+        final logger = FakeLogger();
         await appPackage.create(
-          description: description,
-          orgName: orgName,
-          android: android,
-          ios: ios,
-          linux: linux,
-          macos: macos,
-          web: web,
-          windows: windows,
+          description: 'some desc',
+          orgName: 'my.org',
+          android: true,
+          ios: true,
+          linux: true,
+          macos: false,
+          web: false,
+          windows: false,
           logger: logger,
         );
 
@@ -292,18 +217,18 @@ void main() {
               that: isA<DirectoryGeneratorTarget>().having(
                 (g) => g.dir.path,
                 'dir',
-                '$projectPath/packages/$projectName/$projectName',
+                'project/path/packages/my_project/my_project',
               ),
             ),
             vars: <String, dynamic>{
-              'project_name': projectName,
-              'description': description,
-              'android': android,
-              'ios': ios,
-              'linux': linux,
-              'macos': macos,
-              'web': web,
-              'windows': windows,
+              'project_name': 'my_project',
+              'description': 'some desc',
+              'android': true,
+              'ios': true,
+              'linux': true,
+              'macos': false,
+              'web': false,
+              'windows': false,
               'none': false,
             },
             logger: logger,
@@ -311,395 +236,460 @@ void main() {
         ).called(1);
         verify(() => platformNativeDirectoryBuilder(platform: Platform.android))
             .called(1);
+        verify(() => platformNativeDirectoryBuilder(platform: Platform.ios))
+            .called(1);
         verify(() => platformNativeDirectoryBuilder(platform: Platform.linux))
             .called(1);
-        verify(() => platformNativeDirectoryBuilder(platform: Platform.windows))
-            .called(1);
-        verifyNever(
-            () => platformNativeDirectoryBuilder(platform: Platform.ios));
         verifyNever(
             () => platformNativeDirectoryBuilder(platform: Platform.macos));
         verifyNever(
             () => platformNativeDirectoryBuilder(platform: Platform.web));
+        verifyNever(
+            () => platformNativeDirectoryBuilder(platform: Platform.windows));
         verify(
           () => platformNativeDirectory.create(
-            description: description,
-            orgName: orgName,
+            description: 'some desc',
+            orgName: 'my.org',
             logger: logger,
           ),
         ).called(3);
         verifyNever(
           () => platformNativeDirectory.create(
-            description: description,
-            orgName: orgName,
+            description: 'some desc',
+            orgName: 'my.org',
             logger: logger,
           ),
         );
       });
     });
 
-    group('addPlatform', () {
-      late Platform platform;
-      late String? description;
-      late String? orgName;
-      late Logger logger;
-
-      setUp(() {
-        platform = Platform.android;
-        description = 'some desc';
-        orgName = 'com.ex.org';
-        logger = MockLogger();
-      });
-
+    group('.addPlatform()', () {
       test('completes successfully with correct output', () async {
+        // Arrange
+        final appFeaturePackage = getPlatformAppFeaturePackage();
+        when(() => appFeaturePackage.packageName()).thenReturn('app_feature');
+        final platformDirectory = getPlatformDirectory();
+        when(() => platformDirectory.appFeaturePackage)
+            .thenReturn(appFeaturePackage);
+        final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+        when(() => platformDirectoryBuilder(platform: any(named: 'platform')))
+            .thenReturn(platformDirectory);
+        final project = getProject();
+        when(() => project.platformDirectory)
+            .thenReturn(platformDirectoryBuilder);
+        final pubspecFile = getPubspecFile();
+        final platformNativeDirectory = getPlatformNativeDirectory();
+        final platformNativeDirectoryBuilder =
+            getPlatfromNativeDirectoryBuilder();
+        when(
+          () => platformNativeDirectoryBuilder(
+            platform: any(named: 'platform'),
+          ),
+        ).thenReturn(platformNativeDirectory);
+        final mainFile1 = getMainFile();
+        final mainFile2 = getMainFile();
+        final generator = getMasonGenerator();
+        final appPackage = _getAppPackage(
+          project: project,
+          pubspecFile: pubspecFile,
+          platformNativeDirectoryBuilder: platformNativeDirectoryBuilder,
+          mainFiles: {mainFile1, mainFile2},
+          generator: (_) async => generator,
+        );
+
         // Act
+        final logger = FakeLogger();
         await appPackage.addPlatform(
-          platform,
-          description: description,
-          orgName: orgName,
+          Platform.android,
+          description: 'some desc',
+          orgName: 'my.org',
           logger: logger,
         );
 
         // Assert
-        verify(() => project.platformDirectory(platform: platform)).called(1);
-        verify(() => pubspecFile.setDependency(appFeaturePackagePackageName))
+        verify(() => project.platformDirectory(platform: Platform.android))
             .called(1);
-        verify(() => platformNativeDirectoryBuilder(platform: platform))
+        verify(() => pubspecFile.setDependency('app_feature')).called(1);
+        verify(() => platformNativeDirectoryBuilder(platform: Platform.android))
             .called(1);
         verify(
           () => platformNativeDirectory.create(
-            description: description,
-            orgName: orgName,
+            description: 'some desc',
+            orgName: 'my.org',
             logger: logger,
           ),
         ).called(1);
-        verify(() => mainFile1.addSetupForPlatform(platform)).called(1);
-        verify(() => mainFile2.addSetupForPlatform(platform)).called(1);
+        verify(() => mainFile1.addSetupForPlatform(Platform.android)).called(1);
+        verify(() => mainFile2.addSetupForPlatform(Platform.android)).called(1);
         // TODO assert logging
       });
     });
 
-    group('removePlatform', () {
-      late Platform platform;
-      late Logger logger;
-
-      setUp(() {
-        platform = Platform.android;
-        logger = MockLogger();
-      });
-
+    group('.removePlatform()', () {
       test('completes successfully with correct output', () async {
+        // Arrange
+        final appFeaturePackage = getPlatformAppFeaturePackage();
+        when(() => appFeaturePackage.packageName()).thenReturn('app_feature');
+        final platformDirectory = getPlatformDirectory();
+        when(() => platformDirectory.appFeaturePackage)
+            .thenReturn(appFeaturePackage);
+        final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+        when(() => platformDirectoryBuilder(platform: any(named: 'platform')))
+            .thenReturn(platformDirectory);
+        final project = getProject();
+        when(() => project.platformDirectory)
+            .thenReturn(platformDirectoryBuilder);
+        final pubspecFile = getPubspecFile();
+        final platformNativeDirectory = getPlatformNativeDirectory();
+        final platformNativeDirectoryBuilder =
+            getPlatfromNativeDirectoryBuilder();
+        when(
+          () => platformNativeDirectoryBuilder(
+            platform: any(named: 'platform'),
+          ),
+        ).thenReturn(platformNativeDirectory);
+        final mainFile1 = getMainFile();
+        final mainFile2 = getMainFile();
+        final generator = getMasonGenerator();
+        final appPackage = _getAppPackage(
+          project: project,
+          pubspecFile: pubspecFile,
+          platformNativeDirectoryBuilder: platformNativeDirectoryBuilder,
+          mainFiles: {mainFile1, mainFile2},
+          generator: (_) async => generator,
+        );
+
         // Act
+        final logger = FakeLogger();
         await appPackage.removePlatform(
-          platform,
+          Platform.android,
           logger: logger,
         );
 
         // Assert
-        verify(() => project.platformDirectory(platform: platform)).called(1);
-        verify(() => pubspecFile.removeDependency(appFeaturePackagePackageName))
+        verify(() => project.platformDirectory(platform: Platform.android))
             .called(1);
-        verify(() => platformNativeDirectoryBuilder(platform: platform))
+        verify(() => pubspecFile.removeDependency('app_feature')).called(1);
+        verify(() => platformNativeDirectoryBuilder(platform: Platform.android))
             .called(1);
-        verify(
-          () => platformNativeDirectory.delete(
-            logger: logger,
-          ),
-        ).called(1);
-        verify(() => mainFile1.removeSetupForPlatform(platform)).called(1);
-        verify(() => mainFile2.removeSetupForPlatform(platform)).called(1);
+        verify(() => platformNativeDirectory.delete(logger: logger)).called(1);
+        verify(() => mainFile1.removeSetupForPlatform(Platform.android))
+            .called(1);
+        verify(() => mainFile2.removeSetupForPlatform(Platform.android))
+            .called(1);
         // TODO assert logging
       });
     });
   });
 
   group('MainFile', () {
-    final cwd = Directory.current;
-
-    late Environment environment;
-
-    late AppPackage appPackage;
-    const appPackagePath = 'foo/bar/baz';
-    late Project project;
-    const projectName = 'ab_cd';
-
-    late MainFile mainFile;
-
-    setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync();
-
-      environment = Environment.development;
-
-      appPackage = MockAppPackage();
-      project = MockProject();
-      when(() => project.name()).thenReturn(projectName);
-      when(() => appPackage.path).thenReturn(appPackagePath);
-      when(() => appPackage.project).thenReturn(project);
-
-      mainFile = MainFile(
-        environment,
-        appPackage: appPackage,
-      );
-
-      File(mainFile.path).createSync(recursive: true);
-    });
-
-    tearDown(() {
-      Directory.current = cwd;
-    });
-
-    group('path', () {
-      test('is correct', () {
-        // Assert
-        expect(
-          mainFile.path,
-          '$appPackagePath/lib/main_${environment.name}.dart',
+    group('.path', () {
+      test('(development)', () {
+        // Arrange
+        final appPackage = getAppPackage();
+        when(() => appPackage.path).thenReturn('app_package/path');
+        final mainFile = _getMainFile(
+          Environment.development,
+          appPackage: appPackage,
         );
+
+        // Assert
+        expect(mainFile.path, 'app_package/path/lib/main_development.dart');
+      });
+
+      test('(test)', () {
+        // Arrange
+        final appPackage = getAppPackage();
+        when(() => appPackage.path).thenReturn('app_package/path');
+        final mainFile = _getMainFile(
+          Environment.test,
+          appPackage: appPackage,
+        );
+
+        // Assert
+        expect(mainFile.path, 'app_package/path/lib/main_test.dart');
+      });
+
+      test('(production)', () {
+        // Arrange
+        final appPackage = getAppPackage();
+        when(() => appPackage.path).thenReturn('app_package/path');
+        final mainFile = _getMainFile(
+          Environment.production,
+          appPackage: appPackage,
+        );
+
+        // Assert
+        expect(mainFile.path, 'app_package/path/lib/main_production.dart');
       });
     });
 
-    group('addSetupForPlatform', () {
-      test(
-          'add platform setup correctly when no other platform setups exist (dev)',
+    group('.addSetupForPlatform()', () {
+      group('add platform setup correctly when no other platform setups exist',
           () {
-        // Arrange
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileNoSetup);
+        void performTest(Environment environment) {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('ab_cd');
+          final appPackage = getAppPackage();
+          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.project).thenReturn(project);
+          final mainFile = _getMainFile(
+            environment,
+            appPackage: appPackage,
+          );
+          final file = File(mainFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(mainFileNoSetup);
 
-        // Act
-        mainFile.addSetupForPlatform(Platform.android);
+          // Act
+          mainFile.addSetupForPlatform(Platform.android);
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileWithAndroidSetup(environment));
+          // Assert
+          final contents = file.readAsStringSync();
+          expect(contents, mainFileWithAndroidSetup(environment));
+        }
+
+        test('(development)', () => performTest(Environment.development));
+
+        test('(test)', () => performTest(Environment.test));
+
+        test('(production)', () => performTest(Environment.production));
       });
 
-      test(
-          'add platform setup correctly when no other platform setups exist (web) (dev)',
+      group(
+          'add platform setup correctly when no other platform setups exist (web)',
           () {
-        // Arrange
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileNoSetup);
+        void performTest(Environment environment) {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('ab_cd');
+          final appPackage = getAppPackage();
+          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.project).thenReturn(project);
+          final mainFile = _getMainFile(
+            environment,
+            appPackage: appPackage,
+          );
+          final file = File(mainFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(mainFileNoSetup);
 
-        // Act
-        mainFile.addSetupForPlatform(Platform.web);
+          // Act
+          mainFile.addSetupForPlatform(Platform.web);
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileWithWebSetup(environment));
+          // Assert
+          final contents = file.readAsStringSync();
+          expect(contents, mainFileWithWebSetup(environment));
+        }
+
+        test('(development)', () => performTest(Environment.development));
+
+        test('(test)', () => performTest(Environment.test));
+
+        test('(production)', () => performTest(Environment.production));
       });
 
-      test(
-          'add platform setup correctly when other platform setups exist (dev)',
+      group('add platform setup correctly when other platform setups exist',
           () {
-        // Arrange
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileWithWebSetup(environment));
+        void performTest(Environment environment) {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('ab_cd');
+          final appPackage = getAppPackage();
+          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.project).thenReturn(project);
+          final mainFile = _getMainFile(
+            environment,
+            appPackage: appPackage,
+          );
+          final file = File(mainFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              mainFileWithWebSetup(environment),
+            );
 
-        // Act
-        mainFile.addSetupForPlatform(Platform.android);
+          // Act
+          mainFile.addSetupForPlatform(Platform.android);
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileWithWebAndAndroidSetup(environment));
+          // Assert
+          final contents = file.readAsStringSync();
+          expect(
+            contents,
+            mainFileWithWebAndAndroidSetup(environment),
+          );
+        }
+
+        test('(development)', () => performTest(Environment.development));
+
+        test('(test)', () => performTest(Environment.test));
+
+        test('(production)', () => performTest(Environment.production));
       });
 
-      test('does nothing when setup for platform already exists (dev)', () {
-        // Arrange
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileWithAndroidSetup(environment));
+      group('does nothing when setup for platform already exists', () {
+        void performTest(Environment environment) {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('ab_cd');
+          final appPackage = getAppPackage();
+          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.project).thenReturn(project);
+          final mainFile = _getMainFile(
+            environment,
+            appPackage: appPackage,
+          );
+          final file = File(mainFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              mainFileWithAndroidSetup(environment),
+            );
 
-        // Act
-        mainFile.addSetupForPlatform(Platform.android);
+          // Act
+          mainFile.addSetupForPlatform(Platform.android);
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileWithAndroidSetup(environment));
-      });
+          // Assert
+          final contents = file.readAsStringSync();
+          expect(contents, mainFileWithAndroidSetup(environment));
+        }
 
-      test(
-          'add platform setup correctly when no other platform setups exist (test)',
-          () {
-        // Arrange
-        environment = Environment.test;
-        mainFile = MainFile(environment, appPackage: appPackage);
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileNoSetup);
+        test('(development)', () => performTest(Environment.development));
 
-        // Act
-        mainFile.addSetupForPlatform(Platform.android);
+        test('(test)', () => performTest(Environment.test));
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileWithAndroidSetup(environment));
-      });
-
-      test(
-          'add platform setup correctly when no other platform setups exist (web) (test)',
-          () {
-        // Arrange
-        environment = Environment.test;
-        mainFile = MainFile(environment, appPackage: appPackage);
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileNoSetup);
-
-        // Act
-        mainFile.addSetupForPlatform(Platform.web);
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileWithWebSetup(environment));
-      });
-
-      test(
-          'add platform setup correctly when other platform setups exist (test)',
-          () {
-        // Arrange
-        environment = Environment.test;
-        mainFile = MainFile(environment, appPackage: appPackage);
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileWithWebSetup(environment));
-
-        // Act
-        mainFile.addSetupForPlatform(Platform.android);
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileWithWebAndAndroidSetup(environment));
-      });
-
-      test('does nothing when setup for platform already exists (test)', () {
-        // Arrange
-        environment = Environment.test;
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileWithAndroidSetup(environment));
-
-        // Act
-        mainFile.addSetupForPlatform(Platform.android);
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileWithAndroidSetup(environment));
-      });
-
-      test(
-          'add platform setup correctly when no other platform setups exist (prod)',
-          () {
-        // Arrange
-        environment = Environment.production;
-        mainFile = MainFile(environment, appPackage: appPackage);
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileNoSetup);
-
-        // Act
-        mainFile.addSetupForPlatform(Platform.android);
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileWithAndroidSetup(environment));
-      });
-
-      test(
-          'add platform setup correctly when no other platform setups exist (web) (prod)',
-          () {
-        // Arrange
-        environment = Environment.production;
-        mainFile = MainFile(environment, appPackage: appPackage);
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileNoSetup);
-
-        // Act
-        mainFile.addSetupForPlatform(Platform.web);
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileWithWebSetup(environment));
-      });
-
-      test(
-          'add platform setup correctly when other platform setups exist (prod)',
-          () {
-        // Arrange
-        environment = Environment.production;
-        mainFile = MainFile(environment, appPackage: appPackage);
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileWithWebSetup(environment));
-
-        // Act
-        mainFile.addSetupForPlatform(Platform.android);
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileWithWebAndAndroidSetup(environment));
-      });
-
-      test('does nothing when setup for platform already exists (prod)', () {
-        // Arrange
-        environment = Environment.production;
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileWithAndroidSetup(environment));
-
-        // Act
-        mainFile.addSetupForPlatform(Platform.android);
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileWithAndroidSetup(environment));
+        test('(production)', () => performTest(Environment.production));
       });
     });
 
-    group('removeSetupForPlatform', () {
-      test('does nothing when no other platform setups exist', () {
-        // Arrange
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileNoSetup);
+    group('.removeSetupForPlatform()', () {
+      group('does nothing when no other platform setups exist', () {
+        void performTest(Environment environment) {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('ab_cd');
+          final appPackage = getAppPackage();
+          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.project).thenReturn(project);
+          final mainFile = _getMainFile(
+            environment,
+            appPackage: appPackage,
+          );
+          final file = File(mainFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(mainFileNoSetup);
 
-        // Act
-        mainFile.removeSetupForPlatform(Platform.android);
+          // Act
+          mainFile.removeSetupForPlatform(Platform.android);
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileNoSetup);
+          // Assert
+          expect(file.readAsStringSync(), mainFileNoSetup);
+        }
+
+        test('(development)', () => performTest(Environment.development));
+
+        test('(test)', () => performTest(Environment.test));
+
+        test('(production)', () => performTest(Environment.production));
       });
 
-      test('remove platform setup correctly when platform exists', () {
-        // Arrange
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileWithAndroidSetup(environment));
+      group('remove platform setup correctly when platform exists', () {
+        void performTest(Environment environment) {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('ab_cd');
+          final appPackage = getAppPackage();
+          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.project).thenReturn(project);
+          final mainFile = _getMainFile(
+            environment,
+            appPackage: appPackage,
+          );
+          final file = File(mainFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              mainFileWithAndroidSetup(environment),
+            );
 
-        // Act
-        mainFile.removeSetupForPlatform(Platform.android);
+          // Act
+          mainFile.removeSetupForPlatform(Platform.android);
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileNoSetup);
+          // Assert
+          final contents = file.readAsStringSync();
+          expect(contents, mainFileNoSetup);
+        }
+
+        test('(development)', () => performTest(Environment.development));
+
+        test('(test)', () => performTest(Environment.test));
+
+        test('(production)', () => performTest(Environment.production));
       });
 
-      test('remove platform setup correctly when platform exists (web)', () {
-        // Arrange
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileWithWebSetup(environment));
+      group('remove platform setup correctly when platform exists (web)', () {
+        void performTest(Environment environment) {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('ab_cd');
+          final appPackage = getAppPackage();
+          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.project).thenReturn(project);
+          final mainFile = _getMainFile(
+            environment,
+            appPackage: appPackage,
+          );
+          final file = File(mainFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              mainFileWithWebSetup(environment),
+            );
 
-        // Act
-        mainFile.removeSetupForPlatform(Platform.web);
+          // Act
+          mainFile.removeSetupForPlatform(Platform.web);
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileNoSetup);
+          // Assert
+          final contents = file.readAsStringSync();
+          expect(contents, mainFileNoSetup);
+        }
+
+        test('(development)', () => performTest(Environment.development));
+
+        test('(test)', () => performTest(Environment.test));
+
+        test('(production)', () => performTest(Environment.production));
       });
 
-      test('remove platform setup correctly when other platform setups exist',
+      group('remove platform setup correctly when other platform setups exist',
           () {
-        // Arrange
-        final file = File(mainFile.path);
-        file.writeAsStringSync(mainFileWithWebAndAndroidSetup(environment));
+        void performTest(Environment environment) {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('ab_cd');
+          final appPackage = getAppPackage();
+          when(() => appPackage.path).thenReturn(tempPath);
+          when(() => appPackage.project).thenReturn(project);
+          final mainFile = _getMainFile(
+            environment,
+            appPackage: appPackage,
+          );
+          final file = File(mainFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              mainFileWithWebAndAndroidSetup(environment),
+            );
 
-        // Act
-        mainFile.removeSetupForPlatform(Platform.android);
+          // Act
+          mainFile.removeSetupForPlatform(Platform.android);
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, mainFileWithWebSetup(environment));
+          // Assert
+          final contents = file.readAsStringSync();
+          expect(contents, mainFileWithWebSetup(environment));
+        }
+
+        test('(development)', () => performTest(Environment.development));
+
+        test('(test)', () => performTest(Environment.test));
+
+        test('(production)', () => performTest(Environment.production));
       });
     });
   });

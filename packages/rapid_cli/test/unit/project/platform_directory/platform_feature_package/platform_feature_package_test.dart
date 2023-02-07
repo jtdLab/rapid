@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
@@ -6,7 +8,6 @@ import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import '../../../mocks.dart';
 

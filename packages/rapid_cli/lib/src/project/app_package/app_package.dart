@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/dart_file.dart';
@@ -7,7 +9,6 @@ import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/app_package/platform_native_directory/platform_native_directory.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'dart:io';
 
 import 'app_package_bundle.dart';
 
@@ -173,11 +174,7 @@ class MainFile extends DartFile {
   void addSetupForPlatform(Platform platform) {
     final projectName = _appPackage.project.name();
     final platformName = platform.name;
-    final envName = environment == Environment.development
-        ? 'dev'
-        : environment == Environment.test
-            ? 'test'
-            : 'prod';
+    final envName = environment.shortName;
 
     final imports = readImports();
     if (imports.length == 1 && imports.first == 'package:rapid/rapid.dart') {
@@ -260,5 +257,18 @@ class MainFile extends DartFile {
     }
 
     // TODO improvment remove unesessary imports if possible
+  }
+}
+
+extension EnvironmentX on Environment {
+  String get shortName {
+    switch (this) {
+      case Environment.development:
+        return 'dev';
+      case Environment.test:
+        return 'test';
+      case Environment.production:
+        return 'prod';
+    }
   }
 }

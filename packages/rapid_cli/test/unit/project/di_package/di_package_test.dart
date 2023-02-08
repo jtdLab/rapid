@@ -97,52 +97,55 @@ void main() {
     });
 
     group('.create()', () {
-      test('completes successfully with correct output', () async {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn('project/path');
-        when(() => project.name()).thenReturn('my_project');
-        final generator = getMasonGenerator();
-        final diPackage = _getDiPackage(
-          project: project,
-          generator: (_) async => generator,
-        );
+      test(
+        'completes successfully with correct output',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final diPackage = _getDiPackage(
+            project: project,
+            generator: (_) async => generator,
+          );
 
-        // Act
-        final logger = FakeLogger();
-        await diPackage.create(
-          android: true,
-          ios: true,
-          linux: true,
-          macos: false,
-          web: false,
-          windows: false,
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                'project/path/packages/my_project/my_project_di',
-              ),
-            ),
-            vars: <String, dynamic>{
-              'project_name': 'my_project',
-              'android': true,
-              'ios': true,
-              'linux': true,
-              'macos': false,
-              'web': false,
-              'windows': false,
-            },
+          // Act
+          final logger = FakeLogger();
+          await diPackage.create(
+            android: true,
+            ios: true,
+            linux: true,
+            macos: false,
+            web: false,
+            windows: false,
             logger: logger,
-          ),
-        ).called(1);
-      });
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_di',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'android': true,
+                'ios': true,
+                'linux': true,
+                'macos': false,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
     });
 
     group('.registerCustomFeaturePackage()', () {
@@ -223,83 +226,91 @@ void main() {
     });
 
     group('.addCustomFeaturePackage()', () {
-      test('add import and external package module correctly', () {
-        // Arrange
-        final diPackage = getDiPackage();
-        when(() => diPackage.path).thenReturn(getTempDir().path);
-        final injectionFile = _getInjectionFile(diPackage: diPackage);
-        final file = File(injectionFile.path)
-          ..createSync(recursive: true)
-          ..writeAsStringSync(injectionFileWithInitialPackages);
+      test(
+        'add import and external package module correctly',
+        withTempDir(() {
+          // Arrange
+          final diPackage = getDiPackage();
+          final injectionFile = _getInjectionFile(diPackage: diPackage);
+          final file = File(injectionFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(injectionFileWithInitialPackages);
 
-        // Act
-        final customFeaturePackage = getPlatformCustomFeaturePackage();
-        when(() => customFeaturePackage.packageName())
-            .thenReturn('kuk_abc_android_home_page');
-        injectionFile.addCustomFeaturePackage(customFeaturePackage);
+          // Act
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.packageName())
+              .thenReturn('kuk_abc_android_home_page');
+          injectionFile.addCustomFeaturePackage(customFeaturePackage);
 
-        // Assert
-        expect(file.readAsStringSync(), injectionFileWithPackages);
-      });
+          // Assert
+          expect(file.readAsStringSync(), injectionFileWithPackages);
+        }),
+      );
 
-      test('do nothing when package already exists', () {
-        // Arrange
-        final diPackage = getDiPackage();
-        when(() => diPackage.path).thenReturn(getTempDir().path);
-        final injectionFile = _getInjectionFile(diPackage: diPackage);
-        final file = File(injectionFile.path)
-          ..createSync(recursive: true)
-          ..writeAsStringSync(injectionFileWithPackages);
+      test(
+        'do nothing when package already exists',
+        withTempDir(() {
+          // Arrange
+          final diPackage = getDiPackage();
+          final injectionFile = _getInjectionFile(diPackage: diPackage);
+          final file = File(injectionFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(injectionFileWithPackages);
 
-        // Act
-        final customFeaturePackage = getPlatformCustomFeaturePackage();
-        when(() => customFeaturePackage.packageName())
-            .thenReturn('kuk_abc_android_home_page');
-        injectionFile.addCustomFeaturePackage(customFeaturePackage);
+          // Act
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.packageName())
+              .thenReturn('kuk_abc_android_home_page');
+          injectionFile.addCustomFeaturePackage(customFeaturePackage);
 
-        // Assert
-        expect(file.readAsStringSync(), injectionFileWithPackages);
-      });
+          // Assert
+          expect(file.readAsStringSync(), injectionFileWithPackages);
+        }),
+      );
     });
 
     group('.removeCustomFeaturePackage()', () {
-      test('remove import and external package module correctly', () {
-        // Arrange
-        final diPackage = getDiPackage();
-        when(() => diPackage.path).thenReturn(getTempDir().path);
-        final injectionFile = _getInjectionFile(diPackage: diPackage);
-        final file = File(injectionFile.path)
-          ..createSync(recursive: true)
-          ..writeAsStringSync(injectionFileWithPackages);
+      test(
+        'remove import and external package module correctly',
+        withTempDir(() {
+          // Arrange
+          final diPackage = getDiPackage();
+          final injectionFile = _getInjectionFile(diPackage: diPackage);
+          final file = File(injectionFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(injectionFileWithPackages);
 
-        // Act
-        final customFeaturePackage = getPlatformCustomFeaturePackage();
-        when(() => customFeaturePackage.packageName())
-            .thenReturn('kuk_abc_android_home_page');
-        injectionFile.removeCustomFeaturePackage(customFeaturePackage);
+          // Act
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.packageName())
+              .thenReturn('kuk_abc_android_home_page');
+          injectionFile.removeCustomFeaturePackage(customFeaturePackage);
 
-        // Assert
-        expect(file.readAsStringSync(), injectionFileWithInitialPackages);
-      });
+          // Assert
+          expect(file.readAsStringSync(), injectionFileWithInitialPackages);
+        }),
+      );
 
-      test('do nothing when package does not exist', () {
-        // Arrange
-        final diPackage = getDiPackage();
-        when(() => diPackage.path).thenReturn(getTempDir().path);
-        final injectionFile = _getInjectionFile(diPackage: diPackage);
-        final file = File(injectionFile.path)
-          ..createSync(recursive: true)
-          ..writeAsStringSync(injectionFileWithInitialPackages);
+      test(
+        'do nothing when package does not exist',
+        withTempDir(() {
+          // Arrange
+          final diPackage = getDiPackage();
+          final injectionFile = _getInjectionFile(diPackage: diPackage);
+          final file = File(injectionFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(injectionFileWithInitialPackages);
 
-        // Act
-        final customFeaturePackage = getPlatformCustomFeaturePackage();
-        when(() => customFeaturePackage.packageName())
-            .thenReturn('kuk_abc_android_home_page');
-        injectionFile.removeCustomFeaturePackage(customFeaturePackage);
+          // Act
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.packageName())
+              .thenReturn('kuk_abc_android_home_page');
+          injectionFile.removeCustomFeaturePackage(customFeaturePackage);
 
-        // Assert
-        expect(file.readAsStringSync(), injectionFileWithInitialPackages);
-      });
+          // Assert
+          expect(file.readAsStringSync(), injectionFileWithInitialPackages);
+        }),
+      );
     });
   });
 }

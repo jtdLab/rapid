@@ -5,6 +5,7 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/project/ui_package/ui_package.dart';
 import 'package:test/test.dart';
 
+import '../../common.dart';
 import '../../mocks.dart';
 
 UiPackage _getUiPackage({
@@ -38,40 +39,43 @@ void main() {
     });
 
     group('.create()', () {
-      test('completes successfully with correct output', () async {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn('project/path');
-        when(() => project.name()).thenReturn('my_project');
-        final generator = getMasonGenerator();
-        final uiPackage = _getUiPackage(
-          project: project,
-          generator: (_) async => generator,
-        );
+      test(
+        'completes successfully with correct output',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final uiPackage = _getUiPackage(
+            project: project,
+            generator: (_) async => generator,
+          );
 
-        // Act
-        final logger = FakeLogger();
-        await uiPackage.create(
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                'project/path/packages/my_project_ui/my_project_ui',
-              ),
-            ),
-            vars: <String, dynamic>{
-              'project_name': 'my_project',
-            },
+          // Act
+          final logger = FakeLogger();
+          await uiPackage.create(
             logger: logger,
-          ),
-        ).called(1);
-      });
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project_ui/my_project_ui',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
     });
   });
 }

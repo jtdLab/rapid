@@ -12,6 +12,7 @@ import 'package:rapid_cli/src/project/app_package/platform_native_directory/web_
 import 'package:rapid_cli/src/project/app_package/platform_native_directory/windows_native_directory_bundle.dart';
 import 'package:test/test.dart';
 
+import '../../../common.dart';
 import '../../../mocks.dart';
 
 PlatformNativeDirectory _getPlatformNativeDirectory(
@@ -115,191 +116,211 @@ void main() {
 
     group('.create()', () {
       test(
-          'completes successfully with correct output when description is not null',
-          () async {
-        // Arrange
-        final project = getProject();
-        when(() => project.name()).thenReturn('my_project');
-        final appPackage = getAppPackage();
-        when(() => appPackage.path).thenReturn('app_package/path');
-        when(() => appPackage.project).thenReturn(project);
-        final generator = getMasonGenerator();
-        final platformNativeDirectory = _getPlatformNativeDirectory(
-          Platform.android,
-          appPackage: appPackage,
-          generator: (_) async => generator,
-        );
-
-        // Act
-        final logger = FakeLogger();
-        await platformNativeDirectory.create(
-          description: 'some desc',
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                'app_package/path/android',
-              ),
-            ),
-            vars: <String, dynamic>{
-              'project_name': 'my_project',
-              'description': 'some desc',
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
-
-      test(
-          'completes successfully with correct output when orgName is not null',
-          () async {
-        // Arrange
-        final project = getProject();
-        when(() => project.name()).thenReturn('my_project');
-        final appPackage = getAppPackage();
-        when(() => appPackage.path).thenReturn('app_package/path');
-        when(() => appPackage.project).thenReturn(project);
-        final generator = getMasonGenerator();
-        final platformNativeDirectory = _getPlatformNativeDirectory(
-          Platform.android,
-          appPackage: appPackage,
-          generator: (_) async => generator,
-        );
-
-        // Act
-        final logger = FakeLogger();
-        await platformNativeDirectory.create(
-          orgName: 'my.org',
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                'app_package/path/android',
-              ),
-            ),
-            vars: <String, dynamic>{
-              'project_name': 'my_project',
-              'org_name': 'my.org',
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
-
-      group('uses correct bundle', () {
-        test('(android)', () async {
+        'completes successfully with correct output when description is not null',
+        withTempDir(() async {
           // Arrange
-          final generator = getGeneratorBuilder();
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final appPackage = getAppPackage();
+          when(() => appPackage.path).thenReturn('app_package/path');
+          when(() => appPackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
           final platformNativeDirectory = _getPlatformNativeDirectory(
             Platform.android,
-            generator: generator,
+            appPackage: appPackage,
+            generator: (_) async => generator,
           );
 
           // Act
+          final logger = FakeLogger();
           await platformNativeDirectory.create(
-            logger: FakeLogger(),
+            description: 'some desc',
+            logger: logger,
           );
 
           // Assert
-          verify(() => generator(androidNativeDirectoryBundle)).called(1);
-        });
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'app_package/path/android',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'description': 'some desc',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
 
-        test('(ios)', () async {
+      test(
+        'completes successfully with correct output when orgName is not null',
+        withTempDir(() async {
           // Arrange
-          final generator = getGeneratorBuilder();
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final appPackage = getAppPackage();
+          when(() => appPackage.path).thenReturn('app_package/path');
+          when(() => appPackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
           final platformNativeDirectory = _getPlatformNativeDirectory(
-            Platform.ios,
-            generator: generator,
+            Platform.android,
+            appPackage: appPackage,
+            generator: (_) async => generator,
           );
 
           // Act
+          final logger = FakeLogger();
           await platformNativeDirectory.create(
-            logger: FakeLogger(),
+            orgName: 'my.org',
+            logger: logger,
           );
 
           // Assert
-          verify(() => generator(iosNativeDirectoryBundle)).called(1);
-        });
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'app_package/path/android',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'org_name': 'my.org',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
 
-        test('(linux)', () async {
-          // Arrange
-          final generator = getGeneratorBuilder();
-          final platformNativeDirectory = _getPlatformNativeDirectory(
-            Platform.linux,
-            generator: generator,
-          );
+      group('uses correct bundle', () {
+        test(
+          '(android)',
+          withTempDir(() async {
+            // Arrange
+            final generator = getGeneratorBuilder();
+            final platformNativeDirectory = _getPlatformNativeDirectory(
+              Platform.android,
+              generator: generator,
+            );
 
-          // Act
-          await platformNativeDirectory.create(
-            logger: FakeLogger(),
-          );
+            // Act
+            await platformNativeDirectory.create(
+              logger: FakeLogger(),
+            );
 
-          // Assert
-          verify(() => generator(linuxNativeDirectoryBundle)).called(1);
-        });
+            // Assert
+            verify(() => generator(androidNativeDirectoryBundle)).called(1);
+          }),
+        );
 
-        test('(macos)', () async {
-          // Arrange
-          final generator = getGeneratorBuilder();
-          final platformNativeDirectory = _getPlatformNativeDirectory(
-            Platform.macos,
-            generator: generator,
-          );
+        test(
+          '(ios)',
+          withTempDir(() async {
+            // Arrange
+            final generator = getGeneratorBuilder();
+            final platformNativeDirectory = _getPlatformNativeDirectory(
+              Platform.ios,
+              generator: generator,
+            );
 
-          // Act
-          await platformNativeDirectory.create(
-            logger: FakeLogger(),
-          );
+            // Act
+            await platformNativeDirectory.create(
+              logger: FakeLogger(),
+            );
 
-          // Assert
-          verify(() => generator(macosNativeDirectoryBundle)).called(1);
-        });
+            // Assert
+            verify(() => generator(iosNativeDirectoryBundle)).called(1);
+          }),
+        );
 
-        test('(web)', () async {
-          // Arrange
-          final generator = getGeneratorBuilder();
-          final platformNativeDirectory = _getPlatformNativeDirectory(
-            Platform.web,
-            generator: generator,
-          );
+        test(
+          '(linux)',
+          withTempDir(() async {
+            // Arrange
+            final generator = getGeneratorBuilder();
+            final platformNativeDirectory = _getPlatformNativeDirectory(
+              Platform.linux,
+              generator: generator,
+            );
 
-          // Act
-          await platformNativeDirectory.create(
-            logger: FakeLogger(),
-          );
+            // Act
+            await platformNativeDirectory.create(
+              logger: FakeLogger(),
+            );
 
-          // Assert
-          verify(() => generator(webNativeDirectoryBundle)).called(1);
-        });
+            // Assert
+            verify(() => generator(linuxNativeDirectoryBundle)).called(1);
+          }),
+        );
 
-        test('(windows)', () async {
-          // Arrange
-          final generator = getGeneratorBuilder();
-          final platformNativeDirectory = _getPlatformNativeDirectory(
-            Platform.windows,
-            generator: generator,
-          );
+        test(
+          '(macos)',
+          withTempDir(() async {
+            // Arrange
+            final generator = getGeneratorBuilder();
+            final platformNativeDirectory = _getPlatformNativeDirectory(
+              Platform.macos,
+              generator: generator,
+            );
 
-          // Act
-          await platformNativeDirectory.create(
-            logger: FakeLogger(),
-          );
+            // Act
+            await platformNativeDirectory.create(
+              logger: FakeLogger(),
+            );
 
-          // Assert
-          verify(() => generator(windowsNativeDirectoryBundle)).called(1);
-        });
+            // Assert
+            verify(() => generator(macosNativeDirectoryBundle)).called(1);
+          }),
+        );
+
+        test(
+          '(web)',
+          withTempDir(() async {
+            // Arrange
+            final generator = getGeneratorBuilder();
+            final platformNativeDirectory = _getPlatformNativeDirectory(
+              Platform.web,
+              generator: generator,
+            );
+
+            // Act
+            await platformNativeDirectory.create(
+              logger: FakeLogger(),
+            );
+
+            // Assert
+            verify(() => generator(webNativeDirectoryBundle)).called(1);
+          }),
+        );
+
+        test(
+          '(windows)',
+          withTempDir(() async {
+            // Arrange
+            final generator = getGeneratorBuilder();
+            final platformNativeDirectory = _getPlatformNativeDirectory(
+              Platform.windows,
+              generator: generator,
+            );
+
+            // Act
+            await platformNativeDirectory.create(
+              logger: FakeLogger(),
+            );
+
+            // Assert
+            verify(() => generator(windowsNativeDirectoryBundle)).called(1);
+          }),
+        );
       });
     });
   });

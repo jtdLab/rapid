@@ -176,91 +176,95 @@ void main() {
     });
 
     group('.create()', () {
-      test('completes successfully with correct output', () async {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn('project/path');
-        when(() => project.name()).thenReturn('my_project');
-        final platformNativeDirectory = getPlatformNativeDirectory();
-        final platformNativeDirectoryBuilder =
-            getPlatfromNativeDirectoryBuilder();
-        when(
-          () => platformNativeDirectoryBuilder(
-            platform: any(named: 'platform'),
-          ),
-        ).thenReturn(platformNativeDirectory);
-        final generator = getMasonGenerator();
-        final appPackage = _getAppPackage(
-          project: project,
-          platformNativeDirectoryBuilder: platformNativeDirectoryBuilder,
-          generator: (_) async => generator,
-        );
-
-        // Act
-        final logger = FakeLogger();
-        await appPackage.create(
-          description: 'some desc',
-          orgName: 'my.org',
-          android: true,
-          ios: true,
-          linux: true,
-          macos: false,
-          web: false,
-          windows: false,
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                'project/path/packages/my_project/my_project',
-              ),
+      test(
+        'completes successfully with correct output',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final platformNativeDirectory = getPlatformNativeDirectory();
+          final platformNativeDirectoryBuilder =
+              getPlatfromNativeDirectoryBuilder();
+          when(
+            () => platformNativeDirectoryBuilder(
+              platform: any(named: 'platform'),
             ),
-            vars: <String, dynamic>{
-              'project_name': 'my_project',
-              'description': 'some desc',
-              'android': true,
-              'ios': true,
-              'linux': true,
-              'macos': false,
-              'web': false,
-              'windows': false,
-              'none': false,
-            },
-            logger: logger,
-          ),
-        ).called(1);
-        verify(() => platformNativeDirectoryBuilder(platform: Platform.android))
-            .called(1);
-        verify(() => platformNativeDirectoryBuilder(platform: Platform.ios))
-            .called(1);
-        verify(() => platformNativeDirectoryBuilder(platform: Platform.linux))
-            .called(1);
-        verifyNever(
-            () => platformNativeDirectoryBuilder(platform: Platform.macos));
-        verifyNever(
-            () => platformNativeDirectoryBuilder(platform: Platform.web));
-        verifyNever(
-            () => platformNativeDirectoryBuilder(platform: Platform.windows));
-        verify(
-          () => platformNativeDirectory.create(
+          ).thenReturn(platformNativeDirectory);
+          final generator = getMasonGenerator();
+          final appPackage = _getAppPackage(
+            project: project,
+            platformNativeDirectoryBuilder: platformNativeDirectoryBuilder,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await appPackage.create(
             description: 'some desc',
             orgName: 'my.org',
+            android: true,
+            ios: true,
+            linux: true,
+            macos: false,
+            web: false,
+            windows: false,
             logger: logger,
-          ),
-        ).called(3);
-        verifyNever(
-          () => platformNativeDirectory.create(
-            description: 'some desc',
-            orgName: 'my.org',
-            logger: logger,
-          ),
-        );
-      });
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'description': 'some desc',
+                'android': true,
+                'ios': true,
+                'linux': true,
+                'macos': false,
+                'web': false,
+                'windows': false,
+                'none': false,
+              },
+              logger: logger,
+            ),
+          ).called(1);
+          verify(
+            () => platformNativeDirectoryBuilder(platform: Platform.android),
+          ).called(1);
+          verify(() => platformNativeDirectoryBuilder(platform: Platform.ios))
+              .called(1);
+          verify(() => platformNativeDirectoryBuilder(platform: Platform.linux))
+              .called(1);
+          verifyNever(
+              () => platformNativeDirectoryBuilder(platform: Platform.macos));
+          verifyNever(
+              () => platformNativeDirectoryBuilder(platform: Platform.web));
+          verifyNever(
+              () => platformNativeDirectoryBuilder(platform: Platform.windows));
+          verify(
+            () => platformNativeDirectory.create(
+              description: 'some desc',
+              orgName: 'my.org',
+              logger: logger,
+            ),
+          ).called(3);
+          verifyNever(
+            () => platformNativeDirectory.create(
+              description: 'some desc',
+              orgName: 'my.org',
+              logger: logger,
+            ),
+          );
+        }),
+      );
     });
 
     group('.addPlatform()', () {
@@ -432,7 +436,6 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -450,11 +453,20 @@ void main() {
           expect(contents, mainFileWithAndroidSetup(environment));
         }
 
-        test('(development)', () => performTest(Environment.development));
+        test(
+          '(development)',
+          withTempDir(() => performTest(Environment.development)),
+        );
 
-        test('(test)', () => performTest(Environment.test));
+        test(
+          '(test)',
+          withTempDir(() => performTest(Environment.test)),
+        );
 
-        test('(production)', () => performTest(Environment.production));
+        test(
+          '(production)',
+          withTempDir(() => performTest(Environment.production)),
+        );
       });
 
       group(
@@ -465,7 +477,6 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -483,11 +494,20 @@ void main() {
           expect(contents, mainFileWithWebSetup(environment));
         }
 
-        test('(development)', () => performTest(Environment.development));
+        test(
+          '(development)',
+          withTempDir(() => performTest(Environment.development)),
+        );
 
-        test('(test)', () => performTest(Environment.test));
+        test(
+          '(test)',
+          withTempDir(() => performTest(Environment.test)),
+        );
 
-        test('(production)', () => performTest(Environment.production));
+        test(
+          '(production)',
+          withTempDir(() => performTest(Environment.production)),
+        );
       });
 
       group('add platform setup correctly when other platform setups exist',
@@ -497,7 +517,6 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -520,11 +539,20 @@ void main() {
           );
         }
 
-        test('(development)', () => performTest(Environment.development));
+        test(
+          '(development)',
+          withTempDir(() => performTest(Environment.development)),
+        );
 
-        test('(test)', () => performTest(Environment.test));
+        test(
+          '(test)',
+          withTempDir(() => performTest(Environment.test)),
+        );
 
-        test('(production)', () => performTest(Environment.production));
+        test(
+          '(production)',
+          withTempDir(() => performTest(Environment.production)),
+        );
       });
 
       group('does nothing when setup for platform already exists', () {
@@ -533,7 +561,6 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -553,11 +580,20 @@ void main() {
           expect(contents, mainFileWithAndroidSetup(environment));
         }
 
-        test('(development)', () => performTest(Environment.development));
+        test(
+          '(development)',
+          withTempDir(() => performTest(Environment.development)),
+        );
 
-        test('(test)', () => performTest(Environment.test));
+        test(
+          '(test)',
+          withTempDir(() => performTest(Environment.test)),
+        );
 
-        test('(production)', () => performTest(Environment.production));
+        test(
+          '(production)',
+          withTempDir(() => performTest(Environment.production)),
+        );
       });
     });
 
@@ -568,7 +604,6 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -585,11 +620,20 @@ void main() {
           expect(file.readAsStringSync(), mainFileNoSetup);
         }
 
-        test('(development)', () => performTest(Environment.development));
+        test(
+          '(development)',
+          withTempDir(() => performTest(Environment.development)),
+        );
 
-        test('(test)', () => performTest(Environment.test));
+        test(
+          '(test)',
+          withTempDir(() => performTest(Environment.test)),
+        );
 
-        test('(production)', () => performTest(Environment.production));
+        test(
+          '(production)',
+          withTempDir(() => performTest(Environment.production)),
+        );
       });
 
       group('remove platform setup correctly when platform exists', () {
@@ -598,7 +642,6 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -618,11 +661,20 @@ void main() {
           expect(contents, mainFileNoSetup);
         }
 
-        test('(development)', () => performTest(Environment.development));
+        test(
+          '(development)',
+          withTempDir(() => performTest(Environment.development)),
+        );
 
-        test('(test)', () => performTest(Environment.test));
+        test(
+          '(test)',
+          withTempDir(() => performTest(Environment.test)),
+        );
 
-        test('(production)', () => performTest(Environment.production));
+        test(
+          '(production)',
+          withTempDir(() => performTest(Environment.production)),
+        );
       });
 
       group('remove platform setup correctly when platform exists (web)', () {
@@ -631,7 +683,6 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -651,11 +702,20 @@ void main() {
           expect(contents, mainFileNoSetup);
         }
 
-        test('(development)', () => performTest(Environment.development));
+        test(
+          '(development)',
+          withTempDir(() => performTest(Environment.development)),
+        );
 
-        test('(test)', () => performTest(Environment.test));
+        test(
+          '(test)',
+          withTempDir(() => performTest(Environment.test)),
+        );
 
-        test('(production)', () => performTest(Environment.production));
+        test(
+          '(production)',
+          withTempDir(() => performTest(Environment.production)),
+        );
       });
 
       group('remove platform setup correctly when other platform setups exist',
@@ -665,7 +725,6 @@ void main() {
           final project = getProject();
           when(() => project.name()).thenReturn('ab_cd');
           final appPackage = getAppPackage();
-          when(() => appPackage.path).thenReturn(getTempDir().path);
           when(() => appPackage.project).thenReturn(project);
           final mainFile = _getMainFile(
             environment,
@@ -685,11 +744,20 @@ void main() {
           expect(contents, mainFileWithWebSetup(environment));
         }
 
-        test('(development)', () => performTest(Environment.development));
+        test(
+          '(development)',
+          withTempDir(() => performTest(Environment.development)),
+        );
 
-        test('(test)', () => performTest(Environment.test));
+        test(
+          '(test)',
+          withTempDir(() => performTest(Environment.test)),
+        );
 
-        test('(production)', () => performTest(Environment.production));
+        test(
+          '(production)',
+          withTempDir(() => performTest(Environment.production)),
+        );
       });
     });
   });

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
@@ -10,15 +11,28 @@ import 'package:rapid_cli/src/project/project.dart';
 
 import 'mocks.dart';
 
-String tempPath = p.join('.dart_tool', 'test', 'tmp');
+String tempPath = p.join(Directory.current.path, '.dart_tool', 'test', 'tmp');
 
-Directory getTempDir() {
-  final dir = Directory(tempPath);
-  if (dir.existsSync()) {
-    dir.deleteSync(recursive: true);
+final random = Random();
+Future<Directory> getTempDir() async {
+  var name = random.nextInt(pow(2, 32) as int);
+  var dir = Directory(p.join(tempPath, '${name}_tmp'));
+  if (await dir.exists()) {
+    await dir.delete(recursive: true);
   }
-  dir.createSync(recursive: true);
+  await dir.create(recursive: true);
   return dir;
+}
+
+dynamic Function() withTempDir(FutureOr<void> Function() fn) {
+  return () async {
+    final cwd = Directory.current;
+    final dir = await getTempDir();
+
+    Directory.current = dir;
+    await fn();
+    Directory.current = cwd;
+  };
 }
 
 void Function() _overridePrint(void Function(List<String>) fn) {

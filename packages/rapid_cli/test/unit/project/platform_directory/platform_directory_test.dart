@@ -270,94 +270,100 @@ void main() {
     });
 
     group('.customFeaturePackages()', () {
-      test('returns empty list when platform directory has no sub directories',
-          () {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn(getTempDir().path);
-        final platformDirectory = _getPlatformDirectory(
-          Platform.android,
-          project: project,
-        );
-        Directory(platformDirectory.path).createSync(recursive: true);
+      test(
+        'returns empty list when platform directory has no sub directories',
+        withTempDir(() {
+          // Arrange
+          final project = getProject();
+          final platformDirectory = _getPlatformDirectory(
+            Platform.android,
+            project: project,
+          );
+          Directory(platformDirectory.path).createSync(recursive: true);
 
-        // Act + Assert
-        expect(platformDirectory.customFeaturePackages(), isEmpty);
-      });
+          // Act + Assert
+          expect(platformDirectory.customFeaturePackages(), isEmpty);
+        }),
+      );
 
       test(
-          'returns list with custom feature packages when platform directory has sub directories',
-          () {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn(getTempDir().path);
-        when(() => project.name()).thenReturn('my_project');
-        final platformDirectory = _getPlatformDirectory(
-          Platform.android,
-          project: project,
-        );
-        const customFeaturePackageNames = ['my_feat_a', 'my_feat_b'];
-        for (final featureName in customFeaturePackageNames) {
-          Directory(
-            p.join(platformDirectory.path, 'my_project_android_$featureName'),
-          ).createSync(recursive: true);
-        }
-
-        // Act
-        final customFeaturePackages = platformDirectory.customFeaturePackages();
-
-        // Assert
-        expect(customFeaturePackages, hasLength(2));
-        for (int i = 0; i < 2; i++) {
-          final customFeaturePackage = customFeaturePackages[i];
-          expect(customFeaturePackage.name, customFeaturePackageNames[i]);
-          expect(customFeaturePackage.platform, Platform.android);
-          expect(
-            customFeaturePackage.path,
-            endsWith('my_project_android_${customFeaturePackageNames[i]}'),
+        'returns list with custom feature packages when platform directory has sub directories',
+        withTempDir(() {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformDirectory = _getPlatformDirectory(
+            Platform.android,
+            project: project,
           );
-        }
-      });
+          const customFeaturePackageNames = ['my_feat_a', 'my_feat_b'];
+          for (final featureName in customFeaturePackageNames) {
+            Directory(
+              p.join(platformDirectory.path, 'my_project_android_$featureName'),
+            ).createSync(recursive: true);
+          }
 
-      test('ignores app and routing feature packages', () {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn(getTempDir().path);
-        when(() => project.name()).thenReturn('my_project');
-        final platformDirectory = _getPlatformDirectory(
-          Platform.android,
-          project: project,
-        );
-        const customFeaturePackageNames = [
-          'app',
-          'routing',
-          'my_feat_a',
-          'my_feat_b'
-        ];
-        for (final featureName in customFeaturePackageNames) {
-          Directory(
-            p.join(platformDirectory.path, 'my_project_android_$featureName'),
-          ).createSync(recursive: true);
-        }
+          // Act
+          final customFeaturePackages =
+              platformDirectory.customFeaturePackages();
 
-        // Act
-        final customFeaturePackages = platformDirectory.customFeaturePackages();
+          // Assert
+          expect(customFeaturePackages, hasLength(2));
+          for (int i = 0; i < 2; i++) {
+            final customFeaturePackage = customFeaturePackages[i];
+            expect(customFeaturePackage.name, customFeaturePackageNames[i]);
+            expect(customFeaturePackage.platform, Platform.android);
+            expect(
+              customFeaturePackage.path,
+              endsWith('my_project_android_${customFeaturePackageNames[i]}'),
+            );
+          }
+        }),
+      );
 
-        // Assert
-        expect(customFeaturePackages, hasLength(2));
-        for (int i = 2; i < 4; i++) {
-          final customFeaturePackage = customFeaturePackages[i - 2];
-          expect(customFeaturePackage.name, customFeaturePackageNames[i]);
-          expect(customFeaturePackage.platform, Platform.android);
-          expect(
-            customFeaturePackage.path,
-            p.join(
-              platformDirectory.path,
-              'my_project_android_${customFeaturePackageNames[i]}',
-            ),
+      test(
+        'ignores app and routing feature packages',
+        withTempDir(() {
+          // Arrange
+          final project = getProject();
+
+          when(() => project.name()).thenReturn('my_project');
+          final platformDirectory = _getPlatformDirectory(
+            Platform.android,
+            project: project,
           );
-        }
-      });
+          const customFeaturePackageNames = [
+            'app',
+            'routing',
+            'my_feat_a',
+            'my_feat_b'
+          ];
+          for (final featureName in customFeaturePackageNames) {
+            Directory(
+              p.join(platformDirectory.path, 'my_project_android_$featureName'),
+            ).createSync(recursive: true);
+          }
+
+          // Act
+          final customFeaturePackages =
+              platformDirectory.customFeaturePackages();
+
+          // Assert
+          expect(customFeaturePackages, hasLength(2));
+          for (int i = 2; i < 4; i++) {
+            final customFeaturePackage = customFeaturePackages[i - 2];
+            expect(customFeaturePackage.name, customFeaturePackageNames[i]);
+            expect(customFeaturePackage.platform, Platform.android);
+            expect(
+              customFeaturePackage.path,
+              p.join(
+                platformDirectory.path,
+                'my_project_android_${customFeaturePackageNames[i]}',
+              ),
+            );
+          }
+        }),
+      );
     });
   });
 }

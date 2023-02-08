@@ -165,54 +165,62 @@ void main() {
     });
 
     group('.exists', () {
-      test('returns true when the file exists', () {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn(getTempDir().path);
-        final melosFile = _getMelosFile(project: project);
-        File(melosFile.path).createSync(recursive: true);
+      test(
+        'returns true when the file exists',
+        withTempDir(() {
+          // Arrange
+          final project = getProject();
+          final melosFile = _getMelosFile(project: project);
+          File(melosFile.path).createSync(recursive: true);
 
-        // Act + Assert
-        expect(melosFile.exists(), true);
-      });
+          // Act + Assert
+          expect(melosFile.exists(), true);
+        }),
+      );
 
-      test('returns false when the file does not exists', () {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn(getTempDir().path);
-        final melosFile = _getMelosFile(project: project);
+      test(
+        'returns false when the file does not exists',
+        withTempDir(() {
+          // Arrange
+          final project = getProject();
+          final melosFile = _getMelosFile(project: project);
 
-        // Act + Assert
-        expect(melosFile.exists(), false);
-      });
+          // Act + Assert
+          expect(melosFile.exists(), false);
+        }),
+      );
     });
 
     group('.name', () {
-      test('returns name', () {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn(getTempDir().path);
-        final melosFile = _getMelosFile(project: project);
-        File(melosFile.path)
-          ..createSync(recursive: true)
-          ..writeAsStringSync(melosWithName);
+      test(
+        'returns name',
+        withTempDir(() {
+          // Arrange
+          final project = getProject();
+          final melosFile = _getMelosFile(project: project);
+          File(melosFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(melosWithName);
 
-        // Act + Assert
-        expect(melosFile.readName(), 'foo_bar');
-      });
+          // Act + Assert
+          expect(melosFile.readName(), 'foo_bar');
+        }),
+      );
 
-      test('throws read name failure when name is not present', () {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn(getTempDir().path);
-        final melosFile = _getMelosFile(project: project);
-        File(melosFile.path)
-          ..createSync(recursive: true)
-          ..writeAsStringSync(melosWithoutName);
+      test(
+        'throws read name failure when name is not present',
+        withTempDir(() {
+          // Arrange
+          final project = getProject();
+          final melosFile = _getMelosFile(project: project);
+          File(melosFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(melosWithoutName);
 
-        // Act + Assert
-        expect(() => melosFile.readName(), throwsA(isA<ReadNameFailure>()));
-      });
+          // Act + Assert
+          expect(() => melosFile.readName(), throwsA(isA<ReadNameFailure>()));
+        }),
+      );
     });
   });
 }

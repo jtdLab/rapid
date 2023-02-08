@@ -253,6 +253,7 @@ MockInjectionFile getInjectionFile() {
 
 MockDiPackage getDiPackage() {
   final diPackage = MockDiPackage();
+  when(() => diPackage.path).thenReturn('some/path');
 
   return diPackage;
 }

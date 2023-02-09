@@ -108,9 +108,9 @@ void main() {
       }),
     );
 
-    test('can be instantiated without explicit logger', () {
+    test('can be instantiated without explicit logger and project', () {
       // Act
-      final command = ActivateMacosCommand(project: project);
+      final command = ActivateMacosCommand();
 
       // Assert
       expect(command, isNotNull);

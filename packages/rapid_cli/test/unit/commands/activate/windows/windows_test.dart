@@ -103,9 +103,9 @@ void main() {
       }),
     );
 
-    test('can be instantiated without explicit logger', () {
+    test('can be instantiated without explicit logger and project', () {
       // Act
-      final command = ActivateWindowsCommand(project: project);
+      final command = ActivateWindowsCommand();
 
       // Assert
       expect(command, isNotNull);

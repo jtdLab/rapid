@@ -108,9 +108,9 @@ void main() {
       }),
     );
 
-    test('can be instantiated without explicit logger', () {
+    test('can be instantiated without explicit logger and project', () {
       // Act
-      final command = ActivateLinuxCommand(project: project);
+      final command = ActivateLinuxCommand();
 
       // Assert
       expect(command, isNotNull);

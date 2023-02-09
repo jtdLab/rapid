@@ -92,9 +92,9 @@ void main() {
       }),
     );
 
-    test('can be instantiated without explicit logger', () {
+    test('can be instantiated without explicit logger and project', () {
       // Act
-      final command = ActivateWebCommand(project: project);
+      final command = ActivateWebCommand();
 
       // Assert
       expect(command, isNotNull);

@@ -78,15 +78,15 @@ Future<void> projectExists(Project project) async {
 /// Completes when [platform] is activated in [project].
 Future<void> platformIsActivated(
   Platform platform,
-  Project project, [
-  String? errorMessage,
-]) async {
+  Project project,
+  String errorMessage,
+) async {
   final platformIsActivated = project.platformIsActivated(platform);
 
   if (!platformIsActivated) {
     throw EnvironmentException(
       ExitCode.config.code,
-      errorMessage ?? '${platform.prettyName} is deactivated.',
+      errorMessage,
     );
   }
 }

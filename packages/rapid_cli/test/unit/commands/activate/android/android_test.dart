@@ -103,9 +103,9 @@ void main() {
       }),
     );
 
-    test('can be instantiated without explicit logger', () {
+    test('can be instantiated without explicit logger and project', () {
       // Act
-      final command = ActivateAndroidCommand(project: project);
+      final command = ActivateAndroidCommand();
 
       // Assert
       expect(command, isNotNull);

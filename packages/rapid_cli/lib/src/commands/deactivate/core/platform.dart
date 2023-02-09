@@ -33,10 +33,10 @@ abstract class DeactivatePlatformCommand extends Command<int>
   DeactivatePlatformCommand({
     required Platform platform,
     Logger? logger,
-    required Project project,
+    Project? project,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project;
+        _project = project ?? Project();
 
   final Platform _platform;
   final Logger _logger;

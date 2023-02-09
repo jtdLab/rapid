@@ -1,10 +1,11 @@
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/deactivate/web/web.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import '../../../common.dart';
 import '../../../mocks.dart';
@@ -70,9 +71,9 @@ void main() {
       }),
     );
 
-    test('can be instantiated without explicit logger', () {
+    test('can be instantiated without explicit logger and project', () {
       // Act
-      final command = DeactivateWebCommand(project: project);
+      final command = DeactivateWebCommand();
 
       // Assert
       expect(command, isNotNull);

@@ -8,9 +8,8 @@ import 'package:rapid_cli/src/project/project.dart';
 class DeactivateMacosCommand extends DeactivatePlatformCommand {
   DeactivateMacosCommand({
     super.logger,
-    required Project project,
+    super.project,
   }) : super(
           platform: Platform.macos,
-          project: project,
         );
 }

@@ -152,11 +152,13 @@ class ServiceInterface extends FileSystemEntityCollection {
         _generator = generator ?? MasonGenerator.fromBundle,
         super([
           Directory(
-            path: p.join(
-              domainPackage.path,
-              'lib',
-              dir,
-              name.snakeCase,
+            path: p.normalize(
+              p.join(
+                domainPackage.path,
+                'lib',
+                dir,
+                name.snakeCase,
+              ),
             ),
           ),
         ]);
@@ -208,19 +210,23 @@ class ValueObject extends FileSystemEntityCollection {
         _generator = generator ?? MasonGenerator.fromBundle,
         super([
           Directory(
-            path: p.join(
-              domainPackage.path,
-              'lib',
-              dir,
-              name.snakeCase,
+            path: p.normalize(
+              p.join(
+                domainPackage.path,
+                'lib',
+                dir,
+                name.snakeCase,
+              ),
             ),
           ),
           Directory(
-            path: p.join(
-              domainPackage.path,
-              'test',
-              dir,
-              name.snakeCase,
+            path: p.normalize(
+              p.join(
+                domainPackage.path,
+                'test',
+                dir,
+                name.snakeCase,
+              ),
             ),
           ),
         ]);

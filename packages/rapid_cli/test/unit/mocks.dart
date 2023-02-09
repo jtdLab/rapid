@@ -8,6 +8,8 @@ import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/app_package/app_package.dart';
 import 'package:rapid_cli/src/project/app_package/platform_native_directory/platform_native_directory.dart';
 import 'package:rapid_cli/src/project/di_package/di_package.dart';
+import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
+import 'package:rapid_cli/src/project/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/platform_ui_package/platform_ui_package.dart';
@@ -150,6 +152,21 @@ abstract class _DartFormatFixCommand {
 
 class MockDartFormatFixCommand extends Mock implements _DartFormatFixCommand {}
 
+class MockDomainPackage extends Mock implements DomainPackage {}
+
+class MockInfrastructurePackage extends Mock implements InfrastructurePackage {}
+
+abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
+  Future<void> call({
+    String cwd,
+    required Logger logger,
+  });
+}
+
+class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+    extends Mock
+    implements _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
+
 // Fakes
 
 class FakeProcess {
@@ -260,7 +277,10 @@ MockDiPackage getDiPackage() {
 
 MockPlatformCustomFeaturePackage getPlatformCustomFeaturePackage() {
   final platformCustomFeaturePackage = MockPlatformCustomFeaturePackage();
+  when(() => platformCustomFeaturePackage.path).thenReturn('some/path');
   when(() => platformCustomFeaturePackage.name).thenReturn('some_feature_name');
+  when(() => platformCustomFeaturePackage.packageName())
+      .thenReturn('some_feature_package_name');
 
   return platformCustomFeaturePackage;
 }
@@ -318,6 +338,79 @@ MockMainFile getMainFile() {
 
 MockPlatformAppFeaturePackage getPlatformAppFeaturePackage() {
   final appFeaturePackage = MockPlatformAppFeaturePackage();
+  when(() => appFeaturePackage.path).thenReturn('some/path');
 
   return appFeaturePackage;
+}
+
+MockLocalizationsFile getLocalizationsFile() {
+  final localizationsFile = MockLocalizationsFile();
+
+  return localizationsFile;
+}
+
+MockL10nFile getL10nFile() {
+  final l10nFile = MockL10nFile();
+
+  return l10nFile;
+}
+
+MockFlutterGenL10nCommand getFlutterGenl10n() {
+  final flutterGenL10n = MockFlutterGenL10nCommand();
+  when(
+    () => flutterGenL10n(cwd: any(named: 'cwd'), logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
+
+  return flutterGenL10n;
+}
+
+MockArbDirectory getArbDirectory() {
+  final arbDirectory = MockArbDirectory();
+  when(() => arbDirectory.path).thenReturn('some/path');
+  final platformFeaturePackage = getPlatformCustomFeaturePackage();
+  when(() => arbDirectory.platformFeaturePackage)
+      .thenReturn(platformFeaturePackage);
+
+  return arbDirectory;
+}
+
+MockLanguageLocalizationsFile getLanguageLocalizationsFile() {
+  final languageLocalizationsFile = MockLanguageLocalizationsFile();
+
+  return languageLocalizationsFile;
+}
+
+MockArbFile getArbFile() {
+  final arbFile = MockArbFile();
+
+  return arbFile;
+}
+
+MockDomainPackage getDomainPackage() {
+  final domainPackage = MockDomainPackage();
+  when(() => domainPackage.path).thenReturn('some/path');
+
+  return domainPackage;
+}
+
+MockInfrastructurePackage getInfrastructurePackage() {
+  final infrastructurePackage = MockInfrastructurePackage();
+  when(() => infrastructurePackage.path).thenReturn('some/path');
+
+  return infrastructurePackage;
+}
+
+MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+    getFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs() {
+  final flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+      MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
+
+  when(
+    () => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+      cwd: any(named: 'cwd'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+
+  return flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 }

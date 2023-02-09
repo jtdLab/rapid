@@ -4,328 +4,624 @@ import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 
+import '../../../common.dart';
 import '../../../mocks.dart';
 
+const localizationsFileEmpty = '''
+import 'package:ab_cd_ui_android/ab_cd_ui_android.dart';
 
+const localizationsDelegates = <LocalizationsDelegate>[];
+
+const supportedLocales = [
+  Locale('en'),
+];
+''';
+
+const localizationsFileWithPackages = '''
+import 'package:ab_cd_android_home_page/ab_cd_android_home_page.dart';
+import 'package:ab_cd_ui_android/ab_cd_ui_android.dart';
+
+const localizationsDelegates = <LocalizationsDelegate>[
+  AbCdAndroidHomePageLocalizations.delegate,
+];
+
+const supportedLocales = [
+  Locale('en'),
+];
+''';
+
+const localizationsFileWithMorePackages = '''
+import 'package:ab_cd_android_home_page/ab_cd_android_home_page.dart';
+import 'package:ab_cd_android_sign_in_page/ab_cd_android_sign_in_page.dart';
+import 'package:ab_cd_ui_android/ab_cd_ui_android.dart';
+
+const localizationsDelegates = <LocalizationsDelegate>[
+  AbCdAndroidHomePageLocalizations.delegate,
+  AbCdAndroidSignInPageLocalizations.delegate,
+];
+
+const supportedLocales = [
+  Locale('en'),
+];
+''';
+
+const localizationsFileWithLanguage = '''
+import 'package:ab_cd_ui_android/ab_cd_ui_android.dart';
+
+const localizationsDelegates = <LocalizationsDelegate>[];
+
+const supportedLocales = [
+  Locale('en'),
+];
+''';
+
+const localizationsFileWithMoreLanguages = '''
+import 'package:ab_cd_ui_android/ab_cd_ui_android.dart';
+
+const localizationsDelegates = <LocalizationsDelegate>[];
+
+const supportedLocales = [
+  Locale('en'),
+  Locale('fr'),
+];
+''';
+
+PlatformAppFeaturePackage _getPlatformAppFeaturePackage(
+  Platform platform, {
+  Project? project,
+  PubspecFile? pubspecFile,
+  LocalizationsFile? localizationsFile,
+  GeneratorBuilder? generator,
+}) {
+  return PlatformAppFeaturePackage(
+    platform,
+    project: project ?? getProject(),
+    pubspecFile: pubspecFile ?? getPubspecFile(),
+    localizationsFile: localizationsFile,
+    generator: generator ?? (_) async => getMasonGenerator(),
+  );
+}
+
+LocalizationsFile _getLocalizationsFile({
+  PlatformAppFeaturePackage? platformAppFeaturePackage,
+}) {
+  return LocalizationsFile(
+    platformAppFeaturePackage:
+        platformAppFeaturePackage ?? getPlatformAppFeaturePackage(),
+  );
+}
+
+PlatformRoutingFeaturePackage _getPlatformRoutingFeaturePackage(
+  Platform platform, {
+  Project? project,
+  PubspecFile? pubspecFile,
+  GeneratorBuilder? generator,
+}) {
+  return PlatformRoutingFeaturePackage(
+    platform,
+    project: project ?? getProject(),
+    pubspecFile: pubspecFile ?? getPubspecFile(),
+    generator: generator ?? (_) async => getMasonGenerator(),
+  );
+}
+
+PlatformCustomFeaturePackage _getPlatformCustomFeaturePackage(
+  String name,
+  Platform platform, {
+  Project? project,
+  L10nFile? l10nFile,
+  ArbDirectory? arbDirectory,
+  LanguageLocalizationsFileBuilder? languageLocalizationsFile,
+  FlutterGenl10nCommand? flutterGenl10n,
+  GeneratorBuilder? generator,
+}) {
+  return PlatformCustomFeaturePackage(
+    name,
+    platform,
+    project: project ?? getProject(),
+    l10nFile: l10nFile ?? getL10nFile(),
+    arbDirectory: arbDirectory ?? getArbDirectory(),
+    languageLocalizationsFile: languageLocalizationsFile ??
+        ({required String language}) => getLanguageLocalizationsFile(),
+    flutterGenl10n: flutterGenl10n ?? getFlutterGenl10n().call,
+    generator: generator ?? (_) async => getMasonGenerator(),
+  );
+}
+
+L10nFile _getL10nFile({
+  PlatformFeaturePackage? platformFeaturePackage,
+}) {
+  return L10nFile(
+    platformFeaturePackage:
+        platformFeaturePackage ?? getPlatformCustomFeaturePackage(),
+  );
+}
+
+LanguageLocalizationsFile _getLanguageLocalizationsFile(
+  String language, {
+  PlatformFeaturePackage? platformFeaturePackage,
+}) {
+  return LanguageLocalizationsFile(
+    language,
+    platformFeaturePackage:
+        platformFeaturePackage ?? getPlatformCustomFeaturePackage(),
+  );
+}
+
+ArbDirectory _getArbDirectory({
+  PlatformFeaturePackage? platformFeaturePackage,
+}) {
+  return ArbDirectory(
+    platformFeaturePackage:
+        platformFeaturePackage ?? getPlatformCustomFeaturePackage(),
+  );
+}
+
+ArbFile _getArbFile({
+  required String language,
+  ArbDirectory? arbDirectory,
+  GeneratorBuilder? generator,
+}) {
+  return ArbFile(
+    language: language,
+    arbDirectory: arbDirectory ?? getArbDirectory(),
+    generator: generator ?? (_) async => getMasonGenerator(),
+  );
+}
+
+Bloc _getBloc({
+  required String name,
+  PlatformFeaturePackage? platformFeaturePackage,
+  GeneratorBuilder? generator,
+}) {
+  return Bloc(
+    name: name,
+    platformFeaturePackage:
+        platformFeaturePackage ?? getPlatformCustomFeaturePackage(),
+    generator: generator ?? (_) async => getMasonGenerator(),
+  );
+}
+
+Cubit _getCubit({
+  required String name,
+  PlatformFeaturePackage? platformFeaturePackage,
+  GeneratorBuilder? generator,
+}) {
+  return Cubit(
+    name: name,
+    platformFeaturePackage:
+        platformFeaturePackage ?? getPlatformCustomFeaturePackage(),
+    generator: generator ?? (_) async => getMasonGenerator(),
+  );
+}
 
 void main() {
   group('PlatformAppFeaturePackage', () {
-    late Platform platform;
-
-    late Project project;
-    const projectPath = 'foo/bar';
-    const projectName = 'foo_bar';
-
-    late PubspecFile pubspecFile;
-
-    late LocalizationsFile localizationsFile;
-
-    late MasonGenerator generator;
-    final generatedFiles = List.filled(
-      23,
-      const GeneratedFile.created(path: ''),
-    );
-
-    late PlatformAppFeaturePackage underTest;
-
-    PlatformAppFeaturePackage platformAppFeaturePackage() =>
-        PlatformAppFeaturePackage(
-          platform,
-          project: project,
-          pubspecFile: pubspecFile,
-          localizationsFile: localizationsFile,
-          generator: (_) async => generator,
-        );
-
     setUpAll(() {
       registerFallbackValue(FakeLogger());
       registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
-    setUp(() {
-      platform = Platform.android;
+    group('.path', () {
+      test('(android)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+          Platform.android,
+          project: project,
+        );
 
-      project = MockProject();
-      when(() => project.path).thenReturn(projectPath);
-      when(() => project.name()).thenReturn(projectName);
+        // Act + Assert
+        expect(
+          platformAppFeaturePackage.path,
+          'project/path/packages/my_project/my_project_android/my_project_android_app',
+        );
+      });
 
-      pubspecFile = MockPubspecFile();
+      test('(ios)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+          Platform.ios,
+          project: project,
+        );
 
-      localizationsFile = MockLocalizationsFile();
+        // Act + Assert
+        expect(
+          platformAppFeaturePackage.path,
+          'project/path/packages/my_project/my_project_ios/my_project_ios_app',
+        );
+      });
 
-      generator = MockMasonGenerator();
-      when(() => generator.id).thenReturn('generator_id');
-      when(() => generator.description).thenReturn('generator description');
-      when(
-        () => generator.generate(
-          any(),
-          vars: any(named: 'vars'),
-          logger: any(named: 'logger'),
+      test('(linux)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+          Platform.linux,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformAppFeaturePackage.path,
+          'project/path/packages/my_project/my_project_linux/my_project_linux_app',
+        );
+      });
+
+      test('(macos)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+          Platform.macos,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformAppFeaturePackage.path,
+          'project/path/packages/my_project/my_project_macos/my_project_macos_app',
+        );
+      });
+
+      test('(web)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+          Platform.web,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformAppFeaturePackage.path,
+          'project/path/packages/my_project/my_project_web/my_project_web_app',
+        );
+      });
+
+      test('(windows)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+          Platform.windows,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformAppFeaturePackage.path,
+          'project/path/packages/my_project/my_project_windows/my_project_windows_app',
+        );
+      });
+    });
+
+    test('.localizationsFile', () {
+      final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+        Platform.android,
+      );
+
+      // Act + Assert
+      expect(
+        platformAppFeaturePackage.localizationsFile,
+        isA<LocalizationsFile>().having(
+          (lf) => lf.platformAppFeaturePackage,
+          'platformAppFeaturePackage',
+          platformAppFeaturePackage,
         ),
-      ).thenAnswer((_) async => generatedFiles);
-
-      underTest = platformAppFeaturePackage();
+      );
     });
 
-    group('path', () {
-      test('is correct', () {
-        // Assert
-        expect(
-          underTest.path,
-          '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_app',
-        );
-      });
+    group('.create()', () {
+      test(
+        'completes successfully with correct output (android)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+            Platform.android,
+            project: project,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await platformAppFeaturePackage.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_android/my_project_android_app',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'android': true,
+                'ios': false,
+                'linux': false,
+                'macos': false,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (ios)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+            Platform.ios,
+            project: project,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await platformAppFeaturePackage.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_ios/my_project_ios_app',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'android': false,
+                'ios': true,
+                'linux': false,
+                'macos': false,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (linux)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+            Platform.linux,
+            project: project,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await platformAppFeaturePackage.create(
+            logger: logger,
+          );
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_linux/my_project_linux_app',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'android': false,
+                'ios': false,
+                'linux': true,
+                'macos': false,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (macos)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+            Platform.macos,
+            project: project,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await platformAppFeaturePackage.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_macos/my_project_macos_app',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'android': false,
+                'ios': false,
+                'linux': false,
+                'macos': true,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (web)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+            Platform.web,
+            project: project,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await platformAppFeaturePackage.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_web/my_project_web_app',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'android': false,
+                'ios': false,
+                'linux': false,
+                'macos': false,
+                'web': true,
+                'windows': false,
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (windows)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+            Platform.windows,
+            project: project,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await platformAppFeaturePackage.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_windows/my_project_windows_app',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'android': false,
+                'ios': false,
+                'linux': false,
+                'macos': false,
+                'web': false,
+                'windows': true,
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
     });
 
-    group('localizationsFile', () {
-      test('returns correct localizations file', () {
-        // Assert
-        expect(
-          underTest.localizationsFile,
-          localizationsFile,
-        );
-      });
-    });
-
-    group('create', () {
-      late Logger logger;
-
-      setUp(() {
-        logger = MockLogger();
-      });
-
-      test('completes successfully with correct output (android)', () async {
+    group('.registerCustomFeaturePackage()', () {
+      test('adds package to pubspec and registers its localizations delegate',
+          () async {
         // Arrange
-        platform = Platform.android;
-        underTest = platformAppFeaturePackage();
+        final pubspecFile = getPubspecFile();
+        final localizationsFile = getLocalizationsFile();
+        final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+          Platform.android,
+          pubspecFile: pubspecFile,
+          localizationsFile: localizationsFile,
+        );
 
         // Act
-        await underTest.create(
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_app',
-              ),
-            ),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'android': true,
-              'ios': false,
-              'linux': false,
-              'macos': false,
-              'web': false,
-              'windows': false,
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
-
-      test('completes successfully with correct output (ios)', () async {
-        // Arrange
-        platform = Platform.ios;
-        underTest = platformAppFeaturePackage();
-
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_app',
-              ),
-            ),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'android': false,
-              'ios': true,
-              'linux': false,
-              'macos': false,
-              'web': false,
-              'windows': false,
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
-
-      test('completes successfully with correct output (linux)', () async {
-        // Arrange
-        platform = Platform.linux;
-        underTest = platformAppFeaturePackage();
-
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_app',
-              ),
-            ),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'android': false,
-              'ios': false,
-              'linux': true,
-              'macos': false,
-              'web': false,
-              'windows': false,
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
-
-      test('completes successfully with correct output (macos)', () async {
-        // Arrange
-        platform = Platform.macos;
-        underTest = platformAppFeaturePackage();
-
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_app',
-              ),
-            ),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'android': false,
-              'ios': false,
-              'linux': false,
-              'macos': true,
-              'web': false,
-              'windows': false,
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
-
-      test('completes successfully with correct output (web)', () async {
-        // Arrange
-        platform = Platform.web;
-        underTest = platformAppFeaturePackage();
-
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_app',
-              ),
-            ),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'android': false,
-              'ios': false,
-              'linux': false,
-              'macos': false,
-              'web': true,
-              'windows': false,
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
-
-      test('completes successfully with correct output (windows)', () async {
-        // Arrange
-        platform = Platform.windows;
-        underTest = platformAppFeaturePackage();
-
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_app',
-              ),
-            ),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'android': false,
-              'ios': false,
-              'linux': false,
-              'macos': false,
-              'web': false,
-              'windows': true,
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
-    });
-
-    group('registerCustomFeaturePackage', () {
-      late PlatformCustomFeaturePackage customFeaturePackage;
-      late String customFeaturePackageName;
-      late Logger logger;
-
-      setUp(() {
-        customFeaturePackage = MockPlatformCustomFeaturePackage();
-        customFeaturePackageName = 'foo_bar';
+        final customFeaturePackage = getPlatformCustomFeaturePackage();
         when(() => customFeaturePackage.packageName())
-            .thenReturn(customFeaturePackageName);
-        logger = MockLogger();
-      });
-
-      test('register custom feature package correctly', () async {
-        // Act
-        await underTest.registerCustomFeaturePackage(
+            .thenReturn('feature_name');
+        await platformAppFeaturePackage.registerCustomFeaturePackage(
           customFeaturePackage,
-          logger: logger,
+          logger: FakeLogger(),
         );
 
         // Assert
-        verify(() => pubspecFile.setDependency(customFeaturePackageName));
+        verify(() => pubspecFile.setDependency('feature_name'));
         verify(
           () => localizationsFile.addLocalizationsDelegate(
             customFeaturePackage,
@@ -334,28 +630,30 @@ void main() {
       });
     });
 
-    group('unregisterCustomFeaturePackage', () {
-      late PlatformCustomFeaturePackage customFeaturePackage;
-      late String customFeaturePackageName;
-      late Logger logger;
+    group('.unregisterCustomFeaturePackage()', () {
+      test(
+          'removes package from pubspec and unregisters its localizations delegate',
+          () async {
+        // Arrange
+        final pubspecFile = getPubspecFile();
+        final localizationsFile = getLocalizationsFile();
+        final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+          Platform.android,
+          pubspecFile: pubspecFile,
+          localizationsFile: localizationsFile,
+        );
 
-      setUp(() {
-        customFeaturePackage = MockPlatformCustomFeaturePackage();
-        customFeaturePackageName = 'foo_bar';
-        when(() => customFeaturePackage.packageName())
-            .thenReturn(customFeaturePackageName);
-        logger = MockLogger();
-      });
-
-      test('unregister custom feature package correctly', () async {
         // Act
-        await underTest.unregisterCustomFeaturePackage(
+        final customFeaturePackage = getPlatformCustomFeaturePackage();
+        when(() => customFeaturePackage.packageName())
+            .thenReturn('feature_name');
+        await platformAppFeaturePackage.unregisterCustomFeaturePackage(
           customFeaturePackage,
-          logger: logger,
+          logger: FakeLogger(),
         );
 
         // Assert
-        verify(() => pubspecFile.removeDependency(customFeaturePackageName));
+        verify(() => pubspecFile.removeDependency('feature_name'));
         verify(
           () => localizationsFile.removeLocalizationsDelegate(
             customFeaturePackage,
@@ -366,869 +664,1264 @@ void main() {
   });
 
   group('LocalizationsFile', () {
-    late PlatformAppFeaturePackage platformAppFeaturePackage;
-    const platformAppFeaturePackagePath = 'foo/bam';
-
-    late LocalizationsFile underTest;
-
-    LocalizationsFile localizationsFile() => LocalizationsFile(
-          platformAppFeaturePackage: platformAppFeaturePackage,
-        );
-
-    setUp(() {
-      platformAppFeaturePackage = MockPlatformAppFeaturePackage();
+    test('.path', () {
+      // Arrange
+      final platformAppFeaturePackage = getPlatformAppFeaturePackage();
       when(() => platformAppFeaturePackage.path)
-          .thenReturn(platformAppFeaturePackagePath);
+          .thenReturn('platform_app_feature_package/path');
+      final localizationsFile = _getLocalizationsFile(
+        platformAppFeaturePackage: platformAppFeaturePackage,
+      );
 
-      underTest = localizationsFile();
+      // Act + Assert
+      expect(
+        localizationsFile.path,
+        'platform_app_feature_package/path/lib/src/presentation/localizations.dart',
+      );
     });
 
-    group('path', () {
-      test('is correct', () {
-        // Assert
-        expect(
-          underTest.path,
-          '$platformAppFeaturePackagePath/lib/src/presentation/localizations.dart',
-        );
-      });
+    test('.platformAppFeaturePackage', () {
+      // Arrange
+      final platformAppFeaturePackage = getPlatformAppFeaturePackage();
+      final localizationsFile = _getLocalizationsFile(
+        platformAppFeaturePackage: platformAppFeaturePackage,
+      );
+
+      // Act + Assert
+      expect(
+        localizationsFile.platformAppFeaturePackage,
+        platformAppFeaturePackage,
+      );
     });
 
-    group('addLocalizationsDelegate', () {
-      // TODO
+    group('.addLocalizationsDelegate()', () {
+      test(
+        'adds import and the localizations delegate correctly',
+        withTempDir(() {
+          // Arrange
+          final localizationsFile = _getLocalizationsFile();
+          final file = File(localizationsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(localizationsFileEmpty);
+
+          // Act
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.packageName())
+              .thenReturn('ab_cd_android_home_page');
+          localizationsFile.addLocalizationsDelegate(customFeaturePackage);
+
+          // Assert
+          expect(file.readAsStringSync(), localizationsFileWithPackages);
+        }),
+      );
+
+      test(
+        'adds import and the localizations delegate correctly when diffrent packages already present',
+        withTempDir(() {
+          // Arrange
+          final localizationsFile = _getLocalizationsFile();
+          final file = File(localizationsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(localizationsFileWithPackages);
+
+          // Act
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.packageName())
+              .thenReturn('ab_cd_android_sign_in_page');
+          localizationsFile.addLocalizationsDelegate(customFeaturePackage);
+
+          // Assert
+          expect(file.readAsStringSync(), localizationsFileWithMorePackages);
+        }),
+      );
+
+      test(
+        'does nothing when same package already present',
+        withTempDir(() {
+          // Arrange
+          final localizationsFile = _getLocalizationsFile();
+          final file = File(localizationsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(localizationsFileWithPackages);
+
+          // Act
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.packageName())
+              .thenReturn('ab_cd_android_home_page');
+          localizationsFile.addLocalizationsDelegate(customFeaturePackage);
+
+          // Assert
+          expect(file.readAsStringSync(), localizationsFileWithPackages);
+        }),
+      );
     });
 
-    group('removeLocalizationsDelegate', () {
-      // TODO
+    group('.removeLocalizationsDelegate()', () {
+      test(
+        'removes import and the localizations delegate correctly',
+        withTempDir(() {
+          // Arrange
+          final localizationsFile = _getLocalizationsFile();
+          final file = File(localizationsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(localizationsFileWithPackages);
+
+          // Act
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.packageName())
+              .thenReturn('ab_cd_android_home_page');
+          localizationsFile.removeLocalizationsDelegate(customFeaturePackage);
+
+          // Assert
+          expect(file.readAsStringSync(), localizationsFileEmpty);
+        }),
+      );
+
+      test(
+        'removes import and the localizations delegate correctly when diffrent packages already present',
+        withTempDir(() {
+          // Arrange
+          final localizationsFile = _getLocalizationsFile();
+          final file = File(localizationsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(localizationsFileWithMorePackages);
+
+          // Act
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.packageName())
+              .thenReturn('ab_cd_android_sign_in_page');
+          localizationsFile.removeLocalizationsDelegate(customFeaturePackage);
+
+          // Assert
+          expect(file.readAsStringSync(), localizationsFileWithPackages);
+        }),
+      );
+
+      test(
+        'does nothing when no packages are present',
+        withTempDir(() {
+          // Arrange
+          final localizationsFile = _getLocalizationsFile();
+          final file = File(localizationsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(localizationsFileEmpty);
+
+          // Act
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.packageName())
+              .thenReturn('ab_cd_android_home_page');
+          localizationsFile.removeLocalizationsDelegate(customFeaturePackage);
+
+          // Assert
+          expect(file.readAsStringSync(), localizationsFileEmpty);
+        }),
+      );
     });
 
-    group('addSupportedLanguage', () {
-      // TODO
+    group('.addSupportedLanguage()', () {
+      test(
+        'adds the supported language correctly',
+        withTempDir(() {
+          // Arrange
+          final localizationsFile = _getLocalizationsFile();
+          final file = File(localizationsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(localizationsFileWithLanguage);
+
+          // Act
+          localizationsFile.addSupportedLanguage('fr');
+
+          // Assert
+          expect(file.readAsStringSync(), localizationsFileWithMoreLanguages);
+        }),
+      );
+
+      test(
+        'does nothing when the language already exists',
+        withTempDir(() {
+          // Arrange
+          final localizationsFile = _getLocalizationsFile();
+          final file = File(localizationsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(localizationsFileWithLanguage);
+
+          // Act
+          localizationsFile.addSupportedLanguage('en');
+
+          // Assert
+          expect(file.readAsStringSync(), localizationsFileWithLanguage);
+        }),
+      );
     });
 
-    group('removeSupportedLanguage', () {
-      // TODO
+    group('.removeSupportedLanguage()', () {
+      test(
+        'removes the supported language correctly',
+        withTempDir(() {
+          // Arrange
+          final localizationsFile = _getLocalizationsFile();
+          final file = File(localizationsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(localizationsFileWithMoreLanguages);
+
+          // Act
+          localizationsFile.removeSupportedLanguage('fr');
+
+          // Assert
+          expect(file.readAsStringSync(), localizationsFileWithLanguage);
+        }),
+      );
+
+      test(
+        'does nothing when the language does not exist',
+        withTempDir(() {
+          // Arrange
+          final localizationsFile = _getLocalizationsFile();
+          final file = File(localizationsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(localizationsFileWithLanguage);
+
+          // Act
+          localizationsFile.removeSupportedLanguage('fr');
+
+          // Assert
+          expect(file.readAsStringSync(), localizationsFileWithLanguage);
+        }),
+      );
     });
   });
 
   group('PlatformRoutingFeaturePackage', () {
-    late Platform platform;
-
-    late Project project;
-    const projectPath = 'foo/bar';
-    const projectName = 'foo_bar';
-
-    late PubspecFile pubspecFile;
-
-    late MasonGenerator generator;
-    final generatedFiles = List.filled(
-      23,
-      const GeneratedFile.created(path: ''),
-    );
-
-    late PlatformRoutingFeaturePackage underTest;
-
-    PlatformRoutingFeaturePackage platformRoutingFeaturePackage() =>
-        PlatformRoutingFeaturePackage(
-          platform,
-          project: project,
-          pubspecFile: pubspecFile,
-          generator: (_) async => generator,
-        );
-
     setUpAll(() {
       registerFallbackValue(FakeLogger());
       registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
-    setUp(() {
-      platform = Platform.android;
+    group('.path', () {
+      test('(android)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformRoutingFeaturePackage = _getPlatformRoutingFeaturePackage(
+          Platform.android,
+          project: project,
+        );
 
-      project = MockProject();
-      when(() => project.path).thenReturn(projectPath);
-      when(() => project.name()).thenReturn(projectName);
-
-      pubspecFile = MockPubspecFile();
-
-      generator = MockMasonGenerator();
-      when(() => generator.id).thenReturn('generator_id');
-      when(() => generator.description).thenReturn('generator description');
-      when(
-        () => generator.generate(
-          any(),
-          vars: any(named: 'vars'),
-          logger: any(named: 'logger'),
-        ),
-      ).thenAnswer((_) async => generatedFiles);
-
-      underTest = platformRoutingFeaturePackage();
-    });
-
-    group('path', () {
-      test('is correct', () {
-        // Assert
+        // Act + Assert
         expect(
-          underTest.path,
-          '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_routing',
+          platformRoutingFeaturePackage.path,
+          'project/path/packages/my_project/my_project_android/my_project_android_routing',
+        );
+      });
+
+      test('(ios)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformRoutingFeaturePackage = _getPlatformRoutingFeaturePackage(
+          Platform.ios,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformRoutingFeaturePackage.path,
+          'project/path/packages/my_project/my_project_ios/my_project_ios_routing',
+        );
+      });
+
+      test('(linux)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformRoutingFeaturePackage = _getPlatformRoutingFeaturePackage(
+          Platform.linux,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformRoutingFeaturePackage.path,
+          'project/path/packages/my_project/my_project_linux/my_project_linux_routing',
+        );
+      });
+
+      test('(macos)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformRoutingFeaturePackage = _getPlatformRoutingFeaturePackage(
+          Platform.macos,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformRoutingFeaturePackage.path,
+          'project/path/packages/my_project/my_project_macos/my_project_macos_routing',
+        );
+      });
+
+      test('(web)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformRoutingFeaturePackage = _getPlatformRoutingFeaturePackage(
+          Platform.web,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformRoutingFeaturePackage.path,
+          'project/path/packages/my_project/my_project_web/my_project_web_routing',
+        );
+      });
+
+      test('(windows)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformRoutingFeaturePackage = _getPlatformRoutingFeaturePackage(
+          Platform.windows,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformRoutingFeaturePackage.path,
+          'project/path/packages/my_project/my_project_windows/my_project_windows_routing',
         );
       });
     });
 
-    group('create', () {
-      late Logger logger;
+    group('.create()', () {
+      test(
+        'completes successfully with correct output (android)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformRoutingFeaturePackage =
+              _getPlatformRoutingFeaturePackage(
+            Platform.android,
+            project: project,
+            generator: (_) async => generator,
+          );
 
-      setUp(() {
-        logger = MockLogger();
-      });
-
-      test('completes successfully with correct output (android)', () async {
-        // Arrange
-        platform = Platform.android;
-        underTest = platformRoutingFeaturePackage();
-
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_routing',
-              ),
-            ),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'android': true,
-              'ios': false,
-              'linux': false,
-              'macos': false,
-              'web': false,
-              'windows': false,
-            },
+          // Act
+          final logger = FakeLogger();
+          await platformRoutingFeaturePackage.create(
             logger: logger,
-          ),
-        ).called(1);
-      });
+          );
 
-      test('completes successfully with correct output (ios)', () async {
-        // Arrange
-        platform = Platform.ios;
-        underTest = platformRoutingFeaturePackage();
-
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_routing',
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_android/my_project_android_routing',
+                ),
               ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'android': true,
+                'ios': false,
+                'linux': false,
+                'macos': false,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
             ),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'android': false,
-              'ios': true,
-              'linux': false,
-              'macos': false,
-              'web': false,
-              'windows': false,
-            },
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (ios)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformRoutingFeaturePackage =
+              _getPlatformRoutingFeaturePackage(
+            Platform.ios,
+            project: project,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await platformRoutingFeaturePackage.create(
             logger: logger,
-          ),
-        ).called(1);
-      });
+          );
 
-      test('completes successfully with correct output (linux)', () async {
-        // Arrange
-        platform = Platform.linux;
-        underTest = platformRoutingFeaturePackage();
-
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_routing',
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_ios/my_project_ios_routing',
+                ),
               ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'android': false,
+                'ios': true,
+                'linux': false,
+                'macos': false,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
             ),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'android': false,
-              'ios': false,
-              'linux': true,
-              'macos': false,
-              'web': false,
-              'windows': false,
-            },
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (linux)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformRoutingFeaturePackage =
+              _getPlatformRoutingFeaturePackage(
+            Platform.linux,
+            project: project,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await platformRoutingFeaturePackage.create(
             logger: logger,
-          ),
-        ).called(1);
-      });
-
-      test('completes successfully with correct output (macos)', () async {
-        // Arrange
-        platform = Platform.macos;
-        underTest = platformRoutingFeaturePackage();
-
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_routing',
+          );
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_linux/my_project_linux_routing',
+                ),
               ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'android': false,
+                'ios': false,
+                'linux': true,
+                'macos': false,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
             ),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'android': false,
-              'ios': false,
-              'linux': false,
-              'macos': true,
-              'web': false,
-              'windows': false,
-            },
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (macos)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformRoutingFeaturePackage =
+              _getPlatformRoutingFeaturePackage(
+            Platform.macos,
+            project: project,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await platformRoutingFeaturePackage.create(
             logger: logger,
-          ),
-        ).called(1);
-      });
+          );
 
-      test('completes successfully with correct output (web)', () async {
-        // Arrange
-        platform = Platform.web;
-        underTest = platformRoutingFeaturePackage();
-
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_routing',
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_macos/my_project_macos_routing',
+                ),
               ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'android': false,
+                'ios': false,
+                'linux': false,
+                'macos': true,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
             ),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'android': false,
-              'ios': false,
-              'linux': false,
-              'macos': false,
-              'web': true,
-              'windows': false,
-            },
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (web)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformRoutingFeaturePackage =
+              _getPlatformRoutingFeaturePackage(
+            Platform.web,
+            project: project,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await platformRoutingFeaturePackage.create(
             logger: logger,
-          ),
-        ).called(1);
-      });
+          );
 
-      test('completes successfully with correct output (windows)', () async {
-        // Arrange
-        platform = Platform.windows;
-        underTest = platformRoutingFeaturePackage();
-
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_routing',
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_web/my_project_web_routing',
+                ),
               ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'android': false,
+                'ios': false,
+                'linux': false,
+                'macos': false,
+                'web': true,
+                'windows': false,
+              },
+              logger: logger,
             ),
-            vars: <String, dynamic>{
-              'project_name': projectName,
-              'android': false,
-              'ios': false,
-              'linux': false,
-              'macos': false,
-              'web': false,
-              'windows': true,
-            },
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (windows)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformRoutingFeaturePackage =
+              _getPlatformRoutingFeaturePackage(
+            Platform.windows,
+            project: project,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await platformRoutingFeaturePackage.create(
             logger: logger,
-          ),
-        ).called(1);
-      });
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_windows/my_project_windows_routing',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'android': false,
+                'ios': false,
+                'linux': false,
+                'macos': false,
+                'web': false,
+                'windows': true,
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
     });
 
-    group('registerCustomFeaturePackage', () {
-      late PlatformCustomFeaturePackage customFeaturePackage;
-      late String customFeaturePackageName;
-      late Logger logger;
+    group('.registerCustomFeaturePackage()', () {
+      test('adds package to pubspec', () async {
+        // Arrange
+        final pubspecFile = getPubspecFile();
+        final platformAppFeaturePackage = _getPlatformRoutingFeaturePackage(
+          Platform.android,
+          pubspecFile: pubspecFile,
+        );
 
-      setUp(() {
-        customFeaturePackage = MockPlatformCustomFeaturePackage();
-        customFeaturePackageName = 'foo_bar';
+        // Act
+        final customFeaturePackage = getPlatformCustomFeaturePackage();
         when(() => customFeaturePackage.packageName())
-            .thenReturn(customFeaturePackageName);
-        logger = MockLogger();
-      });
-
-      test('register custom feature package correctly', () async {
-        // Act
-        await underTest.registerCustomFeaturePackage(
+            .thenReturn('feature_name');
+        await platformAppFeaturePackage.registerCustomFeaturePackage(
           customFeaturePackage,
-          logger: logger,
+          logger: FakeLogger(),
         );
 
         // Assert
-        verify(() => pubspecFile.setDependency(customFeaturePackageName));
+        verify(() => pubspecFile.setDependency('feature_name'));
       });
     });
 
-    group('unregisterCustomFeaturePackage', () {
-      late PlatformCustomFeaturePackage customFeaturePackage;
-      late String customFeaturePackageName;
-      late Logger logger;
+    group('.unregisterCustomFeaturePackage()', () {
+      test('removes package from pubspec', () async {
+        // Arrange
+        final pubspecFile = getPubspecFile();
+        final platformAppFeaturePackage = _getPlatformRoutingFeaturePackage(
+          Platform.android,
+          pubspecFile: pubspecFile,
+        );
 
-      setUp(() {
-        customFeaturePackage = MockPlatformCustomFeaturePackage();
-        customFeaturePackageName = 'foo_bar';
-        when(() => customFeaturePackage.packageName())
-            .thenReturn(customFeaturePackageName);
-        logger = MockLogger();
-      });
-
-      test('unregister custom feature package correctly', () async {
         // Act
-        await underTest.unregisterCustomFeaturePackage(
+        final customFeaturePackage = getPlatformCustomFeaturePackage();
+        when(() => customFeaturePackage.packageName())
+            .thenReturn('feature_name');
+        await platformAppFeaturePackage.unregisterCustomFeaturePackage(
           customFeaturePackage,
-          logger: logger,
+          logger: FakeLogger(),
         );
 
         // Assert
-        verify(() => pubspecFile.removeDependency(customFeaturePackageName));
+        verify(() => pubspecFile.removeDependency('feature_name'));
       });
     });
   });
 
   group('PlatformCustomFeaturePackage', () {
-    late String name;
-
-    late Platform platform;
-
-    late Project project;
-    const projectPath = 'foo/bar';
-    const projectName = 'foo_bar';
-
-    late L10nFile l10nFile;
-
-    late ArbDirectory arbDirectory;
-
-    late MasonGenerator generator;
-    final generatedFiles = List.filled(
-      23,
-      const GeneratedFile.created(path: ''),
-    );
-
-    late LanguageLocalizationsFileBuilder languageLocalizationsFileBuilder;
-    late LanguageLocalizationsFile languageLocalizationsFile;
-
-    late FlutterGenl10nCommand flutterGenl10n;
-
-    late PlatformCustomFeaturePackage underTest;
-
-    PlatformCustomFeaturePackage platformCustomFeaturePackage() =>
-        PlatformCustomFeaturePackage(
-          name,
-          platform,
-          project: project,
-          l10nFile: l10nFile,
-          arbDirectory: arbDirectory,
-          languageLocalizationsFile: languageLocalizationsFileBuilder,
-          flutterGenl10n: flutterGenl10n,
-          generator: (_) async => generator,
-        );
-
     setUpAll(() {
       registerFallbackValue(FakeLogger());
       registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
-    setUp(() {
-      name = 'my_feature';
+    group('.path', () {
+      test('(android)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.android,
+          project: project,
+        );
 
-      platform = Platform.android;
-
-      project = MockProject();
-      when(() => project.path).thenReturn(projectPath);
-      when(() => project.name()).thenReturn(projectName);
-
-      l10nFile = MockL10nFile();
-
-      arbDirectory = MockArbDirectory();
-
-      generator = MockMasonGenerator();
-      when(() => generator.id).thenReturn('generator_id');
-      when(() => generator.description).thenReturn('generator description');
-      when(
-        () => generator.generate(
-          any(),
-          vars: any(named: 'vars'),
-          logger: any(named: 'logger'),
-        ),
-      ).thenAnswer((_) async => generatedFiles);
-
-      languageLocalizationsFileBuilder = MockLanguageLocalizationsFileBuilder();
-      languageLocalizationsFile = MockLanguageLocalizationsFile();
-      when(
-        () => languageLocalizationsFileBuilder(
-          language: any(named: 'language'),
-        ),
-      ).thenReturn(languageLocalizationsFile);
-
-      flutterGenl10n = MockFlutterGenL10nCommand();
-      when(
-        () => flutterGenl10n(
-          cwd: any(named: 'cwd'),
-          logger: any(named: 'logger'),
-        ),
-      ).thenAnswer((_) async {});
-
-      underTest = platformCustomFeaturePackage();
-    });
-
-    group('path', () {
-      test('is correct', () {
-        // Assert
+        // Act + Assert
         expect(
-          underTest.path,
-          '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_my_feature',
+          platformCustomFeaturePackage.path,
+          'project/path/packages/my_project/my_project_android/my_project_android_my_feature',
+        );
+      });
+
+      test('(ios)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.ios,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformCustomFeaturePackage.path,
+          'project/path/packages/my_project/my_project_ios/my_project_ios_my_feature',
+        );
+      });
+
+      test('(linux)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.linux,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformCustomFeaturePackage.path,
+          'project/path/packages/my_project/my_project_linux/my_project_linux_my_feature',
+        );
+      });
+
+      test('(macos)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.macos,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformCustomFeaturePackage.path,
+          'project/path/packages/my_project/my_project_macos/my_project_macos_my_feature',
+        );
+      });
+
+      test('(web)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.web,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformCustomFeaturePackage.path,
+          'project/path/packages/my_project/my_project_web/my_project_web_my_feature',
+        );
+      });
+
+      test('(windows)', () {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.windows,
+          project: project,
+        );
+
+        // Act + Assert
+        expect(
+          platformCustomFeaturePackage.path,
+          'project/path/packages/my_project/my_project_windows/my_project_windows_my_feature',
         );
       });
     });
 
-    group('supportedLanguages', () {
-      late ArbFile arbFile1;
-      const arbFile1Language = 'de';
-      late ArbFile arbFile2;
-      const arbFile2Language = 'fr';
-
-      setUp(() {
-        arbFile1 = MockArbFile();
-        when(() => arbFile1.language).thenReturn(arbFile1Language);
-        arbFile2 = MockArbFile();
-        when(() => arbFile2.language).thenReturn(arbFile2Language);
-        when(() => arbDirectory.arbFiles()).thenReturn([arbFile1, arbFile2]);
-      });
-
+    group('.supportedLanguages()', () {
       test('returns correct supported languages', () {
-        // Act
-        final supportedLanguages = underTest.supportedLanguages();
+        // Arrange
+        final arbDirectory = getArbDirectory();
+        final arbFile1 = getArbFile();
+        when(() => arbFile1.language).thenReturn('de');
+        final arbFile2 = getArbFile();
+        when(() => arbFile2.language).thenReturn('fr');
+        when(() => arbDirectory.arbFiles()).thenReturn([arbFile1, arbFile2]);
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.android,
+          arbDirectory: arbDirectory,
+        );
 
-        // Assert
+        // Act + Assert
         expect(
-            supportedLanguages, equals([arbFile1Language, arbFile2Language]));
+          platformCustomFeaturePackage.supportedLanguages(),
+          equals(['de', 'fr']),
+        );
       });
     });
 
-    group('supportsLanguage', () {
-      late ArbFile arbFile1;
-      const arbFile1Language = 'de';
-
-      setUp(() {
-        arbFile1 = MockArbFile();
-        when(() => arbFile1.language).thenReturn(arbFile1Language);
-        when(() => arbDirectory.arbFiles()).thenReturn([arbFile1]);
-      });
-
+    group('.supportsLanguage()', () {
       test('returns true when language is supported', () {
-        // Act
-        final supportsLanguage = underTest.supportsLanguage(arbFile1Language);
+        // Arrange
+        final arbDirectory = getArbDirectory();
+        final arbFile1 = getArbFile();
+        when(() => arbFile1.language).thenReturn('de');
+        when(() => arbDirectory.arbFiles()).thenReturn([arbFile1]);
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.android,
+          arbDirectory: arbDirectory,
+        );
 
-        // Assert
-        expect(supportsLanguage, true);
+        // Act + Assert
+        expect(platformCustomFeaturePackage.supportsLanguage('de'), true);
       });
 
       test('returns false when language is NOT supported', () {
-        // Act
-        final supportsLanguage = underTest.supportsLanguage('fr');
+        // Arrange
+        final arbDirectory = getArbDirectory();
+        final arbFile1 = getArbFile();
+        when(() => arbFile1.language).thenReturn('de');
+        when(() => arbDirectory.arbFiles()).thenReturn([arbFile1]);
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.android,
+          arbDirectory: arbDirectory,
+        );
 
-        // Assert
-        expect(supportsLanguage, false);
+        // Act + Assert
+        expect(platformCustomFeaturePackage.supportsLanguage('fr'), false);
       });
     });
 
-    group('defaultLanguage', () {
-      const templateArbFileProp = 'my_feature_fr.arb';
+    test('.defaultLanguage()', () {
+      // Arrange
+      final l10nFile = getL10nFile();
+      when(() => l10nFile.templateArbFile()).thenReturn('my_feature_fr.arb');
+      final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+        'my_feature',
+        Platform.android,
+        l10nFile: l10nFile,
+      );
 
-      setUp(() {
-        when(() => l10nFile.templateArbFile()).thenReturn(templateArbFileProp);
-        underTest = platformCustomFeaturePackage();
-      });
-
-      test('returns correct defaultLanguage', () {
-        // Act
-        final defaultLanguage = underTest.defaultLanguage();
-
-        // Assert
-        expect(defaultLanguage, 'fr');
-      });
+      // Act + Assert
+      expect(platformCustomFeaturePackage.defaultLanguage(), 'fr');
     });
 
-    group('create', () {
-      late String? description;
-      late Logger logger;
+    group('.create()', () {
+      test(
+        'completes successfully with correct output (android)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+            'my_feature',
+            Platform.android,
+            project: project,
+            generator: (_) async => generator,
+          );
 
-      setUp(() {
-        description = null;
-        logger = MockLogger();
-      });
+          // Act
+          final logger = FakeLogger();
+          await platformCustomFeaturePackage.create(logger: logger);
 
-      test('completes successfully with correct output (android)', () async {
-        // Arrange
-        platform = Platform.android;
-        underTest = platformCustomFeaturePackage();
-
-        // Act
-        await underTest.create(
-          description: description,
-          logger: logger,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_my_feature',
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_android/my_project_android_my_feature',
+                ),
               ),
+              vars: <String, dynamic>{
+                'name': 'my_feature',
+                'description': 'The My Feature feature',
+                'project_name': 'my_project',
+                'android': true,
+                'ios': false,
+                'linux': false,
+                'macos': false,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
             ),
-            vars: <String, dynamic>{
-              'name': name,
-              'description': 'The My Feature feature',
-              'project_name': projectName,
-              'android': true,
-              'ios': false,
-              'linux': false,
-              'macos': false,
-              'web': false,
-              'windows': false,
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
+          ).called(1);
+        }),
+      );
 
-      test('completes successfully with correct output (ios)', () async {
-        // Arrange
-        platform = Platform.ios;
-        underTest = platformCustomFeaturePackage();
+      test(
+        'completes successfully with correct output (ios)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+            'my_feature',
+            Platform.ios,
+            project: project,
+            generator: (_) async => generator,
+          );
 
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
+          // Act
+          final logger = FakeLogger();
+          await platformCustomFeaturePackage.create(logger: logger);
 
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_my_feature',
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_ios/my_project_ios_my_feature',
+                ),
               ),
+              vars: <String, dynamic>{
+                'name': 'my_feature',
+                'description': 'The My Feature feature',
+                'project_name': 'my_project',
+                'android': false,
+                'ios': true,
+                'linux': false,
+                'macos': false,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
             ),
-            vars: <String, dynamic>{
-              'name': name,
-              'description': 'The My Feature feature',
-              'project_name': projectName,
-              'android': false,
-              'ios': true,
-              'linux': false,
-              'macos': false,
-              'web': false,
-              'windows': false,
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
+          ).called(1);
+        }),
+      );
 
-      test('completes successfully with correct output (linux)', () async {
-        // Arrange
-        platform = Platform.linux;
-        underTest = platformCustomFeaturePackage();
+      test(
+        'completes successfully with correct output (linux)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+            'my_feature',
+            Platform.linux,
+            project: project,
+            generator: (_) async => generator,
+          );
 
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
+          // Act
+          final logger = FakeLogger();
+          await platformCustomFeaturePackage.create(logger: logger);
 
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_my_feature',
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_linux/my_project_linux_my_feature',
+                ),
               ),
+              vars: <String, dynamic>{
+                'name': 'my_feature',
+                'description': 'The My Feature feature',
+                'project_name': 'my_project',
+                'android': false,
+                'ios': false,
+                'linux': true,
+                'macos': false,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
             ),
-            vars: <String, dynamic>{
-              'name': name,
-              'description': 'The My Feature feature',
-              'project_name': projectName,
-              'android': false,
-              'ios': false,
-              'linux': true,
-              'macos': false,
-              'web': false,
-              'windows': false,
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
+          ).called(1);
+        }),
+      );
 
-      test('completes successfully with correct output (macos)', () async {
-        // Arrange
-        platform = Platform.macos;
-        underTest = platformCustomFeaturePackage();
+      test(
+        'completes successfully with correct output (macos)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+            'my_feature',
+            Platform.macos,
+            project: project,
+            generator: (_) async => generator,
+          );
 
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
+          // Act
+          final logger = FakeLogger();
+          await platformCustomFeaturePackage.create(logger: logger);
 
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_my_feature',
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_macos/my_project_macos_my_feature',
+                ),
               ),
+              vars: <String, dynamic>{
+                'name': 'my_feature',
+                'description': 'The My Feature feature',
+                'project_name': 'my_project',
+                'android': false,
+                'ios': false,
+                'linux': false,
+                'macos': true,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
             ),
-            vars: <String, dynamic>{
-              'name': name,
-              'description': 'The My Feature feature',
-              'project_name': projectName,
-              'android': false,
-              'ios': false,
-              'linux': false,
-              'macos': true,
-              'web': false,
-              'windows': false,
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
+          ).called(1);
+        }),
+      );
 
-      test('completes successfully with correct output (web)', () async {
-        // Arrange
-        platform = Platform.web;
-        underTest = platformCustomFeaturePackage();
+      test(
+        'completes successfully with correct output (web)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+            'my_feature',
+            Platform.web,
+            project: project,
+            generator: (_) async => generator,
+          );
 
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
+          // Act
+          final logger = FakeLogger();
+          await platformCustomFeaturePackage.create(logger: logger);
 
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_my_feature',
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_web/my_project_web_my_feature',
+                ),
               ),
+              vars: <String, dynamic>{
+                'name': 'my_feature',
+                'description': 'The My Feature feature',
+                'project_name': 'my_project',
+                'android': false,
+                'ios': false,
+                'linux': false,
+                'macos': false,
+                'web': true,
+                'windows': false,
+              },
+              logger: logger,
             ),
-            vars: <String, dynamic>{
-              'name': name,
-              'description': 'The My Feature feature',
-              'project_name': projectName,
-              'android': false,
-              'ios': false,
-              'linux': false,
-              'macos': false,
-              'web': true,
-              'windows': false,
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
+          ).called(1);
+        }),
+      );
 
-      test('completes successfully with correct output (windows)', () async {
-        // Arrange
-        platform = Platform.windows;
-        underTest = platformCustomFeaturePackage();
+      test(
+        'completes successfully with correct output (windows)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+            'my_feature',
+            Platform.windows,
+            project: project,
+            generator: (_) async => generator,
+          );
 
-        // Act
-        await underTest.create(
-          logger: logger,
-        );
+          // Act
+          final logger = FakeLogger();
+          await platformCustomFeaturePackage.create(logger: logger);
 
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_my_feature',
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_windows/my_project_windows_my_feature',
+                ),
               ),
+              vars: <String, dynamic>{
+                'name': 'my_feature',
+                'description': 'The My Feature feature',
+                'project_name': 'my_project',
+                'android': false,
+                'ios': false,
+                'linux': false,
+                'macos': false,
+                'web': false,
+                'windows': true,
+              },
+              logger: logger,
             ),
-            vars: <String, dynamic>{
-              'name': name,
-              'description': 'The My Feature feature',
-              'project_name': projectName,
-              'android': false,
-              'ios': false,
-              'linux': false,
-              'macos': false,
-              'web': false,
-              'windows': true,
-            },
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output with custom description',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final generator = getMasonGenerator();
+          final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+            'my_feature',
+            Platform.android,
+            project: project,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await platformCustomFeaturePackage.create(
+            description: 'some desc',
             logger: logger,
-          ),
-        ).called(1);
-      });
+          );
 
-      test('completes successfully with correct output with custom description',
-          () async {
-        // Arrange
-        platform = Platform.android;
-        description = 'Some desc';
-        underTest = platformCustomFeaturePackage();
-
-        // Act
-        await underTest.create(
-          logger: logger,
-          description: description,
-        );
-
-        // Assert
-        verify(
-          () => generator.generate(
-            any(
-              that: isA<DirectoryGeneratorTarget>().having(
-                (g) => g.dir.path,
-                'dir',
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_my_feature',
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project_android/my_project_android_my_feature',
+                ),
               ),
+              vars: <String, dynamic>{
+                'name': 'my_feature',
+                'description': 'some desc',
+                'project_name': 'my_project',
+                'android': true,
+                'ios': false,
+                'linux': false,
+                'macos': false,
+                'web': false,
+                'windows': false,
+              },
+              logger: logger,
             ),
-            vars: <String, dynamic>{
-              'name': name,
-              'description': description,
-              'project_name': projectName,
-              'android': true,
-              'ios': false,
-              'linux': false,
-              'macos': false,
-              'web': false,
-              'windows': false,
-            },
-            logger: logger,
-          ),
-        ).called(1);
-      });
+          ).called(1);
+        }),
+      );
     });
 
-    group('bloc', () {
-      late String blocName;
+    test('.bloc()', () {
+      // Arrange
+      final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+        'my_feature',
+        Platform.android,
+      );
 
-      setUp(() {
-        blocName = 'FooBar';
-      });
-
-      test('returns correct bloc', () {
-        // Act
-        final bloc = underTest.bloc(name: blocName);
-
-        // Assert
-        expect(bloc.name, blocName);
-        expect(bloc.platformFeaturePackage, underTest);
-      });
+      // Act + Assert
+      expect(
+        platformCustomFeaturePackage.bloc(name: 'MyCool'),
+        isA<Bloc>()
+            .having(
+              (bloc) => bloc.name,
+              'name',
+              'MyCool',
+            )
+            .having(
+              (bloc) => bloc.platformFeaturePackage,
+              'platformFeaturePackage',
+              platformCustomFeaturePackage,
+            ),
+      );
     });
 
-    group('cubit', () {
-      late String cubitName;
+    test('.cubit()', () {
+      // Arrange
+      final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+        'my_feature',
+        Platform.android,
+      );
 
-      setUp(() {
-        cubitName = 'FooBar';
-      });
-
-      test('returns correct bloc', () {
-        // Act
-        final cubit = underTest.cubit(name: cubitName);
-
-        // Assert
-        expect(cubit.name, cubitName);
-        expect(cubit.platformFeaturePackage, underTest);
-      });
+      // Act + Assert
+      expect(
+        platformCustomFeaturePackage.cubit(name: 'MyCool'),
+        isA<Cubit>()
+            .having(
+              (cubit) => cubit.name,
+              'name',
+              'MyCool',
+            )
+            .having(
+              (cubit) => cubit.platformFeaturePackage,
+              'platformFeaturePackage',
+              platformCustomFeaturePackage,
+            ),
+      );
     });
 
-    group('addLanguage', () {
-      late ArbFile arbFile;
-      late String language;
-
-      late Logger logger;
-
-      setUp(() {
-        arbFile = MockArbFile();
-        language = 'de';
+    group('.addLanguage()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final arbFile = getArbFile();
         when(() => arbFile.exists()).thenReturn(false);
         when(() => arbFile.create(logger: any(named: 'logger')))
             .thenAnswer((_) async {});
-        when(() => arbDirectory.arbFile(language: language))
-            .thenReturn(arbFile);
+        final arbDirectory = getArbDirectory();
+        when(() => arbDirectory.arbFile(language: 'de')).thenReturn(arbFile);
+        final flutterGenl10n = getFlutterGenl10n();
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.android,
+          project: project,
+          arbDirectory: arbDirectory,
+          flutterGenl10n: flutterGenl10n,
+        );
 
-        logger = MockLogger();
-      });
-
-      test('completes successfully with correct output', () async {
         // Act
-        await underTest.addLanguage(language: language, logger: logger);
+        final logger = FakeLogger();
+        await platformCustomFeaturePackage.addLanguage(
+          language: 'de',
+          logger: logger,
+        );
 
         // Assert
-        verify(() => arbDirectory.arbFile(language: language)).called(1);
+        verify(() => arbDirectory.arbFile(language: 'de')).called(1);
         verify(() => arbFile.create(logger: logger)).called(1);
         verify(
           () => flutterGenl10n(
             cwd:
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_my_feature',
+                'project/path/packages/my_project/my_project_android/my_project_android_my_feature',
             logger: logger,
           ),
         ).called(1);
@@ -1238,64 +1931,103 @@ void main() {
           'completes successfully with correct output when the arb file of the language already exists',
           () async {
         // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final arbFile = getArbFile();
         when(() => arbFile.exists()).thenReturn(true);
+        when(() => arbFile.create(logger: any(named: 'logger')))
+            .thenAnswer((_) async {});
+        final arbDirectory = getArbDirectory();
+        when(() => arbDirectory.arbFile(language: 'de')).thenReturn(arbFile);
+        final flutterGenl10n = getFlutterGenl10n();
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.android,
+          project: project,
+          arbDirectory: arbDirectory,
+          flutterGenl10n: flutterGenl10n,
+        );
 
         // Act
-        await underTest.addLanguage(language: language, logger: logger);
+        final logger = FakeLogger();
+        await platformCustomFeaturePackage.addLanguage(
+          language: 'de',
+          logger: logger,
+        );
 
         // Assert
-        verify(() => arbDirectory.arbFile(language: language)).called(1);
+        verify(() => arbDirectory.arbFile(language: 'de')).called(1);
         verifyNever(() => arbFile.create(logger: logger));
         verifyNever(
           () => flutterGenl10n(
             cwd:
-                '$projectPath/packages/$projectName/${projectName}_${platform.name}/${projectName}_${platform.name}_my_feature',
+                'project/path/packages/my_project/my_project_android/my_project_android_my_feature',
             logger: logger,
           ),
         );
       });
     });
 
-    group('removeLanguage', () {
-      late ArbFile arbFile;
-      late String language;
-
-      late Logger logger;
-
-      setUp(() {
-        arbFile = MockArbFile();
-        language = 'de';
+    group('.removeLanguage()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final arbFile = getArbFile();
         when(() => arbFile.exists()).thenReturn(true);
         when(() => arbFile.create(logger: any(named: 'logger')))
             .thenAnswer((_) async {});
-        when(() => arbDirectory.arbFile(language: language))
-            .thenReturn(arbFile);
-
+        final arbDirectory = getArbDirectory();
+        when(() => arbDirectory.arbFile(language: 'de')).thenReturn(arbFile);
+        final languageLocalizationsFile = getLanguageLocalizationsFile();
         when(() => languageLocalizationsFile.exists()).thenReturn(true);
+        final flutterGenl10n = getFlutterGenl10n();
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.android,
+          arbDirectory: arbDirectory,
+          languageLocalizationsFile: ({required String language}) =>
+              languageLocalizationsFile,
+          flutterGenl10n: flutterGenl10n,
+        );
 
-        logger = MockLogger();
-      });
-
-      test('completes successfully with correct output', () async {
         // Act
-        await underTest.removeLanguage(language: language, logger: logger);
+        final logger = FakeLogger();
+        await platformCustomFeaturePackage.removeLanguage(
+          language: 'de',
+          logger: logger,
+        );
 
         // Assert
-        verify(() => arbDirectory.arbFile(language: language)).called(1);
+        verify(() => arbDirectory.arbFile(language: 'de')).called(1);
         verify(() => arbFile.delete(logger: logger)).called(1);
       });
 
       test(
           'completes successfully with correct output when the arb file of the language does NOT exists',
           () async {
-        // Arrange
+        final arbFile = getArbFile();
         when(() => arbFile.exists()).thenReturn(false);
+        when(() => arbFile.create(logger: any(named: 'logger')))
+            .thenAnswer((_) async {});
+        final arbDirectory = getArbDirectory();
+        when(() => arbDirectory.arbFile(language: 'de')).thenReturn(arbFile);
+        final flutterGenl10n = getFlutterGenl10n();
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.android,
+          arbDirectory: arbDirectory,
+          flutterGenl10n: flutterGenl10n,
+        );
 
         // Act
-        await underTest.removeLanguage(language: language, logger: logger);
+        final logger = FakeLogger();
+        await platformCustomFeaturePackage.removeLanguage(
+          language: 'de',
+          logger: logger,
+        );
 
         // Assert
-        verify(() => arbDirectory.arbFile(language: language)).called(1);
+        verify(() => arbDirectory.arbFile(language: 'de')).called(1);
         verifyNever(() => arbFile.delete(logger: logger));
         verifyNever(() => arbFile.delete(logger: logger));
       });
@@ -1303,533 +2035,939 @@ void main() {
   });
 
   group('L10nFile', () {
-    group('templateArbFile', () {
-      // TODO
+    test('.path', () {
+      // Arrange
+      final platformFeaturePackage = getPlatformCustomFeaturePackage();
+      when(() => platformFeaturePackage.path)
+          .thenReturn('platform_feature_package/path');
+      final l10nFile =
+          _getL10nFile(platformFeaturePackage: platformFeaturePackage);
+
+      // Act + Assert
+      expect(l10nFile.path, 'platform_feature_package/path/l10n.yaml');
+    });
+
+    group('.templateArbFile()', () {
+      test(
+        'reads the template-arb-file property',
+        withTempDir(() {
+          // Arrange
+          final l10nFile = _getL10nFile();
+          File(l10nFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync('template-arb-file: foo.dart');
+
+          expect(l10nFile.templateArbFile(), 'foo.dart');
+        }),
+      );
+
+      test(
+        'throws ReadTemplateArbFileFailure when the template-arb-file property does not exist',
+        withTempDir(() {
+          // Arrange
+          final l10nFile = _getL10nFile();
+          File(l10nFile.path).createSync(recursive: true);
+
+          // Act
+          expect(
+            () => l10nFile.templateArbFile(),
+            throwsA(isA<ReadTemplateArbFileFailure>()),
+          );
+        }),
+      );
+
+      test(
+        'throws ReadTemplateArbFileFailure when the file does not exist',
+        withTempDir(() {
+          // Arrange
+          final l10nFile = _getL10nFile();
+
+          // Act
+          expect(
+            () => l10nFile.templateArbFile(),
+            throwsA(isA<ReadTemplateArbFileFailure>()),
+          );
+        }),
+      );
     });
   });
 
   group('LanguageLocalizationsFile', () {
-    late String language;
-
-    late PlatformFeaturePackage platformFeaturePackage;
-    const platformFeaturePackagePackagName = 'foo_bar';
-    const platformFeaturePackagePackagPath = 'foo/bar';
-
-    late LanguageLocalizationsFile underTest;
-
-    setUp(() {
-      language = 'de';
-
-      platformFeaturePackage = MockPlatformFeaturePackage();
-      when(() => platformFeaturePackage.packageName())
-          .thenReturn(platformFeaturePackagePackagName);
+    test('.path', () {
+      // Arrange
+      final platformFeaturePackage = getPlatformCustomFeaturePackage();
       when(() => platformFeaturePackage.path)
-          .thenReturn(platformFeaturePackagePackagPath);
-
-      underTest = LanguageLocalizationsFile(
-        language,
+          .thenReturn('platform_feature/path');
+      when(() => platformFeaturePackage.packageName()).thenReturn('my_feature');
+      final languageLocalizationsFile = _getLanguageLocalizationsFile(
+        'fr',
         platformFeaturePackage: platformFeaturePackage,
+      );
+
+      // Act + Assert
+      expect(
+        languageLocalizationsFile.path,
+        'platform_feature/path/lib/src/presentation/l10n/my_feature_localizations_fr.dart',
       );
     });
 
-    group('path', () {
-      test('is correct', () {
-        // Assert
-        expect(
-          underTest.path,
-          '$platformFeaturePackagePackagPath/lib/src/presentation/l10n/${platformFeaturePackagePackagName}_localizations_$language.dart',
-        );
-      });
-    });
+    group('.delete()', () {
+      test(
+        'removes the underlying file',
+        withTempDir(() {
+          // Arrange
+          final languageLocalizationsFile = _getLanguageLocalizationsFile('fr');
+          final file = File(languageLocalizationsFile.path)
+            ..createSync(recursive: true);
 
-    group('delete', () {
-      late Logger logger;
+          // Act
+          languageLocalizationsFile.delete(logger: FakeLogger());
 
-      setUp(() {
-        logger = MockLogger();
-      });
-
-      test('removes the underlying file', () {
-        // Arrange
-        final file = File(underTest.path);
-        file.createSync(recursive: true);
-
-        // Act
-        underTest.delete(logger: logger);
-
-        // Assert
-        expect(file.existsSync(), false);
-      });
+          // Assert
+          expect(file.existsSync(), false);
+        }),
+      );
     });
   });
 
   group('ArbDirectory', () {
-    group('platformFeaturePackage', () {
-      // TODO
+    test('.platformFeaturePackage', () {
+      // Arrange
+      final platformFeaturePackage = getPlatformCustomFeaturePackage();
+      final arbDirectory = _getArbDirectory(
+        platformFeaturePackage: platformFeaturePackage,
+      );
+
+      // Act + Assert
+      expect(arbDirectory.platformFeaturePackage, platformFeaturePackage);
     });
 
-    group('arbFiles', () {
-      // TODO
+    group('.arbFiles()', () {
+      test('returns empty list if no arb files exists', () {
+        // Arrange
+        final arbDirectory = _getArbDirectory();
+
+        // Assert
+        expect(arbDirectory.arbFiles(), []);
+      });
+
+      test(
+        'returns list of arb files if arb files exists',
+        withTempDir(() {
+          // Arrange
+          final arbDirectory = _getArbDirectory();
+          File(_getArbFile(language: 'fr', arbDirectory: arbDirectory).path)
+              .createSync(recursive: true);
+          File(_getArbFile(language: 'de', arbDirectory: arbDirectory).path)
+              .createSync(recursive: true);
+
+          // Assert
+          expect(arbDirectory.arbFiles(), hasLength(2));
+          expect(
+            arbDirectory.arbFiles(),
+            contains(
+              isA<ArbFile>().having(
+                (arbFile) => arbFile.language,
+                'language',
+                'fr',
+              ),
+            ),
+          );
+          expect(
+            arbDirectory.arbFiles(),
+            contains(
+              isA<ArbFile>().having(
+                (arbFile) => arbFile.language,
+                'language',
+                'de',
+              ),
+            ),
+          );
+        }),
+      );
     });
 
-    group('arbFile', () {
-      // TODO
+    test('.arbFile()', () {
+      // Arrange
+      final platformFeaturePackage = getPlatformCustomFeaturePackage();
+      final arbDirectory = _getArbDirectory(
+        platformFeaturePackage: platformFeaturePackage,
+      );
+
+      // Act + Assert
+      expect(
+        arbDirectory.arbFile(language: 'fr'),
+        isA<ArbFile>()
+            .having(
+              (arbFile) => arbFile.language,
+              'language',
+              'fr',
+            )
+            .having(
+              (arbFile) => arbFile.arbDirectory,
+              'arbDirectory',
+              arbDirectory,
+            ),
+      );
     });
   });
 
   group('ArbFile', () {
-    group('arbDirectory', () {
-      // TODO
+    setUpAll(() {
+      registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
-    group('language', () {
-      // TODO
+    test('.arbDirectory', () {
+      // Arrange
+      final arbDirectory = getArbDirectory();
+      final arbfile = _getArbFile(
+        language: 'fr',
+        arbDirectory: arbDirectory,
+      );
+
+      // Act + Assert
+      expect(arbfile.arbDirectory, arbDirectory);
     });
 
-    group('create', () {
-      // TODO
+    test('.language', () {
+      // Arrange
+      final arbfile = _getArbFile(language: 'fr');
+
+      // Act + Assert
+      expect(arbfile.language, 'fr');
+    });
+
+    group('.create()', () {
+      test(
+        'completes successfully with correct output',
+        withTempDir(() async {
+          // Arrange
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.name).thenReturn('my_feature');
+          final arbDirectory = getArbDirectory();
+          when(() => arbDirectory.path).thenReturn('arb_directory/path');
+          when(() => arbDirectory.platformFeaturePackage)
+              .thenReturn(platformFeaturePackage);
+          final generator = getMasonGenerator();
+          final arbfile = _getArbFile(
+            language: 'fr',
+            arbDirectory: arbDirectory,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await arbfile.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'arb_directory/path',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'feature_name': 'my_feature',
+                'language': 'fr',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
     });
   });
 
   group('Bloc', () {
-    group('name', () {
-      // TODO
+    setUpAll(() {
+      registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
-    group('platformFeaturePackage', () {
-      // TODO
+    test('.name', () {
+      // Arrange
+      final bloc = _getBloc(name: 'Cool');
+
+      // Act + Assert
+      expect(bloc.name, 'Cool');
+    });
+
+    test('.platformFeaturePackage', () {
+      // Arrange
+      final platformFeaturePackage = getPlatformCustomFeaturePackage();
+      final bloc = _getBloc(
+        name: 'Cool',
+        platformFeaturePackage: platformFeaturePackage,
+      );
+
+      // Act + Assert
+      expect(bloc.platformFeaturePackage, platformFeaturePackage);
     });
 
     group('create', () {
-      // TODO
+      test(
+        'completes successfully with correct output (android)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          when(() => platformFeaturePackage.platform)
+              .thenReturn(Platform.android);
+          when(() => platformFeaturePackage.name).thenReturn('my_feature');
+          when(() => platformFeaturePackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
+          final bloc = _getBloc(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await bloc.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'platform_feature_package/path',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'name': 'Cool',
+                'platform': 'android',
+                'feature_name': 'my_feature',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (ios)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          when(() => platformFeaturePackage.platform).thenReturn(Platform.ios);
+          when(() => platformFeaturePackage.name).thenReturn('my_feature');
+          when(() => platformFeaturePackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
+          final bloc = _getBloc(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await bloc.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'platform_feature_package/path',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'name': 'Cool',
+                'platform': 'ios',
+                'feature_name': 'my_feature',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (linux)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          when(() => platformFeaturePackage.platform)
+              .thenReturn(Platform.linux);
+          when(() => platformFeaturePackage.name).thenReturn('my_feature');
+          when(() => platformFeaturePackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
+          final bloc = _getBloc(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await bloc.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'platform_feature_package/path',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'name': 'Cool',
+                'platform': 'linux',
+                'feature_name': 'my_feature',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (macos)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          when(() => platformFeaturePackage.platform)
+              .thenReturn(Platform.macos);
+          when(() => platformFeaturePackage.name).thenReturn('my_feature');
+          when(() => platformFeaturePackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
+          final bloc = _getBloc(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await bloc.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'platform_feature_package/path',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'name': 'Cool',
+                'platform': 'macos',
+                'feature_name': 'my_feature',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (web)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          when(() => platformFeaturePackage.platform).thenReturn(Platform.web);
+          when(() => platformFeaturePackage.name).thenReturn('my_feature');
+          when(() => platformFeaturePackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
+          final bloc = _getBloc(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await bloc.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'platform_feature_package/path',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'name': 'Cool',
+                'platform': 'web',
+                'feature_name': 'my_feature',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (windows)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          when(() => platformFeaturePackage.platform)
+              .thenReturn(Platform.windows);
+          when(() => platformFeaturePackage.name).thenReturn('my_feature');
+          when(() => platformFeaturePackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
+          final bloc = _getBloc(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await bloc.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'platform_feature_package/path',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'name': 'Cool',
+                'platform': 'windows',
+                'feature_name': 'my_feature',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+    });
+
+    group('.delete()', () {
+      test(
+        'deletes all related files',
+        withTempDir(() async {
+          // Arrange
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          final bloc = _getBloc(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+          );
+          final blocDir = Directory(
+            'platform_feature_package/path/lib/src/application/cool',
+          )..createSync(recursive: true);
+          final blocTestDir = Directory(
+            'platform_feature_package/path/test/src/application/cool',
+          )..createSync(recursive: true);
+
+          // Act
+          final logger = FakeLogger();
+          bloc.delete(logger: logger);
+
+          // Assert
+          expect(blocDir.existsSync(), false);
+          expect(blocTestDir.existsSync(), false);
+        }),
+      );
     });
   });
 
   group('Cubit', () {
-    group('name', () {
-      // TODO
+    setUpAll(() {
+      registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
-    group('platformFeaturePackage', () {
-      // TODO
+    test('.name', () {
+      // Arrange
+      final cubit = _getCubit(name: 'Cool');
+
+      // Act + Assert
+      expect(cubit.name, 'Cool');
+    });
+
+    test('.platformFeaturePackage', () {
+      // Arrange
+      final platformFeaturePackage = getPlatformCustomFeaturePackage();
+      final cubit = _getCubit(
+        name: 'Cool',
+        platformFeaturePackage: platformFeaturePackage,
+      );
+
+      // Act + Assert
+      expect(cubit.platformFeaturePackage, platformFeaturePackage);
     });
 
     group('create', () {
-      // TODO
+      test(
+        'completes successfully with correct output (android)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          when(() => platformFeaturePackage.platform)
+              .thenReturn(Platform.android);
+          when(() => platformFeaturePackage.name).thenReturn('my_feature');
+          when(() => platformFeaturePackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
+          final cubit = _getCubit(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await cubit.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'platform_feature_package/path',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'name': 'Cool',
+                'platform': 'android',
+                'feature_name': 'my_feature',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (ios)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          when(() => platformFeaturePackage.platform).thenReturn(Platform.ios);
+          when(() => platformFeaturePackage.name).thenReturn('my_feature');
+          when(() => platformFeaturePackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
+          final cubit = _getCubit(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await cubit.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'platform_feature_package/path',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'name': 'Cool',
+                'platform': 'ios',
+                'feature_name': 'my_feature',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (linux)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          when(() => platformFeaturePackage.platform)
+              .thenReturn(Platform.linux);
+          when(() => platformFeaturePackage.name).thenReturn('my_feature');
+          when(() => platformFeaturePackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
+          final cubit = _getCubit(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await cubit.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'platform_feature_package/path',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'name': 'Cool',
+                'platform': 'linux',
+                'feature_name': 'my_feature',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (macos)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          when(() => platformFeaturePackage.platform)
+              .thenReturn(Platform.macos);
+          when(() => platformFeaturePackage.name).thenReturn('my_feature');
+          when(() => platformFeaturePackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
+          final cubit = _getCubit(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await cubit.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'platform_feature_package/path',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'name': 'Cool',
+                'platform': 'macos',
+                'feature_name': 'my_feature',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (web)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          when(() => platformFeaturePackage.platform).thenReturn(Platform.web);
+          when(() => platformFeaturePackage.name).thenReturn('my_feature');
+          when(() => platformFeaturePackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
+          final cubit = _getCubit(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await cubit.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'platform_feature_package/path',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'name': 'Cool',
+                'platform': 'web',
+                'feature_name': 'my_feature',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (windows)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          when(() => platformFeaturePackage.platform)
+              .thenReturn(Platform.windows);
+          when(() => platformFeaturePackage.name).thenReturn('my_feature');
+          when(() => platformFeaturePackage.project).thenReturn(project);
+          final generator = getMasonGenerator();
+          final cubit = _getCubit(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await cubit.create(
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'platform_feature_package/path',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'name': 'Cool',
+                'platform': 'windows',
+                'feature_name': 'my_feature',
+              },
+              logger: logger,
+            ),
+          ).called(1);
+        }),
+      );
+    });
+
+    group('.delete()', () {
+      test(
+        'deletes all related files',
+        withTempDir(() async {
+          // Arrange
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          final cubit = _getBloc(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+          );
+          final cubitDir = Directory(
+            'platform_feature_package/path/lib/src/application/cool',
+          )..createSync(recursive: true);
+          final cubitTestDir = Directory(
+            'platform_feature_package/path/test/src/application/cool',
+          )..createSync(recursive: true);
+
+          // Act
+          final logger = FakeLogger();
+          cubit.delete(logger: logger);
+
+          // Assert
+          expect(cubitDir.existsSync(), false);
+          expect(cubitTestDir.existsSync(), false);
+        }),
+      );
     });
   });
 }
-
-/// group('delete', () {
-///    test('deletes the directory', () {
-///      // Arrange
-///      final directory = Directory(platformDirectory.path);
-///
-///      // Act
-///      platformDirectory.delete();
-///
-///      // Assert
-///      expect(directory.existsSync(), false);
-///    });
-///  });
-///
-///  group('exists', () {
-///    test('returns true when the directory exists', () {
-///      // Act
-///      final exists = platformDirectory.exists();
-///
-///      // Assert
-///      expect(exists, true);
-///    });
-///
-///    test('returns false when the directory does not exists', () {
-///      // Arrange
-///      Directory(platformDirectory.path).deleteSync(recursive: true);
-///
-///      // Act
-///      final exists = platformDirectory.exists();
-///
-///      // Assert
-///      expect(exists, false);
-///    });
-///  });
-///
-///  group('featureExists', () {
-///    test('returns true when the requested feature exists', () {
-///      // Arrange
-///      final featureName = 'existing_feature';
-///      Directory(p.join(platformDirectory.path,
-///              '${projectName}_${platform.name}_$featureName'))
-///          .createSync(recursive: true);
-///
-///      // Act
-///      final exists = platformDirectory.featureExists(featureName);
-///
-///      // Assert
-///      expect(exists, true);
-///    });
-///
-///    test('returns false when the requested package does not exist', () {
-///      // Arrange
-///      final featureName = 'not_existing_feature';
-///
-///      // Act
-///      final exists = platformDirectory.featureExists(featureName);
-///
-///      // Assert
-///      expect(exists, false);
-///    });
-///  });
-
-///  import 'package:mocktail/mocktail.dart';
-/// import 'package:path/path.dart' as p;
-/// import 'package:rapid_cli/src/core/platform.dart';
-/// import 'package:rapid_cli/src/project/feature.dart';
-/// import 'package:rapid_cli/src/project/melos_file.dart';
-/// import 'package:rapid_cli/src/project/platform_directory.dart';
-/// import 'package:rapid_cli/src/project/project.dart';
-/// import 'package:test/test.dart';
-/// import 'dart:io';
-///
-/// const l10nWithTemplateArbFile = '''
-/// template-arb-file: foo_bar
-/// ''';
-///
-/// const l10nWithoutTemplateArbFile = '''
-/// some: value
-/// ''';
-///
-/// class MockMelosFile extends Mock implements MelosFile {}
-///
-/// class MockProject extends Mock implements Project {}
-///
-/// class MockPlatformDirectory extends Mock implements PlatformDirectory {}
-///
-/// class MockFeature extends Mock implements Feature {}
-///
-/// void main() {
-///   group('Feature', () {
-///     final cwd = Directory.current;
-///
-///     const projectName = 'my_app';
-///     late MelosFile melosFile;
-///     late Project project;
-///     const platform = Platform.android;
-///     const platformDirPath = 'bom/bam';
-///     late PlatformDirectory platformDirectory;
-///     const featureName = 'my_feature';
-///     late Feature feature;
-///
-///     setUp(() {
-///       Directory.current = Directory.systemTemp.createTempSync();
-///
-///       melosFile = MockMelosFile();
-///       when(() => melosFile.readName()).thenReturn(projectName);
-///       project = MockProject();
-///       when(() => project.melosFile).thenReturn(melosFile);
-///       platformDirectory = MockPlatformDirectory();
-///       when(() => platformDirectory.platform).thenReturn(platform);
-///       when(() => platformDirectory.path).thenReturn(platformDirPath);
-///       when(() => platformDirectory.project).thenReturn(project);
-///       feature = Feature(
-///         entityName: featureName,
-///         platformDirectory: platformDirectory,
-///       );
-///       Directory(feature.path).createSync(recursive: true);
-///       Directory(
-///         p.join(feature.path, 'lib', 'src', 'presentation', 'l10n', 'arb'),
-///       ).createSync(recursive: true);
-///     });
-///
-///     tearDown(() {
-///       Directory.current = cwd;
-///     });
-///
-///     group('delete', () {
-///       test('deletes the directory', () {
-///         // Arrange
-///         final directory = Directory(feature.path);
-///
-///         // Act
-///         feature.delete();
-///
-///         // Assert
-///         expect(directory.existsSync(), false);
-///       });
-///     });
-///
-///     group('defaultLanguage', () {
-///       test('returns the correct default language extracted from l10n.yaml', () {
-///         // Arrange
-///         final l10nFile = File(p.join(feature.path, 'l10n.yaml'));
-///         l10nFile.createSync(recursive: true);
-///         l10nFile.writeAsStringSync('template-arb-file: ${featureName}_fr.arb');
-///
-///         // Act
-///         final defaultLanguage = feature.defaultLanguage();
-///
-///         // Assert
-///         expect(defaultLanguage, 'fr');
-///       });
-///     });
-///
-///     group('exists', () {
-///       test('returns true when the directory exists', () {
-///         // Act
-///         final exists = feature.exists();
-///
-///         // Assert
-///         expect(exists, true);
-///       });
-///
-///       test('returns false when the directory does not exists', () {
-///         // Arrange
-///         Directory(feature.path).deleteSync(recursive: true);
-///
-///         // Act
-///         final exists = feature.exists();
-///
-///         // Assert
-///         expect(exists, false);
-///       });
-///     });
-///
-///     group('findArbFileByLanguage', () {
-///       test('returns the arb file corresponding to the language', () {
-///         // Arrange
-///         const language = 'de';
-///         final path = p.join(
-///           feature.path,
-///           'lib',
-///           'src',
-///           'presentation',
-///           'l10n',
-///           'arb',
-///           '${featureName}_$language.arb',
-///         );
-///         final file = File(path);
-///         file.createSync(recursive: true);
-///
-///         // Act
-///         final arbFile = feature.findArbFileByLanguage(language);
-///
-///         // Assert
-///         expect(arbFile.path, path);
-///         expect(arbFile.language, language);
-///       });
-///
-///       test('throws when the arb file does not exist', () {
-///         // Arrange
-///         const language = 'de';
-///
-///         // Act & Assert
-///         expect(
-///           () => feature.findArbFileByLanguage(language),
-///           throwsA(isA<ArbFileNotExisting>()),
-///         );
-///       });
-///     });
-///
-///     group('supportedLanguages', () {
-///       test(
-///           'returns the correct supported languages depending on existing .arb files',
-///           () {
-///         // Arrange
-///         const languages = ['de', 'en', 'fr'];
-///         for (final language in languages) {
-///           final arbFile = File(
-///             p.join(
-///               feature.path,
-///               'lib',
-///               'src',
-///               'presentation',
-///               'l10n',
-///               'arb',
-///               '${featureName}_$language.arb',
-///             ),
-///           );
-///           arbFile.createSync(recursive: true);
-///         }
-///
-///         // Act
-///         final supportedLanguages = feature.supportedLanguages();
-///
-///         // Assert
-///         expect(supportedLanguages, equals(languages));
-///       });
-///     });
-///
-///     group('supportsLanguage', () {
-///       test('returns true when the corresponding .arb file exists', () {
-///         // Arrange
-///         const language = 'de';
-///         final arbFile = File(
-///           p.join(
-///             feature.path,
-///             'lib',
-///             'src',
-///             'presentation',
-///             'l10n',
-///             'arb',
-///             '${featureName}_$language.arb',
-///           ),
-///         );
-///         arbFile.createSync(recursive: true);
-///
-///         // Act
-///         final supportsLanguage = feature.supportsLanguage(language);
-///
-///         // Assert
-///         expect(supportsLanguage, true);
-///       });
-///
-///       test('returns false when the corresponding .arb file does not exist', () {
-///         // Arrange
-///         const language = 'de';
-///
-///         // Act
-///         final supportsLanguage = feature.supportsLanguage(language);
-///
-///         // Assert
-///         expect(supportsLanguage, false);
-///       });
-///     });
-///
-///     group('name', () {
-///       test('is correct', () {
-///         // Assert
-///         expect(feature.entityName, featureName);
-///       });
-///     });
-///
-///     group('path', () {
-///       test('is correct', () {
-///         // Assert
-///         expect(
-///           feature.path,
-///           '$platformDirPath/${projectName}_${platform.name}_$featureName',
-///         );
-///       });
-///     });
-///
-///     group('platform', () {
-///       test('is correct', () {
-///         // Assert
-///         expect(feature.platform, platform);
-///       });
-///     });
-///
-///     group('pubspecFile', () {
-///       test('has correct path', () {
-///         // Act
-///         final pubspecFile = feature.pubspecFile;
-///
-///         // Assert
-///         expect(
-///           pubspecFile.path,
-///           '$platformDirPath/${projectName}_${platform.name}_$featureName/pubspec.yaml',
-///         );
-///       });
-///     });
-///   });
-///
-///   group('ArbFile', () {
-///     final cwd = Directory.current;
-///
-///     const featureName = 'my_feature';
-///     const featurePath = 'foo/bar';
-///     late Feature feature;
-///     const language = 'en';
-///     late ArbFile arbFile;
-///
-///     setUp(() {
-///       Directory.current = Directory.systemTemp.createTempSync();
-///
-///       feature = MockFeature();
-///       when(() => feature.entityName).thenReturn(featureName);
-///       when(() => feature.path).thenReturn(featurePath);
-///       arbFile = ArbFile(language: language, feature: feature);
-///       File(arbFile.path).createSync(recursive: true);
-///     });
-///
-///     tearDown(() {
-///       Directory.current = cwd;
-///     });
-///
-///     group('language', () {
-///       test('is correct', () {
-///         // Assert
-///         expect(arbFile.language, language);
-///       });
-///     });
-///
-///     group('path', () {
-///       test('is correct', () {
-///         // Assert
-///         expect(
-///           arbFile.path,
-///           'foo/bar/lib/src/presentation/l10n/arb/my_feature_en.arb',
-///         );
-///       });
-///     });
-///
-///     group('delete', () {
-///       test('deletes the file', () {
-///         // Arrange
-///         final file = File(arbFile.path);
-///
-///         // Act
-///         arbFile.delete();
-///
-///         // Assert
-///         expect(file.existsSync(), false);
-///       });
-///     });
-///   });
-///
-///   group('L10nFile', () {
-///     final cwd = Directory.current;
-///
-///     late L10nFile l10nFile;
-///
-///     setUp(() {
-///       Directory.current = Directory.systemTemp.createTempSync();
-///
-///       l10nFile = L10nFile();
-///       File(l10nFile.path).createSync(recursive: true);
-///     });
-///
-///     tearDown(() {
-///       Directory.current = cwd;
-///     });
-///
-///     group('path', () {
-///       test('is correct', () {
-///         // Assert
-///         expect(l10nFile.path, 'l10n.yaml');
-///       });
-///     });
-///
-///     group('templateArbFile', () {
-///       test('returns template-arb-file', () {
-///         // Arrange
-///         final file = File(l10nFile.path);
-///         file.writeAsStringSync(l10nWithTemplateArbFile);
-///
-///         // Act + Assert
-///         expect(l10nFile.templateArbFile(), 'foo_bar');
-///       });
-///
-///       test('throws when name is not present', () {
-///         // Arrange
-///         final file = File(l10nFile.path);
-///         file.writeAsStringSync(l10nWithoutTemplateArbFile);
-///
-///         // Act + Assert
-///         expect(() => l10nFile.templateArbFile(),
-///             throwsA(isA<ReadTemplateArbFileFailure>()));
-///       });
-///     });
-///   });
-/// }
-///

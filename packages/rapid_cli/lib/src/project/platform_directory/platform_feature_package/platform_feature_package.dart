@@ -57,7 +57,7 @@ class PlatformAppFeaturePackage extends PlatformFeaturePackage {
   /// {@macro platform_app_feature_package}
   PlatformAppFeaturePackage(
     Platform platform, {
-    required super.project,
+    required super.project, //TODO  should not platform dir be passed instead of project?
     super.pubspecFile,
     LocalizationsFile? localizationsFile,
     GeneratorBuilder? generator,
@@ -138,7 +138,7 @@ class LocalizationsFile extends DartFile {
         value: [
           newDelegate,
           ...existingDelegates,
-        ],
+        ]..sort(),
       );
     }
   }
@@ -162,19 +162,19 @@ class LocalizationsFile extends DartFile {
   }
 
   void addSupportedLanguage(String language) {
-    final locale = 'Locale($language)';
+    final locale = 'Locale(\'$language\')';
     final existingLocales = readTopLevelListVar(name: 'supportedLocales');
 
     if (!existingLocales.contains(locale)) {
       setTopLevelListVar(
         name: 'supportedLocales',
-        value: [locale, ...existingLocales],
+        value: [locale, ...existingLocales]..sort(),
       );
     }
   }
 
   void removeSupportedLanguage(String language) {
-    final locale = 'Locale($language)';
+    final locale = 'Locale(\'$language\')';
     final existingLocales = readTopLevelListVar(name: 'supportedLocales');
 
     if (existingLocales.contains(locale)) {
@@ -421,20 +421,24 @@ class ArbDirectory extends Directory {
   final PlatformFeaturePackage platformFeaturePackage;
 
   List<ArbFile> arbFiles() {
-    final arbFiles = list()
-        .whereType<File>()
-        .where((e) => e.extension == 'arb')
-        .where((e) => e.name != null)
-        .map(
-          (e) => ArbFile(
-            language: e.name!.split('_').last,
-            arbDirectory: this,
-          ),
-        )
-        .toList();
-    arbFiles.sort((a, b) => a.language.compareTo(b.language));
+    try {
+      final arbFiles = list()
+          .whereType<File>()
+          .where((e) => e.extension == 'arb')
+          .where((e) => e.name != null)
+          .map(
+            (e) => ArbFile(
+              language: e.name!.split('_').last,
+              arbDirectory: this,
+            ),
+          )
+          .toList();
+      arbFiles.sort((a, b) => a.language.compareTo(b.language));
 
-    return arbFiles;
+      return arbFiles;
+    } catch (_) {
+      return [];
+    }
   }
 
   ArbFile arbFile({required String language}) =>
@@ -494,7 +498,7 @@ class Bloc extends FileSystemEntityCollection {
               'lib',
               'src',
               'application',
-              name,
+              name.snakeCase,
             ),
           ),
           Directory(
@@ -503,7 +507,7 @@ class Bloc extends FileSystemEntityCollection {
               'test',
               'src',
               'application',
-              name,
+              name.snakeCase,
             ),
           ),
         ]);
@@ -549,7 +553,7 @@ class Cubit extends FileSystemEntityCollection {
               'lib',
               'src',
               'application',
-              name,
+              name.snakeCase,
             ),
           ),
           Directory(
@@ -558,7 +562,7 @@ class Cubit extends FileSystemEntityCollection {
               'test',
               'src',
               'application',
-              name,
+              name.snakeCase,
             ),
           ),
         ]);

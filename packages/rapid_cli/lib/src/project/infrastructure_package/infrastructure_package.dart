@@ -89,21 +89,25 @@ class DataTransferObject extends FileSystemEntityCollection {
         _generator = generator ?? MasonGenerator.fromBundle,
         super([
           Directory(
-            path: p.join(
-              infrastructurePackage.path,
-              'lib',
-              'src',
-              dir,
-              entityName.snakeCase,
+            path: p.normalize(
+              p.join(
+                infrastructurePackage.path,
+                'lib',
+                'src',
+                dir,
+                entityName.snakeCase,
+              ),
             ),
           ),
           Directory(
-            path: p.join(
-              infrastructurePackage.path,
-              'test',
-              'src',
-              dir,
-              entityName.snakeCase,
+            path: p.normalize(
+              p.join(
+                infrastructurePackage.path,
+                'test',
+                'src',
+                dir,
+                entityName.snakeCase,
+              ),
             ),
           ),
         ]);
@@ -151,21 +155,25 @@ class ServiceImplementation extends FileSystemEntityCollection {
         _generator = generator ?? MasonGenerator.fromBundle,
         super([
           Directory(
-            path: p.join(
-              infrastructurePackage.path,
-              'lib',
-              'src',
-              dir,
-              serviceName.snakeCase,
+            path: p.normalize(
+              p.join(
+                infrastructurePackage.path,
+                'lib',
+                'src',
+                dir,
+                serviceName.snakeCase,
+              ),
             ),
           ),
           Directory(
-            path: p.join(
-              infrastructurePackage.path,
-              'test',
-              'src',
-              dir,
-              serviceName.snakeCase,
+            path: p.normalize(
+              p.join(
+                infrastructurePackage.path,
+                'test',
+                'src',
+                dir,
+                serviceName.snakeCase,
+              ),
             ),
           ),
         ]);

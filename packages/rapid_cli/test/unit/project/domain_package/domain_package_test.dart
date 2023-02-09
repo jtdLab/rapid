@@ -12,11 +12,11 @@ import '../../common.dart';
 import '../../mocks.dart';
 
 DomainPackage _getDomainPackage({
-  required Project project,
+  Project? project,
   GeneratorBuilder? generator,
 }) {
   return DomainPackage(
-    project: project,
+    project: project ?? getProject(),
     generator: generator ?? (_) async => getMasonGenerator(),
   );
 }
@@ -131,6 +131,68 @@ void main() {
             ),
           ).called(1);
         }),
+      );
+    });
+
+    test('.entity()', () {
+      // Arrange
+      final domainPackage = _getDomainPackage();
+
+      // Act + Assert
+      expect(
+        domainPackage.entity(name: 'Cool', dir: 'entity/path'),
+        isA<Entity>()
+            .having((entity) => entity.name, 'name', 'Cool')
+            .having((entity) => entity.dir, 'dir', 'entity/path')
+            .having(
+              (entity) => entity.domainPackage,
+              'domainPackage',
+              domainPackage,
+            ),
+      );
+    });
+
+    test('.serviceInterface()', () {
+      // Arrange
+      final domainPackage = _getDomainPackage();
+
+      // Act + Assert
+      expect(
+        domainPackage.serviceInterface(
+          name: 'Cool',
+          dir: 'service_interface/path',
+        ),
+        isA<ServiceInterface>()
+            .having((serviceInterface) => serviceInterface.name, 'name', 'Cool')
+            .having((serviceInterface) => serviceInterface.dir, 'dir',
+                'service_interface/path')
+            .having(
+              (serviceInterface) => serviceInterface.domainPackage,
+              'domainPackage',
+              domainPackage,
+            ),
+      );
+    });
+
+    test('.valueObject()', () {
+      // Arrange
+      final domainPackage = _getDomainPackage();
+
+      // Act + Assert
+      expect(
+        domainPackage.valueObject(name: 'Cool', dir: 'value_object/path'),
+        isA<ValueObject>()
+            .having((valueObject) => valueObject.name, 'name', 'Cool')
+            .having(
+              (valueObject) => valueObject.dir,
+              'dir',
+              'value_object/path',
+            )
+            .having(
+              (valueObject) => valueObject.domainPackage,
+              'domainPackage',
+              domainPackage,
+            ),
       );
     });
   });
@@ -303,7 +365,7 @@ void main() {
           when(() => domainPackage.project).thenReturn(project);
           final dartFormatFix = getDartFormatFix();
           final generator = getMasonGenerator();
-          final serviceInterface = _getEntity(
+          final serviceInterface = _getServiceInterface(
             name: 'my_service_interface',
             dir: 'service_interface/path',
             domainPackage: domainPackage,

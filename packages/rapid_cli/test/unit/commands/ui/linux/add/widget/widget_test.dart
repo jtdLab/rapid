@@ -241,5 +241,27 @@ void main() {
       verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
     });
+
+    test('exits with 78 when the referenced widget already exists', () async {
+      // Arrange
+      when(
+        () => project.addWidget(
+          name: any(named: 'name'),
+          outputDir: any(named: 'outputDir'),
+          platform: Platform.linux,
+          logger: logger,
+        ),
+      ).thenThrow(WidgetAlreadyExists());
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(
+        () => logger.err('Linux Widget $name already exists.'),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
+      expect(result, ExitCode.config.code);
+    });
   });
 }

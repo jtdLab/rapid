@@ -96,7 +96,9 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
           } on WidgetAlreadyExists {
             _logger
               ..info('')
-              ..err('${_platform.prettyName} Widget $name already exists.');
+              ..err(
+                '${_platform.prettyName} Widget $name already exists.',
+              );
 
             return ExitCode.config.code;
           }

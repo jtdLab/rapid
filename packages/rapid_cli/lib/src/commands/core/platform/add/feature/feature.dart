@@ -113,7 +113,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
             _logger
               ..info('')
               ..err(
-                'The feature "$name" does not exist on ${_platform.prettyName}.',
+                'The feature "$name" does already on ${_platform.prettyName}.',
               );
 
             return ExitCode.config.code;

@@ -241,6 +241,31 @@ void main() {
       expect(result, ExitCode.success.code);
     });
 
+    test('exits with 78 when the feature already exists', () async {
+      // Arrange
+      when(
+        () => project.addFeature(
+          name: any(named: 'name'),
+          description: any(named: 'description'),
+          routing: any(named: 'routing'),
+          platform: Platform.macos,
+          logger: logger,
+        ),
+      ).thenThrow(FeatureAlreadyExists());
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(
+        () => logger.err(
+          'The feature "$name" does already on macOS.',
+        ),
+      ).called(1);
+      verify(() => logger.info('')).called(1);
+      expect(result, ExitCode.config.code);
+    });
+
     test('exits with 78 when macOS is not activated', () async {
       // Arrange
       when(() => project.platformIsActivated(Platform.macos)).thenReturn(false);

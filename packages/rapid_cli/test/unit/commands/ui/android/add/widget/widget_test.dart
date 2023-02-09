@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
@@ -5,7 +7,6 @@ import 'package:rapid_cli/src/commands/ui/android/add/widget/widget.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import '../../../../../common.dart';
 import '../../../../../mocks.dart';
@@ -240,6 +241,28 @@ void main() {
 
       // Assert
       verify(() => logger.err('Android is not activated.')).called(1);
+      verify(() => logger.info('')).called(1);
+      expect(result, ExitCode.config.code);
+    });
+
+    test('exits with 78 when the referenced widget already exists', () async {
+      // Arrange
+      when(
+        () => project.addWidget(
+          name: any(named: 'name'),
+          outputDir: any(named: 'outputDir'),
+          platform: Platform.android,
+          logger: logger,
+        ),
+      ).thenThrow(WidgetAlreadyExists());
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(
+        () => logger.err('Android Widget $name already exists.'),
+      ).called(1);
       verify(() => logger.info('')).called(1);
       expect(result, ExitCode.config.code);
     });

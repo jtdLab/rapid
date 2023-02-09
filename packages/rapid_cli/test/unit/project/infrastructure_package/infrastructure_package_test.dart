@@ -12,11 +12,11 @@ import '../../common.dart';
 import '../../mocks.dart';
 
 InfrastructurePackage _getInfrastructurePackage({
-  required Project project,
+  Project? project,
   GeneratorBuilder? generator,
 }) {
   return InfrastructurePackage(
-    project: project,
+    project: project ?? getProject(),
     generator: generator ?? (_) async => getMasonGenerator(),
   );
 }
@@ -112,6 +112,53 @@ void main() {
             ),
           ).called(1);
         }),
+      );
+    });
+
+    test('.dataTransferObject()', () {
+      // Arrange
+      final infrastructurePackage = _getInfrastructurePackage();
+
+      // Act + Assert
+      expect(
+        infrastructurePackage.dataTransferObject(
+          entityName: 'Cool',
+          dir: 'data_transfer_object/path',
+        ),
+        isA<DataTransferObject>()
+            .having((dto) => dto.entityName, 'entityName', 'Cool')
+            .having((dto) => dto.dir, 'dir', 'data_transfer_object/path')
+            .having(
+              (dto) => dto.infrastructurePackage,
+              'infrastructurePackage',
+              infrastructurePackage,
+            ),
+      );
+    });
+
+    test('.serviceImplementation()', () {
+      // Arrange
+      final infrastructurePackage = _getInfrastructurePackage();
+
+      // Act + Assert
+      expect(
+        infrastructurePackage.serviceImplementation(
+          name: 'Fake',
+          serviceName: 'MyService',
+          dir: 'service_implementation/path',
+        ),
+        isA<ServiceImplementation>()
+            .having((si) => si.serviceName, 'serviceName', 'MyService')
+            .having(
+              (si) => si.dir,
+              'dir',
+              'service_implementation/path',
+            )
+            .having(
+              (si) => si.infrastructurePackage,
+              'infrastructurePackage',
+              infrastructurePackage,
+            ),
       );
     });
   });

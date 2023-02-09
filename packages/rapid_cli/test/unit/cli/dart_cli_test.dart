@@ -57,6 +57,7 @@ void main() {
       });
 
       test('throws when process fails', () async {
+        when(() => process.stderr).thenAnswer((_) => Stream.value([1]));
         when(() => process.exitCode)
             .thenAnswer((_) async => ExitCode.software.code);
         await ProcessOverrides.runZoned(

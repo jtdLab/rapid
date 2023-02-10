@@ -22,6 +22,8 @@ include: package:lints/recommended.yaml
 analyzer:
   exclude:
     - test/e2e/fixtures/**
+  errors:
+    invalid_use_of_protected_member: error
 
 # For more information about the core and recommended set of lints, see
 # https://dart.dev/go/core-lints

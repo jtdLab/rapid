@@ -860,4 +860,20 @@ class MelosFile extends YamlFile {
       throw ReadNameFailure();
     }
   }
+
+  @protected
+  @override
+  T readValue<T extends Object?>(Iterable<Object?> path);
+
+  @protected
+  @override
+  void removeValue(Iterable<Object?> path);
+
+  @protected
+  @override
+  void setValue<T extends Object?>(
+    Iterable<Object?> path,
+    T? value, {
+    bool blankIfValueNull = false,
+  });
 }

@@ -1,8 +1,6 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 
-// TODO more protected
-
 /// {@template file_system_entity}
 /// Abstraction of a file system entity.
 /// {@endtemplate}

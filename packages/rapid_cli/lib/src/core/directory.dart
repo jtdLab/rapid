@@ -6,7 +6,7 @@ import 'package:rapid_cli/src/core/file.dart';
 
 import 'file_system_entity.dart';
 
-// TODO more protectedØØ
+// TODO more protected
 
 /// {@template directory}
 /// Abstraction of a directory.

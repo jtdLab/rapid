@@ -1,8 +1,9 @@
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/core/dart_package.dart';
-import 'package:test/test.dart';
 import 'dart:io';
 
+import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:test/test.dart';
+
+import '../common.dart';
 import '../mocks.dart';
 
 const pubspecWithDependencies = '''
@@ -78,215 +79,242 @@ const pubspecWithoutName = '''
 some: value
 ''';
 
+DartPackage _getDartPackage({
+  String? path,
+  PubspecFile? pubspecFile,
+}) {
+  return DartPackage(
+    path: path ?? 'some/path',
+    pubspecFile: pubspecFile,
+  );
+}
+
+PubspecFile _getPubspecFile({
+  String? path,
+}) {
+  return PubspecFile(
+    path: path ?? 'some/path',
+  );
+}
+
 void main() {
   group('DartPackage', () {
-    final cwd = Directory.current;
+    group('.delete()', () {
+      test(
+        'deletes the directory',
+        withTempDir(() {
+          // Arrange
+          final dartPackage = _getDartPackage();
+          final directory = Directory(dartPackage.path)
+            ..createSync(recursive: true);
 
-    const path = 'foo';
-    late DartPackage dartPackage;
+          // Act
+          dartPackage.delete(logger: FakeLogger());
 
-    setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync();
-
-      dartPackage = DartPackage(path: path);
-      Directory(dartPackage.path).createSync(recursive: true);
+          // Assert
+          expect(directory.existsSync(), false);
+        }),
+      );
     });
 
-    tearDown(() {
-      Directory.current = cwd;
+    group('.exists()', () {
+      test(
+        'returns true when the directory exists',
+        withTempDir(() {
+          // Act
+          final dartPackage = _getDartPackage();
+          Directory(dartPackage.path).createSync(recursive: true);
+
+          // Act + Assert
+          expect(dartPackage.exists(), true);
+        }),
+      );
+
+      test(
+        'returns false when the directory does not exists',
+        withTempDir(() {
+          // Arrange
+          final dartPackage = _getDartPackage();
+
+          // Act + Assert
+          expect(dartPackage.exists(), false);
+        }),
+      );
     });
 
-    group('delete', () {
-      late Logger logger;
+    test('.path', () {
+      // Arrange
+      final dartPackage = _getDartPackage(path: 'dart_package/path');
 
-      setUp(() {
-        logger = MockLogger();
-      });
-
-      test('deletes the directory', () {
-        // Arrange
-        final directory = Directory(dartPackage.path);
-
-        // Act
-        dartPackage.delete(logger: logger);
-
-        // Assert
-        expect(directory.existsSync(), false);
-      });
+      // Act + Assert
+      expect(dartPackage.path, 'dart_package/path');
     });
 
-    group('exists', () {
-      test('returns true when the directory exists', () {
-        // Act
-        final exists = dartPackage.exists();
+    test('.pubspecFile', () {
+      // Arrange
+      final dartPackage = _getDartPackage(path: 'dart_package/path');
 
-        // Assert
-        expect(exists, true);
-      });
-
-      test('returns false when the directory does not exists', () {
-        // Arrange
-        Directory(dartPackage.path).deleteSync(recursive: true);
-
-        // Act
-        final exists = dartPackage.exists();
-
-        // Assert
-        expect(exists, false);
-      });
-    });
-
-    group('path', () {
-      test('is correct', () {
-        // Assert
-        expect(dartPackage.path, path);
-      });
-
-      test('is correct (no path)', () {
-        // Arrange
-        dartPackage = DartPackage();
-
-        // Assert
-        expect(dartPackage.path, '.');
-      });
-    });
-
-    group('pubspecFile', () {
-      test('returns correct pubspec file', () {
-        // Act
-        final pubspecFile = dartPackage.pubspecFile;
-
-        // Assert
-        expect(pubspecFile.path, '$path/pubspec.yaml');
-      });
+      // Act + Assert
+      expect(
+        dartPackage.pubspecFile,
+        isA<PubspecFile>().having(
+          (pubspec) => pubspec.path,
+          'path',
+          'dart_package/path/pubspec.yaml',
+        ),
+      );
     });
   });
 
   group('PubspecFile', () {
-    final cwd = Directory.current;
-
-    late PubspecFile pubspecFile;
-
-    setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync();
-
-      pubspecFile = PubspecFile();
-      File(pubspecFile.path).createSync(recursive: true);
-    });
-
-    tearDown(() {
-      Directory.current = cwd;
-    });
-
     group('name', () {
-      test('returns name', () {
-        // Arrange
-        final file = File(pubspecFile.path);
-        file.writeAsStringSync(pubspecWithName);
+      test(
+        'returns name',
+        withTempDir(() {
+          // Arrange
+          final pubspecFile = _getPubspecFile();
+          File(pubspecFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(pubspecWithName);
 
-        // Act + Assert
-        expect(pubspecFile.readName(), 'foo_bar');
-      });
+          // Act + Assert
+          expect(pubspecFile.readName(), 'foo_bar');
+        }),
+      );
 
-      test('throws when name is not present', () {
-        // Arrange
-        final file = File(pubspecFile.path);
-        file.writeAsStringSync(pubspecWithoutName);
+      test(
+        'throws when name is not present',
+        withTempDir(() {
+          // Arrange
+          final pubspecFile = _getPubspecFile();
+          File(pubspecFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(pubspecWithoutName);
 
-        // Act + Assert
-        expect(() => pubspecFile.readName(), throwsA(isA<ReadNameFailure>()));
-      });
+          // Act + Assert
+          expect(() => pubspecFile.readName(), throwsA(isA<ReadNameFailure>()));
+        }),
+      );
     });
 
-    group('path', () {
-      test('is correct', () {
-        // Assert
-        expect(pubspecFile.path, 'pubspec.yaml');
-      });
+    test('.path', () {
+      // Arrange
+      final pubspecFile = _getPubspecFile(path: 'pubspec/path');
+
+      // Act + Assert
+      expect(pubspecFile.path, 'pubspec/path/pubspec.yaml');
     });
 
     group('removeDependency', () {
-      test('removes dependency correctly', () {
-        // Arrange
-        final file = File(pubspecFile.path);
-        file.writeAsStringSync(pubspecWithAdditionalDependencyWithVersion);
+      test(
+        'removes dependency correctly',
+        withTempDir(() {
+          // Arrange
+          final pubspecFile = _getPubspecFile();
+          final file = File(pubspecFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(pubspecWithAdditionalDependencyWithVersion);
 
-        // Act
-        pubspecFile.removeDependency('my_dependency');
+          // Act
+          pubspecFile.removeDependency('my_dependency');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, pubspecWithDependencies);
-      });
+          // Assert
+          expect(file.readAsStringSync(), pubspecWithDependencies);
+        }),
+      );
     });
 
     group('removeDependencyByPattern', () {
-      test('removes dependencies that match the pattern correctly', () {
-        // Arrange
-        final file = File(pubspecFile.path);
-        file.writeAsStringSync(pubspecWithAdditionalPatternDependencies);
+      test(
+        'removes dependencies that match the pattern correctly',
+        withTempDir(() {
+          // Arrange
+          final pubspecFile = _getPubspecFile();
+          final file = File(pubspecFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(pubspecWithAdditionalPatternDependencies);
 
-        // Act
-        pubspecFile.removeDependencyByPattern('my_pattern');
+          // Act
+          pubspecFile.removeDependencyByPattern('my_pattern');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, pubspecWithDependencies);
-      });
+          // Assert
+          expect(file.readAsStringSync(), pubspecWithDependencies);
+        }),
+      );
 
-      test('does nothing when no dependencies that match pattern exist', () {
-        // Arrange
-        final file = File(pubspecFile.path);
-        file.writeAsStringSync(pubspecWithDependencies);
+      test(
+        'does nothing when no dependencies that match pattern exist',
+        withTempDir(() {
+          // Arrange
+          final pubspecFile = _getPubspecFile();
+          final file = File(pubspecFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(pubspecWithDependencies);
 
-        // Act
-        pubspecFile.removeDependencyByPattern('my_pattern');
+          // Act
+          pubspecFile.removeDependencyByPattern('my_pattern');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, pubspecWithDependencies);
-      });
+          // Assert
+          final contents = file.readAsStringSync();
+          expect(contents, pubspecWithDependencies);
+        }),
+      );
     });
 
     group('setDependency', () {
-      test('adds dependency with version correctly', () {
-        // Arrange
-        final file = File(pubspecFile.path);
-        file.writeAsStringSync(pubspecWithDependencies);
+      test(
+        'adds dependency with version correctly',
+        withTempDir(() {
+          // Arrange
+          final pubspecFile = _getPubspecFile();
+          final file = File(pubspecFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(pubspecWithDependencies);
 
-        // Act
-        pubspecFile.setDependency('my_dependency', version: '1.1.1');
+          // Act
+          pubspecFile.setDependency('my_dependency', version: '1.1.1');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, pubspecWithAdditionalDependencyWithVersion);
-      });
+          // Assert
+          final contents = file.readAsStringSync();
+          expect(contents, pubspecWithAdditionalDependencyWithVersion);
+        }),
+      );
 
-      test('adds dependency without version correctly', () {
-        // Arrange
-        final file = File(pubspecFile.path);
-        file.writeAsStringSync(pubspecWithDependencies);
+      test(
+        'adds dependency without version correctly',
+        withTempDir(() {
+          // Arrange
+          final pubspecFile = _getPubspecFile();
+          final file = File(pubspecFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(pubspecWithDependencies);
 
-        // Act
-        pubspecFile.setDependency('my_dependency');
+          // Act
+          pubspecFile.setDependency('my_dependency');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, pubspecWithAdditionalDependencyWithoutVersion);
-      });
+          // Assert
+          final contents = file.readAsStringSync();
+          expect(contents, pubspecWithAdditionalDependencyWithoutVersion);
+        }),
+      );
 
-      test('updates dependency version correctly', () {
-        // Arrange
-        final file = File(pubspecFile.path);
-        file.writeAsStringSync(pubspecWithDependencies);
+      test(
+        'updates dependency version correctly',
+        withTempDir(() {
+          // Arrange
+          final pubspecFile = _getPubspecFile();
+          final file = File(pubspecFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(pubspecWithDependencies);
 
-        // Act
-        pubspecFile.setDependency('baz', version: '^5.0.0');
+          // Act
+          pubspecFile.setDependency('baz', version: '^5.0.0');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, pubspecWithDependenciesUpdated);
-      });
+          // Assert
+          final contents = file.readAsStringSync();
+          expect(contents, pubspecWithDependenciesUpdated);
+        }),
+      );
     });
   });
 }

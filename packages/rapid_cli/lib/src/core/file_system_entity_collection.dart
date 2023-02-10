@@ -3,8 +3,6 @@ import 'package:rapid_cli/src/core/directory.dart';
 
 import 'file_system_entity.dart';
 
-// TODO more protected
-
 /// {@template file_system_entity_collection}
 /// Abstraction of a collection of file system entities.
 /// {@endtemplate}

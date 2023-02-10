@@ -1,10 +1,7 @@
-import 'package:meta/meta.dart';
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
 import 'file.dart';
-
-// TODO make methods protected or move all yaml files into same library
 
 /// Thrown when [YamlFile.removeValue] is called with [path] that does not reference a value.
 class InvalidPath implements Exception {}
@@ -20,7 +17,6 @@ class YamlFile extends File {
   }) : super(extension: 'yaml');
 
   /// Reads the value at [path].
-  @protected
   T readValue<T extends Object?>(Iterable<Object?> path) {
     assert(path.isNotEmpty);
     assert(path.length < 5);
@@ -45,7 +41,6 @@ class YamlFile extends File {
   }
 
   /// Removes the value at [path].
-  @protected
   void removeValue(Iterable<Object?> path) {
     final contents = read();
 
@@ -71,7 +66,6 @@ class YamlFile extends File {
   /// ```yaml
   /// my_value:
   /// ```
-  @protected
   void setValue<T extends Object?>(
     Iterable<Object?> path,
     T? value, {

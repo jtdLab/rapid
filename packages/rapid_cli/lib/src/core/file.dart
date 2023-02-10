@@ -1,13 +1,10 @@
 import 'dart:io' as io;
 
 import 'package:mason/mason.dart';
-import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 
 import 'directory.dart';
 import 'file_system_entity.dart';
-
-// TODO more protected
 
 /// {@template file}
 /// Abstraction of a file.
@@ -47,11 +44,9 @@ class File extends FileSystemEntity {
   Directory get parent => Directory(path: _file.parent.path);
 
   /// Reads the contents of the file.
-  @protected
   String read() => _file.readAsStringSync();
 
   /// Writes [contents] to the file.
-  @protected
   void write(String contents) => _file.writeAsStringSync(contents, flush: true);
 
   /// Deletes the file.

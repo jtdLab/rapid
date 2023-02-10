@@ -1,6 +1,7 @@
 import 'dart:io' as io;
 
 import 'package:mason/mason.dart';
+import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/core/directory.dart';

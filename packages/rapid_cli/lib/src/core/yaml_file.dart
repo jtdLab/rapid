@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
@@ -84,4 +85,23 @@ class YamlFile extends File {
 
     write(output);
   }
+}
+
+/// Mixin for subclasses that want to hide "low level" [YamlFile] api.
+mixin YamlFileProtectedMixin on YamlFile {
+  @protected
+  @override
+  T readValue<T extends Object?>(Iterable<Object?> path);
+
+  @protected
+  @override
+  void removeValue(Iterable<Object?> path);
+
+  @protected
+  @override
+  void setValue<T extends Object?>(
+    Iterable<Object?> path,
+    T? value, {
+    bool blankIfValueNull = false,
+  });
 }

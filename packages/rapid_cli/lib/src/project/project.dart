@@ -1,7 +1,6 @@
 import 'dart:io' as io;
 
 import 'package:mason/mason.dart';
-import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/core/directory.dart';
@@ -845,7 +844,7 @@ class ReadNameFailure implements Exception {}
 ///
 /// Location: `melos.yaml`
 /// {@endtemplate}
-class MelosFile extends YamlFile {
+class MelosFile extends YamlFile with YamlFileProtectedMixin {
   /// {@macro melos_file}
   MelosFile({required Project project})
       : super(
@@ -860,20 +859,4 @@ class MelosFile extends YamlFile {
       throw ReadNameFailure();
     }
   }
-
-  @protected
-  @override
-  T readValue<T extends Object?>(Iterable<Object?> path);
-
-  @protected
-  @override
-  void removeValue(Iterable<Object?> path);
-
-  @protected
-  @override
-  void setValue<T extends Object?>(
-    Iterable<Object?> path,
-    T? value, {
-    bool blankIfValueNull = false,
-  });
 }

@@ -76,7 +76,7 @@ typedef ProjectBuilder = Project Function({String path});
 /// {@template project}
 /// Abstraction of a Rapid project.
 /// {@endtemplate}
-abstract class Project implements FileSystemEntityCollection, Directory {
+abstract class Project implements Directory {
   /// {@macro project}
   factory Project({
     String path = '.',
@@ -134,6 +134,10 @@ abstract class Project implements FileSystemEntityCollection, Directory {
   PlatformUiPackageBuilder get platformUiPackage;
 
   String name();
+
+  bool existsAll();
+
+  bool existsAny();
 
   bool platformIsActivated(Platform platform);
 
@@ -298,6 +302,8 @@ abstract class MelosFile implements YamlFile {
       MelosFileImpl(
         project: project,
       );
+
+  Project get project;
 
   String readName();
 }

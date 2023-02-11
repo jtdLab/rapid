@@ -38,6 +38,15 @@ void main() {
       );
     });
 
+    test('.project', () {
+      // Arrange
+      final project = getProject();
+      final uiPackage = _getUiPackage(project: project);
+
+      // Act + Assert
+      expect(uiPackage.project, project);
+    });
+
     group('.create()', () {
       test(
         'completes successfully with correct output',

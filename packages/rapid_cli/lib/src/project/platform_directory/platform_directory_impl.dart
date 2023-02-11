@@ -12,9 +12,8 @@ class PlatformDirectoryImpl extends DartPackageImpl
     implements PlatformDirectory {
   PlatformDirectoryImpl(
     this.platform, {
-    required Project project,
-  })  : _project = project,
-        super(
+    required this.project,
+  }) : super(
           path: p.join(
             project.path,
             'packages',
@@ -22,15 +21,16 @@ class PlatformDirectoryImpl extends DartPackageImpl
             '${project.name()}_${platform.name}',
           ),
         ) {
-    appFeaturePackage = PlatformAppFeaturePackage(platform, project: _project);
+    appFeaturePackage = PlatformAppFeaturePackage(platform, project: project);
     routingFeaturePackage =
-        PlatformRoutingFeaturePackage(platform, project: _project);
+        PlatformRoutingFeaturePackage(platform, project: project);
   }
-
-  final Project _project;
 
   @override
   final Platform platform;
+
+  @override
+  final Project project;
 
   @override
   late final PlatformAppFeaturePackage appFeaturePackage;
@@ -60,7 +60,7 @@ class PlatformDirectoryImpl extends DartPackageImpl
 
   @override
   PlatformCustomFeaturePackage customFeaturePackage({required String name}) =>
-      PlatformCustomFeaturePackage(name, platform, project: _project);
+      PlatformCustomFeaturePackage(name, platform, project: project);
 
   @override
   List<PlatformCustomFeaturePackage> customFeaturePackages() => list()
@@ -71,9 +71,9 @@ class PlatformDirectoryImpl extends DartPackageImpl
         (e) => PlatformCustomFeaturePackage(
           p
               .basename(e.path)
-              .replaceAll('${_project.name()}_${platform.name}_', ''),
+              .replaceAll('${project.name()}_${platform.name}_', ''),
           platform,
-          project: _project,
+          project: project,
         ),
       )
       .toList()

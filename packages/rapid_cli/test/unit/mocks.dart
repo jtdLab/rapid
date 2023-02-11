@@ -10,10 +10,12 @@ import 'package:rapid_cli/src/project/app_package/platform_native_directory/plat
 import 'package:rapid_cli/src/project/di_package/di_package.dart';
 import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/infrastructure_package/infrastructure_package.dart';
+import 'package:rapid_cli/src/project/logging_package/logging_package.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/platform_ui_package/platform_ui_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src/project/ui_package/ui_package.dart';
 
 // Mocks
 
@@ -167,6 +169,37 @@ class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
     extends Mock
     implements _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
 
+abstract class _MelosBootstrapCommand {
+  Future<void> call({
+    String cwd,
+    required Logger logger,
+    List<String>? scope,
+  });
+}
+
+class MockMelosBootstrapCommand extends Mock
+    implements _MelosBootstrapCommand {}
+
+abstract class _FlutterPubGet {
+  Future<void> call({
+    String cwd,
+    required Logger logger,
+  });
+}
+
+class MockFlutterPubGetCommand extends Mock implements _FlutterPubGet {}
+
+class MockLoggingPackage extends Mock implements LoggingPackage {}
+
+class MockUiPackage extends Mock implements UiPackage {}
+
+abstract class _PlatformUiPackageBuilder {
+  PlatformUiPackage call({required Platform platform});
+}
+
+class MockPlatformUiPackageBuilder extends Mock
+    implements _PlatformUiPackageBuilder {}
+
 // Fakes
 
 class FakeProcess {
@@ -250,6 +283,7 @@ MockDartFormatFixCommand getDartFormatFix() {
 MockAppPackage getAppPackage() {
   final appPackage = MockAppPackage();
   when(() => appPackage.path).thenReturn('some/path');
+  when(() => appPackage.exists()).thenReturn(true);
   final project = getProject();
   when(() => appPackage.project).thenReturn(project);
 
@@ -271,6 +305,7 @@ MockInjectionFile getInjectionFile() {
 MockDiPackage getDiPackage() {
   final diPackage = MockDiPackage();
   when(() => diPackage.path).thenReturn('some/path');
+  when(() => diPackage.exists()).thenReturn(true);
 
   return diPackage;
 }
@@ -287,6 +322,7 @@ MockPlatformCustomFeaturePackage getPlatformCustomFeaturePackage() {
 
 MockPlatformUiPackage getPlatformUiPackage() {
   final platformUiPackage = MockPlatformUiPackage();
+  when(() => platformUiPackage.exists()).thenReturn(true);
 
   return platformUiPackage;
 }
@@ -316,6 +352,7 @@ MockPlatformNativeDirectoryBuilder getPlatfromNativeDirectoryBuilder() {
 
 MockPlatformDirectory getPlatformDirectory() {
   final platformDirectory = MockPlatformDirectory();
+  when(() => platformDirectory.exists()).thenReturn(true);
 
   return platformDirectory;
 }
@@ -389,6 +426,7 @@ MockArbFile getArbFile() {
 MockDomainPackage getDomainPackage() {
   final domainPackage = MockDomainPackage();
   when(() => domainPackage.path).thenReturn('some/path');
+  when(() => domainPackage.exists()).thenReturn(true);
 
   return domainPackage;
 }
@@ -396,6 +434,7 @@ MockDomainPackage getDomainPackage() {
 MockInfrastructurePackage getInfrastructurePackage() {
   final infrastructurePackage = MockInfrastructurePackage();
   when(() => infrastructurePackage.path).thenReturn('some/path');
+  when(() => infrastructurePackage.exists()).thenReturn(true);
 
   return infrastructurePackage;
 }
@@ -413,4 +452,63 @@ MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
   ).thenAnswer((_) async {});
 
   return flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+}
+
+MockMelosBootstrapCommand getMelosBootstrap() {
+  final melosBootstrap = MockMelosBootstrapCommand();
+  when(
+    () => melosBootstrap(
+      cwd: any(named: 'cwd'),
+      logger: any(named: 'logger'),
+      scope: any(named: 'scope'),
+    ),
+  ).thenAnswer((_) async {});
+
+  return melosBootstrap;
+}
+
+MockFlutterPubGetCommand getFlutterPubGet() {
+  final flutterPubGet = MockFlutterPubGetCommand();
+  when(
+    () => flutterPubGet(
+      cwd: any(named: 'cwd'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+
+  return flutterPubGet;
+}
+
+MockMelosFile getMelosFile() {
+  final melosFile = MockMelosFile();
+  when(() => melosFile.path).thenReturn('some/path');
+  when(() => melosFile.readName()).thenReturn('some_name');
+  when(() => melosFile.exists()).thenReturn(true);
+
+  return melosFile;
+}
+
+MockLoggingPackage getLoggingPackage() {
+  final loggingPackage = MockLoggingPackage();
+  when(() => loggingPackage.path).thenReturn('some/path');
+
+  return loggingPackage;
+}
+
+MockUiPackage getUiPackage() {
+  final uiPackage = MockUiPackage();
+  when(() => uiPackage.path).thenReturn('some/path');
+  when(() => uiPackage.exists()).thenReturn(true);
+
+  return uiPackage;
+}
+
+MockPlatformUiPackageBuilder getPlatfromUiPackageBuilder() {
+  final platformUiPackageBuilder = MockPlatformUiPackageBuilder();
+  final platformUiPackage = getPlatformUiPackage();
+  when(
+    () => platformUiPackageBuilder(platform: any(named: 'platform')),
+  ).thenReturn(platformUiPackage);
+
+  return platformUiPackageBuilder;
 }

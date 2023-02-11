@@ -26,6 +26,8 @@ abstract class DiPackage implements DartPackage {
         generator: generator,
       );
 
+  Project get project;
+
   Future<void> create({
     required bool android,
     required bool ios,

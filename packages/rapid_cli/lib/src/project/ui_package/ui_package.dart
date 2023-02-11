@@ -17,5 +17,7 @@ abstract class UiPackage implements DartPackage {
   }) =>
       UiPackageImpl(project: project, generator: generator);
 
+  Project get project;
+
   Future<void> create({required Logger logger});
 }

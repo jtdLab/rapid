@@ -11,10 +11,9 @@ import 'ui_package_bundle.dart';
 
 class UiPackageImpl extends DartPackageImpl implements UiPackage {
   UiPackageImpl({
-    required Project project,
+    required this.project,
     GeneratorBuilder? generator,
-  })  : _project = project,
-        _generator = generator ?? MasonGenerator.fromBundle,
+  })  : _generator = generator ?? MasonGenerator.fromBundle,
         super(
           path: p.join(
             project.path,
@@ -24,14 +23,16 @@ class UiPackageImpl extends DartPackageImpl implements UiPackage {
           ),
         );
 
-  final Project _project;
   final GeneratorBuilder _generator;
+
+  @override
+  final Project project;
 
   @override
   Future<void> create({
     required Logger logger,
   }) async {
-    final projectName = _project.name();
+    final projectName = project.name();
 
     final generator = await _generator(uiPackageBundle);
     await generator.generate(

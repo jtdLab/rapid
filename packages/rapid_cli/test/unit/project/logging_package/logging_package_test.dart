@@ -38,6 +38,15 @@ void main() {
       );
     });
 
+    test('.project', () {
+      // Arrange
+      final project = getProject();
+      final loggingPackage = _getLoggingPackage(project: project);
+
+      // Act + Assert
+      expect(loggingPackage.project, project);
+    });
+
     group('.create()', () {
       test(
         'completes successfully with correct output',

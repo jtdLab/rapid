@@ -20,6 +20,8 @@ abstract class PlatformDirectory implements DartPackage {
 
   Platform get platform;
 
+  Project get project;
+
   PlatformAppFeaturePackage get appFeaturePackage;
 
   PlatformRoutingFeaturePackage get routingFeaturePackage;

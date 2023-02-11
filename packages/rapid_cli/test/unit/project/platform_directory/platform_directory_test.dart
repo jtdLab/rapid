@@ -127,6 +127,18 @@ void main() {
       });
     });
 
+    test('.project', () {
+      // Arrange
+      final project = getProject();
+      final platformDirectory = _getPlatformDirectory(
+        Platform.android,
+        project: project,
+      );
+
+      // Act + Assert
+      expect(platformDirectory.project, project);
+    });
+
     test('.appFeaturePackage', () {
       // Arrange
       final project = getProject();

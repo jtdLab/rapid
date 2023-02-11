@@ -17,5 +17,7 @@ abstract class LoggingPackage implements DartPackage {
   }) =>
       LoggingPackageImpl(project: project, generator: generator);
 
+  Project get project;
+
   Future<void> create({required Logger logger});
 }

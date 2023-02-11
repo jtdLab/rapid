@@ -827,11 +827,14 @@ class ProjectImpl extends DirectoryImpl implements Project {
 }
 
 class MelosFileImpl extends YamlFileImpl implements MelosFile {
-  MelosFileImpl({required Project project})
+  MelosFileImpl({required this.project})
       : super(
           path: project.path,
           name: 'melos',
         );
+
+  @override
+  final Project project;
 
   @override
   String readName() {

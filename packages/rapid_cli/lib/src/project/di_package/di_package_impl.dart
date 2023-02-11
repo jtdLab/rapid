@@ -13,12 +13,11 @@ import 'di_package_bundle.dart';
 
 class DiPackageImpl extends DartPackageImpl implements DiPackage {
   DiPackageImpl({
-    required Project project,
+    required this.project,
     super.pubspecFile,
     InjectionFile? injectionFile,
     GeneratorBuilder? generator,
-  })  : _project = project,
-        _generator = generator ?? MasonGenerator.fromBundle,
+  })  : _generator = generator ?? MasonGenerator.fromBundle,
         super(
           path: p.join(
             project.path,
@@ -30,9 +29,11 @@ class DiPackageImpl extends DartPackageImpl implements DiPackage {
     _injectionFile = injectionFile ?? InjectionFileImpl(diPackage: this);
   }
 
-  final Project _project;
   late final InjectionFile _injectionFile;
   final GeneratorBuilder _generator;
+
+  @override
+  final Project project;
 
   @override
   Future<void> create({
@@ -44,7 +45,7 @@ class DiPackageImpl extends DartPackageImpl implements DiPackage {
     required bool windows,
     required Logger logger,
   }) async {
-    final projectName = _project.name();
+    final projectName = project.name();
 
     final generator = await _generator(diPackageBundle);
     await generator.generate(

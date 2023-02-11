@@ -96,6 +96,15 @@ void main() {
       expect(diPackage.path, 'project/path/packages/my_project/my_project_di');
     });
 
+    test('.project', () {
+      // Arrange
+      final project = getProject();
+      final diPackage = _getDiPackage(project: project);
+
+      // Act + Assert
+      expect(diPackage.project, project);
+    });
+
     group('.create()', () {
       test(
         'completes successfully with correct output',

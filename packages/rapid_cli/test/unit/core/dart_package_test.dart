@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:test/test.dart';
 
@@ -164,10 +165,20 @@ void main() {
         ),
       );
     });
+
+    test('.packageName()', () {
+      // Arrange
+      final pubspecFile = getPubspecFile();
+      when(() => pubspecFile.readName()).thenReturn('my_project');
+      final dartPackage = _getDartPackage(pubspecFile: pubspecFile);
+
+      // Act + Assert
+      expect(dartPackage.packageName(), 'my_project');
+    });
   });
 
   group('PubspecFile', () {
-    group('name', () {
+    group('.readName()', () {
       test(
         'returns name',
         withTempDir(() {
@@ -205,7 +216,7 @@ void main() {
       expect(pubspecFile.path, 'pubspec/path/pubspec.yaml');
     });
 
-    group('removeDependency', () {
+    group('.removeDependency()', () {
       test(
         'removes dependency correctly',
         withTempDir(() {
@@ -224,7 +235,7 @@ void main() {
       );
     });
 
-    group('removeDependencyByPattern', () {
+    group('.removeDependencyByPattern()', () {
       test(
         'removes dependencies that match the pattern correctly',
         withTempDir(() {
@@ -261,7 +272,7 @@ void main() {
       );
     });
 
-    group('setDependency', () {
+    group('.setDependency()', () {
       test(
         'adds dependency with version correctly',
         withTempDir(() {

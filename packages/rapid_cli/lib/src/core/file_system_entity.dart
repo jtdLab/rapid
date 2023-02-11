@@ -2,11 +2,9 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 
 /// {@template file_system_entity}
-/// Abstraction of a file system entity.
+/// Base class of any file system entity.
 /// {@endtemplate}
 abstract class FileSystemEntity {
-  /// {@macro file_system_entity}
-
   /// The path of the file system entity.
   String get path;
 

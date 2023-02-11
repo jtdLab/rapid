@@ -1,25 +1,24 @@
-import 'package:yaml/yaml.dart';
+import 'package:rapid_cli/src/core/dart_package_impl.dart';
+import 'package:rapid_cli/src/core/yaml_file.dart';
 
 import 'directory.dart';
-import 'yaml_file.dart';
 
 /// {@template dart_package}
 /// Abstraction of a dart package.
 /// {@endtemplate}
-class DartPackage extends Directory {
+abstract class DartPackage implements Directory {
   /// {@macro dart_package}
-  DartPackage({
-    super.path,
+  factory DartPackage({
+    String path = '.',
     PubspecFile? pubspecFile,
-  }) : _pubspecFile = pubspecFile;
-
-  final PubspecFile? _pubspecFile;
+  }) =>
+      DartPackageImpl(path: path, pubspecFile: pubspecFile);
 
   /// The pubspec file of the dart package.
-  late final PubspecFile pubspecFile = _pubspecFile ?? PubspecFile(path: path);
+  PubspecFile get pubspecFile;
 
   /// The name of the dart package.
-  String packageName() => pubspecFile.readName();
+  String packageName();
 }
 
 /// Thrown when [PubspecFile.readName] fails to read the `name` property.
@@ -28,33 +27,21 @@ class ReadNameFailure implements Exception {}
 /// {@template pubspec_file}
 /// Abstraction of the pubspec file of a dart package.
 /// {@endtemplate}
-class PubspecFile extends YamlFile with YamlFileProtectedMixin {
+abstract class PubspecFile implements YamlFile {
   /// {@macro pubspec_file}
-  PubspecFile({super.path}) : super(name: 'pubspec');
+  factory PubspecFile({
+    String path = '.',
+  }) =>
+      PubspecFileImpl(path: path);
 
   /// The `name` property of the pubspec file.
-  String readName() {
-    try {
-      return readValue(['name']);
-    } catch (_) {
-      throw ReadNameFailure();
-    }
-  }
+  String readName();
 
   /// Removes dependency with [name] from the pubspec file.
-  void removeDependency(String name) => removeValue(['dependencies', name]);
+  void removeDependency(String name);
 
   /// Removes dependencies that match [pattern] from the pubspec file.
-  void removeDependencyByPattern(String pattern) {
-    final dependencies = readValue(['dependencies']);
-
-    for (final dependency in (dependencies as YamlMap)
-        .entries
-        .map((e) => (e.key as String).split(':').first.trim())
-        .where((e) => e.contains(pattern))) {
-      removeDependency(dependency);
-    }
-  }
+  void removeDependencyByPattern(String pattern);
 
   /// Adds dependency with [name] and an optional [version] to the pubspec file.
   ///
@@ -66,6 +53,5 @@ class PubspecFile extends YamlFile with YamlFileProtectedMixin {
   /// dependencies:
   ///   my_dependency:
   /// ```
-  void setDependency(String name, {String? version}) =>
-      setValue(['dependencies', name], version, blankIfValueNull: true);
+  void setDependency(String name, {String? version});
 }

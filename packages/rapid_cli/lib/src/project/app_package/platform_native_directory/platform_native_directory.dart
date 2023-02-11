@@ -1,71 +1,34 @@
-import 'dart:io' as io;
-
 import 'package:mason/mason.dart';
-import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/app_package/app_package.dart';
 
-import 'android_native_directory_bundle.dart';
-import 'ios_native_directory_bundle.dart';
-import 'linux_native_directory_bundle.dart';
-import 'macos_native_directory_bundle.dart';
-import 'web_native_directory_bundle.dart';
-import 'windows_native_directory_bundle.dart';
+import 'platform_native_directory_impl.dart';
 
 /// {@template platform_native_directory}
 /// Abstraction of a platform native directory of the app package of a Rapid project.
 ///
 /// Location: `packages/<project name>/<project name>/<platform>`
 /// {@endtemplate}
-class PlatformNativeDirectory extends Directory {
+abstract class PlatformNativeDirectory implements Directory {
   /// {@macro platform_native_directory}
-  PlatformNativeDirectory(
-    this.platform, {
+  factory PlatformNativeDirectory(
+    Platform platform, {
     required AppPackage appPackage,
     GeneratorBuilder? generator,
-  })  : _appPackage = appPackage,
-        _generator = generator ?? MasonGenerator.fromBundle,
-        super(
-          path: p.join(appPackage.path, platform.name),
-        );
+  }) =>
+      PlatformNativeDirectoryImpl(
+        platform,
+        appPackage: appPackage,
+        generator: generator,
+      );
 
-  final AppPackage _appPackage;
-  final GeneratorBuilder _generator;
-
-  final Platform platform;
+  Platform get platform;
 
   Future<void> create({
     String? description,
     String? orgName,
     required Logger logger,
-  }) async {
-    final projectName = _appPackage.project.name();
-
-    late final MasonGenerator generator;
-    if (platform == Platform.android) {
-      generator = await _generator(androidNativeDirectoryBundle);
-    } else if (platform == Platform.ios) {
-      generator = await _generator(iosNativeDirectoryBundle);
-    } else if (platform == Platform.linux) {
-      generator = await _generator(linuxNativeDirectoryBundle);
-    } else if (platform == Platform.macos) {
-      generator = await _generator(macosNativeDirectoryBundle);
-    } else if (platform == Platform.web) {
-      generator = await _generator(webNativeDirectoryBundle);
-    } else {
-      generator = await _generator(windowsNativeDirectoryBundle);
-    }
-
-    await generator.generate(
-      DirectoryGeneratorTarget(io.Directory(path)),
-      vars: <String, dynamic>{
-        'project_name': projectName,
-        if (description != null) 'description': description,
-        if (orgName != null) 'org_name': orgName,
-      },
-      logger: logger,
-    );
-  }
+  });
 }

@@ -1,8 +1,6 @@
-import 'package:meta/meta.dart';
-import 'package:yaml/yaml.dart';
-import 'package:yaml_edit/yaml_edit.dart';
+import 'package:rapid_cli/src/core/file.dart';
 
-import 'file.dart';
+import 'yaml_file_impl.dart';
 
 /// Thrown when [YamlFile.removeValue] is called with [path] that does not reference a value.
 class InvalidPath implements Exception {}
@@ -10,50 +8,21 @@ class InvalidPath implements Exception {}
 /// {@template yaml_file}
 /// Abstraction of a yaml file.
 /// {@endtemplate}
-class YamlFile extends File {
+abstract class YamlFile implements File {
   /// {@macro yaml_file}
-  YamlFile({
-    super.path,
-    required String super.name,
-  }) : super(extension: 'yaml');
+  factory YamlFile({
+    String path = '.',
+    required String name,
+  }) =>
+      YamlFileImpl(path: path, name: name);
 
   /// Reads the value at [path].
-  T readValue<T extends Object?>(Iterable<Object?> path) {
-    assert(path.isNotEmpty);
-    assert(path.length < 5);
-
-    final contents = read();
-
-    try {
-      final yaml = loadYaml(contents);
-      if (path.length == 1) {
-        return yaml[path.first];
-      } else if (path.length == 2) {
-        return yaml[path.first][path.last];
-      } else if (path.length == 3) {
-        return yaml[path.first][path.elementAt(1)][path.last];
-      } else {
-        return yaml[path.first][path.elementAt(1)][path.elementAt(2)]
-            [path.last];
-      }
-    } catch (_) {
-      throw InvalidPath();
-    }
-  }
+  ///
+  /// Path must have length 1.
+  T readValue<T extends Object?>(Iterable<Object?> path);
 
   /// Removes the value at [path].
-  void removeValue(Iterable<Object?> path) {
-    final contents = read();
-
-    try {
-      final editor = YamlEditor(contents);
-      editor.remove(path);
-      // TODO in nested paths the removing leads to a empty set "{}" instead of blank field
-      final output = editor.toString();
-
-      write(output);
-    } catch (_) {}
-  }
+  void removeValue(Iterable<Object?> path);
 
   /// Sets [value] at [path].
   ///
@@ -67,38 +36,6 @@ class YamlFile extends File {
   /// ```yaml
   /// my_value:
   /// ```
-  void setValue<T extends Object?>(
-    Iterable<Object?> path,
-    T? value, {
-    bool blankIfValueNull = false,
-  }) {
-    final contents = read();
-
-    final editor = YamlEditor(contents);
-    editor.update(path, value);
-    var output = editor.toString();
-    if (value == null && blankIfValueNull) {
-      final replacement = editor.edits.first.replacement;
-      output =
-          output.replaceAll(replacement, replacement.replaceAll(' null', ''));
-    }
-
-    write(output);
-  }
-}
-
-/// Mixin for subclasses that want to hide "low level" [YamlFile] api.
-mixin YamlFileProtectedMixin on YamlFile {
-  @protected
-  @override
-  T readValue<T extends Object?>(Iterable<Object?> path);
-
-  @protected
-  @override
-  void removeValue(Iterable<Object?> path);
-
-  @protected
-  @override
   void setValue<T extends Object?>(
     Iterable<Object?> path,
     T? value, {

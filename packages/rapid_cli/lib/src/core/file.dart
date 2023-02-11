@@ -1,55 +1,35 @@
-import 'dart:io' as io;
-
 import 'package:mason/mason.dart';
-import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/core/file_impl.dart';
 
-import 'directory.dart';
 import 'file_system_entity.dart';
 
 /// {@template file}
 /// Abstraction of a file.
 /// {@endtemplate}
-class File extends FileSystemEntity {
+abstract class File implements FileSystemEntity {
   /// {@macro file}
-  File({
+  factory File({
     String path = '.',
-    this.name,
-    this.extension,
-  })  : assert(
-          !(name == null && extension == null),
-          'Properties name and extension can not be null at the same time',
-        ),
-        _file = io.File(
-          p.normalize(
-            p.join(path, '${name ?? ''}.${extension ?? ''}'),
-          ),
-        );
+    String? name,
+    String? extension,
+  }) =>
+      FileImpl(path: path, name: name, extension: extension);
 
-  final String? name;
-  final String? extension;
+  /// The name of the file.
+  String? get name;
 
-  /// The underlying file
-  final io.File _file;
-
-  /// The path of the file.
-  @override
-  String get path => _file.path;
-
-  /// Wheter the file exists.
-  @override
-  bool exists() => _file.existsSync();
-
-  /// The parent directory of the file.
-  @override
-  Directory get parent => Directory(path: _file.parent.path);
+  /// The extension of the file.
+  String? get extension;
 
   /// Reads the contents of the file.
-  String read() => _file.readAsStringSync();
+  String read();
 
   /// Writes [contents] to the file.
-  void write(String contents) => _file.writeAsStringSync(contents, flush: true);
+  ///
+  /// This flushes the data to disc before returning.
+  void write(String contents);
 
   /// Deletes the file.
   @override
-  void delete({required Logger logger}) => _file.deleteSync(recursive: true);
+  void delete({required Logger logger});
 }

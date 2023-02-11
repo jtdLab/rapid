@@ -14,12 +14,11 @@ import '../../mocks.dart';
 PlatformDirectory _getPlatformDirectory(
   Platform platform, {
   required Project project,
-  List<PlatformCustomFeaturePackage>? customFeaturePackages,
 }) {
   return PlatformDirectory(
     platform,
     project: project,
-  )..customFeaturePackagesOverrides = customFeaturePackages;
+  );
 }
 
 void main() {
@@ -30,14 +29,14 @@ void main() {
         final project = getProject();
         when(() => project.path).thenReturn('project/path');
         when(() => project.name()).thenReturn('my_project');
-        final loggingPackage = _getPlatformDirectory(
+        final platformDirectory = _getPlatformDirectory(
           Platform.android,
           project: project,
         );
 
         // Act + Assert
         expect(
-          loggingPackage.path,
+          platformDirectory.path,
           'project/path/packages/my_project/my_project_android',
         );
       });
@@ -47,14 +46,14 @@ void main() {
         final project = getProject();
         when(() => project.path).thenReturn('project/path');
         when(() => project.name()).thenReturn('my_project');
-        final loggingPackage = _getPlatformDirectory(
+        final platformDirectory = _getPlatformDirectory(
           Platform.ios,
           project: project,
         );
 
         // Act + Assert
         expect(
-          loggingPackage.path,
+          platformDirectory.path,
           'project/path/packages/my_project/my_project_ios',
         );
       });
@@ -64,14 +63,14 @@ void main() {
         final project = getProject();
         when(() => project.path).thenReturn('project/path');
         when(() => project.name()).thenReturn('my_project');
-        final loggingPackage = _getPlatformDirectory(
+        final platformDirectory = _getPlatformDirectory(
           Platform.linux,
           project: project,
         );
 
         // Act + Assert
         expect(
-          loggingPackage.path,
+          platformDirectory.path,
           'project/path/packages/my_project/my_project_linux',
         );
       });
@@ -81,14 +80,14 @@ void main() {
         final project = getProject();
         when(() => project.path).thenReturn('project/path');
         when(() => project.name()).thenReturn('my_project');
-        final loggingPackage = _getPlatformDirectory(
+        final platformDirectory = _getPlatformDirectory(
           Platform.macos,
           project: project,
         );
 
         // Act + Assert
         expect(
-          loggingPackage.path,
+          platformDirectory.path,
           'project/path/packages/my_project/my_project_macos',
         );
       });
@@ -98,14 +97,14 @@ void main() {
         final project = getProject();
         when(() => project.path).thenReturn('project/path');
         when(() => project.name()).thenReturn('my_project');
-        final loggingPackage = _getPlatformDirectory(
+        final platformDirectory = _getPlatformDirectory(
           Platform.web,
           project: project,
         );
 
         // Act + Assert
         expect(
-          loggingPackage.path,
+          platformDirectory.path,
           'project/path/packages/my_project/my_project_web',
         );
       });
@@ -115,14 +114,14 @@ void main() {
         final project = getProject();
         when(() => project.path).thenReturn('project/path');
         when(() => project.name()).thenReturn('my_project');
-        final loggingPackage = _getPlatformDirectory(
+        final platformDirectory = _getPlatformDirectory(
           Platform.windows,
           project: project,
         );
 
         // Act + Assert
         expect(
-          loggingPackage.path,
+          platformDirectory.path,
           'project/path/packages/my_project/my_project_windows',
         );
       });
@@ -131,14 +130,14 @@ void main() {
     test('.appFeaturePackage', () {
       // Arrange
       final project = getProject();
-      final loggingPackage = _getPlatformDirectory(
+      final platformDirectory = _getPlatformDirectory(
         Platform.android,
         project: project,
       );
 
       // Act + Assert
       expect(
-        loggingPackage.appFeaturePackage,
+        platformDirectory.appFeaturePackage,
         isA<PlatformAppFeaturePackage>()
             .having((appfp) => appfp.platform, 'platform', Platform.android)
             .having((appfp) => appfp.project, 'project', project),
@@ -148,14 +147,14 @@ void main() {
     test('.routingFeaturePackage', () {
       // Arrange
       final project = getProject();
-      final loggingPackage = _getPlatformDirectory(
+      final platformDirectory = _getPlatformDirectory(
         Platform.android,
         project: project,
       );
 
       // Act + Assert
       expect(
-        loggingPackage.routingFeaturePackage,
+        platformDirectory.routingFeaturePackage,
         isA<PlatformRoutingFeaturePackage>()
             .having(
               (routingfp) => routingfp.platform,
@@ -167,82 +166,142 @@ void main() {
     });
 
     group('.allFeaturesHaveSameLanguages()', () {
-      test('returns true when all custom feature packages have same language',
-          () {
-        // Arrange
-        final project = getProject();
-        final feature1 = getPlatformCustomFeaturePackage();
-        when(() => feature1.supportedLanguages()).thenReturn({'en', 'de'});
-        final feature2 = getPlatformCustomFeaturePackage();
-        when(() => feature2.supportedLanguages()).thenReturn({'de', 'en'});
-        final platformDirectory = _getPlatformDirectory(
-          Platform.android,
-          project: project,
-          customFeaturePackages: [feature1, feature2],
-        );
-
-        // Act + Assert
-        expect(platformDirectory.allFeaturesHaveSameLanguages(), true);
-      });
+      void createFeatureFiles({
+        required String name,
+        required Set<String> languages,
+        required PlatformDirectory platformDirectory,
+      }) {
+        for (final language in languages) {
+          File(
+            ArbFile(
+              language: language,
+              arbDirectory: ArbDirectory(
+                platformFeaturePackage: platformDirectory.customFeaturePackage(
+                  name: name,
+                ),
+              ),
+            ).path,
+          ).createSync(recursive: true);
+        }
+      }
 
       test(
-          'returns false when NOT all custom feature packages have same language',
-          () {
-        // Arrange
-        final project = getProject();
-        final feature1 = getPlatformCustomFeaturePackage();
-        when(() => feature1.supportedLanguages()).thenReturn({'fr', 'de'});
-        final feature2 = getPlatformCustomFeaturePackage();
-        when(() => feature2.supportedLanguages()).thenReturn({'de', 'en'});
-        final platformDirectory = _getPlatformDirectory(
-          Platform.android,
-          project: project,
-          customFeaturePackages: [feature1, feature2],
-        );
+        'returns true when all custom feature packages have same supported languages',
+        withTempDir(() {
+          // Arrange
+          final project = getProject();
+          final platformDirectory = _getPlatformDirectory(
+            Platform.android,
+            project: project,
+          );
+          createFeatureFiles(
+            name: 'my_feature_a',
+            languages: {'de', 'fr'},
+            platformDirectory: platformDirectory,
+          );
+          createFeatureFiles(
+            name: 'my_feature_b',
+            languages: {'fr', 'de'},
+            platformDirectory: platformDirectory,
+          );
 
-        // Act + Assert
-        expect(platformDirectory.allFeaturesHaveSameLanguages(), false);
-      });
+          // Act + Assert
+          expect(platformDirectory.allFeaturesHaveSameLanguages(), true);
+        }),
+      );
+
+      test(
+        'returns false when NOT all custom feature packages have same supported languages',
+        withTempDir(() {
+          // Arrange
+          final project = getProject();
+          final platformDirectory = _getPlatformDirectory(
+            Platform.android,
+            project: project,
+          );
+          createFeatureFiles(
+            name: 'my_feature_a',
+            languages: {'de', 'fr'},
+            platformDirectory: platformDirectory,
+          );
+          createFeatureFiles(
+            name: 'my_feature_b',
+            languages: {'de', 'en'},
+            platformDirectory: platformDirectory,
+          );
+
+          // Act + Assert
+          expect(platformDirectory.allFeaturesHaveSameLanguages(), false);
+        }),
+      );
     });
 
     group('.allFeaturesHaveSameDefaultLanguage()', () {
-      test(
-          'returns true when all custom feature packages have same default language',
-          () {
-        // Arrange
-        final project = getProject();
-        final feature1 = getPlatformCustomFeaturePackage();
-        when(() => feature1.defaultLanguage()).thenReturn('fr');
-        final feature2 = getPlatformCustomFeaturePackage();
-        when(() => feature2.defaultLanguage()).thenReturn('fr');
-        final platformDirectory = _getPlatformDirectory(
-          Platform.android,
-          project: project,
-          customFeaturePackages: [feature1, feature2],
-        );
-
-        // Act + Assert
-        expect(platformDirectory.allFeaturesHaveSameDefaultLanguage(), true);
-      });
+      void createFeatureFiles({
+        required String name,
+        required String language,
+        required PlatformDirectory platformDirectory,
+      }) {
+        File(
+          L10nFile(
+            platformFeaturePackage: platformDirectory.customFeaturePackage(
+              name: name,
+            ),
+          ).path,
+        )
+          ..createSync(recursive: true)
+          ..writeAsStringSync('template-arb-file: ${name}_$language.arb');
+      }
 
       test(
-          'returns false when NOT all custom feature packages have same default language',
-          () {
-        // Arrange
-        final project = getProject();
-        final feature1 = getPlatformCustomFeaturePackage();
-        when(() => feature1.defaultLanguage()).thenReturn('en');
-        final feature2 = getPlatformCustomFeaturePackage();
-        when(() => feature2.defaultLanguage()).thenReturn('fr');
-        final platformDirectory = _getPlatformDirectory(
-          Platform.android,
-          project: project,
-          customFeaturePackages: [feature1, feature2],
-        );
+        'returns true when all custom feature packages have same default language',
+        withTempDir(() {
+          // Arrange
+          final project = getProject();
+          final platformDirectory = _getPlatformDirectory(
+            Platform.android,
+            project: project,
+          );
+          createFeatureFiles(
+            name: 'my_feature_a',
+            language: 'de',
+            platformDirectory: platformDirectory,
+          );
+          createFeatureFiles(
+            name: 'my_feature_b',
+            language: 'de',
+            platformDirectory: platformDirectory,
+          );
 
-        // Act + Assert
-        expect(platformDirectory.allFeaturesHaveSameDefaultLanguage(), false);
-      });
+          // Act + Assert
+          expect(platformDirectory.allFeaturesHaveSameDefaultLanguage(), true);
+        }),
+      );
+
+      test(
+        'returns false when NOT all custom feature packages have same default language',
+        withTempDir(() {
+          // Arrange
+          final project = getProject();
+          final platformDirectory = _getPlatformDirectory(
+            Platform.android,
+            project: project,
+          );
+          createFeatureFiles(
+            name: 'my_feature_a',
+            language: 'de',
+            platformDirectory: platformDirectory,
+          );
+          createFeatureFiles(
+            name: 'my_feature_b',
+            language: 'fr',
+            platformDirectory: platformDirectory,
+          );
+
+          // Act + Assert
+          expect(platformDirectory.allFeaturesHaveSameDefaultLanguage(), false);
+        }),
+      );
     });
 
     group('.customFeaturePackage()', () {
@@ -299,7 +358,10 @@ void main() {
           const customFeaturePackageNames = ['my_feat_a', 'my_feat_b'];
           for (final featureName in customFeaturePackageNames) {
             Directory(
-              p.join(platformDirectory.path, 'my_project_android_$featureName'),
+              p.join(
+                platformDirectory.path,
+                'my_project_android_$featureName',
+              ),
             ).createSync(recursive: true);
           }
 

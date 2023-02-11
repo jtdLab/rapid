@@ -820,13 +820,13 @@ void main() {
           final widget = _getWidget(
             platformUiPackage: platformUiPackage,
             name: 'CoolButton',
-            dir: 'widget/path',
+            dir: '.',
           );
           final widgetDir = Directory(
-            'platform_ui_package/path/lib/src/widget/path/cool_button',
+            'platform_ui_package/path/lib/src/cool_button',
           )..createSync(recursive: true);
           final widgetTestDir = Directory(
-            'platform_ui_package/path/test/src/widget/path/cool_button',
+            'platform_ui_package/path/test/src/cool_button',
           )..createSync(recursive: true);
 
           // Act
@@ -834,6 +834,47 @@ void main() {
           widget.delete(logger: logger);
 
           // Assert
+          expect(widgetDir.existsSync(), false);
+          expect(widgetTestDir.existsSync(), false);
+        }),
+      );
+
+      test(
+        'deletes all related files (with dir)',
+        withTempDir(() async {
+          // Arrange
+          final platformUiPackage = getPlatformUiPackage();
+          when(() => platformUiPackage.path)
+              .thenReturn('platform_ui_package/path');
+          final widget = _getWidget(
+            platformUiPackage: platformUiPackage,
+            name: 'CoolButton',
+            dir: 'foo',
+          );
+          final widgetDir = Directory(
+            'platform_ui_package/path/lib/src/foo/cool_button',
+          )..createSync(recursive: true);
+          final widgetTestDir = Directory(
+            'platform_ui_package/path/test/src/foo/cool_button',
+          )..createSync(recursive: true);
+
+          // Act
+          final logger = FakeLogger();
+          widget.delete(logger: logger);
+
+          // Assert
+          expect(
+            Directory(
+              'platform_ui_package/path/lib/src/foo/cool_button',
+            ).existsSync(),
+            false,
+          );
+          expect(
+            Directory(
+              'platform_ui_package/path/test/src/foo/cool_button',
+            ).existsSync(),
+            false,
+          );
           expect(widgetDir.existsSync(), false);
           expect(widgetTestDir.existsSync(), false);
         }),

@@ -7,6 +7,7 @@ import 'package:rapid_cli/src/core/environment.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/app_package/app_package.dart';
+import 'package:rapid_cli/src/project/app_package/app_package_impl.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 
@@ -249,6 +250,101 @@ void main() {
               () => platformNativeDirectoryBuilder(platform: Platform.web));
           verifyNever(
               () => platformNativeDirectoryBuilder(platform: Platform.windows));
+          verify(
+            () => platformNativeDirectory.create(
+              description: 'some desc',
+              orgName: 'my.org',
+              logger: logger,
+            ),
+          ).called(3);
+          verifyNever(
+            () => platformNativeDirectory.create(
+              description: 'some desc',
+              orgName: 'my.org',
+              logger: logger,
+            ),
+          );
+        }),
+      );
+
+      test(
+        'completes successfully with correct output (2)',
+        withTempDir(() async {
+          // Arrange
+          final project = getProject();
+          when(() => project.path).thenReturn('project/path');
+          when(() => project.name()).thenReturn('my_project');
+          final platformNativeDirectory = getPlatformNativeDirectory();
+          final platformNativeDirectoryBuilder =
+              getPlatfromNativeDirectoryBuilder();
+          when(
+            () => platformNativeDirectoryBuilder(
+              platform: any(named: 'platform'),
+            ),
+          ).thenReturn(platformNativeDirectory);
+          final generator = getMasonGenerator();
+          final appPackage = _getAppPackage(
+            project: project,
+            platformNativeDirectoryBuilder: platformNativeDirectoryBuilder,
+            generator: (_) async => generator,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await appPackage.create(
+            description: 'some desc',
+            orgName: 'my.org',
+            android: false,
+            ios: false,
+            linux: false,
+            macos: true,
+            web: true,
+            windows: true,
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => generator.generate(
+              any(
+                that: isA<DirectoryGeneratorTarget>().having(
+                  (g) => g.dir.path,
+                  'dir',
+                  'project/path/packages/my_project/my_project',
+                ),
+              ),
+              vars: <String, dynamic>{
+                'project_name': 'my_project',
+                'description': 'some desc',
+                'android': false,
+                'ios': false,
+                'linux': false,
+                'macos': true,
+                'web': true,
+                'windows': true,
+                'none': false,
+              },
+              logger: logger,
+            ),
+          ).called(1);
+          verify(
+            () => platformNativeDirectoryBuilder(platform: Platform.macos),
+          ).called(1);
+          verify(
+            () => platformNativeDirectoryBuilder(platform: Platform.web),
+          ).called(1);
+          verify(
+            () => platformNativeDirectoryBuilder(platform: Platform.windows),
+          ).called(1);
+          verifyNever(
+            () => platformNativeDirectoryBuilder(platform: Platform.android),
+          );
+          verifyNever(
+            () => platformNativeDirectoryBuilder(platform: Platform.ios),
+          );
+          verifyNever(
+            () => platformNativeDirectoryBuilder(platform: Platform.linux),
+          );
           verify(
             () => platformNativeDirectory.create(
               description: 'some desc',

@@ -34,13 +34,13 @@ abstract class FileSystemEntityCollection {
       }
     }
   }
-}
 
-/// Wheter [parent] should be deleted.
-///
-/// This is used to avoid unwanted empty directories.
-bool _shouldDeleteParent(Directory parent) =>
-    parent.isEmpty &&
-    !(parent.path.endsWith('test') ||
-        parent.path.endsWith('lib') ||
-        parent.path.endsWith('lib/src'));
+  /// Wheter [parent] should be deleted.
+  ///
+  /// This is used to avoid unwanted empty directories.
+  bool _shouldDeleteParent(Directory parent) =>
+      parent.isEmpty &&
+      !(parent.path.endsWith('test') ||
+          parent.path.endsWith('lib') ||
+          parent.path.endsWith('lib/src'));
+}

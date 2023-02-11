@@ -2624,6 +2624,34 @@ void main() {
           expect(blocTestDir.existsSync(), false);
         }),
       );
+
+      test(
+        'deletes all related files',
+        withTempDir(() async {
+          // Arrange
+          final platformFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => platformFeaturePackage.path)
+              .thenReturn('platform_feature_package/path');
+          final bloc = _getBloc(
+            name: 'Cool',
+            platformFeaturePackage: platformFeaturePackage,
+          );
+          final blocDir = Directory(
+            'platform_feature_package/path/lib/src/application/cool',
+          )..createSync(recursive: true);
+          final blocTestDir = Directory(
+            'platform_feature_package/path/test/src/application/cool',
+          )..createSync(recursive: true);
+
+          // Act
+          final logger = FakeLogger();
+          bloc.delete(logger: logger);
+
+          // Assert
+          expect(blocDir.existsSync(), false);
+          expect(blocTestDir.existsSync(), false);
+        }),
+      );
     });
   });
 

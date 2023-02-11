@@ -1,8 +1,9 @@
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/core/dart_file.dart';
-import 'package:test/test.dart';
 import 'dart:io';
 
+import 'package:rapid_cli/src/core/dart_file.dart';
+import 'package:test/test.dart';
+
+import '../common.dart';
 import '../mocks.dart';
 
 const dartFileWith2ImportsPerType = '''
@@ -372,921 +373,1157 @@ final someList = <dynamic>[
 ];
 ''';
 
+DartFile _getDartFile({
+  String? path,
+  String? name,
+}) {
+  return DartFile(
+    path: path ?? 'some/path',
+    name: name ?? 'some',
+  );
+}
+
 void main() {
   group('DartFile', () {
-    final cwd = Directory.current;
+    test('.path', () {
+      // Arrange
+      final dartFile = _getDartFile(path: 'dart_file/path', name: 'foo');
 
-    late DartFile dartFile;
-
-    setUp(() {
-      Directory.current = Directory.systemTemp.createTempSync();
-
-      dartFile = DartFile(name: 'foo');
-      File(dartFile.path).createSync(recursive: true);
+      // Act + Assert
+      expect(dartFile.path, 'dart_file/path/foo.dart');
     });
 
-    tearDown(() {
-      Directory.current = cwd;
-    });
-
-    group('path', () {
-      test('is correct', () {
-        // Assert
-        expect(dartFile.path, 'foo.dart');
-      });
-    });
-
-    group('exists', () {
-      test('returns true when underlying file exists', () {
-        // Act
-        final exists = dartFile.exists();
-
-        // Assert
-        expect(exists, true);
-      });
-
-      test('returns true when underlying file does not exist', () {
-        // Arrange
-        File(dartFile.path).deleteSync(recursive: true);
-
-        // Act
-        final exists = dartFile.exists();
-
-        // Assert
-        expect(exists, false);
-      });
-    });
-
-    group('delete', () {
-      late Logger logger;
-
-      setUp(() {
-        logger = MockLogger();
-      });
-
-      test('deletes the file', () {
-        // Arrange
-        final file = File(dartFile.path);
-
-        // Act
-        dartFile.delete(logger: logger);
-
-        // Assert
-        expect(file.existsSync(), false);
-      });
-    });
-
-    group('addImport', () {
-      test('adds dart import correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWith2ImportsPerType);
-
-        // Act
-        dartFile.addImport('dart:bbb');
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithAdditionalDartImport);
-      });
-
-      test('adds package import correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWith2ImportsPerType);
-
-        // Act
-        dartFile.addImport('package:bbb/bbb.dart');
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithAdditionalPackageImport);
-      });
-
-      test('adds relative import correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWith2ImportsPerType);
-
-        // Act
-        dartFile.addImport('bbb.dart');
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithAdditionalRelativeImport);
-      });
-
-      test('adds import with alias correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWith2ImportsPerType);
-
-        // Act
-        dartFile.addImport('package:bbb/bbb.dart', alias: 'b');
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithAdditionalAliasImport);
-      });
-
-      test('does nothing when import already exists', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWith2ImportsPerType);
-
-        // Act
-        dartFile.addImport('package:ccc/ccc.dart');
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWith2ImportsPerType);
-      });
-    });
-
-    group('addNamedParamToMethodCallInTopLevelFunctionBody', () {
+    group('.exists()', () {
       test(
-          'adds named param correctly to referenced function call (arrow syntax)',
-          () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithTopLevelFunctionInArrowSyntax);
+        'returns true when underlying file exists',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          File(dartFile.path).createSync(recursive: true);
 
-        // Act
-        dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
-          paramName: 'a',
-          paramValue: '\'3\'',
-          functionName: 'foo',
-          functionToCallName: 'bar',
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelFunctionInArrowSyntaxWithParam);
-      });
+          // Act + Assert
+          expect(dartFile.exists(), true);
+        }),
+      );
 
       test(
-          'adds named param correctly to referenced function call (body syntax)',
-          () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithTopLevelFunctionInBodySyntax);
+        'returns true when underlying file does not exist',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
 
-        // Act
-        dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
-          paramName: 'z',
-          paramValue: '88',
-          functionName: 'foo',
-          functionToCallName: 'bar',
-        );
+          // Act + Assert
+          expect(dartFile.exists(), false);
+        }),
+      );
+    });
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelFunctionInBodySyntaxWithParam);
-      });
+    group('.delete()', () {
+      test(
+        'deletes the file',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)..createSync(recursive: true);
+
+          // Act
+          dartFile.delete(logger: FakeLogger());
+
+          // Assert
+          expect(file.existsSync(), false);
+        }),
+      );
+    });
+
+    group('.addImport()', () {
+      test(
+        'adds dart import correctly',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWith2ImportsPerType);
+
+          // Act
+          dartFile.addImport('dart:bbb');
+
+          // Assert
+          expect(file.readAsStringSync(), dartFileWithAdditionalDartImport);
+        }),
+      );
 
       test(
-          'adds named param correctly to referenced function call (body syntax with return)',
-          () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-            dartFileWithTopLevelFunctionInBodySyntaxWithReturn);
+        'adds package import correctly',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWith2ImportsPerType);
 
-        // Act
-        dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
-          paramName: 'z',
-          paramValue: '88',
-          functionName: 'foo',
-          functionToCallName: 'bar',
-        );
+          // Act
+          dartFile.addImport('package:bbb/bbb.dart');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents,
-            dartFileWithTopLevelFunctionInBodySyntaxWithParamAndReturn);
-      });
+          // Assert
+          expect(file.readAsStringSync(), dartFileWithAdditionalPackageImport);
+        }),
+      );
 
       test(
-          'adds named param correctly to referenced function call when index is not 0 (body syntax)',
-          () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithTopLevelFunctionInBodySyntax);
+        'adds relative import correctly',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWith2ImportsPerType);
 
-        // Act
-        dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
-          paramName: 'z',
-          paramValue: '88',
-          functionName: 'foo',
-          functionToCallName: 'bar',
-          index: 1,
-        );
+          // Act
+          dartFile.addImport('bbb.dart');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents,
-            dartFileWithTopLevelFunctionInBodySyntaxWithParamAndIndex);
-      });
-
-      test('does nothing when param already exists (arrow syntax)', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-            dartFileWithTopLevelFunctionInArrowSyntaxWithParam);
-
-        // Act
-        dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
-          paramName: 'a',
-          paramValue: '\'33\'',
-          functionName: 'foo',
-          functionToCallName: 'bar',
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelFunctionInArrowSyntaxWithParam);
-      });
-
-      test('does nothing when param already exists (body syntax)', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-            dartFileWithTopLevelFunctionInBodySyntaxWithParam);
-
-        // Act
-        dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
-          paramName: 'z',
-          paramValue: '100',
-          functionName: 'foo',
-          functionToCallName: 'bar',
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelFunctionInBodySyntaxWithParam);
-      });
-    });
-
-    group('addTopLevelFunction', () {
-      test('adds top level function correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithMethods);
-
-        // Act
-        dartFile.addTopLevelFunction(
-          Method(
-            (m) => m
-              ..returns = refer('String')
-              ..name = 'aaa'
-              ..body = Code('print(1);'),
-          ),
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithAdditionalTopLevelMethod);
-      });
-
-      test('adds top level function correctly when file is empty', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(emptyDartFile);
-
-        // Act
-        dartFile.addTopLevelFunction(
-          Method(
-            (m) => m
-              ..returns = refer('String')
-              ..name = 'aaa'
-              ..body = Code('print(1);'),
-          ),
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithSingleMethod);
-      });
+          // Assert
+          expect(file.readAsStringSync(), dartFileWithAdditionalRelativeImport);
+        }),
+      );
 
       test(
-          'does nothing when top level function with given name already exists',
-          () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithMethods);
+        'adds import with alias correctly',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWith2ImportsPerType);
 
-        // Act
-        dartFile.addTopLevelFunction(
-          Method(
-            (m) => m
-              ..returns = refer('String')
-              ..name = 'bbb'
-              ..body = Code('print(1);'),
-          ),
-        );
+          // Act
+          dartFile.addImport('package:bbb/bbb.dart', alias: 'b');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithMethods);
-      });
+          // Assert
+          expect(file.readAsStringSync(), dartFileWithAdditionalAliasImport);
+        }),
+      );
+
+      test(
+        'does nothing when import already exists',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWith2ImportsPerType);
+
+          // Act
+          dartFile.addImport('package:ccc/ccc.dart');
+
+          // Assert
+          expect(file.readAsStringSync(), dartFileWith2ImportsPerType);
+        }),
+      );
     });
 
-    group('readImports', () {
-      test('returns correct imports', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithImports);
+    group('.addNamedParamToMethodCallInTopLevelFunctionBody()', () {
+      test(
+        'adds named param correctly to referenced function call (arrow syntax)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithTopLevelFunctionInArrowSyntax);
 
-        // Act
-        final imports = dartFile.readImports();
+          // Act
+          dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
+            paramName: 'a',
+            paramValue: '\'3\'',
+            functionName: 'foo',
+            functionToCallName: 'bar',
+          );
 
-        // Assert
-        expect(imports, ['dart:aaa', 'dart:ccc']);
-      });
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithTopLevelFunctionInArrowSyntaxWithParam,
+          );
+        }),
+      );
 
-      test('returns no imports when no imports exists', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithoutImports);
+      test(
+        'adds named param correctly to referenced function call (body syntax)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithTopLevelFunctionInBodySyntax);
 
-        // Act
-        final imports = dartFile.readImports();
+          // Act
+          dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
+            paramName: 'z',
+            paramValue: '88',
+            functionName: 'foo',
+            functionToCallName: 'bar',
+          );
 
-        // Assert
-        expect(imports, []);
-      });
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithTopLevelFunctionInBodySyntaxWithParam,
+          );
+        }),
+      );
+
+      test(
+        'adds named param correctly to referenced function call (body syntax with return)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              dartFileWithTopLevelFunctionInBodySyntaxWithReturn,
+            );
+
+          // Act
+          dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
+            paramName: 'z',
+            paramValue: '88',
+            functionName: 'foo',
+            functionToCallName: 'bar',
+          );
+
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithTopLevelFunctionInBodySyntaxWithParamAndReturn,
+          );
+        }),
+      );
+
+      test(
+        'adds named param correctly to referenced function call when index is not 0 (body syntax)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithTopLevelFunctionInBodySyntax);
+
+          // Act
+          dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
+            paramName: 'z',
+            paramValue: '88',
+            functionName: 'foo',
+            functionToCallName: 'bar',
+            index: 1,
+          );
+
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithTopLevelFunctionInBodySyntaxWithParamAndIndex,
+          );
+        }),
+      );
+
+      test(
+        'does nothing when param already exists (arrow syntax)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              dartFileWithTopLevelFunctionInArrowSyntaxWithParam,
+            );
+
+          // Act
+          dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
+            paramName: 'a',
+            paramValue: '\'33\'',
+            functionName: 'foo',
+            functionToCallName: 'bar',
+          );
+
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithTopLevelFunctionInArrowSyntaxWithParam,
+          );
+        }),
+      );
+
+      test(
+        'does nothing when param already exists (body syntax)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              dartFileWithTopLevelFunctionInBodySyntaxWithParam,
+            );
+
+          // Act
+          dartFile.addNamedParamToMethodCallInTopLevelFunctionBody(
+            paramName: 'z',
+            paramValue: '100',
+            functionName: 'foo',
+            functionToCallName: 'bar',
+          );
+
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithTopLevelFunctionInBodySyntaxWithParam,
+          );
+        }),
+      );
     });
 
-    group('readTopLevelFunctionNames', () {
-      test('returns names of top level functions', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithTopLevelFunctions);
+    group('.addTopLevelFunction()', () {
+      test(
+        'adds top level function correctly',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithMethods);
 
-        // Act
-        final imports = dartFile.readTopLevelFunctionNames();
+          // Act
+          dartFile.addTopLevelFunction(
+            Method(
+              (m) => m
+                ..returns = refer('String')
+                ..name = 'aaa'
+                ..body = Code('print(1);'),
+            ),
+          );
 
-        // Assert
-        expect(imports, ['main', 'runSomeCode', 'someText']);
-      });
+          // Assert
+          expect(file.readAsStringSync(), dartFileWithAdditionalTopLevelMethod);
+        }),
+      );
 
-      test('returns empty list when no top level functions exist', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithoutTopLevelFunctions);
+      test(
+        'adds top level function correctly when file is empty',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(emptyDartFile);
 
-        // Act
-        final imports = dartFile.readTopLevelFunctionNames();
+          // Act
+          dartFile.addTopLevelFunction(
+            Method(
+              (m) => m
+                ..returns = refer('String')
+                ..name = 'aaa'
+                ..body = Code('print(1);'),
+            ),
+          );
 
-        // Assert
-        expect(imports, isEmpty);
-      });
+          // Assert
+          expect(file.readAsStringSync(), dartFileWithSingleMethod);
+        }),
+      );
+
+      test(
+        'does nothing when top level function with given name already exists',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithMethods);
+
+          // Act
+          dartFile.addTopLevelFunction(
+            Method(
+              (m) => m
+                ..returns = refer('String')
+                ..name = 'bbb'
+                ..body = Code('print(1);'),
+            ),
+          );
+
+          // Assert
+          expect(file.readAsStringSync(), dartFileWithMethods);
+        }),
+      );
     });
 
-    group('readTopLevelListVar', () {
-      test('returns empty list when list is empty', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithTopLevelListEmpty);
+    group('.readImports()', () {
+      test(
+        'returns correct imports',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithImports);
 
-        // Act
-        final list = dartFile.readTopLevelListVar(name: 'someList');
+          // Act + Assert
+          expect(dartFile.readImports(), ['dart:aaa', 'dart:ccc']);
+        }),
+      );
 
-        // Assert
-        expect(list, isEmpty);
-      });
+      test(
+        'returns no imports when no imports exists',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithoutImports);
 
-      test('returns list with values as string', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithTopLevelList);
-
-        // Act
-        final list = dartFile.readTopLevelListVar(name: 'someList');
-
-        // Assert
-        expect(list, ['\'A\'', '3', 'true']);
-      });
-
-      test('returns list with values as string when list has generics', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithTopLevelListWithGenerics);
-
-        // Act
-        final list = dartFile.readTopLevelListVar(name: 'someList');
-
-        // Assert
-        expect(list, ['\'A\'', '3', 'true']);
-      });
+          // Act + Assert
+          expect(dartFile.readImports(), []);
+        }),
+      );
     });
 
-    group('readTypeListFromAnnotationParamOfTopLevelFunction', () {
-      test('returns list with type names', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithAnnotatedTopLevelFunction);
+    group('.readTopLevelFunctionNames()', () {
+      test(
+        'returns names of top level functions',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithTopLevelFunctions);
 
-        // Act
-        final list = dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
-          property: 'myArg',
-          annotation: 'MyAnnotation',
-          functionName: 'foo',
-        );
+          // Act + Assert
+          expect(
+            dartFile.readTopLevelFunctionNames(),
+            ['main', 'runSomeCode', 'someText'],
+          );
+        }),
+      );
 
-        // Assert
-        expect(list, ['A', 'B', 'C']);
-      });
+      test(
+        'returns empty list when no top level functions exist',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithoutTopLevelFunctions);
 
-      test('returns empty list when no types exist', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-            dartFileWithAnnotatedTopLevelFunctionWithEmptyArg);
+          // Act + Assert
+          expect(dartFile.readTopLevelFunctionNames(), isEmpty);
+        }),
+      );
+    });
 
-        // Act
-        final list = dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
-          property: 'myArg',
-          annotation: 'MyAnnotation',
-          functionName: 'foo',
-        );
+    group('.readTopLevelListVar()', () {
+      test(
+        'returns empty list when list is empty',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithTopLevelListEmpty);
 
-        // Assert
-        expect(list, []);
-      });
+          // Act + Assert
+          expect(dartFile.readTopLevelListVar(name: 'someList'), isEmpty);
+        }),
+      );
 
-      test('returns list with type names (multiple annotations)', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithAnnotatedTopLevelFunctionMulti);
+      test(
+        'returns list with values as string',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithTopLevelList);
 
-        // Act
-        final list = dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
-          property: 'myArg',
-          annotation: 'MyAnnotation',
-          functionName: 'foo',
-        );
+          // Act + Assert
+          expect(
+            dartFile.readTopLevelListVar(name: 'someList'),
+            ['\'A\'', '3', 'true'],
+          );
+        }),
+      );
 
-        // Assert
-        expect(list, ['A', 'B', 'C']);
-      });
+      test(
+        'returns list with values as string when list has generics',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithTopLevelListWithGenerics);
 
-      test('returns empty list when no types exist (multiple annotations)', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-            dartFileWithAnnotatedTopLevelFunctionWithEmptyArgMulti);
+          // Act + Assert
+          expect(
+            dartFile.readTopLevelListVar(name: 'someList'),
+            ['\'A\'', '3', 'true'],
+          );
+        }),
+      );
+    });
 
-        // Act
-        final list = dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
-          property: 'myArg',
-          annotation: 'MyAnnotation',
-          functionName: 'foo',
-        );
+    group('.readTypeListFromAnnotationParamOfTopLevelFunction()', () {
+      test(
+        'returns list with type names',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithAnnotatedTopLevelFunction);
 
-        // Assert
-        expect(list, []);
-      });
+          // Act + Assert
+          expect(
+            dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
+              property: 'myArg',
+              annotation: 'MyAnnotation',
+              functionName: 'foo',
+            ),
+            ['A', 'B', 'C'],
+          );
+        }),
+      );
 
-      test('returns list with type names (multiple annotations & args)', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-            dartFileWithAnnotatedTopLevelFunctionMultipleArgsMore);
+      test(
+        'returns empty list when no types exist',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              dartFileWithAnnotatedTopLevelFunctionWithEmptyArg,
+            );
 
-        // Act
-        final list = dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
-          property: 'myArg',
-          annotation: 'MyAnnotation',
-          functionName: 'foo',
-        );
+          // Act + Assert
+          expect(
+            dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
+              property: 'myArg',
+              annotation: 'MyAnnotation',
+              functionName: 'foo',
+            ),
+            [],
+          );
+        }),
+      );
 
-        // Assert
-        expect(list, ['A', 'B', 'C']);
-      });
+      test(
+        'returns list with type names (multiple annotations)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithAnnotatedTopLevelFunctionMulti);
+
+          // Act + Assert
+          expect(
+            dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
+              property: 'myArg',
+              annotation: 'MyAnnotation',
+              functionName: 'foo',
+            ),
+            ['A', 'B', 'C'],
+          );
+        }),
+      );
+
+      test(
+        'returns empty list when no types exist (multiple annotations)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+                dartFileWithAnnotatedTopLevelFunctionWithEmptyArgMulti);
+
+          // Act + Assert
+          expect(
+            dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
+              property: 'myArg',
+              annotation: 'MyAnnotation',
+              functionName: 'foo',
+            ),
+            [],
+          );
+        }),
+      );
+
+      test(
+        'returns list with type names (multiple annotations & args)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+                dartFileWithAnnotatedTopLevelFunctionMultipleArgsMore);
+
+          // Act + Assert
+          expect(
+            dartFile.readTypeListFromAnnotationParamOfTopLevelFunction(
+              property: 'myArg',
+              annotation: 'MyAnnotation',
+              functionName: 'foo',
+            ),
+            ['A', 'B', 'C'],
+          );
+        }),
+      );
     });
 
     group('removeImport', () {
-      test('removes import correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithAdditionalDartImport);
+      test(
+        'removes import correctly',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithAdditionalDartImport);
 
-        // Act
-        dartFile.removeImport('dart:bbb');
+          // Act
+          dartFile.removeImport('dart:bbb');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWith2ImportsPerType);
-      });
+          // Assert
+          expect(file.readAsStringSync(), dartFileWith2ImportsPerType);
+        }),
+      );
 
-      test('removes import with alias correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithAdditionalAliasImport);
+      test(
+        'removes import with alias correctly',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithAdditionalAliasImport);
 
-        // Act
-        dartFile.removeImport('package:bbb/bbb.dart');
+          // Act
+          dartFile.removeImport('package:bbb/bbb.dart');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWith2ImportsPerType);
-      });
+          // Assert
+          expect(file.readAsStringSync(), dartFileWith2ImportsPerType);
+        }),
+      );
 
-      test('removes long import with alias correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithLongDartImportWithAlias);
+      test(
+        'removes long import with alias correctly',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithLongDartImportWithAlias);
 
-        // Act
-        dartFile.removeImport(
-          'package:ccc_ccc_ccc_ccc_ccc_ccc_ccc/ccc_ccc_ccc_ccc_ccc_ccc_ccc.dart',
-        );
+          // Act
+          dartFile.removeImport(
+            'package:ccc_ccc_ccc_ccc_ccc_ccc_ccc/ccc_ccc_ccc_ccc_ccc_ccc_ccc.dart',
+          );
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithoutLongDartImportWithAlias);
-      });
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithoutLongDartImportWithAlias,
+          );
+        }),
+      );
 
-      test('does nothing when import does not exist', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWith2ImportsPerType);
+      test(
+        'does nothing when import does not exist',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWith2ImportsPerType);
 
-        // Act
-        dartFile.removeImport('dart:zzz');
+          // Act
+          dartFile.removeImport('dart:zzz');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWith2ImportsPerType);
-      });
+          // Assert
+          expect(file.readAsStringSync(), dartFileWith2ImportsPerType);
+        }),
+      );
     });
 
-    group('removeNamedParamFromMethodCallInTopLevelFunctionBody', () {
+    group('.removeNamedParamFromMethodCallInTopLevelFunctionBody()', () {
       test(
-          'removes named param correctly from referenced function call (arrow syntax)',
-          () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-          dartFileWithTopLevelFunctionInArrowSyntaxWithParam,
-        );
+        'removes named param correctly from referenced function call (arrow syntax)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              dartFileWithTopLevelFunctionInArrowSyntaxWithParam,
+            );
 
-        // Act
-        dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
-          paramName: 'a',
-          functionName: 'foo',
-          functionToCallName: 'bar',
-        );
+          // Act
+          dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+            paramName: 'a',
+            functionName: 'foo',
+            functionToCallName: 'bar',
+          );
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelFunctionInArrowSyntax);
-      });
-
-      test(
-          'removes named param correctly from referenced function call (body syntax)',
-          () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-            dartFileWithTopLevelFunctionInBodySyntaxWithParam);
-
-        // Act
-        dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
-          paramName: 'z',
-          functionName: 'foo',
-          functionToCallName: 'bar',
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelFunctionInBodySyntax);
-      });
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithTopLevelFunctionInArrowSyntax,
+          );
+        }),
+      );
 
       test(
-          'remove named param correctly from referenced function call (body syntax with return)',
-          () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-            dartFileWithTopLevelFunctionInBodySyntaxWithParamAndReturn);
+        'removes named param correctly from referenced function call (body syntax)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+                dartFileWithTopLevelFunctionInBodySyntaxWithParam);
 
-        // Act
-        dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
-          paramName: 'z',
-          functionName: 'foo',
-          functionToCallName: 'bar',
-        );
+          // Act
+          dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+            paramName: 'z',
+            functionName: 'foo',
+            functionToCallName: 'bar',
+          );
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelFunctionInBodySyntaxWithReturn);
-      });
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithTopLevelFunctionInBodySyntax,
+          );
+        }),
+      );
 
       test(
-          'remove named param correctly to referenced function call when index is not 0 (body syntax)',
-          () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-            dartFileWithTopLevelFunctionInBodySyntaxWithParamAndIndex);
+        'remove named param correctly from referenced function call (body syntax with return)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+                dartFileWithTopLevelFunctionInBodySyntaxWithParamAndReturn);
 
-        // Act
-        dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
-          paramName: 'z',
-          functionName: 'foo',
-          functionToCallName: 'bar',
-          index: 1,
-        );
+          // Act
+          dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+            paramName: 'z',
+            functionName: 'foo',
+            functionToCallName: 'bar',
+          );
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelFunctionInBodySyntax);
-      });
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithTopLevelFunctionInBodySyntaxWithReturn,
+          );
+        }),
+      );
 
-      test('does nothing when param does not exists (arrow syntax)', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithTopLevelFunctionInArrowSyntax);
+      test(
+        'remove named param correctly to referenced function call when index is not 0 (body syntax)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+                dartFileWithTopLevelFunctionInBodySyntaxWithParamAndIndex);
 
-        // Act
-        dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
-          paramName: 'a',
-          functionName: 'foo',
-          functionToCallName: 'bar',
-        );
+          // Act
+          dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+            paramName: 'z',
+            functionName: 'foo',
+            functionToCallName: 'bar',
+            index: 1,
+          );
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelFunctionInArrowSyntax);
-      });
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithTopLevelFunctionInBodySyntax,
+          );
+        }),
+      );
 
-      test('does nothing when param does not exists (body syntax)', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithTopLevelFunctionInBodySyntax);
+      test(
+        'does nothing when param does not exists (arrow syntax)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithTopLevelFunctionInArrowSyntax);
 
-        // Act
-        dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
-          paramName: 'z',
-          functionName: 'foo',
-          functionToCallName: 'bar',
-        );
+          // Act
+          dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+            paramName: 'a',
+            functionName: 'foo',
+            functionToCallName: 'bar',
+          );
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelFunctionInBodySyntax);
-      });
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithTopLevelFunctionInArrowSyntax,
+          );
+        }),
+      );
+
+      test(
+        'does nothing when param does not exists (body syntax)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithTopLevelFunctionInBodySyntax);
+
+          // Act
+          dartFile.removeNamedParamFromMethodCallInTopLevelFunctionBody(
+            paramName: 'z',
+            functionName: 'foo',
+            functionToCallName: 'bar',
+          );
+
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithTopLevelFunctionInBodySyntax,
+          );
+        }),
+      );
     });
 
-    group('removeTopLevelFunction', () {
-      test('removes top level function correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithAdditionalTopLevelMethod);
+    group('.removeTopLevelFunction()', () {
+      test(
+        'removes top level function correctly',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithAdditionalTopLevelMethod);
 
-        // Act
-        dartFile.removeTopLevelFunction('aaa');
+          // Act
+          dartFile.removeTopLevelFunction('aaa');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithMethods);
-      });
-
-      test('removes top level function correctly (2)', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithMethods);
-
-        // Act
-        dartFile.removeTopLevelFunction('bbb');
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithClassesOnly);
-      });
-
-      test('does nothing when top level function does not exist', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithMethods);
-
-        // Act
-        dartFile.removeTopLevelFunction('zzz');
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithMethods);
-      });
-
-      test('does nothing when file is empty', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(emptyDartFile);
-
-        // Act
-        dartFile.removeTopLevelFunction('zzz');
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, emptyDartFile);
-      });
-    });
-
-    group('setTopLevelListVar', () {
-      test('sets list correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-          dartFileWithTopLevelListEmpty,
-        );
-
-        // Act
-        dartFile.setTopLevelListVar(
-          name: 'someList',
-          value: ['\'A\'', '3', 'true'],
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelList);
-      });
-
-      test('sets list correctly (generics)', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-          dartFileWithTopLevelListEmptyWithGenerics,
-        );
-
-        // Act
-        dartFile.setTopLevelListVar(
-          name: 'someList',
-          value: ['\'A\'', '3', 'true'],
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelListWithGenerics);
-      });
-
-      test('sets list to be empty correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-          dartFileWithTopLevelList,
-        );
-
-        // Act
-        dartFile.setTopLevelListVar(
-          name: 'someList',
-          value: [],
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelListEmpty);
-      });
-
-      test('sets list to be empty correctly (generics)', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-          dartFileWithTopLevelListWithGenerics,
-        );
-
-        // Act
-        dartFile.setTopLevelListVar(
-          name: 'someList',
-          value: [],
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithTopLevelListEmptyWithGenerics);
-      });
-    });
-
-    group('setTypeListOfAnnotationParamOfTopLevelFunction', () {
-      test('sets type list correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-          dartFileWithAnnotatedTopLevelFunctionWithEmptyArg,
-        );
-
-        // Act
-        dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
-          property: 'myArg',
-          annotation: 'MyAnnotation',
-          functionName: 'foo',
-          value: ['A', 'B', 'C'],
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithAnnotatedTopLevelFunction);
-      });
-
-      test('sets type list correctly when some types already exists', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithAnnotatedTopLevelFunction);
-
-        // Act
-        dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
-          property: 'myArg',
-          annotation: 'MyAnnotation',
-          functionName: 'foo',
-          value: ['A', 'B', 'C', 'D'],
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithAnnotatedTopLevelFunctionMore);
-      });
-
-      test('sets type list correctly (multiple annotations)', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-          dartFileWithAnnotatedTopLevelFunctionWithEmptyArgMulti,
-        );
-
-        // Act
-        dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
-          property: 'myArg',
-          annotation: 'MyAnnotation',
-          functionName: 'foo',
-          value: ['A', 'B', 'C'],
-        );
-
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithAnnotatedTopLevelFunctionMulti);
-      });
+          // Assert
+          expect(file.readAsStringSync(), dartFileWithMethods);
+        }),
+      );
 
       test(
-          'sets type list correctly when some types already exist (multiple annotations)',
-          () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(dartFileWithAnnotatedTopLevelFunctionMulti);
+        'removes top level function correctly (2)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithMethods);
 
-        // Act
-        dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
-          property: 'myArg',
-          annotation: 'MyAnnotation',
-          functionName: 'foo',
-          value: ['A', 'B', 'C', 'D'],
-        );
+          // Act
+          dartFile.removeTopLevelFunction('bbb');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithAnnotatedTopLevelFunctionMoreMulti);
-      });
+          // Assert
+          expect(file.readAsStringSync(), dartFileWithClassesOnly);
+        }),
+      );
 
       test(
-          'sets type list correctly when some types and other args already exist (multiple annotations)',
-          () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-            dartFileWithAnnotatedTopLevelFunctionMultipleArgsEmpty);
+        'does nothing when top level function does not exist',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithMethods);
 
-        // Act
-        dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
-          property: 'myArg',
-          annotation: 'MyAnnotation',
-          functionName: 'foo',
-          value: ['A', 'B', 'C'],
-        );
+          // Act
+          dartFile.removeTopLevelFunction('zzz');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithAnnotatedTopLevelFunctionMultipleArgsMore);
-      });
+          // Assert
+          expect(file.readAsStringSync(), dartFileWithMethods);
+        }),
+      );
 
-      test('sets empty type list correctly', () {
-        // Arrange
-        final file = File(dartFile.path);
-        file.writeAsStringSync(
-          dartFileWithAnnotatedTopLevelFunction,
-        );
+      test(
+        'does nothing when file is empty',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(emptyDartFile);
 
-        // Act
-        dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
-          property: 'myArg',
-          annotation: 'MyAnnotation',
-          functionName: 'foo',
-          value: [],
-        );
+          // Act
+          dartFile.removeTopLevelFunction('zzz');
 
-        // Assert
-        final contents = file.readAsStringSync();
-        expect(contents, dartFileWithAnnotatedTopLevelFunctionWithEmptyArg);
-      });
+          // Assert
+          expect(file.readAsStringSync(), emptyDartFile);
+        }),
+      );
+    });
+
+    group('.setTopLevelListVar()', () {
+      test(
+        'sets list correctly',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              dartFileWithTopLevelListEmpty,
+            );
+
+          // Act
+          dartFile.setTopLevelListVar(
+            name: 'someList',
+            value: ['\'A\'', '3', 'true'],
+          );
+
+          // Assert
+          expect(file.readAsStringSync(), dartFileWithTopLevelList);
+        }),
+      );
+
+      test(
+        'sets list correctly (generics)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              dartFileWithTopLevelListEmptyWithGenerics,
+            );
+
+          // Act
+          dartFile.setTopLevelListVar(
+            name: 'someList',
+            value: ['\'A\'', '3', 'true'],
+          );
+
+          // Assert
+          expect(file.readAsStringSync(), dartFileWithTopLevelListWithGenerics);
+        }),
+      );
+
+      test(
+        'sets list to be empty correctly',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              dartFileWithTopLevelList,
+            );
+
+          // Act
+          dartFile.setTopLevelListVar(
+            name: 'someList',
+            value: [],
+          );
+
+          // Assert
+          expect(file.readAsStringSync(), dartFileWithTopLevelListEmpty);
+        }),
+      );
+
+      test(
+        'sets list to be empty correctly (generics)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              dartFileWithTopLevelListWithGenerics,
+            );
+
+          // Act
+          dartFile.setTopLevelListVar(
+            name: 'someList',
+            value: [],
+          );
+
+          // Assert
+          expect(file.readAsStringSync(),
+              dartFileWithTopLevelListEmptyWithGenerics);
+        }),
+      );
+    });
+
+    group('.setTypeListOfAnnotationParamOfTopLevelFunction()', () {
+      test(
+        'sets type list correctly',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              dartFileWithAnnotatedTopLevelFunctionWithEmptyArg,
+            );
+
+          // Act
+          dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+            property: 'myArg',
+            annotation: 'MyAnnotation',
+            functionName: 'foo',
+            value: ['A', 'B', 'C'],
+          );
+
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithAnnotatedTopLevelFunction,
+          );
+        }),
+      );
+
+      test(
+        'sets type list correctly when some types already exists',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithAnnotatedTopLevelFunction);
+
+          // Act
+          dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+            property: 'myArg',
+            annotation: 'MyAnnotation',
+            functionName: 'foo',
+            value: ['A', 'B', 'C', 'D'],
+          );
+
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithAnnotatedTopLevelFunctionMore,
+          );
+        }),
+      );
+
+      test(
+        'sets type list correctly (multiple annotations)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              dartFileWithAnnotatedTopLevelFunctionWithEmptyArgMulti,
+            );
+
+          // Act
+          dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+            property: 'myArg',
+            annotation: 'MyAnnotation',
+            functionName: 'foo',
+            value: ['A', 'B', 'C'],
+          );
+
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithAnnotatedTopLevelFunctionMulti,
+          );
+        }),
+      );
+
+      test(
+        'sets type list correctly when some types already exist (multiple annotations)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(dartFileWithAnnotatedTopLevelFunctionMulti);
+
+          // Act
+          dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+            property: 'myArg',
+            annotation: 'MyAnnotation',
+            functionName: 'foo',
+            value: ['A', 'B', 'C', 'D'],
+          );
+
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithAnnotatedTopLevelFunctionMoreMulti,
+          );
+        }),
+      );
+
+      test(
+        'sets type list correctly when some types and other args already exist (multiple annotations)',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+                dartFileWithAnnotatedTopLevelFunctionMultipleArgsEmpty);
+
+          // Act
+          dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+            property: 'myArg',
+            annotation: 'MyAnnotation',
+            functionName: 'foo',
+            value: ['A', 'B', 'C'],
+          );
+
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithAnnotatedTopLevelFunctionMultipleArgsMore,
+          );
+        }),
+      );
+
+      test(
+        'sets empty type list correctly',
+        withTempDir(() {
+          // Arrange
+          final dartFile = _getDartFile();
+          final file = File(dartFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              dartFileWithAnnotatedTopLevelFunction,
+            );
+
+          // Act
+          dartFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+            property: 'myArg',
+            annotation: 'MyAnnotation',
+            functionName: 'foo',
+            value: [],
+          );
+
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            dartFileWithAnnotatedTopLevelFunctionWithEmptyArg,
+          );
+        }),
+      );
     });
   });
 }

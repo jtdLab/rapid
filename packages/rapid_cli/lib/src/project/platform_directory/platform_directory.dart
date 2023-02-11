@@ -1,11 +1,8 @@
-import 'package:collection/collection.dart';
-import 'package:meta/meta.dart';
-import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/dart_package.dart';
-import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
+import 'platform_directory_impl.dart';
 import 'platform_feature_package/platform_feature_package.dart';
 
 /// {@template platform_directory}
@@ -13,73 +10,25 @@ import 'platform_feature_package/platform_feature_package.dart';
 ///
 /// Location: `packages/<project name>/<project name>_<platform>`
 /// {@endtemplate}
-class PlatformDirectory extends DartPackage {
+abstract class PlatformDirectory implements DartPackage {
   /// {@macro platform_directory}
-  PlatformDirectory(
-    this.platform, {
+  factory PlatformDirectory(
+    Platform platform, {
     required Project project,
-  })  : _project = project,
-        super(
-          path: p.join(
-            project.path,
-            'packages',
-            project.name(),
-            '${project.name()}_${platform.name}',
-          ),
-        ) {
-    appFeaturePackage = PlatformAppFeaturePackage(platform, project: project);
-    routingFeaturePackage =
-        PlatformRoutingFeaturePackage(platform, project: project);
-  }
+  }) =>
+      PlatformDirectoryImpl(platform, project: project);
 
-  final Project _project;
+  Platform get platform;
 
-  final Platform platform;
+  PlatformAppFeaturePackage get appFeaturePackage;
 
-  late final PlatformAppFeaturePackage appFeaturePackage;
+  PlatformRoutingFeaturePackage get routingFeaturePackage;
 
-  late final PlatformRoutingFeaturePackage routingFeaturePackage;
+  bool allFeaturesHaveSameLanguages();
 
-  bool allFeaturesHaveSameLanguages() {
-    // TODO include app and routing ?
-    final featurePackages = customFeaturePackages();
+  bool allFeaturesHaveSameDefaultLanguage();
 
-    return EqualitySet.from(
-          DeepCollectionEquality.unordered(),
-          featurePackages.map((e) => e.supportedLanguages()),
-        ).length ==
-        1;
-  }
+  PlatformCustomFeaturePackage customFeaturePackage({required String name});
 
-  bool allFeaturesHaveSameDefaultLanguage() {
-    // TODO include app and routing ?
-    final featurePackages = customFeaturePackages();
-
-    return featurePackages.map((e) => e.defaultLanguage()).toSet().length == 1;
-  }
-
-  PlatformCustomFeaturePackage customFeaturePackage({required String name}) =>
-      PlatformCustomFeaturePackage(name, platform, project: _project);
-
-  @visibleForTesting
-  List<PlatformCustomFeaturePackage>? customFeaturePackagesOverrides;
-
-  List<PlatformCustomFeaturePackage> customFeaturePackages() =>
-      (customFeaturePackagesOverrides ??
-          list()
-              .whereType<Directory>()
-              .where(
-                  (e) => !e.path.endsWith('routing') && !e.path.endsWith('app'))
-              .map(
-                // TODO mayb add ofDir constructor to platfor custom feature package
-                (e) => PlatformCustomFeaturePackage(
-                  p
-                      .basename(e.path)
-                      .replaceAll('${_project.name()}_${platform.name}_', ''),
-                  platform,
-                  project: _project,
-                ),
-              )
-              .toList())
-        ..sort((a, b) => a.name.compareTo(b.name));
+  List<PlatformCustomFeaturePackage> customFeaturePackages();
 }

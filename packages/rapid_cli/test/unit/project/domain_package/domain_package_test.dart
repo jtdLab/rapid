@@ -232,7 +232,7 @@ void main() {
       expect(entity.domainPackage, domainPackage);
     });
 
-    group('create', () {
+    group('.create()', () {
       test(
         'completes successfully with correct output',
         withTempDir(() async {
@@ -309,6 +309,34 @@ void main() {
           expect(entityTestDir.existsSync(), false);
         }),
       );
+
+      test(
+        'deletes all related files (with dir)',
+        withTempDir(() async {
+          // Arrange
+          final domainPackage = getDomainPackage();
+          when(() => domainPackage.path).thenReturn('domain_package/path');
+          final entity = _getEntity(
+            name: 'Cool',
+            dir: 'foo',
+            domainPackage: domainPackage,
+          );
+          final entityDir = Directory('domain_package/path/lib/foo/cool')
+            ..createSync(recursive: true);
+          final entityTestDir = Directory('domain_package/path/test/foo/cool')
+            ..createSync(recursive: true);
+
+          // Act
+          final logger = FakeLogger();
+          entity.delete(logger: logger);
+
+          // Assert
+          expect(Directory('domain_package/path/lib/foo').existsSync(), false);
+          expect(Directory('domain_package/path/test/foo').existsSync(), false);
+          expect(entityDir.existsSync(), false);
+          expect(entityTestDir.existsSync(), false);
+        }),
+      );
     });
   });
 
@@ -353,7 +381,7 @@ void main() {
       expect(serviceInterface.domainPackage, domainPackage);
     });
 
-    group('create', () {
+    group('.create()', () {
       test(
         'completes successfully with correct output',
         withTempDir(() async {
@@ -427,6 +455,31 @@ void main() {
           expect(serviceInterfaceDir.existsSync(), false);
         }),
       );
+
+      test(
+        'deletes all related files (with dir)',
+        withTempDir(() async {
+          // Arrange
+          final domainPackage = getDomainPackage();
+          when(() => domainPackage.path).thenReturn('domain_package/path');
+          final serviceInterface = _getServiceInterface(
+            name: 'Cool',
+            dir: 'foo',
+            domainPackage: domainPackage,
+          );
+          final serviceInterfaceDir =
+              Directory('domain_package/path/lib/foo/cool')
+                ..createSync(recursive: true);
+
+          // Act
+          final logger = FakeLogger();
+          serviceInterface.delete(logger: logger);
+
+          // Assert
+          expect(Directory('domain_package/path/lib/foo').existsSync(), false);
+          expect(serviceInterfaceDir.existsSync(), false);
+        }),
+      );
     });
   });
 
@@ -471,7 +524,7 @@ void main() {
       expect(valueObject.domainPackage, domainPackage);
     });
 
-    group('create', () {
+    group('.create()', () {
       test(
         'completes successfully with correct output',
         withTempDir(() async {
@@ -554,10 +607,37 @@ void main() {
             ..createSync(recursive: true);
 
           // Act
-          final logger = FakeLogger();
-          valueObject.delete(logger: logger);
+          valueObject.delete(logger: FakeLogger());
 
           // Assert
+          expect(valueObjectDir.existsSync(), false);
+          expect(valueObjectTestDir.existsSync(), false);
+        }),
+      );
+
+      test(
+        'deletes all related files (with dir)',
+        withTempDir(() async {
+          // Arrange
+          final domainPackage = getDomainPackage();
+          when(() => domainPackage.path).thenReturn('domain_package/path');
+          final valueObject = _getValueObject(
+            name: 'Cool',
+            dir: 'foo',
+            domainPackage: domainPackage,
+          );
+          final valueObjectDir = Directory('domain_package/path/lib/foo/cool')
+            ..createSync(recursive: true);
+          final valueObjectTestDir =
+              Directory('domain_package/path/test/foo/cool')
+                ..createSync(recursive: true);
+
+          // Act
+          valueObject.delete(logger: FakeLogger());
+
+          // Assert
+          expect(Directory('domain_package/path/lib/foo').existsSync(), false);
+          expect(Directory('domain_package/path/test/foo').existsSync(), false);
           expect(valueObjectDir.existsSync(), false);
           expect(valueObjectTestDir.existsSync(), false);
         }),

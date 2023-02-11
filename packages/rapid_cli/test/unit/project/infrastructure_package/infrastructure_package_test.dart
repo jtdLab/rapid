@@ -288,6 +288,47 @@ void main() {
           expect(dataTransferObjectTestDir.existsSync(), false);
         }),
       );
+
+      test(
+        'deletes all related files (with dir)',
+        withTempDir(() async {
+          // Arrange
+          final infrastructurePackage = getInfrastructurePackage();
+          when(() => infrastructurePackage.path)
+              .thenReturn('infrastructure_package/path');
+          final dataTransferObject = _getDataTransferObject(
+            entityName: 'Cool',
+            dir: 'foo',
+            infrastructurePackage: infrastructurePackage,
+          );
+          final dataTransferObjectDir =
+              Directory('infrastructure_package/path/lib/src/foo/cool')
+                ..createSync(recursive: true);
+          final dataTransferObjectTestDir =
+              Directory('infrastructure_package/path/test/src/foo/cool')
+                ..createSync(recursive: true);
+
+          // Act
+          final logger = FakeLogger();
+          dataTransferObject.delete(logger: logger);
+
+          // Assert
+          expect(
+            Directory(
+              'infrastructure_package/path/lib/src/foo',
+            ).existsSync(),
+            false,
+          );
+          expect(
+            Directory(
+              'infrastructure_package/path/test/src/foo',
+            ).existsSync(),
+            false,
+          );
+          expect(dataTransferObjectDir.existsSync(), false);
+          expect(dataTransferObjectTestDir.existsSync(), false);
+        }),
+      );
     });
   });
 
@@ -338,7 +379,7 @@ void main() {
       );
     });
 
-    group('create', () {
+    group('.create()', () {
       test(
         'completes successfully with correct output',
         withTempDir(() async {
@@ -395,34 +436,74 @@ void main() {
       );
     });
 
-    test(
-      'deletes all related files',
-      withTempDir(() async {
-        // Arrange
-        final infrastructurePackage = getInfrastructurePackage();
-        when(() => infrastructurePackage.path)
-            .thenReturn('infrastructure_package/path');
-        final serviceImplementation = _getServiceImplementation(
-          name: 'Fake',
-          serviceName: 'MyService',
-          dir: '.',
-          infrastructurePackage: infrastructurePackage,
-        );
-        final serviceImplementationDir =
-            Directory('infrastructure_package/path/lib/src/my_service')
-              ..createSync(recursive: true);
-        final serviceImplementationTestDir =
-            Directory('infrastructure_package/path/test/src/my_service')
-              ..createSync(recursive: true);
+    group('.delete()', () {
+      test(
+        'deletes all related files',
+        withTempDir(() async {
+          // Arrange
+          final infrastructurePackage = getInfrastructurePackage();
+          when(() => infrastructurePackage.path)
+              .thenReturn('infrastructure_package/path');
+          final serviceImplementation = _getServiceImplementation(
+            name: 'Fake',
+            serviceName: 'MyService',
+            dir: '.',
+            infrastructurePackage: infrastructurePackage,
+          );
+          final serviceImplementationDir =
+              Directory('infrastructure_package/path/lib/src/my_service')
+                ..createSync(recursive: true);
+          final serviceImplementationTestDir =
+              Directory('infrastructure_package/path/test/src/my_service')
+                ..createSync(recursive: true);
 
-        // Act
-        final logger = FakeLogger();
-        serviceImplementation.delete(logger: logger);
+          // Act
+          final logger = FakeLogger();
+          serviceImplementation.delete(logger: logger);
 
-        // Assert
-        expect(serviceImplementationDir.existsSync(), false);
-        expect(serviceImplementationTestDir.existsSync(), false);
-      }),
-    );
+          // Assert
+          expect(serviceImplementationDir.existsSync(), false);
+          expect(serviceImplementationTestDir.existsSync(), false);
+        }),
+      );
+
+      test(
+        'deletes all related files (with dir)',
+        withTempDir(() async {
+          // Arrange
+          final infrastructurePackage = getInfrastructurePackage();
+          when(() => infrastructurePackage.path)
+              .thenReturn('infrastructure_package/path');
+          final serviceImplementation = _getServiceImplementation(
+            name: 'Fake',
+            serviceName: 'MyService',
+            dir: 'foo',
+            infrastructurePackage: infrastructurePackage,
+          );
+          final serviceImplementationDir =
+              Directory('infrastructure_package/path/lib/src/foo/my_service')
+                ..createSync(recursive: true);
+          final serviceImplementationTestDir =
+              Directory('infrastructure_package/path/test/src/foo/my_service')
+                ..createSync(recursive: true);
+
+          // Act
+          final logger = FakeLogger();
+          serviceImplementation.delete(logger: logger);
+
+          // Assert
+          expect(
+            Directory('infrastructure_package/path/lib/src/foo').existsSync(),
+            false,
+          );
+          expect(
+            Directory('infrastructure_package/path/test/src/foo').existsSync(),
+            false,
+          );
+          expect(serviceImplementationDir.existsSync(), false);
+          expect(serviceImplementationTestDir.existsSync(), false);
+        }),
+      );
+    });
   });
 }

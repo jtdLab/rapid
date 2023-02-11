@@ -144,6 +144,14 @@ class CreateCommand extends Command<int>
         _logger,
         () async {
           final outputDir = super.outputDir;
+          final project = _project(path: outputDir);
+          if (!project.isEmpty) {
+            _logger
+              ..info('')
+              ..err('Output directory must be empty.');
+
+            return ExitCode.config.code;
+          }
           final projectName = _projectName;
           final description = _description;
           final orgName = super.orgName;
@@ -157,7 +165,6 @@ class CreateCommand extends Command<int>
 
           _logger.info('Creating Rapid project ...');
 
-          final project = _project(path: outputDir);
           await project.create(
             projectName: projectName,
             description: description,

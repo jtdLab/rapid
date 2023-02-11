@@ -106,7 +106,7 @@ void Function() withRunnerOnProject(
     when(() => melosFile.exists()).thenReturn(true);
     when(() => melosFile.readName()).thenReturn('test_app');
     final project = MockProject();
-    when(() => project.exists()).thenReturn(true);
+    when(() => project.existsAll()).thenReturn(true);
     when(() => project.platformIsActivated(any())).thenReturn(true);
     // TODO
     //when(() => project.melosFile).thenReturn(melosFile);

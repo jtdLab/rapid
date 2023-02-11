@@ -51,7 +51,7 @@ void main() {
           logger: logger,
         ),
       ).thenAnswer((_) async {});
-      when(() => project.exists()).thenReturn(true);
+      when(() => project.existsAll()).thenReturn(true);
       when(() => project.platformIsActivated(Platform.android))
           .thenReturn(true);
 
@@ -315,7 +315,7 @@ void main() {
 
     test('exits with 66 when project does not exist', () async {
       // Arrange
-      when(() => project.exists()).thenReturn(false);
+      when(() => project.existsAll()).thenReturn(false);
 
       // Act
       final result = await command.run();

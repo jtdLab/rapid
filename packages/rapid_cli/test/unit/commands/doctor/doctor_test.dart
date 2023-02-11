@@ -124,7 +124,7 @@ void main() {
           .thenReturn(true);
       when(() => platformDirectoryWeb.allFeaturesHaveSameDefaultLanguage())
           .thenReturn(true);
-      when(() => project.exists()).thenReturn(true);
+      when(() => project.existsAll()).thenReturn(true);
       when(() => project.platformIsActivated(Platform.android))
           .thenReturn(true);
       when(() => project.platformIsActivated(Platform.ios)).thenReturn(false);
@@ -299,7 +299,7 @@ void main() {
 
     test('exits with 66 project does not exist', () async {
       // Arrange
-      when(() => project.exists()).thenReturn(false);
+      when(() => project.existsAll()).thenReturn(false);
 
       // Act
       final result = await command.run();

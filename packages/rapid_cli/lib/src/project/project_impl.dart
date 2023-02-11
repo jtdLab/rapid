@@ -115,7 +115,14 @@ class ProjectImpl extends DirectoryImpl implements Project {
       uiPackage.exists();
 
   @override
-  bool existsAny() => !isEmpty;
+  bool existsAny() =>
+      melosFile.exists() ||
+      appPackage.exists() ||
+      diPackage.exists() ||
+      domainPackage.exists() ||
+      infrastructurePackage.exists() ||
+      loggingPackage.exists() ||
+      uiPackage.exists();
 
   @override
   bool platformIsActivated(Platform platform) {

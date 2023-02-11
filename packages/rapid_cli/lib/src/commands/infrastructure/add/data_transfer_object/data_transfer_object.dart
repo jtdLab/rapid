@@ -51,7 +51,7 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [projectExists(_project)],
+        [projectExistsAll(_project)],
         _logger,
         () async {
           final entityName = _entity;

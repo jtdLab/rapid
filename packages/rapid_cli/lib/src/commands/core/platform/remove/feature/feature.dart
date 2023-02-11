@@ -59,7 +59,7 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          projectExists(_project),
+          projectExistsAll(_project),
           platformIsActivated(
             _platform,
             _project,

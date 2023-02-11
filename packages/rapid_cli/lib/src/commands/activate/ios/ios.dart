@@ -34,7 +34,7 @@ class ActivateIosCommand extends ActivatePlatformCommand with OrgNameGetter {
   @override
   Future<int> run() => runWhen(
         [
-          projectExists(_project),
+          projectExistsAll(_project),
           platformIsDeactivated(platform, _project),
         ],
         _logger,

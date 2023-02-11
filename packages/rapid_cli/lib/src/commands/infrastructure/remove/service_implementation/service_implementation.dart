@@ -49,7 +49,7 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [projectExists(_project)],
+        [projectExistsAll(_project)],
         _logger,
         () async {
           final name = super.className;

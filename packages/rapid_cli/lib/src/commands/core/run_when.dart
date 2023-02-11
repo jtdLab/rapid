@@ -1,6 +1,5 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -63,11 +62,11 @@ Future<void> melosIsInstalled(
   }
 }
 
-/// Completes when [project] exists.
-Future<void> projectExists(Project project) async {
-  final exists = project.exists();
+/// Completes when all entities of [project] exist.
+Future<void> projectExistsAll(Project project) async {
+  final existsAll = project.existsAll();
 
-  if (!exists) {
+  if (!existsAll) {
     throw EnvironmentException(
       ExitCode.noInput.code,
       'This command should be run from the root of an existing Rapid project.',

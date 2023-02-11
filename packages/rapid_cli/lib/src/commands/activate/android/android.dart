@@ -35,7 +35,7 @@ class ActivateAndroidCommand extends ActivatePlatformCommand
   @override
   Future<int> run() => runWhen(
         [
-          projectExists(_project),
+          projectExistsAll(_project),
           platformIsDeactivated(platform, _project),
         ],
         _logger,

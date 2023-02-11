@@ -108,6 +108,7 @@ void main() {
 
       projectBuilder = MockProjectBuilder();
       project = MockProject();
+      when(() => project.isEmpty).thenReturn(true);
       when(
         () => project.create(
           projectName: any(named: 'projectName'),
@@ -670,6 +671,19 @@ void main() {
       verify(() => logger.err('Melos not installed.')).called(1);
       verify(() => logger.info('')).called(1);
       expect(result, ExitCode.unavailable.code);
+    });
+
+    test('exits with 78 when output dir is not empty', () async {
+      // Arrange
+      when(() => project.isEmpty).thenReturn(false);
+
+      // Act
+      final result = await command.run();
+
+      // Assert
+      verify(() => logger.err('Output directory must be empty.')).called(1);
+      verify(() => logger.info('')).called(1);
+      expect(result, ExitCode.config.code);
     });
 
     // TODO testing this way good?

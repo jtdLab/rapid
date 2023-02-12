@@ -38,6 +38,8 @@ abstract class AppPackage implements DartPackage {
 
   Project get project;
 
+  PlatformNativeDirectoryBuilder get platformNativeDirectory;
+
   Future<void> create({
     required String description,
     required String orgName,

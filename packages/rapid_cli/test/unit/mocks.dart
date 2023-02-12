@@ -292,6 +292,7 @@ MockAppPackage getAppPackage() {
 
 MockPubspecFile getPubspecFile() {
   final pubspecFile = MockPubspecFile();
+  when(() => pubspecFile.readName()).thenReturn('some_name');
 
   return pubspecFile;
 }

@@ -30,7 +30,7 @@ class AppPackageImpl extends DartPackageImpl implements AppPackage {
             project.name(),
           ),
         ) {
-    _platformNativeDirectory = platformNativeDirectory ??
+    this.platformNativeDirectory = platformNativeDirectory ??
         (({required platform}) =>
             PlatformNativeDirectory(platform, appPackage: this));
     _mainFiles = mainFiles ??
@@ -41,12 +41,14 @@ class AppPackageImpl extends DartPackageImpl implements AppPackage {
         };
   }
 
-  late final PlatformNativeDirectoryBuilder _platformNativeDirectory;
   late final Set<MainFile> _mainFiles;
   final GeneratorBuilder _generator;
 
   @override
   final Project project;
+
+  @override
+  late final PlatformNativeDirectoryBuilder platformNativeDirectory;
 
   @override
   Future<void> create({
@@ -90,7 +92,7 @@ class AppPackageImpl extends DartPackageImpl implements AppPackage {
 
     for (final platform in platforms) {
       final platformNativeDirectory =
-          _platformNativeDirectory(platform: platform);
+          this.platformNativeDirectory(platform: platform);
       platformNativeDirectory.create(
         description: description,
         orgName: orgName,
@@ -110,7 +112,7 @@ class AppPackageImpl extends DartPackageImpl implements AppPackage {
     final appFeaturePackage = platformDirectory.appFeaturePackage;
     pubspecFile.setDependency(appFeaturePackage.packageName());
 
-    final platformNativeDirectory = _platformNativeDirectory(
+    final platformNativeDirectory = this.platformNativeDirectory(
       platform: platform,
     );
     await platformNativeDirectory.create(
@@ -134,7 +136,7 @@ class AppPackageImpl extends DartPackageImpl implements AppPackage {
     final appFeaturePackage = platformDirectory.appFeaturePackage;
     pubspecFile.removeDependency(appFeaturePackage.packageName());
 
-    final platformNativeDirectory = _platformNativeDirectory(
+    final platformNativeDirectory = this.platformNativeDirectory(
       platform: platform,
     );
     platformNativeDirectory.delete(logger: logger);

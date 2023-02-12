@@ -8,6 +8,7 @@ import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/app_package/app_package.dart';
 import 'package:rapid_cli/src/project/app_package/app_package_impl.dart';
+import 'package:rapid_cli/src/project/app_package/platform_native_directory/platform_native_directory.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 
@@ -128,17 +129,16 @@ Future<void> runAndroidApp() async {
 ''';
 
 AppPackage _getAppPackage({
-  required Project project,
+  Project? project,
   PubspecFile? pubspecFile,
   PlatformNativeDirectoryBuilder? platformNativeDirectoryBuilder,
   Set<MainFile>? mainFiles,
   GeneratorBuilder? generator,
 }) {
   return AppPackage(
-    project: project,
+    project: project ?? getProject(),
     pubspecFile: pubspecFile ?? getPubspecFile(),
-    platformNativeDirectory: platformNativeDirectoryBuilder ??
-        getPlatfromNativeDirectoryBuilder().call,
+    platformNativeDirectory: platformNativeDirectoryBuilder,
     mainFiles: mainFiles ?? {},
     generator: generator ?? (_) async => getMasonGenerator(),
   );
@@ -173,6 +173,27 @@ void main() {
       expect(
         appPackage.path,
         'project/path/packages/my_project/my_project',
+      );
+    });
+
+    test('.platformNativeDirectory', () {
+      // Arrange
+      final appPackage = _getAppPackage();
+
+      // Assert
+      expect(
+        appPackage.platformNativeDirectory,
+        isA<PlatformNativeDirectoryBuilder>().having(
+          (platformNativeDirectory) => platformNativeDirectory(
+            platform: Platform.android,
+          ),
+          'returns',
+          isA<PlatformNativeDirectory>().having(
+            (platformNativeDirectory) => platformNativeDirectory.platform,
+            'platform',
+            Platform.android,
+          ),
+        ),
       );
     });
 

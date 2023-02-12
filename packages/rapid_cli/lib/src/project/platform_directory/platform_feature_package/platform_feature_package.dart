@@ -138,6 +138,7 @@ abstract class PlatformCustomFeaturePackage implements PlatformFeaturePackage {
     String name,
     Platform platform, {
     required Project project,
+    PubspecFile? pubspecFile,
     L10nFile? l10nFile,
     ArbDirectory? arbDirectory,
     LanguageLocalizationsFileBuilder? languageLocalizationsFile,
@@ -148,12 +149,15 @@ abstract class PlatformCustomFeaturePackage implements PlatformFeaturePackage {
         name,
         platform,
         project: project,
+        pubspecFile: pubspecFile,
         l10nFile: l10nFile,
         arbDirectory: arbDirectory,
         languageLocalizationsFile: languageLocalizationsFile,
         flutterGenl10n: flutterGenl10n,
         generator: generator,
       );
+
+  LanguageLocalizationsFileBuilder get languageLocalizationsFile;
 
   Set<String> supportedLanguages();
 

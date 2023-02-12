@@ -115,6 +115,7 @@ PlatformCustomFeaturePackage _getPlatformCustomFeaturePackage(
   String name,
   Platform platform, {
   Project? project,
+  PubspecFile? pubspecFile,
   L10nFile? l10nFile,
   ArbDirectory? arbDirectory,
   LanguageLocalizationsFileBuilder? languageLocalizationsFile,
@@ -125,10 +126,10 @@ PlatformCustomFeaturePackage _getPlatformCustomFeaturePackage(
     name,
     platform,
     project: project ?? getProject(),
+    pubspecFile: pubspecFile ?? getPubspecFile(),
     l10nFile: l10nFile ?? getL10nFile(),
     arbDirectory: arbDirectory ?? getArbDirectory(),
-    languageLocalizationsFile: languageLocalizationsFile ??
-        ({required String language}) => getLanguageLocalizationsFile(),
+    languageLocalizationsFile: languageLocalizationsFile,
     flutterGenl10n: flutterGenl10n ?? getFlutterGenl10n().call,
     generator: generator ?? (_) async => getMasonGenerator(),
   );
@@ -1439,6 +1440,25 @@ void main() {
           'project/path/packages/my_project/my_project_windows/my_project_windows_my_feature',
         );
       });
+    });
+
+    test('.platformNativeDirectory', () {
+      // Arrange
+      final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+        'foo',
+        Platform.android,
+      );
+
+      // Assert
+      expect(
+        platformCustomFeaturePackage.languageLocalizationsFile,
+        isA<LanguageLocalizationsFileBuilder>().having(
+          (languageLocalizationsFile) =>
+              languageLocalizationsFile(language: 'de'),
+          'returns',
+          isA<LanguageLocalizationsFile>(),
+        ),
+      );
     });
 
     group('.supportedLanguages()', () {

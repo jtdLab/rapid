@@ -261,16 +261,18 @@ class PlatformCustomFeaturePackageImpl extends PlatformFeaturePackageImpl
         _generator = generator ?? MasonGenerator.fromBundle {
     _l10nFile = l10nFile ?? L10nFile(platformFeaturePackage: this);
     _arbDirectory = arbDirectory ?? ArbDirectory(platformFeaturePackage: this);
-    _languageLocalizationsFile = languageLocalizationsFile ??
+    this.languageLocalizationsFile = languageLocalizationsFile ??
         (({required String language}) =>
             LanguageLocalizationsFile(language, platformFeaturePackage: this));
   }
 
   late final L10nFile _l10nFile;
   late final ArbDirectory _arbDirectory;
-  late final LanguageLocalizationsFileBuilder _languageLocalizationsFile;
   final FlutterGenl10nCommand _flutterGenl10n;
   final GeneratorBuilder _generator;
+
+  @override
+  late final LanguageLocalizationsFileBuilder languageLocalizationsFile;
 
   @override
   Set<String> supportedLanguages() =>
@@ -347,7 +349,7 @@ class PlatformCustomFeaturePackageImpl extends PlatformFeaturePackageImpl
       arbFile.delete(logger: logger);
 
       final languageLocalizationsFile =
-          _languageLocalizationsFile(language: language);
+          this.languageLocalizationsFile(language: language);
       if (languageLocalizationsFile.exists()) {
         languageLocalizationsFile.delete(logger: logger);
       }

@@ -1,7 +1,6 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/directory.dart';
-import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file.dart';

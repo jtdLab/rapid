@@ -101,10 +101,16 @@ class WidgetImpl extends FileSystemEntityCollection implements Widget {
   final DartFormatFixCommand _dartFormatFix;
   final GeneratorBuilder _generator;
 
+  @override
   final String name;
+
+  @override
   final String dir;
+
+  @override
   final PlatformUiPackage platformUiPackage;
 
+  @override
   Future<void> create({
     required Logger logger,
   }) async {

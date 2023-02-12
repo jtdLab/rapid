@@ -665,6 +665,11 @@ void main() {
   });
 
   group('LocalizationsFile', () {
+    setUpAll(() {
+      registerFallbackValue(FakeLogger());
+      registerFallbackValue(FakePlatformCustomFeaturePackage());
+    });
+
     test('.path', () {
       // Arrange
       final platformAppFeaturePackage = getPlatformAppFeaturePackage();

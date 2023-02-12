@@ -160,6 +160,7 @@ void main() {
       registerFallbackValue(FakeLogger());
       registerFallbackValue(FakeDirectoryGeneratorTarget());
       registerFallbackValue(Platform.android);
+      registerFallbackValue(FakePlatformCustomFeaturePackage());
     });
 
     test('.path', () {

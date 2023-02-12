@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
@@ -18,12 +19,6 @@ import 'package:test/test.dart';
 import '../common.dart';
 import '../mocks.dart';
 
-const projectName = 'foo_bar';
-
-const melos = '''
-name: $projectName
-''';
-
 const melosWithName = '''
 name: foo_bar
 ''';
@@ -31,6 +26,25 @@ name: foo_bar
 const melosWithoutName = '''
 some: value
 ''';
+
+extension on Platform {
+  String get prettyName {
+    switch (this) {
+      case Platform.android:
+        return 'Android';
+      case Platform.ios:
+        return 'iOS';
+      case Platform.web:
+        return 'Web';
+      case Platform.linux:
+        return 'Linux';
+      case Platform.macos:
+        return 'macOS';
+      case Platform.windows:
+        return 'Windows';
+    }
+  }
+}
 
 Project _getProject({
   String path = '.',
@@ -78,6 +92,13 @@ MelosFile _getMelosFile({Project? project}) {
 
 void main() {
   group('Project', () {
+    setUpAll(() {
+      registerFallbackValue(FakeDirectoryGeneratorTarget());
+      registerFallbackValue(FakeLogger());
+      registerFallbackValue(Platform.android);
+      registerFallbackValue(FakePlatformCustomFeaturePackage());
+    });
+
     test('.path', () {
       // Arrange
       final project = _getProject(path: 'project/path');
@@ -525,47 +546,2796 @@ void main() {
       });
     });
 
-    group('.create()', () {});
+    group('.create()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final appPackage = getAppPackage();
+        final diPackage = getDiPackage();
+        final domainPackage = getDomainPackage();
+        final infrastructurePackage = getInfrastructurePackage();
+        final loggingPackage = getLoggingPackage();
+        final appFeaturePackage = getPlatformAppFeaturePackage();
+        final routingFeaturePackage = getPlatformRoutingFeaturePackage();
+        final homePageFeaturePackage = getPlatformCustomFeaturePackage();
+        final platformDirectory = getPlatformDirectory();
+        when(() => platformDirectory.appFeaturePackage)
+            .thenReturn(appFeaturePackage);
+        when(() => platformDirectory.routingFeaturePackage)
+            .thenReturn(routingFeaturePackage);
+        when(() => platformDirectory.customFeaturePackage(name: 'home_page'))
+            .thenReturn(homePageFeaturePackage);
+        final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+        when(
+          () => platformDirectoryBuilder(platform: any(named: 'platform')),
+        ).thenReturn(platformDirectory);
+        final platformUiPackage = getPlatformUiPackage();
+        final platformUiPackageBuilder = getPlatfromUiPackageBuilder();
+        when(
+          () => platformUiPackageBuilder(platform: any(named: 'platform')),
+        ).thenReturn(platformUiPackage);
+        final uiPackage = getUiPackage();
+        final melosBootstrap = getMelosBootstrap();
+        final dartFormatFix = getDartFormatFix();
+        final generator = getMasonGenerator();
+        final project = _getProject(
+          appPackage: appPackage,
+          diPackage: diPackage,
+          domainPackage: domainPackage,
+          infrastructurePackage: infrastructurePackage,
+          loggingPackage: loggingPackage,
+          platformDirectory: platformDirectoryBuilder,
+          uiPackage: uiPackage,
+          platformUiPackage: platformUiPackageBuilder,
+          melosBootstrap: melosBootstrap,
+          dartFormatFix: dartFormatFix,
+          generator: (_) async => generator,
+        );
 
-    group('.addPlatform()', () {});
+        // Act
+        final progress = MockProgress();
+        final logger = MockLogger();
+        when(() => logger.progress(any())).thenReturn(progress);
+        await project.create(
+          projectName: 'my_project',
+          description: 'my desc',
+          orgName: 'my.org',
+          example: false,
+          android: true,
+          ios: true,
+          linux: true,
+          macos: false,
+          web: false,
+          windows: false,
+          logger: logger,
+        );
 
-    group('.removePlatform()', () {});
+        // Assert
+        verify(() => logger.progress('Generating project files')).called(1);
+        verify(
+          () => generator.generate(
+            any(
+              that: isA<DirectoryGeneratorTarget>().having(
+                (g) => g.dir.path,
+                'dir',
+                '.',
+              ),
+            ),
+            vars: <String, dynamic>{
+              'project_name': 'my_project',
+            },
+            logger: logger,
+          ),
+        ).called(1);
+        verify(
+          () => appPackage.create(
+            description: 'my desc',
+            orgName: 'my.org',
+            android: true,
+            ios: true,
+            linux: true,
+            macos: false,
+            web: false,
+            windows: false,
+            logger: logger,
+          ),
+        ).called(1);
+        verify(
+          () => diPackage.create(
+            android: true,
+            ios: true,
+            linux: true,
+            macos: false,
+            web: false,
+            windows: false,
+            logger: logger,
+          ),
+        ).called(1);
+        verify(() => domainPackage.create(logger: logger)).called(1);
+        verify(() => infrastructurePackage.create(logger: logger)).called(1);
+        verify(() => loggingPackage.create(logger: logger)).called(1);
+        verify(() => uiPackage.create(logger: logger)).called(1);
+        verify(() => platformDirectoryBuilder(platform: Platform.android))
+            .called(1);
+        verify(() => platformDirectoryBuilder(platform: Platform.ios))
+            .called(1);
+        verify(() => platformDirectoryBuilder(platform: Platform.linux))
+            .called(1);
+        verify(() => appFeaturePackage.create(logger: logger)).called(3);
+        verify(() => routingFeaturePackage.create(logger: logger)).called(3);
+        verify(() => homePageFeaturePackage.create(logger: logger)).called(3);
+        verify(() => platformUiPackageBuilder(platform: Platform.android))
+            .called(1);
+        verify(() => platformUiPackageBuilder(platform: Platform.ios))
+            .called(1);
+        verify(() => platformUiPackageBuilder(platform: Platform.linux))
+            .called(1);
+        verify(() => platformUiPackage.create(logger: logger)).called(3);
+        verify(() => progress.complete()).called(1);
+        verify(() => melosBootstrap(cwd: '.', logger: logger)).called(1);
+        verify(() => dartFormatFix(cwd: '.', logger: logger)).called(1);
+      });
 
-    group('.addFeature()', () {});
+      test('completes successfully with correct output (2)', () async {
+        // Arrange
+        final appPackage = getAppPackage();
+        final diPackage = getDiPackage();
+        final domainPackage = getDomainPackage();
+        final infrastructurePackage = getInfrastructurePackage();
+        final loggingPackage = getLoggingPackage();
+        final appFeaturePackage = getPlatformAppFeaturePackage();
+        final routingFeaturePackage = getPlatformRoutingFeaturePackage();
+        final homePageFeaturePackage = getPlatformCustomFeaturePackage();
+        final platformDirectory = getPlatformDirectory();
+        when(() => platformDirectory.appFeaturePackage)
+            .thenReturn(appFeaturePackage);
+        when(() => platformDirectory.routingFeaturePackage)
+            .thenReturn(routingFeaturePackage);
+        when(() => platformDirectory.customFeaturePackage(name: 'home_page'))
+            .thenReturn(homePageFeaturePackage);
+        final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+        when(
+          () => platformDirectoryBuilder(platform: any(named: 'platform')),
+        ).thenReturn(platformDirectory);
+        final platformUiPackage = getPlatformUiPackage();
+        final platformUiPackageBuilder = getPlatfromUiPackageBuilder();
+        when(
+          () => platformUiPackageBuilder(platform: any(named: 'platform')),
+        ).thenReturn(platformUiPackage);
+        final uiPackage = getUiPackage();
+        final melosBootstrap = getMelosBootstrap();
+        final dartFormatFix = getDartFormatFix();
+        final generator = getMasonGenerator();
+        final project = _getProject(
+          appPackage: appPackage,
+          diPackage: diPackage,
+          domainPackage: domainPackage,
+          infrastructurePackage: infrastructurePackage,
+          loggingPackage: loggingPackage,
+          platformDirectory: platformDirectoryBuilder,
+          uiPackage: uiPackage,
+          platformUiPackage: platformUiPackageBuilder,
+          melosBootstrap: melosBootstrap,
+          dartFormatFix: dartFormatFix,
+          generator: (_) async => generator,
+        );
 
-    group('.removeFeature()', () {});
+        // Act
+        final progress = MockProgress();
+        final logger = MockLogger();
+        when(() => logger.progress(any())).thenReturn(progress);
+        await project.create(
+          projectName: 'my_project',
+          description: 'my desc',
+          orgName: 'my.org',
+          example: false,
+          android: false,
+          ios: false,
+          linux: false,
+          macos: true,
+          web: true,
+          windows: true,
+          logger: logger,
+        );
 
-    group('.addLanguage()', () {});
+        // Assert
+        verify(() => logger.progress('Generating project files')).called(1);
+        verify(
+          () => generator.generate(
+            any(
+              that: isA<DirectoryGeneratorTarget>().having(
+                (g) => g.dir.path,
+                'dir',
+                '.',
+              ),
+            ),
+            vars: <String, dynamic>{
+              'project_name': 'my_project',
+            },
+            logger: logger,
+          ),
+        ).called(1);
+        verify(
+          () => appPackage.create(
+            description: 'my desc',
+            orgName: 'my.org',
+            android: false,
+            ios: false,
+            linux: false,
+            macos: true,
+            web: true,
+            windows: true,
+            logger: logger,
+          ),
+        ).called(1);
+        verify(
+          () => diPackage.create(
+            android: false,
+            ios: false,
+            linux: false,
+            macos: true,
+            web: true,
+            windows: true,
+            logger: logger,
+          ),
+        ).called(1);
+        verify(() => domainPackage.create(logger: logger)).called(1);
+        verify(() => infrastructurePackage.create(logger: logger)).called(1);
+        verify(() => loggingPackage.create(logger: logger)).called(1);
+        verify(() => uiPackage.create(logger: logger)).called(1);
+        verify(() => platformDirectoryBuilder(platform: Platform.macos))
+            .called(1);
+        verify(() => platformDirectoryBuilder(platform: Platform.web))
+            .called(1);
+        verify(() => platformDirectoryBuilder(platform: Platform.windows))
+            .called(1);
+        verify(() => appFeaturePackage.create(logger: logger)).called(3);
+        verify(() => routingFeaturePackage.create(logger: logger)).called(3);
+        verify(() => homePageFeaturePackage.create(logger: logger)).called(3);
+        verify(() => platformUiPackageBuilder(platform: Platform.macos))
+            .called(1);
+        verify(() => platformUiPackageBuilder(platform: Platform.web))
+            .called(1);
+        verify(() => platformUiPackageBuilder(platform: Platform.windows))
+            .called(1);
+        verify(() => platformUiPackage.create(logger: logger)).called(3);
+        verify(() => progress.complete()).called(1);
+        verify(() => melosBootstrap(cwd: '.', logger: logger)).called(1);
+        verify(() => dartFormatFix(cwd: '.', logger: logger)).called(1);
+      });
+    });
 
-    group('.removeLanguage()', () {});
+    group('.addPlatform()', () {
+      group('completes successfully with correct output', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final appPackage = getAppPackage();
+          when(() => appPackage.packageName()).thenReturn('app_package');
+          final diPackage = getDiPackage();
+          when(() => diPackage.path).thenReturn('di_package/path');
+          when(() => diPackage.packageName()).thenReturn('di_package');
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.packageName())
+              .thenReturn('app_feature_package');
+          final routingFeaturePackage = getPlatformRoutingFeaturePackage();
+          when(() => routingFeaturePackage.packageName())
+              .thenReturn('routing_feature_package');
+          final homePageFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => homePageFeaturePackage.packageName())
+              .thenReturn('home_page_feature_package');
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
+          when(() => platformDirectory.routingFeaturePackage)
+              .thenReturn(routingFeaturePackage);
+          when(() => platformDirectory.customFeaturePackage(name: 'home_page'))
+              .thenReturn(homePageFeaturePackage);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final platformUiPackage = getPlatformUiPackage();
+          when(() => platformUiPackage.packageName())
+              .thenReturn('platform_ui_package');
+          final platformUiPackageBuilder = getPlatfromUiPackageBuilder();
+          when(
+            () => platformUiPackageBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformUiPackage);
+          final melosBootstrap = getMelosBootstrap();
+          final flutterPubGet = getFlutterPubGet();
+          final flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+              getFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs();
+          final dartFormatFix = getDartFormatFix();
+          final project = _getProject(
+            appPackage: appPackage,
+            diPackage: diPackage,
+            platformDirectory: platformDirectoryBuilder,
+            platformUiPackage: platformUiPackageBuilder,
+            melosBootstrap: melosBootstrap,
+            flutterPubGet: flutterPubGet,
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+                flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+            dartFormatFix: dartFormatFix,
+          );
 
-    group('.addEntity()', () {});
+          // Act
+          final progress = MockProgress();
+          final logger = MockLogger();
+          when(() => logger.progress(any())).thenReturn(progress);
+          await project.addPlatform(
+            platform,
+            description: 'my desc',
+            orgName: 'my.org',
+            logger: logger,
+          );
 
-    group('.removeEntity()', () {});
+          // Assert
+          verify(
+            () => logger.progress('Generating ${platform.prettyName} files'),
+          ).called(1);
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+          verify(() => appFeaturePackage.create(logger: logger)).called(1);
+          verify(() => routingFeaturePackage.create(logger: logger)).called(1);
+          verify(() => homePageFeaturePackage.create(logger: logger)).called(1);
+          verify(() => platformUiPackageBuilder(platform: platform)).called(1);
+          verify(() => platformUiPackage.create(logger: logger)).called(1);
+          verify(() => progress.complete()).called(1);
+          verify(
+            () => appPackage.addPlatform(
+              platform,
+              description: 'my desc',
+              orgName: 'my.org',
+              logger: logger,
+            ),
+          ).called(1);
+          verify(
+            () => diPackage.registerCustomFeaturePackage(
+              homePageFeaturePackage,
+              logger: logger,
+            ),
+          ).called(1);
+          verify(
+            () => melosBootstrap(
+              cwd: '.',
+              logger: logger,
+              scope: [
+                'app_package',
+                'di_package',
+                'platform_ui_package',
+                'app_feature_package',
+                'routing_feature_package',
+                'home_page_feature_package',
+              ],
+            ),
+          ).called(1);
+          verify(
+            () => flutterPubGet(cwd: 'di_package/path', logger: logger),
+          ).called(1);
+          verify(
+            () => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: 'di_package/path',
+              logger: logger,
+            ),
+          ).called(1);
+          verify(() => dartFormatFix(cwd: '.', logger: logger)).called(1);
+        }
 
-    group('.addServiceInterface()', () {});
+        test('(android)', () => performTest(Platform.android));
 
-    group('.removeServiceInterface()', () {});
+        test('(ios)', () => performTest(Platform.ios));
 
-    group('.addValueObject()', () {});
+        test('(linux)', () => performTest(Platform.linux));
 
-    group('.removeValueObject()', () {});
+        test('(macos)', () => performTest(Platform.macos));
 
-    group('.addDataTransferObject()', () {});
+        test('(web)', () => performTest(Platform.web));
 
-    group('.removeDataTransferObject()', () {});
+        test('(windows)', () => performTest(Platform.windows));
+      });
+    });
 
-    group('.addServiceImplementation()', () {});
+    group('.removePlatform()', () {
+      group('completes successfully with correct output', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final appPackage = getAppPackage();
+          when(() => appPackage.packageName()).thenReturn('app_package');
+          final diPackage = getDiPackage();
+          when(() => diPackage.path).thenReturn('di_package/path');
+          when(() => diPackage.packageName()).thenReturn('di_package');
+          final customFeaturesPackages = [getPlatformCustomFeaturePackage()];
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages())
+              .thenReturn(customFeaturesPackages);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final platformUiPackage = getPlatformUiPackage();
+          final platformUiPackageBuilder = getPlatfromUiPackageBuilder();
+          when(
+            () => platformUiPackageBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformUiPackage);
+          final melosBootstrap = getMelosBootstrap();
+          final flutterPubGet = getFlutterPubGet();
+          final flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+              getFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs();
+          final dartFormatFix = getDartFormatFix();
+          final project = _getProject(
+            appPackage: appPackage,
+            diPackage: diPackage,
+            platformDirectory: platformDirectoryBuilder,
+            platformUiPackage: platformUiPackageBuilder,
+            melosBootstrap: melosBootstrap,
+            flutterPubGet: flutterPubGet,
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+                flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+            dartFormatFix: dartFormatFix,
+          );
 
-    group('.removeServiceImplementation()', () {});
+          // Act
+          final progress = MockProgress();
+          final logger = MockLogger();
+          when(() => logger.progress(any())).thenReturn(progress);
+          await project.removePlatform(
+            platform,
+            logger: logger,
+          );
 
-    group('.addBloc()', () {});
+          // Assert
+          verify(() => logger.progress('Deleting ${platform.prettyName} files'))
+              .called(1);
+          verify(
+            () => appPackage.removePlatform(platform, logger: logger),
+          ).called(1);
+          verify(
+            () => platformUiPackageBuilder(platform: platform),
+          ).called(1);
+          verify(() => platformUiPackage.delete(logger: logger)).called(1);
+          verify(
+            () => platformDirectoryBuilder(platform: platform),
+          ).called(1);
+          verify(
+            () => diPackage.unregisterCustomFeaturePackages(
+              customFeaturesPackages,
+              logger: logger,
+            ),
+          ).called(1);
+          verify(() => platformDirectory.delete(logger: logger)).called(1);
+          verify(() => progress.complete()).called(1);
+          verify(
+            () => melosBootstrap(
+              cwd: '.',
+              logger: logger,
+              scope: [
+                'app_package',
+                'di_package',
+              ],
+            ),
+          ).called(1);
+          verify(
+            () => flutterPubGet(cwd: 'di_package/path', logger: logger),
+          ).called(1);
+          verify(
+            () => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: 'di_package/path',
+              logger: logger,
+            ),
+          ).called(1);
+          verify(() => dartFormatFix(cwd: '.', logger: logger)).called(1);
+        }
 
-    group('.addCubit()', () {});
+        test('(android)', () => performTest(Platform.android));
 
-    group('.addWidget()', () {});
+        test('(ios)', () => performTest(Platform.ios));
 
-    group('.removeWidget()', () {});
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+    });
+
+    group('.addFeature()', () {
+      group('completes successfully with correct output', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final diPackage = getDiPackage();
+          when(() => diPackage.path).thenReturn('di_package/path');
+          when(() => diPackage.packageName()).thenReturn('di_package');
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.packageName())
+              .thenReturn('app_feature_package');
+          final routingFeaturePackage = getPlatformRoutingFeaturePackage();
+          when(() => routingFeaturePackage.packageName())
+              .thenReturn('routing_feature_package');
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.packageName())
+              .thenReturn('my_feature_package');
+          when(() => customFeaturePackage.exists()).thenReturn(false);
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
+          when(() => platformDirectory.routingFeaturePackage)
+              .thenReturn(routingFeaturePackage);
+          when(() => platformDirectory.customFeaturePackage(name: 'my_feature'))
+              .thenReturn(customFeaturePackage);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final melosBootstrap = getMelosBootstrap();
+          final flutterPubGet = getFlutterPubGet();
+          final flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+              getFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs();
+          final dartFormatFix = getDartFormatFix();
+          final project = _getProject(
+            diPackage: diPackage,
+            platformDirectory: platformDirectoryBuilder,
+            melosBootstrap: melosBootstrap,
+            flutterPubGet: flutterPubGet,
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+                flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+            dartFormatFix: dartFormatFix,
+          );
+
+          // Act
+          final logger = MockLogger();
+          await project.addFeature(
+            name: 'my_feature',
+            description: 'my desc',
+            routing: true,
+            platform: platform,
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => platformDirectoryBuilder(platform: platform),
+          ).called(1);
+          verify(
+            () => platformDirectory.customFeaturePackage(name: 'my_feature'),
+          ).called(1);
+          verify(
+            () => customFeaturePackage.create(
+              description: 'my desc',
+              logger: logger,
+            ),
+          ).called(1);
+          verify(
+            () => appFeaturePackage.registerCustomFeaturePackage(
+              customFeaturePackage,
+              logger: logger,
+            ),
+          ).called(1);
+          verify(
+            () => routingFeaturePackage.registerCustomFeaturePackage(
+              customFeaturePackage,
+              logger: logger,
+            ),
+          ).called(1);
+          verify(
+            () => diPackage.registerCustomFeaturePackage(
+              customFeaturePackage,
+              logger: logger,
+            ),
+          ).called(1);
+          verify(
+            () => melosBootstrap(
+              cwd: '.',
+              logger: logger,
+              scope: [
+                'my_feature_package',
+                'di_package',
+                'app_feature_package',
+                'routing_feature_package',
+              ],
+            ),
+          ).called(1);
+          verify(
+            () => flutterPubGet(cwd: 'di_package/path', logger: logger),
+          ).called(1);
+          verify(
+            () => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: 'di_package/path',
+              logger: logger,
+            ),
+          ).called(1);
+          verify(() => dartFormatFix(cwd: '.', logger: logger)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group('completes successfully with correct output without routing', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final diPackage = getDiPackage();
+          when(() => diPackage.path).thenReturn('di_package/path');
+          when(() => diPackage.packageName()).thenReturn('di_package');
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.packageName())
+              .thenReturn('app_feature_package');
+          final routingFeaturePackage = getPlatformRoutingFeaturePackage();
+          when(() => routingFeaturePackage.packageName())
+              .thenReturn('routing_feature_package');
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.packageName())
+              .thenReturn('my_feature_package');
+          when(() => customFeaturePackage.exists()).thenReturn(false);
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
+          when(() => platformDirectory.routingFeaturePackage)
+              .thenReturn(routingFeaturePackage);
+          when(() => platformDirectory.customFeaturePackage(name: 'my_feature'))
+              .thenReturn(customFeaturePackage);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final melosBootstrap = getMelosBootstrap();
+          final flutterPubGet = getFlutterPubGet();
+          final flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+              getFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs();
+          final dartFormatFix = getDartFormatFix();
+          final project = _getProject(
+            diPackage: diPackage,
+            platformDirectory: platformDirectoryBuilder,
+            melosBootstrap: melosBootstrap,
+            flutterPubGet: flutterPubGet,
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+                flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+            dartFormatFix: dartFormatFix,
+          );
+
+          // Act
+          final logger = MockLogger();
+          await project.addFeature(
+            name: 'my_feature',
+            description: 'my desc',
+            routing: false,
+            platform: platform,
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => platformDirectoryBuilder(platform: platform),
+          ).called(1);
+          verify(
+            () => platformDirectory.customFeaturePackage(name: 'my_feature'),
+          ).called(1);
+          verify(
+            () => customFeaturePackage.create(
+              description: 'my desc',
+              logger: logger,
+            ),
+          ).called(1);
+          verify(
+            () => appFeaturePackage.registerCustomFeaturePackage(
+              customFeaturePackage,
+              logger: logger,
+            ),
+          ).called(1);
+          verifyNever(
+            () => routingFeaturePackage.registerCustomFeaturePackage(
+              customFeaturePackage,
+              logger: logger,
+            ),
+          );
+          verify(
+            () => diPackage.registerCustomFeaturePackage(
+              customFeaturePackage,
+              logger: logger,
+            ),
+          ).called(1);
+          verify(
+            () => melosBootstrap(
+              cwd: '.',
+              logger: logger,
+              scope: [
+                'my_feature_package',
+                'di_package',
+                'app_feature_package',
+              ],
+            ),
+          ).called(1);
+          verify(
+            () => flutterPubGet(cwd: 'di_package/path', logger: logger),
+          ).called(1);
+          verify(
+            () => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: 'di_package/path',
+              logger: logger,
+            ),
+          ).called(1);
+          verify(() => dartFormatFix(cwd: '.', logger: logger)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group('throws FeatureAlreadyExists when feature already exists', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.exists()).thenReturn(true);
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackage(name: 'my_feature'))
+              .thenReturn(customFeaturePackage);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.addFeature(
+              name: 'my_feature',
+              description: 'my desc',
+              routing: false,
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<FeatureAlreadyExists>()),
+          );
+          verify(
+            () => platformDirectoryBuilder(platform: platform),
+          ).called(1);
+          verify(
+            () => platformDirectory.customFeaturePackage(name: 'my_feature'),
+          ).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+    });
+
+    group('.removeFeature()', () {
+      group('completes successfully with correct output', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final appPackage = getAppPackage();
+          when(() => appPackage.packageName()).thenReturn('app_package');
+          final diPackage = getDiPackage();
+          when(() => diPackage.path).thenReturn('di_package/path');
+          when(() => diPackage.packageName()).thenReturn('di_package');
+          final appFeaturePackagePubspec = getPubspecFile();
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.packageName())
+              .thenReturn('app_feature_package');
+          when(() => appFeaturePackage.pubspecFile)
+              .thenReturn(appFeaturePackagePubspec);
+          final routingFeaturePackagePubspec = getPubspecFile();
+          final routingFeaturePackage = getPlatformRoutingFeaturePackage();
+          when(() => routingFeaturePackage.packageName())
+              .thenReturn('routing_feature_package');
+          when(() => routingFeaturePackage.pubspecFile)
+              .thenReturn(routingFeaturePackagePubspec);
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.packageName())
+              .thenReturn('my_feature_package');
+          when(() => customFeaturePackage.exists()).thenReturn(true);
+          final otherFeaturePackagePubspecFile = getPubspecFile();
+          final otherFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => otherFeaturePackage.packageName())
+              .thenReturn('my_other_feature_package');
+          when(() => otherFeaturePackage.pubspecFile)
+              .thenReturn(otherFeaturePackagePubspecFile);
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
+          when(() => platformDirectory.routingFeaturePackage)
+              .thenReturn(routingFeaturePackage);
+          when(() => platformDirectory.customFeaturePackage(name: 'my_feature'))
+              .thenReturn(customFeaturePackage);
+          when(() => platformDirectory.customFeaturePackages())
+              .thenReturn([customFeaturePackage, otherFeaturePackage]);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final platformUiPackage = getPlatformUiPackage();
+          when(() => platformUiPackage.packageName())
+              .thenReturn('platform_ui_package');
+          final platformUiPackageBuilder = getPlatfromUiPackageBuilder();
+          when(
+            () => platformUiPackageBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformUiPackage);
+          final melosBootstrap = getMelosBootstrap();
+          final flutterPubGet = getFlutterPubGet();
+          final flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+              getFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs();
+          final dartFormatFix = getDartFormatFix();
+          final project = _getProject(
+            appPackage: appPackage,
+            diPackage: diPackage,
+            platformDirectory: platformDirectoryBuilder,
+            platformUiPackage: platformUiPackageBuilder,
+            melosBootstrap: melosBootstrap,
+            flutterPubGet: flutterPubGet,
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+                flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+            dartFormatFix: dartFormatFix,
+          );
+
+          // Act
+          final logger = MockLogger();
+          await project.removeFeature(
+            name: 'my_feature',
+            platform: platform,
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => platformDirectoryBuilder(platform: platform),
+          ).called(1);
+          verify(
+            () => platformDirectory.customFeaturePackage(name: 'my_feature'),
+          ).called(1);
+          verify(
+            () => diPackage.unregisterCustomFeaturePackages(
+              [customFeaturePackage],
+              logger: logger,
+            ),
+          ).called(1);
+          verify(
+            () => appFeaturePackage.unregisterCustomFeaturePackage(
+              customFeaturePackage,
+              logger: logger,
+            ),
+          ).called(1);
+          verify(
+            () => routingFeaturePackage.unregisterCustomFeaturePackage(
+              customFeaturePackage,
+              logger: logger,
+            ),
+          ).called(1);
+          verify(
+            () => appFeaturePackagePubspec.removeDependency(
+              'my_feature_package',
+            ),
+          ).called(1);
+          verify(
+            () => routingFeaturePackagePubspec.removeDependency(
+              'my_feature_package',
+            ),
+          ).called(1);
+          verify(
+            () => otherFeaturePackagePubspecFile.removeDependency(
+              'my_feature_package',
+            ),
+          ).called(1);
+          verify(() => customFeaturePackage.delete(logger: logger)).called(1);
+          verify(
+            () => melosBootstrap(
+              cwd: '.',
+              logger: logger,
+              scope: [
+                'di_package',
+                'app_feature_package',
+                'routing_feature_package',
+                'my_other_feature_package',
+              ],
+            ),
+          ).called(1);
+          verify(
+            () => flutterPubGet(cwd: 'di_package/path', logger: logger),
+          ).called(1);
+          verify(
+            () => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: 'di_package/path',
+              logger: logger,
+            ),
+          ).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group('throws FeatureDoesNotExist when feature does not exist', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.exists()).thenReturn(false);
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackage(name: 'my_feature'))
+              .thenReturn(customFeaturePackage);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.removeFeature(
+              name: 'my_feature',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<FeatureDoesNotExist>()),
+          );
+          verify(
+            () => platformDirectoryBuilder(platform: platform),
+          ).called(1);
+          verify(
+            () => platformDirectory.customFeaturePackage(name: 'my_feature'),
+          ).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+    });
+
+    group('.addLanguage()', () {
+      group('completes successfully with correct output', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(true);
+          when(() => platformDirectory.allFeaturesHaveSameDefaultLanguage())
+              .thenReturn(true);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final dartFormatFix = getDartFormatFix();
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+            dartFormatFix: dartFormatFix,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await project.addLanguage(
+            'de',
+            platform: platform,
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => platformDirectoryBuilder(platform: platform),
+          ).called(1);
+          verify(
+            () => customFeature1.addLanguage(language: 'de', logger: logger),
+          ).called(1);
+          verify(
+            () => customFeature2.addLanguage(language: 'de', logger: logger),
+          ).called(1);
+          verify(() => dartFormatFix(logger: logger)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group('throws NoFeaturesFound when no features exist', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn([]);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.addLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<NoFeaturesFound>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group(
+          'throws FeaturesHaveDiffrentLanguages when some features have diffrent languages',
+          () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(false);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.addLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<FeaturesHaveDiffrentLanguages>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group(
+          'throws FeaturesHaveDiffrentDefaultLanguage when some features have diffrent default languages',
+          () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(true);
+          when(() => platformDirectory.allFeaturesHaveSameDefaultLanguage())
+              .thenReturn(false);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.addLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<FeaturesHaveDiffrentDefaultLanguage>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group(
+          'throws FeaturesAlreadySupportLanguage when all features already support the language',
+          () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(true);
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(true);
+          when(() => platformDirectory.allFeaturesHaveSameDefaultLanguage())
+              .thenReturn(true);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.addLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<FeaturesAlreadySupportLanguage>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+    });
+
+    group('.removeLanguage()', () {
+      group('completes successfully with correct output', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(true);
+          when(() => customFeature1.defaultLanguage()).thenReturn('fr');
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(true);
+          when(() => platformDirectory.allFeaturesHaveSameDefaultLanguage())
+              .thenReturn(true);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final dartFormatFix = getDartFormatFix();
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+            dartFormatFix: dartFormatFix,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await project.removeLanguage(
+            'de',
+            platform: platform,
+            logger: logger,
+          );
+
+          // Assert
+          verify(
+            () => platformDirectoryBuilder(platform: platform),
+          ).called(1);
+          verify(
+            () => customFeature1.removeLanguage(language: 'de', logger: logger),
+          ).called(1);
+          verify(
+            () => customFeature2.removeLanguage(language: 'de', logger: logger),
+          ).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group('throws NoFeaturesFound when no features exist', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn([]);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.removeLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<NoFeaturesFound>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group(
+          'throws FeaturesHaveDiffrentLanguages when some features have diffrent languages',
+          () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(false);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.removeLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<FeaturesHaveDiffrentLanguages>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group(
+          'throws FeaturesHaveDiffrentDefaultLanguage when some features have diffrent default languages',
+          () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(true);
+          when(() => platformDirectory.allFeaturesHaveSameDefaultLanguage())
+              .thenReturn(false);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.removeLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<FeaturesHaveDiffrentDefaultLanguage>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group(
+          'throws FeaturesDoNotSupportLanguage when the features do not support the language',
+          () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(true);
+          when(() => platformDirectory.allFeaturesHaveSameDefaultLanguage())
+              .thenReturn(true);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.removeLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<FeaturesDoNotSupportLanguage>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group(
+          'throws UnableToRemoveDefaultLanguage when the language is the default language',
+          () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(true);
+          when(() => customFeature1.defaultLanguage()).thenReturn('de');
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(true);
+          when(() => platformDirectory.allFeaturesHaveSameDefaultLanguage())
+              .thenReturn(true);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.removeLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<UnableToRemoveDefaultLanguage>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+    });
+
+    group('.addEntity()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final entity = getEntity();
+        when(() => entity.existsAny()).thenReturn(false);
+        final domainPackage = getDomainPackage();
+        when(() => domainPackage.entity(name: 'FooBar', dir: 'entity/path'))
+            .thenReturn(entity);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act
+        final logger = MockLogger();
+        await project.addEntity(
+          name: 'FooBar',
+          outputDir: 'entity/path',
+          logger: logger,
+        );
+
+        // Assert
+        verify(
+          () => domainPackage.entity(name: 'FooBar', dir: 'entity/path'),
+        ).called(1);
+        verify(() => entity.create(logger: logger)).called(1);
+      });
+
+      test('throws EntityAlreadyExists when entity already exists', () async {
+        // Arrange
+        final entity = getEntity();
+        when(() => entity.existsAny()).thenReturn(true);
+        final domainPackage = getDomainPackage();
+        when(() => domainPackage.entity(name: 'FooBar', dir: 'entity/path'))
+            .thenReturn(entity);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act + Assert
+        expect(
+          project.addEntity(
+            name: 'FooBar',
+            outputDir: 'entity/path',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<EntityAlreadyExists>()),
+        );
+      });
+    });
+
+    group('.removeEntity()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final entity = getEntity();
+        when(() => entity.existsAny()).thenReturn(true);
+        final domainPackage = getDomainPackage();
+        when(() => domainPackage.entity(name: 'FooBar', dir: 'entity/path'))
+            .thenReturn(entity);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act
+        final logger = MockLogger();
+        await project.removeEntity(
+          name: 'FooBar',
+          dir: 'entity/path',
+          logger: logger,
+        );
+
+        // Assert
+        verify(
+          () => domainPackage.entity(name: 'FooBar', dir: 'entity/path'),
+        ).called(1);
+        verify(() => entity.delete(logger: logger)).called(1);
+      });
+
+      test('throws EntityDoesNotExist when entity does not exist', () async {
+        // Arrange
+        final entity = getEntity();
+        when(() => entity.existsAny()).thenReturn(false);
+        final domainPackage = getDomainPackage();
+        when(() => domainPackage.entity(name: 'FooBar', dir: 'entity/path'))
+            .thenReturn(entity);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act + Assert
+        expect(
+          project.removeEntity(
+            name: 'FooBar',
+            dir: 'entity/path',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<EntityDoesNotExist>()),
+        );
+      });
+    });
+
+    group('.addServiceInterface()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final serviceInterface = getServiceInterface();
+        when(() => serviceInterface.existsAny()).thenReturn(false);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.serviceInterface(
+            name: 'FooBar',
+            dir: 'entity/path',
+          ),
+        ).thenReturn(serviceInterface);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act
+        final logger = MockLogger();
+        await project.addServiceInterface(
+          name: 'FooBar',
+          outputDir: 'entity/path',
+          logger: logger,
+        );
+
+        // Assert
+        verify(
+          () => domainPackage.serviceInterface(
+            name: 'FooBar',
+            dir: 'entity/path',
+          ),
+        ).called(1);
+        verify(() => serviceInterface.create(logger: logger)).called(1);
+      });
+
+      test(
+          'throws ServiceInterfaceAlreadyExists when service interface already exists',
+          () async {
+        // Arrange
+        final serviceInterface = getServiceInterface();
+        when(() => serviceInterface.existsAny()).thenReturn(true);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.serviceInterface(
+            name: 'FooBar',
+            dir: 'service_interface/path',
+          ),
+        ).thenReturn(serviceInterface);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act + Assert
+        expect(
+          project.addServiceInterface(
+            name: 'FooBar',
+            outputDir: 'service_interface/path',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<ServiceInterfaceAlreadyExists>()),
+        );
+      });
+    });
+
+    group('.removeServiceInterface()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final serviceInterface = getServiceInterface();
+        when(() => serviceInterface.existsAny()).thenReturn(true);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.serviceInterface(
+            name: 'FooBar',
+            dir: 'entity/path',
+          ),
+        ).thenReturn(serviceInterface);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act
+        final logger = MockLogger();
+        await project.removeServiceInterface(
+          name: 'FooBar',
+          dir: 'entity/path',
+          logger: logger,
+        );
+
+        // Assert
+        verify(
+          () => domainPackage.serviceInterface(
+            name: 'FooBar',
+            dir: 'entity/path',
+          ),
+        ).called(1);
+        verify(() => serviceInterface.delete(logger: logger)).called(1);
+      });
+
+      test(
+          'throws ServiceInterfaceDoesNotExist when service interface does no exist',
+          () async {
+        // Arrange
+        final serviceInterface = getServiceInterface();
+        when(() => serviceInterface.existsAny()).thenReturn(false);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.serviceInterface(
+            name: 'FooBar',
+            dir: 'service_interface/path',
+          ),
+        ).thenReturn(serviceInterface);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act + Assert
+        expect(
+          project.removeServiceInterface(
+            name: 'FooBar',
+            dir: 'service_interface/path',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<ServiceInterfaceDoesNotExist>()),
+        );
+      });
+    });
+
+    group('.addValueObject()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final valueObject = getValueObject();
+        when(() => valueObject.existsAny()).thenReturn(false);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.valueObject(
+            name: 'FooBar',
+            dir: 'value_object/path',
+          ),
+        ).thenReturn(valueObject);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act
+        final logger = MockLogger();
+        await project.addValueObject(
+          name: 'FooBar',
+          outputDir: 'value_object/path',
+          type: 'String',
+          generics: '',
+          logger: logger,
+        );
+
+        // Assert
+        verify(
+          () => domainPackage.valueObject(
+            name: 'FooBar',
+            dir: 'value_object/path',
+          ),
+        ).called(1);
+        verify(
+          () => valueObject.create(
+            logger: logger,
+            type: 'String',
+            generics: '',
+          ),
+        ).called(1);
+      });
+
+      test('throws ValueObjectAlreadyExists when value object already exists',
+          () async {
+        // Arrange
+        final valueObject = getValueObject();
+        when(() => valueObject.existsAny()).thenReturn(true);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.valueObject(
+            name: 'FooBar',
+            dir: 'value_object/path',
+          ),
+        ).thenReturn(valueObject);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act + Assert
+        expect(
+          project.addValueObject(
+            name: 'FooBar',
+            outputDir: 'value_object/path',
+            type: 'String',
+            generics: '',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<ValueObjectAlreadyExists>()),
+        );
+      });
+    });
+
+    group('.removeValueObject()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final valueObject = getValueObject();
+        when(() => valueObject.existsAny()).thenReturn(true);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.valueObject(
+            name: 'FooBar',
+            dir: 'value_object/path',
+          ),
+        ).thenReturn(valueObject);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act
+        final logger = MockLogger();
+        await project.removeValueObject(
+          name: 'FooBar',
+          dir: 'value_object/path',
+          logger: logger,
+        );
+
+        // Assert
+        verify(
+          () => domainPackage.valueObject(
+            name: 'FooBar',
+            dir: 'value_object/path',
+          ),
+        ).called(1);
+        verify(() => valueObject.delete(logger: logger)).called(1);
+      });
+
+      test('throws ValueObjectDoesNotExist when value object does not exist',
+          () async {
+        // Arrange
+        final valueObject = getValueObject();
+        when(() => valueObject.existsAny()).thenReturn(false);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.valueObject(
+            name: 'FooBar',
+            dir: 'value_object/path',
+          ),
+        ).thenReturn(valueObject);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act + Assert
+        expect(
+          project.removeValueObject(
+            name: 'FooBar',
+            dir: 'value_object/path',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<ValueObjectDoesNotExist>()),
+        );
+      });
+    });
+
+    group('.addDataTransferObject()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final entity = getEntity();
+        when(() => entity.existsAny()).thenReturn(true);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.entity(
+            name: 'FooBar',
+            dir: 'data_transfer_object/path',
+          ),
+        ).thenReturn(entity);
+        final dataTransferObject = getDataTransferObject();
+        when(() => dataTransferObject.existsAny()).thenReturn(false);
+        final infrastructurePackage = getInfrastructurePackage();
+        when(
+          () => infrastructurePackage.dataTransferObject(
+            entityName: 'FooBar',
+            dir: 'data_transfer_object/path',
+          ),
+        ).thenReturn(dataTransferObject);
+        final project = _getProject(
+          domainPackage: domainPackage,
+          infrastructurePackage: infrastructurePackage,
+        );
+
+        // Act
+        final logger = FakeLogger();
+        await project.addDataTransferObject(
+          entityName: 'FooBar',
+          outputDir: 'data_transfer_object/path',
+          logger: logger,
+        );
+
+        // Assert
+        verify(
+          () => domainPackage.entity(
+            name: 'FooBar',
+            dir: 'data_transfer_object/path',
+          ),
+        ).called(1);
+        verify(
+          () => infrastructurePackage.dataTransferObject(
+            entityName: 'FooBar',
+            dir: 'data_transfer_object/path',
+          ),
+        ).called(1);
+        verify(() => dataTransferObject.create(logger: logger)).called(1);
+      });
+
+      test('throws EntityDoesNotExist when related entity does not exist',
+          () async {
+        // Arrange
+        final entity = getEntity();
+        when(() => entity.existsAny()).thenReturn(false);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.entity(
+            name: 'FooBar',
+            dir: 'data_transfer_object/path',
+          ),
+        ).thenReturn(entity);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act + Assert
+        expect(
+          project.addDataTransferObject(
+            entityName: 'FooBar',
+            outputDir: 'data_transfer_object/path',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<EntityDoesNotExist>()),
+        );
+      });
+
+      test(
+          'throws DataTransferObjectAlreadyExists when the data transfer object already exists',
+          () async {
+        // Arrange
+        final entity = getEntity();
+        when(() => entity.existsAny()).thenReturn(true);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.entity(
+            name: 'FooBar',
+            dir: 'data_transfer_object/path',
+          ),
+        ).thenReturn(entity);
+        final dataTransferObject = getDataTransferObject();
+        when(() => dataTransferObject.existsAny()).thenReturn(true);
+        final infrastructurePackage = getInfrastructurePackage();
+        when(
+          () => infrastructurePackage.dataTransferObject(
+            entityName: 'FooBar',
+            dir: 'data_transfer_object/path',
+          ),
+        ).thenReturn(dataTransferObject);
+        final project = _getProject(
+          domainPackage: domainPackage,
+          infrastructurePackage: infrastructurePackage,
+        );
+
+        // Act + Assert
+        expect(
+          project.addDataTransferObject(
+            entityName: 'FooBar',
+            outputDir: 'data_transfer_object/path',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<DataTransferObjectAlreadyExists>()),
+        );
+      });
+    });
+
+    group('.removeDataTransferObject()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final dataTransferObject = getDataTransferObject();
+        when(() => dataTransferObject.existsAny()).thenReturn(true);
+        final infrastructurePackage = getInfrastructurePackage();
+        when(
+          () => infrastructurePackage.dataTransferObject(
+            entityName: 'FooBar',
+            dir: 'data_transfer_object/path',
+          ),
+        ).thenReturn(dataTransferObject);
+        final project = _getProject(
+          infrastructurePackage: infrastructurePackage,
+        );
+
+        // Act
+        final logger = FakeLogger();
+        await project.removeDataTransferObject(
+          name: 'FooBar',
+          dir: 'data_transfer_object/path',
+          logger: logger,
+        );
+
+        // Assert
+        verify(
+          () => infrastructurePackage.dataTransferObject(
+            entityName: 'FooBar',
+            dir: 'data_transfer_object/path',
+          ),
+        ).called(1);
+        verify(() => dataTransferObject.delete(logger: logger)).called(1);
+      });
+
+      test(
+          'throws DataTransferObjectDoesNotExist when the value object does not exist',
+          () async {
+        // Arrange
+        final dataTransferObject = getDataTransferObject();
+        when(() => dataTransferObject.existsAny()).thenReturn(false);
+        final infrastructurePackage = getInfrastructurePackage();
+        when(
+          () => infrastructurePackage.dataTransferObject(
+            entityName: 'FooBar',
+            dir: 'data_transfer_object/path',
+          ),
+        ).thenReturn(dataTransferObject);
+        final project = _getProject(
+          infrastructurePackage: infrastructurePackage,
+        );
+
+        // Act
+        expect(
+          project.removeDataTransferObject(
+            name: 'FooBar',
+            dir: 'data_transfer_object/path',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<DataTransferObjectDoesNotExist>()),
+        );
+      });
+    });
+
+    group('.addServiceImplementation()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final serviceInterface = getServiceInterface();
+        when(() => serviceInterface.existsAny()).thenReturn(true);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.serviceInterface(
+            name: 'FooBar',
+            dir: 'service_implementation/path',
+          ),
+        ).thenReturn(serviceInterface);
+        final serviceImplementation = getServiceImplementation();
+        when(() => serviceImplementation.existsAny()).thenReturn(false);
+        final infrastructurePackage = getInfrastructurePackage();
+        when(
+          () => infrastructurePackage.serviceImplementation(
+            name: 'Fake',
+            serviceName: 'FooBar',
+            dir: 'service_implementation/path',
+          ),
+        ).thenReturn(serviceImplementation);
+        final project = _getProject(
+          domainPackage: domainPackage,
+          infrastructurePackage: infrastructurePackage,
+        );
+
+        // Act
+        final logger = FakeLogger();
+        await project.addServiceImplementation(
+          name: 'Fake',
+          serviceName: 'FooBar',
+          outputDir: 'service_implementation/path',
+          logger: logger,
+        );
+
+        // Assert
+        verify(
+          () => domainPackage.serviceInterface(
+            name: 'FooBar',
+            dir: 'service_implementation/path',
+          ),
+        ).called(1);
+        verify(
+          () => infrastructurePackage.serviceImplementation(
+            name: 'Fake',
+            serviceName: 'FooBar',
+            dir: 'service_implementation/path',
+          ),
+        ).called(1);
+        verify(() => serviceImplementation.create(logger: logger)).called(1);
+      });
+
+      test(
+          'throws ServiceInterfaceDoesNotExist when related service interface does not exist',
+          () async {
+        // Arrange
+        final serviceInterface = getServiceInterface();
+        when(() => serviceInterface.existsAny()).thenReturn(false);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.serviceInterface(
+            name: 'FooBar',
+            dir: 'service_implementation/path',
+          ),
+        ).thenReturn(serviceInterface);
+        final project = _getProject(
+          domainPackage: domainPackage,
+        );
+
+        // Act + Assert
+        expect(
+          project.addServiceImplementation(
+            name: 'Fake',
+            serviceName: 'FooBar',
+            outputDir: 'service_implementation/path',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<ServiceInterfaceDoesNotExist>()),
+        );
+      });
+
+      test(
+          'throws ServiceImplementationAlreadyExists when the service implementation already exists',
+          () async {
+        // Arrange
+        final serviceInterface = getServiceInterface();
+        when(() => serviceInterface.existsAny()).thenReturn(true);
+        final domainPackage = getDomainPackage();
+        when(
+          () => domainPackage.serviceInterface(
+            name: 'FooBar',
+            dir: 'service_implementation/path',
+          ),
+        ).thenReturn(serviceInterface);
+        final serviceImplementation = getServiceImplementation();
+        when(() => serviceImplementation.existsAny()).thenReturn(true);
+        final infrastructurePackage = getInfrastructurePackage();
+        when(
+          () => infrastructurePackage.serviceImplementation(
+            name: 'Fake',
+            serviceName: 'FooBar',
+            dir: 'service_implementation/path',
+          ),
+        ).thenReturn(serviceImplementation);
+        final project = _getProject(
+          domainPackage: domainPackage,
+          infrastructurePackage: infrastructurePackage,
+        );
+
+        // Act + Assert
+        expect(
+          project.addServiceImplementation(
+            name: 'Fake',
+            serviceName: 'FooBar',
+            outputDir: 'service_implementation/path',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<ServiceImplementationAlreadyExists>()),
+        );
+      });
+    });
+
+    group('.removeServiceImplementation()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final serviceImplementation = getServiceImplementation();
+        when(() => serviceImplementation.existsAny()).thenReturn(true);
+        final infrastructurePackage = getInfrastructurePackage();
+        when(
+          () => infrastructurePackage.serviceImplementation(
+            name: 'Fake',
+            serviceName: 'FooBar',
+            dir: 'service_implementation/path',
+          ),
+        ).thenReturn(serviceImplementation);
+        final project = _getProject(
+          infrastructurePackage: infrastructurePackage,
+        );
+
+        // Act
+        final logger = FakeLogger();
+        await project.removeServiceImplementation(
+          name: 'Fake',
+          serviceName: 'FooBar',
+          dir: 'service_implementation/path',
+          logger: logger,
+        );
+
+        // Assert
+        verify(
+          () => infrastructurePackage.serviceImplementation(
+            name: 'Fake',
+            serviceName: 'FooBar',
+            dir: 'service_implementation/path',
+          ),
+        ).called(1);
+        verify(() => serviceImplementation.delete(logger: logger)).called(1);
+      });
+
+      test(
+          'throws ServiceImplementationDoesNotExist when the service implementation does not exist',
+          () async {
+        // Arrange
+        final serviceImplementation = getServiceImplementation();
+        when(() => serviceImplementation.existsAny()).thenReturn(false);
+        final infrastructurePackage = getInfrastructurePackage();
+        when(
+          () => infrastructurePackage.serviceImplementation(
+            name: 'Fake',
+            serviceName: 'FooBar',
+            dir: 'service_implementation/path',
+          ),
+        ).thenReturn(serviceImplementation);
+        final project = _getProject(
+          infrastructurePackage: infrastructurePackage,
+        );
+
+        // Act
+        expect(
+          project.removeServiceImplementation(
+            name: 'Fake',
+            serviceName: 'FooBar',
+            dir: 'service_implementation/path',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<ServiceImplementationDoesNotExist>()),
+        );
+      });
+    });
+
+    group('.addBloc()', () {
+      group('completes successfully with correct output', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final bloc = getBloc();
+          when(() => bloc.existsAny()).thenReturn(false);
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.path).thenReturn('my_feature/path');
+          when(() => customFeaturePackage.exists()).thenReturn(true);
+          when(() => customFeaturePackage.bloc(name: any(named: 'name')))
+              .thenReturn(bloc);
+          final platformDirectory = getPlatformDirectory();
+          when(
+            () => platformDirectory.customFeaturePackage(
+              name: any(named: 'name'),
+            ),
+          ).thenReturn(customFeaturePackage);
+          final platformDirectoryBuilder = getPlatformDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+              getFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs();
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+                flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+          );
+
+          // Act
+          final logger = MockLogger();
+          await project.addBloc(
+            name: 'FooBar',
+            featureName: 'my_feature',
+            platform: platform,
+            logger: logger,
+          );
+
+          // Assert
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+          verify(() =>
+                  platformDirectory.customFeaturePackage(name: 'my_feature'))
+              .called(1);
+          verify(() => customFeaturePackage.bloc(name: 'FooBar')).called(1);
+          verify(() => bloc.create(logger: logger)).called(1);
+          verify(
+            () => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: 'my_feature/path',
+              logger: logger,
+            ),
+          ).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group(
+          'throws FeatureDoesNotExist when the related feature does not exists',
+          () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.exists()).thenReturn(false);
+          final platformDirectory = getPlatformDirectory();
+          when(
+            () => platformDirectory.customFeaturePackage(
+              name: any(named: 'name'),
+            ),
+          ).thenReturn(customFeaturePackage);
+          final platformDirectoryBuilder = getPlatformDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.addBloc(
+              name: 'FooBar',
+              featureName: 'my_feature',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<FeatureDoesNotExist>()),
+          );
+
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+          verify(() =>
+                  platformDirectory.customFeaturePackage(name: 'my_feature'))
+              .called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group('throws BlocAlreadyExists when bloc already exists', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final bloc = getBloc();
+          when(() => bloc.existsAny()).thenReturn(true);
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.exists()).thenReturn(true);
+          when(() => customFeaturePackage.bloc(name: any(named: 'name')))
+              .thenReturn(bloc);
+          final platformDirectory = getPlatformDirectory();
+          when(
+            () => platformDirectory.customFeaturePackage(
+              name: any(named: 'name'),
+            ),
+          ).thenReturn(customFeaturePackage);
+          final platformDirectoryBuilder = getPlatformDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.addBloc(
+              name: 'FooBar',
+              featureName: 'my_feature',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<BlocAlreadyExists>()),
+          );
+
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+          verify(() =>
+                  platformDirectory.customFeaturePackage(name: 'my_feature'))
+              .called(1);
+          verify(() => customFeaturePackage.bloc(name: 'FooBar')).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+    });
+
+    group('.addCubit()', () {
+      group('completes successfully with correct output', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final cubit = getCubit();
+          when(() => cubit.existsAny()).thenReturn(false);
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.path).thenReturn('my_feature/path');
+          when(() => customFeaturePackage.exists()).thenReturn(true);
+          when(() => customFeaturePackage.cubit(name: any(named: 'name')))
+              .thenReturn(cubit);
+          final platformDirectory = getPlatformDirectory();
+          when(
+            () => platformDirectory.customFeaturePackage(
+              name: any(named: 'name'),
+            ),
+          ).thenReturn(customFeaturePackage);
+          final platformDirectoryBuilder = getPlatformDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+              getFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs();
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+                flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+          );
+
+          // Act
+          final logger = MockLogger();
+          await project.addCubit(
+            name: 'FooBar',
+            featureName: 'my_feature',
+            platform: platform,
+            logger: logger,
+          );
+
+          // Assert
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+          verify(() =>
+                  platformDirectory.customFeaturePackage(name: 'my_feature'))
+              .called(1);
+          verify(() => customFeaturePackage.cubit(name: 'FooBar')).called(1);
+          verify(() => cubit.create(logger: logger)).called(1);
+          verify(
+            () => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: 'my_feature/path',
+              logger: logger,
+            ),
+          ).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group(
+          'throws FeatureDoesNotExist when the related feature does not exists',
+          () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.exists()).thenReturn(false);
+          final platformDirectory = getPlatformDirectory();
+          when(
+            () => platformDirectory.customFeaturePackage(
+              name: any(named: 'name'),
+            ),
+          ).thenReturn(customFeaturePackage);
+          final platformDirectoryBuilder = getPlatformDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.addCubit(
+              name: 'FooBar',
+              featureName: 'my_feature',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<FeatureDoesNotExist>()),
+          );
+
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+          verify(() =>
+                  platformDirectory.customFeaturePackage(name: 'my_feature'))
+              .called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group('throws CubitAlreadyExists when bloc already exists', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final cubit = getCubit();
+          when(() => cubit.existsAny()).thenReturn(true);
+          final customFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => customFeaturePackage.exists()).thenReturn(true);
+          when(() => customFeaturePackage.cubit(name: any(named: 'name')))
+              .thenReturn(cubit);
+          final platformDirectory = getPlatformDirectory();
+          when(
+            () => platformDirectory.customFeaturePackage(
+              name: any(named: 'name'),
+            ),
+          ).thenReturn(customFeaturePackage);
+          final platformDirectoryBuilder = getPlatformDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.addCubit(
+              name: 'FooBar',
+              featureName: 'my_feature',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<CubitAlreadyExists>()),
+          );
+
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+          verify(() =>
+                  platformDirectory.customFeaturePackage(name: 'my_feature'))
+              .called(1);
+          verify(() => customFeaturePackage.cubit(name: 'FooBar')).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+    });
+
+    group('.addWidget()', () {
+      group('completes successfully with correct output', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final widget = getWidget();
+          when(() => widget.existsAny()).thenReturn(false);
+          final platformUiPackage = getPlatformUiPackage();
+          when(
+            () => platformUiPackage.widget(
+              name: 'FooBar',
+              dir: 'widget/path',
+            ),
+          ).thenReturn(widget);
+          final platformUiPackageBuilder = getPlatformUiPackageBuilder();
+          when(
+            () => platformUiPackageBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformUiPackage);
+          final project = _getProject(
+            platformUiPackage: platformUiPackageBuilder,
+          );
+
+          // Act
+          final logger = MockLogger();
+          await project.addWidget(
+            name: 'FooBar',
+            outputDir: 'widget/path',
+            platform: platform,
+            logger: logger,
+          );
+
+          // Assert
+          verify(() => platformUiPackageBuilder(platform: platform)).called(1);
+          verify(
+            () => platformUiPackage.widget(
+              name: 'FooBar',
+              dir: 'widget/path',
+            ),
+          ).called(1);
+          verify(() => widget.create(logger: logger)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group('throws WidgetAlreadyExists when widget already exists', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final widget = getWidget();
+          when(() => widget.existsAny()).thenReturn(true);
+          final platformUiPackage = getPlatformUiPackage();
+          when(
+            () => platformUiPackage.widget(
+              name: 'FooBar',
+              dir: 'widget/path',
+            ),
+          ).thenReturn(widget);
+          final platformUiPackageBuilder = getPlatformUiPackageBuilder();
+          when(
+            () => platformUiPackageBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformUiPackage);
+          final project = _getProject(
+            platformUiPackage: platformUiPackageBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.addWidget(
+              name: 'FooBar',
+              outputDir: 'widget/path',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<WidgetAlreadyExists>()),
+          );
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+    });
+
+    group('.removeWidget()', () {
+      group('completes successfully with correct output', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final widget = getWidget();
+          when(() => widget.existsAny()).thenReturn(true);
+          final platformUiPackage = getPlatformUiPackage();
+          when(
+            () => platformUiPackage.widget(
+              name: 'FooBar',
+              dir: 'widget/path',
+            ),
+          ).thenReturn(widget);
+          final platformUiPackageBuilder = getPlatformUiPackageBuilder();
+          when(
+            () => platformUiPackageBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformUiPackage);
+          final project = _getProject(
+            platformUiPackage: platformUiPackageBuilder,
+          );
+
+          // Act
+          final logger = MockLogger();
+          await project.removeWidget(
+            name: 'FooBar',
+            dir: 'widget/path',
+            platform: platform,
+            logger: logger,
+          );
+
+          // Assert
+          verify(() => platformUiPackageBuilder(platform: platform)).called(1);
+          verify(
+            () => platformUiPackage.widget(
+              name: 'FooBar',
+              dir: 'widget/path',
+            ),
+          ).called(1);
+          verify(() => widget.delete(logger: logger)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group('throws WidgetDoesNotExist when widget does not exist', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final widget = getWidget();
+          when(() => widget.existsAny()).thenReturn(false);
+          final platformUiPackage = getPlatformUiPackage();
+          when(
+            () => platformUiPackage.widget(
+              name: 'FooBar',
+              dir: 'widget/path',
+            ),
+          ).thenReturn(widget);
+          final platformUiPackageBuilder = getPlatformUiPackageBuilder();
+          when(
+            () => platformUiPackageBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformUiPackage);
+          final project = _getProject(
+            platformUiPackage: platformUiPackageBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.removeWidget(
+              name: 'FooBar',
+              dir: 'widget/path',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<WidgetDoesNotExist>()),
+          );
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+    });
   });
 
   group('MelosFile', () {

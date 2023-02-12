@@ -79,6 +79,9 @@ class MockPlatformDirectory extends Mock implements PlatformDirectory {}
 class MockPlatformCustomFeaturePackage extends Mock
     implements PlatformCustomFeaturePackage {}
 
+class MockPlatformRoutingFeaturePackage extends Mock
+    implements PlatformRoutingFeaturePackage {}
+
 class MockPubspecFile extends Mock implements PubspecFile {}
 
 class MockInjectionFile extends Mock implements InjectionFile {}
@@ -156,6 +159,14 @@ class MockDartFormatFixCommand extends Mock implements _DartFormatFixCommand {}
 
 class MockDomainPackage extends Mock implements DomainPackage {}
 
+class MockEntity extends Mock implements Entity {}
+
+class MockServiceInterface extends Mock implements ServiceInterface {}
+
+class MockServiceImplementation extends Mock implements ServiceImplementation {}
+
+class MockValueObject extends Mock implements ValueObject {}
+
 class MockInfrastructurePackage extends Mock implements InfrastructurePackage {}
 
 abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
@@ -200,6 +211,14 @@ abstract class _PlatformUiPackageBuilder {
 class MockPlatformUiPackageBuilder extends Mock
     implements _PlatformUiPackageBuilder {}
 
+class MockDataTransferObject extends Mock implements DataTransferObject {}
+
+class MockWidget extends Mock implements Widget {}
+
+class MockBloc extends Mock implements Bloc {}
+
+class MockCubit extends Mock implements Cubit {}
+
 // Fakes
 
 class FakeProcess {
@@ -228,6 +247,9 @@ class FakeDirectoryGeneratorTarget extends Fake
 class FakeMasonBundle extends Fake implements MasonBundle {}
 
 class FakeLogger extends Fake implements Logger {}
+
+class FakePlatformCustomFeaturePackage extends Fake
+    implements PlatformCustomFeaturePackage {}
 
 // Common Mock Setups
 
@@ -286,6 +308,33 @@ MockAppPackage getAppPackage() {
   when(() => appPackage.exists()).thenReturn(true);
   final project = getProject();
   when(() => appPackage.project).thenReturn(project);
+  when(
+    () => appPackage.create(
+      description: any(named: 'description'),
+      orgName: any(named: 'orgName'),
+      android: any(named: 'android'),
+      ios: any(named: 'ios'),
+      linux: any(named: 'linux'),
+      macos: any(named: 'macos'),
+      web: any(named: 'web'),
+      windows: any(named: 'windows'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+  when(
+    () => appPackage.addPlatform(
+      any(),
+      description: any(named: 'description'),
+      orgName: any(named: 'orgName'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+  when(
+    () => appPackage.removePlatform(
+      any(),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
 
   return appPackage;
 }
@@ -307,6 +356,29 @@ MockDiPackage getDiPackage() {
   final diPackage = MockDiPackage();
   when(() => diPackage.path).thenReturn('some/path');
   when(() => diPackage.exists()).thenReturn(true);
+  when(
+    () => diPackage.create(
+      android: any(named: 'android'),
+      ios: any(named: 'ios'),
+      linux: any(named: 'linux'),
+      macos: any(named: 'macos'),
+      web: any(named: 'web'),
+      windows: any(named: 'windows'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+  when(
+    () => diPackage.registerCustomFeaturePackage(
+      any(),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+  when(
+    () => diPackage.unregisterCustomFeaturePackages(
+      any(),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
 
   return diPackage;
 }
@@ -317,15 +389,73 @@ MockPlatformCustomFeaturePackage getPlatformCustomFeaturePackage() {
   when(() => platformCustomFeaturePackage.name).thenReturn('some_feature_name');
   when(() => platformCustomFeaturePackage.packageName())
       .thenReturn('some_feature_package_name');
+  when(
+    () => platformCustomFeaturePackage.create(
+      description: any(named: 'description'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+  when(
+    () => platformCustomFeaturePackage.addLanguage(
+      language: any(named: 'language'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+  when(
+    () => platformCustomFeaturePackage.removeLanguage(
+      language: any(named: 'language'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
 
   return platformCustomFeaturePackage;
+}
+
+MockPlatformRoutingFeaturePackage getPlatformRoutingFeaturePackage() {
+  final platformRoutingFeaturePackage = MockPlatformRoutingFeaturePackage();
+  when(() => platformRoutingFeaturePackage.path)
+      .thenReturn('routing_feature/path');
+  when(() => platformRoutingFeaturePackage.name)
+      .thenReturn('routing_feature_name');
+  when(() => platformRoutingFeaturePackage.packageName())
+      .thenReturn('routing_feature_package_name');
+  when(
+    () => platformRoutingFeaturePackage.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
+  when(
+    () => platformRoutingFeaturePackage.registerCustomFeaturePackage(
+      any(),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+  when(
+    () => platformRoutingFeaturePackage.unregisterCustomFeaturePackage(
+      any(),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+
+  return platformRoutingFeaturePackage;
 }
 
 MockPlatformUiPackage getPlatformUiPackage() {
   final platformUiPackage = MockPlatformUiPackage();
   when(() => platformUiPackage.exists()).thenReturn(true);
+  when(
+    () => platformUiPackage.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
 
   return platformUiPackage;
+}
+
+MockPlatformUiPackageBuilder getPlatformUiPackageBuilder() {
+  final platformUiPackageBuilder = MockPlatformUiPackageBuilder();
+  final platformUiPackage = getPlatformUiPackage();
+  when(
+    () => platformUiPackageBuilder(platform: any(named: 'platform')),
+  ).thenReturn(platformUiPackage);
+
+  return platformUiPackageBuilder;
 }
 
 MockPlatformNativeDirectory getPlatformNativeDirectory() {
@@ -358,6 +488,33 @@ MockPlatformDirectory getPlatformDirectory() {
   return platformDirectory;
 }
 
+MockBloc getBloc() {
+  final bloc = MockBloc();
+  when(
+    () => bloc.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
+
+  return bloc;
+}
+
+MockCubit getCubit() {
+  final cubit = MockCubit();
+  when(
+    () => cubit.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
+
+  return cubit;
+}
+
+MockWidget getWidget() {
+  final widget = MockWidget();
+  when(
+    () => widget.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
+
+  return widget;
+}
+
 MockPlatformDirectoryBuilder getPlatfromDirectoryBuilder() {
   final platformDirectoryBuilder = MockPlatformDirectoryBuilder();
   final platformDirectory = getPlatformDirectory();
@@ -377,6 +534,21 @@ MockMainFile getMainFile() {
 MockPlatformAppFeaturePackage getPlatformAppFeaturePackage() {
   final appFeaturePackage = MockPlatformAppFeaturePackage();
   when(() => appFeaturePackage.path).thenReturn('some/path');
+  when(
+    () => appFeaturePackage.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
+  when(
+    () => appFeaturePackage.registerCustomFeaturePackage(
+      any(),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+  when(
+    () => appFeaturePackage.unregisterCustomFeaturePackage(
+      any(),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
 
   return appFeaturePackage;
 }
@@ -428,14 +600,60 @@ MockDomainPackage getDomainPackage() {
   final domainPackage = MockDomainPackage();
   when(() => domainPackage.path).thenReturn('some/path');
   when(() => domainPackage.exists()).thenReturn(true);
+  when(
+    () => domainPackage.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
 
   return domainPackage;
+}
+
+MockEntity getEntity() {
+  final entity = MockEntity();
+  when(
+    () => entity.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
+
+  return entity;
+}
+
+MockServiceInterface getServiceInterface() {
+  final serviceInterface = MockServiceInterface();
+  when(
+    () => serviceInterface.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
+
+  return serviceInterface;
+}
+
+MockServiceImplementation getServiceImplementation() {
+  final serviceImplementation = MockServiceImplementation();
+  when(
+    () => serviceImplementation.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
+
+  return serviceImplementation;
+}
+
+MockValueObject getValueObject() {
+  final valueObject = MockValueObject();
+  when(
+    () => valueObject.create(
+      type: any(named: 'type'),
+      generics: any(named: 'generics'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+
+  return valueObject;
 }
 
 MockInfrastructurePackage getInfrastructurePackage() {
   final infrastructurePackage = MockInfrastructurePackage();
   when(() => infrastructurePackage.path).thenReturn('some/path');
   when(() => infrastructurePackage.exists()).thenReturn(true);
+  when(
+    () => infrastructurePackage.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
 
   return infrastructurePackage;
 }
@@ -492,6 +710,9 @@ MockMelosFile getMelosFile() {
 MockLoggingPackage getLoggingPackage() {
   final loggingPackage = MockLoggingPackage();
   when(() => loggingPackage.path).thenReturn('some/path');
+  when(
+    () => loggingPackage.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
 
   return loggingPackage;
 }
@@ -500,6 +721,9 @@ MockUiPackage getUiPackage() {
   final uiPackage = MockUiPackage();
   when(() => uiPackage.path).thenReturn('some/path');
   when(() => uiPackage.exists()).thenReturn(true);
+  when(
+    () => uiPackage.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
 
   return uiPackage;
 }
@@ -512,4 +736,23 @@ MockPlatformUiPackageBuilder getPlatfromUiPackageBuilder() {
   ).thenReturn(platformUiPackage);
 
   return platformUiPackageBuilder;
+}
+
+MockPlatformDirectoryBuilder getPlatformDirectoryBuilder() {
+  final platformDirectoryBuilder = MockPlatformDirectoryBuilder();
+  final platfromDirectory = getPlatformDirectory();
+  when(
+    () => platformDirectoryBuilder(platform: any(named: 'platform')),
+  ).thenReturn(platfromDirectory);
+
+  return platformDirectoryBuilder;
+}
+
+MockDataTransferObject getDataTransferObject() {
+  final dataTransferObject = MockDataTransferObject();
+  when(
+    () => dataTransferObject.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
+
+  return dataTransferObject;
 }

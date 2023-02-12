@@ -83,6 +83,8 @@ void main() {
   group('DiPackage', () {
     setUpAll(() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
+      registerFallbackValue(FakeLogger());
+      registerFallbackValue(FakePlatformCustomFeaturePackage());
     });
 
     test('.path', () {

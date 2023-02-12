@@ -243,7 +243,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
 
     generateProgress.complete();
 
-    // TODO logg inside the metohd pls
+    // TODO log inside the metohd pls
     await appPackage.addPlatform(
       platform,
       description: description,
@@ -251,7 +251,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
       logger: logger,
     );
 
-    // TODO logg inside the metohd pls
+    // TODO log inside the metohd pls
     await diPackage.registerCustomFeaturePackage(
       platformHomePagePackage,
       logger: logger,
@@ -293,10 +293,10 @@ class ProjectImpl extends DirectoryImpl implements Project {
     );
 
     await appPackage.removePlatform(platform, logger: logger);
-    final platformDirectory = this.platformDirectory(platform: platform);
-    final customFeaturesPackages = platformDirectory.customFeaturePackages();
     final platformUiPackage = this.platformUiPackage(platform: platform);
     platformUiPackage.delete(logger: logger);
+    final platformDirectory = this.platformDirectory(platform: platform);
+    final customFeaturesPackages = platformDirectory.customFeaturePackages();
     await diPackage.unregisterCustomFeaturePackages(
       customFeaturesPackages,
       logger: logger,
@@ -372,6 +372,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
       );
 
       await _melosBootstrap(
+        cwd: path,
         logger: logger,
         scope: [
           customFeaturePackage.packageName(),
@@ -391,7 +392,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
         logger: logger,
       );
 
-      await _dartFormatFix(logger: logger);
+      await _dartFormatFix(cwd: path, logger: logger);
     }
   }
 
@@ -430,7 +431,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
     );
 
     final otherFeaturePackages = [
-      platformDirectory.appFeaturePackage,
+      appFeaturePackage,
       routingFeaturePackage,
       ...platformDirectory.customFeaturePackages(),
     ]..removeWhere(
@@ -446,11 +447,10 @@ class ProjectImpl extends DirectoryImpl implements Project {
     customFeaturePackage.delete(logger: logger);
 
     await _melosBootstrap(
+      cwd: path,
       logger: logger,
       scope: [
         diPackage.packageName(),
-        appFeaturePackage.packageName(),
-        routingFeaturePackage.packageName(),
         ...otherFeaturePackages.map((e) => e.packageName())
       ],
     );
@@ -675,7 +675,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
       dir: dir,
     );
     if (!dataTransferObject.existsAny()) {
-      throw ValueObjectDoesNotExist();
+      throw DataTransferObjectDoesNotExist();
     }
 
     dataTransferObject.delete(logger: logger);

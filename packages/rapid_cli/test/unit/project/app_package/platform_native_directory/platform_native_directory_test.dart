@@ -32,6 +32,9 @@ void main() {
     setUpAll(() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
       registerFallbackValue(FakeMasonBundle());
+      registerFallbackValue(FakeLogger());
+      registerFallbackValue(Platform.android);
+      registerFallbackValue(FakePlatformCustomFeaturePackage());
     });
 
     group('.path', () {

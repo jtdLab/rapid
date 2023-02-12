@@ -1,3 +1,5 @@
+// TODO this file exists only for coverage reasons and should not be needed in final release
+
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/file.dart';
 import 'package:test/test.dart';

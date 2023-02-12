@@ -1,3 +1,5 @@
+// TODO this file exists only for coverage reasons and should not be needed in final release
+
 import 'dart:io' as io;
 
 import 'package:mocktail/mocktail.dart';

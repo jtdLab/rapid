@@ -756,6 +756,10 @@ void main() {
   });
 
   group('LanguageLocalizationsFile', () {
+    setUpAll(() {
+      registerFallbackValue(FakeLogger());
+    });
+
     test('.path', () {
       // Arrange
       final platformFeaturePackage = getPlatformCustomFeaturePackage();
@@ -1004,6 +1008,7 @@ void main() {
   group('Bloc', () {
     setUpAll(() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
+      registerFallbackValue(FakeLogger());
     });
 
     test('.name', () {
@@ -1376,6 +1381,7 @@ void main() {
   group('Cubit', () {
     setUpAll(() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
+      registerFallbackValue(FakeLogger());
     });
 
     test('.name', () {

@@ -505,6 +505,11 @@ void main() {
   });
 
   group('MainFile', () {
+    setUpAll(() {
+      registerFallbackValue(Platform.android);
+      registerFallbackValue(FakeLogger());
+    });
+
     group('.path', () {
       test('(development)', () {
         // Arrange

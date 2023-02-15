@@ -223,6 +223,11 @@ void main() {
   });
 
   group('InjectionFile', () {
+    setUpAll(() {
+      registerFallbackValue(FakeLogger());
+      registerFallbackValue(FakePlatformCustomFeaturePackage());
+    });
+
     test('.path', () {
       // Arrange
       final diPackage = getDiPackage();

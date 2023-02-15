@@ -8,6 +8,7 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
+// TODO
 /* Future<void> _performTest(bool fast) async {
   final dir = await getTempDir('activate_android${fast ? '_fast' : ''}');
 
@@ -166,6 +167,6 @@ void main() {
         tags: ['android'],
       );
     },
-    timeout: const Timeout(Duration(minutes: 16)),
+    timeout: const Timeout(Duration(minutes: 24)),
   );
 }

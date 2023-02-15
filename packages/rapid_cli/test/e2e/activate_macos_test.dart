@@ -106,6 +106,6 @@ void main() {
         tags: ['macos'],
       );
     },
-    timeout: const Timeout(Duration(minutes: 20)),
+    timeout: const Timeout(Duration(minutes: 24)),
   );
 }

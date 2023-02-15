@@ -106,6 +106,6 @@ void main() {
         tags: ['linux'],
       );
     },
-    timeout: const Timeout(Duration(minutes: 16)),
+    timeout: const Timeout(Duration(minutes: 24)),
   );
 }

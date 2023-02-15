@@ -6,5 +6,5 @@ class ProjectIosIosHomePageLocalizationsEn
   ProjectIosIosHomePageLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get title => 'Home Page title in english';
+  String get title => 'Home Page title for en';
 }

@@ -96,7 +96,7 @@ abstract class ProjectIosIosHomePageLocalizations {
   /// Title text shown in the Home Page
   ///
   /// In en, this message translates to:
-  /// **'Home Page title in english'**
+  /// **'Home Page title for en'**
   String get title;
 }
 

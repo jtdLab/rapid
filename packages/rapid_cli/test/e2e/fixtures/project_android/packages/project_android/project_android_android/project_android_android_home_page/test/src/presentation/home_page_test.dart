@@ -23,7 +23,7 @@ void main() {
       await tester.pumpApp(homePage());
 
       // Assert
-      expect(find.text('Home Page title in english'), findsOneWidget);
+      expect(find.text('Home Page title for en'), findsOneWidget);
     });
   });
 }

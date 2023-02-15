@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget {
     return ProjectMacosScaffold(
       children: [
         ContentArea(
-          builder: (context) {
+          builder: (context, _) {
             return Center(
               child: Text(title),
             );

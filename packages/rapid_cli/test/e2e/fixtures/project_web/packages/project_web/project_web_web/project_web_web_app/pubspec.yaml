@@ -11,11 +11,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   rapid_di:
     git:
       url: https://github.com/jtdLab/rapid.git
       path: packages/rapid/rapid/rapid_di
+  intl: ^0.17.0
+  bloc: ^8.1.1
+  freezed_annotation: ^2.2.0
+  flutter_bloc: ^8.1.2
   injectable: ^2.1.0
+  project_web_domain:
   project_web_ui_web:
   project_web_web_routing:
   project_web_web_home_page:
@@ -23,8 +30,12 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mocktail: ^0.3.0
+  bloc_test: ^9.1.1
   flutter_lints: ^2.0.1
+  build_runner: ^2.3.2
+  freezed: ^2.3.2
+  injectable_generator: ^2.1.4
+  mocktail: ^0.3.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

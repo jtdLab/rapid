@@ -25,8 +25,8 @@ class ProjectWindowsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lightTheme = ThemeData(extensions: lightExtensions);
-    final darkTheme = ThemeData(extensions: darkExtensions);
+    final lightTheme = FluentThemeData(extensions: lightExtensions);
+    final darkTheme = FluentThemeData(extensions: darkExtensions);
 
     if (home != null) {
       return FluentApp(

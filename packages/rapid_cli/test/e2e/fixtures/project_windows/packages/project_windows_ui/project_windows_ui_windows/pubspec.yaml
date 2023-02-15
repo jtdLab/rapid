@@ -14,7 +14,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   theme_tailor_annotation: ^1.0.3
-  fluent_ui: ^4.1.2
+  fluent_ui: ^4.3.0
   project_windows_ui:
 
 dev_dependencies:

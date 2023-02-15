@@ -794,6 +794,10 @@ void main() {
   });
 
   group('ArbDirectory', () {
+    setUpAll(() {
+      registerFallbackValue(FakeLogger());
+    });
+
     test('.platformCustomizableFeaturePackage', () {
       // Arrange
       final platformFeaturePackage = getPlatformCustomFeaturePackage();

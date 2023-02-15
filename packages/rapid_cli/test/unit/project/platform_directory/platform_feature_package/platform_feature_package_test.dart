@@ -2213,17 +2213,17 @@ void main() {
           ).called(1);
         }
 
-        test('(android)', () => performTest(Platform.android));
+        test('(android)', withTempDir(() => performTest(Platform.android)));
 
-        test('(ios)', () => performTest(Platform.ios));
+        test('(ios)', withTempDir(() => performTest(Platform.ios)));
 
-        test('(linux)', () => performTest(Platform.linux));
+        test('(linux)', withTempDir(() => performTest(Platform.linux)));
 
-        test('(macos)', () => performTest(Platform.macos));
+        test('(macos)', withTempDir(() => performTest(Platform.macos)));
 
-        test('(web)', () => performTest(Platform.web));
+        test('(web)', withTempDir(() => performTest(Platform.web)));
 
-        test('(windows)', () => performTest(Platform.windows));
+        test('(windows)', withTempDir(() => performTest(Platform.windows)));
       });
     });
 
@@ -3037,17 +3037,17 @@ void main() {
           ).called(1);
         }
 
-        test('(android)', () => performTest(Platform.android));
+        test('(android)', withTempDir(() => performTest(Platform.android)));
 
-        test('(ios)', () => performTest(Platform.ios));
+        test('(ios)', withTempDir(() => performTest(Platform.ios)));
 
-        test('(linux)', () => performTest(Platform.linux));
+        test('(linux)', withTempDir(() => performTest(Platform.linux)));
 
-        test('(macos)', () => performTest(Platform.macos));
+        test('(macos)', withTempDir(() => performTest(Platform.macos)));
 
-        test('(web)', () => performTest(Platform.web));
+        test('(web)', withTempDir(() => performTest(Platform.web)));
 
-        test('(windows)', () => performTest(Platform.windows));
+        test('(windows)', withTempDir(() => performTest(Platform.windows)));
       });
 
       test(

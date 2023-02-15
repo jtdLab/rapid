@@ -66,7 +66,6 @@ void Function() withRunner(
 ) {
   return _overridePrint((printLogs) async {
     final logger = MockLogger();
-
     final progress = MockProgress();
     final progressLogs = <String>[];
     final commandRunner = RapidCommandRunner(
@@ -83,8 +82,6 @@ void Function() withRunner(
   });
 }
 
-// TODO refactor
-
 /// Runs [fn] in a test environment with a project.
 ///
 /// This is used to implement negative/positive testing of commands
@@ -100,7 +97,7 @@ void Function() withRunnerOnProject(
       fn,
 ) {
   return _overridePrint((printLogs) async {
-    registerFallbackValue(Platform.android);
+    registerFallbackValue(Platform.android); // TODO
     final logger = MockLogger();
     final melosFile = MockMelosFile();
     when(() => melosFile.exists()).thenReturn(true);
@@ -108,9 +105,8 @@ void Function() withRunnerOnProject(
     final project = MockProject();
     when(() => project.existsAll()).thenReturn(true);
     when(() => project.platformIsActivated(any())).thenReturn(true);
-    // TODO
-    //when(() => project.melosFile).thenReturn(melosFile);
-    //when(() => project.isActivated(any())).thenReturn(true);
+    when(() => project.melosFile).thenReturn(melosFile);
+
     final progress = MockProgress();
     final progressLogs = <String>[];
     final commandRunner = RapidCommandRunner(

@@ -7,7 +7,7 @@ final arbFileBundle = MasonBundle.fromJson(<String, dynamic>{
   "files": [
     {
       "path": "{{feature_name}}_{{language}}.arb",
-      "data": "ewogICAgIkBAbG9jYWxlIjogInt7bGFuZ3VhZ2V9fSIKfQ==",
+      "data": "ewogICJAQGxvY2FsZSI6ICJ7e2xhbmd1YWdlfX0iCn0=",
       "type": "text"
     }
   ],

@@ -144,6 +144,7 @@ abstract class Project implements Directory {
     required String projectName,
     required String description,
     required String orgName,
+    required String language,
     required bool example,
     required bool android,
     required bool ios,
@@ -158,6 +159,7 @@ abstract class Project implements Directory {
     Platform platform, {
     String? description,
     String? orgName,
+    required String language,
     required Logger logger,
   });
 

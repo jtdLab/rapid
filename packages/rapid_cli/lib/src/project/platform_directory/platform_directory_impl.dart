@@ -40,8 +40,10 @@ class PlatformDirectoryImpl extends DartPackageImpl
 
   @override
   bool allFeaturesHaveSameLanguages() {
-    // TODO include app and routing ?
-    final featurePackages = customFeaturePackages();
+    final featurePackages = [
+      appFeaturePackage,
+      ...customFeaturePackages(),
+    ];
 
     return EqualitySet.from(
           DeepCollectionEquality.unordered(),
@@ -52,8 +54,10 @@ class PlatformDirectoryImpl extends DartPackageImpl
 
   @override
   bool allFeaturesHaveSameDefaultLanguage() {
-    // TODO include app and routing ?
-    final featurePackages = customFeaturePackages();
+    final featurePackages = [
+      appFeaturePackage,
+      ...customFeaturePackages(),
+    ];
 
     return featurePackages.map((e) => e.defaultLanguage()).toSet().length == 1;
   }
@@ -67,7 +71,6 @@ class PlatformDirectoryImpl extends DartPackageImpl
       .whereType<Directory>()
       .where((e) => !e.path.endsWith('routing') && !e.path.endsWith('app'))
       .map(
-        // TODO mayb add ofDir constructor to platfor custom feature package
         (e) => PlatformCustomFeaturePackage(
           p
               .basename(e.path)

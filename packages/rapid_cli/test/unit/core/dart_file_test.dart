@@ -407,7 +407,7 @@ void main() {
       );
 
       test(
-        'returns true when underlying file does not exist',
+        'returns false when underlying file does not exist',
         withTempDir(() {
           // Arrange
           final dartFile = _getDartFile();

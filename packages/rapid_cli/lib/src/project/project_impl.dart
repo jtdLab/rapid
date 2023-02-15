@@ -137,6 +137,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required String projectName,
     required String description,
     required String orgName,
+    required String language,
     required bool example,
     required bool android,
     required bool ios,
@@ -194,7 +195,11 @@ class ProjectImpl extends DirectoryImpl implements Project {
       final platformDirectory = this.platformDirectory(platform: platform);
 
       final platformAppPackage = platformDirectory.appFeaturePackage;
-      await platformAppPackage.create(logger: logger);
+      await platformAppPackage.create(
+        defaultLanguage: language,
+        languages: {language},
+        logger: logger,
+      );
 
       final platformRoutingPackage = platformDirectory.routingFeaturePackage;
       await platformRoutingPackage.create(logger: logger);
@@ -202,7 +207,12 @@ class ProjectImpl extends DirectoryImpl implements Project {
       final platformHomePagePackage = platformDirectory.customFeaturePackage(
         name: 'home_page',
       );
-      await platformHomePagePackage.create(logger: logger);
+      // TODO use description?
+      await platformHomePagePackage.create(
+        defaultLanguage: language,
+        languages: {language},
+        logger: logger,
+      );
 
       final platformUiPackage = this.platformUiPackage(platform: platform);
       await platformUiPackage.create(logger: logger);
@@ -219,6 +229,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
     Platform platform, {
     String? description,
     String? orgName,
+    required String language,
     required Logger logger,
   }) async {
     final generateProgress = logger.progress(
@@ -228,7 +239,11 @@ class ProjectImpl extends DirectoryImpl implements Project {
     final platformDirectory = this.platformDirectory(platform: platform);
 
     final platformAppPackage = platformDirectory.appFeaturePackage;
-    await platformAppPackage.create(logger: logger);
+    await platformAppPackage.create(
+      defaultLanguage: language,
+      languages: {language},
+      logger: logger,
+    );
 
     final platformRoutingPackage = platformDirectory.routingFeaturePackage;
     await platformRoutingPackage.create(logger: logger);
@@ -236,7 +251,12 @@ class ProjectImpl extends DirectoryImpl implements Project {
     final platformHomePagePackage = platformDirectory.customFeaturePackage(
       name: 'home_page',
     );
-    await platformHomePagePackage.create(logger: logger);
+    // TODO use description?
+    await platformHomePagePackage.create(
+      defaultLanguage: language,
+      languages: {language},
+      logger: logger,
+    );
 
     final platformUiPackage = this.platformUiPackage(platform: platform);
     await platformUiPackage.create(logger: logger);
@@ -347,12 +367,15 @@ class ProjectImpl extends DirectoryImpl implements Project {
     }
 
     if (!customFeaturePackageExists) {
+      final appFeaturePackage = platformDirectory.appFeaturePackage;
+
       await customFeaturePackage.create(
         description: description,
+        defaultLanguage: appFeaturePackage.defaultLanguage(),
+        languages: appFeaturePackage.supportedLanguages(),
         logger: logger,
       );
 
-      final appFeaturePackage = platformDirectory.appFeaturePackage;
       await appFeaturePackage.registerCustomFeaturePackage(
         customFeaturePackage,
         logger: logger,
@@ -493,6 +516,11 @@ class ProjectImpl extends DirectoryImpl implements Project {
       throw FeaturesAlreadySupportLanguage();
     }
 
+    final appFeaturePackage = platformDirectory.appFeaturePackage;
+    await appFeaturePackage.addLanguage(
+      language: language,
+      logger: logger,
+    );
     for (final customFeature in customFeatures) {
       await customFeature.addLanguage(
         language: language,

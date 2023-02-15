@@ -8249,4 +8249,4 @@ const _validLanguages = [
 /// For more information see:
 ///
 ///  https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
-bool validateLanguage(String language) => _validLanguages.contains(language);
+bool isValidLanguage(String language) => _validLanguages.contains(language);

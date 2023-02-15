@@ -15,9 +15,11 @@ const expectedUsage = [
   'Adds support for Web to this project.\n'
       '\n'
       'Usage: rapid activate web\n'
-      '-h, --help    Print this usage information.\n'
-      '    --desc    The description for the native Web project.\n'
-      '              (defaults to "A Rapid app.")\n'
+      '-h, --help        Print this usage information.\n'
+      '    --desc        The description for the native Web project.\n'
+      '                  (defaults to "A Rapid app.")\n'
+      '    --language    The default language for Web\n'
+      '                  (defaults to "en")\n'
       '\n'
       'Run "rapid help" to see global options.'
 ];
@@ -34,6 +36,7 @@ void main() {
 
     late ArgResults argResults;
     late String? desc;
+    late String language;
 
     late ActivateWebCommand command;
 
@@ -48,6 +51,7 @@ void main() {
           Platform.web,
           description: any(named: 'description'),
           orgName: any(named: 'orgName'),
+          language: any(named: 'language'),
           logger: logger,
         ),
       ).thenAnswer((_) async {});
@@ -59,6 +63,8 @@ void main() {
           .thenAnswer((_) async {});
 
       argResults = MockArgResults();
+      language = 'de';
+      when(() => argResults['language']).thenReturn(language);
 
       command = ActivateWebCommand(
         logger: logger,
@@ -100,6 +106,26 @@ void main() {
       expect(command, isNotNull);
     });
 
+    test(
+      'throws UsageException when language is invalid',
+      withRunnerOnProject((commandRunner, logger, _, project, printLogs) async {
+        // Arrange
+        when(() => project.platformIsActivated(Platform.web)).thenReturn(false);
+        const language = 'xxyyzz';
+        const expectedErrorMessage = '"$language" is not a valid language.\n\n'
+            'See https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry for more information.';
+
+        // Act
+        final result = await commandRunner.run(
+          ['activate', 'web', '--language', language],
+        );
+
+        // Assert
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+      }),
+    );
+
     test('completes successfully with correct output', () async {
       // Act
       final result = await command.run();
@@ -112,6 +138,7 @@ void main() {
         () => project.addPlatform(
           Platform.web,
           description: 'A Rapid app.',
+          language: language,
           logger: logger,
         ),
       ).called(1);
@@ -136,6 +163,7 @@ void main() {
         () => project.addPlatform(
           Platform.web,
           description: desc,
+          language: language,
           logger: logger,
         ),
       ).called(1);

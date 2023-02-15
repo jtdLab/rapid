@@ -1,6 +1,7 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/commands/core/language_option.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -15,7 +16,7 @@ const _defaultDescription = 'A Rapid app.';
 /// `rapid create` command creates a new Rapid project in the specified directory.
 /// {@endtemplate}
 class CreateCommand extends Command<int>
-    with OverridableArgResults, OutputDirGetter, OrgNameGetter {
+    with OverridableArgResults, OutputDirGetter, OrgNameGetter, LanguageGetter {
   /// {@macro create_command}
   CreateCommand({
     Logger? logger,
@@ -56,6 +57,9 @@ class CreateCommand extends Command<int>
       )
       ..addOrgNameOption(
         help: 'The organization of the new project.',
+      )
+      ..addLanguageOption(
+        help: 'The language of the new project',
       )
       ..addFlag(
         'example',
@@ -155,6 +159,7 @@ class CreateCommand extends Command<int>
           final projectName = _projectName;
           final description = _description;
           final orgName = super.orgName;
+          final language = super.language;
           final example = _example;
           final android = _android || _mobile || _all;
           final ios = _ios || _mobile || _all;
@@ -169,6 +174,7 @@ class CreateCommand extends Command<int>
             projectName: projectName,
             description: description,
             orgName: orgName,
+            language: language,
             example: example,
             android: android,
             ios: ios,

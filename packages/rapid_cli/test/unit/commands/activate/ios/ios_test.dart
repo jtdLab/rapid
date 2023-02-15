@@ -18,6 +18,8 @@ const expectedUsage = [
       '-h, --help        Print this usage information.\n'
       '    --org-name    The organization for the native iOS project.\n'
       '                  (defaults to "com.example")\n'
+      '    --language    The default language for iOS\n'
+      '                  (defaults to "en")\n'
       '\n'
       'Run "rapid help" to see global options.'
 ];
@@ -34,8 +36,13 @@ void main() {
 
     late ArgResults argResults;
     late String? orgName;
+    late String language;
 
     late ActivateIosCommand command;
+
+    setUpAll(() {
+      registerFallbackValue(FakeLogger());
+    });
 
     setUp(() {
       Directory.current = Directory.systemTemp.createTempSync();
@@ -48,6 +55,7 @@ void main() {
           Platform.ios,
           description: any(named: 'description'),
           orgName: any(named: 'orgName'),
+          language: any(named: 'language'),
           logger: logger,
         ),
       ).thenAnswer((_) async {});
@@ -59,6 +67,8 @@ void main() {
           .thenAnswer((_) async {});
 
       argResults = MockArgResults();
+      language = 'de';
+      when(() => argResults['language']).thenReturn(language);
 
       command = ActivateIosCommand(
         logger: logger,
@@ -108,6 +118,26 @@ void main() {
       expect(command, isNotNull);
     });
 
+    test(
+      'throws UsageException when language is invalid',
+      withRunnerOnProject((commandRunner, logger, _, project, printLogs) async {
+        // Arrange
+        when(() => project.platformIsActivated(Platform.ios)).thenReturn(false);
+        const language = 'xxyyzz';
+        const expectedErrorMessage = '"$language" is not a valid language.\n\n'
+            'See https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry for more information.';
+
+        // Act
+        final result = await commandRunner.run(
+          ['activate', 'ios', '--language', language],
+        );
+
+        // Assert
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+      }),
+    );
+
     test('completes successfully with correct output', () async {
       // Act
       final result = await command.run();
@@ -120,6 +150,7 @@ void main() {
         () => project.addPlatform(
           Platform.ios,
           orgName: 'com.example',
+          language: language,
           logger: logger,
         ),
       ).called(1);
@@ -145,6 +176,7 @@ void main() {
         () => project.addPlatform(
           Platform.ios,
           orgName: orgName,
+          language: language,
           logger: logger,
         ),
       ).called(1);
@@ -183,18 +215,29 @@ void main() {
       expect(result, ExitCode.config.code);
     });
 
-    // TODO testing this way good?
     group('org-name', () {
       group('--org', () {
         test(
           'is a valid alias',
-          withRunner((commandRunner, logger, printLogs) async {
+          withRunnerOnProject(
+              (commandRunner, logger, _, project, printLogs) async {
             // Arrange
+            when(() => project.platformIsActivated(Platform.ios))
+                .thenReturn(false);
+            when(
+              () => project.addPlatform(
+                Platform.ios,
+                description: any(named: 'description'),
+                orgName: any(named: 'orgName'),
+                language: any(named: 'language'),
+                logger: any(named: 'logger'),
+              ),
+            ).thenAnswer((_) async {});
             const orgName = 'com.my.org';
 
             // Act
             final result = await commandRunner.run(
-              ['create', 'my_project', '--org-name', orgName],
+              ['activate', 'ios', '--org-name', orgName],
             );
 
             // Assert
@@ -206,10 +249,15 @@ void main() {
 
       group('invalid --org-name', () {
         void Function() verifyOrgNameIsInvalid(String orgName) =>
-            withRunner((commandRunner, logger, printLogs) async {
+            withRunnerOnProject(
+                (commandRunner, logger, _, project, printLogs) async {
+              // Arrange
+              when(() => project.platformIsActivated(Platform.ios))
+                  .thenReturn(false);
+
               // Act
               final result = await commandRunner.run(
-                ['create', 'my_project', '--org-name', orgName],
+                ['activate', 'ios', '--org-name', orgName],
               );
 
               // Assert
@@ -261,6 +309,7 @@ void main() {
                 () => project.addPlatform(
                   Platform.ios,
                   orgName: orgName,
+                  language: language,
                   logger: logger,
                 ),
               ).called(1);

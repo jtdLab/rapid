@@ -2,9 +2,9 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/android/add/language/language.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/platform/core/validate_language.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
+import 'package:rapid_cli/src/commands/core/validate_language.dart';
 import 'package:rapid_cli/src/commands/ios/add/language/language.dart';
 import 'package:rapid_cli/src/commands/linux/add/language/language.dart';
 import 'package:rapid_cli/src/commands/macos/add/language/language.dart';
@@ -144,7 +144,7 @@ abstract class PlatformAddLanguageCommand extends Command<int>
     }
 
     final language = args.first;
-    final isValid = validateLanguage(language);
+    final isValid = isValidLanguage(language);
     if (!isValid) {
       throw UsageException(
         '"$language" is not a valid language.\n\n'

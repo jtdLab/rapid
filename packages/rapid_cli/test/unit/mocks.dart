@@ -142,7 +142,7 @@ class MockLanguageLocalizationsFile extends Mock
 class MockPlatformFeaturePackage extends Mock
     implements PlatformFeaturePackage {}
 
-class MockArbFile extends Mock implements ArbFile {}
+class MockLanguageArbFile extends Mock implements LanguageArbFile {}
 
 class MockMelosFile extends Mock implements MelosFile {}
 
@@ -392,6 +392,8 @@ MockPlatformCustomFeaturePackage getPlatformCustomFeaturePackage() {
   when(
     () => platformCustomFeaturePackage.create(
       description: any(named: 'description'),
+      defaultLanguage: any(named: 'defaultLanguage'),
+      languages: any(named: 'languages'),
       logger: any(named: 'logger'),
     ),
   ).thenAnswer((_) async {});
@@ -535,7 +537,11 @@ MockPlatformAppFeaturePackage getPlatformAppFeaturePackage() {
   final appFeaturePackage = MockPlatformAppFeaturePackage();
   when(() => appFeaturePackage.path).thenReturn('some/path');
   when(
-    () => appFeaturePackage.create(logger: any(named: 'logger')),
+    () => appFeaturePackage.create(
+      defaultLanguage: any(named: 'defaultLanguage'),
+      languages: any(named: 'languages'),
+      logger: any(named: 'logger'),
+    ),
   ).thenAnswer((_) async {});
   when(
     () => appFeaturePackage.registerCustomFeaturePackage(
@@ -546,6 +552,12 @@ MockPlatformAppFeaturePackage getPlatformAppFeaturePackage() {
   when(
     () => appFeaturePackage.unregisterCustomFeaturePackage(
       any(),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+  when(
+    () => appFeaturePackage.addLanguage(
+      language: any(named: 'language'),
       logger: any(named: 'logger'),
     ),
   ).thenAnswer((_) async {});
@@ -578,8 +590,14 @@ MockArbDirectory getArbDirectory() {
   final arbDirectory = MockArbDirectory();
   when(() => arbDirectory.path).thenReturn('some/path');
   final platformFeaturePackage = getPlatformCustomFeaturePackage();
-  when(() => arbDirectory.platformFeaturePackage)
+  when(() => arbDirectory.platformCustomizableFeaturePackage)
       .thenReturn(platformFeaturePackage);
+  final languageArbFile = getLanguageArbFile();
+  when(
+    () => arbDirectory.languageArbFile(
+      language: any(named: 'language'),
+    ),
+  ).thenReturn(languageArbFile);
 
   return arbDirectory;
 }
@@ -590,10 +608,12 @@ MockLanguageLocalizationsFile getLanguageLocalizationsFile() {
   return languageLocalizationsFile;
 }
 
-MockArbFile getArbFile() {
-  final arbFile = MockArbFile();
+MockLanguageArbFile getLanguageArbFile() {
+  final arbLanguageFile = MockLanguageArbFile();
+  when(() => arbLanguageFile.create(logger: any(named: 'logger')))
+      .thenAnswer((_) async {});
 
-  return arbFile;
+  return arbLanguageFile;
 }
 
 MockDomainPackage getDomainPackage() {

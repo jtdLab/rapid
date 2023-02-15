@@ -599,6 +599,7 @@ void main() {
           projectName: 'my_project',
           description: 'my desc',
           orgName: 'my.org',
+          language: 'de',
           example: false,
           android: true,
           ios: true,
@@ -660,9 +661,21 @@ void main() {
             .called(1);
         verify(() => platformDirectoryBuilder(platform: Platform.linux))
             .called(1);
-        verify(() => appFeaturePackage.create(logger: logger)).called(3);
+        verify(
+          () => appFeaturePackage.create(
+            defaultLanguage: 'de',
+            languages: {'de'},
+            logger: logger,
+          ),
+        ).called(3);
         verify(() => routingFeaturePackage.create(logger: logger)).called(3);
-        verify(() => homePageFeaturePackage.create(logger: logger)).called(3);
+        verify(
+          () => homePageFeaturePackage.create(
+            defaultLanguage: 'de',
+            languages: {'de'},
+            logger: logger,
+          ),
+        ).called(3);
         verify(() => platformUiPackageBuilder(platform: Platform.android))
             .called(1);
         verify(() => platformUiPackageBuilder(platform: Platform.ios))
@@ -727,6 +740,7 @@ void main() {
           projectName: 'my_project',
           description: 'my desc',
           orgName: 'my.org',
+          language: 'de',
           example: false,
           android: false,
           ios: false,
@@ -788,9 +802,21 @@ void main() {
             .called(1);
         verify(() => platformDirectoryBuilder(platform: Platform.windows))
             .called(1);
-        verify(() => appFeaturePackage.create(logger: logger)).called(3);
+        verify(
+          () => appFeaturePackage.create(
+            logger: logger,
+            defaultLanguage: 'de',
+            languages: {'de'},
+          ),
+        ).called(3);
         verify(() => routingFeaturePackage.create(logger: logger)).called(3);
-        verify(() => homePageFeaturePackage.create(logger: logger)).called(3);
+        verify(
+          () => homePageFeaturePackage.create(
+            logger: logger,
+            defaultLanguage: 'de',
+            languages: {'de'},
+          ),
+        ).called(3);
         verify(() => platformUiPackageBuilder(platform: Platform.macos))
             .called(1);
         verify(() => platformUiPackageBuilder(platform: Platform.web))
@@ -865,6 +891,7 @@ void main() {
             platform,
             description: 'my desc',
             orgName: 'my.org',
+            language: 'de',
             logger: logger,
           );
 
@@ -873,9 +900,21 @@ void main() {
             () => logger.progress('Generating ${platform.prettyName} files'),
           ).called(1);
           verify(() => platformDirectoryBuilder(platform: platform)).called(1);
-          verify(() => appFeaturePackage.create(logger: logger)).called(1);
+          verify(
+            () => appFeaturePackage.create(
+              defaultLanguage: 'de',
+              languages: {'de'},
+              logger: logger,
+            ),
+          ).called(1);
           verify(() => routingFeaturePackage.create(logger: logger)).called(1);
-          verify(() => homePageFeaturePackage.create(logger: logger)).called(1);
+          verify(
+            () => homePageFeaturePackage.create(
+              defaultLanguage: 'de',
+              languages: {'de'},
+              logger: logger,
+            ),
+          ).called(1);
           verify(() => platformUiPackageBuilder(platform: platform)).called(1);
           verify(() => platformUiPackage.create(logger: logger)).called(1);
           verify(() => progress.complete()).called(1);
@@ -1048,6 +1087,9 @@ void main() {
           final appFeaturePackage = getPlatformAppFeaturePackage();
           when(() => appFeaturePackage.packageName())
               .thenReturn('app_feature_package');
+          when(() => appFeaturePackage.defaultLanguage()).thenReturn('de');
+          when(() => appFeaturePackage.supportedLanguages())
+              .thenReturn({'en', 'fr', 'de'});
           final routingFeaturePackage = getPlatformRoutingFeaturePackage();
           when(() => routingFeaturePackage.packageName())
               .thenReturn('routing_feature_package');
@@ -1101,6 +1143,8 @@ void main() {
           verify(
             () => customFeaturePackage.create(
               description: 'my desc',
+              defaultLanguage: 'de',
+              languages: {'en', 'fr', 'de'},
               logger: logger,
             ),
           ).called(1);
@@ -1168,6 +1212,9 @@ void main() {
           final appFeaturePackage = getPlatformAppFeaturePackage();
           when(() => appFeaturePackage.packageName())
               .thenReturn('app_feature_package');
+          when(() => appFeaturePackage.defaultLanguage()).thenReturn('de');
+          when(() => appFeaturePackage.supportedLanguages())
+              .thenReturn({'en', 'fr', 'de'});
           final routingFeaturePackage = getPlatformRoutingFeaturePackage();
           when(() => routingFeaturePackage.packageName())
               .thenReturn('routing_feature_package');
@@ -1220,6 +1267,8 @@ void main() {
           ).called(1);
           verify(
             () => customFeaturePackage.create(
+              defaultLanguage: 'de',
+              languages: {'en', 'fr', 'de'},
               description: 'my desc',
               logger: logger,
             ),
@@ -1531,10 +1580,13 @@ void main() {
       group('completes successfully with correct output', () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
           final customFeature2 = getPlatformCustomFeaturePackage();
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn(
             [customFeature1, customFeature2],
           );
@@ -1563,6 +1615,9 @@ void main() {
           // Assert
           verify(
             () => platformDirectoryBuilder(platform: platform),
+          ).called(1);
+          verify(
+            () => appFeaturePackage.addLanguage(language: 'de', logger: logger),
           ).called(1);
           verify(
             () => customFeature1.addLanguage(language: 'de', logger: logger),

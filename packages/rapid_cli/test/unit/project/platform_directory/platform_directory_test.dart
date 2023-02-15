@@ -185,10 +185,11 @@ void main() {
       }) {
         for (final language in languages) {
           File(
-            ArbFile(
+            LanguageArbFile(
               language: language,
               arbDirectory: ArbDirectory(
-                platformFeaturePackage: platformDirectory.customFeaturePackage(
+                platformCustomizableFeaturePackage:
+                    platformDirectory.customFeaturePackage(
                   name: name,
                 ),
               ),
@@ -198,13 +199,18 @@ void main() {
       }
 
       test(
-        'returns true when all custom feature packages have same supported languages',
+        'returns true when all custom feature packages and the app feature package have same supported languages',
         withTempDir(() {
           // Arrange
           final project = getProject();
           final platformDirectory = _getPlatformDirectory(
             Platform.android,
             project: project,
+          );
+          createFeatureFiles(
+            name: 'app',
+            languages: {'de', 'fr'},
+            platformDirectory: platformDirectory,
           );
           createFeatureFiles(
             name: 'my_feature_a',
@@ -246,6 +252,36 @@ void main() {
           expect(platformDirectory.allFeaturesHaveSameLanguages(), false);
         }),
       );
+
+      test(
+        'returns false when the app feature package does NOT have same supported languages',
+        withTempDir(() {
+          // Arrange
+          final project = getProject();
+          final platformDirectory = _getPlatformDirectory(
+            Platform.android,
+            project: project,
+          );
+          createFeatureFiles(
+            name: 'app',
+            languages: {'de', 'en'},
+            platformDirectory: platformDirectory,
+          );
+          createFeatureFiles(
+            name: 'my_feature_a',
+            languages: {'de', 'fr'},
+            platformDirectory: platformDirectory,
+          );
+          createFeatureFiles(
+            name: 'my_feature_b',
+            languages: {'de', 'en'},
+            platformDirectory: platformDirectory,
+          );
+
+          // Act + Assert
+          expect(platformDirectory.allFeaturesHaveSameLanguages(), false);
+        }),
+      );
     });
 
     group('.allFeaturesHaveSameDefaultLanguage()', () {
@@ -256,7 +292,8 @@ void main() {
       }) {
         File(
           L10nFile(
-            platformFeaturePackage: platformDirectory.customFeaturePackage(
+            platformCustomizableFeaturePackage:
+                platformDirectory.customFeaturePackage(
               name: name,
             ),
           ).path,
@@ -266,13 +303,18 @@ void main() {
       }
 
       test(
-        'returns true when all custom feature packages have same default language',
+        'returns true when all custom feature packages and the app feature package have same default language',
         withTempDir(() {
           // Arrange
           final project = getProject();
           final platformDirectory = _getPlatformDirectory(
             Platform.android,
             project: project,
+          );
+          createFeatureFiles(
+            name: 'app',
+            language: 'de',
+            platformDirectory: platformDirectory,
           );
           createFeatureFiles(
             name: 'my_feature_a',
@@ -298,6 +340,41 @@ void main() {
           final platformDirectory = _getPlatformDirectory(
             Platform.android,
             project: project,
+          );
+          createFeatureFiles(
+            name: 'app',
+            language: 'de',
+            platformDirectory: platformDirectory,
+          );
+          createFeatureFiles(
+            name: 'my_feature_a',
+            language: 'de',
+            platformDirectory: platformDirectory,
+          );
+          createFeatureFiles(
+            name: 'my_feature_b',
+            language: 'fr',
+            platformDirectory: platformDirectory,
+          );
+
+          // Act + Assert
+          expect(platformDirectory.allFeaturesHaveSameDefaultLanguage(), false);
+        }),
+      );
+
+      test(
+        'returns false when the app feature package does NOT have same default language',
+        withTempDir(() {
+          // Arrange
+          final project = getProject();
+          final platformDirectory = _getPlatformDirectory(
+            Platform.android,
+            project: project,
+          );
+          createFeatureFiles(
+            name: 'app',
+            language: 'fr',
+            platformDirectory: platformDirectory,
           );
           createFeatureFiles(
             name: 'my_feature_a',

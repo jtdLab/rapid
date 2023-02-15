@@ -2,6 +2,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/activate/core/platform.dart';
 import 'package:rapid_cli/src/commands/activate/core/platform_is_deactivated.dart';
+import 'package:rapid_cli/src/commands/core/language_option.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -11,7 +12,8 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template activate_macos_command}
 /// `rapid activate macos` command adds support for macOS to an existing Rapid project.
 /// {@endtemplate}
-class ActivateMacosCommand extends ActivatePlatformCommand with OrgNameGetter {
+class ActivateMacosCommand extends ActivatePlatformCommand
+    with OrgNameGetter, LanguageGetter {
   /// {@macro activate_macos_command}
   ActivateMacosCommand({
     Logger? logger,
@@ -22,9 +24,13 @@ class ActivateMacosCommand extends ActivatePlatformCommand with OrgNameGetter {
         _flutterConfigEnableMacos =
             flutterConfigEnableMacos ?? Flutter.configEnableMacos,
         super(platform: Platform.macos) {
-    argParser.addOrgNameOption(
-      help: 'The organization for the native macOS project.',
-    );
+    argParser
+      ..addOrgNameOption(
+        help: 'The organization for the native macOS project.',
+      )
+      ..addLanguageOption(
+        help: 'The default language for macOS',
+      );
   }
 
   final Logger _logger;
@@ -39,13 +45,15 @@ class ActivateMacosCommand extends ActivatePlatformCommand with OrgNameGetter {
         ],
         _logger,
         () async {
-          final orgName = this.orgName;
+          final orgName = super.orgName;
+          final language = super.language;
 
           _logger.info('Activating ${platform.prettyName} ...');
 
           await _project.addPlatform(
             platform,
             orgName: orgName,
+            language: language,
             logger: _logger,
           );
 

@@ -23,6 +23,8 @@ const expectedUsage = [
       '                    (defaults to "A Rapid app.")\n'
       '    --org-name      The organization of the new project.\n'
       '                    (defaults to "com.example")\n'
+      '    --language      The language of the new project\n'
+      '                    (defaults to "en")\n'
       '    --example       Wheter the new project contains example features and their tests.\n'
       '\n'
       '\n'
@@ -66,6 +68,7 @@ void main() {
 
     late ArgResults argResults;
     late String outputDir;
+    late String language;
     late String projectName;
 
     late CreateCommand command;
@@ -114,6 +117,7 @@ void main() {
           projectName: any(named: 'projectName'),
           description: any(named: 'description'),
           orgName: any(named: 'orgName'),
+          language: any(named: 'language'),
           example: any(named: 'example'),
           android: any(named: 'android'),
           ios: any(named: 'ios'),
@@ -129,8 +133,10 @@ void main() {
       argResults = MockArgResults();
       projectName = 'test_app';
       outputDir = '.';
+      language = 'de';
       when(() => argResults.rest).thenReturn([projectName]);
       when(() => argResults['output-dir']).thenReturn(outputDir);
+      when(() => argResults['language']).thenReturn(language);
 
       command = CreateCommand(
         logger: logger,
@@ -246,6 +252,25 @@ void main() {
       }),
     );
 
+    test(
+      'throws UsageException when language is invalid',
+      withRunner((commandRunner, logger, printLogs) async {
+        // Assert
+        const language = 'xxyyzz';
+        const expectedErrorMessage = '"$language" is not a valid language.\n\n'
+            'See https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry for more information.';
+
+        // Act
+        final result = await commandRunner.run(
+          ['create', 'my_project', '--language', language],
+        );
+
+        // Arrange
+        expect(result, equals(ExitCode.usage.code));
+        verify(() => logger.err(expectedErrorMessage)).called(1);
+      }),
+    );
+
     test('completes successfully with correct output', () async {
       // Act
       final result = await command.run();
@@ -259,6 +284,7 @@ void main() {
           projectName: projectName,
           description: 'A Rapid app.',
           orgName: 'com.example',
+          language: language,
           example: false,
           android: false,
           ios: false,
@@ -291,6 +317,7 @@ void main() {
           projectName: projectName,
           description: description,
           orgName: 'com.example',
+          language: language,
           example: false,
           android: false,
           ios: false,
@@ -323,6 +350,7 @@ void main() {
           projectName: projectName,
           description: 'A Rapid app.',
           orgName: 'com.example',
+          language: language,
           example: false,
           android: true,
           ios: false,
@@ -355,6 +383,7 @@ void main() {
           projectName: projectName,
           description: 'A Rapid app.',
           orgName: 'com.example',
+          language: language,
           example: false,
           android: false,
           ios: true,
@@ -387,6 +416,7 @@ void main() {
           projectName: projectName,
           description: 'A Rapid app.',
           orgName: 'com.example',
+          language: language,
           example: false,
           android: false,
           ios: false,
@@ -419,6 +449,7 @@ void main() {
           projectName: projectName,
           description: 'A Rapid app.',
           orgName: 'com.example',
+          language: language,
           example: false,
           android: false,
           ios: false,
@@ -451,6 +482,7 @@ void main() {
           projectName: projectName,
           description: 'A Rapid app.',
           orgName: 'com.example',
+          language: language,
           example: false,
           android: false,
           ios: false,
@@ -483,6 +515,7 @@ void main() {
           projectName: projectName,
           description: 'A Rapid app.',
           orgName: 'com.example',
+          language: language,
           example: false,
           android: false,
           ios: false,
@@ -527,6 +560,7 @@ void main() {
           projectName: projectName,
           description: 'A Rapid app.',
           orgName: 'com.example',
+          language: language,
           example: false,
           android: true,
           ios: true,
@@ -560,6 +594,7 @@ void main() {
           projectName: projectName,
           description: 'A Rapid app.',
           orgName: 'com.example',
+          language: language,
           example: false,
           android: true,
           ios: true,
@@ -594,6 +629,7 @@ void main() {
           projectName: projectName,
           description: 'A Rapid app.',
           orgName: 'com.example',
+          language: language,
           example: false,
           android: false,
           ios: false,
@@ -631,6 +667,7 @@ void main() {
           projectName: projectName,
           description: 'A Rapid app.',
           orgName: 'com.example',
+          language: language,
           example: false,
           android: true,
           ios: true,
@@ -686,7 +723,6 @@ void main() {
       expect(result, ExitCode.config.code);
     });
 
-    // TODO testing this way good?
     group('org-name', () {
       group('--org', () {
         test(
@@ -765,6 +801,7 @@ void main() {
                   projectName: projectName,
                   description: 'A Rapid app.',
                   orgName: orgName,
+                  language: language,
                   example: false,
                   android: false,
                   ios: false,

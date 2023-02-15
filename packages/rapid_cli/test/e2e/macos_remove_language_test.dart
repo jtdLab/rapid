@@ -31,6 +31,7 @@ void main() {
           // Arrange
           const language = 'fr';
           await setupProject(Platform.macos);
+          languageFiles('app', Platform.macos, [language]).create();
           languageFiles('home_page', Platform.macos, [language]).create();
 
           // Act
@@ -63,6 +64,7 @@ void main() {
           // Arrange
           const language = 'fr';
           await setupProject(Platform.macos);
+          languageFiles('app', Platform.macos, [language]).create();
           languageFiles('home_page', Platform.macos, [language]).create();
 
           // Act

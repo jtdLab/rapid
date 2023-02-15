@@ -562,6 +562,11 @@ class ProjectImpl extends DirectoryImpl implements Project {
       throw UnableToRemoveDefaultLanguage();
     }
 
+    final appFeaturePackage = platformDirectory.appFeaturePackage;
+    await appFeaturePackage.removeLanguage(
+      language: language,
+      logger: logger,
+    );
     for (final customFeature in customFeatures) {
       await customFeature.removeLanguage(
         language: language,

@@ -31,6 +31,7 @@ void main() {
           // Arrange
           const language = 'fr';
           await setupProject(Platform.web);
+          languageFiles('app', Platform.web, [language]).create();
           languageFiles('home_page', Platform.web, [language]).create();
 
           // Act
@@ -63,6 +64,7 @@ void main() {
           // Arrange
           const language = 'fr';
           await setupProject(Platform.web);
+          languageFiles('app', Platform.web, [language]).create();
           languageFiles('home_page', Platform.web, [language]).create();
 
           // Act

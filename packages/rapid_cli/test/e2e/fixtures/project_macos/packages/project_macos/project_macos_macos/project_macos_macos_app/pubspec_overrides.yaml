@@ -1,0 +1,12 @@
+# melos_managed_dependency_overrides: project_macos_domain,project_macos_macos_home_page,project_macos_macos_routing,project_macos_ui,project_macos_ui_macos
+dependency_overrides:
+  project_macos_domain:
+    path: ../../project_macos_domain
+  project_macos_macos_home_page:
+    path: ../project_macos_macos_home_page
+  project_macos_macos_routing:
+    path: ../project_macos_macos_routing
+  project_macos_ui:
+    path: ../../../project_macos_ui/project_macos_ui
+  project_macos_ui_macos:
+    path: ../../../project_macos_ui/project_macos_ui_macos

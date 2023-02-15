@@ -561,6 +561,12 @@ MockPlatformAppFeaturePackage getPlatformAppFeaturePackage() {
       logger: any(named: 'logger'),
     ),
   ).thenAnswer((_) async {});
+  when(
+    () => appFeaturePackage.removeLanguage(
+      language: any(named: 'language'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
 
   return appFeaturePackage;
 }

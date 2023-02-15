@@ -1829,11 +1829,14 @@ void main() {
       group('completes successfully with correct output', () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(true);
           when(() => customFeature1.defaultLanguage()).thenReturn('fr');
           final customFeature2 = getPlatformCustomFeaturePackage();
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn(
             [customFeature1, customFeature2],
           );
@@ -1862,6 +1865,12 @@ void main() {
           // Assert
           verify(
             () => platformDirectoryBuilder(platform: platform),
+          ).called(1);
+          verify(
+            () => appFeaturePackage.removeLanguage(
+              language: 'de',
+              logger: logger,
+            ),
           ).called(1);
           verify(
             () => customFeature1.removeLanguage(language: 'de', logger: logger),

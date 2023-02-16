@@ -1,8 +1,9 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/core/platform/platform.dart';
 import 'package:rapid_cli/src/commands/windows/add/add.dart';
 import 'package:rapid_cli/src/commands/windows/feature/feature.dart';
 import 'package:rapid_cli/src/commands/windows/remove/remove.dart';
-import 'package:rapid_cli/src/commands/core/platform/platform.dart';
+import 'package:rapid_cli/src/commands/windows/set/set.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -20,5 +21,6 @@ class WindowsCommand extends PlatformCommand {
           featureCommand:
               WindowsFeatureCommand(logger: logger, project: project),
           removeCommand: WindowsRemoveCommand(logger: logger, project: project),
+          setCommand: WindowsSetCommand(logger: logger, project: project),
         );
 }

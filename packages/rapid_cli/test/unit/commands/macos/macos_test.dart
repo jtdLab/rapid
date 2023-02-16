@@ -16,6 +16,7 @@ const expectedUsage = [
       '  add       Add features or languages to the macOS part of an existing Rapid project.\n'
       '  feature   Work with features of the macOS part of an existing Rapid project.\n'
       '  remove    Removes features or languages from the macOS part of an existing Rapid project.\n'
+      '  set       Set properties of features from the macOS part of an existing Rapid project.\n'
       '\n'
       'Run "rapid help" to see global options.'
 ];

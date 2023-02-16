@@ -16,6 +16,7 @@ const expectedUsage = [
       '  add       Add features or languages to the Android part of an existing Rapid project.\n'
       '  feature   Work with features of the Android part of an existing Rapid project.\n'
       '  remove    Removes features or languages from the Android part of an existing Rapid project.\n'
+      '  set       Set properties of features from the Android part of an existing Rapid project.\n'
       '\n'
       'Run "rapid help" to see global options.'
 ];

@@ -1,8 +1,9 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/core/platform/platform.dart';
 import 'package:rapid_cli/src/commands/ios/add/add.dart';
 import 'package:rapid_cli/src/commands/ios/feature/feature.dart';
 import 'package:rapid_cli/src/commands/ios/remove/remove.dart';
-import 'package:rapid_cli/src/commands/core/platform/platform.dart';
+import 'package:rapid_cli/src/commands/ios/set/set.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -19,5 +20,6 @@ class IosCommand extends PlatformCommand {
           addCommand: IosAddCommand(logger: logger, project: project),
           featureCommand: IosFeatureCommand(logger: logger, project: project),
           removeCommand: IosRemoveCommand(logger: logger, project: project),
+          setCommand: IosSetCommand(logger: logger, project: project),
         );
 }

@@ -31,6 +31,8 @@ class FeaturesDoNotSupportLanguage implements Exception {}
 
 class UnableToRemoveDefaultLanguage implements Exception {}
 
+class DefaultLanguageAlreadySetToRequestedLanguage implements Exception {}
+
 class EntityAlreadyExists implements Exception {}
 
 class EntityDoesNotExist implements Exception {}
@@ -190,6 +192,12 @@ abstract class Project implements Directory {
 
   Future<void> removeLanguage(
     String language, {
+    required Platform platform,
+    required Logger logger,
+  });
+
+  Future<void> setDefaultLanguage(
+    String newDefaultLanguage, {
     required Platform platform,
     required Logger logger,
   });

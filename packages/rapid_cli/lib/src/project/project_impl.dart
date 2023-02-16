@@ -498,6 +498,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
     final platformDirectory = this.platformDirectory(
       platform: platform,
     );
+    // TODO app package also here
     final customFeatures = platformDirectory.customFeaturePackages();
 
     if (customFeatures.isEmpty) {
@@ -540,6 +541,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
     final platformDirectory = this.platformDirectory(
       platform: platform,
     );
+    // TODO app package also here
     final customFeatures = platformDirectory.customFeaturePackages();
 
     if (customFeatures.isEmpty) {
@@ -572,6 +574,45 @@ class ProjectImpl extends DirectoryImpl implements Project {
         language: language,
         logger: logger,
       );
+    }
+  }
+
+  @override
+  Future<void> setDefaultLanguage(
+    String newDefaultLanguage, {
+    required Platform platform,
+    required Logger logger,
+  }) async {
+    final platformDirectory = this.platformDirectory(
+      platform: platform,
+    );
+    // TODO app package also here
+    final customFeatures = platformDirectory.customFeaturePackages();
+
+    if (customFeatures.isEmpty) {
+      throw NoFeaturesFound();
+    }
+
+    if (!platformDirectory.allFeaturesHaveSameLanguages()) {
+      throw FeaturesHaveDiffrentLanguages();
+    }
+
+    if (!platformDirectory.allFeaturesHaveSameDefaultLanguage()) {
+      throw FeaturesHaveDiffrentDefaultLanguage();
+    }
+
+    if (!customFeatures.first.supportsLanguage(newDefaultLanguage)) {
+      throw FeaturesDoNotSupportLanguage();
+    }
+
+    if (customFeatures.first.defaultLanguage() == newDefaultLanguage) {
+      throw DefaultLanguageAlreadySetToRequestedLanguage();
+    }
+
+    final appFeaturePackage = platformDirectory.appFeaturePackage;
+    appFeaturePackage.setDefaultLanguage(newDefaultLanguage);
+    for (final customFeature in customFeatures) {
+      customFeature.setDefaultLanguage(newDefaultLanguage);
     }
   }
 

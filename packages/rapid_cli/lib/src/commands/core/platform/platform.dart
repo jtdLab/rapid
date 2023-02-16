@@ -4,6 +4,7 @@ import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform/add/add.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/platform/remove/remove.dart';
+import 'package:rapid_cli/src/commands/core/platform/set/set.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/ios/ios.dart';
 import 'package:rapid_cli/src/commands/linux/linux.dart';
@@ -34,10 +35,12 @@ abstract class PlatformCommand extends Command<int> with OverridableArgResults {
     required PlatformAddCommand addCommand,
     required PlatformFeatureCommand featureCommand,
     required PlatformRemoveCommand removeCommand,
+    required PlatformSetCommand setCommand,
   }) : _platform = platform {
     addSubcommand(addCommand);
     addSubcommand(featureCommand);
     addSubcommand(removeCommand);
+    addSubcommand(setCommand);
   }
 
   final Platform _platform;

@@ -2127,6 +2127,297 @@ void main() {
       });
     });
 
+    group('.setDefaultLanguage()', () {
+      group('completes successfully with correct output', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(true);
+          when(() => customFeature1.defaultLanguage()).thenReturn('fr');
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(true);
+          when(() => platformDirectory.allFeaturesHaveSameDefaultLanguage())
+              .thenReturn(true);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final dartFormatFix = getDartFormatFix();
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+            dartFormatFix: dartFormatFix,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          await project.setDefaultLanguage(
+            'de',
+            platform: platform,
+            logger: logger,
+          );
+
+          // Assert
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+          verify(() => appFeaturePackage.setDefaultLanguage('de')).called(1);
+          verify(() => customFeature1.setDefaultLanguage('de')).called(1);
+          verify(() => customFeature2.setDefaultLanguage('de')).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group('throws NoFeaturesFound when no features exist', () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn([]);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.setDefaultLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<NoFeaturesFound>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group(
+          'throws FeaturesHaveDiffrentLanguages when some features have diffrent languages',
+          () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(false);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.setDefaultLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<FeaturesHaveDiffrentLanguages>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group(
+          'throws FeaturesHaveDiffrentDefaultLanguage when some features have diffrent default languages',
+          () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(true);
+          when(() => platformDirectory.allFeaturesHaveSameDefaultLanguage())
+              .thenReturn(false);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.setDefaultLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<FeaturesHaveDiffrentDefaultLanguage>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group(
+          'throws FeaturesDoNotSupportLanguage when the features do not support the new default language',
+          () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(true);
+          when(() => platformDirectory.allFeaturesHaveSameDefaultLanguage())
+              .thenReturn(true);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.setDefaultLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<FeaturesDoNotSupportLanguage>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group(
+          'throws DefaultLanguageAlreadySetToRequestedLanguage when the new default language is the default language',
+          () {
+        Future<void> performTest(Platform platform) async {
+          // Arrange
+          final customFeature1 = getPlatformCustomFeaturePackage();
+          when(() => customFeature1.supportsLanguage(any())).thenReturn(true);
+          when(() => customFeature1.defaultLanguage()).thenReturn('de');
+          final customFeature2 = getPlatformCustomFeaturePackage();
+          final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.customFeaturePackages()).thenReturn(
+            [customFeature1, customFeature2],
+          );
+          when(() => platformDirectory.allFeaturesHaveSameLanguages())
+              .thenReturn(true);
+          when(() => platformDirectory.allFeaturesHaveSameDefaultLanguage())
+              .thenReturn(true);
+          final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
+          when(
+            () => platformDirectoryBuilder(platform: any(named: 'platform')),
+          ).thenReturn(platformDirectory);
+          final project = _getProject(
+            platformDirectory: platformDirectoryBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            project.setDefaultLanguage(
+              'de',
+              platform: platform,
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<DefaultLanguageAlreadySetToRequestedLanguage>()),
+          );
+          verify(() => platformDirectoryBuilder(platform: platform)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+    });
+
     group('.addEntity()', () {
       test('completes successfully with correct output', () async {
         // Arrange

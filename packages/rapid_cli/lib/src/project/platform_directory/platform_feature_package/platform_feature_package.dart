@@ -310,10 +310,6 @@ abstract class LocalizationsFile implements DartFile {
   void removeLocalizationsDelegate(
     PlatformCustomFeaturePackage customFeaturePackage,
   );
-
-  void addSupportedLanguage(String language);
-
-  void removeSupportedLanguage(String language);
 }
 
 /// {@template platform_custom_feature_package}

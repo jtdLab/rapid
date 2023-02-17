@@ -600,32 +600,6 @@ class LocalizationsFileImpl extends DartFileImpl implements LocalizationsFile {
       );
     }
   }
-
-  @override
-  void addSupportedLanguage(String language) {
-    final locale = 'Locale(\'$language\')';
-    final existingLocales = readTopLevelListVar(name: 'supportedLocales');
-
-    if (!existingLocales.contains(locale)) {
-      setTopLevelListVar(
-        name: 'supportedLocales',
-        value: [locale, ...existingLocales]..sort(),
-      );
-    }
-  }
-
-  @override
-  void removeSupportedLanguage(String language) {
-    final locale = 'Locale(\'$language\')';
-    final existingLocales = readTopLevelListVar(name: 'supportedLocales');
-
-    if (existingLocales.contains(locale)) {
-      setTopLevelListVar(
-        name: 'supportedLocales',
-        value: existingLocales..remove(locale),
-      );
-    }
-  }
 }
 
 class PlatformCustomFeaturePackageImpl

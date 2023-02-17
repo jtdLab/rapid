@@ -177,25 +177,58 @@ void main() {
       );
     });
 
-    test('.platformNativeDirectory', () {
-      // Arrange
-      final appPackage = _getAppPackage();
+    group('platformNativeDirectory', () {
+      void performTest(Platform platform) {
+        // Arrange
+        final appPackage = _getAppPackage();
 
-      // Assert
-      expect(
-        appPackage.platformNativeDirectory,
-        isA<PlatformNativeDirectoryBuilder>().having(
-          (platformNativeDirectory) => platformNativeDirectory(
-            platform: Platform.android,
+        // Assert
+        expect(
+          appPackage.platformNativeDirectory,
+          isA<PlatformNativeDirectoryBuilder>().having(
+            (platformNativeDirectory) => platformNativeDirectory(
+              platform: platform,
+            ),
+            'returns',
+            isA<PlatformNativeDirectory>().having(
+              (platformNativeDirectory) => platformNativeDirectory.platform,
+              'platform',
+              platform,
+            ),
           ),
-          'returns',
-          isA<PlatformNativeDirectory>().having(
-            (platformNativeDirectory) => platformNativeDirectory.platform,
-            'platform',
-            Platform.android,
+        );
+      }
+
+      test('(android)', () => performTest(Platform.android));
+
+      test('(ios)', () {
+        // Arrange
+        final appPackage = _getAppPackage();
+
+        // Assert
+        expect(
+          appPackage.platformNativeDirectory,
+          isA<PlatformNativeDirectoryBuilder>().having(
+            (platformNativeDirectory) => platformNativeDirectory(
+              platform: Platform.ios,
+            ),
+            'returns',
+            isA<IosNativeDirectory>().having(
+              (iosNativeDirectory) => iosNativeDirectory.platform,
+              'platform',
+              Platform.ios,
+            ),
           ),
-        ),
-      );
+        );
+      });
+
+      test('(linux)', () => performTest(Platform.linux));
+
+      test('(macos)', () => performTest(Platform.macos));
+
+      test('(web)', () => performTest(Platform.web));
+
+      test('(windows)', () => performTest(Platform.windows));
     });
 
     group('.create()', () {
@@ -226,6 +259,7 @@ void main() {
           await appPackage.create(
             description: 'some desc',
             orgName: 'my.org',
+            language: 'de',
             android: true,
             ios: true,
             linux: true,
@@ -278,7 +312,15 @@ void main() {
               orgName: 'my.org',
               logger: logger,
             ),
-          ).called(3);
+          ).called(2);
+          verify(
+            () => platformNativeDirectory.create(
+              description: 'some desc',
+              orgName: 'my.org',
+              language: 'de',
+              logger: logger,
+            ),
+          ).called(1);
           verifyNever(
             () => platformNativeDirectory.create(
               description: 'some desc',
@@ -316,6 +358,7 @@ void main() {
           await appPackage.create(
             description: 'some desc',
             orgName: 'my.org',
+            language: 'de',
             android: false,
             ios: false,
             linux: false,

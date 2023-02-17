@@ -169,6 +169,8 @@ class MockValueObject extends Mock implements ValueObject {}
 
 class MockInfrastructurePackage extends Mock implements InfrastructurePackage {}
 
+class MockInfoPlistFile extends Mock implements InfoPlistFile {}
+
 abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
   Future<void> call({
     String cwd,
@@ -218,6 +220,8 @@ class MockWidget extends Mock implements Widget {}
 class MockBloc extends Mock implements Bloc {}
 
 class MockCubit extends Mock implements Cubit {}
+
+class MockIosNativeDirectory extends Mock implements IosNativeDirectory {}
 
 // Fakes
 
@@ -312,6 +316,7 @@ MockAppPackage getAppPackage() {
     () => appPackage.create(
       description: any(named: 'description'),
       orgName: any(named: 'orgName'),
+      language: any(named: 'language'),
       android: any(named: 'android'),
       ios: any(named: 'ios'),
       linux: any(named: 'linux'),
@@ -466,6 +471,7 @@ MockPlatformNativeDirectory getPlatformNativeDirectory() {
     () => platformNativeDirectory.create(
       description: any(named: 'description'),
       orgName: any(named: 'orgName'),
+      language: any(named: 'language'),
       logger: any(named: 'logger'),
     ),
   ).thenAnswer((_) async {});
@@ -616,6 +622,7 @@ MockLanguageLocalizationsFile getLanguageLocalizationsFile() {
 
 MockLanguageArbFile getLanguageArbFile() {
   final arbLanguageFile = MockLanguageArbFile();
+  when(() => arbLanguageFile.exists()).thenReturn(true);
   when(() => arbLanguageFile.create(logger: any(named: 'logger')))
       .thenAnswer((_) async {});
 
@@ -781,4 +788,20 @@ MockDataTransferObject getDataTransferObject() {
   ).thenAnswer((_) async {});
 
   return dataTransferObject;
+}
+
+MockIosNativeDirectory getIosNativeDirectory() {
+  final iosNativeDirectory = MockIosNativeDirectory();
+  when(() => iosNativeDirectory.path).thenReturn('some/path');
+  when(
+    () => iosNativeDirectory.create(logger: any(named: 'logger')),
+  ).thenAnswer((_) async {});
+
+  return iosNativeDirectory;
+}
+
+MockInfoPlistFile getInfoPlistFile() {
+  final infoPlistFile = MockInfoPlistFile();
+
+  return infoPlistFile;
 }

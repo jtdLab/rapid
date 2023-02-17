@@ -5,6 +5,7 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/directory_impl.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/core/plist_file_impl.dart';
 import 'package:rapid_cli/src/project/app_package/app_package.dart';
 
 import 'android_native_directory_bundle.dart';
@@ -37,6 +38,7 @@ class PlatformNativeDirectoryImpl extends DirectoryImpl
   Future<void> create({
     String? description,
     String? orgName,
+    String? language,
     required Logger logger,
   }) async {
     final projectName = _appPackage.project.name();
@@ -62,8 +64,60 @@ class PlatformNativeDirectoryImpl extends DirectoryImpl
         'project_name': projectName,
         if (description != null) 'description': description,
         if (orgName != null) 'org_name': orgName,
+        if (language != null) 'language': language, // TODO update ios template
       },
       logger: logger,
     );
+  }
+}
+
+class IosNativeDirectoryImpl extends PlatformNativeDirectoryImpl
+    implements IosNativeDirectory {
+  IosNativeDirectoryImpl({
+    required super.appPackage,
+    super.generator,
+    InfoPlistFile? infoPlistFile,
+  }) : super(Platform.ios) {
+    this.infoPlistFile =
+        infoPlistFile ?? InfoPlistFile(iosNativeDirectory: this);
+  }
+
+  @override
+  late final InfoPlistFile infoPlistFile;
+}
+
+class InfoPlistFileImpl extends PlistFileImpl implements InfoPlistFile {
+  InfoPlistFileImpl({
+    required this.iosNativeDirectory,
+  }) : super(
+          path: p.join(iosNativeDirectory.path, 'Runner'),
+          name: 'Info',
+        );
+
+  @override
+  final IosNativeDirectory iosNativeDirectory;
+
+  @override
+  void addLanguage({required String language}) {
+    final dict = readDict();
+
+    final languages =
+        ((dict['CFBundleLocalizations'] ?? []) as List).cast<String>();
+    if (!languages.contains(language)) {
+      dict['CFBundleLocalizations'] = [...languages, language];
+      setDict(dict);
+    }
+  }
+
+  @override
+  void removeLanguage({required String language}) {
+    final dict = readDict();
+
+    final languages =
+        ((dict['CFBundleLocalizations'] ?? []) as List).cast<String>();
+    if (languages.contains(language)) {
+      dict['CFBundleLocalizations'] = languages..remove(language);
+      setDict(dict);
+    }
   }
 }

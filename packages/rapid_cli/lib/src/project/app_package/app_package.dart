@@ -43,6 +43,7 @@ abstract class AppPackage implements DartPackage {
   Future<void> create({
     required String description,
     required String orgName,
+    required String language,
     required bool android,
     required bool ios,
     required bool linux,

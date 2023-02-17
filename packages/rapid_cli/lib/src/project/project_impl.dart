@@ -160,6 +160,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
     await appPackage.create(
       description: description,
       orgName: orgName,
+      language: language,
       android: android,
       ios: ios,
       linux: linux,

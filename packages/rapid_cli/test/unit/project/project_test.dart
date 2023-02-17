@@ -631,6 +631,7 @@ void main() {
           () => appPackage.create(
             description: 'my desc',
             orgName: 'my.org',
+            language: 'de',
             android: true,
             ios: true,
             linux: true,
@@ -772,6 +773,7 @@ void main() {
           () => appPackage.create(
             description: 'my desc',
             orgName: 'my.org',
+            language: 'de',
             android: false,
             ios: false,
             linux: false,

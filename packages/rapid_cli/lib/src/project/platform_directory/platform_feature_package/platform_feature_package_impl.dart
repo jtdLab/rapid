@@ -13,6 +13,7 @@ import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file_impl.dart';
+import 'package:rapid_cli/src/project/app_package/platform_native_directory/platform_native_directory.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 import 'arb_file_bundle.dart';
@@ -161,10 +162,19 @@ abstract class PlatformCustomizableFeaturePackageImpl
     required String language,
     required Logger logger,
   }) async {
-    final arbFile = _arbDirectory.languageArbFile(language: language);
-    if (!arbFile.exists()) {
-      await arbFile.create(logger: logger);
+    final languageArbFile = _arbDirectory.languageArbFile(language: language);
+    if (!languageArbFile.exists()) {
+      await languageArbFile.create(logger: logger);
       await _flutterGenl10n(cwd: path, logger: logger);
+    }
+
+    if (platform == Platform.ios) {
+      final appPackage = project.appPackage;
+      final iosNativeDirectory = appPackage.platformNativeDirectory(
+        platform: platform,
+      ) as IosNativeDirectory;
+      final infoPlistFile = iosNativeDirectory.infoPlistFile;
+      infoPlistFile.addLanguage(language: language);
     }
   }
 
@@ -173,15 +183,26 @@ abstract class PlatformCustomizableFeaturePackageImpl
     required String language,
     required Logger logger,
   }) async {
-    final arbFile = _arbDirectory.languageArbFile(language: language);
-    if (arbFile.exists()) {
-      arbFile.delete(logger: logger);
+    final languageArbFile = _arbDirectory.languageArbFile(language: language);
+    if (languageArbFile.exists()) {
+      languageArbFile.delete(logger: logger);
+    }
 
-      final languageLocalizationsFile =
-          this.languageLocalizationsFile(language: language);
-      if (languageLocalizationsFile.exists()) {
-        languageLocalizationsFile.delete(logger: logger);
-      }
+    final languageLocalizationsFile =
+        this.languageLocalizationsFile(language: language);
+    if (languageLocalizationsFile.exists()) {
+      languageLocalizationsFile.delete(logger: logger);
+    }
+
+    await _flutterGenl10n(cwd: path, logger: logger);
+
+    if (platform == Platform.ios) {
+      final appPackage = project.appPackage;
+      final iosNativeDirectory = appPackage.platformNativeDirectory(
+        platform: platform,
+      ) as IosNativeDirectory;
+      final infoPlistFile = iosNativeDirectory.infoPlistFile;
+      infoPlistFile.removeLanguage(language: language);
     }
   }
 

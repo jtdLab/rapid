@@ -1727,6 +1727,7 @@ void main() {
     setUpAll(() {
       registerFallbackValue(FakeLogger());
       registerFallbackValue(FakeDirectoryGeneratorTarget());
+      registerFallbackValue(Platform.android);
     });
 
     group('.path', () {
@@ -1975,6 +1976,53 @@ void main() {
         ).called(1);
       });
 
+      test('completes successfully with correct output (ios)', () async {
+        // Arrange
+        final infoPlistFile = getInfoPlistFile();
+        final iosNativeDirectory = getIosNativeDirectory();
+        when(() => iosNativeDirectory.infoPlistFile).thenReturn(infoPlistFile);
+        final appPackage = getAppPackage();
+        when(() => appPackage.platformNativeDirectory)
+            .thenReturn(({required Platform platform}) => iosNativeDirectory);
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        when(() => project.appPackage).thenReturn(appPackage);
+        final arbFile = getLanguageArbFile();
+        when(() => arbFile.exists()).thenReturn(false);
+        when(() => arbFile.create(logger: any(named: 'logger')))
+            .thenAnswer((_) async {});
+        final arbDirectory = getArbDirectory();
+        when(() => arbDirectory.languageArbFile(language: 'de'))
+            .thenReturn(arbFile);
+        final flutterGenl10n = getFlutterGenl10n();
+        final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+          Platform.ios,
+          project: project,
+          arbDirectory: arbDirectory,
+          flutterGenl10n: flutterGenl10n,
+        );
+
+        // Act
+        final logger = FakeLogger();
+        await platformAppFeaturePackage.addLanguage(
+          language: 'de',
+          logger: logger,
+        );
+
+        // Assert
+        verify(() => arbDirectory.languageArbFile(language: 'de')).called(1);
+        verify(() => arbFile.create(logger: logger)).called(1);
+        verify(
+          () => flutterGenl10n(
+            cwd:
+                'project/path/packages/my_project/my_project_ios/my_project_ios_app',
+            logger: logger,
+          ),
+        ).called(1);
+        verify(() => infoPlistFile.addLanguage(language: 'de')).called(1);
+      });
+
       test(
           'completes successfully with correct output when the arb file of the language already exists',
           () async {
@@ -2020,6 +2068,9 @@ void main() {
     group('.removeLanguage()', () {
       test('completes successfully with correct output', () async {
         // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
         final arbFile = getLanguageArbFile();
         when(() => arbFile.exists()).thenReturn(true);
         when(() => arbFile.create(logger: any(named: 'logger')))
@@ -2032,6 +2083,7 @@ void main() {
         final flutterGenl10n = getFlutterGenl10n();
         final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
           Platform.android,
+          project: project,
           arbDirectory: arbDirectory,
           languageLocalizationsFile: ({required String language}) =>
               languageLocalizationsFile,
@@ -2048,6 +2100,64 @@ void main() {
         // Assert
         verify(() => arbDirectory.languageArbFile(language: 'de')).called(1);
         verify(() => arbFile.delete(logger: logger)).called(1);
+        verify(
+          () => flutterGenl10n(
+            cwd:
+                'project/path/packages/my_project/my_project_android/my_project_android_app',
+            logger: logger,
+          ),
+        ).called(1);
+      });
+
+      test('completes successfully with correct output (ios)', () async {
+        // Arrange
+        final infoPlistFile = getInfoPlistFile();
+        final iosNativeDirectory = getIosNativeDirectory();
+        when(() => iosNativeDirectory.infoPlistFile).thenReturn(infoPlistFile);
+        final appPackage = getAppPackage();
+        when(() => appPackage.platformNativeDirectory)
+            .thenReturn(({required Platform platform}) => iosNativeDirectory);
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        when(() => project.appPackage).thenReturn(appPackage);
+        final arbFile = getLanguageArbFile();
+        when(() => arbFile.exists()).thenReturn(true);
+        when(() => arbFile.create(logger: any(named: 'logger')))
+            .thenAnswer((_) async {});
+        final arbDirectory = getArbDirectory();
+        when(() => arbDirectory.languageArbFile(language: 'de'))
+            .thenReturn(arbFile);
+        final languageLocalizationsFile = getLanguageLocalizationsFile();
+        when(() => languageLocalizationsFile.exists()).thenReturn(true);
+        final flutterGenl10n = getFlutterGenl10n();
+        final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+          Platform.ios,
+          project: project,
+          arbDirectory: arbDirectory,
+          languageLocalizationsFile: ({required String language}) =>
+              languageLocalizationsFile,
+          flutterGenl10n: flutterGenl10n,
+        );
+
+        // Act
+        final logger = FakeLogger();
+        await platformAppFeaturePackage.removeLanguage(
+          language: 'de',
+          logger: logger,
+        );
+
+        // Assert
+        verify(() => arbDirectory.languageArbFile(language: 'de')).called(1);
+        verify(() => arbFile.delete(logger: logger)).called(1);
+        verify(
+          () => flutterGenl10n(
+            cwd:
+                'project/path/packages/my_project/my_project_ios/my_project_ios_app',
+            logger: logger,
+          ),
+        ).called(1);
+        verify(() => infoPlistFile.removeLanguage(language: 'de')).called(1);
       });
 
       test(
@@ -2077,7 +2187,37 @@ void main() {
         // Assert
         verify(() => arbDirectory.languageArbFile(language: 'de')).called(1);
         verifyNever(() => arbFile.delete(logger: logger));
-        verifyNever(() => arbFile.delete(logger: logger));
+      });
+
+      test(
+          'completes successfully with correct output when the '
+          'language localizations file of the language does NOT exist',
+          () async {
+        final arbFile = getLanguageArbFile();
+        final arbDirectory = getArbDirectory();
+        when(() => arbDirectory.languageArbFile(language: 'de'))
+            .thenReturn(arbFile);
+        final languageLocalizationsFile = getLanguageLocalizationsFile();
+        when(() => languageLocalizationsFile.exists()).thenReturn(false);
+        final flutterGenl10n = getFlutterGenl10n();
+        final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+          Platform.android,
+          arbDirectory: arbDirectory,
+          languageLocalizationsFile: ({required String language}) =>
+              languageLocalizationsFile,
+          flutterGenl10n: flutterGenl10n,
+        );
+
+        // Act
+        final logger = FakeLogger();
+        await platformAppFeaturePackage.removeLanguage(
+          language: 'de',
+          logger: logger,
+        );
+
+        // Assert
+        verify(() => arbFile.delete(logger: logger)).called(1);
+        verifyNever(() => languageLocalizationsFile.delete(logger: logger));
       });
     });
 
@@ -2528,6 +2668,7 @@ void main() {
     setUpAll(() {
       registerFallbackValue(FakeLogger());
       registerFallbackValue(FakeDirectoryGeneratorTarget());
+      registerFallbackValue(Platform.android);
     });
 
     group('.path', () {
@@ -2791,6 +2932,54 @@ void main() {
         ).called(1);
       });
 
+      test('completes successfully with correct output (ios)', () async {
+        // Arrange
+        final infoPlistFile = getInfoPlistFile();
+        final iosNativeDirectory = getIosNativeDirectory();
+        when(() => iosNativeDirectory.infoPlistFile).thenReturn(infoPlistFile);
+        final appPackage = getAppPackage();
+        when(() => appPackage.platformNativeDirectory)
+            .thenReturn(({required Platform platform}) => iosNativeDirectory);
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        when(() => project.appPackage).thenReturn(appPackage);
+        final arbFile = getLanguageArbFile();
+        when(() => arbFile.exists()).thenReturn(false);
+        when(() => arbFile.create(logger: any(named: 'logger')))
+            .thenAnswer((_) async {});
+        final arbDirectory = getArbDirectory();
+        when(() => arbDirectory.languageArbFile(language: 'de'))
+            .thenReturn(arbFile);
+        final flutterGenl10n = getFlutterGenl10n();
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.ios,
+          project: project,
+          arbDirectory: arbDirectory,
+          flutterGenl10n: flutterGenl10n,
+        );
+
+        // Act
+        final logger = FakeLogger();
+        await platformCustomFeaturePackage.addLanguage(
+          language: 'de',
+          logger: logger,
+        );
+
+        // Assert
+        verify(() => arbDirectory.languageArbFile(language: 'de')).called(1);
+        verify(() => arbFile.create(logger: logger)).called(1);
+        verify(
+          () => flutterGenl10n(
+            cwd:
+                'project/path/packages/my_project/my_project_ios/my_project_ios_my_feature',
+            logger: logger,
+          ),
+        ).called(1);
+        verify(() => infoPlistFile.addLanguage(language: 'de')).called(1);
+      });
+
       test(
           'completes successfully with correct output when the arb file of the language already exists',
           () async {
@@ -2837,6 +3026,9 @@ void main() {
     group('.removeLanguage()', () {
       test('completes successfully with correct output', () async {
         // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
         final arbFile = getLanguageArbFile();
         when(() => arbFile.exists()).thenReturn(true);
         when(() => arbFile.create(logger: any(named: 'logger')))
@@ -2850,6 +3042,7 @@ void main() {
         final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
           'my_feature',
           Platform.android,
+          project: project,
           arbDirectory: arbDirectory,
           languageLocalizationsFile: ({required String language}) =>
               languageLocalizationsFile,
@@ -2866,6 +3059,65 @@ void main() {
         // Assert
         verify(() => arbDirectory.languageArbFile(language: 'de')).called(1);
         verify(() => arbFile.delete(logger: logger)).called(1);
+        verify(
+          () => flutterGenl10n(
+            cwd:
+                'project/path/packages/my_project/my_project_android/my_project_android_my_feature',
+            logger: logger,
+          ),
+        ).called(1);
+      });
+
+      test('completes successfully with correct output (ios)', () async {
+        // Arrange
+        final infoPlistFile = getInfoPlistFile();
+        final iosNativeDirectory = getIosNativeDirectory();
+        when(() => iosNativeDirectory.infoPlistFile).thenReturn(infoPlistFile);
+        final appPackage = getAppPackage();
+        when(() => appPackage.platformNativeDirectory)
+            .thenReturn(({required Platform platform}) => iosNativeDirectory);
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        when(() => project.appPackage).thenReturn(appPackage);
+        final arbFile = getLanguageArbFile();
+        when(() => arbFile.exists()).thenReturn(true);
+        when(() => arbFile.create(logger: any(named: 'logger')))
+            .thenAnswer((_) async {});
+        final arbDirectory = getArbDirectory();
+        when(() => arbDirectory.languageArbFile(language: 'de'))
+            .thenReturn(arbFile);
+        final languageLocalizationsFile = getLanguageLocalizationsFile();
+        when(() => languageLocalizationsFile.exists()).thenReturn(true);
+        final flutterGenl10n = getFlutterGenl10n();
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.ios,
+          project: project,
+          arbDirectory: arbDirectory,
+          languageLocalizationsFile: ({required String language}) =>
+              languageLocalizationsFile,
+          flutterGenl10n: flutterGenl10n,
+        );
+
+        // Act
+        final logger = FakeLogger();
+        await platformCustomFeaturePackage.removeLanguage(
+          language: 'de',
+          logger: logger,
+        );
+
+        // Assert
+        verify(() => arbDirectory.languageArbFile(language: 'de')).called(1);
+        verify(() => arbFile.delete(logger: logger)).called(1);
+        verify(
+          () => flutterGenl10n(
+            cwd:
+                'project/path/packages/my_project/my_project_ios/my_project_ios_my_feature',
+            logger: logger,
+          ),
+        ).called(1);
+        verify(() => infoPlistFile.removeLanguage(language: 'de')).called(1);
       });
 
       test(
@@ -2896,7 +3148,38 @@ void main() {
         // Assert
         verify(() => arbDirectory.languageArbFile(language: 'de')).called(1);
         verifyNever(() => arbFile.delete(logger: logger));
-        verifyNever(() => arbFile.delete(logger: logger));
+      });
+
+      test(
+          'completes successfully with correct output when the '
+          'language localizations file of the language does NOT exist',
+          () async {
+        final arbFile = getLanguageArbFile();
+        final arbDirectory = getArbDirectory();
+        when(() => arbDirectory.languageArbFile(language: 'de'))
+            .thenReturn(arbFile);
+        final languageLocalizationsFile = getLanguageLocalizationsFile();
+        when(() => languageLocalizationsFile.exists()).thenReturn(false);
+        final flutterGenl10n = getFlutterGenl10n();
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.android,
+          arbDirectory: arbDirectory,
+          languageLocalizationsFile: ({required String language}) =>
+              languageLocalizationsFile,
+          flutterGenl10n: flutterGenl10n,
+        );
+
+        // Act
+        final logger = FakeLogger();
+        await platformCustomFeaturePackage.removeLanguage(
+          language: 'de',
+          logger: logger,
+        );
+
+        // Assert
+        verify(() => arbFile.delete(logger: logger)).called(1);
+        verifyNever(() => languageLocalizationsFile.delete(logger: logger));
       });
     });
 

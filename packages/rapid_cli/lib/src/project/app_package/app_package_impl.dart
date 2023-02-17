@@ -31,8 +31,9 @@ class AppPackageImpl extends DartPackageImpl implements AppPackage {
           ),
         ) {
     this.platformNativeDirectory = platformNativeDirectory ??
-        (({required platform}) =>
-            PlatformNativeDirectory(platform, appPackage: this));
+        (({required platform}) => platform == Platform.ios
+            ? IosNativeDirectory(appPackage: this)
+            : PlatformNativeDirectory(platform, appPackage: this));
     _mainFiles = mainFiles ??
         {
           MainFile(Environment.development, appPackage: this),
@@ -54,6 +55,7 @@ class AppPackageImpl extends DartPackageImpl implements AppPackage {
   Future<void> create({
     required String description,
     required String orgName,
+    required String language,
     required bool android,
     required bool ios,
     required bool linux,
@@ -96,6 +98,7 @@ class AppPackageImpl extends DartPackageImpl implements AppPackage {
       platformNativeDirectory.create(
         description: description,
         orgName: orgName,
+        language: platform == Platform.ios ? language : null,
         logger: logger,
       );
     }

@@ -2168,9 +2168,15 @@ void main() {
 
           // Assert
           verify(() => platformDirectoryBuilder(platform: platform)).called(1);
-          verify(() => appFeaturePackage.setDefaultLanguage('de')).called(1);
-          verify(() => customFeature1.setDefaultLanguage('de')).called(1);
-          verify(() => customFeature2.setDefaultLanguage('de')).called(1);
+          verify(
+            () => appFeaturePackage.setDefaultLanguage('de', logger: logger),
+          ).called(1);
+          verify(
+            () => customFeature1.setDefaultLanguage('de', logger: logger),
+          ).called(1);
+          verify(
+            () => customFeature2.setDefaultLanguage('de', logger: logger),
+          ).called(1);
         }
 
         test('(android)', () => performTest(Platform.android));

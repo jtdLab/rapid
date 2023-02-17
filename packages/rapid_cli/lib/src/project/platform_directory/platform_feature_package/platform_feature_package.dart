@@ -73,7 +73,10 @@ abstract class PlatformCustomizableFeaturePackage
 
   String defaultLanguage();
 
-  void setDefaultLanguage(String newDefaultLanguage);
+  Future<void> setDefaultLanguage(
+    String newDefaultLanguage, {
+    required Logger logger,
+  });
 
   Future<void> addLanguage({
     required String language,

@@ -611,9 +611,9 @@ class ProjectImpl extends DirectoryImpl implements Project {
     }
 
     final appFeaturePackage = platformDirectory.appFeaturePackage;
-    appFeaturePackage.setDefaultLanguage(newDefaultLanguage);
+    appFeaturePackage.setDefaultLanguage(newDefaultLanguage, logger: logger);
     for (final customFeature in customFeatures) {
-      customFeature.setDefaultLanguage(newDefaultLanguage);
+      customFeature.setDefaultLanguage(newDefaultLanguage, logger: logger);
     }
   }
 

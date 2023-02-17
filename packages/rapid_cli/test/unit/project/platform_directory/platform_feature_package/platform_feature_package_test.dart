@@ -1920,20 +1920,39 @@ void main() {
       expect(platformAppFeaturePackage.defaultLanguage(), 'fr');
     });
 
-    test('.setDefaultLanguage()', () {
-      // Arrange
-      final l10nFile = getL10nFile();
-      when(() => l10nFile.readTemplateArbFile()).thenReturn('app_fr.arb');
-      final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
-        Platform.android,
-        l10nFile: l10nFile,
-      );
+    group('.setDefaultLanguage()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final l10nFile = getL10nFile();
+        when(() => l10nFile.readTemplateArbFile()).thenReturn('app_fr.arb');
+        final flutterGenl10n = getFlutterGenl10n();
+        final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
+          Platform.android,
+          project: project,
+          l10nFile: l10nFile,
+          flutterGenl10n: flutterGenl10n,
+        );
 
-      // Act
-      platformAppFeaturePackage.setDefaultLanguage('en');
+        // Act
+        final logger = FakeLogger();
+        await platformAppFeaturePackage.setDefaultLanguage(
+          'en',
+          logger: logger,
+        );
 
-      // Assert
-      verify(() => l10nFile.setTemplateArbFile('app_en.arb'));
+        // Assert
+        verify(() => l10nFile.setTemplateArbFile('app_en.arb'));
+        verify(
+          () => flutterGenl10n(
+            cwd:
+                'project/path/packages/my_project/my_project_android/my_project_android_app',
+            logger: logger,
+          ),
+        ).called(1);
+      });
     });
 
     group('.addLanguage()', () {
@@ -2873,22 +2892,40 @@ void main() {
       expect(platformCustomFeaturePackage.defaultLanguage(), 'fr');
     });
 
-    test('.setDefaultLanguage()', () {
-      // Arrange
-      final l10nFile = getL10nFile();
-      when(() => l10nFile.readTemplateArbFile())
-          .thenReturn('my_feature_fr.arb');
-      final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
-        'my_feature',
-        Platform.android,
-        l10nFile: l10nFile,
-      );
+    group('.setDefaultLanguage()', () {
+      test('completes successfully with correct output', () async {
+        // Arrange
+        final project = getProject();
+        when(() => project.path).thenReturn('project/path');
+        when(() => project.name()).thenReturn('my_project');
+        final l10nFile = getL10nFile();
+        when(() => l10nFile.readTemplateArbFile()).thenReturn('app_fr.arb');
+        final flutterGenl10n = getFlutterGenl10n();
+        final platformCustomFeaturePackage = _getPlatformCustomFeaturePackage(
+          'my_feature',
+          Platform.android,
+          project: project,
+          l10nFile: l10nFile,
+          flutterGenl10n: flutterGenl10n,
+        );
 
-      // Act
-      platformCustomFeaturePackage.setDefaultLanguage('en');
+        // Act
+        final logger = FakeLogger();
+        await platformCustomFeaturePackage.setDefaultLanguage(
+          'en',
+          logger: logger,
+        );
 
-      // Assert
-      verify(() => l10nFile.setTemplateArbFile('my_feature_en.arb'));
+        // Assert
+        verify(() => l10nFile.setTemplateArbFile('app_en.arb'));
+        verify(
+          () => flutterGenl10n(
+            cwd:
+                'project/path/packages/my_project/my_project_android/my_project_android_my_feature',
+            logger: logger,
+          ),
+        ).called(1);
+      });
     });
 
     group('.addLanguage()', () {

@@ -145,7 +145,10 @@ abstract class PlatformCustomizableFeaturePackageImpl
   }
 
   @override
-  void setDefaultLanguage(String newDefaultLanguage) {
+  Future<void> setDefaultLanguage(
+    String newDefaultLanguage, {
+    required Logger logger,
+  }) async {
     final l10nFile = _l10nFile;
     final templateArbFile = l10nFile.readTemplateArbFile();
     final newTemplateArbFile = templateArbFile.replaceRange(
@@ -155,6 +158,7 @@ abstract class PlatformCustomizableFeaturePackageImpl
     );
 
     l10nFile.setTemplateArbFile(newTemplateArbFile);
+    await _flutterGenl10n(cwd: path, logger: logger);
   }
 
   @override

@@ -569,7 +569,7 @@ void main() {
           () => platformDirectoryBuilder(platform: any(named: 'platform')),
         ).thenReturn(platformDirectory);
         final platformUiPackage = getPlatformUiPackage();
-        final platformUiPackageBuilder = getPlatfromUiPackageBuilder();
+        final platformUiPackageBuilder = getPlatformUiPackageBuilder();
         when(
           () => platformUiPackageBuilder(platform: any(named: 'platform')),
         ).thenReturn(platformUiPackage);
@@ -711,7 +711,7 @@ void main() {
           () => platformDirectoryBuilder(platform: any(named: 'platform')),
         ).thenReturn(platformDirectory);
         final platformUiPackage = getPlatformUiPackage();
-        final platformUiPackageBuilder = getPlatfromUiPackageBuilder();
+        final platformUiPackageBuilder = getPlatformUiPackageBuilder();
         when(
           () => platformUiPackageBuilder(platform: any(named: 'platform')),
         ).thenReturn(platformUiPackage);
@@ -864,7 +864,7 @@ void main() {
           final platformUiPackage = getPlatformUiPackage();
           when(() => platformUiPackage.packageName())
               .thenReturn('platform_ui_package');
-          final platformUiPackageBuilder = getPlatfromUiPackageBuilder();
+          final platformUiPackageBuilder = getPlatformUiPackageBuilder();
           when(
             () => platformUiPackageBuilder(platform: any(named: 'platform')),
           ).thenReturn(platformUiPackage);
@@ -992,7 +992,7 @@ void main() {
             () => platformDirectoryBuilder(platform: any(named: 'platform')),
           ).thenReturn(platformDirectory);
           final platformUiPackage = getPlatformUiPackage();
-          final platformUiPackageBuilder = getPlatfromUiPackageBuilder();
+          final platformUiPackageBuilder = getPlatformUiPackageBuilder();
           when(
             () => platformUiPackageBuilder(platform: any(named: 'platform')),
           ).thenReturn(platformUiPackage);
@@ -1425,7 +1425,7 @@ void main() {
           final platformUiPackage = getPlatformUiPackage();
           when(() => platformUiPackage.packageName())
               .thenReturn('platform_ui_package');
-          final platformUiPackageBuilder = getPlatfromUiPackageBuilder();
+          final platformUiPackageBuilder = getPlatformUiPackageBuilder();
           when(
             () => platformUiPackageBuilder(platform: any(named: 'platform')),
           ).thenReturn(platformUiPackage);
@@ -1627,7 +1627,7 @@ void main() {
           verify(
             () => customFeature2.addLanguage(language: 'de', logger: logger),
           ).called(1);
-          verify(() => dartFormatFix(logger: logger)).called(1);
+          verify(() => dartFormatFix(cwd: '.', logger: logger)).called(1);
         }
 
         test('(android)', () => performTest(Platform.android));
@@ -1880,6 +1880,7 @@ void main() {
           verify(
             () => customFeature2.removeLanguage(language: 'de', logger: logger),
           ).called(1);
+          verify(() => dartFormatFix(cwd: '.', logger: logger)).called(1);
         }
 
         test('(android)', () => performTest(Platform.android));
@@ -2177,6 +2178,7 @@ void main() {
           verify(
             () => customFeature2.setDefaultLanguage('de', logger: logger),
           ).called(1);
+          verify(() => dartFormatFix(cwd: '.', logger: logger)).called(1);
         }
 
         test('(android)', () => performTest(Platform.android));

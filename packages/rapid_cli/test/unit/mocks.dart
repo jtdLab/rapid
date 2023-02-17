@@ -414,6 +414,12 @@ MockPlatformCustomFeaturePackage getPlatformCustomFeaturePackage() {
       logger: any(named: 'logger'),
     ),
   ).thenAnswer((_) async {});
+  when(
+    () => platformCustomFeaturePackage.setDefaultLanguage(
+      any(),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
 
   return platformCustomFeaturePackage;
 }
@@ -570,6 +576,12 @@ MockPlatformAppFeaturePackage getPlatformAppFeaturePackage() {
   when(
     () => appFeaturePackage.removeLanguage(
       language: any(named: 'language'),
+      logger: any(named: 'logger'),
+    ),
+  ).thenAnswer((_) async {});
+  when(
+    () => appFeaturePackage.setDefaultLanguage(
+      any(),
       logger: any(named: 'logger'),
     ),
   ).thenAnswer((_) async {});
@@ -759,16 +771,6 @@ MockUiPackage getUiPackage() {
   ).thenAnswer((_) async {});
 
   return uiPackage;
-}
-
-MockPlatformUiPackageBuilder getPlatfromUiPackageBuilder() {
-  final platformUiPackageBuilder = MockPlatformUiPackageBuilder();
-  final platformUiPackage = getPlatformUiPackage();
-  when(
-    () => platformUiPackageBuilder(platform: any(named: 'platform')),
-  ).thenReturn(platformUiPackage);
-
-  return platformUiPackageBuilder;
 }
 
 MockPlatformDirectoryBuilder getPlatformDirectoryBuilder() {

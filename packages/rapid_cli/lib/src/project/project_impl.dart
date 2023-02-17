@@ -530,7 +530,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
       );
     }
 
-    await _dartFormatFix(logger: logger);
+    await _dartFormatFix(cwd: path, logger: logger);
   }
 
   @override
@@ -576,6 +576,8 @@ class ProjectImpl extends DirectoryImpl implements Project {
         logger: logger,
       );
     }
+
+    await _dartFormatFix(cwd: path, logger: logger);
   }
 
   @override
@@ -611,10 +613,18 @@ class ProjectImpl extends DirectoryImpl implements Project {
     }
 
     final appFeaturePackage = platformDirectory.appFeaturePackage;
-    appFeaturePackage.setDefaultLanguage(newDefaultLanguage, logger: logger);
+    await appFeaturePackage.setDefaultLanguage(
+      newDefaultLanguage,
+      logger: logger,
+    );
     for (final customFeature in customFeatures) {
-      customFeature.setDefaultLanguage(newDefaultLanguage, logger: logger);
+      await customFeature.setDefaultLanguage(
+        newDefaultLanguage,
+        logger: logger,
+      );
     }
+
+    await _dartFormatFix(cwd: path, logger: logger);
   }
 
   @override

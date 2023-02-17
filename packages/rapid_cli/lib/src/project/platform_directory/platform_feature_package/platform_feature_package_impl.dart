@@ -169,7 +169,6 @@ abstract class PlatformCustomizableFeaturePackageImpl
     final languageArbFile = _arbDirectory.languageArbFile(language: language);
     if (!languageArbFile.exists()) {
       await languageArbFile.create(logger: logger);
-      await _flutterGenl10n(cwd: path, logger: logger);
     }
 
     if (platform == Platform.ios) {
@@ -180,6 +179,8 @@ abstract class PlatformCustomizableFeaturePackageImpl
       final infoPlistFile = iosNativeDirectory.infoPlistFile;
       infoPlistFile.addLanguage(language: language);
     }
+
+    await _flutterGenl10n(cwd: path, logger: logger);
   }
 
   @override
@@ -198,8 +199,6 @@ abstract class PlatformCustomizableFeaturePackageImpl
       languageLocalizationsFile.delete(logger: logger);
     }
 
-    await _flutterGenl10n(cwd: path, logger: logger);
-
     if (platform == Platform.ios) {
       final appPackage = project.appPackage;
       final iosNativeDirectory = appPackage.platformNativeDirectory(
@@ -208,6 +207,8 @@ abstract class PlatformCustomizableFeaturePackageImpl
       final infoPlistFile = iosNativeDirectory.infoPlistFile;
       infoPlistFile.removeLanguage(language: language);
     }
+
+    await _flutterGenl10n(cwd: path, logger: logger);
   }
 
   @override

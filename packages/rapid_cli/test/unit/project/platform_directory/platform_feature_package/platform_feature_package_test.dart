@@ -2348,21 +2348,7 @@ void main() {
             ),
           ).called(1);
           verify(() => languageArbFileDe.create(logger: logger)).called(1);
-          verify(
-            () => languageArbFileDe.addTranslation(
-              name: 'title',
-              translation: 'App title for de',
-              description: 'Title text shown in the App',
-            ),
-          ).called(1);
           verify(() => languageArbFileFr.create(logger: logger)).called(1);
-          verify(
-            () => languageArbFileFr.addTranslation(
-              name: 'title',
-              translation: 'App title for fr',
-              description: 'Title text shown in the App',
-            ),
-          ).called(1);
           verify(
             () => flutterGenl10n(
               cwd:

@@ -515,11 +515,6 @@ class PlatformAppFeaturePackageImpl
     for (final language in languages) {
       final languageArbFile = _arbDirectory.languageArbFile(language: language);
       await languageArbFile.create(logger: logger);
-      languageArbFile.addTranslation(
-        name: 'title',
-        translation: 'App title for $language',
-        description: 'Title text shown in the App',
-      );
     }
 
     await _flutterGenl10n(cwd: path, logger: logger);

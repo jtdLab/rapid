@@ -25,7 +25,7 @@ final domainPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "lib/{{project_name}}_domain.dart",
       "data":
-          "Ly8gVE9ETzogZG9jCmxpYnJhcnkge3twcm9qZWN0X25hbWV9fV9kb21haW47Cg==",
+          "Ly8vIERvbWFpbiBMYXllciBmb3Ige3twcm9qZWN0X25hbWUudGl0bGVDYXNlKCl9fS4KLy8vCi8vLyBUbyB1c2UsIGltcG9ydCBgcGFja2FnZTp7e3Byb2plY3RfbmFtZX19X2RvbWFpbi97e3Byb2plY3RfbmFtZX19X2RvbWFpbi5kYXJ0YC4KbGlicmFyeSB7e3Byb2plY3RfbmFtZX19X2RvbWFpbjsK",
       "type": "text"
     },
     {

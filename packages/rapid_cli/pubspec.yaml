@@ -1,6 +1,7 @@
 name: rapid_cli
 description: Rapid is set of best practices, snippets and a cli to develop apps fast.
 version: 0.0.1
+publish_to: none
 executables:
   rapid:
 
@@ -10,7 +11,10 @@ environment:
 dependencies:
   meta: ^1.9.0
   args: ^2.3.1
-  mason: ^0.1.0-dev.41
+  mason:
+    git:
+      url: https://github.com/jtdLab/mason.git
+      path: packages/mason
   path: ^1.8.3
   yaml: ^3.1.1
   yaml_edit: ^2.0.3

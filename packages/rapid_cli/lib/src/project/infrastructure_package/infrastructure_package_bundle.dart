@@ -18,6 +18,12 @@ final infrastructurePackageBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
+      "path": "build.yaml",
+      "data":
+          "dGFyZ2V0czoKICAkZGVmYXVsdDoKICAgIGJ1aWxkZXJzOgogICAgICBzb3VyY2VfZ2VuOmNvbWJpbmluZ19idWlsZGVyOgogICAgICAgIG9wdGlvbnM6CiAgICAgICAgICBwcmVhbWJsZTogIi8vIGNvdmVyYWdlOmlnbm9yZS1maWxlIg==",
+      "type": "text"
+    },
+    {
       "path": "CHANGELOG.md",
       "data": "IyMgMS4wLjAKCi0gSW5pdGlhbCB2ZXJzaW9uLgo=",
       "type": "text"

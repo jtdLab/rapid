@@ -653,6 +653,6 @@ class PlatformCustomFeaturePackageImpl
       );
     }
 
-    await _flutterGenl10n(cwd: path, logger: logger); // TODO test
+    await _flutterGenl10n(cwd: path, logger: logger);
   }
 }

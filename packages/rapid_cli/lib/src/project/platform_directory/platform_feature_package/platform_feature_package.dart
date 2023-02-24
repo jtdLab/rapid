@@ -255,7 +255,7 @@ abstract class PlatformAppFeaturePackage
     ArbDirectory? arbDirectory,
     LanguageLocalizationsFileBuilder? languageLocalizationsFile,
     FlutterGenl10nCommand? flutterGenl10n,
-    LocalizationsFile? localizationsFile,
+    LocalizationsDelegatesFile? localizationsDelegatesFile,
     GeneratorBuilder? generator,
   }) =>
       PlatformAppFeaturePackageImpl(
@@ -266,7 +266,7 @@ abstract class PlatformAppFeaturePackage
         arbDirectory: arbDirectory,
         languageLocalizationsFile: languageLocalizationsFile,
         flutterGenl10n: flutterGenl10n,
-        localizationsFile: localizationsFile,
+        localizationsDelegatesFile: localizationsDelegatesFile,
         generator: generator,
       );
 
@@ -287,17 +287,17 @@ abstract class PlatformAppFeaturePackage
   });
 }
 
-/// {@template localizations_file}
-/// Abstraction of the localizations file of an app feature package of a Rapid project.
+/// {@template localizations_delegates_file}
+/// Abstraction of the delegates file of an app feature package of a Rapid project.
 ///
-/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_app/lib/src/presentation/localizations.dart`
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_app/lib/src/presentation/localizations_delegates.dart`
 /// {@endtemplate}
-abstract class LocalizationsFile implements DartFile {
-  /// {@macro localizations_file}
-  factory LocalizationsFile({
+abstract class LocalizationsDelegatesFile implements DartFile {
+  /// {@macro localizations_delegates_file}
+  factory LocalizationsDelegatesFile({
     required PlatformAppFeaturePackage platformAppFeaturePackage,
   }) =>
-      LocalizationsFileImpl(
+      LocalizationsDelegatesFileImpl(
         platformAppFeaturePackage: platformAppFeaturePackage,
       );
 

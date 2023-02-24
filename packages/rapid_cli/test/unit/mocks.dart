@@ -130,7 +130,8 @@ abstract class _LanguageLocalizationsFileBuilder {
 class MockLanguageLocalizationsFileBuilder extends Mock
     implements _LanguageLocalizationsFileBuilder {}
 
-class MockLocalizationsFile extends Mock implements LocalizationsFile {}
+class MockLocalizationsDelegatesFile extends Mock
+    implements LocalizationsDelegatesFile {}
 
 class MockL10nFile extends Mock implements L10nFile {}
 
@@ -589,10 +590,10 @@ MockPlatformAppFeaturePackage getPlatformAppFeaturePackage() {
   return appFeaturePackage;
 }
 
-MockLocalizationsFile getLocalizationsFile() {
-  final localizationsFile = MockLocalizationsFile();
+MockLocalizationsDelegatesFile getLocalizationsDelegatesFile() {
+  final localizationsDelegatesFile = MockLocalizationsDelegatesFile();
 
-  return localizationsFile;
+  return localizationsDelegatesFile;
 }
 
 MockL10nFile getL10nFile() {

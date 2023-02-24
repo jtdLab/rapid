@@ -169,6 +169,8 @@ abstract class PlatformCustomizableFeaturePackageImpl
     final languageArbFile = _arbDirectory.languageArbFile(language: language);
     if (!languageArbFile.exists()) {
       await languageArbFile.create(logger: logger);
+
+      await _flutterGenl10n(cwd: path, logger: logger);
     }
 
     if (platform == Platform.ios) {
@@ -179,8 +181,6 @@ abstract class PlatformCustomizableFeaturePackageImpl
       final infoPlistFile = iosNativeDirectory.infoPlistFile;
       infoPlistFile.addLanguage(language: language);
     }
-
-    await _flutterGenl10n(cwd: path, logger: logger);
   }
 
   @override
@@ -477,15 +477,15 @@ class PlatformAppFeaturePackageImpl
     super.arbDirectory,
     super.languageLocalizationsFile,
     super.flutterGenl10n,
-    LocalizationsFile? localizationsFile,
+    LocalizationsDelegatesFile? localizationsDelegatesFile,
     GeneratorBuilder? generator,
   })  : _generator = generator ?? MasonGenerator.fromBundle,
         super('app', platform) {
-    _localizationsFile =
-        localizationsFile ?? LocalizationsFile(platformAppFeaturePackage: this);
+    _localizationsDelegatesFile = localizationsDelegatesFile ??
+        LocalizationsDelegatesFile(platformAppFeaturePackage: this);
   }
 
-  late final LocalizationsFile _localizationsFile;
+  late final LocalizationsDelegatesFile _localizationsDelegatesFile;
   final GeneratorBuilder _generator;
 
   @override
@@ -526,7 +526,7 @@ class PlatformAppFeaturePackageImpl
     required Logger logger,
   }) async {
     pubspecFile.setDependency(customFeaturePackage.packageName());
-    _localizationsFile.addLocalizationsDelegate(customFeaturePackage);
+    _localizationsDelegatesFile.addLocalizationsDelegate(customFeaturePackage);
   }
 
   @override
@@ -535,12 +535,14 @@ class PlatformAppFeaturePackageImpl
     required Logger logger,
   }) async {
     pubspecFile.removeDependency(customFeaturePackage.packageName());
-    _localizationsFile.removeLocalizationsDelegate(customFeaturePackage);
+    _localizationsDelegatesFile
+        .removeLocalizationsDelegate(customFeaturePackage);
   }
 }
 
-class LocalizationsFileImpl extends DartFileImpl implements LocalizationsFile {
-  LocalizationsFileImpl({
+class LocalizationsDelegatesFileImpl extends DartFileImpl
+    implements LocalizationsDelegatesFile {
+  LocalizationsDelegatesFileImpl({
     required this.platformAppFeaturePackage,
   }) : super(
           path: p.join(
@@ -549,7 +551,7 @@ class LocalizationsFileImpl extends DartFileImpl implements LocalizationsFile {
             'src',
             'presentation',
           ),
-          name: 'localizations',
+          name: 'localizations_delegates',
         );
 
   @override

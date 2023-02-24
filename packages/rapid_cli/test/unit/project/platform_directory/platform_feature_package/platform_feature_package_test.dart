@@ -188,7 +188,7 @@ PlatformAppFeaturePackage _getPlatformAppFeaturePackage(
   ArbDirectory? arbDirectory,
   LanguageLocalizationsFileBuilder? languageLocalizationsFile,
   FlutterGenl10nCommand? flutterGenl10n,
-  LocalizationsFile? localizationsFile,
+  LocalizationsDelegatesFile? localizationsDelegatesFile,
   GeneratorBuilder? generator,
 }) {
   return PlatformAppFeaturePackage(
@@ -199,15 +199,15 @@ PlatformAppFeaturePackage _getPlatformAppFeaturePackage(
     arbDirectory: arbDirectory ?? getArbDirectory(),
     languageLocalizationsFile: languageLocalizationsFile,
     flutterGenl10n: flutterGenl10n ?? getFlutterGenl10n().call,
-    localizationsFile: localizationsFile,
+    localizationsDelegatesFile: localizationsDelegatesFile,
     generator: generator ?? (_) async => getMasonGenerator(),
   );
 }
 
-LocalizationsFile _getLocalizationsFile({
+LocalizationsDelegatesFile _getLocalizationsDelegatesFile({
   PlatformAppFeaturePackage? platformAppFeaturePackage,
 }) {
-  return LocalizationsFile(
+  return LocalizationsDelegatesFile(
     platformAppFeaturePackage:
         platformAppFeaturePackage ?? getPlatformAppFeaturePackage(),
   );
@@ -2377,11 +2377,11 @@ void main() {
           () async {
         // Arrange
         final pubspecFile = getPubspecFile();
-        final localizationsFile = getLocalizationsFile();
+        final localizationsFile = getLocalizationsDelegatesFile();
         final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
           Platform.android,
           pubspecFile: pubspecFile,
-          localizationsFile: localizationsFile,
+          localizationsDelegatesFile: localizationsFile,
         );
 
         // Act
@@ -2409,11 +2409,11 @@ void main() {
           () async {
         // Arrange
         final pubspecFile = getPubspecFile();
-        final localizationsFile = getLocalizationsFile();
+        final localizationsDelegatesFile = getLocalizationsDelegatesFile();
         final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
           Platform.android,
           pubspecFile: pubspecFile,
-          localizationsFile: localizationsFile,
+          localizationsDelegatesFile: localizationsDelegatesFile,
         );
 
         // Act
@@ -2428,7 +2428,7 @@ void main() {
         // Assert
         verify(() => pubspecFile.removeDependency('feature_name'));
         verify(
-          () => localizationsFile.removeLocalizationsDelegate(
+          () => localizationsDelegatesFile.removeLocalizationsDelegate(
             customFeaturePackage,
           ),
         );
@@ -2436,7 +2436,7 @@ void main() {
     });
   });
 
-  group('LocalizationsFile', () {
+  group('LocalizationsDelegatesFile', () {
     setUpAll(() {
       registerFallbackValue(FakeLogger());
       registerFallbackValue(FakePlatformCustomFeaturePackage());
@@ -2447,27 +2447,27 @@ void main() {
       final platformAppFeaturePackage = getPlatformAppFeaturePackage();
       when(() => platformAppFeaturePackage.path)
           .thenReturn('platform_app_feature_package/path');
-      final localizationsFile = _getLocalizationsFile(
+      final localizationsDelegatesFile = _getLocalizationsDelegatesFile(
         platformAppFeaturePackage: platformAppFeaturePackage,
       );
 
       // Act + Assert
       expect(
-        localizationsFile.path,
-        'platform_app_feature_package/path/lib/src/presentation/localizations.dart',
+        localizationsDelegatesFile.path,
+        'platform_app_feature_package/path/lib/src/presentation/localizations_delegates.dart',
       );
     });
 
     test('.platformAppFeaturePackage', () {
       // Arrange
       final platformAppFeaturePackage = getPlatformAppFeaturePackage();
-      final localizationsFile = _getLocalizationsFile(
+      final localizationsDelegatesFile = _getLocalizationsDelegatesFile(
         platformAppFeaturePackage: platformAppFeaturePackage,
       );
 
       // Act + Assert
       expect(
-        localizationsFile.platformAppFeaturePackage,
+        localizationsDelegatesFile.platformAppFeaturePackage,
         platformAppFeaturePackage,
       );
     });
@@ -2477,8 +2477,8 @@ void main() {
         'adds import and the localizations delegate correctly',
         withTempDir(() {
           // Arrange
-          final localizationsFile = _getLocalizationsFile();
-          final file = File(localizationsFile.path)
+          final localizationsDelegatesFile = _getLocalizationsDelegatesFile();
+          final file = File(localizationsDelegatesFile.path)
             ..createSync(recursive: true)
             ..writeAsStringSync(localizationsFileEmpty);
 
@@ -2486,7 +2486,8 @@ void main() {
           final customFeaturePackage = getPlatformCustomFeaturePackage();
           when(() => customFeaturePackage.packageName())
               .thenReturn('ab_cd_android_home_page');
-          localizationsFile.addLocalizationsDelegate(customFeaturePackage);
+          localizationsDelegatesFile
+              .addLocalizationsDelegate(customFeaturePackage);
 
           // Assert
           expect(file.readAsStringSync(), localizationsFileWithPackages);
@@ -2497,8 +2498,8 @@ void main() {
         'adds import and the localizations delegate correctly when diffrent packages already present',
         withTempDir(() {
           // Arrange
-          final localizationsFile = _getLocalizationsFile();
-          final file = File(localizationsFile.path)
+          final localizationsDelegatesFile = _getLocalizationsDelegatesFile();
+          final file = File(localizationsDelegatesFile.path)
             ..createSync(recursive: true)
             ..writeAsStringSync(localizationsFileWithPackages);
 
@@ -2506,7 +2507,8 @@ void main() {
           final customFeaturePackage = getPlatformCustomFeaturePackage();
           when(() => customFeaturePackage.packageName())
               .thenReturn('ab_cd_android_sign_in_page');
-          localizationsFile.addLocalizationsDelegate(customFeaturePackage);
+          localizationsDelegatesFile
+              .addLocalizationsDelegate(customFeaturePackage);
 
           // Assert
           expect(file.readAsStringSync(), localizationsFileWithMorePackages);
@@ -2517,8 +2519,8 @@ void main() {
         'does nothing when same package already present',
         withTempDir(() {
           // Arrange
-          final localizationsFile = _getLocalizationsFile();
-          final file = File(localizationsFile.path)
+          final localizationsDelegatesFile = _getLocalizationsDelegatesFile();
+          final file = File(localizationsDelegatesFile.path)
             ..createSync(recursive: true)
             ..writeAsStringSync(localizationsFileWithPackages);
 
@@ -2526,7 +2528,8 @@ void main() {
           final customFeaturePackage = getPlatformCustomFeaturePackage();
           when(() => customFeaturePackage.packageName())
               .thenReturn('ab_cd_android_home_page');
-          localizationsFile.addLocalizationsDelegate(customFeaturePackage);
+          localizationsDelegatesFile
+              .addLocalizationsDelegate(customFeaturePackage);
 
           // Assert
           expect(file.readAsStringSync(), localizationsFileWithPackages);
@@ -2539,8 +2542,8 @@ void main() {
         'removes import and the localizations delegate correctly',
         withTempDir(() {
           // Arrange
-          final localizationsFile = _getLocalizationsFile();
-          final file = File(localizationsFile.path)
+          final localizationsDelegatesFile = _getLocalizationsDelegatesFile();
+          final file = File(localizationsDelegatesFile.path)
             ..createSync(recursive: true)
             ..writeAsStringSync(localizationsFileWithPackages);
 
@@ -2548,7 +2551,8 @@ void main() {
           final customFeaturePackage = getPlatformCustomFeaturePackage();
           when(() => customFeaturePackage.packageName())
               .thenReturn('ab_cd_android_home_page');
-          localizationsFile.removeLocalizationsDelegate(customFeaturePackage);
+          localizationsDelegatesFile
+              .removeLocalizationsDelegate(customFeaturePackage);
 
           // Assert
           expect(file.readAsStringSync(), localizationsFileEmpty);
@@ -2559,8 +2563,8 @@ void main() {
         'removes import and the localizations delegate correctly when diffrent packages already present',
         withTempDir(() {
           // Arrange
-          final localizationsFile = _getLocalizationsFile();
-          final file = File(localizationsFile.path)
+          final localizationsDelegatesFile = _getLocalizationsDelegatesFile();
+          final file = File(localizationsDelegatesFile.path)
             ..createSync(recursive: true)
             ..writeAsStringSync(localizationsFileWithMorePackages);
 
@@ -2568,7 +2572,8 @@ void main() {
           final customFeaturePackage = getPlatformCustomFeaturePackage();
           when(() => customFeaturePackage.packageName())
               .thenReturn('ab_cd_android_sign_in_page');
-          localizationsFile.removeLocalizationsDelegate(customFeaturePackage);
+          localizationsDelegatesFile
+              .removeLocalizationsDelegate(customFeaturePackage);
 
           // Assert
           expect(file.readAsStringSync(), localizationsFileWithPackages);
@@ -2579,8 +2584,8 @@ void main() {
         'does nothing when no packages are present',
         withTempDir(() {
           // Arrange
-          final localizationsFile = _getLocalizationsFile();
-          final file = File(localizationsFile.path)
+          final localizationsDelegatesFile = _getLocalizationsDelegatesFile();
+          final file = File(localizationsDelegatesFile.path)
             ..createSync(recursive: true)
             ..writeAsStringSync(localizationsFileEmpty);
 
@@ -2588,7 +2593,8 @@ void main() {
           final customFeaturePackage = getPlatformCustomFeaturePackage();
           when(() => customFeaturePackage.packageName())
               .thenReturn('ab_cd_android_home_page');
-          localizationsFile.removeLocalizationsDelegate(customFeaturePackage);
+          localizationsDelegatesFile
+              .removeLocalizationsDelegate(customFeaturePackage);
 
           // Assert
           expect(file.readAsStringSync(), localizationsFileEmpty);

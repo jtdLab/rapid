@@ -9,10 +9,11 @@ const _defaultLanguage = 'en';
 
 /// Adds language option.
 extension LanguageOption on ArgParser {
-  /// Adds `--language`, `--lang` option. // TODO --lang
+  /// Adds `--language`, `--lang` option.
   void addLanguageOption({required String help}) {
     addOption(
       'language',
+      aliases: ['lang'],
       help: help,
       defaultsTo: _defaultLanguage,
     );

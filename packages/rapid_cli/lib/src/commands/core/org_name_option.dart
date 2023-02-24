@@ -11,10 +11,11 @@ final _orgNameRegExp = RegExp(r'^[a-zA-Z][\w-]*(\.[a-zA-Z][\w-]*)+$');
 
 /// Adds organization name option.
 extension OrgNameOption on ArgParser {
-  /// Adds `--org-name`, `--org` option. // TODO --org is correct ?
+  /// Adds `--org-name`, `--org` option.
   void addOrgNameOption({required String help}) {
     addOption(
       'org-name',
+      aliases: ['org'],
       help: help,
       defaultsTo: _defaultOrgName,
     );

@@ -1583,6 +1583,7 @@ void main() {
         Future<void> performTest(Platform platform) async {
           // Arrange
           final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(true);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
           final customFeature2 = getPlatformCustomFeaturePackage();
@@ -1643,10 +1644,16 @@ void main() {
         test('(windows)', () => performTest(Platform.windows));
       });
 
-      group('throws NoFeaturesFound when no features exist', () {
+      group(
+          'throws NoFeaturesFound when no app feature and no custom features exist',
+          () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn([]);
           final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
           when(
@@ -1686,10 +1693,14 @@ void main() {
           () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
           final customFeature2 = getPlatformCustomFeaturePackage();
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn(
             [customFeature1, customFeature2],
           );
@@ -1733,10 +1744,14 @@ void main() {
           () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
           final customFeature2 = getPlatformCustomFeaturePackage();
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn(
             [customFeature1, customFeature2],
           );
@@ -1782,10 +1797,14 @@ void main() {
           () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(true);
           final customFeature2 = getPlatformCustomFeaturePackage();
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn(
             [customFeature1, customFeature2],
           );
@@ -1832,6 +1851,7 @@ void main() {
         Future<void> performTest(Platform platform) async {
           // Arrange
           final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(true);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(true);
           when(() => customFeature1.defaultLanguage()).thenReturn('fr');
@@ -1899,7 +1919,11 @@ void main() {
       group('throws NoFeaturesFound when no features exist', () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn([]);
           final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
           when(
@@ -1939,10 +1963,14 @@ void main() {
           () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
           final customFeature2 = getPlatformCustomFeaturePackage();
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn(
             [customFeature1, customFeature2],
           );
@@ -1986,10 +2014,14 @@ void main() {
           () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
           final customFeature2 = getPlatformCustomFeaturePackage();
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn(
             [customFeature1, customFeature2],
           );
@@ -2035,10 +2067,14 @@ void main() {
           () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
           final customFeature2 = getPlatformCustomFeaturePackage();
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn(
             [customFeature1, customFeature2],
           );
@@ -2084,11 +2120,15 @@ void main() {
           () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(true);
           when(() => customFeature1.defaultLanguage()).thenReturn('de');
           final customFeature2 = getPlatformCustomFeaturePackage();
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn(
             [customFeature1, customFeature2],
           );
@@ -2135,6 +2175,7 @@ void main() {
         Future<void> performTest(Platform platform) async {
           // Arrange
           final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(true);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(true);
           when(() => customFeature1.defaultLanguage()).thenReturn('fr');
@@ -2197,7 +2238,11 @@ void main() {
       group('throws NoFeaturesFound when no features exist', () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn([]);
           final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
           when(
@@ -2237,10 +2282,14 @@ void main() {
           () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
           final customFeature2 = getPlatformCustomFeaturePackage();
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn(
             [customFeature1, customFeature2],
           );
@@ -2284,10 +2333,14 @@ void main() {
           () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
           final customFeature2 = getPlatformCustomFeaturePackage();
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn(
             [customFeature1, customFeature2],
           );
@@ -2333,10 +2386,14 @@ void main() {
           () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(false);
           final customFeature2 = getPlatformCustomFeaturePackage();
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn(
             [customFeature1, customFeature2],
           );
@@ -2382,11 +2439,15 @@ void main() {
           () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appFeaturePackage = getPlatformAppFeaturePackage();
+          when(() => appFeaturePackage.exists()).thenReturn(false);
           final customFeature1 = getPlatformCustomFeaturePackage();
           when(() => customFeature1.supportsLanguage(any())).thenReturn(true);
           when(() => customFeature1.defaultLanguage()).thenReturn('de');
           final customFeature2 = getPlatformCustomFeaturePackage();
           final platformDirectory = getPlatformDirectory();
+          when(() => platformDirectory.appFeaturePackage)
+              .thenReturn(appFeaturePackage);
           when(() => platformDirectory.customFeaturePackages()).thenReturn(
             [customFeature1, customFeature2],
           );

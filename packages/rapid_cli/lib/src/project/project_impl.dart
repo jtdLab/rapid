@@ -499,10 +499,10 @@ class ProjectImpl extends DirectoryImpl implements Project {
     final platformDirectory = this.platformDirectory(
       platform: platform,
     );
-    // TODO app package also here
+    final appFeaturePackage = platformDirectory.appFeaturePackage;
     final customFeatures = platformDirectory.customFeaturePackages();
 
-    if (customFeatures.isEmpty) {
+    if (!appFeaturePackage.exists() && customFeatures.isEmpty) {
       throw NoFeaturesFound();
     }
 
@@ -518,7 +518,6 @@ class ProjectImpl extends DirectoryImpl implements Project {
       throw FeaturesAlreadySupportLanguage();
     }
 
-    final appFeaturePackage = platformDirectory.appFeaturePackage;
     await appFeaturePackage.addLanguage(
       language: language,
       logger: logger,
@@ -542,10 +541,10 @@ class ProjectImpl extends DirectoryImpl implements Project {
     final platformDirectory = this.platformDirectory(
       platform: platform,
     );
-    // TODO app package also here
+    final appFeaturePackage = platformDirectory.appFeaturePackage;
     final customFeatures = platformDirectory.customFeaturePackages();
 
-    if (customFeatures.isEmpty) {
+    if (!appFeaturePackage.exists() && customFeatures.isEmpty) {
       throw NoFeaturesFound();
     }
 
@@ -565,7 +564,6 @@ class ProjectImpl extends DirectoryImpl implements Project {
       throw UnableToRemoveDefaultLanguage();
     }
 
-    final appFeaturePackage = platformDirectory.appFeaturePackage;
     await appFeaturePackage.removeLanguage(
       language: language,
       logger: logger,
@@ -589,10 +587,10 @@ class ProjectImpl extends DirectoryImpl implements Project {
     final platformDirectory = this.platformDirectory(
       platform: platform,
     );
-    // TODO app package also here
+    final appFeaturePackage = platformDirectory.appFeaturePackage;
     final customFeatures = platformDirectory.customFeaturePackages();
 
-    if (customFeatures.isEmpty) {
+    if (!appFeaturePackage.exists() && customFeatures.isEmpty) {
       throw NoFeaturesFound();
     }
 
@@ -612,7 +610,6 @@ class ProjectImpl extends DirectoryImpl implements Project {
       throw DefaultLanguageAlreadySetToRequestedLanguage();
     }
 
-    final appFeaturePackage = platformDirectory.appFeaturePackage;
     await appFeaturePackage.setDefaultLanguage(
       newDefaultLanguage,
       logger: logger,

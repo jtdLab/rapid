@@ -111,8 +111,8 @@ void main() {
         const expectedErrorMessage = 'No option specified for the name.';
 
         // Act
-        final result = await commandRunner.run(
-            ['linux', 'feature', 'add', 'bloc', '--feature', 'some_feat']);
+        final result = await commandRunner
+            .run(['linux', 'feature', 'add', 'bloc', '--feature', 'some_feat']);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
@@ -178,8 +178,7 @@ void main() {
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
         // Arrange
-        const expectedErrorMessage =
-            'No option specified for the feature.';
+        const expectedErrorMessage = 'No option specified for the feature.';
 
         // Act
         final result = await commandRunner

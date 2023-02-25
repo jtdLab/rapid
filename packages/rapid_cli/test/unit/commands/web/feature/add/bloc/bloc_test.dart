@@ -111,8 +111,8 @@ void main() {
         const expectedErrorMessage = 'No option specified for the name.';
 
         // Act
-        final result = await commandRunner.run(
-            ['web', 'feature', 'add', 'bloc', '--feature', 'some_feat']);
+        final result = await commandRunner
+            .run(['web', 'feature', 'add', 'bloc', '--feature', 'some_feat']);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
@@ -156,15 +156,8 @@ void main() {
         final expectedErrorMessage = '"$name" is not a valid dart class name.';
 
         // Act
-        final result = await commandRunner.run([
-          'web',
-          'feature',
-          'add',
-          'bloc',
-          name,
-          '--feature',
-          featureName
-        ]);
+        final result = await commandRunner.run(
+            ['web', 'feature', 'add', 'bloc', name, '--feature', featureName]);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
@@ -178,8 +171,7 @@ void main() {
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
         // Arrange
-        const expectedErrorMessage =
-            'No option specified for the feature.';
+        const expectedErrorMessage = 'No option specified for the feature.';
 
         // Act
         final result = await commandRunner

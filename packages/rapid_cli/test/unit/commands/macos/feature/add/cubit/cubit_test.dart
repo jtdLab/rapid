@@ -14,11 +14,11 @@ const expectedUsage = [
   'Adds a cubit to a feature of the macOS part of an existing Rapid project.\n'
       '\n'
       'Usage: rapid macos feature add cubit <name> [arguments]\n'
-      '-h, --help            Print this usage information.\n'
+      '-h, --help       Print this usage information.\n'
       '\n'
       '\n'
-      '    --feature-name    The name of the feature this new cubit will be added to.\n'
-      '                      This must be the name of an existing macOS feature.\n'
+      '-f, --feature    The name of the feature this new cubit will be added to.\n'
+      '                 This must be the name of an existing macOS feature.\n'
       '\n'
       'Run "rapid help" to see global options.'
 ];
@@ -57,7 +57,7 @@ void main() {
       argResults = MockArgResults();
       featureName = 'my_cool_feature';
       name = 'FooBar';
-      when(() => argResults['feature-name']).thenReturn(featureName);
+      when(() => argResults['feature']).thenReturn(featureName);
       when(() => argResults.rest).thenReturn([name]);
 
       command = MacosFeatureAddCubitCommand(
@@ -111,14 +111,8 @@ void main() {
         const expectedErrorMessage = 'No option specified for the name.';
 
         // Act
-        final result = await commandRunner.run([
-          'macos',
-          'feature',
-          'add',
-          'cubit',
-          '--feature-name',
-          'some_feat'
-        ]);
+        final result = await commandRunner.run(
+            ['macos', 'feature', 'add', 'cubit', '--feature', 'some_feat']);
 
         // Assert
         expect(result, equals(ExitCode.usage.code));
@@ -142,7 +136,7 @@ void main() {
           'cubit',
           'name1',
           'name2',
-          '--feature-name',
+          '--feature',
           'some_feat'
         ]);
 
@@ -168,7 +162,7 @@ void main() {
           'add',
           'cubit',
           name,
-          '--feature-name',
+          '--feature',
           featureName
         ]);
 
@@ -180,12 +174,11 @@ void main() {
     );
 
     test(
-      'throws UsageException when --feature-name is missing',
+      'throws UsageException when --feature is missing',
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
         // Arrange
-        const expectedErrorMessage =
-            'No option specified for the feature name.';
+        const expectedErrorMessage = 'No option specified for the feature.';
 
         // Act
         final result = await commandRunner
@@ -199,7 +192,7 @@ void main() {
     );
 
     test(
-      'throws UsageException when --feature-name is not a valid package name',
+      'throws UsageException when --feature is not a valid package name',
       withRunnerOnProject(
           (commandRunner, logger, melosFile, project, printLogs) async {
         // Arrange
@@ -215,7 +208,7 @@ void main() {
           'add',
           'cubit',
           'FooBar',
-          '--feature-name',
+          '--feature',
           featureName
         ]);
 

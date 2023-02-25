@@ -42,7 +42,8 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
     argParser
       ..addSeparator('')
       ..addOption(
-        'feature-name',
+        'feature',
+        abbr: 'f',
         help: 'The name of the feature this new cubit will be added to.\n'
             'This must be the name of an existing ${_platform.prettyName} feature.',
       );
@@ -75,7 +76,7 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
         ],
         _logger,
         () async {
-          final featureName = _featureName;
+          final feature = _feature;
           final name = super.className;
 
           _logger.info('Adding Cubit ...');
@@ -83,7 +84,7 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
           try {
             await _project.addCubit(
               name: name,
-              featureName: featureName,
+              featureName: feature,
               platform: _platform,
               logger: _logger,
             );
@@ -91,7 +92,7 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
             _logger
               ..info('')
               ..success(
-                'Added ${name.pascalCase}Cubit to ${_platform.prettyName} feature $featureName.',
+                'Added ${name.pascalCase}Cubit to ${_platform.prettyName} feature $feature.',
               );
 
             return ExitCode.success.code;
@@ -99,7 +100,7 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
             _logger
               ..info('')
               ..err(
-                'The feature $featureName does not exist on ${_platform.prettyName}.',
+                'The feature $feature does not exist on ${_platform.prettyName}.',
               );
 
             return ExitCode.config.code;
@@ -107,7 +108,7 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
             _logger
               ..info('')
               ..err(
-                'The cubit $name does already exist in $featureName on ${_platform.prettyName}.',
+                'The cubit $name does already exist in $feature on ${_platform.prettyName}.',
               );
 
             return ExitCode.config.code;
@@ -116,12 +117,12 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
       );
 
   /// Gets the name the feature the cubit should be added to.
-  String get _featureName {
-    final raw = argResults['feature-name'] as String?;
+  String get _feature {
+    final raw = argResults['feature'] as String?;
 
     if (raw == null) {
       throw UsageException(
-        'No option specified for the feature name.',
+        'No option specified for the feature.',
         usage,
       );
     }

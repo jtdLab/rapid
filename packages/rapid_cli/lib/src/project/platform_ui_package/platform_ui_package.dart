@@ -1,5 +1,6 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
@@ -17,17 +18,21 @@ abstract class PlatformUiPackage implements DartPackage {
   factory PlatformUiPackage(
     Platform platform, {
     required Project project,
+    ThemeExtensionsFile? themeExtensionsFile,
     GeneratorBuilder? generator,
   }) =>
       PlatformUiPackageImpl(
         platform,
         project: project,
+        themeExtensionsFile: themeExtensionsFile,
         generator: generator,
       );
 
   Platform get platform;
 
   Project get project;
+
+  ThemeExtensionsFile get themeExtensionsFile;
 
   Future<void> create({required Logger logger});
 
@@ -64,4 +69,25 @@ abstract class Widget implements FileSystemEntityCollection {
   PlatformUiPackage get platformUiPackage;
 
   Future<void> create({required Logger logger});
+}
+
+/// {@template theme_extensions_file}
+/// Abstraction of the theme extensions file of a platform ui package of a Rapid project.
+///
+/// Location: `packages/<project name>_ui/<project name>_ui_<platform>/lib/src/theme_extensions.dart`
+/// {@endtemplate}
+abstract class ThemeExtensionsFile implements DartFile {
+  /// {@macro theme_extensions_file}
+  factory ThemeExtensionsFile({
+    required PlatformUiPackage platformUiPackage,
+  }) =>
+      ThemeExtensionsFileImpl(
+        platformUiPackage: platformUiPackage,
+      );
+
+  PlatformUiPackage get platformUiPackage;
+
+  void addThemeExtension(Widget widget);
+
+  void removeThemeExtension(Widget widget);
 }

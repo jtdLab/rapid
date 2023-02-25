@@ -888,6 +888,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
     }
 
     await widget.create(logger: logger);
+    platformUiPackage.themeExtensionsFile.addThemeExtension(widget);
   }
 
   @override
@@ -904,6 +905,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
       throw WidgetDoesNotExist();
     }
 
+    platformUiPackage.themeExtensionsFile.removeThemeExtension(widget);
     widget.delete(logger: logger);
   }
 }

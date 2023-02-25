@@ -172,6 +172,8 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {}
 
 class MockInfoPlistFile extends Mock implements InfoPlistFile {}
 
+class MockThemeExtensionsFile extends Mock implements ThemeExtensionsFile {}
+
 abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
   Future<void> call({
     String cwd,
@@ -454,6 +456,7 @@ MockPlatformRoutingFeaturePackage getPlatformRoutingFeaturePackage() {
 
 MockPlatformUiPackage getPlatformUiPackage() {
   final platformUiPackage = MockPlatformUiPackage();
+  when(() => platformUiPackage.path).thenReturn('some/path');
   when(() => platformUiPackage.exists()).thenReturn(true);
   when(
     () => platformUiPackage.create(logger: any(named: 'logger')),
@@ -807,4 +810,10 @@ MockInfoPlistFile getInfoPlistFile() {
   final infoPlistFile = MockInfoPlistFile();
 
   return infoPlistFile;
+}
+
+MockThemeExtensionsFile getThemeExtensionsFile() {
+  final themeExtensionsFile = MockThemeExtensionsFile();
+
+  return themeExtensionsFile;
 }

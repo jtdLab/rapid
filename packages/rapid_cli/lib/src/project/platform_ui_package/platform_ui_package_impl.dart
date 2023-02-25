@@ -3,6 +3,7 @@ import 'dart:io' as io;
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
@@ -19,6 +20,7 @@ class PlatformUiPackageImpl extends DartPackageImpl
   PlatformUiPackageImpl(
     this.platform, {
     required this.project,
+    ThemeExtensionsFile? themeExtensionsFile,
     GeneratorBuilder? generator,
   })  : _generator = generator ?? MasonGenerator.fromBundle,
         super(
@@ -28,7 +30,10 @@ class PlatformUiPackageImpl extends DartPackageImpl
             '${project.name()}_ui',
             '${project.name()}_ui_${platform.name}',
           ),
-        );
+        ) {
+    this.themeExtensionsFile =
+        themeExtensionsFile ?? ThemeExtensionsFileImpl(platformUiPackage: this);
+  }
 
   final GeneratorBuilder _generator;
 
@@ -37,6 +42,9 @@ class PlatformUiPackageImpl extends DartPackageImpl
 
   @override
   final Project project;
+
+  @override
+  late final ThemeExtensionsFile themeExtensionsFile;
 
   @override
   Future<void> create({
@@ -135,5 +143,71 @@ class WidgetImpl extends FileSystemEntityCollection implements Widget {
     );
 
     await _dartFormatFix(cwd: platformUiPackage.path, logger: logger);
+  }
+}
+
+class ThemeExtensionsFileImpl extends DartFileImpl
+    implements ThemeExtensionsFile {
+  ThemeExtensionsFileImpl({
+    required this.platformUiPackage,
+  }) : super(
+          path: p.join(
+            platformUiPackage.path,
+            'lib',
+            'src',
+          ),
+          name: 'theme_extensions',
+        );
+
+  @override
+  final PlatformUiPackage platformUiPackage;
+
+  @override
+  void addThemeExtension(Widget widget) {
+    final projectName = widget.platformUiPackage.project.name();
+    final name = widget.name;
+
+    addImport('${name.snakeCase}/${name.snakeCase}_theme.dart');
+
+    final themes = ['light', 'dark']; // TODO read from file
+
+    for (final theme in themes) {
+      final extension = '${projectName.pascalCase}${name}Theme.$theme';
+      final existingExtensions =
+          readTopLevelListVar(name: '${theme}Extensions');
+
+      if (!existingExtensions.contains(extension)) {
+        setTopLevelListVar(
+          name: '${theme}Extensions',
+          value: [
+            extension,
+            ...existingExtensions,
+          ]..sort(),
+        );
+      }
+    }
+  }
+
+  @override
+  void removeThemeExtension(Widget widget) {
+    final projectName = widget.platformUiPackage.project.name();
+    final name = widget.name;
+
+    removeImport('${name.snakeCase}/${name.snakeCase}_theme.dart');
+
+    final themes = ['light', 'dark']; // TODO read from file
+
+    for (final theme in themes) {
+      final extension = '${projectName.pascalCase}${name}Theme.$theme';
+      final existingExtensions =
+          readTopLevelListVar(name: '${theme}Extensions');
+
+      if (existingExtensions.contains(extension)) {
+        setTopLevelListVar(
+          name: '${theme}Extensions',
+          value: existingExtensions..remove(extension),
+        );
+      }
+    }
   }
 }

@@ -3569,6 +3569,7 @@ void main() {
           // Arrange
           final widget = getWidget();
           when(() => widget.existsAny()).thenReturn(false);
+          final themeExtensionsFile = getThemeExtensionsFile();
           final platformUiPackage = getPlatformUiPackage();
           when(
             () => platformUiPackage.widget(
@@ -3576,6 +3577,8 @@ void main() {
               dir: 'widget/path',
             ),
           ).thenReturn(widget);
+          when(() => platformUiPackage.themeExtensionsFile)
+              .thenReturn(themeExtensionsFile);
           final platformUiPackageBuilder = getPlatformUiPackageBuilder();
           when(
             () => platformUiPackageBuilder(platform: any(named: 'platform')),
@@ -3602,6 +3605,7 @@ void main() {
             ),
           ).called(1);
           verify(() => widget.create(logger: logger)).called(1);
+          verify(() => themeExtensionsFile.addThemeExtension(widget)).called(1);
         }
 
         test('(android)', () => performTest(Platform.android));
@@ -3669,6 +3673,7 @@ void main() {
           // Arrange
           final widget = getWidget();
           when(() => widget.existsAny()).thenReturn(true);
+          final themeExtensionsFile = getThemeExtensionsFile();
           final platformUiPackage = getPlatformUiPackage();
           when(
             () => platformUiPackage.widget(
@@ -3676,6 +3681,8 @@ void main() {
               dir: 'widget/path',
             ),
           ).thenReturn(widget);
+          when(() => platformUiPackage.themeExtensionsFile)
+              .thenReturn(themeExtensionsFile);
           final platformUiPackageBuilder = getPlatformUiPackageBuilder();
           when(
             () => platformUiPackageBuilder(platform: any(named: 'platform')),
@@ -3701,6 +3708,8 @@ void main() {
               dir: 'widget/path',
             ),
           ).called(1);
+          verify(() => themeExtensionsFile.removeThemeExtension(widget))
+              .called(1);
           verify(() => widget.delete(logger: logger)).called(1);
         }
 

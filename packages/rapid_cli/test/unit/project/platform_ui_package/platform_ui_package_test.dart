@@ -12,6 +12,45 @@ import 'package:test/test.dart';
 import '../../common.dart';
 import '../../mocks.dart';
 
+const themeExtensionsFileEmpty = '''
+import 'package:ab_cd_ui_android/ab_cd_ui_android.dart';
+
+const lightExtensions = <ThemeExtension>[];
+
+const darkExtensions = <ThemeExtension>[];
+''';
+
+const themeExtensionsFileWithExtensions = '''
+import 'package:ab_cd_ui_android/ab_cd_ui_android.dart';
+
+import 'cool_widget/cool_widget_theme.dart';
+
+const lightExtensions = <ThemeExtension>[
+  MyProjectCoolWidgetTheme.light,
+];
+
+const darkExtensions = <ThemeExtension>[
+  MyProjectCoolWidgetTheme.dark,
+];
+''';
+
+const themeExtensionsFileWithMoreExtensions = '''
+import 'package:ab_cd_ui_android/ab_cd_ui_android.dart';
+
+import 'cool_widget/cool_widget_theme.dart';
+import 'sweet_widget/sweet_widget_theme.dart';
+
+const lightExtensions = <ThemeExtension>[
+  MyProjectCoolWidgetTheme.light,
+  MyProjectSweetWidgetTheme.light,
+];
+
+const darkExtensions = <ThemeExtension>[
+  MyProjectCoolWidgetTheme.dark,
+  MyProjectSweetWidgetTheme.dark,
+];
+''';
+
 PlatformUiPackage _getPlatformUiPackage(
   Platform platform, {
   Project? project,
@@ -37,6 +76,14 @@ Widget _getWidget({
     platformUiPackage: platformUiPackage,
     dartFormatFix: dartFormatFix ?? getDartFormatFix().call,
     generator: generator ?? (_) async => getMasonGenerator(),
+  );
+}
+
+ThemeExtensionsFile _getThemeExtensionsFile({
+  PlatformUiPackage? platformUiPackage,
+}) {
+  return ThemeExtensionsFile(
+    platformUiPackage: platformUiPackage ?? getPlatformUiPackage(),
   );
 }
 
@@ -146,6 +193,98 @@ void main() {
         expect(
           platformUiPackage.path,
           'project/path/packages/my_project_ui/my_project_ui_windows',
+        );
+      });
+    });
+
+    group('.themeExtensionsFile', () {
+      test('(android)', () {
+        // Arrange
+        final platformUiPackage = _getPlatformUiPackage(Platform.android);
+
+        // Act + Assert
+        expect(
+          platformUiPackage.themeExtensionsFile,
+          isA<ThemeExtensionsFile>().having(
+            (extFile) => extFile.platformUiPackage,
+            'platformUiPackage',
+            platformUiPackage,
+          ),
+        );
+      });
+
+      test('(ios)', () {
+        // Arrange
+        final platformUiPackage = _getPlatformUiPackage(Platform.ios);
+
+        // Act + Assert
+        expect(
+          platformUiPackage.themeExtensionsFile,
+          isA<ThemeExtensionsFile>().having(
+            (extFile) => extFile.platformUiPackage,
+            'platformUiPackage',
+            platformUiPackage,
+          ),
+        );
+      });
+
+      test('(linux)', () {
+        // Arrange
+        final platformUiPackage = _getPlatformUiPackage(Platform.linux);
+
+        // Act + Assert
+        expect(
+          platformUiPackage.themeExtensionsFile,
+          isA<ThemeExtensionsFile>().having(
+            (extFile) => extFile.platformUiPackage,
+            'platformUiPackage',
+            platformUiPackage,
+          ),
+        );
+      });
+
+      test('(macos)', () {
+        // Arrange
+        final platformUiPackage = _getPlatformUiPackage(Platform.macos);
+
+        // Act + Assert
+        expect(
+          platformUiPackage.themeExtensionsFile,
+          isA<ThemeExtensionsFile>().having(
+            (extFile) => extFile.platformUiPackage,
+            'platformUiPackage',
+            platformUiPackage,
+          ),
+        );
+      });
+
+      test('(web)', () {
+        // Arrange
+        final platformUiPackage = _getPlatformUiPackage(Platform.web);
+
+        // Act + Assert
+        expect(
+          platformUiPackage.themeExtensionsFile,
+          isA<ThemeExtensionsFile>().having(
+            (extFile) => extFile.platformUiPackage,
+            'platformUiPackage',
+            platformUiPackage,
+          ),
+        );
+      });
+
+      test('(windows)', () {
+        // Arrange
+        final platformUiPackage = _getPlatformUiPackage(Platform.windows);
+
+        // Act + Assert
+        expect(
+          platformUiPackage.themeExtensionsFile,
+          isA<ThemeExtensionsFile>().having(
+            (extFile) => extFile.platformUiPackage,
+            'platformUiPackage',
+            platformUiPackage,
+          ),
         );
       });
     });
@@ -877,6 +1016,174 @@ void main() {
           );
           expect(widgetDir.existsSync(), false);
           expect(widgetTestDir.existsSync(), false);
+        }),
+      );
+    });
+  });
+
+  group('ThemeExtensionsFile', () {
+    setUpAll(() {
+      registerFallbackValue(FakeLogger());
+    });
+
+    test('.platformUiPackage', () {
+      // Arrange
+      final platformUiPackage = getPlatformUiPackage();
+      final themeExtensionsFile = _getThemeExtensionsFile(
+        platformUiPackage: platformUiPackage,
+      );
+
+      // Act + Assert
+      expect(themeExtensionsFile.platformUiPackage, platformUiPackage);
+    });
+
+    group('.addThemeExtension()', () {
+      test(
+        'adds import and the light and dark theme extension correctly',
+        withTempDir(() {
+          // Arrange
+          final themeExtensionsFile = _getThemeExtensionsFile();
+          final file = File(themeExtensionsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(themeExtensionsFileEmpty);
+
+          // Act
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformUiPackage = getPlatformUiPackage();
+          when(() => platformUiPackage.project).thenReturn(project);
+          final widget = getWidget();
+          when(() => widget.platformUiPackage).thenReturn(platformUiPackage);
+          when(() => widget.name).thenReturn('CoolWidget');
+          themeExtensionsFile.addThemeExtension(widget);
+
+          // Assert
+          expect(file.readAsStringSync(), themeExtensionsFileWithExtensions);
+        }),
+      );
+
+      test(
+        'adds import and the light and dark theme extension correctly when diffrent packages already present',
+        withTempDir(() {
+          // Arrange
+          final themeExtensionsFile = _getThemeExtensionsFile();
+          final file = File(themeExtensionsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(themeExtensionsFileWithExtensions);
+
+          // Act
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformUiPackage = getPlatformUiPackage();
+          when(() => platformUiPackage.project).thenReturn(project);
+          final widget = getWidget();
+          when(() => widget.platformUiPackage).thenReturn(platformUiPackage);
+          when(() => widget.name).thenReturn('SweetWidget');
+          themeExtensionsFile.addThemeExtension(widget);
+
+          // Assert
+          expect(
+            file.readAsStringSync(),
+            themeExtensionsFileWithMoreExtensions,
+          );
+        }),
+      );
+
+      test(
+        'does nothing when same package already present',
+        withTempDir(() {
+          // Arrange
+          final themeExtensionsFile = _getThemeExtensionsFile();
+          final file = File(themeExtensionsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(themeExtensionsFileWithExtensions);
+
+          // Act
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformUiPackage = getPlatformUiPackage();
+          when(() => platformUiPackage.project).thenReturn(project);
+          final widget = getWidget();
+          when(() => widget.platformUiPackage).thenReturn(platformUiPackage);
+          when(() => widget.name).thenReturn('CoolWidget');
+          themeExtensionsFile.addThemeExtension(widget);
+
+          // Assert
+          expect(file.readAsStringSync(), themeExtensionsFileWithExtensions);
+        }),
+      );
+    });
+
+    group('.removeThemeExtension()', () {
+      test(
+        'removes import and the localizations delegate correctly',
+        withTempDir(() {
+          // Arrange
+          final themeExtensionsFile = _getThemeExtensionsFile();
+          final file = File(themeExtensionsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(themeExtensionsFileWithExtensions);
+
+          // Act
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformUiPackage = getPlatformUiPackage();
+          when(() => platformUiPackage.project).thenReturn(project);
+          final widget = getWidget();
+          when(() => widget.platformUiPackage).thenReturn(platformUiPackage);
+          when(() => widget.name).thenReturn('CoolWidget');
+          themeExtensionsFile.removeThemeExtension(widget);
+
+          // Assert
+          expect(file.readAsStringSync(), themeExtensionsFileEmpty);
+        }),
+      );
+
+      test(
+        'removes import and the localizations delegate correctly when diffrent packages already present',
+        withTempDir(() {
+          // Arrange
+          final themeExtensionsFile = _getThemeExtensionsFile();
+          final file = File(themeExtensionsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(themeExtensionsFileWithMoreExtensions);
+
+          // Act
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformUiPackage = getPlatformUiPackage();
+          when(() => platformUiPackage.project).thenReturn(project);
+          final widget = getWidget();
+          when(() => widget.platformUiPackage).thenReturn(platformUiPackage);
+          when(() => widget.name).thenReturn('SweetWidget');
+          themeExtensionsFile.removeThemeExtension(widget);
+
+          // Assert
+          expect(file.readAsStringSync(), themeExtensionsFileWithExtensions);
+        }),
+      );
+
+      test(
+        'does nothing when no packages are present',
+        withTempDir(() {
+          // Arrange
+          final themeExtensionsFile = _getThemeExtensionsFile();
+          final file = File(themeExtensionsFile.path)
+            ..createSync(recursive: true)
+            ..writeAsStringSync(themeExtensionsFileEmpty);
+
+          // Act
+          final project = getProject();
+          when(() => project.name()).thenReturn('my_project');
+          final platformUiPackage = getPlatformUiPackage();
+          when(() => platformUiPackage.project).thenReturn(project);
+          final widget = getWidget();
+          when(() => widget.platformUiPackage).thenReturn(platformUiPackage);
+          when(() => widget.name).thenReturn('CoolWidget');
+          themeExtensionsFile.removeThemeExtension(widget);
+
+          // Assert
+          expect(file.readAsStringSync(), themeExtensionsFileEmpty);
         }),
       );
     });

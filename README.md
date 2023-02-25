@@ -21,7 +21,7 @@ Rapid is based on carefully selected packages from the Flutter Community and bri
 
 ## What packages is Rapid based on? 👀
 
-| Task                   | via                                     |
+| Task                   | Package                                 |
 | ---------------------- |:---------------------------------------:|
 | Project Management     | [melos](https://pub.dev/packages/melos) |
 | Dependency Injection   | [getIt](https://pub.dev/packages/get_it), [injectable](https://pub.dev/packages/injectable) |
@@ -30,6 +30,10 @@ Rapid is based on carefully selected packages from the Flutter Community and bri
 | Localization           | [flutter_localizations](https://docs.flutter.dev/development/accessibility-and-localization/internationalization) |
 | State Management       | [bloc](https://pub.dev/packages/bloc) |
 | Immutability           | [freezed](https://pub.dev/packages/freezed) |
+| Serialization          | [json_serializable](https://pub.dev/packages/json_serializable) |
+| Explicit Error Handling | [dartz](https://pub.dev/packages/dartz) |
+| Testing          | [mocktail](https://pub.dev/packages/mocktail), [bloc_test](https://pub.dev/packages/bloc_test) |
+
 
 Special thanks to all developers/contributors of these packages ❤️
 

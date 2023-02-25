@@ -12,10 +12,8 @@ This is under heavy development and not yet ready for real world use.
 | Package                                                                          | Description |
 | -------------------------------------------------------------------------------- | ----------- |
 | [rapid_cli](https://github.com/jtdLab/rapid/tree/main/packages/rapid_cli)        | Command Line Interface for development |
-| [rapid](https://github.com/jtdLab/rapid/tree/main/packages/rapid/rapid/rapid)          | Setup |
 | [rapid_di](https://github.com/jtdLab/rapid/tree/main/packages/rapid/rapid/rapid_di)          | Dependency Injection |
 | [rapid_domain](https://github.com/jtdLab/rapid/tree/main/packages/rapid/rapid/rapid_domain)          | Domain Layer |
-| [rapid_test_presentation](https://github.com/jtdLab/rapid/tree/main/packages/rapid/rapid_test/rapid_test_presentation) | Presentation Testing |
 
 ## Well architectured Flutter apps. Fast ⚡
 

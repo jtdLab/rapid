@@ -60,7 +60,7 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
           _logger.info('Adding Service Implementation ...');
 
           try {
-            _project.addServiceImplementation(
+            await _project.addServiceImplementation(
               name: name,
               serviceName: serviceName,
               outputDir: outputDir,

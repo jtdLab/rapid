@@ -23,7 +23,7 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
       ..addSeparator('')
       ..addOption(
         'entity',
-        help: 'The entity the data transfer object is related to.',
+        help: 'The name of the entity the data transfer object is related to.',
         abbr: 'e',
       )
       ..addOutputDirOption(
@@ -54,14 +54,14 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
         [projectExistsAll(_project)],
         _logger,
         () async {
-          final entityName = _entity;
+          final entity = _entity;
           final outputDir = super.outputDir;
 
           _logger.info('Adding Data Transfer Object ...');
 
           try {
             await _project.addDataTransferObject(
-              entityName: entityName,
+              entityName: entity,
               outputDir: outputDir,
               logger: _logger,
             );
@@ -69,7 +69,7 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
             _logger
               ..info('')
               ..success(
-                'Added Data Transfer Object ${entityName}Dto.',
+                'Added Data Transfer Object ${entity}Dto.',
               );
 
             return ExitCode.success.code;
@@ -77,7 +77,7 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
             _logger
               ..info('')
               ..err(
-                'Entity $entityName does not exist.',
+                'Entity $entity does not exist.',
               );
 
             return ExitCode.config.code;
@@ -85,7 +85,7 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
             _logger
               ..info('')
               ..err(
-                'Data Transfer Object ${entityName}Dto already exists.',
+                'Data Transfer Object ${entity}Dto already exists.',
               );
 
             return ExitCode.config.code;

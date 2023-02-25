@@ -16,7 +16,7 @@ const expectedUsage = [
       '-h, --help          Print this usage information.\n'
       '\n'
       '\n'
-      '-e, --entity        The entity the data transfer object is related to.\n'
+      '-e, --entity        The name of the entity the data transfer object is related to.\n'
       '-o, --output-dir    The output directory relative to <infrastructure_package>/lib/src .\n'
       '                    (defaults to ".")\n'
       '\n'

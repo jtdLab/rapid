@@ -22,7 +22,8 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
       ..addSeparator('')
       ..addOption(
         'service',
-        help: 'The service interface the service implementation is related to.',
+        help:
+            'The name of the service interface the service implementation is related to.',
         abbr: 's',
       )
       ..addDirOption(
@@ -53,7 +54,7 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
         _logger,
         () async {
           final name = super.className;
-          final serviceName = _service;
+          final service = _service;
           final dir = super.dir;
 
           _logger.info('Removing Service Implementation ...');
@@ -61,7 +62,7 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
           try {
             await _project.removeServiceImplementation(
               name: name,
-              serviceName: serviceName,
+              serviceName: service,
               dir: dir,
               logger: _logger,
             );
@@ -69,7 +70,7 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
             _logger
               ..info('')
               ..success(
-                'Removed Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service.',
+                'Removed Service Implementation ${name.pascalCase}${service.pascalCase}Service.',
               );
 
             return ExitCode.success.code;
@@ -77,7 +78,7 @@ class InfrastructureRemoveServiceImplementationCommand extends Command<int>
             _logger
               ..info('')
               ..err(
-                'Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service not found.',
+                'Service Implementation ${name.pascalCase}${service.pascalCase}Service not found.',
               );
 
             return ExitCode.config.code;

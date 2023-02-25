@@ -16,7 +16,7 @@ const expectedUsage = [
       '-h, --help       Print this usage information.\n'
       '\n'
       '\n'
-      '-s, --service    The service interface the service implementation is related to.\n'
+      '-s, --service    The name of the service interface the service implementation is related to.\n'
       '-d, --dir        The directory relative to <infrastructure_package>/lib/ .\n'
       '                 (defaults to ".")\n'
       '\n'

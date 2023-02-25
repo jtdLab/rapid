@@ -22,7 +22,8 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
       ..addSeparator('')
       ..addOption(
         'service',
-        help: 'The service interface the service implementation is related to.',
+        help:
+            'The name of the service interface the service implementation is related to.',
         abbr: 's',
       )
       ..addOutputDirOption(
@@ -54,7 +55,7 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
         _logger,
         () async {
           final name = super.className;
-          final serviceName = _service;
+          final service = _service;
           final outputDir = super.outputDir;
 
           _logger.info('Adding Service Implementation ...');
@@ -62,7 +63,7 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
           try {
             await _project.addServiceImplementation(
               name: name,
-              serviceName: serviceName,
+              serviceName: service,
               outputDir: outputDir,
               logger: _logger,
             );
@@ -72,7 +73,7 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
             _logger
               ..info('')
               ..success(
-                'Added Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service.',
+                'Added Service Implementation ${name.pascalCase}${service.pascalCase}Service.',
               );
 
             return ExitCode.success.code;
@@ -80,7 +81,7 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
             _logger
               ..info('')
               ..err(
-                'Service Interface I${serviceName}Service does not exist.',
+                'Service Interface I${service}Service does not exist.',
               );
 
             return ExitCode.config.code;
@@ -88,7 +89,7 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
             _logger
               ..info('')
               ..err(
-                'Service Implementation ${name.pascalCase}${serviceName.pascalCase}Service already exists.',
+                'Service Implementation ${name.pascalCase}${service.pascalCase}Service already exists.',
               );
 
             return ExitCode.config.code;

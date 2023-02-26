@@ -399,9 +399,12 @@ class ProjectImpl extends DirectoryImpl implements Project {
         cwd: path,
         logger: logger,
         scope: [
-          customFeaturePackage.packageName(),
+          appPackage.packageName(),
           diPackage.packageName(),
           appFeaturePackage.packageName(),
+          ...platformDirectory
+              .customFeaturePackages()
+              .map((e) => e.packageName()),
           if (routing) routingFeaturePackage.packageName(),
         ],
       );
@@ -456,8 +459,8 @@ class ProjectImpl extends DirectoryImpl implements Project {
 
     final otherFeaturePackages = [
       appFeaturePackage,
-      routingFeaturePackage,
       ...platformDirectory.customFeaturePackages(),
+      routingFeaturePackage,
     ]..removeWhere(
         (e) => e.packageName() == customFeaturePackage.packageName(),
       );
@@ -474,6 +477,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
       cwd: path,
       logger: logger,
       scope: [
+        appPackage.packageName(),
         diPackage.packageName(),
         ...otherFeaturePackages.map((e) => e.packageName())
       ],

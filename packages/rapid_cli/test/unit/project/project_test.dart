@@ -1083,6 +1083,8 @@ void main() {
       group('completes successfully with correct output', () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appPackage = getAppPackage();
+          when(() => appPackage.packageName()).thenReturn('app_package');
           final diPackage = getDiPackage();
           when(() => diPackage.path).thenReturn('di_package/path');
           when(() => diPackage.packageName()).thenReturn('di_package');
@@ -1099,6 +1101,9 @@ void main() {
           when(() => customFeaturePackage.packageName())
               .thenReturn('my_feature_package');
           when(() => customFeaturePackage.exists()).thenReturn(false);
+          final otherFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => otherFeaturePackage.packageName())
+              .thenReturn('my_other_feature_package');
           final platformDirectory = getPlatformDirectory();
           when(() => platformDirectory.appFeaturePackage)
               .thenReturn(appFeaturePackage);
@@ -1106,6 +1111,8 @@ void main() {
               .thenReturn(routingFeaturePackage);
           when(() => platformDirectory.customFeaturePackage(name: 'my_feature'))
               .thenReturn(customFeaturePackage);
+          when(() => platformDirectory.customFeaturePackages())
+              .thenReturn([customFeaturePackage, otherFeaturePackage]);
           final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
           when(
             () => platformDirectoryBuilder(platform: any(named: 'platform')),
@@ -1116,6 +1123,7 @@ void main() {
               getFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs();
           final dartFormatFix = getDartFormatFix();
           final project = _getProject(
+            appPackage: appPackage,
             diPackage: diPackage,
             platformDirectory: platformDirectoryBuilder,
             melosBootstrap: melosBootstrap,
@@ -1173,9 +1181,11 @@ void main() {
               cwd: '.',
               logger: logger,
               scope: [
-                'my_feature_package',
+                'app_package',
                 'di_package',
                 'app_feature_package',
+                'my_feature_package',
+                'my_other_feature_package',
                 'routing_feature_package',
               ],
             ),
@@ -1208,6 +1218,8 @@ void main() {
       group('completes successfully with correct output without routing', () {
         Future<void> performTest(Platform platform) async {
           // Arrange
+          final appPackage = getAppPackage();
+          when(() => appPackage.packageName()).thenReturn('app_package');
           final diPackage = getDiPackage();
           when(() => diPackage.path).thenReturn('di_package/path');
           when(() => diPackage.packageName()).thenReturn('di_package');
@@ -1224,6 +1236,9 @@ void main() {
           when(() => customFeaturePackage.packageName())
               .thenReturn('my_feature_package');
           when(() => customFeaturePackage.exists()).thenReturn(false);
+          final otherFeaturePackage = getPlatformCustomFeaturePackage();
+          when(() => otherFeaturePackage.packageName())
+              .thenReturn('my_other_feature_package');
           final platformDirectory = getPlatformDirectory();
           when(() => platformDirectory.appFeaturePackage)
               .thenReturn(appFeaturePackage);
@@ -1231,6 +1246,8 @@ void main() {
               .thenReturn(routingFeaturePackage);
           when(() => platformDirectory.customFeaturePackage(name: 'my_feature'))
               .thenReturn(customFeaturePackage);
+          when(() => platformDirectory.customFeaturePackages())
+              .thenReturn([customFeaturePackage, otherFeaturePackage]);
           final platformDirectoryBuilder = getPlatfromDirectoryBuilder();
           when(
             () => platformDirectoryBuilder(platform: any(named: 'platform')),
@@ -1241,6 +1258,7 @@ void main() {
               getFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs();
           final dartFormatFix = getDartFormatFix();
           final project = _getProject(
+            appPackage: appPackage,
             diPackage: diPackage,
             platformDirectory: platformDirectoryBuilder,
             melosBootstrap: melosBootstrap,
@@ -1298,9 +1316,11 @@ void main() {
               cwd: '.',
               logger: logger,
               scope: [
-                'my_feature_package',
+                'app_package',
                 'di_package',
                 'app_feature_package',
+                'my_feature_package',
+                'my_other_feature_package',
               ],
             ),
           ).called(1);
@@ -1500,10 +1520,11 @@ void main() {
               cwd: '.',
               logger: logger,
               scope: [
+                'app_package',
                 'di_package',
                 'app_feature_package',
-                'routing_feature_package',
                 'my_other_feature_package',
+                'routing_feature_package',
               ],
             ),
           ).called(1);

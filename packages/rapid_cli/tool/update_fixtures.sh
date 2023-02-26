@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Run from packages/rapid_cli
+# sh tool/update_fixtures.sh 
 
 # Generates fresh fixtures projects used for e2e testing.
 cd test/e2e/fixtures

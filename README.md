@@ -32,6 +32,7 @@ Rapid is based on carefully selected packages from the Flutter Community and bri
 | Immutability           | [freezed](https://pub.dev/packages/freezed) |
 | Serialization          | [json_serializable](https://pub.dev/packages/json_serializable) |
 | Explicit Error Handling | [dartz](https://pub.dev/packages/dartz) |
+| Stringless APIs  | [flutter_gen](https://pub.dev/packages/flutter_gen) |
 | Testing          | [mocktail](https://pub.dev/packages/mocktail), [bloc_test](https://pub.dev/packages/bloc_test) |
 
 

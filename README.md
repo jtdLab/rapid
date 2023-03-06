@@ -24,6 +24,7 @@ Rapid is based on carefully selected packages from the Flutter Community and bri
 | Task                   | Package                                 |
 | ---------------------- |:---------------------------------------:|
 | Project Management     | [melos](https://pub.dev/packages/melos) |
+| Code Generation        | [build_runner](https://pub.dev/packages/build_runner) |
 | Dependency Injection   | [getIt](https://pub.dev/packages/get_it), [injectable](https://pub.dev/packages/injectable) |
 | Routing                | [auto_route](https://pub.dev/packages/auto_route) |
 | Theming                | [theme_tailor](https://pub.dev/packages/theme_tailor) |

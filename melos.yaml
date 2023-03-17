@@ -1,19 +1,19 @@
 name: rapid
 
 packages:
-  - packages/rapid/rapid/rapid
-  - packages/rapid/rapid/rapid_di
+  - packages/rapid/rapid/rapid_domain
+  - packages/rapid/rapid_test/rapid_test_domain
   - packages/rapid_cli
 
 command:
   bootstrap:
-    usePubspecOverrides: true
     # https://github.com/dart-lang/pub/issues/3404)
     runPubGetInParallel: false
 
 ide:
   intellij: false
 
+# TODO update to melos 3.0.0 via https://melos.invertase.dev/guides/migrations
 scripts:
   postbootstrap: melos run setup-pre-commit-hook
   postclean: |

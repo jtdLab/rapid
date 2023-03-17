@@ -9,6 +9,9 @@ class LinuxRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   LinuxRemoveFeatureCommand({
     super.logger,
     required super.project,
+    super.melosBootstrap,
+    super.flutterPubGet,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.linux,
         );

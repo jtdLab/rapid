@@ -1,12 +1,11 @@
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
-import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file.dart';
+import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 
-import 'app_package/app_package.dart';
 import 'di_package/di_package.dart';
 import 'infrastructure_package/infrastructure_package.dart';
 import 'logging_package/logging_package.dart';
@@ -15,13 +14,15 @@ import 'platform_ui_package/platform_ui_package.dart';
 import 'project_impl.dart';
 import 'ui_package/ui_package.dart';
 
+// TODO move to source
+
 class FeatureDoesNotExist implements Exception {}
 
 class FeatureAlreadyExists implements Exception {}
 
 class NoFeaturesFound implements Exception {}
 
-class FeaturesHaveDiffrentLanguages implements Exception {}
+class FeaturesSupportDiffrentLanguages implements Exception {}
 
 class FeaturesHaveDiffrentDefaultLanguage implements Exception {}
 
@@ -55,21 +56,19 @@ class ServiceImplementationDoesNotExist implements Exception {}
 
 class BlocAlreadyExists implements Exception {}
 
+class BlocDoesNotExist implements Exception {}
+
 class CubitAlreadyExists implements Exception {}
+
+class CubitDoesNotExist implements Exception {}
 
 class WidgetAlreadyExists implements Exception {}
 
 class WidgetDoesNotExist implements Exception {}
 
-/// Signature for method that returns the [PlatformDirectory] for [platform].
-typedef PlatformDirectoryBuilder = PlatformDirectory Function({
-  required Platform platform,
-});
+class LanguageArbFileAlreadyExists implements Exception {}
 
-/// Signature for method that returns the [PlatformUiPackage] for [platform].
-typedef PlatformUiPackageBuilder = PlatformUiPackage Function({
-  required Platform platform,
-});
+class LanguageArbFileDoesNotExists implements Exception {}
 
 /// Signature for method that returns the [Project] for [path].
 typedef ProjectBuilder = Project Function({String path});
@@ -77,48 +76,35 @@ typedef ProjectBuilder = Project Function({String path});
 /// {@template project}
 /// Abstraction of a Rapid project.
 /// {@endtemplate}
-abstract class Project implements Directory {
+abstract class Project implements Directory, OverridableGenerator {
   /// {@macro project}
-  factory Project({
-    String path = '.',
-    MelosFile? melosFile,
-    AppPackage? appPackage,
-    DiPackage? diPackage,
-    DomainPackage? domainPackage,
-    InfrastructurePackage? infrastructurePackage,
-    LoggingPackage? loggingPackage,
-    PlatformDirectoryBuilder? platformDirectory,
-    UiPackage? uiPackage,
-    PlatformUiPackageBuilder? platformUiPackage,
-    MelosBootstrapCommand? melosBootstrap,
-    FlutterPubGetCommand? flutterPubGet,
-    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    DartFormatFixCommand? dartFormatFix,
-    GeneratorBuilder? generator,
-  }) =>
-      ProjectImpl(
-        path: path,
-        melosFile: melosFile,
-        appPackage: appPackage,
-        diPackage: diPackage,
-        domainPackage: domainPackage,
-        infrastructurePackage: infrastructurePackage,
-        loggingPackage: loggingPackage,
-        platformDirectory: platformDirectory,
-        uiPackage: uiPackage,
-        platformUiPackage: platformUiPackage,
-        melosBootstrap: melosBootstrap,
-        flutterPubGet: flutterPubGet,
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-        dartFormatFix: dartFormatFix,
-        generator: generator,
-      );
+  factory Project({String path = '.'}) => ProjectImpl(path: path);
+
+  @visibleForTesting
+  MelosFileBuilder? melosFileOverrides;
+
+  @visibleForTesting
+  DiPackageBuilder? diPackageOverrides;
+
+  @visibleForTesting
+  DomainPackageBuilder? domainPackageOverrides;
+
+  @visibleForTesting
+  InfrastructurePackageBuilder? infrastructurePackageOverrides;
+
+  @visibleForTesting
+  LoggingPackageBuilder? loggingPackageOverrides;
+
+  @visibleForTesting
+  PlatformDirectoryBuilder? platformDirectoryOverrides;
+
+  @visibleForTesting
+  UiPackageBuilder? uiPackageOverrides;
+
+  @visibleForTesting
+  PlatformUiPackageBuilder? platformUiPackageOverrides;
 
   MelosFile get melosFile;
-
-  AppPackage get appPackage;
 
   DiPackage get diPackage;
 
@@ -128,11 +114,13 @@ abstract class Project implements Directory {
 
   LoggingPackage get loggingPackage;
 
-  PlatformDirectoryBuilder get platformDirectory;
+  T platformDirectory<T extends PlatformDirectory>({
+    required Platform platform,
+  });
 
   UiPackage get uiPackage;
 
-  PlatformUiPackageBuilder get platformUiPackage;
+  PlatformUiPackage platformUiPackage({required Platform platform});
 
   String name();
 
@@ -173,7 +161,6 @@ abstract class Project implements Directory {
   Future<void> addFeature({
     required String name,
     required String description,
-    required bool routing,
     required Platform platform,
     required Logger logger,
   });
@@ -273,7 +260,21 @@ abstract class Project implements Directory {
     required Logger logger,
   });
 
+  Future<void> removeBloc({
+    required String name,
+    required String featureName,
+    required Platform platform,
+    required Logger logger,
+  });
+
   Future<void> addCubit({
+    required String name,
+    required String featureName,
+    required Platform platform,
+    required Logger logger,
+  });
+
+  Future<void> removeCubit({
     required String name,
     required String featureName,
     required Platform platform,
@@ -297,6 +298,8 @@ abstract class Project implements Directory {
 
 /// Thrown when [MelosFile.readName] fails to read the `name` property.
 class ReadNameFailure implements Exception {}
+
+typedef MelosFileBuilder = MelosFile Function({required Project project});
 
 /// {@template melos_file}
 /// Abstraction of the melos file of a Rapid project.

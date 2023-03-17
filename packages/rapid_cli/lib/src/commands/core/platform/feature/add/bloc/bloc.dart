@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -38,9 +39,16 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
+    FlutterPubGetCommand? flutterPubGet,
+    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project {
+        _project = project,
+        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs {
     argParser
       ..addSeparator('')
       // TODO add hint that its a dart package nameish string but not the full name of the related package
@@ -55,6 +63,9 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
   final Platform _platform;
   final Logger _logger;
   final Project _project;
+  final FlutterPubGetCommand _flutterPubGet;
+  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   @override
   String get name => 'bloc';
@@ -89,6 +100,16 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
               name: name,
               featureName: feature,
               platform: _platform,
+              logger: _logger,
+            );
+
+            final platformDirectory =
+                _project.platformDirectory(platform: _platform);
+            final featurePackage =
+                platformDirectory.featuresDirectory.featurePackage(feature);
+            await _flutterPubGet(cwd: featurePackage.path, logger: _logger);
+            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: featurePackage.path,
               logger: _logger,
             );
 

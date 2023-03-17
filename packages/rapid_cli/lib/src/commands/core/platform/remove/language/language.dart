@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
@@ -35,13 +36,19 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
+    FlutterGenl10nCommand? flutterGenl10n,
+    DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project;
+        _project = project,
+        _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix;
 
   final Platform _platform;
   final Logger _logger;
   final Project _project;
+  final FlutterGenl10nCommand _flutterGenl10n;
+  final DartFormatFixCommand _dartFormatFix;
 
   @override
   String get name => 'language';
@@ -79,6 +86,15 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
               logger: _logger,
             );
 
+            final platformDirectory =
+                _project.platformDirectory(platform: _platform);
+            final featurePackages =
+                platformDirectory.featuresDirectory.featurePackages();
+            for (final featurePackage in featurePackages) {
+              await _flutterGenl10n(cwd: featurePackage.path, logger: _logger);
+            }
+            await _dartFormatFix(cwd: _project.path, logger: _logger);
+
             _logger
               ..info('')
               ..success(
@@ -105,7 +121,7 @@ abstract class PlatformRemoveLanguageCommand extends Command<int>
               );
 
             return ExitCode.config.code;
-          } on FeaturesHaveDiffrentLanguages {
+          } on FeaturesSupportDiffrentLanguages {
             _logger
               ..info('')
               ..err(

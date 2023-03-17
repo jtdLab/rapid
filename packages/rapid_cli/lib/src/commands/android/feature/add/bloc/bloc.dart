@@ -1,3 +1,4 @@
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 
@@ -9,6 +10,8 @@ class AndroidFeatureAddBlocCommand extends PlatformFeatureAddBlocCommand {
   AndroidFeatureAddBlocCommand({
     super.logger,
     required super.project,
+    super.flutterPubGet,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.android,
         );

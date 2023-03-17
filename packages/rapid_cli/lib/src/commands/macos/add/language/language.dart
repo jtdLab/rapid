@@ -9,6 +9,8 @@ class MacosAddLanguageCommand extends PlatformAddLanguageCommand {
   MacosAddLanguageCommand({
     super.logger,
     required super.project,
+    super.flutterGenl10n,
+    super.dartFormatFix,
   }) : super(
           platform: Platform.macos,
         );

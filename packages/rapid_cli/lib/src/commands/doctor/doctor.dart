@@ -29,7 +29,8 @@ class DoctorCommand extends Command<int> {
   @override
   String get description => 'Show information about an existing Rapid project.';
 
-  @override
+  // TODO refactor
+  /*  @override
   Future<int> run() => runWhen(
         [projectExistsAll(_project)],
         _logger,
@@ -115,6 +116,7 @@ class DoctorCommand extends Command<int> {
           return ExitCode.success.code;
         },
       );
+ */
 }
 
 extension on Iterable<String> {

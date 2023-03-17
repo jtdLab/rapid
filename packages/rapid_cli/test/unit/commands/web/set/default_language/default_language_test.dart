@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/web/set/default_language/default_language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -27,6 +28,10 @@ void main() {
     late Logger logger;
 
     late Project project;
+
+    late FlutterGenl10nCommand flutterGenl10n;
+
+    late DartFormatFixCommand dartFormatFix;
 
     late ArgResults argResults;
     late String language;
@@ -56,6 +61,8 @@ void main() {
       command = WebSetDefaultLanguageCommand(
         logger: logger,
         project: project,
+        flutterGenl10n: flutterGenl10n,
+        dartFormatFix: dartFormatFix,
       )..argResultOverrides = argResults;
     });
 
@@ -241,7 +248,7 @@ void main() {
           platform: Platform.web,
           logger: logger,
         ),
-      ).thenThrow(FeaturesHaveDiffrentLanguages());
+      ).thenThrow(FeaturesSupportDiffrentLanguages());
 
       // Act
       final result = await command.run();

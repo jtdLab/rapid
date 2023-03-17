@@ -14,8 +14,7 @@ LoggingPackage _getLoggingPackage({
 }) {
   return LoggingPackage(
     project: project,
-    generator: generator ?? (_) async => getMasonGenerator(),
-  );
+  )..generatorOverrides = generator;
 }
 
 void main() {
@@ -36,15 +35,6 @@ void main() {
         loggingPackage.path,
         'project/path/packages/my_project/my_project_logging',
       );
-    });
-
-    test('.project', () {
-      // Arrange
-      final project = getProject();
-      final loggingPackage = _getLoggingPackage(project: project);
-
-      // Act + Assert
-      expect(loggingPackage.project, project);
     });
 
     group('.create()', () {

@@ -85,16 +85,15 @@ DartPackage _getDartPackage({
   PubspecFile? pubspecFile,
 }) {
   return DartPackage(
-    path: path ?? 'some/path',
-    pubspecFile: pubspecFile,
-  );
+    path: path ?? 'some/path', // TODO needed some/path
+  )..pubspecFileOverrides = pubspecFile;
 }
 
 PubspecFile _getPubspecFile({
   String? path,
 }) {
   return PubspecFile(
-    path: path ?? 'some/path',
+    path: path ?? 'some/path', // TODO needed some/path
   );
 }
 

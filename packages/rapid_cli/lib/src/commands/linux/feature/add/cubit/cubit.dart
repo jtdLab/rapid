@@ -9,6 +9,8 @@ class LinuxFeatureAddCubitCommand extends PlatformFeatureAddCubitCommand {
   LinuxFeatureAddCubitCommand({
     super.logger,
     required super.project,
+    super.flutterPubGet,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.linux,
         );

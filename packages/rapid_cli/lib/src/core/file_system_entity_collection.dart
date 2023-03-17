@@ -17,6 +17,7 @@ abstract class FileSystemEntityCollection {
   bool existsAny() => _fileSystemEnties.any((e) => e.exists());
 
   /// Deletes the file system entity collection.
+  @override
   void delete({required Logger logger}) {
     for (final fileSystemEntity in _fileSystemEnties) {
       if (fileSystemEntity.exists()) {

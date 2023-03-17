@@ -1,5 +1,6 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
+import 'package:meta/meta.dart';
 
 import 'overridable_arg_results.dart';
 import 'validate_language.dart';
@@ -25,6 +26,7 @@ mixin LanguageGetter on OverridableArgResults {
   /// Gets language specified by the user.
   ///
   /// Returns [_defaultLanguage] when no language specified.
+  @protected
   String get language =>
       _validateLanguage(argResults['language'] ?? _defaultLanguage);
 

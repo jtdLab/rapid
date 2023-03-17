@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/platform_ui_package/platform_ui_package.dart';
@@ -54,29 +53,28 @@ const darkExtensions = <ThemeExtension>[
 PlatformUiPackage _getPlatformUiPackage(
   Platform platform, {
   Project? project,
+  WidgetBuilder? widgetBuilder,
   GeneratorBuilder? generator,
 }) {
   return PlatformUiPackage(
     platform,
     project: project ?? getProject(),
-    generator: generator ?? (_) async => getMasonGenerator(),
-  );
+  )
+    ..generatorOverrides = generator
+    ..widgetOverrides = widgetBuilder;
 }
 
 Widget _getWidget({
   required String name,
   required String dir,
   required PlatformUiPackage platformUiPackage,
-  DartFormatFixCommand? dartFormatFix,
   GeneratorBuilder? generator,
 }) {
   return Widget(
     name: name,
     dir: dir,
     platformUiPackage: platformUiPackage,
-    dartFormatFix: dartFormatFix ?? getDartFormatFix().call,
-    generator: generator ?? (_) async => getMasonGenerator(),
-  );
+  )..generatorOverrides = generator;
 }
 
 ThemeExtensionsFile _getThemeExtensionsFile({
@@ -94,489 +92,251 @@ void main() {
     });
 
     group('.path', () {
-      test('(android)', () {
+      void performTest(Platform platform) {
         // Arrange
         final project = getProject();
         when(() => project.path).thenReturn('project/path');
         when(() => project.name()).thenReturn('my_project');
         final platformUiPackage = _getPlatformUiPackage(
-          Platform.android,
+          platform,
           project: project,
         );
 
         // Act + Assert
         expect(
           platformUiPackage.path,
-          'project/path/packages/my_project_ui/my_project_ui_android',
+          'project/path/packages/my_project_ui/my_project_ui_$platform.name',
         );
-      });
+      }
 
-      test('(ios)', () {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn('project/path');
-        when(() => project.name()).thenReturn('my_project');
-        final platformUiPackage = _getPlatformUiPackage(
-          Platform.ios,
-          project: project,
-        );
+      test('(android)', () => performTest(Platform.android));
 
-        // Assert
-        expect(
-          platformUiPackage.path,
-          'project/path/packages/my_project_ui/my_project_ui_ios',
-        );
-      });
+      test('(ios)', () => performTest(Platform.ios));
 
-      test('(linux)', () {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn('project/path');
-        when(() => project.name()).thenReturn('my_project');
-        final platformUiPackage = _getPlatformUiPackage(
-          Platform.linux,
-          project: project,
-        );
+      test('(linux)', () => performTest(Platform.linux));
 
-        // Assert
-        expect(
-          platformUiPackage.path,
-          'project/path/packages/my_project_ui/my_project_ui_linux',
-        );
-      });
+      test('(macos)', () => performTest(Platform.macos));
 
-      test('(macos)', () {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn('project/path');
-        when(() => project.name()).thenReturn('my_project');
-        final platformUiPackage = _getPlatformUiPackage(
-          Platform.macos,
-          project: project,
-        );
+      test('(web)', () => performTest(Platform.web));
 
-        // Assert
-        expect(
-          platformUiPackage.path,
-          'project/path/packages/my_project_ui/my_project_ui_macos',
-        );
-      });
-
-      test('(web)', () {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn('project/path');
-        when(() => project.name()).thenReturn('my_project');
-        final platformUiPackage = _getPlatformUiPackage(
-          Platform.web,
-          project: project,
-        );
-
-        // Assert
-        expect(
-          platformUiPackage.path,
-          'project/path/packages/my_project_ui/my_project_ui_web',
-        );
-      });
-
-      test('(windows)', () {
-        // Arrange
-        final project = getProject();
-        when(() => project.path).thenReturn('project/path');
-        when(() => project.name()).thenReturn('my_project');
-        final platformUiPackage = _getPlatformUiPackage(
-          Platform.windows,
-          project: project,
-        );
-
-        // Assert
-        expect(
-          platformUiPackage.path,
-          'project/path/packages/my_project_ui/my_project_ui_windows',
-        );
-      });
-    });
-
-    group('.themeExtensionsFile', () {
-      test('(android)', () {
-        // Arrange
-        final platformUiPackage = _getPlatformUiPackage(Platform.android);
-
-        // Act + Assert
-        expect(
-          platformUiPackage.themeExtensionsFile,
-          isA<ThemeExtensionsFile>().having(
-            (extFile) => extFile.platformUiPackage,
-            'platformUiPackage',
-            platformUiPackage,
-          ),
-        );
-      });
-
-      test('(ios)', () {
-        // Arrange
-        final platformUiPackage = _getPlatformUiPackage(Platform.ios);
-
-        // Act + Assert
-        expect(
-          platformUiPackage.themeExtensionsFile,
-          isA<ThemeExtensionsFile>().having(
-            (extFile) => extFile.platformUiPackage,
-            'platformUiPackage',
-            platformUiPackage,
-          ),
-        );
-      });
-
-      test('(linux)', () {
-        // Arrange
-        final platformUiPackage = _getPlatformUiPackage(Platform.linux);
-
-        // Act + Assert
-        expect(
-          platformUiPackage.themeExtensionsFile,
-          isA<ThemeExtensionsFile>().having(
-            (extFile) => extFile.platformUiPackage,
-            'platformUiPackage',
-            platformUiPackage,
-          ),
-        );
-      });
-
-      test('(macos)', () {
-        // Arrange
-        final platformUiPackage = _getPlatformUiPackage(Platform.macos);
-
-        // Act + Assert
-        expect(
-          platformUiPackage.themeExtensionsFile,
-          isA<ThemeExtensionsFile>().having(
-            (extFile) => extFile.platformUiPackage,
-            'platformUiPackage',
-            platformUiPackage,
-          ),
-        );
-      });
-
-      test('(web)', () {
-        // Arrange
-        final platformUiPackage = _getPlatformUiPackage(Platform.web);
-
-        // Act + Assert
-        expect(
-          platformUiPackage.themeExtensionsFile,
-          isA<ThemeExtensionsFile>().having(
-            (extFile) => extFile.platformUiPackage,
-            'platformUiPackage',
-            platformUiPackage,
-          ),
-        );
-      });
-
-      test('(windows)', () {
-        // Arrange
-        final platformUiPackage = _getPlatformUiPackage(Platform.windows);
-
-        // Act + Assert
-        expect(
-          platformUiPackage.themeExtensionsFile,
-          isA<ThemeExtensionsFile>().having(
-            (extFile) => extFile.platformUiPackage,
-            'platformUiPackage',
-            platformUiPackage,
-          ),
-        );
-      });
+      test('(windows)', () => performTest(Platform.windows));
     });
 
     group('.create()', () {
-      test(
-        'completes successfully with correct output (android)',
-        withTempDir(() async {
-          // Arrange
-          final project = getProject();
-          when(() => project.path).thenReturn('project/path');
-          when(() => project.name()).thenReturn('my_project');
-          final generator = getMasonGenerator();
-          final platformUiPackage = _getPlatformUiPackage(
-            Platform.android,
-            project: project,
-            generator: (_) async => generator,
-          );
+      group('completes successfully with correct output', () {
+        Future<void> performTest(Platform platform) async =>
+            withTempDir(() async {
+              // Arrange
+              final project = getProject();
+              when(() => project.path).thenReturn('project/path');
+              when(() => project.name()).thenReturn('my_project');
+              final generator = getMasonGenerator();
+              final platformUiPackage = _getPlatformUiPackage(
+                platform,
+                project: project,
+                generator: (_) async => generator,
+              );
 
-          // Act
-          final logger = FakeLogger();
-          await platformUiPackage.create(
-            logger: logger,
-          );
+              // Act
+              final logger = FakeLogger();
+              await platformUiPackage.create(logger: logger);
 
-          // Assert
-          verify(
-            () => generator.generate(
-              any(
-                that: isA<DirectoryGeneratorTarget>().having(
-                  (g) => g.dir.path,
-                  'dir',
-                  'project/path/packages/my_project_ui/my_project_ui_android',
+              // Assert
+              verify(
+                () => generator.generate(
+                  any(
+                    that: isA<DirectoryGeneratorTarget>().having(
+                      (g) => g.dir.path,
+                      'dir',
+                      'project/path/packages/my_project_ui/my_project_ui_${platform.name}',
+                    ),
+                  ),
+                  vars: <String, dynamic>{
+                    'project_name': 'my_project',
+                    'android': platform == Platform.android,
+                    'ios': platform == Platform.ios,
+                    'linux': platform == Platform.linux,
+                    'macos': platform == Platform.macos,
+                    'web': platform == Platform.web,
+                    'windows': platform == Platform.windows,
+                  },
+                  logger: logger,
                 ),
-              ),
-              vars: <String, dynamic>{
-                'project_name': 'my_project',
-                'android': true,
-                'ios': false,
-                'linux': false,
-                'macos': false,
-                'web': false,
-                'windows': false,
-              },
-              logger: logger,
-            ),
-          ).called(1);
-        }),
-      );
+              ).called(1);
+            });
 
-      test(
-        'completes successfully with correct output (ios)',
-        withTempDir(() async {
-          // Arrange
-          final project = getProject();
-          when(() => project.path).thenReturn('project/path');
-          when(() => project.name()).thenReturn('my_project');
-          final generator = getMasonGenerator();
-          final platformUiPackage = _getPlatformUiPackage(
-            Platform.ios,
-            project: project,
-            generator: (_) async => generator,
-          );
+        test('(android)', () => performTest(Platform.android));
 
-          // Act
-          final logger = FakeLogger();
-          await platformUiPackage.create(
-            logger: logger,
-          );
+        test('(ios)', () => performTest(Platform.ios));
 
-          // Assert
-          verify(
-            () => generator.generate(
-              any(
-                that: isA<DirectoryGeneratorTarget>().having(
-                  (g) => g.dir.path,
-                  'dir',
-                  'project/path/packages/my_project_ui/my_project_ui_ios',
-                ),
-              ),
-              vars: <String, dynamic>{
-                'project_name': 'my_project',
-                'android': false,
-                'ios': true,
-                'linux': false,
-                'macos': false,
-                'web': false,
-                'windows': false,
-              },
-              logger: logger,
-            ),
-          ).called(1);
-        }),
-      );
+        test('(linux)', () => performTest(Platform.linux));
 
-      test(
-        'completes successfully with correct output (linux)',
-        withTempDir(() async {
-          // Arrange
-          final project = getProject();
-          when(() => project.path).thenReturn('project/path');
-          when(() => project.name()).thenReturn('my_project');
-          final generator = getMasonGenerator();
-          final platformUiPackage = _getPlatformUiPackage(
-            Platform.linux,
-            project: project,
-            generator: (_) async => generator,
-          );
+        test('(macos)', () => performTest(Platform.macos));
 
-          // Act
-          final logger = FakeLogger();
-          await platformUiPackage.create(
-            logger: logger,
-          );
+        test('(web)', () => performTest(Platform.web));
 
-          // Assert
-          verify(
-            () => generator.generate(
-              any(
-                that: isA<DirectoryGeneratorTarget>().having(
-                  (g) => g.dir.path,
-                  'dir',
-                  'project/path/packages/my_project_ui/my_project_ui_linux',
-                ),
-              ),
-              vars: <String, dynamic>{
-                'project_name': 'my_project',
-                'android': false,
-                'ios': false,
-                'linux': true,
-                'macos': false,
-                'web': false,
-                'windows': false,
-              },
-              logger: logger,
-            ),
-          ).called(1);
-        }),
-      );
-
-      test(
-        'completes successfully with correct output (macos)',
-        withTempDir(() async {
-          // Arrange
-          final project = getProject();
-          when(() => project.path).thenReturn('project/path');
-          when(() => project.name()).thenReturn('my_project');
-          final generator = getMasonGenerator();
-          final platformUiPackage = _getPlatformUiPackage(
-            Platform.macos,
-            project: project,
-            generator: (_) async => generator,
-          );
-
-          // Act
-          final logger = FakeLogger();
-          await platformUiPackage.create(
-            logger: logger,
-          );
-
-          // Assert
-          verify(
-            () => generator.generate(
-              any(
-                that: isA<DirectoryGeneratorTarget>().having(
-                  (g) => g.dir.path,
-                  'dir',
-                  'project/path/packages/my_project_ui/my_project_ui_macos',
-                ),
-              ),
-              vars: <String, dynamic>{
-                'project_name': 'my_project',
-                'android': false,
-                'ios': false,
-                'linux': false,
-                'macos': true,
-                'web': false,
-                'windows': false,
-              },
-              logger: logger,
-            ),
-          ).called(1);
-        }),
-      );
-
-      test(
-        'completes successfully with correct output (web)',
-        withTempDir(() async {
-          // Arrange
-          final project = getProject();
-          when(() => project.path).thenReturn('project/path');
-          when(() => project.name()).thenReturn('my_project');
-          final generator = getMasonGenerator();
-          final platformUiPackage = _getPlatformUiPackage(
-            Platform.web,
-            project: project,
-            generator: (_) async => generator,
-          );
-
-          // Act
-          final logger = FakeLogger();
-          await platformUiPackage.create(
-            logger: logger,
-          );
-
-          // Assert
-          verify(
-            () => generator.generate(
-              any(
-                that: isA<DirectoryGeneratorTarget>().having(
-                  (g) => g.dir.path,
-                  'dir',
-                  'project/path/packages/my_project_ui/my_project_ui_web',
-                ),
-              ),
-              vars: <String, dynamic>{
-                'project_name': 'my_project',
-                'android': false,
-                'ios': false,
-                'linux': false,
-                'macos': false,
-                'web': true,
-                'windows': false,
-              },
-              logger: logger,
-            ),
-          ).called(1);
-        }),
-      );
-
-      test(
-        'completes successfully with correct output (windows)',
-        withTempDir(() async {
-          // Arrange
-          final project = getProject();
-          when(() => project.path).thenReturn('project/path');
-          when(() => project.name()).thenReturn('my_project');
-          final generator = getMasonGenerator();
-          final platformUiPackage = _getPlatformUiPackage(
-            Platform.windows,
-            project: project,
-            generator: (_) async => generator,
-          );
-
-          // Act
-          final logger = FakeLogger();
-          await platformUiPackage.create(
-            logger: logger,
-          );
-
-          // Assert
-          verify(
-            () => generator.generate(
-              any(
-                that: isA<DirectoryGeneratorTarget>().having(
-                  (g) => g.dir.path,
-                  'dir',
-                  'project/path/packages/my_project_ui/my_project_ui_windows',
-                ),
-              ),
-              vars: <String, dynamic>{
-                'project_name': 'my_project',
-                'android': false,
-                'ios': false,
-                'linux': false,
-                'macos': false,
-                'web': false,
-                'windows': true,
-              },
-              logger: logger,
-            ),
-          ).called(1);
-        }),
-      );
+        test('(windows)', () => performTest(Platform.windows));
+      });
     });
 
-    test('.widget()', () {
-      // Arrange
-      final platformUiPackage = _getPlatformUiPackage(Platform.android);
+    group('.addWidget()', () {
+      group('completes successfully with correct output', () {
+        void performTest(Platform platform) {
+          // Arrange
+          final widget = getWidget();
+          when(() => widget.existsAny()).thenReturn(false);
+          final widgetBuilder = getWidgetBuilder(widget);
+          final platformUiPackage = _getPlatformUiPackage(
+            platform,
+            widgetBuilder: widgetBuilder,
+          );
 
-      // Act + Assert
-      expect(
-        platformUiPackage.widget(name: 'FooBar', dir: 'some/path'),
-        isA<Widget>()
-            .having((widget) => widget.name, 'name', 'FooBar')
-            .having((widget) => widget.dir, 'name', 'some/path')
-            .having(
-              (widget) => widget.platformUiPackage,
-              'platformUiPackage',
-              platformUiPackage,
+          // Act
+          final logger = FakeLogger();
+          platformUiPackage.addWidget(
+            name: 'Cool',
+            outputDir: 'my/dir',
+            logger: logger,
+          );
+
+          // Act + Assert
+          verify(
+            () => widgetBuilder(
+              name: 'Cool',
+              dir: 'my/dir',
+              platformUiPackage: platformUiPackage,
             ),
-      );
+          ).called(1);
+          verify(() => widget.create(logger: logger)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group('throws WidgetAlreadyExists when widget exists', () {
+        void performTest(Platform platform) {
+          // Arrange
+          final widget = getWidget();
+          when(() => widget.existsAny()).thenReturn(true);
+          final widgetBuilder = getWidgetBuilder(widget);
+          final platformUiPackage = _getPlatformUiPackage(
+            platform,
+            widgetBuilder: widgetBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            () => platformUiPackage.addWidget(
+              name: 'Cool',
+              outputDir: 'my/dir',
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<WidgetAlreadyExists>()),
+          );
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+    });
+
+    group('.removeWidget()', () {
+      group('completes successfully with correct output', () {
+        void performTest(Platform platform) {
+          // Arrange
+          final widget = getWidget();
+          when(() => widget.existsAny()).thenReturn(true);
+          final widgetBuilder = getWidgetBuilder(widget);
+          final platformUiPackage = _getPlatformUiPackage(
+            platform,
+            widgetBuilder: widgetBuilder,
+          );
+
+          // Act
+          final logger = FakeLogger();
+          platformUiPackage.removeWidget(
+            name: 'Cool',
+            dir: 'my/dir',
+            logger: logger,
+          );
+
+          // Act + Assert
+          verify(
+            () => widgetBuilder(
+              name: 'Cool',
+              dir: 'my/dir',
+              platformUiPackage: platformUiPackage,
+            ),
+          ).called(1);
+          verify(() => widget.delete(logger: logger)).called(1);
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
+
+      group('throws WidgetDoesNotExist when widget does not exist', () {
+        void performTest(Platform platform) {
+          // Arrange
+          final widget = getWidget();
+          when(() => widget.existsAny()).thenReturn(false);
+          final widgetBuilder = getWidgetBuilder(widget);
+          final platformUiPackage = _getPlatformUiPackage(
+            platform,
+            widgetBuilder: widgetBuilder,
+          );
+
+          // Act + Assert
+          expect(
+            () => platformUiPackage.removeWidget(
+              name: 'Cool',
+              dir: 'my/dir',
+              logger: FakeLogger(),
+            ),
+            throwsA(isA<WidgetDoesNotExist>()),
+          );
+        }
+
+        test('(android)', () => performTest(Platform.android));
+
+        test('(ios)', () => performTest(Platform.ios));
+
+        test('(linux)', () => performTest(Platform.linux));
+
+        test('(macos)', () => performTest(Platform.macos));
+
+        test('(web)', () => performTest(Platform.web));
+
+        test('(windows)', () => performTest(Platform.windows));
+      });
     });
   });
 
@@ -587,365 +347,67 @@ void main() {
     });
 
     group('.create()', () {
-      test(
-        'completes successfully with correct output (android)',
-        withTempDir(() async {
-          // Arrange
-          final project = getProject();
-          when(() => project.name()).thenReturn('my_project');
-          final platformUiPackage = getPlatformUiPackage();
-          when(() => platformUiPackage.path)
-              .thenReturn('platform_ui_package/path');
-          when(() => platformUiPackage.project).thenReturn(project);
-          when(() => platformUiPackage.platform).thenReturn(Platform.android);
-          final dartFormatFix = getDartFormatFix();
-          final generator = getMasonGenerator();
-          final widget = _getWidget(
-            name: 'CoolButton',
-            dir: 'widget/path',
-            platformUiPackage: platformUiPackage,
-            dartFormatFix: dartFormatFix,
-            generator: (_) async => generator,
-          );
+      group('completes successfully with correct output', () {
+        Future<void> performTest(Platform platform) async =>
+            withTempDir(() async {
+              // Arrange
+              final project = getProject();
+              when(() => project.name()).thenReturn('my_project');
+              final platformUiPackage = getPlatformUiPackage();
+              when(() => platformUiPackage.path)
+                  .thenReturn('platform_ui_package/path');
+              when(() => platformUiPackage.project).thenReturn(project);
+              when(() => platformUiPackage.platform).thenReturn(platform);
+              final generator = getMasonGenerator();
+              final widget = _getWidget(
+                name: 'CoolButton',
+                dir: 'widget/path',
+                platformUiPackage: platformUiPackage,
+                generator: (_) async => generator,
+              );
 
-          // Act
-          final logger = FakeLogger();
-          await widget.create(
-            logger: logger,
-          );
+              // Act
+              final logger = FakeLogger();
+              await widget.create(logger: logger);
 
-          // Assert
-          verify(
-            () => generator.generate(
-              any(
-                that: isA<DirectoryGeneratorTarget>().having(
-                  (g) => g.dir.path,
-                  'dir',
-                  'platform_ui_package/path',
+              // Assert
+              verify(
+                () => generator.generate(
+                  any(
+                    that: isA<DirectoryGeneratorTarget>().having(
+                      (g) => g.dir.path,
+                      'dir',
+                      'platform_ui_package/path',
+                    ),
+                  ),
+                  vars: <String, dynamic>{
+                    'project_name': 'my_project',
+                    'name': 'CoolButton',
+                    'output_dir': 'widget/path',
+                    'android': platform == Platform.android,
+                    'ios': platform == Platform.ios,
+                    'linux': platform == Platform.linux,
+                    'macos': platform == Platform.macos,
+                    'web': platform == Platform.web,
+                    'windows': platform == Platform.windows,
+                  },
+                  logger: logger,
                 ),
-              ),
-              vars: <String, dynamic>{
-                'project_name': 'my_project',
-                'name': 'CoolButton',
-                'output_dir': 'widget/path',
-                'android': true,
-                'ios': false,
-                'linux': false,
-                'macos': false,
-                'web': false,
-                'windows': false,
-              },
-              logger: logger,
-            ),
-          ).called(1);
-          verify(
-            () => dartFormatFix(
-              cwd: 'platform_ui_package/path',
-              logger: logger,
-            ),
-          );
-        }),
-      );
+              ).called(1);
+            });
 
-      test(
-        'completes successfully with correct output (ios)',
-        withTempDir(() async {
-          // Arrange
-          final project = getProject();
-          when(() => project.name()).thenReturn('my_project');
-          final platformUiPackage = getPlatformUiPackage();
-          when(() => platformUiPackage.path)
-              .thenReturn('platform_ui_package/path');
-          when(() => platformUiPackage.project).thenReturn(project);
-          when(() => platformUiPackage.platform).thenReturn(Platform.ios);
-          final dartFormatFix = getDartFormatFix();
-          final generator = getMasonGenerator();
-          final widget = _getWidget(
-            name: 'CoolButton',
-            dir: 'widget/path',
-            platformUiPackage: platformUiPackage,
-            dartFormatFix: dartFormatFix,
-            generator: (_) async => generator,
-          );
+        test('(android)', () => performTest(Platform.android));
 
-          // Act
-          final logger = FakeLogger();
-          await widget.create(
-            logger: logger,
-          );
+        test('(ios)', () => performTest(Platform.ios));
 
-          // Assert
-          verify(
-            () => generator.generate(
-              any(
-                that: isA<DirectoryGeneratorTarget>().having(
-                  (g) => g.dir.path,
-                  'dir',
-                  'platform_ui_package/path',
-                ),
-              ),
-              vars: <String, dynamic>{
-                'project_name': 'my_project',
-                'name': 'CoolButton',
-                'output_dir': 'widget/path',
-                'android': false,
-                'ios': true,
-                'linux': false,
-                'macos': false,
-                'web': false,
-                'windows': false,
-              },
-              logger: logger,
-            ),
-          ).called(1);
-          verify(
-            () => dartFormatFix(
-              cwd: 'platform_ui_package/path',
-              logger: logger,
-            ),
-          );
-        }),
-      );
+        test('(linux)', () => performTest(Platform.linux));
 
-      test(
-        'completes successfully with correct output (linux)',
-        withTempDir(() async {
-          // Arrange
-          final project = getProject();
-          when(() => project.name()).thenReturn('my_project');
-          final platformUiPackage = getPlatformUiPackage();
-          when(() => platformUiPackage.path)
-              .thenReturn('platform_ui_package/path');
-          when(() => platformUiPackage.project).thenReturn(project);
-          when(() => platformUiPackage.platform).thenReturn(Platform.linux);
-          final dartFormatFix = getDartFormatFix();
-          final generator = getMasonGenerator();
-          final widget = _getWidget(
-            name: 'CoolButton',
-            dir: 'widget/path',
-            platformUiPackage: platformUiPackage,
-            dartFormatFix: dartFormatFix,
-            generator: (_) async => generator,
-          );
+        test('(macos)', () => performTest(Platform.macos));
 
-          // Act
-          final logger = FakeLogger();
-          await widget.create(
-            logger: logger,
-          );
+        test('(web)', () => performTest(Platform.web));
 
-          // Assert
-          verify(
-            () => generator.generate(
-              any(
-                that: isA<DirectoryGeneratorTarget>().having(
-                  (g) => g.dir.path,
-                  'dir',
-                  'platform_ui_package/path',
-                ),
-              ),
-              vars: <String, dynamic>{
-                'project_name': 'my_project',
-                'name': 'CoolButton',
-                'output_dir': 'widget/path',
-                'android': false,
-                'ios': false,
-                'linux': true,
-                'macos': false,
-                'web': false,
-                'windows': false,
-              },
-              logger: logger,
-            ),
-          ).called(1);
-          verify(
-            () => dartFormatFix(
-              cwd: 'platform_ui_package/path',
-              logger: logger,
-            ),
-          );
-        }),
-      );
-
-      test(
-        'completes successfully with correct output (macos)',
-        withTempDir(() async {
-          // Arrange
-          final project = getProject();
-          when(() => project.name()).thenReturn('my_project');
-          final platformUiPackage = getPlatformUiPackage();
-          when(() => platformUiPackage.path)
-              .thenReturn('platform_ui_package/path');
-          when(() => platformUiPackage.project).thenReturn(project);
-          when(() => platformUiPackage.platform).thenReturn(Platform.macos);
-          final dartFormatFix = getDartFormatFix();
-          final generator = getMasonGenerator();
-          final widget = _getWidget(
-            name: 'CoolButton',
-            dir: 'widget/path',
-            platformUiPackage: platformUiPackage,
-            dartFormatFix: dartFormatFix,
-            generator: (_) async => generator,
-          );
-
-          // Act
-          final logger = FakeLogger();
-          await widget.create(
-            logger: logger,
-          );
-
-          // Assert
-          verify(
-            () => generator.generate(
-              any(
-                that: isA<DirectoryGeneratorTarget>().having(
-                  (g) => g.dir.path,
-                  'dir',
-                  'platform_ui_package/path',
-                ),
-              ),
-              vars: <String, dynamic>{
-                'project_name': 'my_project',
-                'name': 'CoolButton',
-                'output_dir': 'widget/path',
-                'android': false,
-                'ios': false,
-                'linux': false,
-                'macos': true,
-                'web': false,
-                'windows': false,
-              },
-              logger: logger,
-            ),
-          ).called(1);
-          verify(
-            () => dartFormatFix(
-              cwd: 'platform_ui_package/path',
-              logger: logger,
-            ),
-          );
-        }),
-      );
-
-      test(
-        'completes successfully with correct output (web)',
-        withTempDir(() async {
-          // Arrange
-          final project = getProject();
-          when(() => project.name()).thenReturn('my_project');
-          final platformUiPackage = getPlatformUiPackage();
-          when(() => platformUiPackage.path)
-              .thenReturn('platform_ui_package/path');
-          when(() => platformUiPackage.project).thenReturn(project);
-          when(() => platformUiPackage.platform).thenReturn(Platform.web);
-          final dartFormatFix = getDartFormatFix();
-          final generator = getMasonGenerator();
-          final widget = _getWidget(
-            name: 'CoolButton',
-            dir: 'widget/path',
-            platformUiPackage: platformUiPackage,
-            dartFormatFix: dartFormatFix,
-            generator: (_) async => generator,
-          );
-
-          // Act
-          final logger = FakeLogger();
-          await widget.create(
-            logger: logger,
-          );
-
-          // Assert
-          verify(
-            () => generator.generate(
-              any(
-                that: isA<DirectoryGeneratorTarget>().having(
-                  (g) => g.dir.path,
-                  'dir',
-                  'platform_ui_package/path',
-                ),
-              ),
-              vars: <String, dynamic>{
-                'project_name': 'my_project',
-                'name': 'CoolButton',
-                'output_dir': 'widget/path',
-                'android': false,
-                'ios': false,
-                'linux': false,
-                'macos': false,
-                'web': true,
-                'windows': false,
-              },
-              logger: logger,
-            ),
-          ).called(1);
-          verify(
-            () => dartFormatFix(
-              cwd: 'platform_ui_package/path',
-              logger: logger,
-            ),
-          );
-        }),
-      );
-
-      test(
-        'completes successfully with correct output (windows)',
-        withTempDir(() async {
-          // Arrange
-          final project = getProject();
-          when(() => project.name()).thenReturn('my_project');
-          final platformUiPackage = getPlatformUiPackage();
-          when(() => platformUiPackage.path)
-              .thenReturn('platform_ui_package/path');
-          when(() => platformUiPackage.project).thenReturn(project);
-          when(() => platformUiPackage.platform).thenReturn(Platform.windows);
-          final dartFormatFix = getDartFormatFix();
-          final generator = getMasonGenerator();
-          final widget = _getWidget(
-            name: 'CoolButton',
-            dir: 'widget/path',
-            platformUiPackage: platformUiPackage,
-            dartFormatFix: dartFormatFix,
-            generator: (_) async => generator,
-          );
-
-          // Act
-          final logger = FakeLogger();
-          await widget.create(
-            logger: logger,
-          );
-
-          // Assert
-          verify(
-            () => generator.generate(
-              any(
-                that: isA<DirectoryGeneratorTarget>().having(
-                  (g) => g.dir.path,
-                  'dir',
-                  'platform_ui_package/path',
-                ),
-              ),
-              vars: <String, dynamic>{
-                'project_name': 'my_project',
-                'name': 'CoolButton',
-                'output_dir': 'widget/path',
-                'android': false,
-                'ios': false,
-                'linux': false,
-                'macos': false,
-                'web': false,
-                'windows': true,
-              },
-              logger: logger,
-            ),
-          ).called(1);
-          verify(
-            () => dartFormatFix(
-              cwd: 'platform_ui_package/path',
-              logger: logger,
-            ),
-          );
-        }),
-      );
+        test('(windows)', () => performTest(Platform.windows));
+      });
     });
 
     group('.delete()', () {
@@ -1022,21 +484,6 @@ void main() {
   });
 
   group('ThemeExtensionsFile', () {
-    setUpAll(() {
-      registerFallbackValue(FakeLogger());
-    });
-
-    test('.platformUiPackage', () {
-      // Arrange
-      final platformUiPackage = getPlatformUiPackage();
-      final themeExtensionsFile = _getThemeExtensionsFile(
-        platformUiPackage: platformUiPackage,
-      );
-
-      // Act + Assert
-      expect(themeExtensionsFile.platformUiPackage, platformUiPackage);
-    });
-
     group('.addThemeExtension()', () {
       test(
         'adds import and the light and dark theme extension correctly',
@@ -1052,10 +499,7 @@ void main() {
           when(() => project.name()).thenReturn('my_project');
           final platformUiPackage = getPlatformUiPackage();
           when(() => platformUiPackage.project).thenReturn(project);
-          final widget = getWidget();
-          when(() => widget.platformUiPackage).thenReturn(platformUiPackage);
-          when(() => widget.name).thenReturn('CoolWidget');
-          themeExtensionsFile.addThemeExtension(widget);
+          themeExtensionsFile.addThemeExtension('CoolWidget');
 
           // Assert
           expect(file.readAsStringSync(), themeExtensionsFileWithExtensions);
@@ -1076,10 +520,7 @@ void main() {
           when(() => project.name()).thenReturn('my_project');
           final platformUiPackage = getPlatformUiPackage();
           when(() => platformUiPackage.project).thenReturn(project);
-          final widget = getWidget();
-          when(() => widget.platformUiPackage).thenReturn(platformUiPackage);
-          when(() => widget.name).thenReturn('SweetWidget');
-          themeExtensionsFile.addThemeExtension(widget);
+          themeExtensionsFile.addThemeExtension('SweetWidget');
 
           // Assert
           expect(
@@ -1103,10 +544,7 @@ void main() {
           when(() => project.name()).thenReturn('my_project');
           final platformUiPackage = getPlatformUiPackage();
           when(() => platformUiPackage.project).thenReturn(project);
-          final widget = getWidget();
-          when(() => widget.platformUiPackage).thenReturn(platformUiPackage);
-          when(() => widget.name).thenReturn('CoolWidget');
-          themeExtensionsFile.addThemeExtension(widget);
+          themeExtensionsFile.addThemeExtension('CoolWidget');
 
           // Assert
           expect(file.readAsStringSync(), themeExtensionsFileWithExtensions);
@@ -1129,10 +567,7 @@ void main() {
           when(() => project.name()).thenReturn('my_project');
           final platformUiPackage = getPlatformUiPackage();
           when(() => platformUiPackage.project).thenReturn(project);
-          final widget = getWidget();
-          when(() => widget.platformUiPackage).thenReturn(platformUiPackage);
-          when(() => widget.name).thenReturn('CoolWidget');
-          themeExtensionsFile.removeThemeExtension(widget);
+          themeExtensionsFile.removeThemeExtension('CoolWidget');
 
           // Assert
           expect(file.readAsStringSync(), themeExtensionsFileEmpty);
@@ -1153,10 +588,7 @@ void main() {
           when(() => project.name()).thenReturn('my_project');
           final platformUiPackage = getPlatformUiPackage();
           when(() => platformUiPackage.project).thenReturn(project);
-          final widget = getWidget();
-          when(() => widget.platformUiPackage).thenReturn(platformUiPackage);
-          when(() => widget.name).thenReturn('SweetWidget');
-          themeExtensionsFile.removeThemeExtension(widget);
+          themeExtensionsFile.removeThemeExtension('SweetWidget');
 
           // Assert
           expect(file.readAsStringSync(), themeExtensionsFileWithExtensions);
@@ -1177,10 +609,7 @@ void main() {
           when(() => project.name()).thenReturn('my_project');
           final platformUiPackage = getPlatformUiPackage();
           when(() => platformUiPackage.project).thenReturn(project);
-          final widget = getWidget();
-          when(() => widget.platformUiPackage).thenReturn(platformUiPackage);
-          when(() => widget.name).thenReturn('CoolWidget');
-          themeExtensionsFile.removeThemeExtension(widget);
+          themeExtensionsFile.removeThemeExtension('CoolWidget');
 
           // Assert
           expect(file.readAsStringSync(), themeExtensionsFileEmpty);

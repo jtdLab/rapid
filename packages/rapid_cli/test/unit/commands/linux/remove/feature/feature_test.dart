@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/linux/remove/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -26,6 +27,13 @@ void main() {
     late Logger logger;
 
     late Project project;
+
+    late MelosBootstrapCommand melosBootstrap;
+
+    late FlutterPubGetCommand flutterPubGet;
+
+    late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
     late ArgResults argResults;
     late String name;
@@ -55,6 +63,10 @@ void main() {
       command = LinuxRemoveFeatureCommand(
         logger: logger,
         project: project,
+        melosBootstrap: melosBootstrap,
+        flutterPubGet: flutterPubGet,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
       )..argResultOverrides = argResults;
     });
 

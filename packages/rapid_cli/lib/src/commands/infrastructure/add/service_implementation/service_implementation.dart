@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -16,8 +17,10 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
   InfrastructureAddServiceImplementationCommand({
     Logger? logger,
     required Project project,
+    DartFormatFixCommand? dartFormatFix,
   })  : _logger = logger ?? Logger(),
-        _project = project {
+        _project = project,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
       ..addSeparator('')
       ..addOption(
@@ -34,6 +37,7 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
 
   final Logger _logger;
   final Project _project;
+  final DartFormatFixCommand _dartFormatFix;
 
   @override
   String get name => 'service_implementation';
@@ -65,6 +69,12 @@ class InfrastructureAddServiceImplementationCommand extends Command<int>
               name: name,
               serviceName: service,
               outputDir: outputDir,
+              logger: _logger,
+            );
+
+            final infrastructurePackage = _project.infrastructurePackage;
+            await _dartFormatFix(
+              cwd: infrastructurePackage.path,
               logger: _logger,
             );
 

@@ -4,7 +4,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 

@@ -1,105 +1,92 @@
-import 'dart:io' as io;
-
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/core/directory_impl.dart';
-import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file_impl.dart';
+import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
+import 'package:rapid_cli/src/project/platform_ui_package/platform_ui_package.dart';
 
-import 'app_package/app_package.dart';
 import 'di_package/di_package.dart';
 import 'infrastructure_package/infrastructure_package.dart';
 import 'logging_package/logging_package.dart';
-import 'platform_directory/platform_directory.dart';
-import 'platform_ui_package/platform_ui_package.dart';
 import 'project.dart';
 import 'project_bundle.dart';
 import 'ui_package/ui_package.dart';
 
-class ProjectImpl extends DirectoryImpl implements Project {
-  ProjectImpl({
-    super.path,
-    MelosFile? melosFile,
-    AppPackage? appPackage,
-    DiPackage? diPackage,
-    DomainPackage? domainPackage,
-    InfrastructurePackage? infrastructurePackage,
-    LoggingPackage? loggingPackage,
-    PlatformDirectoryBuilder? platformDirectory,
-    UiPackage? uiPackage,
-    PlatformUiPackageBuilder? platformUiPackage,
-    MelosBootstrapCommand? melosBootstrap,
-    FlutterPubGetCommand? flutterPubGet,
-    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-    DartFormatFixCommand? dartFormatFix,
-    GeneratorBuilder? generator,
-  })  : _melosFile = melosFile,
-        _appPackage = appPackage,
-        _diPackage = diPackage,
-        _domainPackage = domainPackage,
-        _infrastructurePackage = infrastructurePackage,
-        _loggingPackage = loggingPackage,
-        _uiPackage = uiPackage,
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
-        _dartFormatFix = dartFormatFix ?? Dart.formatFix,
-        _generator = generator ?? MasonGenerator.fromBundle {
-    this.platformDirectory = platformDirectory ??
-        (({required platform}) => PlatformDirectory(platform, project: this));
-    this.platformUiPackage = platformUiPackage ??
-        (({required platform}) => PlatformUiPackage(platform, project: this));
-  }
-
-  final MelosFile? _melosFile;
-  final AppPackage? _appPackage;
-  final DiPackage? _diPackage;
-  final DomainPackage? _domainPackage;
-  final InfrastructurePackage? _infrastructurePackage;
-  final LoggingPackage? _loggingPackage;
-  final UiPackage? _uiPackage;
-  final MelosBootstrapCommand _melosBootstrap;
-  final FlutterPubGetCommand _flutterPubGet;
-  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
-  final DartFormatFixCommand _dartFormatFix;
-  final GeneratorBuilder _generator;
+class ProjectImpl extends DirectoryImpl
+    with OverridableGenerator, Generatable
+    implements Project {
+  ProjectImpl({super.path});
 
   @override
-  MelosFile get melosFile => _melosFile ?? MelosFile(project: this);
+  MelosFileBuilder? melosFileOverrides;
 
   @override
-  AppPackage get appPackage => _appPackage ?? AppPackage(project: this);
+  DiPackageBuilder? diPackageOverrides;
 
   @override
-  DiPackage get diPackage => _diPackage ?? DiPackage(project: this);
+  DomainPackageBuilder? domainPackageOverrides;
+
+  @override
+  InfrastructurePackageBuilder? infrastructurePackageOverrides;
+
+  @override
+  LoggingPackageBuilder? loggingPackageOverrides;
+
+  @override
+  PlatformDirectoryBuilder? platformDirectoryOverrides;
+
+  @override
+  UiPackageBuilder? uiPackageOverrides;
+
+  @override
+  PlatformUiPackageBuilder? platformUiPackageOverrides;
+
+  @override
+  MelosFile get melosFile =>
+      (melosFileOverrides ?? MelosFile.new)(project: this);
+
+  @override
+  DiPackage get diPackage =>
+      (diPackageOverrides ?? DiPackage.new)(project: this);
 
   @override
   DomainPackage get domainPackage =>
-      _domainPackage ?? DomainPackage(project: this);
+      (domainPackageOverrides ?? DomainPackage.new)(project: this);
 
   @override
   InfrastructurePackage get infrastructurePackage =>
-      _infrastructurePackage ?? InfrastructurePackage(project: this);
+      (infrastructurePackageOverrides ?? InfrastructurePackage.new)(
+        project: this,
+        domainPackage: domainPackage,
+      );
 
   @override
   LoggingPackage get loggingPackage =>
-      _loggingPackage ?? LoggingPackage(project: this);
+      (loggingPackageOverrides ?? LoggingPackage.new)(project: this);
+
+  // TODO this sucks
+  @override
+  T platformDirectory<T extends PlatformDirectory>({
+    required Platform platform,
+  }) =>
+      platformDirectoryOverrides?.call(platform: platform, project: this)
+          as T? ??
+      (platform == Platform.ios
+          ? IosDirectory(project: this)
+          : NoneIosDirectory(platform, project: this)) as T;
 
   @override
-  late final PlatformDirectoryBuilder platformDirectory;
+  UiPackage get uiPackage =>
+      (uiPackageOverrides ?? UiPackage.new)(project: this);
 
   @override
-  UiPackage get uiPackage => _uiPackage ?? UiPackage(project: this);
-
-  @override
-  late final PlatformUiPackageBuilder platformUiPackage;
+  PlatformUiPackage platformUiPackage({required Platform platform}) =>
+      (platformUiPackageOverrides ?? PlatformUiPackage.new)(
+        platform,
+        project: this,
+      );
 
   @override
   String name() => melosFile.readName();
@@ -107,7 +94,6 @@ class ProjectImpl extends DirectoryImpl implements Project {
   @override
   bool existsAll() =>
       melosFile.exists() &&
-      appPackage.exists() &&
       diPackage.exists() &&
       domainPackage.exists() &&
       infrastructurePackage.exists() &&
@@ -117,7 +103,6 @@ class ProjectImpl extends DirectoryImpl implements Project {
   @override
   bool existsAny() =>
       melosFile.exists() ||
-      appPackage.exists() ||
       diPackage.exists() ||
       domainPackage.exists() ||
       infrastructurePackage.exists() ||
@@ -147,26 +132,12 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required bool windows,
     required Logger logger,
   }) async {
-    final generateProgress = logger.progress('Generating project files');
-
-    final generator = await _generator(projectBundle);
-    await generator.generate(
-      DirectoryGeneratorTarget(io.Directory(path)),
+    await generate(
+      name: 'project',
+      bundle: projectBundle,
       vars: <String, dynamic>{
         'project_name': projectName,
       },
-      logger: logger,
-    );
-    await appPackage.create(
-      description: description,
-      orgName: orgName,
-      language: language,
-      android: android,
-      ios: ios,
-      linux: linux,
-      macos: macos,
-      web: web,
-      windows: windows,
       logger: logger,
     );
     await diPackage.create(
@@ -193,36 +164,29 @@ class ProjectImpl extends DirectoryImpl implements Project {
     ];
 
     for (final platform in platforms) {
-      final platformDirectory = this.platformDirectory(platform: platform);
-
-      final platformAppPackage = platformDirectory.appFeaturePackage;
-      await platformAppPackage.create(
-        defaultLanguage: language,
-        languages: {language},
-        logger: logger,
-      );
-
-      final platformRoutingPackage = platformDirectory.routingFeaturePackage;
-      await platformRoutingPackage.create(logger: logger);
-
-      final platformHomePagePackage = platformDirectory.customFeaturePackage(
-        name: 'home_page',
-      );
-      // TODO use description?
-      await platformHomePagePackage.create(
-        defaultLanguage: language,
-        languages: {language},
-        logger: logger,
-      );
-
+      // TODO use add platform method ?
       final platformUiPackage = this.platformUiPackage(platform: platform);
       await platformUiPackage.create(logger: logger);
+
+      if (platform == Platform.ios) {
+        final platformDirectory =
+            this.platformDirectory<IosDirectory>(platform: platform);
+        await platformDirectory.create(
+          orgName: orgName,
+          language: language,
+          logger: logger,
+        );
+      } else {
+        final platformDirectory =
+            this.platformDirectory<NoneIosDirectory>(platform: platform);
+        await platformDirectory.create(
+          description: description,
+          orgName: orgName,
+          language: language,
+          logger: logger,
+        );
+      }
     }
-
-    generateProgress.complete();
-
-    await _melosBootstrap(cwd: path, logger: logger);
-    await _dartFormatFix(cwd: path, logger: logger);
   }
 
   @override
@@ -233,75 +197,27 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required String language,
     required Logger logger,
   }) async {
-    final generateProgress = logger.progress(
-      'Generating ${platform.prettyName} files',
-    );
-
-    final platformDirectory = this.platformDirectory(platform: platform);
-
-    final platformAppPackage = platformDirectory.appFeaturePackage;
-    await platformAppPackage.create(
-      defaultLanguage: language,
-      languages: {language},
-      logger: logger,
-    );
-
-    final platformRoutingPackage = platformDirectory.routingFeaturePackage;
-    await platformRoutingPackage.create(logger: logger);
-
-    final platformHomePagePackage = platformDirectory.customFeaturePackage(
-      name: 'home_page',
-    );
-    // TODO use description?
-    await platformHomePagePackage.create(
-      defaultLanguage: language,
-      languages: {language},
-      logger: logger,
-    );
+    if (platform == Platform.ios) {
+      final platformDirectory =
+          this.platformDirectory<IosDirectory>(platform: platform);
+      await platformDirectory.create(
+        orgName: orgName!, // TODO not good
+        language: language,
+        logger: logger,
+      );
+    } else {
+      final platformDirectory =
+          this.platformDirectory<NoneIosDirectory>(platform: platform);
+      await platformDirectory.create(
+        description: description,
+        orgName: orgName,
+        language: language,
+        logger: logger,
+      );
+    }
 
     final platformUiPackage = this.platformUiPackage(platform: platform);
     await platformUiPackage.create(logger: logger);
-
-    generateProgress.complete();
-
-    // TODO log inside the metohd pls
-    await appPackage.addPlatform(
-      platform,
-      description: description,
-      orgName: orgName,
-      logger: logger,
-    );
-
-    // TODO log inside the metohd pls
-    await diPackage.registerCustomFeaturePackage(
-      platformHomePagePackage,
-      logger: logger,
-    );
-
-    await _melosBootstrap(
-      cwd: path,
-      scope: [
-        appPackage.packageName(),
-        diPackage.packageName(),
-        platformUiPackage.packageName(),
-        platformAppPackage.packageName(),
-        platformRoutingPackage.packageName(),
-        platformHomePagePackage.packageName(),
-      ],
-      logger: logger,
-    );
-
-    await _flutterPubGet(
-      cwd: diPackage.path,
-      logger: logger,
-    );
-
-    await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-      cwd: diPackage.path,
-      logger: logger,
-    );
-
-    await _dartFormatFix(cwd: path, logger: logger);
   }
 
   @override
@@ -309,118 +225,25 @@ class ProjectImpl extends DirectoryImpl implements Project {
     Platform platform, {
     required Logger logger,
   }) async {
-    final deleteProgress = logger.progress(
-      'Deleting ${platform.prettyName} files',
-    );
-
-    await appPackage.removePlatform(platform, logger: logger);
-    final platformUiPackage = this.platformUiPackage(platform: platform);
-    platformUiPackage.delete(logger: logger);
     final platformDirectory = this.platformDirectory(platform: platform);
-    final customFeaturesPackages = platformDirectory.customFeaturePackages();
-    await diPackage.unregisterCustomFeaturePackages(
-      customFeaturesPackages,
-      logger: logger,
-    );
+    final platformUiPackage = this.platformUiPackage(platform: platform);
     platformDirectory.delete(logger: logger);
-
-    deleteProgress.complete();
-
-    await _melosBootstrap(
-      cwd: path,
-      scope: [
-        appPackage.packageName(),
-        diPackage.packageName(),
-      ],
-      logger: logger,
-    );
-
-    await _flutterPubGet(
-      cwd: diPackage.path,
-      logger: logger,
-    );
-
-    await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-      cwd: diPackage.path,
-      logger: logger,
-    );
-
-    await _dartFormatFix(cwd: path, logger: logger);
+    platformUiPackage.delete(logger: logger);
   }
 
   @override
   Future<void> addFeature({
     required String name,
     required String description,
-    required bool routing,
     required Platform platform,
     required Logger logger,
   }) async {
-    final platformDirectory = this.platformDirectory(
-      platform: platform,
-    );
-    final customFeaturePackage = platformDirectory.customFeaturePackage(
+    final platformDirectory = this.platformDirectory(platform: platform);
+    await platformDirectory.addFeature(
       name: name,
+      description: description,
+      logger: logger,
     );
-    final customFeaturePackageExists = customFeaturePackage.exists();
-    if (customFeaturePackageExists) {
-      throw FeatureAlreadyExists();
-    }
-
-    if (!customFeaturePackageExists) {
-      final appFeaturePackage = platformDirectory.appFeaturePackage;
-
-      await customFeaturePackage.create(
-        description: description,
-        defaultLanguage: appFeaturePackage.defaultLanguage(),
-        languages: appFeaturePackage.supportedLanguages(),
-        logger: logger,
-      );
-
-      await appFeaturePackage.registerCustomFeaturePackage(
-        customFeaturePackage,
-        logger: logger,
-      );
-
-      final routingFeaturePackage = platformDirectory.routingFeaturePackage;
-      if (routing) {
-        await routingFeaturePackage.registerCustomFeaturePackage(
-          customFeaturePackage,
-          logger: logger,
-        );
-      }
-
-      await diPackage.registerCustomFeaturePackage(
-        customFeaturePackage,
-        logger: logger,
-      );
-
-      await _melosBootstrap(
-        cwd: path,
-        logger: logger,
-        scope: [
-          appPackage.packageName(),
-          diPackage.packageName(),
-          appFeaturePackage.packageName(),
-          ...platformDirectory
-              .customFeaturePackages()
-              .map((e) => e.packageName()),
-          if (routing) routingFeaturePackage.packageName(),
-        ],
-      );
-
-      await _flutterPubGet(
-        cwd: diPackage.path,
-        logger: logger,
-      );
-
-      await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-        cwd: diPackage.path,
-        logger: logger,
-      );
-
-      await _dartFormatFix(cwd: path, logger: logger);
-    }
   }
 
   @override
@@ -429,69 +252,8 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required Platform platform,
     required Logger logger,
   }) async {
-    final platformDirectory = this.platformDirectory(
-      platform: platform,
-    );
-    final customFeaturePackage = platformDirectory.customFeaturePackage(
-      name: name,
-    );
-    final customFeaturePackageExists = customFeaturePackage.exists();
-    if (!customFeaturePackageExists) {
-      throw FeatureDoesNotExist();
-    }
-
-    await diPackage.unregisterCustomFeaturePackages(
-      [customFeaturePackage],
-      logger: logger,
-    );
-
-    final appFeaturePackage = platformDirectory.appFeaturePackage;
-    await appFeaturePackage.unregisterCustomFeaturePackage(
-      customFeaturePackage,
-      logger: logger,
-    );
-
-    final routingFeaturePackage = platformDirectory.routingFeaturePackage;
-    await routingFeaturePackage.unregisterCustomFeaturePackage(
-      customFeaturePackage,
-      logger: logger,
-    );
-
-    final otherFeaturePackages = [
-      appFeaturePackage,
-      ...platformDirectory.customFeaturePackages(),
-      routingFeaturePackage,
-    ]..removeWhere(
-        (e) => e.packageName() == customFeaturePackage.packageName(),
-      );
-
-    for (final otherFeaturePackage in otherFeaturePackages) {
-      otherFeaturePackage.pubspecFile.removeDependency(
-        customFeaturePackage.packageName(),
-      );
-    }
-
-    customFeaturePackage.delete(logger: logger);
-
-    await _melosBootstrap(
-      cwd: path,
-      logger: logger,
-      scope: [
-        appPackage.packageName(),
-        diPackage.packageName(),
-        ...otherFeaturePackages.map((e) => e.packageName())
-      ],
-    );
-
-    await _flutterPubGet(
-      cwd: diPackage.path,
-      logger: logger,
-    );
-
-    await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-      cwd: diPackage.path,
-      logger: logger,
-    );
+    final platformDirectory = this.platformDirectory(platform: platform);
+    await platformDirectory.removeFeature(name: name, logger: logger);
   }
 
   @override
@@ -500,40 +262,8 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required Platform platform,
     required Logger logger,
   }) async {
-    final platformDirectory = this.platformDirectory(
-      platform: platform,
-    );
-    final appFeaturePackage = platformDirectory.appFeaturePackage;
-    final customFeatures = platformDirectory.customFeaturePackages();
-
-    if (!appFeaturePackage.exists() && customFeatures.isEmpty) {
-      throw NoFeaturesFound();
-    }
-
-    if (!platformDirectory.allFeaturesHaveSameLanguages()) {
-      throw FeaturesHaveDiffrentLanguages();
-    }
-
-    if (!platformDirectory.allFeaturesHaveSameDefaultLanguage()) {
-      throw FeaturesHaveDiffrentDefaultLanguage();
-    }
-
-    if (customFeatures.first.supportsLanguage(language)) {
-      throw FeaturesAlreadySupportLanguage();
-    }
-
-    await appFeaturePackage.addLanguage(
-      language: language,
-      logger: logger,
-    );
-    for (final customFeature in customFeatures) {
-      await customFeature.addLanguage(
-        language: language,
-        logger: logger,
-      );
-    }
-
-    await _dartFormatFix(cwd: path, logger: logger);
+    final platformDirectory = this.platformDirectory(platform: platform);
+    await platformDirectory.addLanguage(language, logger: logger);
   }
 
   @override
@@ -542,44 +272,8 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required Platform platform,
     required Logger logger,
   }) async {
-    final platformDirectory = this.platformDirectory(
-      platform: platform,
-    );
-    final appFeaturePackage = platformDirectory.appFeaturePackage;
-    final customFeatures = platformDirectory.customFeaturePackages();
-
-    if (!appFeaturePackage.exists() && customFeatures.isEmpty) {
-      throw NoFeaturesFound();
-    }
-
-    if (!platformDirectory.allFeaturesHaveSameLanguages()) {
-      throw FeaturesHaveDiffrentLanguages();
-    }
-
-    if (!platformDirectory.allFeaturesHaveSameDefaultLanguage()) {
-      throw FeaturesHaveDiffrentDefaultLanguage();
-    }
-
-    if (!customFeatures.first.supportsLanguage(language)) {
-      throw FeaturesDoNotSupportLanguage();
-    }
-
-    if (customFeatures.first.defaultLanguage() == language) {
-      throw UnableToRemoveDefaultLanguage();
-    }
-
-    await appFeaturePackage.removeLanguage(
-      language: language,
-      logger: logger,
-    );
-    for (final customFeature in customFeatures) {
-      await customFeature.removeLanguage(
-        language: language,
-        logger: logger,
-      );
-    }
-
-    await _dartFormatFix(cwd: path, logger: logger);
+    final platformDirectory = this.platformDirectory(platform: platform);
+    await platformDirectory.removeLanguage(language, logger: logger);
   }
 
   @override
@@ -588,44 +282,11 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required Platform platform,
     required Logger logger,
   }) async {
-    final platformDirectory = this.platformDirectory(
-      platform: platform,
-    );
-    final appFeaturePackage = platformDirectory.appFeaturePackage;
-    final customFeatures = platformDirectory.customFeaturePackages();
-
-    if (!appFeaturePackage.exists() && customFeatures.isEmpty) {
-      throw NoFeaturesFound();
-    }
-
-    if (!platformDirectory.allFeaturesHaveSameLanguages()) {
-      throw FeaturesHaveDiffrentLanguages();
-    }
-
-    if (!platformDirectory.allFeaturesHaveSameDefaultLanguage()) {
-      throw FeaturesHaveDiffrentDefaultLanguage();
-    }
-
-    if (!customFeatures.first.supportsLanguage(newDefaultLanguage)) {
-      throw FeaturesDoNotSupportLanguage();
-    }
-
-    if (customFeatures.first.defaultLanguage() == newDefaultLanguage) {
-      throw DefaultLanguageAlreadySetToRequestedLanguage();
-    }
-
-    await appFeaturePackage.setDefaultLanguage(
+    final platformDirectory = this.platformDirectory(platform: platform);
+    await platformDirectory.setDefaultLanguage(
       newDefaultLanguage,
       logger: logger,
     );
-    for (final customFeature in customFeatures) {
-      await customFeature.setDefaultLanguage(
-        newDefaultLanguage,
-        logger: logger,
-      );
-    }
-
-    await _dartFormatFix(cwd: path, logger: logger);
   }
 
   @override
@@ -634,12 +295,11 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required String outputDir,
     required Logger logger,
   }) async {
-    final entity = domainPackage.entity(name: name, dir: outputDir);
-    if (entity.existsAny()) {
-      throw EntityAlreadyExists();
-    }
-
-    await entity.create(logger: logger);
+    await domainPackage.addEntity(
+      name: name,
+      outputDir: outputDir,
+      logger: logger,
+    );
   }
 
   @override
@@ -648,12 +308,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required String dir,
     required Logger logger,
   }) async {
-    final entity = domainPackage.entity(name: name, dir: dir);
-    if (!entity.existsAny()) {
-      throw EntityDoesNotExist();
-    }
-
-    entity.delete(logger: logger);
+    await domainPackage.removeEntity(name: name, dir: dir, logger: logger);
   }
 
   @override
@@ -662,15 +317,11 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required String outputDir,
     required Logger logger,
   }) async {
-    final serviceInterface = domainPackage.serviceInterface(
+    await domainPackage.addServiceInterface(
       name: name,
-      dir: outputDir,
+      outputDir: outputDir,
+      logger: logger,
     );
-    if (serviceInterface.existsAny()) {
-      throw ServiceInterfaceAlreadyExists();
-    }
-
-    await serviceInterface.create(logger: logger);
   }
 
   @override
@@ -679,15 +330,11 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required String dir,
     required Logger logger,
   }) async {
-    final serviceInterface = domainPackage.serviceInterface(
+    await domainPackage.removeServiceInterface(
       name: name,
       dir: dir,
+      logger: logger,
     );
-    if (!serviceInterface.existsAny()) {
-      throw ServiceInterfaceDoesNotExist();
-    }
-
-    serviceInterface.delete(logger: logger);
   }
 
   @override
@@ -698,15 +345,13 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required String generics,
     required Logger logger,
   }) async {
-    final valueObject = domainPackage.valueObject(
+    await domainPackage.addValueObject(
       name: name,
-      dir: outputDir,
+      outputDir: outputDir,
+      type: type,
+      generics: generics,
+      logger: logger,
     );
-    if (valueObject.existsAny()) {
-      throw ValueObjectAlreadyExists();
-    }
-
-    await valueObject.create(type: type, generics: generics, logger: logger);
   }
 
   @override
@@ -715,15 +360,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required String dir,
     required Logger logger,
   }) async {
-    final valueObject = domainPackage.valueObject(
-      name: name,
-      dir: dir,
-    );
-    if (!valueObject.existsAny()) {
-      throw ValueObjectDoesNotExist();
-    }
-
-    valueObject.delete(logger: logger);
+    await domainPackage.removeValueObject(name: name, dir: dir, logger: logger);
   }
 
   @override
@@ -732,22 +369,11 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required String outputDir,
     required Logger logger,
   }) async {
-    final entity = domainPackage.entity(name: entityName, dir: outputDir);
-
-    if (!entity.existsAny()) {
-      throw EntityDoesNotExist();
-    }
-
-    final dataTransferObject = infrastructurePackage.dataTransferObject(
+    await infrastructurePackage.addDataTransferObject(
       entityName: entityName,
-      dir: outputDir,
+      outputDir: outputDir,
+      logger: logger,
     );
-
-    if (dataTransferObject.existsAny()) {
-      throw DataTransferObjectAlreadyExists();
-    }
-
-    await dataTransferObject.create(logger: logger);
   }
 
   @override
@@ -756,15 +382,11 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required String dir,
     required Logger logger,
   }) async {
-    final dataTransferObject = infrastructurePackage.dataTransferObject(
-      entityName: name.replaceAll('Dto', ''), // TODO good ?
+    await infrastructurePackage.removeDataTransferObject(
+      name: name,
       dir: dir,
+      logger: logger,
     );
-    if (!dataTransferObject.existsAny()) {
-      throw DataTransferObjectDoesNotExist();
-    }
-
-    dataTransferObject.delete(logger: logger);
   }
 
   @override
@@ -774,24 +396,12 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required String outputDir,
     required Logger logger,
   }) async {
-    final serviceInterface =
-        domainPackage.serviceInterface(name: serviceName, dir: outputDir);
-
-    if (!serviceInterface.existsAny()) {
-      throw ServiceInterfaceDoesNotExist();
-    }
-
-    final serviceImplementation = infrastructurePackage.serviceImplementation(
+    await infrastructurePackage.addServiceImplementation(
       name: name,
       serviceName: serviceName,
-      dir: outputDir,
+      outputDir: outputDir,
+      logger: logger,
     );
-
-    if (serviceImplementation.existsAny()) {
-      throw ServiceImplementationAlreadyExists();
-    }
-
-    await serviceImplementation.create(logger: logger);
   }
 
   @override
@@ -801,16 +411,12 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required String dir,
     required Logger logger,
   }) async {
-    final serviceImplementation = infrastructurePackage.serviceImplementation(
+    await infrastructurePackage.removeServiceImplementation(
       name: name,
       serviceName: serviceName,
       dir: dir,
+      logger: logger,
     );
-    if (!serviceImplementation.existsAny()) {
-      throw ServiceImplementationDoesNotExist();
-    }
-
-    serviceImplementation.delete(logger: logger);
   }
 
   @override
@@ -820,27 +426,25 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required Platform platform,
     required Logger logger,
   }) async {
-    final platformDirectory = this.platformDirectory(
-      platform: platform,
+    final platformDirectory = this.platformDirectory(platform: platform);
+    await platformDirectory.addBloc(
+      name: name,
+      featureName: featureName,
+      logger: logger,
     );
-    final customFeaturePackage = platformDirectory.customFeaturePackage(
-      name: featureName,
-    );
+  }
 
-    if (!customFeaturePackage.exists()) {
-      throw FeatureDoesNotExist();
-    }
-
-    final bloc = customFeaturePackage.bloc(name: name);
-
-    if (bloc.existsAny()) {
-      throw BlocAlreadyExists();
-    }
-
-    await bloc.create(logger: logger);
-
-    await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-      cwd: customFeaturePackage.path,
+  @override
+  Future<void> removeBloc({
+    required String name,
+    required String featureName,
+    required Platform platform,
+    required Logger logger,
+  }) async {
+    final platformDirectory = this.platformDirectory(platform: platform);
+    await platformDirectory.removeBloc(
+      name: name,
+      featureName: featureName,
       logger: logger,
     );
   }
@@ -852,27 +456,25 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required Platform platform,
     required Logger logger,
   }) async {
-    final platformDirectory = this.platformDirectory(
-      platform: platform,
+    final platformDirectory = this.platformDirectory(platform: platform);
+    await platformDirectory.addCubit(
+      name: name,
+      featureName: featureName,
+      logger: logger,
     );
-    final customFeaturePackage = platformDirectory.customFeaturePackage(
-      name: featureName,
-    );
+  }
 
-    if (!customFeaturePackage.exists()) {
-      throw FeatureDoesNotExist();
-    }
-
-    final cubit = customFeaturePackage.cubit(name: name);
-
-    if (cubit.existsAny()) {
-      throw CubitAlreadyExists();
-    }
-
-    await cubit.create(logger: logger);
-
-    await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-      cwd: customFeaturePackage.path,
+  @override
+  Future<void> removeCubit({
+    required String name,
+    required String featureName,
+    required Platform platform,
+    required Logger logger,
+  }) async {
+    final platformDirectory = this.platformDirectory(platform: platform);
+    await platformDirectory.removeCubit(
+      name: name,
+      featureName: featureName,
       logger: logger,
     );
   }
@@ -885,14 +487,11 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required Logger logger,
   }) async {
     final platformUiPackage = this.platformUiPackage(platform: platform);
-    final widget = platformUiPackage.widget(name: name, dir: outputDir);
-
-    if (widget.existsAny()) {
-      throw WidgetAlreadyExists();
-    }
-
-    await widget.create(logger: logger);
-    platformUiPackage.themeExtensionsFile.addThemeExtension(widget);
+    await platformUiPackage.addWidget(
+      name: name,
+      outputDir: outputDir,
+      logger: logger,
+    );
   }
 
   @override
@@ -903,14 +502,7 @@ class ProjectImpl extends DirectoryImpl implements Project {
     required Logger logger,
   }) async {
     final platformUiPackage = this.platformUiPackage(platform: platform);
-    final widget = platformUiPackage.widget(name: name, dir: dir);
-
-    if (!widget.existsAny()) {
-      throw WidgetDoesNotExist();
-    }
-
-    platformUiPackage.themeExtensionsFile.removeThemeExtension(widget);
-    widget.delete(logger: logger);
+    await platformUiPackage.removeWidget(name: name, dir: dir, logger: logger);
   }
 }
 

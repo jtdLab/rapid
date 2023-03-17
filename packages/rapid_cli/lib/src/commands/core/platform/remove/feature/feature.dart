@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
@@ -35,13 +36,26 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
+    MelosBootstrapCommand? melosBootstrap,
+    FlutterPubGetCommand? flutterPubGet,
+    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project;
+        _project = project,
+        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   final Platform _platform;
   final Logger _logger;
   final Project _project;
+  final MelosBootstrapCommand _melosBootstrap;
+  final FlutterPubGetCommand _flutterPubGet;
+  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   @override
   String get name => 'feature';
@@ -76,6 +90,27 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
             await _project.removeFeature(
               name: name,
               platform: _platform,
+              logger: _logger,
+            );
+
+            final platformDirectory =
+                _project.platformDirectory(platform: _platform);
+            final rootPackage = platformDirectory.rootPackage;
+            final remainingFeaturePackages =
+                platformDirectory.featuresDirectory.featurePackages();
+
+            await _melosBootstrap(
+              cwd: _project.path,
+              logger: _logger,
+              scope: [
+                ...remainingFeaturePackages.map((e) => e.packageName()),
+                rootPackage.packageName(),
+              ],
+            );
+
+            await _flutterPubGet(cwd: rootPackage.path, logger: _logger);
+            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: rootPackage.path,
               logger: _logger,
             );
 

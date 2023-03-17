@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -38,9 +39,11 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
+    DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project {
+        _project = project,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
       ..addSeparator('')
       ..addOutputDirOption(
@@ -51,6 +54,7 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
   final Platform _platform;
   final Logger _logger;
   final Project _project;
+  final DartFormatFixCommand _dartFormatFix;
 
   @override
   String get name => 'widget';
@@ -87,6 +91,11 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
               platform: _platform,
               logger: _logger,
             );
+
+            final platformUiPackage = _project.platformUiPackage(
+              platform: _platform,
+            );
+            await _dartFormatFix(cwd: platformUiPackage.path, logger: _logger);
 
             _logger
               ..info('')

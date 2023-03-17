@@ -9,6 +9,8 @@ class LinuxFeatureAddBlocCommand extends PlatformFeatureAddBlocCommand {
   LinuxFeatureAddBlocCommand({
     super.logger,
     required super.project,
+    super.flutterPubGet,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.linux,
         );

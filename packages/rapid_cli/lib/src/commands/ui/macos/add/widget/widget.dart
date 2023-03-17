@@ -9,6 +9,7 @@ class UiMacosAddWidgetCommand extends UiPlatformAddWidgetCommand {
   UiMacosAddWidgetCommand({
     super.logger,
     required super.project,
+    super.dartFormatFix,
   }) : super(
           platform: Platform.macos,
         );

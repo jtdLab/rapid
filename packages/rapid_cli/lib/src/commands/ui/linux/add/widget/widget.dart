@@ -9,6 +9,7 @@ class UiLinuxAddWidgetCommand extends UiPlatformAddWidgetCommand {
   UiLinuxAddWidgetCommand({
     super.logger,
     required super.project,
+    super.dartFormatFix,
   }) : super(
           platform: Platform.linux,
         );

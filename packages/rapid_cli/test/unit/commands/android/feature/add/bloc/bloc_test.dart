@@ -1,11 +1,13 @@
+import 'dart:io';
+
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import '../../../../../common.dart';
 import '../../../../../mocks.dart';
@@ -30,6 +32,11 @@ void main() {
     late Logger logger;
 
     late Project project;
+
+    late FlutterPubGetCommand flutterPubGet;
+
+    late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
     late ArgResults argResults;
     late String featureName;
@@ -64,6 +71,9 @@ void main() {
       command = AndroidFeatureAddBlocCommand(
         logger: logger,
         project: project,
+        flutterPubGet: flutterPubGet,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
       )..argResultOverrides = argResults;
     });
 

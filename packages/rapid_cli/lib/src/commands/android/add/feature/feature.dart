@@ -9,6 +9,11 @@ class AndroidAddFeatureCommand extends PlatformAddFeatureCommand {
   AndroidAddFeatureCommand({
     super.logger,
     required super.project,
+    super.melosBootstrap,
+    super.flutterPubGet,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+    super.flutterGenl10n,
+    super.dartFormatFix,
   }) : super(
           platform: Platform.android,
         );

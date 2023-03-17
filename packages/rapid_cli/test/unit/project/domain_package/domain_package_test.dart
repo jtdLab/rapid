@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -14,64 +13,56 @@ import '../../mocks.dart';
 DomainPackage _getDomainPackage({
   Project? project,
   GeneratorBuilder? generator,
+  EntityBuilder? entityBuilder,
+  ServiceInterfaceBuilder? serviceInterfaceBuilder,
+  ValueObjectBuilder? valueObjectBuilder,
 }) {
   return DomainPackage(
     project: project ?? getProject(),
-    generator: generator ?? (_) async => getMasonGenerator(),
-  );
+  )
+    ..generatorOverrides = generator
+    ..entityOverrides = entityBuilder
+    ..serviceInterfaceOverrides = serviceInterfaceBuilder
+    ..valueObjectOverrides = valueObjectBuilder;
 }
 
 Entity _getEntity({
   required String name,
   required String dir,
   DomainPackage? domainPackage,
-  DartFormatFixCommand? dartFormatFix,
   GeneratorBuilder? generator,
 }) {
   return Entity(
     name: name,
     dir: dir,
     domainPackage: domainPackage ?? getDomainPackage(),
-    dartFormatFix: dartFormatFix ?? getDartFormatFix().call,
-    generator: generator ?? (_) async => getMasonGenerator(),
-  );
+  )..generatorOverrides = generator;
 }
 
 ServiceInterface _getServiceInterface({
   required String name,
   required String dir,
   DomainPackage? domainPackage,
-  DartFormatFixCommand? dartFormatFix,
   GeneratorBuilder? generator,
 }) {
   return ServiceInterface(
     name: name,
     dir: dir,
     domainPackage: domainPackage ?? getDomainPackage(),
-    dartFormatFix: dartFormatFix ?? getDartFormatFix().call,
-    generator: generator ?? (_) async => getMasonGenerator(),
-  );
+  )..generatorOverrides = generator;
 }
 
 ValueObject _getValueObject({
   required String name,
   required String dir,
   DomainPackage? domainPackage,
-  FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-      flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-  DartFormatFixCommand? dartFormatFix,
   GeneratorBuilder? generator,
 }) {
   return ValueObject(
     name: name,
     dir: dir,
     domainPackage: domainPackage ?? getDomainPackage(),
-    flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-            getFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs().call,
-    dartFormatFix: dartFormatFix ?? getDartFormatFix().call,
-    generator: generator ?? (_) async => getMasonGenerator(),
-  );
+  )..generatorOverrides = generator;
 }
 
 void main() {
@@ -134,66 +125,306 @@ void main() {
       );
     });
 
-    test('.entity()', () {
-      // Arrange
-      final domainPackage = _getDomainPackage();
+    group('.addEntity()', () {
+      test('completes successfully with correct output', () {
+        // Arrange
+        final entity = getEntity();
+        when(() => entity.existsAny()).thenReturn(false);
+        final entityBuilder = getEntityBuilder(entity);
+        final domainPackage = _getDomainPackage(entityBuilder: entityBuilder);
 
-      // Act + Assert
-      expect(
-        domainPackage.entity(name: 'Cool', dir: 'entity/path'),
-        isA<Entity>()
-            .having((entity) => entity.name, 'name', 'Cool')
-            .having((entity) => entity.dir, 'dir', 'entity/path')
-            .having(
-              (entity) => entity.domainPackage,
-              'domainPackage',
-              domainPackage,
-            ),
-      );
+        // Act
+        final logger = FakeLogger();
+        domainPackage.addEntity(
+          name: 'cool',
+          outputDir: 'my/dir',
+          logger: logger,
+        );
+
+        // Act + Assert
+        verify(
+          () => entityBuilder(
+            name: 'cool',
+            dir: 'my/dir',
+            domainPackage: domainPackage,
+          ),
+        ).called(1);
+        verify(() => entity.create(logger: logger)).called(1);
+      });
+
+      test('throws EntityAlreadyExists when entity exists', () {
+        // Arrange
+        final entity = getEntity();
+        when(() => entity.existsAny()).thenReturn(true);
+        final entityBuilder = getEntityBuilder(entity);
+        final domainPackage = _getDomainPackage(entityBuilder: entityBuilder);
+
+        // Act + Assert
+        expect(
+          () => domainPackage.addEntity(
+            name: 'cool',
+            outputDir: 'my/dir',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<EntityAlreadyExists>()),
+        );
+      });
     });
 
-    test('.serviceInterface()', () {
-      // Arrange
-      final domainPackage = _getDomainPackage();
+    group('.removeEntity()', () {
+      test('completes successfully with correct output', () {
+        // Arrange
+        final entity = getEntity();
+        when(() => entity.existsAny()).thenReturn(true);
+        final entityBuilder = getEntityBuilder(entity);
+        final domainPackage = _getDomainPackage(entityBuilder: entityBuilder);
 
-      // Act + Assert
-      expect(
-        domainPackage.serviceInterface(
-          name: 'Cool',
-          dir: 'service_interface/path',
-        ),
-        isA<ServiceInterface>()
-            .having((serviceInterface) => serviceInterface.name, 'name', 'Cool')
-            .having((serviceInterface) => serviceInterface.dir, 'dir',
-                'service_interface/path')
-            .having(
-              (serviceInterface) => serviceInterface.domainPackage,
-              'domainPackage',
-              domainPackage,
-            ),
-      );
+        // Act
+        final logger = FakeLogger();
+        domainPackage.removeEntity(
+          name: 'cool',
+          dir: 'my/dir',
+          logger: logger,
+        );
+
+        // Act + Assert
+        verify(
+          () => entityBuilder(
+            name: 'cool',
+            dir: 'my/dir',
+            domainPackage: domainPackage,
+          ),
+        ).called(1);
+        verify(() => entity.delete(logger: logger)).called(1);
+      });
+
+      test('throws EntityDoesNotExist when entity does not exist', () {
+        // Arrange
+        final entity = getEntity();
+        when(() => entity.existsAny()).thenReturn(false);
+        final entityBuilder = getEntityBuilder(entity);
+        final domainPackage = _getDomainPackage(entityBuilder: entityBuilder);
+
+        // Act + Assert
+        expect(
+          () => domainPackage.removeEntity(
+            name: 'cool',
+            dir: 'my/dir',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<EntityDoesNotExist>()),
+        );
+      });
     });
 
-    test('.valueObject()', () {
-      // Arrange
-      final domainPackage = _getDomainPackage();
+    group('.addServiceInterface()', () {
+      test('completes successfully with correct output', () {
+        // Arrange
+        final serviceInterface = getServiceInterface();
+        when(() => serviceInterface.existsAny()).thenReturn(false);
+        final serviceInterfaceBuilder =
+            getServiceInterfaceBuilder(serviceInterface);
+        final domainPackage =
+            _getDomainPackage(serviceInterfaceBuilder: serviceInterfaceBuilder);
 
-      // Act + Assert
-      expect(
-        domainPackage.valueObject(name: 'Cool', dir: 'value_object/path'),
-        isA<ValueObject>()
-            .having((valueObject) => valueObject.name, 'name', 'Cool')
-            .having(
-              (valueObject) => valueObject.dir,
-              'dir',
-              'value_object/path',
-            )
-            .having(
-              (valueObject) => valueObject.domainPackage,
-              'domainPackage',
-              domainPackage,
-            ),
-      );
+        // Act
+        final logger = FakeLogger();
+        domainPackage.addServiceInterface(
+          name: 'cool',
+          outputDir: 'my/dir',
+          logger: logger,
+        );
+
+        // Act + Assert
+        verify(
+          () => serviceInterfaceBuilder(
+            name: 'cool',
+            dir: 'my/dir',
+            domainPackage: domainPackage,
+          ),
+        ).called(1);
+        verify(() => serviceInterface.create(logger: logger)).called(1);
+      });
+
+      test('throws ServiceInterfaceAlreadyExists when service interface exists',
+          () {
+        // Arrange
+        final serviceInterface = getServiceInterface();
+        when(() => serviceInterface.existsAny()).thenReturn(true);
+        final serviceInterfaceBuilder =
+            getServiceInterfaceBuilder(serviceInterface);
+        final domainPackage =
+            _getDomainPackage(serviceInterfaceBuilder: serviceInterfaceBuilder);
+
+        // Act + Assert
+        expect(
+          () => domainPackage.addServiceInterface(
+            name: 'cool',
+            outputDir: 'my/dir',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<ServiceInterfaceAlreadyExists>()),
+        );
+      });
+    });
+
+    group('.removeServiceInterface()', () {
+      test('completes successfully with correct output', () {
+        // Arrange
+        final serviceInterface = getServiceInterface();
+        when(() => serviceInterface.existsAny()).thenReturn(true);
+        final serviceInterfaceBuilder =
+            getServiceInterfaceBuilder(serviceInterface);
+        final domainPackage =
+            _getDomainPackage(serviceInterfaceBuilder: serviceInterfaceBuilder);
+
+        // Act
+        final logger = FakeLogger();
+        domainPackage.removeServiceInterface(
+          name: 'cool',
+          dir: 'my/dir',
+          logger: logger,
+        );
+
+        // Act + Assert
+        verify(
+          () => serviceInterfaceBuilder(
+            name: 'cool',
+            dir: 'my/dir',
+            domainPackage: domainPackage,
+          ),
+        ).called(1);
+        verify(() => serviceInterface.delete(logger: logger)).called(1);
+      });
+
+      test(
+          'throws ServiceInterfaceDoesNotExist when service interface does not exist',
+          () {
+        // Arrange
+        final serviceInterface = getServiceInterface();
+        when(() => serviceInterface.existsAny()).thenReturn(false);
+        final serviceInterfaceBuilder =
+            getServiceInterfaceBuilder(serviceInterface);
+        final domainPackage =
+            _getDomainPackage(serviceInterfaceBuilder: serviceInterfaceBuilder);
+
+        // Act + Assert
+        expect(
+          () => domainPackage.removeServiceInterface(
+            name: 'cool',
+            dir: 'my/dir',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<ServiceInterfaceDoesNotExist>()),
+        );
+      });
+    });
+
+    group('.addValueObject()', () {
+      test('completes successfully with correct output', () {
+        // Arrange
+        final valueObject = getValueObject();
+        when(() => valueObject.existsAny()).thenReturn(false);
+        final valueObjectBuilder = getValueObjectBuilder(valueObject);
+        final domainPackage =
+            _getDomainPackage(valueObjectBuilder: valueObjectBuilder);
+
+        // Act
+        final logger = FakeLogger();
+        domainPackage.addValueObject(
+          name: 'cool',
+          outputDir: 'my/dir',
+          type: 'List<#A>',
+          generics: '<A>',
+          logger: logger,
+        );
+
+        // Act + Assert
+        verify(
+          () => valueObjectBuilder(
+            name: 'cool',
+            dir: 'my/dir',
+            domainPackage: domainPackage,
+          ),
+        ).called(1);
+        verify(
+          () => valueObject.create(
+            logger: logger,
+            type: 'List<#A>',
+            generics: '<A>',
+          ),
+        ).called(1);
+      });
+
+      test('throws ValueObjectAlreadyExists when value object exists', () {
+        // Arrange
+        final valueObject = getValueObject();
+        when(() => valueObject.existsAny()).thenReturn(true);
+        final valueObjectBuilder = getValueObjectBuilder(valueObject);
+        final domainPackage =
+            _getDomainPackage(valueObjectBuilder: valueObjectBuilder);
+
+        // Act + Assert
+        expect(
+          () => domainPackage.addValueObject(
+            name: 'cool',
+            outputDir: 'my/dir',
+            type: 'List<#A>',
+            generics: '<A>',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<ValueObjectAlreadyExists>()),
+        );
+      });
+    });
+
+    group('.removeValueObject()', () {
+      test('completes successfully with correct output', () {
+        // Arrange
+        final valueObject = getValueObject();
+        when(() => valueObject.existsAny()).thenReturn(true);
+        final valueObjectBuilder = getValueObjectBuilder(valueObject);
+        final domainPackage =
+            _getDomainPackage(valueObjectBuilder: valueObjectBuilder);
+
+        // Act
+        final logger = FakeLogger();
+        domainPackage.removeValueObject(
+          name: 'cool',
+          dir: 'my/dir',
+          logger: logger,
+        );
+
+        // Act + Assert
+        verify(
+          () => valueObjectBuilder(
+            name: 'cool',
+            dir: 'my/dir',
+            domainPackage: domainPackage,
+          ),
+        ).called(1);
+        verify(() => valueObject.delete(logger: logger)).called(1);
+      });
+
+      test('throws ValueObjectDoesNotExist when value object does not exist',
+          () {
+        // Arrange
+        final valueObject = getValueObject();
+        when(() => valueObject.existsAny()).thenReturn(false);
+        final valueObjectBuilder = getValueObjectBuilder(valueObject);
+        final domainPackage =
+            _getDomainPackage(valueObjectBuilder: valueObjectBuilder);
+
+        // Act + Assert
+        expect(
+          () => domainPackage.removeValueObject(
+            name: 'cool',
+            dir: 'my/dir',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<ValueObjectDoesNotExist>()),
+        );
+      });
     });
   });
 
@@ -201,35 +432,6 @@ void main() {
     setUpAll(() {
       registerFallbackValue(FakeLogger());
       registerFallbackValue(FakeDirectoryGeneratorTarget());
-    });
-
-    test('.name', () {
-      // Arrange
-      final entity = _getEntity(name: 'my_entity', dir: '.');
-
-      // Act + Assert
-      expect(entity.name, 'my_entity');
-    });
-
-    test('.dir', () {
-      // Arrange
-      final entity = _getEntity(name: 'my_entity', dir: 'entity/path');
-
-      // Act + Assert
-      expect(entity.dir, 'entity/path');
-    });
-
-    test('.domainPackage', () {
-      // Arrange
-      final domainPackage = getDomainPackage();
-      final entity = _getEntity(
-        name: 'my_entity',
-        dir: '.',
-        domainPackage: domainPackage,
-      );
-
-      // Act + Assert
-      expect(entity.domainPackage, domainPackage);
     });
 
     group('.create()', () {
@@ -242,13 +444,11 @@ void main() {
           final domainPackage = getDomainPackage();
           when(() => domainPackage.path).thenReturn('domain_package/path');
           when(() => domainPackage.project).thenReturn(project);
-          final dartFormatFix = getDartFormatFix();
           final generator = getMasonGenerator();
           final entity = _getEntity(
             name: 'my_entity',
             dir: 'entity/path',
             domainPackage: domainPackage,
-            dartFormatFix: dartFormatFix,
             generator: (_) async => generator,
           );
 
@@ -275,9 +475,6 @@ void main() {
               },
               logger: logger,
             ),
-          ).called(1);
-          verify(
-            () => dartFormatFix(cwd: 'domain_package/path', logger: logger),
           ).called(1);
         }),
       );
@@ -346,41 +543,6 @@ void main() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
-    test('.name', () {
-      // Arrange
-      final serviceInterface = _getServiceInterface(
-        name: 'my_service_interface',
-        dir: '.',
-      );
-
-      // Act + Assert
-      expect(serviceInterface.name, 'my_service_interface');
-    });
-
-    test('.dir', () {
-      // Arrange
-      final serviceInterface = _getEntity(
-        name: 'my_service_interface',
-        dir: 'service_interface/path',
-      );
-
-      // Act + Assert
-      expect(serviceInterface.dir, 'service_interface/path');
-    });
-
-    test('.domainPackage', () {
-      // Arrange
-      final domainPackage = getDomainPackage();
-      final serviceInterface = _getEntity(
-        name: 'my_service_interface',
-        dir: '.',
-        domainPackage: domainPackage,
-      );
-
-      // Act + Assert
-      expect(serviceInterface.domainPackage, domainPackage);
-    });
-
     group('.create()', () {
       test(
         'completes successfully with correct output',
@@ -391,13 +553,11 @@ void main() {
           final domainPackage = getDomainPackage();
           when(() => domainPackage.path).thenReturn('domain_package/path');
           when(() => domainPackage.project).thenReturn(project);
-          final dartFormatFix = getDartFormatFix();
           final generator = getMasonGenerator();
           final serviceInterface = _getServiceInterface(
             name: 'my_service_interface',
             dir: 'service_interface/path',
             domainPackage: domainPackage,
-            dartFormatFix: dartFormatFix,
             generator: (_) async => generator,
           );
 
@@ -424,9 +584,6 @@ void main() {
               },
               logger: logger,
             ),
-          ).called(1);
-          verify(
-            () => dartFormatFix(cwd: 'domain_package/path', logger: logger),
           ).called(1);
         }),
       );
@@ -489,41 +646,6 @@ void main() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
-    test('.name', () {
-      // Arrange
-      final valueObject = _getValueObject(
-        name: 'my_value_object',
-        dir: '.',
-      );
-
-      // Act + Assert
-      expect(valueObject.name, 'my_value_object');
-    });
-
-    test('.dir', () {
-      // Arrange
-      final valueObject = _getValueObject(
-        name: 'my_value_object',
-        dir: 'value_object/path',
-      );
-
-      // Act + Assert
-      expect(valueObject.dir, 'value_object/path');
-    });
-
-    test('.domainPackage', () {
-      // Arrange
-      final domainPackage = getDomainPackage();
-      final valueObject = _getValueObject(
-        name: 'my_value_object',
-        dir: '.',
-        domainPackage: domainPackage,
-      );
-
-      // Act + Assert
-      expect(valueObject.domainPackage, domainPackage);
-    });
-
     group('.create()', () {
       test(
         'completes successfully with correct output',
@@ -534,17 +656,11 @@ void main() {
           final domainPackage = getDomainPackage();
           when(() => domainPackage.path).thenReturn('domain_package/path');
           when(() => domainPackage.project).thenReturn(project);
-          final flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-              getFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs();
-          final dartFormatFix = getDartFormatFix();
           final generator = getMasonGenerator();
           final valueObject = _getValueObject(
             name: 'my_value_object',
             dir: 'value_object/path',
             domainPackage: domainPackage,
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
-                flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-            dartFormatFix: dartFormatFix,
             generator: (_) async => generator,
           );
 
@@ -575,15 +691,6 @@ void main() {
               },
               logger: logger,
             ),
-          ).called(1);
-          verify(
-            () => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: 'domain_package/path',
-              logger: logger,
-            ),
-          ).called(1);
-          verify(
-            () => dartFormatFix(cwd: 'domain_package/path', logger: logger),
           ).called(1);
         }),
       );

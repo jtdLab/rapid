@@ -9,6 +9,7 @@ class UiIosAddWidgetCommand extends UiPlatformAddWidgetCommand {
   UiIosAddWidgetCommand({
     super.logger,
     required super.project,
+    super.dartFormatFix,
   }) : super(
           platform: Platform.ios,
         );

@@ -32,6 +32,17 @@ void main() {
 
     late Project project;
 
+    final MelosBootstrapCommand melosBootstrap;
+
+    final FlutterPubGetCommand flutterPubGet;
+
+    final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+
+    final FlutterGenl10nCommand flutterGenl10n;
+
+    final DartFormatFixCommand dartFormatFix;
+
     late FlutterConfigEnablePlatformCommand flutterConfigEnableMacos;
 
     late ArgResults argResults;
@@ -73,6 +84,12 @@ void main() {
       command = ActivateMacosCommand(
         logger: logger,
         project: project,
+        melosBootstrap: melosBootstrap,
+        flutterPubGet: flutterPubGet,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+        flutterGenl10n: flutterGenl10n,
+        dartFormatFix: dartFormatFix,
         flutterConfigEnableMacos: flutterConfigEnableMacos,
       )..argResultOverrides = argResults;
     });

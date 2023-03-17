@@ -1,0 +1,7 @@
+name: project_web_workspace
+
+environment:
+  sdk: ">=2.19.4 <3.0.0"
+  
+dev_dependencies:
+  melos: ^3.0.0

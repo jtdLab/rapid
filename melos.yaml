@@ -57,7 +57,7 @@ scripts:
     exec: dart fix --dry-run
     description: Code fixes in dry mode
 
-  dev:deploy:
+  deploy:dev:
     exec: dart pub global activate --source path .
     description: Locale activate rapid_cli for development.
     packageFilters:

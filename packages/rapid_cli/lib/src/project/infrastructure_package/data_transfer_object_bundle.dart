@@ -47,7 +47,7 @@ final dataTransferObjectBundle = MasonBundle.fromJson(<String, dynamic>{
   },
   "changelog": {
     "path": "CHANGELOG.md",
-    "data": "IyAwLjEuMCsKCi0gVE9ETzogRGVzY3JpYmUgaW5pdGlhbCByZWxlYXNlLgo=",
+    "data": "IyAwLjEuMAoKLSBUT0RPOiBEZXNjcmliZSBpbml0aWFsIHJlbGVhc2UuCg==",
     "type": "text"
   },
   "vars": {

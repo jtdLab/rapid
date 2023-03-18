@@ -18,6 +18,10 @@ templates=(
     "bloc templates/bloc lib/src/project/platform_directory/platform_features_directory/platform_feature_package"
     "cubit templates/cubit lib/src/project/platform_directory/platform_features_directory/platform_feature_package"
     "data_transfer_object templates/data_transfer_object lib/src/project/infrastructure_package"
+    "di_package templates/di_package lib/src/project/di_package"
+    "domain_package templates/domain_package lib/src/project/domain_package"
+    "entity templates/entity lib/src/project/domain_package"
+    "infrastructure_package templates/infrastructure_package lib/src/project/infrastructure_package"
 )
 
 # Loop through the list of triplets and bundle and move each template

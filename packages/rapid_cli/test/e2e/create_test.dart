@@ -139,7 +139,6 @@ void main() {
               platformIndependentPackagesWithTests,
             );
           },
-          tags: ['fast'],
         );
 
         group('--android', () {

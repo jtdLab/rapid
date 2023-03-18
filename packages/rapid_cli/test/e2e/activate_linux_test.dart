@@ -27,7 +27,7 @@ void main() {
       });
 
       group('activate linux', () {
-        Future<void> performTest({required bool fast}) async {
+        Future<void> performTest({bool slow = false}) async {
           // Arrange
           await setupProject();
 
@@ -66,22 +66,24 @@ void main() {
             ...featurePackages,
           ]);
 
-          final failedIntegrationTests = await runFlutterIntegrationTest(
-            platformRootPackage(Platform.linux),
-            pathToTests: 'integration_test/development_test.dart',
-            platform: Platform.linux,
-          );
-          expect(failedIntegrationTests, 0);
+          if (slow) {
+            final failedIntegrationTests = await runFlutterIntegrationTest(
+              platformRootPackage(Platform.linux),
+              pathToTests: 'integration_test/development_test.dart',
+              platform: Platform.linux,
+            );
+            expect(failedIntegrationTests, 0);
+          }
         }
 
         test(
           '',
-          () => performTest(fast: true),
+          () => performTest(),
         );
 
         test(
           '(slow)',
-          () => performTest(fast: false),
+          () => performTest(slow: true),
           tags: ['linux'],
         );
       });

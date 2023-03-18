@@ -60,7 +60,7 @@ final linuxNativeDirectoryBundle = MasonBundle.fromJson(<String, dynamic>{
   "description":
       "A brick generating the linux native directory of a Rapid project.",
   "version": "0.1.0",
-  "environment": {"mason": ">=0.1.0-dev.41 <0.1.0"},
+  "environment": {"mason": ">=0.1.0-dev.47 <0.1.0"},
   "readme": {
     "path": "README.md",
     "data": "IyBsaW51eF9uYXRpdmVfZGlyZWN0b3J5CgpUT0RPCg==",

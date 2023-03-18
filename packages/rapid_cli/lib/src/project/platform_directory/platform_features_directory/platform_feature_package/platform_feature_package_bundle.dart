@@ -130,7 +130,7 @@ final platformFeaturePackageBundle = MasonBundle.fromJson(<String, dynamic>{
   "description":
       "A brick generating a platform custom feature package of a Rapid project.",
   "version": "0.1.0",
-  "environment": {"mason": ">=0.1.0-dev.41 <0.1.0"},
+  "environment": {"mason": ">=0.1.0-dev.47 <0.1.0"},
   "readme": {
     "path": "README.md",
     "data": "IyBwbGF0Zm9ybV9mZWF0dXJlX3BhY2thZ2UKClRPRE8K",

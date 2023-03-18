@@ -53,7 +53,7 @@ final platformNavigationPackageBundle = MasonBundle.fromJson(<String, dynamic>{
   "description":
       "A brick generating a platform navigation package of a Rapid project.",
   "version": "0.1.0",
-  "environment": {"mason": ">=0.1.0-dev.46 <0.1.0"},
+  "environment": {"mason": ">=0.1.0-dev.47 <0.1.0"},
   "readme": {
     "path": "README.md",
     "data": "IyBwbGF0Zm9ybV9uYXZpZ2F0aW9uX3BhY2thZ2UKClRPRE8K",

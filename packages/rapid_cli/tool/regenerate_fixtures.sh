@@ -6,7 +6,7 @@
 # Generates fresh fixtures projects used for e2e testing.
 cd test/e2e/fixtures
 
-echo "Generating fixture project without a platform activated ..."
+echo "Generating fixture project without a platform activated..."
 rm -r project_none
 mkdir project_none
 cd project_none
@@ -17,7 +17,7 @@ platforms=(android ios linux macos web windows)
 
 for platform in "${platforms[@]}"
 do
-    echo "Generating fixture projects with $platform activated ..."
+    echo "Generating fixture projects with $platform activated..."
     rm -r project_$platform
     mkdir project_$platform
     cd project_$platform

@@ -38,22 +38,16 @@ final dataTransferObjectBundle = MasonBundle.fromJson(<String, dynamic>{
   "name": "data_transfer_object",
   "description":
       "A brick generating a data transfer object of the infrastructure package of a Rapid project.",
-  "version": "0.1.0+1",
+  "version": "0.1.0",
   "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {
     "path": "README.md",
-    "data":
-        "IyBkYXRhX3RyYW5zZmVyX29iamVjdAoKQSBuZXcgYnJpY2sgY3JlYXRlZCB3aXRoIHRoZSBNYXNvbiBDTEkuCgpfR2VuZXJhdGVkIGJ5IFttYXNvbl1bMV0g8J+nsV8KCiMjIEdldHRpbmcgU3RhcnRlZCDwn5qACgpUaGlzIGlzIGEgc3RhcnRpbmcgcG9pbnQgZm9yIGEgbmV3IGJyaWNrLgpBIGZldyByZXNvdXJjZXMgdG8gZ2V0IHlvdSBzdGFydGVkIGlmIHRoaXMgaXMgeW91ciBmaXJzdCBicmljayB0ZW1wbGF0ZToKCi0gW09mZmljaWFsIE1hc29uIERvY3VtZW50YXRpb25dWzJdCi0gW0NvZGUgZ2VuZXJhdGlvbiB3aXRoIE1hc29uIEJsb2ddWzNdCi0gW1ZlcnkgR29vZCBMaXZlc3RyZWFtOiBGZWxpeCBBbmdlbG92IERlbW9zIE1hc29uXVs0XQoKWzFdOiBodHRwczovL2dpdGh1Yi5jb20vZmVsYW5nZWwvbWFzb24KWzJdOiBodHRwczovL2dpdGh1Yi5jb20vZmVsYW5nZWwvbWFzb24vdHJlZS9tYXN0ZXIvcGFja2FnZXMvbWFzb25fY2xpI3JlYWRtZQpbM106IGh0dHBzOi8vdmVyeWdvb2QudmVudHVyZXMvYmxvZy9jb2RlLWdlbmVyYXRpb24td2l0aC1tYXNvbgpbNF06IGh0dHBzOi8veW91dHUuYmUvRzRQVGpBNnRwVFUK",
+    "data": "IyBkYXRhX3RyYW5zZmVyX29iamVjdAoKVE9ETwo=",
     "type": "text"
   },
   "changelog": {
     "path": "CHANGELOG.md",
-    "data": "IyAwLjEuMCsxCgotIFRPRE86IERlc2NyaWJlIGluaXRpYWwgcmVsZWFzZS4K",
-    "type": "text"
-  },
-  "license": {
-    "path": "LICENSE",
-    "data": "VE9ETzogQWRkIHlvdXIgbGljZW5zZSBoZXJlLgo=",
+    "data": "IyAwLjEuMCsKCi0gVE9ETzogRGVzY3JpYmUgaW5pdGlhbCByZWxlYXNlLgo=",
     "type": "text"
   },
   "vars": {

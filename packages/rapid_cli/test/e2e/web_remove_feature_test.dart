@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,35 +27,6 @@ void main() {
       });
 
       test(
-        'web remove feature (fast)',
-        () async {
-          // Arrange
-          const featureName = 'foo_bar';
-          await setupProject(Platform.web);
-          await addFeature(featureName, platform: Platform.web);
-
-          // Act
-          final commandResult = await commandRunner.run(
-            ['web', 'remove', 'feature', featureName],
-          );
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          final platformDependentDirs = platformDirs(Platform.web);
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
-          verifyDoNotExist([featurePackage(featureName, Platform.web)]);
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'web remove feature',
         () async {
           // Arrange
@@ -73,17 +45,23 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs(Platform.web);
+          final featurePackages = [
+            featurePackage('app', Platform.web),
+            featurePackage('home_page', Platform.web),
+          ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentDirs,
+            ...platformDependentPackages(Platform.web),
+            ...featurePackages,
           ]);
-          verifyDoNotExist([featurePackage(featureName, Platform.web)]);
+          verifyDoNotExist([
+            featurePackage(featureName, Platform.web),
+          ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
-            featurePackage('app', Platform.web),
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.web),
+            ...featurePackages,
           ]);
         },
       );

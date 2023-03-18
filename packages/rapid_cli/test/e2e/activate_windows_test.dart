@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -25,9 +26,8 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'activate windows (fast)',
-        () async {
+      group('activate windows', () {
+        Future<void> performTest({required bool fast}) async {
           // Arrange
           await setupProject();
 
@@ -42,69 +42,49 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDirs(Platform.windows),
+          final platformPackages = platformDependentPackages(Platform.windows);
+          final featurePackages = [
             featurePackage('app', Platform.windows),
             featurePackage('home_page', Platform.windows),
-            featurePackage('routing', Platform.windows),
-          });
+          ];
+          verifyDoExist([
+            ...platformIndependentPackages,
+            ...platformPackages,
+            ...featurePackages,
+          ]);
           verifyDoNotExist(
-            allPlatformDirs.without(platformDirs(Platform.windows)),
-          );
-        },
-        tags: ['fast'],
-      );
-
-      test(
-        'activate windows',
-        () async {
-          // Arrange
-          await setupProject();
-
-          // Act
-          final commandResult = await commandRunner.run(
-            ['activate', 'windows'],
+            allPlatformDependentPackages.without(platformPackages),
           );
 
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDirs(Platform.windows),
-            featurePackage('app', Platform.windows),
-            featurePackage('home_page', Platform.windows),
-            featurePackage('routing', Platform.windows),
-          });
-          verifyDoNotExist(
-              allPlatformDirs.without(platformDirs(Platform.windows)));
-
-          verifyDoNotHaveTests({
-            domainPackage,
-            infrastructurePackage,
-            featurePackage('routing', Platform.windows),
-          });
-          await verifyTestsPassWith100PercentCoverage({
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
-            featurePackage('app', Platform.windows),
-            featurePackage('home_page', Platform.windows),
-            platformUiPackage(Platform.windows),
-          });
+          verifyDoNotHaveTests([
+            ...platformIndependentPackagesWithoutTests,
+            ...platformDependentPackagesWithoutTests(Platform.windows)
+          ]);
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.windows),
+            ...featurePackages,
+          ]);
 
           final failedIntegrationTests = await runFlutterIntegrationTest(
-            cwd: appPackage.path,
+            platformRootPackage(Platform.windows),
             pathToTests: 'integration_test/development_test.dart',
             platform: Platform.windows,
           );
           expect(failedIntegrationTests, 0);
-        },
-        tags: ['windows'],
-      );
+        }
+
+        test(
+          '',
+          () => performTest(fast: true),
+        );
+
+        test(
+          '(slow)',
+          () => performTest(fast: false),
+          tags: ['windows'],
+        );
+      });
     },
     timeout: const Timeout(Duration(minutes: 24)),
   );

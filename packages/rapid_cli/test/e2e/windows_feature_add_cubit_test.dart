@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -24,45 +25,6 @@ void main() {
       tearDown(() {
         Directory.current = cwd;
       });
-
-      test(
-        'windows feature add cubit (fast)',
-        () async {
-          // Arrange
-          await setupProject(Platform.windows);
-          final name = 'FooBar';
-          final featureName = 'home_page';
-
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            [
-              'windows',
-              'feature',
-              'add',
-              'cubit',
-              name,
-              '--feature-name',
-              featureName,
-            ],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDirs(Platform.windows),
-            ...cubitFiles(
-              name: name,
-              featureName: featureName,
-              platform: Platform.windows,
-            ),
-          });
-        },
-        tags: ['fast'],
-      );
 
       test(
         'windows feature add cubit',
@@ -90,9 +52,13 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
+          final appFeaturePackage = featurePackage('app', Platform.windows);
+          final feature = featurePackage(featureName, Platform.windows);
           verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDirs(Platform.windows),
+            ...platformDependentPackages(Platform.windows),
+            appFeaturePackage,
+            feature,
             ...cubitFiles(
               name: name,
               featureName: featureName,
@@ -100,10 +66,13 @@ void main() {
             ),
           });
 
-          await verifyTestsPass(
-            featurePackage(featureName, Platform.windows),
-            expectedCoverage: 83.33,
-          );
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.windows),
+            appFeaturePackage,
+          ]);
+          // TODO
+          await verifyTestsPass(feature, expectedCoverage: 83.33);
         },
       );
     },

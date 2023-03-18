@@ -106,60 +106,98 @@ Future<void> addFeature(String name, {required Platform platform}) async {
 
 late String projectName;
 
-/// The app package containing all setup.
-final appPackage = Directory(p.join('packages', projectName, projectName));
-
-/// The dependency injection package.
 final diPackage =
     Directory(p.join('packages', projectName, '${projectName}_di'));
 
-/// The domain package.
 final domainPackage =
     Directory(p.join('packages', projectName, '${projectName}_domain'));
 
-/// The infrastructure package.
 final infrastructurePackage =
     Directory(p.join('packages', projectName, '${projectName}_infrastructure'));
 
-/// The logging package.
 final loggingPackage =
     Directory(p.join('packages', projectName, '${projectName}_logging'));
 
-/// The directory of [platform] containing platform specific features.
 Directory platformDir(Platform platform) => Directory(
     p.join('packages', projectName, '${projectName}_${platform.name}'));
 
-/// The platform-independent ui package.
+Directory platformRootPackage(Platform platform) => Directory(
+      p.join(
+        'packages',
+        projectName,
+        '${projectName}_${platform.name}',
+        '${projectName}_${platform.name}',
+      ),
+    );
+
+Directory platformFeaturesDir(Platform platform) => Directory(
+      p.join(
+        'packages',
+        projectName,
+        '${projectName}_${platform.name}',
+        '${projectName}_${platform.name}_features',
+      ),
+    );
+
+Directory featurePackage(String name, Platform platform) => Directory(
+      p.join(
+        platformFeaturesDir(platform).path,
+        '${projectName}_${platform.name}_$name',
+      ),
+    );
+
+Directory platformNavigationPackage(Platform platform) => Directory(
+      p.join(
+        'packages',
+        projectName,
+        '${projectName}_${platform.name}',
+        '${projectName}_${platform.name}_navigation',
+      ),
+    );
+
 final uiPackage =
     Directory(p.join('packages', '${projectName}_ui', '${projectName}_ui'));
 
-/// The package of [feature] on platform.
-Directory featurePackage(String feature, Platform platform) => Directory(p.join(
-    platformDir(platform).path, '${projectName}_${platform.name}_$feature'));
+Directory platformUiPackage(Platform platform) => Directory(
+      p.join(
+        'packages',
+        '${projectName}_ui',
+        '${projectName}_ui_${platform.name}',
+      ),
+    );
 
-/// The ui package of [platform].
-Directory platformUiPackage(Platform platform) => Directory(p.join(
-    'packages', '${projectName}_ui', '${projectName}_ui_${platform.name}'));
-
-/// All platform independent packages.
-final platformIndependentPackages = [
-  appPackage,
+final platformIndependentPackagesWithTests = [
   diPackage,
-  domainPackage,
-  infrastructurePackage,
   loggingPackage,
-  uiPackage
+  uiPackage,
 ];
 
-/// All [platform]-dependent dirs of the test project.
-List<Directory> platformDirs(Platform platform) => [
-      Directory(p.join(appPackage.path, platform.name)),
-      platformDir(platform),
+final platformIndependentPackagesWithoutTests = [
+  domainPackage,
+  infrastructurePackage,
+];
+
+final platformIndependentPackages = [
+  ...platformIndependentPackagesWithTests,
+  ...platformIndependentPackagesWithoutTests,
+];
+
+List<Directory> platformDependentPackagesWithTests(Platform platform) => [
+      platformRootPackage(platform),
       platformUiPackage(platform),
     ];
 
-List<Directory> get allPlatformDirs => Platform.values
-    .map((e) => platformDirs(e))
+List<Directory> platformDependentPackagesWithoutTests(Platform platform) => [
+      platformNavigationPackage(platform),
+    ];
+
+List<Directory> platformDependentPackages(Platform platform) => [
+      ...platformDependentPackagesWithTests(platform),
+      ...platformDependentPackagesWithoutTests(platform),
+    ];
+
+List<Directory> get allPlatformDependentPackages => Platform.values
+    .map((e) => platformDependentPackages(e))
     .fold(<Directory>[], (prev, curr) => prev + curr).toList();
 
 List<File> blocFiles({
@@ -423,6 +461,36 @@ extension IterableX<E extends FileSystemEntity> on Iterable<E> {
   }
 }
 
+extension StringX on String {
+  List<Platform> toPlatforms() {
+    switch (this) {
+      case 'android':
+        return [Platform.android];
+      case 'ios':
+        return [Platform.ios];
+      case 'linux':
+        return [Platform.linux];
+      case 'macos':
+        return [Platform.macos];
+      case 'web':
+        return [Platform.web];
+      case 'windows':
+        return [Platform.windows];
+      case 'mobile':
+        return [Platform.android, Platform.ios];
+      case 'desktop':
+        return [Platform.linux, Platform.macos, Platform.windows];
+      case 'all':
+        return Platform.values;
+      default:
+        throw ArgumentError(
+          'Invalid String which does not represent a platform group.',
+          this,
+        );
+    }
+  }
+}
+
 /// Verifys wheter ALL [entities] exist on disk.
 void verifyDoExist(Iterable<FileSystemEntity> entities) {
   for (final entity in entities) {
@@ -616,11 +684,12 @@ Future<TestResult> _runFlutterTest({
 /// for the given [platform].
 ///
 /// Returns the amount of failed tests.
-Future<int> runFlutterIntegrationTest({
-  required String cwd,
+Future<int> runFlutterIntegrationTest(
+  Directory dir, {
   String pathToTests = '.',
   required Platform platform,
 }) async {
+  final cwd = dir.path;
   late final ProcessResult result;
   if (platform == Platform.web) {
     await Process.start(

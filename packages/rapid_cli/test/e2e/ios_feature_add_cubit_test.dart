@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -24,45 +25,6 @@ void main() {
       tearDown(() {
         Directory.current = cwd;
       });
-
-      test(
-        'ios feature add cubit (fast)',
-        () async {
-          // Arrange
-          await setupProject(Platform.ios);
-          final name = 'FooBar';
-          final featureName = 'home_page';
-
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            [
-              'ios',
-              'feature',
-              'add',
-              'cubit',
-              name,
-              '--feature-name',
-              featureName,
-            ],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDirs(Platform.ios),
-            ...cubitFiles(
-              name: name,
-              featureName: featureName,
-              platform: Platform.ios,
-            ),
-          });
-        },
-        tags: ['fast'],
-      );
 
       test(
         'ios feature add cubit',
@@ -90,9 +52,13 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
+          final appFeaturePackage = featurePackage('app', Platform.ios);
+          final feature = featurePackage(featureName, Platform.ios);
           verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDirs(Platform.ios),
+            ...platformDependentPackages(Platform.ios),
+            appFeaturePackage,
+            feature,
             ...cubitFiles(
               name: name,
               featureName: featureName,
@@ -100,10 +66,13 @@ void main() {
             ),
           });
 
-          await verifyTestsPass(
-            featurePackage(featureName, Platform.ios),
-            expectedCoverage: 83.33,
-          );
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.ios),
+            appFeaturePackage,
+          ]);
+          // TODO
+          await verifyTestsPass(feature, expectedCoverage: 83.33);
         },
       );
     },

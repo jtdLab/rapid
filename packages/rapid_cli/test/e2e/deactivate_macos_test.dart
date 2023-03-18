@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,31 +27,6 @@ void main() {
       });
 
       test(
-        'deactivate macos (fast)',
-        () async {
-          // Arrange
-          await setupProject(Platform.macos);
-
-          // Act
-          final commandResult = await commandRunner.run(
-            ['deactivate', 'macos'],
-          );
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist(allPlatformDirs);
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'deactivate macos',
         () async {
           // Arrange
@@ -70,16 +46,15 @@ void main() {
           verifyDoExist({
             ...platformIndependentPackages,
           });
-          verifyDoNotExist(allPlatformDirs);
+          verifyDoNotExist(allPlatformDependentPackages);
 
-          verifyDoNotHaveTests({domainPackage, infrastructurePackage});
+          verifyDoNotHaveTests(platformIndependentPackagesWithoutTests);
           await verifyTestsPassWith100PercentCoverage({
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
+            ...platformIndependentPackagesWithTests,
           });
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 6)),
+    timeout: const Timeout(Duration(minutes: 3)),
   );
 }

@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,39 +27,6 @@ void main() {
       });
 
       test(
-        'macos remove language (fast)',
-        () async {
-          // Arrange
-          const language = 'fr';
-          await setupProject(Platform.macos);
-          languageFiles('app', Platform.macos, [language]).create();
-          languageFiles('home_page', Platform.macos, [language]).create();
-
-          // Act
-          final commandResult = await commandRunner.run(
-            ['macos', 'remove', 'language', language],
-          );
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          final platformDependentDirs = platformDirs(Platform.macos);
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformDependentDirs,
-            ...languageFiles('home_page', Platform.macos, ['en']),
-          ]);
-          verifyDoNotExist({
-            ...languageFiles('home_page', Platform.macos, ['fr']),
-          });
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'macos remove language',
         () async {
           // Arrange
@@ -78,10 +46,14 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs(Platform.macos);
+          final featurePackages = [
+            featurePackage('app', Platform.macos),
+            featurePackage('home_page', Platform.macos),
+          ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentDirs,
+            ...platformDependentPackages(Platform.macos),
+            ...featurePackages,
             ...languageFiles('home_page', Platform.macos, ['en']),
           ]);
           verifyDoNotExist({
@@ -89,10 +61,9 @@ void main() {
           });
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
-            featurePackage('app', Platform.macos),
-            featurePackage('home_page', Platform.macos),
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.macos),
+            ...featurePackages,
           ]);
         },
       );

@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -24,45 +25,6 @@ void main() {
       tearDown(() {
         Directory.current = cwd;
       });
-
-      test(
-        'web feature add bloc (fast)',
-        () async {
-          // Arrange
-          await setupProject(Platform.web);
-          final name = 'FooBar';
-          final featureName = 'home_page';
-
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            [
-              'web',
-              'feature',
-              'add',
-              'bloc',
-              name,
-              '--feature-name',
-              featureName,
-            ],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDirs(Platform.web),
-            ...blocFiles(
-              name: name,
-              featureName: featureName,
-              platform: Platform.web,
-            ),
-          });
-        },
-        tags: ['fast'],
-      );
 
       test(
         'web feature add bloc',
@@ -90,9 +52,13 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
+          final appFeaturePackage = featurePackage('app', Platform.web);
+          final feature = featurePackage(featureName, Platform.web);
           verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDirs(Platform.web),
+            ...platformDependentPackages(Platform.web),
+            appFeaturePackage,
+            feature,
             ...blocFiles(
               name: name,
               featureName: featureName,
@@ -100,10 +66,13 @@ void main() {
             ),
           });
 
-          await verifyTestsPass(
-            featurePackage(featureName, Platform.web),
-            expectedCoverage: 78.57,
-          );
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.web),
+            appFeaturePackage,
+          ]);
+          // TODO
+          await verifyTestsPass(feature, expectedCoverage: 78.57);
         },
       );
     },

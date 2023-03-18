@@ -1,8 +1,9 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -25,7 +26,7 @@ void main() {
       });
 
       test(
-        'domain add value_object (fast)',
+        'domain add value_object',
         () async {
           // Arrange
           await setupProject();
@@ -54,7 +55,6 @@ void main() {
             ...valueObjectFiles(name: name, outputDir: outputDir),
           });
         },
-        tags: ['fast'],
       );
     },
     timeout: const Timeout(Duration(minutes: 4)),

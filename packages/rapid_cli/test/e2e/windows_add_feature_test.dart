@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,35 +27,6 @@ void main() {
       });
 
       test(
-        'windows add feature (fast)',
-        () async {
-          // Arrange
-          const featureName = 'my_feature';
-          await setupProject(Platform.windows);
-
-          // Act
-          final commandResult = await commandRunner.run(
-            ['windows', 'add', 'feature', featureName],
-          );
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          final platformDependentDirs = platformDirs(Platform.windows);
-          final featureDir = featurePackage(featureName, Platform.windows);
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformDependentDirs,
-            featureDir,
-          ]);
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'windows add feature',
         () async {
           // Arrange
@@ -72,23 +44,25 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs(Platform.windows);
-          final featureDir = featurePackage(featureName, Platform.windows);
+          final featurePackages = [
+            featurePackage('app', Platform.windows),
+            featurePackage('home_page', Platform.windows),
+            featurePackage(featureName, Platform.windows),
+          ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-            featureDir,
+            ...platformDependentPackages(Platform.windows),
+            ...featurePackages,
           ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
-            featurePackage('app', Platform.windows),
-            featureDir,
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.windows),
+            ...featurePackages,
           ]);
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 4)),
+    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

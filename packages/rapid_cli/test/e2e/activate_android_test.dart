@@ -8,66 +8,6 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
-// TODO
-/* Future<void> _performTest(bool fast) async {
-  final dir = await getTempDir('activate_android${fast ? '_fast' : ''}');
-
-  // Arrange
-  await setupProjectNoPlatforms(dir);
-
-  await IOOverrides.runZoned(
-    () async {
-      print(Directory.current.path);
-      // Act
-      final commandRunner = RapidCommandRunner();
-      final commandResult = await commandRunner.run(
-        ['activate', 'android'],
-      );
-
-      // Assert
-      expect(commandResult, equals(ExitCode.success.code));
-
-      await verifyNoAnalyzerIssues();
-      await verifyNoFormattingIssues();
-
-      verifyDoExist({
-        ...platformIndependentPackages,
-        ...platformDirs(Platform.android),
-        featurePackage('app', Platform.android),
-        featurePackage('home_page', Platform.android),
-        featurePackage('routing', Platform.android),
-      });
-      verifyDoNotExist(
-        allPlatformDirs.without(platformDirs(Platform.android)),
-      );
-
-      if (!fast) {
-        verifyDoNotHaveTests({
-          domainPackage,
-          infrastructurePackage,
-          featurePackage('routing', Platform.android),
-        });
-        await verifyTestsPassWith100PercentCoverage({
-          ...platformIndependentPackages
-              .without({domainPackage, infrastructurePackage}),
-          featurePackage('app', Platform.android),
-          featurePackage('home_page', Platform.android),
-          platformUiPackage(Platform.android),
-        });
-
-        final failedIntegrationTests = await runFlutterIntegrationTest(
-          cwd: appPackage.path,
-          pathToTests: 'integration_test/development_test.dart',
-          platform: Platform.android,
-        );
-        expect(failedIntegrationTests, 0);
-      }
-    },
-    getCurrentDirectory: () => dir,
-  );
-}
- */
-
 void main() {
   group(
     'E2E',
@@ -86,9 +26,8 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'activate android (fast)',
-        () async {
+      group('activate android', () {
+        Future<void> performTest({required bool fast}) async {
           // Arrange
           await setupProject();
 
@@ -103,69 +42,49 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDirs(Platform.android),
+          final platformPackages = platformDependentPackages(Platform.android);
+          final featurePackages = [
             featurePackage('app', Platform.android),
             featurePackage('home_page', Platform.android),
-            featurePackage('routing', Platform.android),
-          });
+          ];
+          verifyDoExist([
+            ...platformIndependentPackages,
+            ...platformPackages,
+            ...featurePackages,
+          ]);
           verifyDoNotExist(
-            allPlatformDirs.without(platformDirs(Platform.android)),
-          );
-        },
-        tags: ['fast'],
-      );
-
-      test(
-        'activate android',
-        () async {
-          // Arrange
-          await setupProject();
-
-          // Act
-          final commandResult = await commandRunner.run(
-            ['activate', 'android'],
+            allPlatformDependentPackages.without(platformPackages),
           );
 
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDirs(Platform.android),
-            featurePackage('app', Platform.android),
-            featurePackage('home_page', Platform.android),
-            featurePackage('routing', Platform.android),
-          });
-          verifyDoNotExist(
-              allPlatformDirs.without(platformDirs(Platform.android)));
-
-          verifyDoNotHaveTests({
-            domainPackage,
-            infrastructurePackage,
-            featurePackage('routing', Platform.android),
-          });
-          await verifyTestsPassWith100PercentCoverage({
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
-            featurePackage('app', Platform.android),
-            featurePackage('home_page', Platform.android),
-            platformUiPackage(Platform.android),
-          });
+          verifyDoNotHaveTests([
+            ...platformIndependentPackagesWithoutTests,
+            ...platformDependentPackagesWithoutTests(Platform.android)
+          ]);
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.android),
+            ...featurePackages,
+          ]);
 
           final failedIntegrationTests = await runFlutterIntegrationTest(
-            cwd: appPackage.path,
+            platformRootPackage(Platform.android),
             pathToTests: 'integration_test/development_test.dart',
             platform: Platform.android,
           );
           expect(failedIntegrationTests, 0);
-        },
-        tags: ['android'],
-      );
+        }
+
+        test(
+          '',
+          () => performTest(fast: true),
+        );
+
+        test(
+          '(slow)',
+          () => performTest(fast: false),
+          tags: ['android'],
+        );
+      });
     },
     timeout: const Timeout(Duration(minutes: 24)),
   );

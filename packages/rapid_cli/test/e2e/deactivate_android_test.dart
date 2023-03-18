@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,31 +27,6 @@ void main() {
       });
 
       test(
-        'deactivate android (fast)',
-        () async {
-          // Arrange
-          await setupProject(Platform.android);
-
-          // Act
-          final commandResult = await commandRunner.run(
-            ['deactivate', 'android'],
-          );
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist(allPlatformDirs);
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'deactivate android',
         () async {
           // Arrange
@@ -70,12 +46,11 @@ void main() {
           verifyDoExist({
             ...platformIndependentPackages,
           });
-          verifyDoNotExist(allPlatformDirs);
+          verifyDoNotExist(allPlatformDependentPackages);
 
-          verifyDoNotHaveTests({domainPackage, infrastructurePackage});
+          verifyDoNotHaveTests(platformIndependentPackagesWithoutTests);
           await verifyTestsPassWith100PercentCoverage({
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
+            ...platformIndependentPackagesWithTests,
           });
         },
       );

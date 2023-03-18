@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
-import 'dart:io';
 
 part 'dart_cli.dart';
 part 'flutter_cli.dart';

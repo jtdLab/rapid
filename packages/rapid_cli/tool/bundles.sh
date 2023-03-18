@@ -1,10 +1,9 @@
 #!/bin/bash
 
 # Run from packages/rapid_cli
-# sh tool/rebundle_templates.sh
+# sh tool/bundles.sh
 
-# Rebundles all mason templates and ships the fresh to rapid_cli package.
-
+# Rebundles all mason templates and ships the fresh bundles to rapid_cli package.
 # (name, location, destination) 
 templates=(
     "arb_file templates/arb_file lib/src/project/platform_directory/platform_features_directory/platform_feature_package"

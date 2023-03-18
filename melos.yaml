@@ -34,9 +34,43 @@ scripts:
        - Requires `node` (can be installed via Brew on macOS).
 
   format:
-    run: melos exec -- "dart format . --fix"
+    run: |
+      dart format packages/rapid --fix && \
+      dart format packages/rapid_cli/bin --fix && \
+      dart format packages/rapid_cli/lib --fix && \
+      dart format packages/rapid_cli/test --fix
     description: Format the project
 
   analyze:
-    run: melos exec -- "flutter analyze"
+    run: |
+      flutter analyze packages/rapid && \
+      flutter analyze packages/rapid_cli/bin && \
+      flutter analyze packages/rapid_cli/lib && \
+      flutter analyze packages/apid_cli/test
     description: Analyze the project
+
+  fix:
+    exec: dart fix --apply
+    description: Apply code fixes
+
+  fix:dry:
+    exec: dart fix --dry-run
+    description: Code fixes in dry mode
+
+  dev:deploy:
+    exec: dart pub global activate --source path .
+    description: Locale activate rapid_cli for development.
+    packageFilters:
+      scope: "rapid_cli"
+
+  tool:bundles:
+    exec: sh tool/bundles.sh
+    description: Regenerate fresh bundles from templates.
+    packageFilters:
+      scope: "rapid_cli"
+
+  tool:fixtures:
+    exec: sh tool/fixtures.sh
+    description: Regenerate fresh fixtures for e2e testing.
+    packageFilters:
+      scope: "rapid_cli"

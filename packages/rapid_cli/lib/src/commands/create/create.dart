@@ -170,7 +170,7 @@ class CreateCommand extends Command<int>
         () async {
           final outputDir = super.outputDir;
           final project = _project(path: outputDir);
-          if (!project.isEmpty) {
+          if (project.exists() && !project.isEmpty) {
             _logger
               ..info('')
               ..err('Output directory must be empty.');

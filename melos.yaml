@@ -57,11 +57,29 @@ scripts:
     exec: dart fix --dry-run
     description: Code fixes in dry mode
 
-  deploy:dev:
+  dev:activate:
     exec: dart pub global activate --source path .
-    description: Locale activate rapid_cli for development.
+    description: Locally activate rapid_cli for development.
     packageFilters:
       scope: "rapid_cli"
+
+  dev:create:
+    run: | 
+      rm -r packages/rapid_cli/tmp && \
+      rapid create foo_bar -o packages/rapid_cli/tmp --ios
+    description: Run rapid create for tinkering with single platform.
+
+  dev:create:none:
+    run: | 
+      rm -r packages/rapid_cli/tmp && \
+      rapid create foo_bar -o packages/rapid_cli/tmp
+    description: Run rapid create for tinkering with no platform.
+
+  dev:create:all:
+    run: | 
+      rm -r packages/rapid_cli/tmp && \
+      rapid create foo_bar -o packages/rapid_cli/tmp --all
+    description: Run rapid create for tinkering with all platforms.
 
   tool:bundles:
     exec: sh tool/bundles.sh

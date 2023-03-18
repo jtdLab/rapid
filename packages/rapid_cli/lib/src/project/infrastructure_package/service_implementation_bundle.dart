@@ -24,22 +24,16 @@ final serviceImplementationBundle = MasonBundle.fromJson(<String, dynamic>{
   "name": "service_implementation",
   "description":
       "A brick generating a service implementation of the infrastructure package of a Rapid project.",
-  "version": "0.1.0+1",
+  "version": "0.1.0",
   "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {
     "path": "README.md",
-    "data":
-        "IyBzZXJ2aWNlX2ltcGxlbWVudGF0aW9uCgpBIG5ldyBicmljayBjcmVhdGVkIHdpdGggdGhlIE1hc29uIENMSS4KCl9HZW5lcmF0ZWQgYnkgW21hc29uXVsxXSDwn6exXwoKIyMgR2V0dGluZyBTdGFydGVkIPCfmoAKClRoaXMgaXMgYSBzdGFydGluZyBwb2ludCBmb3IgYSBuZXcgYnJpY2suCkEgZmV3IHJlc291cmNlcyB0byBnZXQgeW91IHN0YXJ0ZWQgaWYgdGhpcyBpcyB5b3VyIGZpcnN0IGJyaWNrIHRlbXBsYXRlOgoKLSBbT2ZmaWNpYWwgTWFzb24gRG9jdW1lbnRhdGlvbl1bMl0KLSBbQ29kZSBnZW5lcmF0aW9uIHdpdGggTWFzb24gQmxvZ11bM10KLSBbVmVyeSBHb29kIExpdmVzdHJlYW06IEZlbGl4IEFuZ2Vsb3YgRGVtb3MgTWFzb25dWzRdCgpbMV06IGh0dHBzOi8vZ2l0aHViLmNvbS9mZWxhbmdlbC9tYXNvbgpbMl06IGh0dHBzOi8vZ2l0aHViLmNvbS9mZWxhbmdlbC9tYXNvbi90cmVlL21hc3Rlci9wYWNrYWdlcy9tYXNvbl9jbGkjcmVhZG1lClszXTogaHR0cHM6Ly92ZXJ5Z29vZC52ZW50dXJlcy9ibG9nL2NvZGUtZ2VuZXJhdGlvbi13aXRoLW1hc29uCls0XTogaHR0cHM6Ly95b3V0dS5iZS9HNFBUakE2dHBUVQo=",
+    "data": "IyBzZXJ2aWNlX2ltcGxlbWVudGF0aW9uCgpUT0RPCg==",
     "type": "text"
   },
   "changelog": {
     "path": "CHANGELOG.md",
-    "data": "IyAwLjEuMCsxCgotIFRPRE86IERlc2NyaWJlIGluaXRpYWwgcmVsZWFzZS4K",
-    "type": "text"
-  },
-  "license": {
-    "path": "LICENSE",
-    "data": "VE9ETzogQWRkIHlvdXIgbGljZW5zZSBoZXJlLgo=",
+    "data": "IyAwLjEuMAoKLSBUT0RPOiBEZXNjcmliZSBpbml0aWFsIHJlbGVhc2UuCg==",
     "type": "text"
   },
   "vars": {

@@ -1,0 +1,45 @@
+name: platform_app_feature_package
+description: A brick generating a platform app package of a Rapid project.
+
+version: 0.1.0
+
+environment:
+  mason: ">=0.1.0-dev.41 <0.1.0"
+
+# Variables specify dynamic values that your brick depends on.
+# Zero or more variables can be specified for a given brick.
+# Each variable has:
+#  * a type (string, number, boolean, enum, or array)
+#  * an optional short description
+#  * an optional default value
+#  * an optional list of default values (array only)
+#  * an optional prompt phrase used when asking for the variable
+#  * a list of values (enums only)
+vars:
+  project_name:
+    type: string
+    description: The project name
+  example:
+    type: boolean
+    description: Wheter the project contains example features and their tests
+  android:
+    type: boolean
+    description: The project supports the Android platform
+  ios:
+    type: boolean
+    description: The project supports the iOS platform
+  web:
+    type: boolean
+    description: The project supports the Web platform
+  linux:
+    type: boolean
+    description: The project supports the Linux platform
+  macos:
+    type: boolean
+    description: The project supports the macOS platform
+  windows:
+    type: boolean
+    description: The project supports the Windows platform
+  default_language:
+    type: string
+    description: The default language of the feature

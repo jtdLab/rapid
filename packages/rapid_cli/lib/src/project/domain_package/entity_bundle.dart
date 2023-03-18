@@ -35,7 +35,7 @@ final entityBundle = MasonBundle.fromJson(<String, dynamic>{
   "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {
     "path": "README.md",
-    "data": "IyBlbnRpdHkKClRPRE8=",
+    "data": "IyBlbnRpdHkKClRPRE8K",
     "type": "text"
   },
   "changelog": {

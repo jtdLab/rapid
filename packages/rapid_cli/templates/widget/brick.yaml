@@ -1,0 +1,40 @@
+name: widget
+description: A brick generating a widget of a platform ui package of a Rapid project.
+
+version: 0.1.0
+
+environment:
+  mason: ">=0.1.0-dev <0.1.0"
+
+# Variables specify dynamic values that your brick depends on.
+# Zero or more variables can be specified for a given brick.
+# Each variable has:
+#  * a type (string, number, or boolean)
+#  * an optional short description
+#  * an optional default value
+#  * an optional prompt phrase used when asking for the variable.
+vars:
+  project_name:
+    type: string
+  name:
+    type: string
+  output_dir:
+    type: string
+  android:
+    type: boolean
+    description: Wheter is Android widget
+  ios:
+    type: boolean
+    description: Wheter is iOS widget
+  web:
+    type: boolean
+    description: Wheter is Web widget
+  linux:
+    type: boolean
+    description: Wheter is Linux widget
+  macos:
+    type: boolean
+    description: Wheter is macOS widget
+  windows:
+    type: boolean
+    description: Wheter is Windows widget

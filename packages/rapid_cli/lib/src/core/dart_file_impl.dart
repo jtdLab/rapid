@@ -81,7 +81,8 @@ int _compareExports(String a, String b) {
 }
 
 final _importRegExp = RegExp('import \'([a-z_/.:]+)\'( as [a-z]+)?;');
-final _exportRegExp = RegExp('export \'([a-z_/.:]+)\';');
+final _exportRegExp =
+    RegExp('export \'([a-z_/.:]+)\' (:?hide|show) [A-Z]+[A-z1-9]*;');
 
 class DartFileImpl extends FileImpl implements DartFile {
   DartFileImpl({
@@ -355,7 +356,8 @@ class DartFileImpl extends FileImpl implements DartFile {
   void removeExport(String export) {
     final contents = read();
 
-    final regExp = RegExp(r"export[\s]+\'" + export + r"\';");
+    final regExp = RegExp(
+        r"export[\s]+\'" + export + r"\' (:?hide|show) [A-Z]+[A-z1-9]*;");
     final match = regExp.firstMatch(contents);
     if (match == null) {
       return;

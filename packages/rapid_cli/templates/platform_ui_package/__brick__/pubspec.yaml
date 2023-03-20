@@ -134,8 +134,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   theme_tailor_annotation: ^1.0.3
-  yaru: ^0.5.3
-  yaru_icons: ^1.0.3
+  yaru: ^0.6.0
+  yaru_icons: ^1.0.4
   {{project_name}}_ui:
 
 dev_dependencies:
@@ -197,7 +197,7 @@ dependencies:
     sdk: flutter
   theme_tailor_annotation: ^1.0.3
   cupertino_icons: ^1.0.5
-  macos_ui: ^1.10.0
+  macos_ui: ^1.12.2
   {{project_name}}_ui:
 
 dev_dependencies:
@@ -318,7 +318,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   theme_tailor_annotation: ^1.0.3
-  fluent_ui: ^4.3.0
+  fluent_ui: ^4.4.1
   {{project_name}}_ui:
 
 dev_dependencies:

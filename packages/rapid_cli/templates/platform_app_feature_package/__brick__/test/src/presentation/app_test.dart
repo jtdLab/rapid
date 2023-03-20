@@ -63,19 +63,33 @@ void main() {
         contains(GlobalWidgetsLocalizations.delegate),
       );
       expect({{project_name.camelCase()}}App.supportedLocales, const [Locale('en')]);
-      expect({{project_name.camelCase()}}App.routeInformationParser, isA<DefaultRouteParser>());
       expect(
-        {{project_name.camelCase()}}App.routerDelegate,
-        isA<AutoRouterDelegate>()
+        {{project_name.camelCase()}}App.routerConfig,
+        isA<RouterConfig<UrlState>>()
             .having(
-              (delegate) => delegate.navigatorObservers,
-              'navigatorObservers',
-              routerObserverBuilder,
+              (routerConfig) => routerConfig.routeInformationParser,
+              'routeInformationParser',
+              isA<DefaultRouteParser>(),
             )
             .having(
-              (delegate) => delegate.controller,
-              'controller',
-              router,
+              (routerConfig) => routerConfig.routeInformationProvider,
+              'routeInformationProvider',
+              isA<AutoRouteInformationProvider>(),
+            )
+            .having(
+              (routerConfig) => routerConfig.routerDelegate,
+              'routerDelegate',
+              isA<AutoRouterDelegate>()
+                  .having(
+                    (delegate) => delegate.navigatorObservers,
+                    'navigatorObservers',
+                    routerObserverBuilder,
+                  )
+                  .having(
+                    (delegate) => delegate.controller,
+                    'controller',
+                    router,
+                  ),
             ),
       );
     });
@@ -108,24 +122,38 @@ void main() {
         {{project_name.camelCase()}}App.localizationsDelegates,
         contains(GlobalWidgetsLocalizations.delegate),
       );
-      expect({{project_name.camelCase()}}App.routeInformationParser, isA<DefaultRouteParser>());
       expect(
-        {{project_name.camelCase()}}App.routerDelegate,
-        isA<AutoRouterDelegate>()
+        {{project_name.camelCase()}}App.routerConfig,
+        isA<RouterConfig<UrlState>>()
             .having(
-              (delegate) => delegate.initialRoutes,
-              'initialRoutes',
-              equals(const [FakePageRouteInfo()]),
+              (routerConfig) => routerConfig.routeInformationParser,
+              'routeInformationParser',
+              isA<DefaultRouteParser>(),
             )
             .having(
-              (delegate) => delegate.navigatorObservers(),
-              'navigatorObservers',
-              equals([routerObserver]),
+              (routerConfig) => routerConfig.routeInformationProvider,
+              'routeInformationProvider',
+              isA<AutoRouteInformationProvider>(),
             )
             .having(
-              (delegate) => delegate.controller,
-              'controller',
-              router,
+              (routerConfig) => routerConfig.routerDelegate,
+              'routerDelegate',
+              isA<AutoRouterDelegate>()
+                  .having(
+                    (delegate) => delegate.initialRoutes,
+                    'initialRoutes',
+                    equals(const [FakePageRouteInfo()]),
+                  )
+                  .having(
+                    (delegate) => delegate.navigatorObservers(),
+                    'navigatorObservers',
+                    equals([routerObserver]),
+                  )
+                  .having(
+                    (delegate) => delegate.controller,
+                    'controller',
+                    router,
+                  ),
             ),
       );
       expect({{project_name.camelCase()}}App.themeMode, ThemeMode.dark);
@@ -197,19 +225,33 @@ void main() {
         contains(GlobalWidgetsLocalizations.delegate),
       );
       expect({{project_name.camelCase()}}App.supportedLocales, const [Locale('en')]);
-      expect({{project_name.camelCase()}}App.routeInformationParser, isA<DefaultRouteParser>());
       expect(
-        {{project_name.camelCase()}}App.routerDelegate,
-        isA<AutoRouterDelegate>()
+        {{project_name.camelCase()}}App.routerConfig,
+        isA<RouterConfig<UrlState>>()
             .having(
-              (delegate) => delegate.navigatorObservers,
-              'navigatorObservers',
-              routerObserverBuilder,
+              (routerConfig) => routerConfig.routeInformationParser,
+              'routeInformationParser',
+              isA<DefaultRouteParser>(),
             )
             .having(
-              (delegate) => delegate.controller,
-              'controller',
-              router,
+              (routerConfig) => routerConfig.routeInformationProvider,
+              'routeInformationProvider',
+              isA<AutoRouteInformationProvider>(),
+            )
+            .having(
+              (routerConfig) => routerConfig.routerDelegate,
+              'routerDelegate',
+              isA<AutoRouterDelegate>()
+                  .having(
+                    (delegate) => delegate.navigatorObservers,
+                    'navigatorObservers',
+                    routerObserverBuilder,
+                  )
+                  .having(
+                    (delegate) => delegate.controller,
+                    'controller',
+                    router,
+                  ),
             ),
       );
     });
@@ -242,24 +284,38 @@ void main() {
         {{project_name.camelCase()}}App.localizationsDelegates,
         contains(GlobalWidgetsLocalizations.delegate),
       );
-      expect({{project_name.camelCase()}}App.routeInformationParser, isA<DefaultRouteParser>());
       expect(
-        {{project_name.camelCase()}}App.routerDelegate,
-        isA<AutoRouterDelegate>()
+        {{project_name.camelCase()}}App.routerConfig,
+        isA<RouterConfig<UrlState>>()
             .having(
-              (delegate) => delegate.initialRoutes,
-              'initialRoutes',
-              equals(const [FakePageRouteInfo()]),
+              (routerConfig) => routerConfig.routeInformationParser,
+              'routeInformationParser',
+              isA<DefaultRouteParser>(),
             )
             .having(
-              (delegate) => delegate.navigatorObservers(),
-              'navigatorObservers',
-              equals([routerObserver]),
+              (routerConfig) => routerConfig.routeInformationProvider,
+              'routeInformationProvider',
+              isA<AutoRouteInformationProvider>(),
             )
             .having(
-              (delegate) => delegate.controller,
-              'controller',
-              router,
+              (routerConfig) => routerConfig.routerDelegate,
+              'routerDelegate',
+              isA<AutoRouterDelegate>()
+                  .having(
+                    (delegate) => delegate.initialRoutes,
+                    'initialRoutes',
+                    equals(const [FakePageRouteInfo()]),
+                  )
+                  .having(
+                    (delegate) => delegate.navigatorObservers(),
+                    'navigatorObservers',
+                    equals([routerObserver]),
+                  )
+                  .having(
+                    (delegate) => delegate.controller,
+                    'controller',
+                    router,
+                  ),
             ),
       );
       expect({{project_name.camelCase()}}App.brightness, Brightness.dark);
@@ -331,19 +387,33 @@ void main() {
         contains(GlobalWidgetsLocalizations.delegate),
       );
       expect({{project_name.camelCase()}}App.supportedLocales, const [Locale('en')]);
-      expect({{project_name.camelCase()}}App.routeInformationParser, isA<DefaultRouteParser>());
       expect(
-        {{project_name.camelCase()}}App.routerDelegate,
-        isA<AutoRouterDelegate>()
+        {{project_name.camelCase()}}App.routerConfig,
+        isA<RouterConfig<UrlState>>()
             .having(
-              (delegate) => delegate.navigatorObservers,
-              'navigatorObservers',
-              routerObserverBuilder,
+              (routerConfig) => routerConfig.routeInformationParser,
+              'routeInformationParser',
+              isA<DefaultRouteParser>(),
             )
             .having(
-              (delegate) => delegate.controller,
-              'controller',
-              router,
+              (routerConfig) => routerConfig.routeInformationProvider,
+              'routeInformationProvider',
+              isA<AutoRouteInformationProvider>(),
+            )
+            .having(
+              (routerConfig) => routerConfig.routerDelegate,
+              'routerDelegate',
+              isA<AutoRouterDelegate>()
+                  .having(
+                    (delegate) => delegate.navigatorObservers,
+                    'navigatorObservers',
+                    routerObserverBuilder,
+                  )
+                  .having(
+                    (delegate) => delegate.controller,
+                    'controller',
+                    router,
+                  ),
             ),
       );
     });
@@ -376,24 +446,38 @@ void main() {
         {{project_name.camelCase()}}App.localizationsDelegates,
         contains(GlobalWidgetsLocalizations.delegate),
       );
-      expect({{project_name.camelCase()}}App.routeInformationParser, isA<DefaultRouteParser>());
       expect(
-        {{project_name.camelCase()}}App.routerDelegate,
-        isA<AutoRouterDelegate>()
+        {{project_name.camelCase()}}App.routerConfig,
+        isA<RouterConfig<UrlState>>()
             .having(
-              (delegate) => delegate.initialRoutes,
-              'initialRoutes',
-              equals(const [FakePageRouteInfo()]),
+              (routerConfig) => routerConfig.routeInformationParser,
+              'routeInformationParser',
+              isA<DefaultRouteParser>(),
             )
             .having(
-              (delegate) => delegate.navigatorObservers(),
-              'navigatorObservers',
-              equals([routerObserver]),
+              (routerConfig) => routerConfig.routeInformationProvider,
+              'routeInformationProvider',
+              isA<AutoRouteInformationProvider>(),
             )
             .having(
-              (delegate) => delegate.controller,
-              'controller',
-              router,
+              (routerConfig) => routerConfig.routerDelegate,
+              'routerDelegate',
+              isA<AutoRouterDelegate>()
+                  .having(
+                    (delegate) => delegate.initialRoutes,
+                    'initialRoutes',
+                    equals(const [FakePageRouteInfo()]),
+                  )
+                  .having(
+                    (delegate) => delegate.navigatorObservers(),
+                    'navigatorObservers',
+                    equals([routerObserver]),
+                  )
+                  .having(
+                    (delegate) => delegate.controller,
+                    'controller',
+                    router,
+                  ),
             ),
       );
       expect({{project_name.camelCase()}}App.themeMode, ThemeMode.dark);
@@ -465,19 +549,33 @@ void main() {
         contains(GlobalWidgetsLocalizations.delegate),
       );
       expect({{project_name.camelCase()}}App.supportedLocales, const [Locale('en')]);
-      expect({{project_name.camelCase()}}App.routeInformationParser, isA<DefaultRouteParser>());
       expect(
-        {{project_name.camelCase()}}App.routerDelegate,
-        isA<AutoRouterDelegate>()
+        {{project_name.camelCase()}}App.routerConfig,
+        isA<RouterConfig<UrlState>>()
             .having(
-              (delegate) => delegate.navigatorObservers,
-              'navigatorObservers',
-              routerObserverBuilder,
+              (routerConfig) => routerConfig.routeInformationParser,
+              'routeInformationParser',
+              isA<DefaultRouteParser>(),
             )
             .having(
-              (delegate) => delegate.controller,
-              'controller',
-              router,
+              (routerConfig) => routerConfig.routeInformationProvider,
+              'routeInformationProvider',
+              isA<AutoRouteInformationProvider>(),
+            )
+            .having(
+              (routerConfig) => routerConfig.routerDelegate,
+              'routerDelegate',
+              isA<AutoRouterDelegate>()
+                  .having(
+                    (delegate) => delegate.navigatorObservers,
+                    'navigatorObservers',
+                    routerObserverBuilder,
+                  )
+                  .having(
+                    (delegate) => delegate.controller,
+                    'controller',
+                    router,
+                  ),
             ),
       );
     });
@@ -510,24 +608,38 @@ void main() {
         {{project_name.camelCase()}}App.localizationsDelegates,
         contains(GlobalWidgetsLocalizations.delegate),
       );
-      expect({{project_name.camelCase()}}App.routeInformationParser, isA<DefaultRouteParser>());
       expect(
-        {{project_name.camelCase()}}App.routerDelegate,
-        isA<AutoRouterDelegate>()
+        {{project_name.camelCase()}}App.routerConfig,
+        isA<RouterConfig<UrlState>>()
             .having(
-              (delegate) => delegate.initialRoutes,
-              'initialRoutes',
-              equals(const [FakePageRouteInfo()]),
+              (routerConfig) => routerConfig.routeInformationParser,
+              'routeInformationParser',
+              isA<DefaultRouteParser>(),
             )
             .having(
-              (delegate) => delegate.navigatorObservers(),
-              'navigatorObservers',
-              equals([routerObserver]),
+              (routerConfig) => routerConfig.routeInformationProvider,
+              'routeInformationProvider',
+              isA<AutoRouteInformationProvider>(),
             )
             .having(
-              (delegate) => delegate.controller,
-              'controller',
-              router,
+              (routerConfig) => routerConfig.routerDelegate,
+              'routerDelegate',
+              isA<AutoRouterDelegate>()
+                  .having(
+                    (delegate) => delegate.initialRoutes,
+                    'initialRoutes',
+                    equals(const [FakePageRouteInfo()]),
+                  )
+                  .having(
+                    (delegate) => delegate.navigatorObservers(),
+                    'navigatorObservers',
+                    equals([routerObserver]),
+                  )
+                  .having(
+                    (delegate) => delegate.controller,
+                    'controller',
+                    router,
+                  ),
             ),
       );
       expect({{project_name.camelCase()}}App.brightness, Brightness.dark);
@@ -599,19 +711,33 @@ void main() {
         contains(GlobalWidgetsLocalizations.delegate),
       );
       expect({{project_name.camelCase()}}App.supportedLocales, const [Locale('en')]);
-      expect({{project_name.camelCase()}}App.routeInformationParser, isA<DefaultRouteParser>());
       expect(
-        {{project_name.camelCase()}}App.routerDelegate,
-        isA<AutoRouterDelegate>()
+        {{project_name.camelCase()}}App.routerConfig,
+        isA<RouterConfig<UrlState>>()
             .having(
-              (delegate) => delegate.navigatorObservers,
-              'navigatorObservers',
-              routerObserverBuilder,
+              (routerConfig) => routerConfig.routeInformationParser,
+              'routeInformationParser',
+              isA<DefaultRouteParser>(),
             )
             .having(
-              (delegate) => delegate.controller,
-              'controller',
-              router,
+              (routerConfig) => routerConfig.routeInformationProvider,
+              'routeInformationProvider',
+              isA<AutoRouteInformationProvider>(),
+            )
+            .having(
+              (routerConfig) => routerConfig.routerDelegate,
+              'routerDelegate',
+              isA<AutoRouterDelegate>()
+                  .having(
+                    (delegate) => delegate.navigatorObservers,
+                    'navigatorObservers',
+                    routerObserverBuilder,
+                  )
+                  .having(
+                    (delegate) => delegate.controller,
+                    'controller',
+                    router,
+                  ),
             ),
       );
     });
@@ -644,24 +770,38 @@ void main() {
         {{project_name.camelCase()}}App.localizationsDelegates,
         contains(GlobalWidgetsLocalizations.delegate),
       );
-      expect({{project_name.camelCase()}}App.routeInformationParser, isA<DefaultRouteParser>());
       expect(
-        {{project_name.camelCase()}}App.routerDelegate,
-        isA<AutoRouterDelegate>()
+        {{project_name.camelCase()}}App.routerConfig,
+        isA<RouterConfig<UrlState>>()
             .having(
-              (delegate) => delegate.initialRoutes,
-              'initialRoutes',
-              equals(const [FakePageRouteInfo()]),
+              (routerConfig) => routerConfig.routeInformationParser,
+              'routeInformationParser',
+              isA<DefaultRouteParser>(),
             )
             .having(
-              (delegate) => delegate.navigatorObservers(),
-              'navigatorObservers',
-              equals([routerObserver]),
+              (routerConfig) => routerConfig.routeInformationProvider,
+              'routeInformationProvider',
+              isA<AutoRouteInformationProvider>(),
             )
             .having(
-              (delegate) => delegate.controller,
-              'controller',
-              router,
+              (routerConfig) => routerConfig.routerDelegate,
+              'routerDelegate',
+              isA<AutoRouterDelegate>()
+                  .having(
+                    (delegate) => delegate.initialRoutes,
+                    'initialRoutes',
+                    equals(const [FakePageRouteInfo()]),
+                  )
+                  .having(
+                    (delegate) => delegate.navigatorObservers(),
+                    'navigatorObservers',
+                    equals([routerObserver]),
+                  )
+                  .having(
+                    (delegate) => delegate.controller,
+                    'controller',
+                    router,
+                  ),
             ),
       );
       expect({{project_name.camelCase()}}App.themeMode, ThemeMode.dark);
@@ -733,19 +873,33 @@ void main() {
         contains(GlobalWidgetsLocalizations.delegate),
       );
       expect({{project_name.camelCase()}}App.supportedLocales, const [Locale('en')]);
-      expect({{project_name.camelCase()}}App.routeInformationParser, isA<DefaultRouteParser>());
       expect(
-        {{project_name.camelCase()}}App.routerDelegate,
-        isA<AutoRouterDelegate>()
+        {{project_name.camelCase()}}App.routerConfig,
+        isA<RouterConfig<UrlState>>()
             .having(
-              (delegate) => delegate.navigatorObservers,
-              'navigatorObservers',
-              routerObserverBuilder,
+              (routerConfig) => routerConfig.routeInformationParser,
+              'routeInformationParser',
+              isA<DefaultRouteParser>(),
             )
             .having(
-              (delegate) => delegate.controller,
-              'controller',
-              router,
+              (routerConfig) => routerConfig.routeInformationProvider,
+              'routeInformationProvider',
+              isA<AutoRouteInformationProvider>(),
+            )
+            .having(
+              (routerConfig) => routerConfig.routerDelegate,
+              'routerDelegate',
+              isA<AutoRouterDelegate>()
+                  .having(
+                    (delegate) => delegate.navigatorObservers,
+                    'navigatorObservers',
+                    routerObserverBuilder,
+                  )
+                  .having(
+                    (delegate) => delegate.controller,
+                    'controller',
+                    router,
+                  ),
             ),
       );
     });
@@ -778,24 +932,38 @@ void main() {
         {{project_name.camelCase()}}App.localizationsDelegates,
         contains(GlobalWidgetsLocalizations.delegate),
       );
-      expect({{project_name.camelCase()}}App.routeInformationParser, isA<DefaultRouteParser>());
       expect(
-        {{project_name.camelCase()}}App.routerDelegate,
-        isA<AutoRouterDelegate>()
+        {{project_name.camelCase()}}App.routerConfig,
+        isA<RouterConfig<UrlState>>()
             .having(
-              (delegate) => delegate.initialRoutes,
-              'initialRoutes',
-              equals(const [FakePageRouteInfo()]),
+              (routerConfig) => routerConfig.routeInformationParser,
+              'routeInformationParser',
+              isA<DefaultRouteParser>(),
             )
             .having(
-              (delegate) => delegate.navigatorObservers(),
-              'navigatorObservers',
-              equals([routerObserver]),
+              (routerConfig) => routerConfig.routeInformationProvider,
+              'routeInformationProvider',
+              isA<AutoRouteInformationProvider>(),
             )
             .having(
-              (delegate) => delegate.controller,
-              'controller',
-              router,
+              (routerConfig) => routerConfig.routerDelegate,
+              'routerDelegate',
+              isA<AutoRouterDelegate>()
+                  .having(
+                    (delegate) => delegate.initialRoutes,
+                    'initialRoutes',
+                    equals(const [FakePageRouteInfo()]),
+                  )
+                  .having(
+                    (delegate) => delegate.navigatorObservers(),
+                    'navigatorObservers',
+                    equals([routerObserver]),
+                  )
+                  .having(
+                    (delegate) => delegate.controller,
+                    'controller',
+                    router,
+                  ),
             ),
       );
       expect({{project_name.camelCase()}}App.themeMode, ThemeMode.dark);

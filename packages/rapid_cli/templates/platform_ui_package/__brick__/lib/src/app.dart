@@ -8,8 +8,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     this.locale,
     Iterable<Locale>? supportedLocales,
     Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routeInformationParser,
-    this.routerDelegate,
+    this.routerConfig,
     this.themeMode,
     this.home,
   }) : _localizationsDelegates = localizationsDelegates,
@@ -20,8 +19,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     Locale? locale,
     required Iterable<Locale> supportedLocales,
     required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-    required RouteInformationParser<Object> routeInformationParser,
-    required RouterDelegate<Object> routerDelegate,
+    required RouterConfig<Object> routerConfig,
     ThemeMode? themeMode,
   }) = _{{project_name.pascalCase()}}App;
 
@@ -41,8 +39,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
-  final RouteInformationParser<Object>? routeInformationParser;
-  final RouterDelegate<Object>? routerDelegate;
+  final RouterConfig<Object>? routerConfig;
   ThemeData get lightTheme => ThemeData(extensions: lightExtensions);
   ThemeData get darkTheme => ThemeData(extensions: darkExtensions);
   final ThemeMode? themeMode;
@@ -54,9 +51,8 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
     super.key,
     super.locale,
     required Iterable<Locale> super.supportedLocales,
-    required super.localizationsDelegates,
-    required super.routeInformationParser,
-    required super.routerDelegate,
+    required Iterable<LocalizationsDelegate<dynamic>> super.localizationsDelegates,
+    required RouterConfig<Object> super.routerConfig,
     super.themeMode,
   }) : super._();
 
@@ -66,8 +62,7 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: routeInformationParser,
-      routerDelegate: routerDelegate,
+      routerConfig: routerConfig,
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,
@@ -108,8 +103,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     this.locale,
     Iterable<Locale>? supportedLocales,
     Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routeInformationParser,
-    this.routerDelegate,
+    this.routerConfig,
     this.brightness,
     this.home,
   }) : _localizationsDelegates = localizationsDelegates,
@@ -120,8 +114,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     Locale? locale,
     required Iterable<Locale> supportedLocales,
     required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-    required RouteInformationParser<Object> routeInformationParser,
-    required RouterDelegate<Object> routerDelegate,
+    required RouterConfig<Object> routerConfig,
     Brightness? brightness,
   }) = _{{project_name.pascalCase()}}App;
 
@@ -141,8 +134,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
-  final RouteInformationParser<Object>? routeInformationParser;
-  final RouterDelegate<Object>? routerDelegate;
+  final RouterConfig<Object>? routerConfig;
   final Brightness? brightness;
   final Widget? home;
 
@@ -169,9 +161,8 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
     super.key,
     super.locale,
     required Iterable<Locale> super.supportedLocales,
-    required super.localizationsDelegates,
-    required super.routeInformationParser,
-    required super.routerDelegate,
+    required Iterable<LocalizationsDelegate<dynamic>> super.localizationsDelegates,
+    required RouterConfig<Object> super.routerConfig,
     super.brightness,
   }) : super._();
 
@@ -181,8 +172,7 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: routeInformationParser,
-      routerDelegate: routerDelegate,
+      routerConfig: routerConfig,
       builder: _builder,
     );
   }
@@ -218,8 +208,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     this.locale,
     Iterable<Locale>? supportedLocales,
     Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routeInformationParser,
-    this.routerDelegate,
+    this.routerConfig,
     this.themeMode,
     this.home,
   }) : _localizationsDelegates = localizationsDelegates,
@@ -230,8 +219,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     Locale? locale,
     required Iterable<Locale> supportedLocales,
     required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-    required RouteInformationParser<Object> routeInformationParser,
-    required RouterDelegate<Object> routerDelegate,
+    required RouterConfig<Object> routerConfig,
     ThemeMode? themeMode,
   }) = _{{project_name.pascalCase()}}App;
 
@@ -251,8 +239,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
-  final RouteInformationParser<Object>? routeInformationParser;
-  final RouterDelegate<Object>? routerDelegate;
+  final RouterConfig<Object>? routerConfig;
   ThemeData get lightTheme => ThemeData(extensions: lightExtensions);
   ThemeData get darkTheme => ThemeData(extensions: darkExtensions);
   final ThemeMode? themeMode;
@@ -264,9 +251,8 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
     super.key,
     super.locale,
     required Iterable<Locale> super.supportedLocales,
-    required super.localizationsDelegates,
-    required super.routeInformationParser,
-    required super.routerDelegate,
+    required Iterable<LocalizationsDelegate<dynamic>> super.localizationsDelegates,
+    required RouterConfig<Object> super.routerConfig,
     super.themeMode,
   }) : super._();
 
@@ -276,8 +262,7 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: routeInformationParser,
-      routerDelegate: routerDelegate,
+      routerConfig: routerConfig,
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,
@@ -320,8 +305,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     this.locale,
     Iterable<Locale>? supportedLocales,
     Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routeInformationParser,
-    this.routerDelegate,
+    this.routerConfig,
     this.brightness,
     this.home,
   }) : _localizationsDelegates = localizationsDelegates,
@@ -332,8 +316,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     Locale? locale,
     required Iterable<Locale> supportedLocales,
     required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-    required RouteInformationParser<Object> routeInformationParser,
-    required RouterDelegate<Object> routerDelegate,
+    required RouterConfig<Object> routerConfig,
     Brightness? brightness,
   }) = _{{project_name.pascalCase()}}App;
 
@@ -353,8 +336,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
-  final RouteInformationParser<Object>? routeInformationParser;
-  final RouterDelegate<Object>? routerDelegate;
+  final RouterConfig<Object>? routerConfig;
   final Brightness? brightness;
   final Widget? home;
 
@@ -381,9 +363,8 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
     super.key,
     super.locale,
     required Iterable<Locale> super.supportedLocales,
-    required super.localizationsDelegates,
-    required super.routeInformationParser,
-    required super.routerDelegate,
+    required Iterable<LocalizationsDelegate<dynamic>> super.localizationsDelegates,
+    required RouterConfig<Object> super.routerConfig,
     super.brightness,
   }) : super._();
 
@@ -393,8 +374,10 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: routeInformationParser!,
-      routerDelegate: routerDelegate!,
+      // TODO: migrate to routerConfig https://github.com/macosui/macos_ui/issues/388
+      routeInformationProvider: routerConfig?.routeInformationProvider,
+      routerDelegate: routerConfig!.routerDelegate,
+      routeInformationParser: routerConfig!.routeInformationParser!,
       builder: _builder,
     );
   }
@@ -431,8 +414,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     this.locale,
     Iterable<Locale>? supportedLocales,
     Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routeInformationParser,
-    this.routerDelegate,
+    this.routerConfig,
     this.themeMode,
     this.home,
   }) : _localizationsDelegates = localizationsDelegates,
@@ -443,8 +425,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     Locale? locale,
     required Iterable<Locale> supportedLocales,
     required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-    required RouteInformationParser<Object> routeInformationParser,
-    required RouterDelegate<Object> routerDelegate,
+    required RouterConfig<Object> routerConfig,
     ThemeMode? themeMode,
   }) = _{{project_name.pascalCase()}}App;
 
@@ -464,8 +445,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
-  final RouteInformationParser<Object>? routeInformationParser;
-  final RouterDelegate<Object>? routerDelegate;
+  final RouterConfig<Object>? routerConfig;
   ThemeData get lightTheme => ThemeData(extensions: lightExtensions);
   ThemeData get darkTheme => ThemeData(extensions: darkExtensions);
   final ThemeMode? themeMode;
@@ -477,9 +457,8 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
     super.key,
     super.locale,
     required Iterable<Locale> super.supportedLocales,
-    required super.localizationsDelegates,
-    required super.routeInformationParser,
-    required super.routerDelegate,
+    required Iterable<LocalizationsDelegate<dynamic>> super.localizationsDelegates,
+    required RouterConfig<Object> super.routerConfig,
     super.themeMode,
   }) : super._();
 
@@ -489,8 +468,7 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: routeInformationParser,
-      routerDelegate: routerDelegate,
+      routerConfig: routerConfig,
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,
@@ -532,8 +510,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     this.locale,
     Iterable<Locale>? supportedLocales,
     Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routeInformationParser,
-    this.routerDelegate,
+    this.routerConfig,
     this.themeMode,
     this.home,
   }) : _localizationsDelegates = localizationsDelegates,
@@ -544,8 +521,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     Locale? locale,
     required Iterable<Locale> supportedLocales,
     required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-    required RouteInformationParser<Object> routeInformationParser,
-    required RouterDelegate<Object> routerDelegate,
+    required RouterConfig<Object> routerConfig,
     ThemeMode? themeMode,
   }) = _{{project_name.pascalCase()}}App;
 
@@ -565,8 +541,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
-  final RouteInformationParser<Object>? routeInformationParser;
-  final RouterDelegate<Object>? routerDelegate;
+  final RouterConfig<Object>? routerConfig;
   FluentThemeData get lightTheme => FluentThemeData(extensions: lightExtensions);
   FluentThemeData get darkTheme => FluentThemeData(extensions: darkExtensions);
   final ThemeMode? themeMode;
@@ -578,9 +553,8 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
     super.key,
     super.locale,
     required Iterable<Locale> super.supportedLocales,
-    required super.localizationsDelegates,
-    required super.routeInformationParser,
-    required super.routerDelegate,
+    required Iterable<LocalizationsDelegate<dynamic>> super.localizationsDelegates,
+    required RouterConfig<Object> super.routerConfig,
     super.themeMode,
   }) : super._();
 
@@ -590,8 +564,10 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: routeInformationParser,
-      routerDelegate: routerDelegate,
+      // TODO: migrate to routerConfig https://github.com/bdlukaa/fluent_ui/issues/781
+      routeInformationProvider: routerConfig?.routeInformationProvider,
+      routerDelegate: routerConfig?.routerDelegate,
+      routeInformationParser: routerConfig?.routeInformationParser,
       color: {{project_name.pascalCase()}}ColorTheme.light.secondary,
       theme: lightTheme,
       darkTheme: darkTheme,

@@ -66,21 +66,21 @@ scripts:
   dev:create:
     run: | 
       melos dev:activate
-      rm -r packages/rapid_cli/tmp && \
+      rm -r -f packages/rapid_cli/tmp && \
       rapid create foo_bar -o packages/rapid_cli/tmp --ios
     description: Run rapid create for tinkering with single platform.
 
   dev:create:none:
     run: | 
       melos dev:activate
-      rm -r packages/rapid_cli/tmp && \
+      rm -r -f packages/rapid_cli/tmp && \
       rapid create foo_bar -o packages/rapid_cli/tmp
     description: Run rapid create for tinkering with no platform.
 
   dev:create:all:
     run: | 
       melos dev:activate
-      rm -r packages/rapid_cli/tmp && \
+      rm -r -f packages/rapid_cli/tmp && \
       rapid create foo_bar -o packages/rapid_cli/tmp --all
     description: Run rapid create for tinkering with all platforms.
 

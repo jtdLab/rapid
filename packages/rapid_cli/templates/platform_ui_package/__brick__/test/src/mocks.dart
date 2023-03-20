@@ -29,7 +29,7 @@ class FakeRouterDelegate extends RouterDelegate<Object> {
   Future<void> setNewRoutePath(Object configuration) async {}
 }
 
-class FakeRouteInformationParser extends RouteInformationParser<Object> {
+{{#macos}}class FakeRouteInformationParser extends RouteInformationParser<Object> {
   @override
   Future<Object> parseRouteInformation(
     RouteInformation routeInformation,
@@ -37,3 +37,39 @@ class FakeRouteInformationParser extends RouteInformationParser<Object> {
     return 0;
   }
 }
+
+class FakeRouterConfig extends RouterConfig<Object> {
+  final RouteInformationParser<Object> _routeInformationParser;
+
+  FakeRouterConfig()
+      : _routeInformationParser = FakeRouteInformationParser(),
+        super(routerDelegate: FakeRouterDelegate());
+
+  @override
+  RouteInformationParser<Object>? get routeInformationParser =>
+      _routeInformationParser;
+}
+{{/macos}}{{#windows}}class FakeRouteInformationParser extends RouteInformationParser<Object> {
+  @override
+  Future<Object> parseRouteInformation(
+    RouteInformation routeInformation,
+  ) async {
+    return 0;
+  }
+}
+
+class FakeRouterConfig extends RouterConfig<Object> {
+  final RouteInformationParser<Object> _routeInformationParser;
+
+  FakeRouterConfig()
+      : _routeInformationParser = FakeRouteInformationParser(),
+        super(routerDelegate: FakeRouterDelegate());
+
+  @override
+  RouteInformationParser<Object>? get routeInformationParser =>
+      _routeInformationParser;
+}
+{{/windows}}{{^macos}}{{^windows}}class FakeRouterConfig extends RouterConfig<Object> {
+  FakeRouterConfig() : super(routerDelegate: FakeRouterDelegate());
+}
+{{/windows}}{{/macos}}

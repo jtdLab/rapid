@@ -2,6 +2,7 @@
 import 'package:{{project_name}}_android_{{name}}/src/presentation/l10n/l10n.dart';
 import 'package:{{project_name}}_ui_android/{{project_name}}_ui_android.dart';
 
+@RoutePage()
 class {{name.pascalCase()}} extends StatelessWidget {
   const {{name.pascalCase()}}({super.key});
 
@@ -20,6 +21,7 @@ class {{name.pascalCase()}} extends StatelessWidget {
 import 'package:{{project_name}}_ios_{{name}}/src/presentation/l10n/l10n.dart';
 import 'package:{{project_name}}_ui_ios/{{project_name}}_ui_ios.dart';
 
+@RoutePage()
 class {{name.pascalCase()}} extends StatelessWidget {
   const {{name.pascalCase()}}({super.key});
 
@@ -38,6 +40,7 @@ class {{name.pascalCase()}} extends StatelessWidget {
 import 'package:{{project_name}}_linux_{{name}}/src/presentation/l10n/l10n.dart';
 import 'package:{{project_name}}_ui_linux/{{project_name}}_ui_linux.dart';
 
+@RoutePage()
 class {{name.pascalCase()}} extends StatelessWidget {
   const {{name.pascalCase()}}({super.key});
 
@@ -56,6 +59,7 @@ class {{name.pascalCase()}} extends StatelessWidget {
 import 'package:{{project_name}}_macos_{{name}}/src/presentation/l10n/l10n.dart';
 import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';
 
+@RoutePage()
 class {{name.pascalCase()}} extends StatelessWidget {
   const {{name.pascalCase()}}({super.key});
 
@@ -80,6 +84,7 @@ class {{name.pascalCase()}} extends StatelessWidget {
 import 'package:{{project_name}}_ui_web/{{project_name}}_ui_web.dart';
 import 'package:{{project_name}}_web_{{name}}/src/presentation/l10n/l10n.dart';
 
+@RoutePage()
 class {{name.pascalCase()}} extends StatelessWidget {
   const {{name.pascalCase()}}({super.key});
 
@@ -98,6 +103,7 @@ class {{name.pascalCase()}} extends StatelessWidget {
 import 'package:{{project_name}}_ui_windows/{{project_name}}_ui_windows.dart';
 import 'package:{{project_name}}_windows_{{name}}/src/presentation/l10n/l10n.dart';
 
+@RoutePage()
 class {{name.pascalCase()}} extends StatelessWidget {
   const {{name.pascalCase()}}({super.key});
 

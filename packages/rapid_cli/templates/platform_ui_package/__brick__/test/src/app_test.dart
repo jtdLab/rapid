@@ -7,16 +7,14 @@ import 'mocks.dart';
   Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-  required RouteInformationParser<Object> routeInformationParser,
-  required RouterDelegate<Object> routerDelegate,
+  required RouterConfig<Object> routerConfig,
   ThemeMode? themeMode,
 }) {
   return {{project_name.pascalCase()}}App(
     locale: locale,
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
-    routeInformationParser: routeInformationParser,
-    routerDelegate: routerDelegate,
+    routerConfig: routerConfig,
     themeMode: themeMode,
   );
 }
@@ -41,13 +39,11 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final {{project_name.camelCase()}}App = _get{{project_name.pascalCase()}}App(
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
       );
 
       // Act
@@ -77,8 +73,7 @@ void main() {
           darkExtensions,
         ),
       );
-      expect(materialApp.routeInformationParser, routeInformationParser);
-      expect(materialApp.routerDelegate, routerDelegate);
+      expect(materialApp.routerConfig, routerConfig);
       expect(materialApp.home, null);
     });
   });
@@ -132,16 +127,14 @@ void main() {
   Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-  required RouteInformationParser<Object> routeInformationParser,
-  required RouterDelegate<Object> routerDelegate,
+  required RouterConfig<Object> routerConfig,
   Brightness? brightness,
 }) {
   return {{project_name.pascalCase()}}App(
     locale: locale,
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
-    routeInformationParser: routeInformationParser,
-    routerDelegate: routerDelegate,
+    routerConfig: routerConfig,
     brightness: brightness,
   );
 }
@@ -166,14 +159,12 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final {{project_name.camelCase()}}App = _get{{project_name.pascalCase()}}App(
         locale: const Locale('en'),
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
         brightness: Brightness.light,
       );
 
@@ -189,8 +180,7 @@ void main() {
         [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
       );
       expect(cupertinoApp.locale, const Locale('en'));
-      expect(cupertinoApp.routeInformationParser, routeInformationParser);
-      expect(cupertinoApp.routerDelegate, routerDelegate);
+      expect(cupertinoApp.routerConfig, routerConfig);
       expect(cupertinoApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
       expect(theme.data.extensions.values.toSet(), lightExtensions);
@@ -200,14 +190,12 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final {{project_name.camelCase()}}App = _get{{project_name.pascalCase()}}App(
         locale: const Locale('en'),
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
         brightness: Brightness.dark,
       );
 
@@ -223,8 +211,7 @@ void main() {
         [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
       );
       expect(cupertinoApp.locale, const Locale('en'));
-      expect(cupertinoApp.routeInformationParser, routeInformationParser);
-      expect(cupertinoApp.routerDelegate, routerDelegate);
+      expect(cupertinoApp.routerConfig, routerConfig);
       expect(cupertinoApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
       expect(theme.data.extensions.values.toSet(), darkExtensions);
@@ -298,16 +285,14 @@ void main() {
   Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-  required RouteInformationParser<Object> routeInformationParser,
-  required RouterDelegate<Object> routerDelegate,
+  required RouterConfig<Object> routerConfig,
   ThemeMode? themeMode,
 }) {
   return {{project_name.pascalCase()}}App(
     locale: locale,
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
-    routeInformationParser: routeInformationParser,
-    routerDelegate: routerDelegate,
+    routerConfig: routerConfig,
     themeMode: themeMode,
   );
 }
@@ -332,13 +317,11 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final {{project_name.camelCase()}}App = _get{{project_name.pascalCase()}}App(
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
       );
 
       // Act
@@ -368,8 +351,7 @@ void main() {
           darkExtensions,
         ),
       );
-      expect(materialApp.routeInformationParser, routeInformationParser);
-      expect(materialApp.routerDelegate, routerDelegate);
+      expect(materialApp.routerConfig, routerConfig);
       expect(materialApp.home, null);
     });
   });
@@ -423,16 +405,14 @@ void main() {
   Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-  required RouteInformationParser<Object> routeInformationParser,
-  required RouterDelegate<Object> routerDelegate,
+  required RouterConfig<Object> routerConfig,
   Brightness? brightness,
 }) {
   return {{project_name.pascalCase()}}App(
     locale: locale,
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
-    routeInformationParser: routeInformationParser,
-    routerDelegate: routerDelegate,
+    routerConfig: routerConfig,
     brightness: brightness,
   );
 }
@@ -457,14 +437,12 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final {{project_name.camelCase()}}App = _get{{project_name.pascalCase()}}App(
         locale: const Locale('en'),
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
         brightness: Brightness.light,
       );
 
@@ -480,8 +458,15 @@ void main() {
         [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
       );
       expect(macosApp.locale, const Locale('en'));
-      expect(macosApp.routeInformationParser, routeInformationParser);
-      expect(macosApp.routerDelegate, routerDelegate);
+      expect(
+        macosApp.routeInformationProvider,
+        routerConfig.routeInformationProvider,
+      );
+      expect(macosApp.routerDelegate, routerConfig.routerDelegate);
+      expect(
+        macosApp.routeInformationParser,
+        routerConfig.routeInformationParser,
+      );
       expect(macosApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
       expect(theme.data.extensions.values.toSet(), lightExtensions);
@@ -491,14 +476,12 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final {{project_name.camelCase()}}App = _get{{project_name.pascalCase()}}App(
         locale: const Locale('en'),
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
         brightness: Brightness.dark,
       );
 
@@ -514,8 +497,15 @@ void main() {
         [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
       );
       expect(macosApp.locale, const Locale('en'));
-      expect(macosApp.routeInformationParser, routeInformationParser);
-      expect(macosApp.routerDelegate, routerDelegate);
+      expect(
+        macosApp.routeInformationProvider,
+        routerConfig.routeInformationProvider,
+      );
+      expect(macosApp.routerDelegate, routerConfig.routerDelegate);
+      expect(
+        macosApp.routeInformationParser,
+        routerConfig.routeInformationParser,
+      );
       expect(macosApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
       expect(theme.data.extensions.values.toSet(), darkExtensions);
@@ -589,16 +579,14 @@ void main() {
   Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-  required RouteInformationParser<Object> routeInformationParser,
-  required RouterDelegate<Object> routerDelegate,
+  required RouterConfig<Object> routerConfig,
   ThemeMode? themeMode,
 }) {
   return {{project_name.pascalCase()}}App(
     locale: locale,
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
-    routeInformationParser: routeInformationParser,
-    routerDelegate: routerDelegate,
+    routerConfig: routerConfig,
     themeMode: themeMode,
   );
 }
@@ -623,13 +611,11 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final {{project_name.camelCase()}}App = _get{{project_name.pascalCase()}}App(
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
       );
 
       // Act
@@ -659,8 +645,7 @@ void main() {
           darkExtensions,
         ),
       );
-      expect(materialApp.routeInformationParser, routeInformationParser);
-      expect(materialApp.routerDelegate, routerDelegate);
+      expect(materialApp.routerConfig, routerConfig);
       expect(materialApp.home, null);
     });
   });
@@ -714,16 +699,14 @@ void main() {
   Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-  required RouteInformationParser<Object> routeInformationParser,
-  required RouterDelegate<Object> routerDelegate,
+  required RouterConfig<Object> routerConfig,
   ThemeMode? themeMode,
 }) {
   return {{project_name.pascalCase()}}App(
     locale: locale,
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
-    routeInformationParser: routeInformationParser,
-    routerDelegate: routerDelegate,
+    routerConfig: routerConfig,
     themeMode: themeMode,
   );
 }
@@ -748,13 +731,11 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final {{project_name.camelCase()}}App = _get{{project_name.pascalCase()}}App(
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
       );
 
       // Act
@@ -784,8 +765,15 @@ void main() {
           darkExtensions,
         ),
       );
-      expect(fluentApp.routeInformationParser, routeInformationParser);
-      expect(fluentApp.routerDelegate, routerDelegate);
+      expect(
+        fluentApp.routeInformationProvider,
+        routerConfig.routeInformationProvider,
+      );
+      expect(fluentApp.routerDelegate, routerConfig.routerDelegate);
+      expect(
+        fluentApp.routeInformationParser,
+        routerConfig.routeInformationParser,
+      );
       expect(fluentApp.home, null);
     });
   });

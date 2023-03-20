@@ -52,8 +52,7 @@ class _App extends App {
     return {{project_name.pascalCase()}}App(
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: router.defaultRouteParser(),
-      routerDelegate: router.delegate(
+      routerConfig: router.config(
         navigatorObservers: routerObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
@@ -90,8 +89,7 @@ class _AppTest extends App {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: router.defaultRouteParser(),
-      routerDelegate: router.delegate(
+      routerConfig: router.config(
         initialRoutes: initialRoutes,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
@@ -155,8 +153,7 @@ class _App extends App {
     return {{project_name.pascalCase()}}App(
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: router.defaultRouteParser(),
-      routerDelegate: router.delegate(
+      routerConfig: router.config(
         navigatorObservers: routerObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
@@ -193,8 +190,7 @@ class _AppTest extends App {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: router.defaultRouteParser(),
-      routerDelegate: router.delegate(
+      routerConfig: router.config(
         initialRoutes: initialRoutes,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
@@ -258,8 +254,7 @@ class _App extends App {
     return {{project_name.pascalCase()}}App(
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: router.defaultRouteParser(),
-      routerDelegate: router.delegate(
+      routerConfig: router.config(
         navigatorObservers: routerObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
@@ -296,8 +291,7 @@ class _AppTest extends App {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: router.defaultRouteParser(),
-      routerDelegate: router.delegate(
+      routerConfig: router.config(
         initialRoutes: initialRoutes,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
@@ -361,8 +355,7 @@ class _App extends App {
     return {{project_name.pascalCase()}}App(
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: router.defaultRouteParser(),
-      routerDelegate: router.delegate(
+      routerConfig: router.config(
         navigatorObservers: routerObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
@@ -399,8 +392,7 @@ class _AppTest extends App {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: router.defaultRouteParser(),
-      routerDelegate: router.delegate(
+      routerConfig: router.config(
         initialRoutes: initialRoutes,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
@@ -464,8 +456,7 @@ class _App extends App {
     return {{project_name.pascalCase()}}App(
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: router.defaultRouteParser(),
-      routerDelegate: router.delegate(
+      routerConfig: router.config(
         navigatorObservers: routerObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
@@ -502,8 +493,7 @@ class _AppTest extends App {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: router.defaultRouteParser(),
-      routerDelegate: router.delegate(
+      routerConfig: router.config(
         initialRoutes: initialRoutes,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
@@ -567,8 +557,7 @@ class _App extends App {
     return {{project_name.pascalCase()}}App(
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: router.defaultRouteParser(),
-      routerDelegate: router.delegate(
+      routerConfig: router.config(
         navigatorObservers: routerObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
@@ -605,8 +594,7 @@ class _AppTest extends App {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: router.defaultRouteParser(),
-      routerDelegate: router.delegate(
+      routerConfig: router.config(
         initialRoutes: initialRoutes,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]

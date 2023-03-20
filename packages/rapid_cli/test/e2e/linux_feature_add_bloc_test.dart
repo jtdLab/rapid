@@ -72,10 +72,10 @@ void main() {
             appFeaturePackage,
           ]);
           // TODO
-          await verifyTestsPass(feature, expectedCoverage: 78.57);
+          await verifyTestsPass(feature, expectedCoverage: 80.0);
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 4)),
+    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

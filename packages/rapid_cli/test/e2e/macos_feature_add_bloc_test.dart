@@ -72,7 +72,7 @@ void main() {
             appFeaturePackage,
           ]);
           // TODO
-          await verifyTestsPass(feature, expectedCoverage: 78.57);
+          await verifyTestsPass(feature, expectedCoverage: 83.33);
         },
       );
     },

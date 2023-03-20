@@ -10,7 +10,13 @@ Create well architectured Flutter Apps fast with Rapid CLI.
 ### Installing 🧑‍💻
 
 ```sh
-flutter pub global activate melos
+flutter pub global activate melos # rapid requires melos >=3.0.0
+```
+
+```sh
+# required to generated clean coverage reports
+flutter pub global activate test_cov_console
+flutter pub global activate remove_from_coverage
 ```
 
 ```sh

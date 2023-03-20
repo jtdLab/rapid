@@ -33,7 +33,7 @@ import 'package:rapid_cli/src/project/project.dart';
 ///  * [UiWindowsAddWidgetCommand]
 /// {@endtemplate}
 abstract class UiPlatformAddWidgetCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter, OutputDirGetter {
+    with OverridableArgResults, ClassNameGetter {
   /// {@macro ui_platform_add_widget_command}
   UiPlatformAddWidgetCommand({
     required Platform platform,
@@ -43,13 +43,7 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project,
-        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
-    argParser
-      ..addSeparator('')
-      ..addOutputDirOption(
-        help: 'The output directory relative to <platform_ui_package>/lib/ .',
-      );
-  }
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix;
 
   final Platform _platform;
   final Logger _logger;
@@ -80,14 +74,13 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
         _logger,
         () async {
           final name = super.className;
-          final outputDir = super.outputDir;
 
           _logger.info('Adding ${_platform.prettyName} Widget ...');
 
           try {
             await _project.addWidget(
               name: name,
-              outputDir: outputDir,
+              outputDir: '.', // TODO not needed param
               platform: _platform,
               logger: _logger,
             );

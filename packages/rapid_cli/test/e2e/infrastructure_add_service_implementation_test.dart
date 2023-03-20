@@ -25,7 +25,6 @@ void main() {
         Directory.current = cwd;
       });
 
-
       test(
         'infrastructure add service_implementation',
         () async {
@@ -82,10 +81,7 @@ void main() {
             ),
           });
 
-          await verifyTestsPass(
-            infrastructurePackage,
-            expectedCoverage: 0
-          );
+          await verifyTestsPass(infrastructurePackage, expectedCoverage: 0);
         },
       );
     },

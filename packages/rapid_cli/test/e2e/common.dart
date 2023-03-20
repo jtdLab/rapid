@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:io/io.dart' show copyPath;
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
@@ -97,6 +98,61 @@ Future<void> addFeature(String name, {required Platform platform}) async {
 
   await pubspecFile.create(recursive: true);
   await pubspecFile.writeAsString('name: $name');
+}
+
+Future<void> addPlatformUiPackageThemeExtensionsFile(
+  String widgetName, {
+  required Platform platform,
+}) async {
+  await File(
+    p.join(
+      platformUiPackage(platform).path,
+      'lib',
+      'src',
+      'theme_extensions.dart',
+    ),
+  ).writeAsString('''
+import 'package:project_${platform.name}_ui_${platform.name}/project_${platform.name}_ui_${platform.name}.dart';
+
+final lightExtensions = <ThemeExtension>[
+  ${projectName.pascalCase}ColorTheme.light,
+  ${projectName.pascalCase}ScaffoldTheme.light,
+  ${projectName.pascalCase}${widgetName.pascalCase}Theme.light,
+];
+
+final darkExtensions = <ThemeExtension>[
+  ${projectName.pascalCase}ColorTheme.dark,
+  ${projectName.pascalCase}ScaffoldTheme.dark,
+  ${projectName.pascalCase}${widgetName.pascalCase}Theme.dark,
+];
+''');
+}
+
+Future<void> addPlatformUiPackageBarrelFile(
+  String widgetName, {
+  required Platform platform,
+}) async {
+  await File(
+    p.join(
+      platformUiPackage(platform).path,
+      'lib',
+      '${projectName}_ui_${platform.name}.dart',
+    ),
+  ).writeAsString('''
+/// Widgets and themes implementing ${projectName.titleCase} design language for ${platform.prettyName}.
+///
+/// To use, import `package:project_${platform.name}_ui_${platform.name}/project_${platform.name}_ui_${platform.name}.dart`.
+library project_${platform.name}_ui_${platform.name};
+
+export 'package:flutter/material.dart' hide Router;
+export 'package:project_${platform.name}_ui/project_${platform.name}_ui.dart';
+
+export 'src/app.dart';
+export 'src/foo_bar.dart';
+export 'src/foo_bar_theme.dart';
+export 'src/scaffold.dart';
+export 'src/scaffold_theme.dart';
+''');
 }
 
 late String projectName;
@@ -352,7 +408,6 @@ List<File> serviceImplementationFiles({
 
 List<File> widgetFiles({
   required String name,
-  String? outputDir,
   required Platform platform,
 }) =>
     [
@@ -361,8 +416,6 @@ List<File> widgetFiles({
           platformUiPackage(platform).path,
           'lib',
           'src',
-          outputDir ?? '',
-          name.snakeCase,
           '${name.snakeCase}_theme.dart',
         ),
       ),
@@ -371,8 +424,6 @@ List<File> widgetFiles({
           platformUiPackage(platform).path,
           'lib',
           'src',
-          outputDir ?? '',
-          name.snakeCase,
           '${name.snakeCase}_theme.tailor.dart',
         ),
       ),
@@ -381,8 +432,6 @@ List<File> widgetFiles({
           platformUiPackage(platform).path,
           'lib',
           'src',
-          outputDir ?? '',
-          name.snakeCase,
           '${name.snakeCase}.dart',
         ),
       ),
@@ -391,8 +440,6 @@ List<File> widgetFiles({
           platformUiPackage(platform).path,
           'test',
           'src',
-          outputDir ?? '',
-          name.snakeCase,
           '${name.snakeCase}_theme_test.dart',
         ),
       ),
@@ -401,8 +448,6 @@ List<File> widgetFiles({
           platformUiPackage(platform).path,
           'test',
           'src',
-          outputDir ?? '',
-          name.snakeCase,
           '${name.snakeCase}_test.dart',
         ),
       ),

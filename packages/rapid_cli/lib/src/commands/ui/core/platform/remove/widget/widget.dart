@@ -30,7 +30,7 @@ import 'package:rapid_cli/src/project/project.dart';
 ///  * [UiWindowsRemoveWidgetCommand]
 /// {@endtemplate}
 abstract class UiPlatformRemoveWidgetCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter, DirGetter {
+    with OverridableArgResults, ClassNameGetter {
   /// {@macro ui_platform_remove_widget_command}
   UiPlatformRemoveWidgetCommand({
     required Platform platform,
@@ -38,13 +38,7 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
     required Project project,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project {
-    argParser
-      ..addSeparator('')
-      ..addDirOption(
-        help: 'The directory relative to <platform_ui_package>/lib/ .',
-      );
-  }
+        _project = project;
 
   final Platform _platform;
   final Logger _logger;
@@ -74,14 +68,13 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
         _logger,
         () async {
           final name = super.className;
-          final dir = super.dir;
 
           _logger.info('Removing ${_platform.prettyName} Widget ...');
 
           try {
             await _project.removeWidget(
               name: name,
-              dir: dir,
+              dir: '.', // TODO not needed
               platform: _platform,
               logger: _logger,
             );

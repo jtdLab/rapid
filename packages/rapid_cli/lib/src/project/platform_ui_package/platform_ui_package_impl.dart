@@ -2,9 +2,11 @@ import 'dart:io' as io;
 
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/directory.dart';
+import 'package:rapid_cli/src/core/file.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
@@ -29,15 +31,19 @@ class PlatformUiPackageImpl extends DartPackageImpl
           ),
         );
 
+  Widget _widget({required String name, required String dir}) =>
+      (widgetOverrides ?? Widget.new)(
+        name: name,
+        dir: dir,
+        platformUiPackage: this,
+      );
+
   ThemeExtensionsFile get _themeExtensionsFile =>
       (themeExtensionsFileOverrides ?? ThemeExtensionsFileImpl.new)(
         platformUiPackage: this,
       );
 
-  Widget _widget({required String name, required String dir}) =>
-      (widgetOverrides ?? Widget.new)(
-        name: name,
-        dir: dir,
+  BarrelFile get _barrelFile => (barrelFileOverrides ?? BarrelFile.new)(
         platformUiPackage: this,
       );
 
@@ -46,6 +52,9 @@ class PlatformUiPackageImpl extends DartPackageImpl
 
   @override
   ThemeExtensionsFileBuilder? themeExtensionsFileOverrides;
+
+  @override
+  BarrelFileBuilder? barrelFileOverrides;
 
   @override
   final Platform platform;
@@ -87,6 +96,9 @@ class PlatformUiPackageImpl extends DartPackageImpl
 
     await widget.create(logger: logger);
     _themeExtensionsFile.addThemeExtension(name);
+
+    _barrelFile.addExport('src/${name.snakeCase}.dart');
+    _barrelFile.addExport('src/${name.snakeCase}_theme.dart');
   }
 
   @override
@@ -102,6 +114,8 @@ class PlatformUiPackageImpl extends DartPackageImpl
 
     widget.delete(logger: logger);
     _themeExtensionsFile.removeThemeExtension(name);
+    _barrelFile.removeExport('src/${name.snakeCase}.dart');
+    _barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
   }
 }
 
@@ -116,23 +130,50 @@ class WidgetImpl extends FileSystemEntityCollection
         _name = name,
         _dir = dir,
         super([
-          Directory(
+          DartFile(
             path: p.join(
               platformUiPackage.path,
               'lib',
               'src',
               dir,
-              name.snakeCase,
             ),
+            name: name.snakeCase,
           ),
-          Directory(
+          DartFile(
+            path: p.join(
+              platformUiPackage.path,
+              'lib',
+              'src',
+              dir,
+            ),
+            name: '${name.snakeCase}_theme',
+          ),
+          DartFile(
+            path: p.join(
+              platformUiPackage.path,
+              'lib',
+              'src',
+              dir,
+            ),
+            name: '${name.snakeCase}_theme.tailor',
+          ),
+          DartFile(
             path: p.join(
               platformUiPackage.path,
               'test',
               'src',
               dir,
-              name.snakeCase,
             ),
+            name: '${name.snakeCase}_test',
+          ),
+          DartFile(
+            path: p.join(
+              platformUiPackage.path,
+              'test',
+              'src',
+              dir,
+            ),
+            name: '${name.snakeCase}_theme_test',
           ),
         ]);
 
@@ -186,8 +227,6 @@ class ThemeExtensionsFileImpl extends DartFileImpl
   void addThemeExtension(String name) {
     final projectName = _platformUiPackage.project.name();
 
-    addImport('${name.snakeCase}/${name.snakeCase}_theme.dart');
-
     final themes = ['light', 'dark']; // TODO read from file
 
     for (final theme in themes) {
@@ -211,8 +250,6 @@ class ThemeExtensionsFileImpl extends DartFileImpl
   void removeThemeExtension(String name) {
     final projectName = _platformUiPackage.project.name();
 
-    removeImport('${name.snakeCase}/${name.snakeCase}_theme.dart');
-
     final themes = ['light', 'dark']; // TODO read from file
 
     for (final theme in themes) {
@@ -228,4 +265,16 @@ class ThemeExtensionsFileImpl extends DartFileImpl
       }
     }
   }
+}
+
+class BarrelFileImpl extends DartFileImpl implements BarrelFile {
+  BarrelFileImpl({
+    required PlatformUiPackage platformUiPackage,
+  }) : super(
+          path: p.join(
+            platformUiPackage.path,
+            'lib',
+          ),
+          name: platformUiPackage.packageName(),
+        );
 }

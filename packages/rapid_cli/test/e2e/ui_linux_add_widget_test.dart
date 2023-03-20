@@ -33,31 +33,20 @@ void main() {
           await setupProject(Platform.linux);
           final name = 'FooBar';
 
-          // Act + Assert
+          // Act
           final commandResult = await commandRunner.run(
             ['ui', 'linux', 'add', 'widget', name],
           );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Act + Assert
-          final outputDir = 'foo';
-          final commandResultWithOutputDir = await commandRunner.run(
-            ['ui', 'linux', 'add', 'widget', name, '--output-dir', outputDir],
-          );
-          expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
           // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
           verifyDoExist({
             ...platformIndependentPackages,
             ...widgetFiles(name: name, platform: Platform.linux),
-            ...widgetFiles(
-              name: name,
-              outputDir: outputDir,
-              platform: Platform.linux,
-            ),
           });
 
           await verifyTestsPassWith100PercentCoverage({

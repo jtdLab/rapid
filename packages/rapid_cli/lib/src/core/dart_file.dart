@@ -24,6 +24,11 @@ abstract class DartFile implements File {
   /// Hint: The imports get sorted after adding
   void addImport(String import, {String? alias});
 
+  /// Adds [export].
+  ///
+  /// Hint: The exports get sorted after adding
+  void addExport(String export);
+
   /// Adds parameter with [paramName] to the [index]-th call to function with [functionToCallName] inside
   /// the body of function [functionName] and assigns it to [paramValue].
   ///
@@ -86,8 +91,11 @@ abstract class DartFile implements File {
     required String functionName,
   });
 
-  /// Removes [import]
+  /// Removes [import].
   void removeImport(String import);
+
+  /// Removes [export].
+  void removeExport(String export);
 
   /// Removes parameter with [paramName] from the [index]-th call to function with [functionToCallName] inside
   /// the body of function [functionName].

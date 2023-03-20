@@ -32,25 +32,16 @@ void main() {
           // Arrange
           await setupProject(Platform.ios);
           final name = 'FooBar';
-          final dir = 'foo';
           widgetFiles(name: name, platform: Platform.ios).create();
-          widgetFiles(name: name, outputDir: dir, platform: Platform.ios)
-              .create();
 
-          // Act + Assert
+          // Act
           final commandResult = await commandRunner.run(
             ['ui', 'ios', 'remove', 'widget', name],
           );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Act + Assert
-
-          final commandResultWithOutputDir = await commandRunner.run(
-            ['ui', 'ios', 'remove', 'widget', name, '--dir', dir],
-          );
-          expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
           // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
@@ -59,11 +50,6 @@ void main() {
           });
           verifyDoNotExist({
             ...widgetFiles(name: name, platform: Platform.ios),
-            ...widgetFiles(
-              name: name,
-              outputDir: dir,
-              platform: Platform.ios,
-            ),
           });
 
           await verifyTestsPassWith100PercentCoverage({

@@ -52,7 +52,7 @@ void main() {
           ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentPackages(Platform.android),
+            ...platformDependentPackages([Platform.android]),
             ...featurePackages,
             ...languageFiles('home_page', Platform.android, ['en']),
           ]);

@@ -67,7 +67,7 @@ class PlatformFeaturesDirectoryImpl extends DartPackageImpl
   }
 
   @override
-  Future<PlatformFeaturePackage> addFeature({
+  Future<void> addFeature({
     required String name,
     String? description,
     required String defaultLanguage,
@@ -87,12 +87,10 @@ class PlatformFeaturesDirectoryImpl extends DartPackageImpl
       languages: languages,
       logger: logger,
     );
-
-    return featurePackage;
   }
 
   @override
-  Future<PlatformFeaturePackage> removeFeature({
+  Future<void> removeFeature({
     required String name,
     required Logger logger,
   }) async {
@@ -114,8 +112,6 @@ class PlatformFeaturesDirectoryImpl extends DartPackageImpl
     }
 
     featurePackage.delete(logger: logger);
-
-    return featurePackage;
   }
 
   @override

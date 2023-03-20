@@ -52,7 +52,7 @@ void main() {
           ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentPackages(Platform.web),
+            ...platformDependentPackages([Platform.web]),
             ...featurePackages,
             ...languageFiles('home_page', Platform.web, ['en']),
           ]);

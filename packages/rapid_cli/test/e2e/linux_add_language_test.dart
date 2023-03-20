@@ -50,7 +50,7 @@ void main() {
           ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentPackages(Platform.linux),
+            ...platformDependentPackages([Platform.linux]),
             ...featurePackages,
             ...languageFiles('home_page', Platform.linux, ['en', language]),
           ]);

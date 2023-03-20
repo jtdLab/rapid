@@ -42,7 +42,7 @@ void main() {
               'add',
               'bloc',
               name,
-              '--feature-name',
+              '--feature',
               featureName,
             ],
           );
@@ -56,7 +56,7 @@ void main() {
           final feature = featurePackage(featureName, Platform.ios);
           verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentPackages(Platform.ios),
+            ...platformDependentPackages([Platform.ios]),
             appFeaturePackage,
             feature,
             ...blocFiles(

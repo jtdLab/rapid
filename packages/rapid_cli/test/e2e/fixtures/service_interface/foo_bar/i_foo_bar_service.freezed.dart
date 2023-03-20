@@ -15,61 +15,55 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$FooBarServiceMethod1Failure {
+mixin _$FooBarServiceMyMethodFailure {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() failureA,
-    required TResult Function() failureB,
+    required TResult Function() myFailure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? failureA,
-    TResult? Function()? failureB,
+    TResult? Function()? myFailure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? failureA,
-    TResult Function()? failureB,
+    TResult Function()? myFailure,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Method1FailureA value) failureA,
-    required TResult Function(_Method1FailureB value) failureB,
+    required TResult Function(_MyMethodMyFailure value) myFailure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Method1FailureA value)? failureA,
-    TResult? Function(_Method1FailureB value)? failureB,
+    TResult? Function(_MyMethodMyFailure value)? myFailure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Method1FailureA value)? failureA,
-    TResult Function(_Method1FailureB value)? failureB,
+    TResult Function(_MyMethodMyFailure value)? myFailure,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $FooBarServiceMethod1FailureCopyWith<$Res> {
-  factory $FooBarServiceMethod1FailureCopyWith(
-          FooBarServiceMethod1Failure value,
-          $Res Function(FooBarServiceMethod1Failure) then) =
-      _$FooBarServiceMethod1FailureCopyWithImpl<$Res,
-          FooBarServiceMethod1Failure>;
+abstract class $FooBarServiceMyMethodFailureCopyWith<$Res> {
+  factory $FooBarServiceMyMethodFailureCopyWith(
+          FooBarServiceMyMethodFailure value,
+          $Res Function(FooBarServiceMyMethodFailure) then) =
+      _$FooBarServiceMyMethodFailureCopyWithImpl<$Res,
+          FooBarServiceMyMethodFailure>;
 }
 
 /// @nodoc
-class _$FooBarServiceMethod1FailureCopyWithImpl<$Res,
-        $Val extends FooBarServiceMethod1Failure>
-    implements $FooBarServiceMethod1FailureCopyWith<$Res> {
-  _$FooBarServiceMethod1FailureCopyWithImpl(this._value, this._then);
+class _$FooBarServiceMyMethodFailureCopyWithImpl<$Res,
+        $Val extends FooBarServiceMyMethodFailure>
+    implements $FooBarServiceMyMethodFailureCopyWith<$Res> {
+  _$FooBarServiceMyMethodFailureCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -78,35 +72,35 @@ class _$FooBarServiceMethod1FailureCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_Method1FailureACopyWith<$Res> {
-  factory _$$_Method1FailureACopyWith(
-          _$_Method1FailureA value, $Res Function(_$_Method1FailureA) then) =
-      __$$_Method1FailureACopyWithImpl<$Res>;
+abstract class _$$_MyMethodMyFailureCopyWith<$Res> {
+  factory _$$_MyMethodMyFailureCopyWith(_$_MyMethodMyFailure value,
+          $Res Function(_$_MyMethodMyFailure) then) =
+      __$$_MyMethodMyFailureCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$_Method1FailureACopyWithImpl<$Res>
-    extends _$FooBarServiceMethod1FailureCopyWithImpl<$Res, _$_Method1FailureA>
-    implements _$$_Method1FailureACopyWith<$Res> {
-  __$$_Method1FailureACopyWithImpl(
-      _$_Method1FailureA _value, $Res Function(_$_Method1FailureA) _then)
+class __$$_MyMethodMyFailureCopyWithImpl<$Res>
+    extends _$FooBarServiceMyMethodFailureCopyWithImpl<$Res,
+        _$_MyMethodMyFailure> implements _$$_MyMethodMyFailureCopyWith<$Res> {
+  __$$_MyMethodMyFailureCopyWithImpl(
+      _$_MyMethodMyFailure _value, $Res Function(_$_MyMethodMyFailure) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$_Method1FailureA implements _Method1FailureA {
-  const _$_Method1FailureA();
+class _$_MyMethodMyFailure implements _MyMethodMyFailure {
+  const _$_MyMethodMyFailure();
 
   @override
   String toString() {
-    return 'FooBarServiceMethod1Failure.failureA()';
+    return 'FooBarServiceMyMethodFailure.myFailure()';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_Method1FailureA);
+        (other.runtimeType == runtimeType && other is _$_MyMethodMyFailure);
   }
 
   @override
@@ -115,30 +109,27 @@ class _$_Method1FailureA implements _Method1FailureA {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() failureA,
-    required TResult Function() failureB,
+    required TResult Function() myFailure,
   }) {
-    return failureA();
+    return myFailure();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? failureA,
-    TResult? Function()? failureB,
+    TResult? Function()? myFailure,
   }) {
-    return failureA?.call();
+    return myFailure?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? failureA,
-    TResult Function()? failureB,
+    TResult Function()? myFailure,
     required TResult orElse(),
   }) {
-    if (failureA != null) {
-      return failureA();
+    if (myFailure != null) {
+      return myFailure();
     }
     return orElse();
   }
@@ -146,404 +137,32 @@ class _$_Method1FailureA implements _Method1FailureA {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_Method1FailureA value) failureA,
-    required TResult Function(_Method1FailureB value) failureB,
+    required TResult Function(_MyMethodMyFailure value) myFailure,
   }) {
-    return failureA(this);
+    return myFailure(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Method1FailureA value)? failureA,
-    TResult? Function(_Method1FailureB value)? failureB,
+    TResult? Function(_MyMethodMyFailure value)? myFailure,
   }) {
-    return failureA?.call(this);
+    return myFailure?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Method1FailureA value)? failureA,
-    TResult Function(_Method1FailureB value)? failureB,
+    TResult Function(_MyMethodMyFailure value)? myFailure,
     required TResult orElse(),
   }) {
-    if (failureA != null) {
-      return failureA(this);
+    if (myFailure != null) {
+      return myFailure(this);
     }
     return orElse();
   }
 }
 
-abstract class _Method1FailureA implements FooBarServiceMethod1Failure {
-  const factory _Method1FailureA() = _$_Method1FailureA;
-}
-
-/// @nodoc
-abstract class _$$_Method1FailureBCopyWith<$Res> {
-  factory _$$_Method1FailureBCopyWith(
-          _$_Method1FailureB value, $Res Function(_$_Method1FailureB) then) =
-      __$$_Method1FailureBCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$_Method1FailureBCopyWithImpl<$Res>
-    extends _$FooBarServiceMethod1FailureCopyWithImpl<$Res, _$_Method1FailureB>
-    implements _$$_Method1FailureBCopyWith<$Res> {
-  __$$_Method1FailureBCopyWithImpl(
-      _$_Method1FailureB _value, $Res Function(_$_Method1FailureB) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$_Method1FailureB implements _Method1FailureB {
-  const _$_Method1FailureB();
-
-  @override
-  String toString() {
-    return 'FooBarServiceMethod1Failure.failureB()';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_Method1FailureB);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() failureA,
-    required TResult Function() failureB,
-  }) {
-    return failureB();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? failureA,
-    TResult? Function()? failureB,
-  }) {
-    return failureB?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? failureA,
-    TResult Function()? failureB,
-    required TResult orElse(),
-  }) {
-    if (failureB != null) {
-      return failureB();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Method1FailureA value) failureA,
-    required TResult Function(_Method1FailureB value) failureB,
-  }) {
-    return failureB(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Method1FailureA value)? failureA,
-    TResult? Function(_Method1FailureB value)? failureB,
-  }) {
-    return failureB?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Method1FailureA value)? failureA,
-    TResult Function(_Method1FailureB value)? failureB,
-    required TResult orElse(),
-  }) {
-    if (failureB != null) {
-      return failureB(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _Method1FailureB implements FooBarServiceMethod1Failure {
-  const factory _Method1FailureB() = _$_Method1FailureB;
-}
-
-/// @nodoc
-mixin _$FooBarServiceMethod2Failure {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() failureA,
-    required TResult Function() failureB,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? failureA,
-    TResult? Function()? failureB,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? failureA,
-    TResult Function()? failureB,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Method2FailureA value) failureA,
-    required TResult Function(_Method2FailureB value) failureB,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Method2FailureA value)? failureA,
-    TResult? Function(_Method2FailureB value)? failureB,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Method2FailureA value)? failureA,
-    TResult Function(_Method2FailureB value)? failureB,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $FooBarServiceMethod2FailureCopyWith<$Res> {
-  factory $FooBarServiceMethod2FailureCopyWith(
-          FooBarServiceMethod2Failure value,
-          $Res Function(FooBarServiceMethod2Failure) then) =
-      _$FooBarServiceMethod2FailureCopyWithImpl<$Res,
-          FooBarServiceMethod2Failure>;
-}
-
-/// @nodoc
-class _$FooBarServiceMethod2FailureCopyWithImpl<$Res,
-        $Val extends FooBarServiceMethod2Failure>
-    implements $FooBarServiceMethod2FailureCopyWith<$Res> {
-  _$FooBarServiceMethod2FailureCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-}
-
-/// @nodoc
-abstract class _$$_Method2FailureACopyWith<$Res> {
-  factory _$$_Method2FailureACopyWith(
-          _$_Method2FailureA value, $Res Function(_$_Method2FailureA) then) =
-      __$$_Method2FailureACopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$_Method2FailureACopyWithImpl<$Res>
-    extends _$FooBarServiceMethod2FailureCopyWithImpl<$Res, _$_Method2FailureA>
-    implements _$$_Method2FailureACopyWith<$Res> {
-  __$$_Method2FailureACopyWithImpl(
-      _$_Method2FailureA _value, $Res Function(_$_Method2FailureA) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$_Method2FailureA implements _Method2FailureA {
-  const _$_Method2FailureA();
-
-  @override
-  String toString() {
-    return 'FooBarServiceMethod2Failure.failureA()';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_Method2FailureA);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() failureA,
-    required TResult Function() failureB,
-  }) {
-    return failureA();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? failureA,
-    TResult? Function()? failureB,
-  }) {
-    return failureA?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? failureA,
-    TResult Function()? failureB,
-    required TResult orElse(),
-  }) {
-    if (failureA != null) {
-      return failureA();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Method2FailureA value) failureA,
-    required TResult Function(_Method2FailureB value) failureB,
-  }) {
-    return failureA(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Method2FailureA value)? failureA,
-    TResult? Function(_Method2FailureB value)? failureB,
-  }) {
-    return failureA?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Method2FailureA value)? failureA,
-    TResult Function(_Method2FailureB value)? failureB,
-    required TResult orElse(),
-  }) {
-    if (failureA != null) {
-      return failureA(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _Method2FailureA implements FooBarServiceMethod2Failure {
-  const factory _Method2FailureA() = _$_Method2FailureA;
-}
-
-/// @nodoc
-abstract class _$$_Method2FailureBCopyWith<$Res> {
-  factory _$$_Method2FailureBCopyWith(
-          _$_Method2FailureB value, $Res Function(_$_Method2FailureB) then) =
-      __$$_Method2FailureBCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$_Method2FailureBCopyWithImpl<$Res>
-    extends _$FooBarServiceMethod2FailureCopyWithImpl<$Res, _$_Method2FailureB>
-    implements _$$_Method2FailureBCopyWith<$Res> {
-  __$$_Method2FailureBCopyWithImpl(
-      _$_Method2FailureB _value, $Res Function(_$_Method2FailureB) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$_Method2FailureB implements _Method2FailureB {
-  const _$_Method2FailureB();
-
-  @override
-  String toString() {
-    return 'FooBarServiceMethod2Failure.failureB()';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_Method2FailureB);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() failureA,
-    required TResult Function() failureB,
-  }) {
-    return failureB();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? failureA,
-    TResult? Function()? failureB,
-  }) {
-    return failureB?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? failureA,
-    TResult Function()? failureB,
-    required TResult orElse(),
-  }) {
-    if (failureB != null) {
-      return failureB();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Method2FailureA value) failureA,
-    required TResult Function(_Method2FailureB value) failureB,
-  }) {
-    return failureB(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Method2FailureA value)? failureA,
-    TResult? Function(_Method2FailureB value)? failureB,
-  }) {
-    return failureB?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Method2FailureA value)? failureA,
-    TResult Function(_Method2FailureB value)? failureB,
-    required TResult orElse(),
-  }) {
-    if (failureB != null) {
-      return failureB(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _Method2FailureB implements FooBarServiceMethod2Failure {
-  const factory _Method2FailureB() = _$_Method2FailureB;
+abstract class _MyMethodMyFailure implements FooBarServiceMyMethodFailure {
+  const factory _MyMethodMyFailure() = _$_MyMethodMyFailure;
 }

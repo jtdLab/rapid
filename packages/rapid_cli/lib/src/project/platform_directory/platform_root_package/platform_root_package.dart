@@ -34,13 +34,13 @@ abstract class PlatformRootPackage
 
   Set<String> supportedLanguages();
 
-  Future<void> registerFeaturePackage(
-    PlatformFeaturePackage featurePackage, {
+  Future<void> registerFeature({
+    required String packageName,
     required Logger logger,
   });
 
-  Future<void> unregisterFeaturePackage(
-    PlatformFeaturePackage featurePackage, {
+  Future<void> unregisterFeature({
+    required String packageName,
     required Logger logger,
   });
 }
@@ -129,11 +129,13 @@ abstract class LocalizationsDelegatesFile implements DartFile {
 
   Set<String> supportedLocales();
 
-  void addLocalizationsDelegate(PlatformFeaturePackage featurePackage);
+  /// Adds localizations delegate of feature with [packageName].
+  void addLocalizationsDelegate(String packageName);
 
   void addSupportedLocale(String locale);
 
-  void removeLocalizationsDelegate(PlatformFeaturePackage featurePackage);
+  /// Removes localizations delegate of feature with [packageName].
+  void removeLocalizationsDelegate(String packageName);
 
   void removeSupportedLocale(String locale);
 }
@@ -156,9 +158,9 @@ abstract class InjectionFile implements DartFile {
         rootPackage: rootPackage,
       );
 
-  /// Adds [featurePackage] to the injection file.
-  void addFeaturePackage(PlatformFeaturePackage featurePackage);
+  /// Adds feature with [packageName] to the injection file.
+  void addFeaturePackage(String packageName);
 
-  /// Removes [featurePackage] from the injection file.
-  void removeFeaturePackage(PlatformFeaturePackage featurePackage);
+  /// Removes feature with [packageName] from the injection file.
+  void removeFeaturePackage(String packageName);
 }

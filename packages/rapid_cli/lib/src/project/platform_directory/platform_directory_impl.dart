@@ -58,7 +58,7 @@ abstract class PlatformDirectoryImpl extends DartPackageImpl
   Set<String> supportedLanguages() {
     final rootPackageSupportedLanguages = rootPackage.supportedLanguages();
 
-    if (DeepCollectionEquality.unordered().equals(
+    if (!DeepCollectionEquality.unordered().equals(
       rootPackageSupportedLanguages,
       featuresDirectory.supportedLanguages(),
     )) {
@@ -74,7 +74,7 @@ abstract class PlatformDirectoryImpl extends DartPackageImpl
     required String description,
     required Logger logger,
   }) async {
-    final featurePackage = await featuresDirectory.addFeature(
+    await featuresDirectory.addFeature(
       name: name,
       description: description,
       defaultLanguage: defaultLanguage(),
@@ -82,7 +82,9 @@ abstract class PlatformDirectoryImpl extends DartPackageImpl
       logger: logger,
     );
 
-    await rootPackage.registerFeaturePackage(featurePackage, logger: logger);
+    await rootPackage.registerFeature(
+        packageName: '${project.name()}_${platform.name}_$name',
+        logger: logger);
   }
 
   @override
@@ -90,10 +92,11 @@ abstract class PlatformDirectoryImpl extends DartPackageImpl
     required String name,
     required Logger logger,
   }) async {
-    final featurePackage =
-        await featuresDirectory.removeFeature(name: name, logger: logger);
+    await rootPackage.unregisterFeature(
+        packageName: '${project.name()}_${platform.name}_$name',
+        logger: logger);
 
-    await rootPackage.unregisterFeaturePackage(featurePackage, logger: logger);
+    await featuresDirectory.removeFeature(name: name, logger: logger);
   }
 
   @mustCallSuper

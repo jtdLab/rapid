@@ -52,27 +52,27 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
       _localizationsDelegatesFile.supportedLocales();
 
   @override
-  Future<void> registerFeaturePackage(
-    PlatformFeaturePackage featurePackage, {
+  Future<void> registerFeature({
+    required String packageName,
     required Logger logger,
   }) async {
-    pubspecFile.setDependency(featurePackage.packageName());
-    _localizationsDelegatesFile.addLocalizationsDelegate(featurePackage);
+    pubspecFile.setDependency(packageName);
+    _localizationsDelegatesFile.addLocalizationsDelegate(packageName);
 
-    pubspecFile.setDependency(featurePackage.packageName());
-    _injectionFile.addFeaturePackage(featurePackage);
+    pubspecFile.setDependency(packageName);
+    _injectionFile.addFeaturePackage(packageName);
   }
 
   @override
-  Future<void> unregisterFeaturePackage(
-    PlatformFeaturePackage featurePackage, {
+  Future<void> unregisterFeature({
+    required String packageName,
     required Logger logger,
   }) async {
-    pubspecFile.removeDependency(featurePackage.packageName());
-    _localizationsDelegatesFile.removeLocalizationsDelegate(featurePackage);
+    pubspecFile.removeDependency(packageName);
+    _localizationsDelegatesFile.removeLocalizationsDelegate(packageName);
 
-    pubspecFile.removeDependency(featurePackage.packageName());
-    _injectionFile.removeFeaturePackage(featurePackage);
+    pubspecFile.removeDependency(packageName);
+    _injectionFile.removeFeaturePackage(packageName);
   }
 }
 
@@ -202,8 +202,7 @@ class LocalizationsDelegatesFileImpl extends DartFileImpl
           .toSet();
 
   @override
-  void addLocalizationsDelegate(PlatformFeaturePackage featurePackage) {
-    final packageName = featurePackage.packageName();
+  void addLocalizationsDelegate(String packageName) {
     addImport('package:$packageName/$packageName.dart');
 
     final newDelegate = '${packageName.pascalCase}Localizations.delegate';
@@ -238,8 +237,7 @@ class LocalizationsDelegatesFileImpl extends DartFileImpl
   }
 
   @override
-  void removeLocalizationsDelegate(PlatformFeaturePackage featurePackage) {
-    final packageName = featurePackage.packageName();
+  void removeLocalizationsDelegate(String packageName) {
     removeImport('package:$packageName/$packageName.dart');
 
     final deleteToRemove = '${packageName.pascalCase}Localizations.delegate';
@@ -277,9 +275,7 @@ class InjectionFileImpl extends DartFileImpl implements InjectionFile {
         );
 
   @override
-  void addFeaturePackage(PlatformFeaturePackage featurePackage) {
-    final packageName = featurePackage.packageName();
-
+  void addFeaturePackage(String packageName) {
     addImport('package:$packageName/$packageName.dart');
 
     final existingExternalPackageModules = _readExternalPackageModules();
@@ -296,9 +292,7 @@ class InjectionFileImpl extends DartFileImpl implements InjectionFile {
   }
 
   @override
-  void removeFeaturePackage(PlatformFeaturePackage featurePackage) {
-    final packageName = featurePackage.packageName();
-
+  void removeFeaturePackage(String packageName) {
     final imports = readImports().where((e) => e.contains(packageName));
     for (final import in imports) {
       removeImport(import);

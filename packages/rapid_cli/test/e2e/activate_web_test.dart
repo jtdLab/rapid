@@ -42,7 +42,7 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformPackages = platformDependentPackages(Platform.web);
+          final platformPackages = platformDependentPackages([Platform.web]);
           final featurePackages = [
             featurePackage('app', Platform.web),
             featurePackage('home_page', Platform.web),

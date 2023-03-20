@@ -46,7 +46,7 @@ void main() {
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
           // Assert
-          await verifyHasAnalyzerIssues(10);
+          await verifyHasAnalyzerIssues(6);
           await verifyNoFormattingIssues();
 
           verifyDoExist({

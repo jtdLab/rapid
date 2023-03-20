@@ -92,13 +92,8 @@ Future<void> addServiceInterface({String? outputDir}) async {
 }
 
 Future<void> addFeature(String name, {required Platform platform}) async {
-  final pubspecFile = File(
-    p.join(
-      platformDir(platform).path,
-      'project_${platform.name}_${platform.name}_$name',
-      'pubspec.yaml',
-    ),
-  );
+  final feature = featurePackage(name, platform);
+  final pubspecFile = File(p.join(feature.path, 'pubspec.yaml'));
 
   await pubspecFile.create(recursive: true);
   await pubspecFile.writeAsString('name: $name');
@@ -191,14 +186,15 @@ List<Directory> platformDependentPackagesWithoutTests(Platform platform) => [
       platformNavigationPackage(platform),
     ];
 
-List<Directory> platformDependentPackages(Platform platform) => [
-      ...platformDependentPackagesWithTests(platform),
-      ...platformDependentPackagesWithoutTests(platform),
+List<Directory> platformDependentPackages(List<Platform> platforms) => [
+      for (final platform in platforms) ...[
+        ...platformDependentPackagesWithTests(platform),
+        ...platformDependentPackagesWithoutTests(platform),
+      ]
     ];
 
-List<Directory> get allPlatformDependentPackages => Platform.values
-    .map((e) => platformDependentPackages(e))
-    .fold(<Directory>[], (prev, curr) => prev + curr).toList();
+List<Directory> get allPlatformDependentPackages =>
+    platformDependentPackages(Platform.values);
 
 List<File> blocFiles({
   required String name,

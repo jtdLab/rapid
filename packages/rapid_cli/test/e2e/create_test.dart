@@ -46,8 +46,10 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
+          verifyDoNotExist(allPlatformDependentPackages
+              .without(platformDependentPackages(platforms)));
           for (final platform in platforms) {
-            final platformPackages = platformDependentPackages(platform);
+            final platformPackages = platformDependentPackages([platform]);
             final featurePackages = [
               featurePackage('app', platform),
               featurePackage('home_page', platform),
@@ -57,9 +59,6 @@ void main() {
               ...platformPackages,
               ...featurePackages,
             ]);
-            verifyDoNotExist(
-              allPlatformDependentPackages.without(platformPackages),
-            );
 
             verifyDoNotHaveTests([
               ...platformIndependentPackagesWithoutTests,
@@ -85,7 +84,7 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformPackages = platformDependentPackages(platform);
+          final platformPackages = platformDependentPackages([platform]);
           final featurePackages = [
             featurePackage('app', platform),
             featurePackage('home_page', platform),

@@ -51,7 +51,7 @@ void main() {
           ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentPackages(Platform.web),
+            ...platformDependentPackages([Platform.web]),
             ...featurePackages,
           ]);
 

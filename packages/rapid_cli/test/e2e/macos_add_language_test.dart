@@ -50,7 +50,7 @@ void main() {
           ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentPackages(Platform.macos),
+            ...platformDependentPackages([Platform.macos]),
             ...featurePackages,
             ...languageFiles('home_page', Platform.macos, ['en', language]),
           ]);

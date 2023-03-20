@@ -51,7 +51,7 @@ void main() {
           ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentPackages(Platform.linux),
+            ...platformDependentPackages([Platform.linux]),
             ...featurePackages,
           ]);
 

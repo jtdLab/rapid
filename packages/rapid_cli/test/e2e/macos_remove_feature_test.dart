@@ -51,7 +51,7 @@ void main() {
           ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentPackages(Platform.macos),
+            ...platformDependentPackages([Platform.macos]),
             ...featurePackages,
           ]);
           verifyDoNotExist([

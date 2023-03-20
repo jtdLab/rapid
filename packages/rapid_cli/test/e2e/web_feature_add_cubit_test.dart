@@ -42,7 +42,7 @@ void main() {
               'add',
               'cubit',
               name,
-              '--feature-name',
+              '--feature',
               featureName,
             ],
           );
@@ -56,7 +56,7 @@ void main() {
           final feature = featurePackage(featureName, Platform.web);
           verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentPackages(Platform.web),
+            ...platformDependentPackages([Platform.web]),
             appFeaturePackage,
             feature,
             ...cubitFiles(

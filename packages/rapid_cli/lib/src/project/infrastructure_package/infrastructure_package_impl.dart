@@ -35,17 +35,17 @@ class InfrastructurePackageImpl extends DartPackageImpl
     required String dir,
   }) =>
       (entityOverrides ?? Entity.new)(
-        name: dir,
+        name: name,
         dir: dir,
         domainPackage: _domainPackage,
       );
 
   ServiceInterface _serviceInterface({
-    required String entityName,
+    required String name,
     required String dir,
   }) =>
       (serviceInterfaceOverrides ?? ServiceInterface.new)(
-        name: dir,
+        name: name,
         dir: dir,
         domainPackage: _domainPackage,
       );
@@ -66,7 +66,7 @@ class InfrastructurePackageImpl extends DartPackageImpl
     required String dir,
   }) =>
       (serviceImplementationOverrides ?? ServiceImplementation.new)(
-        name: dir,
+        name: name,
         serviceName: serviceName,
         dir: dir,
         infrastructurePackage: this,
@@ -112,7 +112,7 @@ class InfrastructurePackageImpl extends DartPackageImpl
     required Logger logger,
   }) async {
     final entity = _entity(name: entityName, dir: outputDir);
-    if (!entity.existsAny()) {
+    if (!entity.existsAll()) {
       throw EntityDoesNotExist();
     }
 
@@ -153,10 +153,10 @@ class InfrastructurePackageImpl extends DartPackageImpl
     required Logger logger,
   }) async {
     final serviceInterface = _serviceInterface(
-      entityName: serviceName,
+      name: serviceName,
       dir: outputDir,
     );
-    if (!serviceInterface.existsAny()) {
+    if (!serviceInterface.existsAll()) {
       throw ServiceInterfaceDoesNotExist();
     }
 

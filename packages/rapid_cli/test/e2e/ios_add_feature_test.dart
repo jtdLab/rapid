@@ -51,7 +51,7 @@ void main() {
           ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentPackages(Platform.ios),
+            ...platformDependentPackages([Platform.ios]),
             ...featurePackages,
           ]);
 

@@ -44,7 +44,7 @@ abstract class PlatformFeaturesDirectory implements Directory {
 
   Set<String> supportedLanguages();
 
-  Future<PlatformFeaturePackage> addFeature({
+  Future<void> addFeature({
     required String name,
     String? description,
     required String defaultLanguage,
@@ -52,7 +52,7 @@ abstract class PlatformFeaturesDirectory implements Directory {
     required Logger logger,
   });
 
-  Future<PlatformFeaturePackage> removeFeature({
+  Future<void> removeFeature({
     required String name,
     required Logger logger,
   });

@@ -42,7 +42,7 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformPackages = platformDependentPackages(Platform.macos);
+          final platformPackages = platformDependentPackages([Platform.macos]);
           final featurePackages = [
             featurePackage('app', Platform.macos),
             featurePackage('home_page', Platform.macos),

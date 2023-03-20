@@ -50,7 +50,7 @@ void main() {
           ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentPackages(Platform.ios),
+            ...platformDependentPackages([Platform.ios]),
             ...featurePackages,
             ...languageFiles('home_page', Platform.ios, ['en', language]),
           ]);

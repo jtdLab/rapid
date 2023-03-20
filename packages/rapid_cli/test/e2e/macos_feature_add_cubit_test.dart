@@ -42,7 +42,7 @@ void main() {
               'add',
               'cubit',
               name,
-              '--feature-name',
+              '--feature',
               featureName,
             ],
           );
@@ -56,7 +56,7 @@ void main() {
           final feature = featurePackage(featureName, Platform.macos);
           verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentPackages(Platform.macos),
+            ...platformDependentPackages([Platform.macos]),
             appFeaturePackage,
             feature,
             ...cubitFiles(

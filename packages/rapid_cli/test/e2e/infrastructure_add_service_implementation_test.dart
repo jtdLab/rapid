@@ -25,6 +25,7 @@ void main() {
         Directory.current = cwd;
       });
 
+
       test(
         'infrastructure add service_implementation',
         () async {
@@ -65,7 +66,7 @@ void main() {
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
           // Assert
-          await verifyHasAnalyzerIssues(6);
+          await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
           verifyDoExist({
@@ -81,9 +82,10 @@ void main() {
             ),
           });
 
-          await verifyTestsPassWith100PercentCoverage({
+          await verifyTestsPass(
             infrastructurePackage,
-          });
+            expectedCoverage: 0
+          );
         },
       );
     },

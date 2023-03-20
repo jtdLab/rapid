@@ -1,7 +1,7 @@
 {{#android}}import 'package:flutter/material.dart';{{/android}}{{#ios}}import 'package:flutter/cupertino.dart';{{/ios}}{{#linux}}import 'package:flutter/material.dart';{{/linux}}{{#macos}}import 'package:flutter/cupertino.dart';{{/macos}}{{#web}}import 'package:flutter/material.dart';{{/web}}{{#windows}}import 'package:fluent_ui/fluent_ui.dart';{{/windows}}
 import 'package:flutter_test/flutter_test.dart';
-import 'package:{{project_name.snakeCase()}}_ui_ios/src/{{name.snakeCase()}}/{{name.snakeCase()}}.dart';
-import 'package:{{project_name.snakeCase()}}_ui_ios/src/{{name.snakeCase()}}/{{name.snakeCase()}}_theme.dart';
+import 'package:{{project_name.snakeCase()}}_ui_{{#android}}android{{/android}}{{#ios}}ios{{/ios}}{{#linux}}linux{{/linux}}{{#macos}}macos{{/macos}}{{#web}}web{{/web}}{{#windows}}windows{{/windows}}/src/{{name.snakeCase()}}/{{name.snakeCase()}}.dart';
+import 'package:{{project_name.snakeCase()}}_ui_{{#android}}android{{/android}}{{#ios}}ios{{/ios}}{{#linux}}linux{{/linux}}{{#macos}}macos{{/macos}}{{#web}}web{{/web}}{{#windows}}windows{{/windows}}/src/{{name.snakeCase()}}/{{name.snakeCase()}}_theme.dart';
 
 import '../helpers/pump_app.dart';
 

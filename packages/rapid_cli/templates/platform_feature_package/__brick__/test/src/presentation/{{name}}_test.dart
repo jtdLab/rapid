@@ -15,7 +15,7 @@ void main() {
 
       // Assert
       expect(find.byType({{project_name.pascalCase()}}Scaffold), findsOneWidget);
-      expect(find.text('Home Page title for {{default_language}}'), findsOneWidget);
+      expect(find.text('{{name.titleCase()}} title for {{default_language}}'), findsOneWidget);
     });
   });
 }

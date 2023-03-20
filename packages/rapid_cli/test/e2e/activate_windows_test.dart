@@ -42,7 +42,8 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformPackages = platformDependentPackages(Platform.windows);
+          final platformPackages =
+              platformDependentPackages([Platform.windows]);
           final featurePackages = [
             featurePackage('app', Platform.windows),
             featurePackage('home_page', Platform.windows),

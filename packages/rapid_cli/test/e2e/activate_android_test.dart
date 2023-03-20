@@ -42,7 +42,8 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformPackages = platformDependentPackages(Platform.android);
+          final platformPackages =
+              platformDependentPackages([Platform.android]);
           final featurePackages = [
             featurePackage('app', Platform.android),
             featurePackage('home_page', Platform.android),

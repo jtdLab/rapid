@@ -42,7 +42,7 @@ void main() {
               'add',
               'bloc',
               name,
-              '--feature-name',
+              '--feature',
               featureName,
             ],
           );
@@ -56,7 +56,7 @@ void main() {
           final feature = featurePackage(featureName, Platform.windows);
           verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDependentPackages(Platform.windows),
+            ...platformDependentPackages([Platform.windows]),
             appFeaturePackage,
             feature,
             ...blocFiles(

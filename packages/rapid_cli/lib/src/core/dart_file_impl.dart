@@ -357,7 +357,11 @@ class DartFileImpl extends FileImpl implements DartFile {
     final contents = read();
 
     final regExp = RegExp(
-        r"export[\s]+\'" + export + r"\' (:?hide|show) [A-Z]+[A-z1-9]*;");
+      r"export[\s]+\'" +
+          export +
+          r"\'([\s]+(:?hide|show)[\s]+[A-Z]+[A-z1-9]*)?;" +
+          r"[\s]{1}",
+    );
     final match = regExp.firstMatch(contents);
     if (match == null) {
       return;

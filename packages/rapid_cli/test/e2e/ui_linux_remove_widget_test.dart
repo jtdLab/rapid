@@ -33,6 +33,14 @@ void main() {
           await setupProject(Platform.linux);
           final name = 'FooBar';
           widgetFiles(name: name, platform: Platform.linux).create();
+          await addPlatformUiPackageThemeExtensionsFile(
+            name,
+            platform: Platform.linux,
+          );
+          await addPlatformUiPackageBarrelFile(
+            name,
+            platform: Platform.linux,
+          );
 
           // Act
           final commandResult = await commandRunner.run(

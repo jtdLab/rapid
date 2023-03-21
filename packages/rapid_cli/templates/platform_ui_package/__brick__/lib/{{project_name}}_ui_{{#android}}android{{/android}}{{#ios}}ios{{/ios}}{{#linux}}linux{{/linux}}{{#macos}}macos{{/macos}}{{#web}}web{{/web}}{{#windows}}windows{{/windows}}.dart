@@ -17,6 +17,7 @@ library {{project_name}}_ui_ios;
 
 export 'package:cupertino_icons/cupertino_icons.dart';
 export 'package:flutter/cupertino.dart' hide Router;
+export 'package:flutter/material.dart' show Theme, ThemeData, ThemeExtension;
 export 'package:{{project_name}}_ui/{{project_name}}_ui.dart';
 
 export 'src/app.dart';
@@ -30,7 +31,8 @@ library {{project_name}}_ui_linux;
 
 export 'package:flutter/material.dart' hide Router;
 export 'package:{{project_name}}_ui/{{project_name}}_ui.dart';
-
+export 'package:yaru/yaru.dart';
+export 'package:yaru_icons/yaru_icons.dart';
 export 'src/app.dart';
 export 'src/scaffold.dart';
 export 'src/scaffold_theme.dart';
@@ -41,7 +43,7 @@ export 'src/scaffold_theme.dart';
 library {{project_name}}_ui_macos;
 
 export 'package:cupertino_icons/cupertino_icons.dart';
-export 'package:flutter/foundation.dart' show Brightness;
+export 'package:flutter/material.dart' show Brightness, Theme, ThemeData, ThemeExtension;
 export 'package:flutter/widgets.dart' hide Router;
 export 'package:macos_ui/macos_ui.dart';
 export 'package:{{project_name}}_ui/{{project_name}}_ui.dart';

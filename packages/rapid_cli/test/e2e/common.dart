@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:io/io.dart' show copyPath;
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
@@ -138,21 +137,13 @@ Future<void> addPlatformUiPackageBarrelFile(
       'lib',
       '${projectName}_ui_${platform.name}.dart',
     ),
-  ).writeAsString('''
-/// Widgets and themes implementing ${projectName.titleCase} design language for ${platform.prettyName}.
-///
-/// To use, import `package:project_${platform.name}_ui_${platform.name}/project_${platform.name}_ui_${platform.name}.dart`.
-library project_${platform.name}_ui_${platform.name};
-
-export 'package:flutter/material.dart' hide Router;
-export 'package:project_${platform.name}_ui/project_${platform.name}_ui.dart';
-
-export 'src/app.dart';
+  ).writeAsString(
+    '''
 export 'src/foo_bar.dart';
 export 'src/foo_bar_theme.dart';
-export 'src/scaffold.dart';
-export 'src/scaffold_theme.dart';
-''');
+''',
+    mode: FileMode.append,
+  );
 }
 
 late String projectName;

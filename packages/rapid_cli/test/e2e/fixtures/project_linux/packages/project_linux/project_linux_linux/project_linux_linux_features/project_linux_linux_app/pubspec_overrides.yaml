@@ -1,0 +1,10 @@
+# melos_managed_dependency_overrides: project_linux_di,project_linux_domain,project_linux_ui,project_linux_ui_linux
+dependency_overrides:
+  project_linux_di:
+    path: ../../../project_linux_di
+  project_linux_domain:
+    path: ../../../project_linux_domain
+  project_linux_ui:
+    path: ../../../../project_linux_ui/project_linux_ui
+  project_linux_ui_linux:
+    path: ../../../../project_linux_ui/project_linux_ui_linux

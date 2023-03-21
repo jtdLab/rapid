@@ -8,7 +8,8 @@ part of 'scaffold_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme> {
+class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>
+    with DiagnosticableTreeMixin {
   const {{project_name.pascalCase()}}ScaffoldTheme({
     required this.backgroundColor,
   });
@@ -47,6 +48,14 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', '{{project_name.pascalCase()}}ScaffoldTheme'))
+      ..add(DiagnosticsProperty('backgroundColor', backgroundColor));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -60,6 +69,11 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
     return Object.hash(
         runtimeType, const DeepCollectionEquality().hash(backgroundColor));
   }
+}
+
+extension {{project_name.pascalCase()}}ScaffoldThemeBuildContext on BuildContext {
+  {{project_name.pascalCase()}}ScaffoldTheme get {{project_name.camelCase()}}ScaffoldTheme =>
+      Theme.of(this).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
 }
 {{/android}}{{#ios}}
 // coverage:ignore-file
@@ -72,7 +86,8 @@ part of 'scaffold_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme> {
+class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>
+    with DiagnosticableTreeMixin {
   const {{project_name.pascalCase()}}ScaffoldTheme({
     required this.backgroundColor,
   });
@@ -111,6 +126,14 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', '{{project_name.pascalCase()}}ScaffoldTheme'))
+      ..add(DiagnosticsProperty('backgroundColor', backgroundColor));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -124,6 +147,11 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
     return Object.hash(
         runtimeType, const DeepCollectionEquality().hash(backgroundColor));
   }
+}
+
+extension {{project_name.pascalCase()}}ScaffoldThemeBuildContext on BuildContext {
+  {{project_name.pascalCase()}}ScaffoldTheme get {{project_name.camelCase()}}ScaffoldTheme =>
+      Theme.of(this).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
 }
 {{/ios}}{{#linux}}
 // coverage:ignore-file
@@ -136,7 +164,8 @@ part of 'scaffold_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme> {
+class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>
+    with DiagnosticableTreeMixin {
   const {{project_name.pascalCase()}}ScaffoldTheme({
     required this.backgroundColor,
   });
@@ -175,6 +204,14 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', '{{project_name.pascalCase()}}ScaffoldTheme'))
+      ..add(DiagnosticsProperty('backgroundColor', backgroundColor));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -188,6 +225,11 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
     return Object.hash(
         runtimeType, const DeepCollectionEquality().hash(backgroundColor));
   }
+}
+
+extension {{project_name.pascalCase()}}ScaffoldThemeBuildContext on BuildContext {
+  {{project_name.pascalCase()}}ScaffoldTheme get {{project_name.camelCase()}}ScaffoldTheme =>
+      Theme.of(this).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
 }
 {{/linux}}{{#macos}}
 // coverage:ignore-file
@@ -200,7 +242,8 @@ part of 'scaffold_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme> {
+class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>
+    with DiagnosticableTreeMixin {
   const {{project_name.pascalCase()}}ScaffoldTheme({
     required this.backgroundColor,
   });
@@ -239,6 +282,14 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', '{{project_name.pascalCase()}}ScaffoldTheme'))
+      ..add(DiagnosticsProperty('backgroundColor', backgroundColor));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -252,6 +303,11 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
     return Object.hash(
         runtimeType, const DeepCollectionEquality().hash(backgroundColor));
   }
+}
+
+extension {{project_name.pascalCase()}}ScaffoldThemeBuildContext on BuildContext {
+  {{project_name.pascalCase()}}ScaffoldTheme get {{project_name.camelCase()}}ScaffoldTheme =>
+      Theme.of(this).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
 }
 {{/macos}}{{#web}}
 // coverage:ignore-file
@@ -264,7 +320,8 @@ part of 'scaffold_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme> {
+class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>
+    with DiagnosticableTreeMixin {
   const {{project_name.pascalCase()}}ScaffoldTheme({
     required this.backgroundColor,
   });
@@ -300,6 +357,14 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
     return {{project_name.pascalCase()}}ScaffoldTheme(
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t)!,
     );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', '{{project_name.pascalCase()}}ScaffoldTheme'))
+      ..add(DiagnosticsProperty('backgroundColor', backgroundColor));
   }
 
   @override
@@ -317,6 +382,11 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
         runtimeType, const DeepCollectionEquality().hash(backgroundColor));
   }
 }
+
+extension {{project_name.pascalCase()}}ScaffoldThemeBuildContext on BuildContext {
+  {{project_name.pascalCase()}}ScaffoldTheme get {{project_name.camelCase()}}ScaffoldTheme =>
+      Theme.of(this).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
+}
 {{/web}}{{#windows}}
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
@@ -328,7 +398,8 @@ part of 'scaffold_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme> {
+class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>
+    with DiagnosticableTreeMixin {
   const {{project_name.pascalCase()}}ScaffoldTheme({
     required this.backgroundColor,
   });
@@ -367,6 +438,14 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', '{{project_name.pascalCase()}}ScaffoldTheme'))
+      ..add(DiagnosticsProperty('backgroundColor', backgroundColor));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -380,5 +459,10 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
     return Object.hash(
         runtimeType, const DeepCollectionEquality().hash(backgroundColor));
   }
+}
+
+extension {{project_name.pascalCase()}}ScaffoldThemeBuildContext on BuildContext {
+  {{project_name.pascalCase()}}ScaffoldTheme get {{project_name.camelCase()}}ScaffoldTheme =>
+      Theme.of(this).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
 }
 {{/windows}}

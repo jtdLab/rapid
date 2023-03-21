@@ -9,7 +9,8 @@ final darkExtensions = <ThemeExtension>[
   {{project_name.pascalCase()}}ColorTheme.dark,
   {{project_name.pascalCase()}}ScaffoldTheme.dark,
 ];
-{{/android}}{{#ios}}import 'package:{{project_name}}_ui_ios/{{project_name}}_ui_ios.dart';
+{{/android}}{{#ios}}import 'package:flutter/material.dart' show ThemeExtension;
+import 'package:{{project_name}}_ui_ios/{{project_name}}_ui_ios.dart';
 
 final lightExtensions = <ThemeExtension>[
   {{project_name.pascalCase()}}ColorTheme.light,
@@ -31,7 +32,8 @@ final darkExtensions = <ThemeExtension>[
   {{project_name.pascalCase()}}ColorTheme.dark,
   {{project_name.pascalCase()}}ScaffoldTheme.dark,
 ];
-{{/linux}}{{#macos}}import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';
+{{/linux}}{{#macos}}import 'package:flutter/material.dart' show ThemeExtension;
+import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';
 
 final lightExtensions = <ThemeExtension>[
   {{project_name.pascalCase()}}ColorTheme.light,

@@ -10,7 +10,8 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = theme?.backgroundColor ?? context.backgroundColor;
+    final theme = this.theme ?? context.{{project_name.camelCase()}}{{name.pascalCase()}}Theme;
+    final backgroundColor = theme.backgroundColor;
 
     // TODO: implement
     return Container(

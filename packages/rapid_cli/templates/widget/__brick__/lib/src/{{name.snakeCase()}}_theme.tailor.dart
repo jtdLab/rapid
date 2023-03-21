@@ -8,7 +8,8 @@ part of '{{name.snakeCase()}}_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class {{project_name.pascalCase()}}{{name.pascalCase()}}Theme extends ThemeExtension<{{project_name.pascalCase()}}{{name.pascalCase()}}Theme> {
+class {{project_name.pascalCase()}}{{name.pascalCase()}}Theme extends ThemeExtension<{{project_name.pascalCase()}}{{name.pascalCase()}}Theme>
+    with DiagnosticableTreeMixin {
   const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme({
     required this.backgroundColor,
   });
@@ -47,6 +48,14 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}}Theme extends ThemeExten
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', '{{project_name.pascalCase()}}{{name.pascalCase()}}Theme'))
+      ..add(DiagnosticsProperty('backgroundColor', backgroundColor));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -62,8 +71,7 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}}Theme extends ThemeExten
   }
 }
 
-extension {{project_name.pascalCase()}}{{name.pascalCase()}}ThemeBuildContextProps on BuildContext {
-  {{project_name.pascalCase()}}{{name.pascalCase()}}Theme get _testOp{{name.pascalCase()}}Theme =>
+extension {{project_name.pascalCase()}}{{name.pascalCase()}}ThemeBuildContext on BuildContext {
+  {{project_name.pascalCase()}}{{name.pascalCase()}}Theme get {{project_name.camelCase()}}{{name.pascalCase()}}Theme =>
       Theme.of(this).extension<{{project_name.pascalCase()}}{{name.pascalCase()}}Theme>()!;
-  Color get backgroundColor => _testOp{{name.pascalCase()}}Theme.backgroundColor;
 }

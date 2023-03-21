@@ -8,7 +8,8 @@ part of 'color_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class {{project_name.pascalCase()}}ColorTheme extends ThemeExtension<{{project_name.pascalCase()}}ColorTheme> {
+class {{project_name.pascalCase()}}ColorTheme extends ThemeExtension<{{project_name.pascalCase()}}ColorTheme>
+    with DiagnosticableTreeMixin {
   const {{project_name.pascalCase()}}ColorTheme({
     required this.primary,
     required this.secondary,
@@ -53,6 +54,15 @@ class {{project_name.pascalCase()}}ColorTheme extends ThemeExtension<{{project_n
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', '{{project_name.pascalCase()}}ColorTheme'))
+      ..add(DiagnosticsProperty('primary', primary))
+      ..add(DiagnosticsProperty('secondary', secondary));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -68,11 +78,4 @@ class {{project_name.pascalCase()}}ColorTheme extends ThemeExtension<{{project_n
         const DeepCollectionEquality().hash(primary),
         const DeepCollectionEquality().hash(secondary));
   }
-}
-
-extension {{project_name.pascalCase()}}ColorThemeBuildContextProps on BuildContext {
-  {{project_name.pascalCase()}}ColorTheme get _{{project_name.camelCase()}}ColorTheme =>
-      Theme.of(this).extension<{{project_name.pascalCase()}}ColorTheme>()!;
-  Color get primary => _{{project_name.camelCase()}}ColorTheme.primary;
-  Color get secondary => _{{project_name.camelCase()}}ColorTheme.secondary;
 }

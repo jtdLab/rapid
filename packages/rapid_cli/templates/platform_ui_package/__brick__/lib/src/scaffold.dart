@@ -13,8 +13,7 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        this.theme ?? Theme.of(context).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
+    final theme = this.theme ?? context.{{project_name.camelCase()}}ScaffoldTheme;
     final backgroundColor = theme.backgroundColor;
 
     return Scaffold(
@@ -25,7 +24,6 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 }
 {{/android}}{{#ios}}
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show Theme;
 import 'package:{{project_name}}_ui_ios/src/scaffold_theme.dart';
 
 class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
@@ -40,8 +38,7 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        this.theme ?? Theme.of(context).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
+    final theme = this.theme ?? context.{{project_name.camelCase()}}ScaffoldTheme;
     final backgroundColor = theme.backgroundColor;
 
     return CupertinoPageScaffold(
@@ -66,8 +63,7 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        this.theme ?? Theme.of(context).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
+    final theme = this.theme ?? context.{{project_name.camelCase()}}ScaffoldTheme;
     final backgroundColor = theme.backgroundColor;
 
     return Scaffold(
@@ -78,7 +74,6 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 }
 {{/linux}}{{#macos}}
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show Theme;
 import 'package:{{project_name}}_ui_macos/src/scaffold_theme.dart';
 import 'package:macos_ui/macos_ui.dart';
 
@@ -94,8 +89,7 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        this.theme ?? Theme.of(context).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
+    final theme = this.theme ?? context.{{project_name.camelCase()}}ScaffoldTheme;
     final backgroundColor = theme.backgroundColor;
 
     return PlatformMenuBar(
@@ -126,8 +120,7 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        this.theme ?? Theme.of(context).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
+    final theme = this.theme ?? context.{{project_name.camelCase()}}ScaffoldTheme;
     final backgroundColor = theme.backgroundColor;
 
     return Scaffold(
@@ -138,7 +131,6 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 }
 {{/web}}{{#windows}}
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart' show Theme;
 import 'package:{{project_name}}_ui_windows/src/scaffold_theme.dart';
 
 class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
@@ -153,8 +145,7 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        this.theme ?? Theme.of(context).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
+    final theme = this.theme ?? context.{{project_name.camelCase()}}ScaffoldTheme;
     final backgroundColor = theme.backgroundColor;
 
     return NavigationView(

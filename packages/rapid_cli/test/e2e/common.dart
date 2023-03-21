@@ -103,6 +103,24 @@ Future<void> addPlatformUiPackageThemeExtensionsFile(
   String widgetName, {
   required Platform platform,
 }) async {
+  final content = [
+    if (platform == Platform.ios || platform == Platform.macos)
+      "import 'package:flutter/material.dart' show ThemeExtension;",
+    "import 'package:project_${platform.name}_ui_${platform.name}/project_${platform.name}_ui_${platform.name}.dart';",
+    '',
+    'final lightExtensions = <ThemeExtension>[',
+    '  ${projectName.pascalCase}ColorTheme.light,',
+    '  ${projectName.pascalCase}ScaffoldTheme.light,',
+    '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.light,',
+    '];',
+    '',
+    'final darkExtensions = <ThemeExtension>[',
+    '  ${projectName.pascalCase}ColorTheme.dark,',
+    '  ${projectName.pascalCase}ScaffoldTheme.dark,',
+    '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.dark,',
+    '];',
+  ].join('\n');
+
   await File(
     p.join(
       platformUiPackage(platform).path,
@@ -110,21 +128,7 @@ Future<void> addPlatformUiPackageThemeExtensionsFile(
       'src',
       'theme_extensions.dart',
     ),
-  ).writeAsString('''
-import 'package:project_${platform.name}_ui_${platform.name}/project_${platform.name}_ui_${platform.name}.dart';
-
-final lightExtensions = <ThemeExtension>[
-  ${projectName.pascalCase}ColorTheme.light,
-  ${projectName.pascalCase}ScaffoldTheme.light,
-  ${projectName.pascalCase}${widgetName.pascalCase}Theme.light,
-];
-
-final darkExtensions = <ThemeExtension>[
-  ${projectName.pascalCase}ColorTheme.dark,
-  ${projectName.pascalCase}ScaffoldTheme.dark,
-  ${projectName.pascalCase}${widgetName.pascalCase}Theme.dark,
-];
-''');
+  ).writeAsString(content);
 }
 
 Future<void> addPlatformUiPackageBarrelFile(

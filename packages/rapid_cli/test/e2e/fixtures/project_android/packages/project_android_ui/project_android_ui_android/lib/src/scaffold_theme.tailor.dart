@@ -9,7 +9,8 @@ part of 'scaffold_theme.dart';
 // **************************************************************************
 
 class ProjectAndroidScaffoldTheme
-    extends ThemeExtension<ProjectAndroidScaffoldTheme> {
+    extends ThemeExtension<ProjectAndroidScaffoldTheme>
+    with DiagnosticableTreeMixin {
   const ProjectAndroidScaffoldTheme({
     required this.backgroundColor,
   });
@@ -48,6 +49,14 @@ class ProjectAndroidScaffoldTheme
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ProjectAndroidScaffoldTheme'))
+      ..add(DiagnosticsProperty('backgroundColor', backgroundColor));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -61,4 +70,9 @@ class ProjectAndroidScaffoldTheme
     return Object.hash(
         runtimeType, const DeepCollectionEquality().hash(backgroundColor));
   }
+}
+
+extension ProjectAndroidScaffoldThemeBuildContext on BuildContext {
+  ProjectAndroidScaffoldTheme get projectAndroidScaffoldTheme =>
+      Theme.of(this).extension<ProjectAndroidScaffoldTheme>()!;
 }

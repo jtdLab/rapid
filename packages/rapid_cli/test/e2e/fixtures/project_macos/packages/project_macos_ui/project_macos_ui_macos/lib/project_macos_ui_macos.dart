@@ -4,7 +4,7 @@
 library project_macos_ui_macos;
 
 export 'package:cupertino_icons/cupertino_icons.dart';
-export 'package:flutter/foundation.dart' show Brightness;
+export 'package:flutter/cupertino.dart' show Brightness;
 export 'package:flutter/widgets.dart' hide Router;
 export 'package:macos_ui/macos_ui.dart';
 export 'package:project_macos_ui/project_macos_ui.dart';

@@ -13,8 +13,7 @@ class ProjectWebScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        this.theme ?? Theme.of(context).extension<ProjectWebScaffoldTheme>()!;
+    final theme = this.theme ?? context.projectWebScaffoldTheme;
     final backgroundColor = theme.backgroundColor;
 
     return Scaffold(

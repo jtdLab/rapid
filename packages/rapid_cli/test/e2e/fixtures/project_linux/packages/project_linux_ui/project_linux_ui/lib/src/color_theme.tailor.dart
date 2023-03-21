@@ -8,7 +8,8 @@ part of 'color_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class ProjectLinuxColorTheme extends ThemeExtension<ProjectLinuxColorTheme> {
+class ProjectLinuxColorTheme extends ThemeExtension<ProjectLinuxColorTheme>
+    with DiagnosticableTreeMixin {
   const ProjectLinuxColorTheme({
     required this.primary,
     required this.secondary,
@@ -54,6 +55,15 @@ class ProjectLinuxColorTheme extends ThemeExtension<ProjectLinuxColorTheme> {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ProjectLinuxColorTheme'))
+      ..add(DiagnosticsProperty('primary', primary))
+      ..add(DiagnosticsProperty('secondary', secondary));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -69,11 +79,4 @@ class ProjectLinuxColorTheme extends ThemeExtension<ProjectLinuxColorTheme> {
         const DeepCollectionEquality().hash(primary),
         const DeepCollectionEquality().hash(secondary));
   }
-}
-
-extension ProjectLinuxColorThemeBuildContextProps on BuildContext {
-  ProjectLinuxColorTheme get _projectLinuxColorTheme =>
-      Theme.of(this).extension<ProjectLinuxColorTheme>()!;
-  Color get primary => _projectLinuxColorTheme.primary;
-  Color get secondary => _projectLinuxColorTheme.secondary;
 }

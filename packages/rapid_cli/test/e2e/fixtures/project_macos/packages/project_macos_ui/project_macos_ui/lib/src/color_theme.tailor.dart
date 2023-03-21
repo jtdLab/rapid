@@ -8,7 +8,8 @@ part of 'color_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class ProjectMacosColorTheme extends ThemeExtension<ProjectMacosColorTheme> {
+class ProjectMacosColorTheme extends ThemeExtension<ProjectMacosColorTheme>
+    with DiagnosticableTreeMixin {
   const ProjectMacosColorTheme({
     required this.primary,
     required this.secondary,
@@ -54,6 +55,15 @@ class ProjectMacosColorTheme extends ThemeExtension<ProjectMacosColorTheme> {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ProjectMacosColorTheme'))
+      ..add(DiagnosticsProperty('primary', primary))
+      ..add(DiagnosticsProperty('secondary', secondary));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -69,11 +79,4 @@ class ProjectMacosColorTheme extends ThemeExtension<ProjectMacosColorTheme> {
         const DeepCollectionEquality().hash(primary),
         const DeepCollectionEquality().hash(secondary));
   }
-}
-
-extension ProjectMacosColorThemeBuildContextProps on BuildContext {
-  ProjectMacosColorTheme get _projectMacosColorTheme =>
-      Theme.of(this).extension<ProjectMacosColorTheme>()!;
-  Color get primary => _projectMacosColorTheme.primary;
-  Color get secondary => _projectMacosColorTheme.secondary;
 }

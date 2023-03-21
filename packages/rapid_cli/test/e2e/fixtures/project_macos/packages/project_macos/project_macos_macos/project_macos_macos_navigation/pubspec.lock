@@ -37,10 +37,10 @@ packages:
     dependency: "direct main"
     description:
       name: auto_route
-      sha256: "7faca1e83d05794deec4e160976c06345da3eeaca7b0e78e39edd657c1b86335"
+      sha256: "70b2461cc58d6a46c20859f23148b370165da183d21a82b783156f9a91d9c38b"
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0+1"
+    version: "6.0.1"
   boolean_selector:
     dependency: transitive
     description:

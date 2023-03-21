@@ -13,8 +13,7 @@ class ProjectLinuxScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        this.theme ?? Theme.of(context).extension<ProjectLinuxScaffoldTheme>()!;
+    final theme = this.theme ?? context.projectLinuxScaffoldTheme;
     final backgroundColor = theme.backgroundColor;
 
     return Scaffold(

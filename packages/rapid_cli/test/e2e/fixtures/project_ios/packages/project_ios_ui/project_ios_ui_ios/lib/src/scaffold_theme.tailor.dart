@@ -8,7 +8,8 @@ part of 'scaffold_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class ProjectIosScaffoldTheme extends ThemeExtension<ProjectIosScaffoldTheme> {
+class ProjectIosScaffoldTheme extends ThemeExtension<ProjectIosScaffoldTheme>
+    with DiagnosticableTreeMixin {
   const ProjectIosScaffoldTheme({
     required this.backgroundColor,
   });
@@ -47,6 +48,14 @@ class ProjectIosScaffoldTheme extends ThemeExtension<ProjectIosScaffoldTheme> {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ProjectIosScaffoldTheme'))
+      ..add(DiagnosticsProperty('backgroundColor', backgroundColor));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -60,4 +69,9 @@ class ProjectIosScaffoldTheme extends ThemeExtension<ProjectIosScaffoldTheme> {
     return Object.hash(
         runtimeType, const DeepCollectionEquality().hash(backgroundColor));
   }
+}
+
+extension ProjectIosScaffoldThemeBuildContext on BuildContext {
+  ProjectIosScaffoldTheme get projectIosScaffoldTheme =>
+      Theme.of(this).extension<ProjectIosScaffoldTheme>()!;
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show Theme;
 import 'package:project_ios_ui_ios/src/scaffold_theme.dart';
 
 class ProjectIosScaffold extends StatelessWidget {
@@ -14,8 +13,7 @@ class ProjectIosScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        this.theme ?? Theme.of(context).extension<ProjectIosScaffoldTheme>()!;
+    final theme = this.theme ?? context.projectIosScaffoldTheme;
     final backgroundColor = theme.backgroundColor;
 
     return CupertinoPageScaffold(

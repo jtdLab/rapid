@@ -9,7 +9,8 @@ part of 'scaffold_theme.dart';
 // **************************************************************************
 
 class ProjectWindowsScaffoldTheme
-    extends ThemeExtension<ProjectWindowsScaffoldTheme> {
+    extends ThemeExtension<ProjectWindowsScaffoldTheme>
+    with DiagnosticableTreeMixin {
   const ProjectWindowsScaffoldTheme({
     required this.backgroundColor,
   });
@@ -48,6 +49,14 @@ class ProjectWindowsScaffoldTheme
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ProjectWindowsScaffoldTheme'))
+      ..add(DiagnosticsProperty('backgroundColor', backgroundColor));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -61,4 +70,9 @@ class ProjectWindowsScaffoldTheme
     return Object.hash(
         runtimeType, const DeepCollectionEquality().hash(backgroundColor));
   }
+}
+
+extension ProjectWindowsScaffoldThemeBuildContext on BuildContext {
+  ProjectWindowsScaffoldTheme get projectWindowsScaffoldTheme =>
+      Theme.of(this).extension<ProjectWindowsScaffoldTheme>()!;
 }

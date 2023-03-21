@@ -8,7 +8,8 @@ part of 'color_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class ProjectIosColorTheme extends ThemeExtension<ProjectIosColorTheme> {
+class ProjectIosColorTheme extends ThemeExtension<ProjectIosColorTheme>
+    with DiagnosticableTreeMixin {
   const ProjectIosColorTheme({
     required this.primary,
     required this.secondary,
@@ -54,6 +55,15 @@ class ProjectIosColorTheme extends ThemeExtension<ProjectIosColorTheme> {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ProjectIosColorTheme'))
+      ..add(DiagnosticsProperty('primary', primary))
+      ..add(DiagnosticsProperty('secondary', secondary));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -69,11 +79,4 @@ class ProjectIosColorTheme extends ThemeExtension<ProjectIosColorTheme> {
         const DeepCollectionEquality().hash(primary),
         const DeepCollectionEquality().hash(secondary));
   }
-}
-
-extension ProjectIosColorThemeBuildContextProps on BuildContext {
-  ProjectIosColorTheme get _projectIosColorTheme =>
-      Theme.of(this).extension<ProjectIosColorTheme>()!;
-  Color get primary => _projectIosColorTheme.primary;
-  Color get secondary => _projectIosColorTheme.secondary;
 }

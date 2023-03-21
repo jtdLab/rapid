@@ -8,7 +8,8 @@ part of 'color_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class ProjectNoneColorTheme extends ThemeExtension<ProjectNoneColorTheme> {
+class ProjectNoneColorTheme extends ThemeExtension<ProjectNoneColorTheme>
+    with DiagnosticableTreeMixin {
   const ProjectNoneColorTheme({
     required this.primary,
     required this.secondary,
@@ -54,6 +55,15 @@ class ProjectNoneColorTheme extends ThemeExtension<ProjectNoneColorTheme> {
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ProjectNoneColorTheme'))
+      ..add(DiagnosticsProperty('primary', primary))
+      ..add(DiagnosticsProperty('secondary', secondary));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -69,11 +79,4 @@ class ProjectNoneColorTheme extends ThemeExtension<ProjectNoneColorTheme> {
         const DeepCollectionEquality().hash(primary),
         const DeepCollectionEquality().hash(secondary));
   }
-}
-
-extension ProjectNoneColorThemeBuildContextProps on BuildContext {
-  ProjectNoneColorTheme get _projectNoneColorTheme =>
-      Theme.of(this).extension<ProjectNoneColorTheme>()!;
-  Color get primary => _projectNoneColorTheme.primary;
-  Color get secondary => _projectNoneColorTheme.secondary;
 }

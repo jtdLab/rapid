@@ -3,9 +3,9 @@ import 'dart:io' as io;
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/arb_file_impl.dart';
+import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
-import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/directory_impl.dart';
 import 'package:rapid_cli/src/core/file.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
@@ -51,11 +51,19 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
         platformFeaturePackage: this,
       );
 
-  Bloc _bloc({required String name}) =>
-      (blocOverrides ?? Bloc.new)(name: name, platformFeaturePackage: this);
+  Bloc _bloc({required String name, required String dir}) =>
+      (blocOverrides ?? Bloc.new)(
+        name: name,
+        dir: dir,
+        platformFeaturePackage: this,
+      );
 
-  Cubit _cubit({required String name}) =>
-      (cubitOverrides ?? Cubit.new)(name: name, platformFeaturePackage: this);
+  Cubit _cubit({required String name, required String dir}) =>
+      (cubitOverrides ?? Cubit.new)(
+        name: name,
+        dir: dir,
+        platformFeaturePackage: this,
+      );
 
   @override
   L10nFileBuilder? l10nFileOverrides;
@@ -181,9 +189,10 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   @override
   Future<void> addBloc({
     required String name,
+    required String outputDir,
     required Logger logger,
   }) async {
-    final bloc = _bloc(name: name);
+    final bloc = _bloc(name: name, dir: outputDir);
     if (bloc.existsAny()) {
       throw BlocAlreadyExists();
     }
@@ -194,9 +203,10 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   @override
   Future<void> removeBloc({
     required String name,
+    required String dir,
     required Logger logger,
   }) async {
-    final bloc = _bloc(name: name);
+    final bloc = _bloc(name: name, dir: dir);
     if (!bloc.existsAny()) {
       throw BlocDoesNotExist();
     }
@@ -207,9 +217,10 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   @override
   Future<void> addCubit({
     required String name,
+    required String outputDir,
     required Logger logger,
   }) async {
-    final cubit = _cubit(name: name);
+    final cubit = _cubit(name: name, dir: outputDir);
     if (cubit.existsAny()) {
       throw CubitAlreadyExists();
     }
@@ -220,9 +231,10 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   @override
   Future<void> removeCubit({
     required String name,
+    required String dir,
     required Logger logger,
   }) async {
-    final cubit = _cubit(name: name);
+    final cubit = _cubit(name: name, dir: dir);
     if (!cubit.existsAny()) {
       throw CubitDoesNotExist();
     }
@@ -416,31 +428,56 @@ class BlocImpl extends FileSystemEntityCollection
     implements Bloc {
   BlocImpl({
     required String name,
+    required String dir,
     required PlatformFeaturePackage platformFeaturePackage,
   })  : _platformFeaturePackage = platformFeaturePackage,
         _name = name,
+        _dir = dir,
         super([
-          Directory(
+          DartFile(
             path: p.join(
               platformFeaturePackage.path,
               'lib',
               'src',
               'application',
-              name.snakeCase,
+              dir,
             ),
+            name: '${name.snakeCase}_bloc',
           ),
-          Directory(
+          DartFile(
             path: p.join(
               platformFeaturePackage.path,
-              'test',
+              'lib',
               'src',
               'application',
-              name.snakeCase,
+              dir,
             ),
+            name: '${name.snakeCase}_bloc.freezed',
+          ),
+          DartFile(
+            path: p.join(
+              platformFeaturePackage.path,
+              'lib',
+              'src',
+              'application',
+              dir,
+            ),
+            name: '${name.snakeCase}_event',
+          ),
+          DartFile(
+            path: p.join(
+              platformFeaturePackage.path,
+              'lib',
+              'src',
+              'application',
+              dir,
+            ),
+            name: '${name.snakeCase}_state',
           ),
         ]);
 
   final String _name;
+  final String _dir;
   final PlatformFeaturePackage _platformFeaturePackage;
 
   @override
@@ -455,6 +492,7 @@ class BlocImpl extends FileSystemEntityCollection
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': _name,
+        'output_dir': _dir,
         'platform': platform,
         'feature_name': featureName,
       },
@@ -468,31 +506,46 @@ class CubitImpl extends FileSystemEntityCollection
     implements Cubit {
   CubitImpl({
     required String name,
+    required String dir,
     required PlatformFeaturePackage platformFeaturePackage,
   })  : _name = name,
+        _dir = dir,
         _platformFeaturePackage = platformFeaturePackage,
         super([
-          Directory(
+          DartFile(
             path: p.join(
               platformFeaturePackage.path,
               'lib',
               'src',
               'application',
-              name.snakeCase,
+              dir,
             ),
+            name: '${name.snakeCase}_cubit',
           ),
-          Directory(
+          DartFile(
             path: p.join(
               platformFeaturePackage.path,
-              'test',
+              'lib',
               'src',
               'application',
-              name.snakeCase,
+              dir,
             ),
+            name: '${name.snakeCase}_cubit.freezed',
+          ),
+          DartFile(
+            path: p.join(
+              platformFeaturePackage.path,
+              'lib',
+              'src',
+              'application',
+              dir,
+            ),
+            name: '${name.snakeCase}_state',
           ),
         ]);
 
   final String _name;
+  final String _dir;
   final PlatformFeaturePackage _platformFeaturePackage;
 
   @override
@@ -507,6 +560,7 @@ class CubitImpl extends FileSystemEntityCollection
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': _name,
+        'output_dir': _dir,
         'platform': platform,
         'feature_name': featureName,
       },

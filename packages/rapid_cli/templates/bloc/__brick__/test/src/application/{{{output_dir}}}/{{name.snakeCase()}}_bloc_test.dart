@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:{{project_name.snakeCase()}}_{{platform}}_{{feature_name}}/src/application/{{name.snakeCase()}}/{{name.snakeCase()}}_bloc.dart';
+import 'package:{{project_name.snakeCase()}}_{{platform}}_{{feature_name}}/src/{{#pathCase}}application/{{{output_dir}}}{{/pathCase}}/{{name.snakeCase()}}_bloc.dart';
 
 {{name.pascalCase()}}Bloc _get{{name.pascalCase()}}Bloc() {
   return {{name.pascalCase()}}Bloc();

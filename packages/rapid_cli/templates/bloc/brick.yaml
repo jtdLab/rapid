@@ -22,6 +22,9 @@ vars:
   feature_name:
     type: string
     description: The name of the feature
+  output_dir:
+    type: string
+    description: The output dir of the bloc
   name:
     type: string
     description: The name of the bloc

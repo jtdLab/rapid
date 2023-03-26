@@ -75,24 +75,28 @@ abstract class PlatformFeaturesDirectory implements Directory {
   Future<void> addBloc({
     required String name,
     required String featureName,
+    required String outputDir,
     required Logger logger,
   });
 
   Future<void> removeBloc({
     required String name,
     required String featureName,
+    required String dir,
     required Logger logger,
   });
 
   Future<void> addCubit({
     required String name,
     required String featureName,
+    required String outputDir,
     required Logger logger,
   });
 
   Future<void> removeCubit({
     required String name,
     required String featureName,
+    required String dir,
     required Logger logger,
   });
 }

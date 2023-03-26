@@ -256,6 +256,7 @@ abstract class Project implements Directory, OverridableGenerator {
   Future<void> addBloc({
     required String name,
     required String featureName,
+    required String outputDir,
     required Platform platform,
     required Logger logger,
   });
@@ -263,6 +264,7 @@ abstract class Project implements Directory, OverridableGenerator {
   Future<void> removeBloc({
     required String name,
     required String featureName,
+    required String dir,
     required Platform platform,
     required Logger logger,
   });
@@ -270,6 +272,7 @@ abstract class Project implements Directory, OverridableGenerator {
   Future<void> addCubit({
     required String name,
     required String featureName,
+    required String outputDir,
     required Platform platform,
     required Logger logger,
   });
@@ -277,6 +280,7 @@ abstract class Project implements Directory, OverridableGenerator {
   Future<void> removeCubit({
     required String name,
     required String featureName,
+    required String dir,
     required Platform platform,
     required Logger logger,
   });

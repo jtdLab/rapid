@@ -423,6 +423,7 @@ class ProjectImpl extends DirectoryImpl
   Future<void> addBloc({
     required String name,
     required String featureName,
+    required String outputDir,
     required Platform platform,
     required Logger logger,
   }) async {
@@ -430,6 +431,7 @@ class ProjectImpl extends DirectoryImpl
     await platformDirectory.addBloc(
       name: name,
       featureName: featureName,
+      outputDir: outputDir,
       logger: logger,
     );
   }
@@ -438,6 +440,7 @@ class ProjectImpl extends DirectoryImpl
   Future<void> removeBloc({
     required String name,
     required String featureName,
+    required String dir,
     required Platform platform,
     required Logger logger,
   }) async {
@@ -445,6 +448,7 @@ class ProjectImpl extends DirectoryImpl
     await platformDirectory.removeBloc(
       name: name,
       featureName: featureName,
+      dir: dir,
       logger: logger,
     );
   }
@@ -453,6 +457,7 @@ class ProjectImpl extends DirectoryImpl
   Future<void> addCubit({
     required String name,
     required String featureName,
+    required String outputDir,
     required Platform platform,
     required Logger logger,
   }) async {
@@ -460,6 +465,7 @@ class ProjectImpl extends DirectoryImpl
     await platformDirectory.addCubit(
       name: name,
       featureName: featureName,
+      outputDir: outputDir,
       logger: logger,
     );
   }
@@ -468,6 +474,7 @@ class ProjectImpl extends DirectoryImpl
   Future<void> removeCubit({
     required String name,
     required String featureName,
+    required String dir,
     required Platform platform,
     required Logger logger,
   }) async {
@@ -475,6 +482,7 @@ class ProjectImpl extends DirectoryImpl
     await platformDirectory.removeCubit(
       name: name,
       featureName: featureName,
+      dir: dir,
       logger: logger,
     );
   }

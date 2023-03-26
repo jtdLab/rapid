@@ -254,38 +254,46 @@ List<File> blocFiles({
   String? outputDir,
 }) =>
     [
-      File(p.join(
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_bloc.dart')),
-      File(p.join(
+          '${name.snakeCase}_bloc.dart',
+        ),
+      ),
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_bloc.freezed.dart')),
-      File(p.join(
+          '${name.snakeCase}_bloc.freezed.dart',
+        ),
+      ),
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_event.dart')),
-      File(p.join(
+          '${name.snakeCase}_event.dart',
+        ),
+      ),
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_state.dart')),
+          '${name.snakeCase}_state.dart',
+        ),
+      ),
     ];
 
 List<File> cubitFiles({
@@ -295,30 +303,36 @@ List<File> cubitFiles({
   String? outputDir,
 }) =>
     [
-      File(p.join(
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_cubit.dart')),
-      File(p.join(
+          '${name.snakeCase}_cubit.dart',
+        ),
+      ),
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_cubit.freezed.dart')),
-      File(p.join(
+          '${name.snakeCase}_cubit.freezed.dart',
+        ),
+      ),
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_state.dart')),
+          '${name.snakeCase}_state.dart',
+        ),
+      ),
     ];
 
 List<File> entityFiles({

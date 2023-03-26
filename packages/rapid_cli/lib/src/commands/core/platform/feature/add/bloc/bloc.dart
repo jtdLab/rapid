@@ -3,6 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
+import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -33,7 +34,7 @@ import 'package:rapid_cli/src/project/project.dart';
 ///  * [WindowsFeatureAddBlocCommand]
 /// {@endtemplate}
 abstract class PlatformFeatureAddBlocCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter {
+    with OverridableArgResults, ClassNameGetter, OutputDirGetter {
   /// {@macro platform_feature_add_bloc_command}
   PlatformFeatureAddBlocCommand({
     required Platform platform,
@@ -57,6 +58,10 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
         abbr: 'f',
         help: 'The name of the feature this new bloc will be added to.\n'
             'This must be the name of an existing ${_platform.prettyName} feature.',
+      )
+      ..addSeparator('')
+      ..addOutputDirOption(
+        help: 'The output directory relative to <feature_package>/lib/src .',
       );
   }
 
@@ -92,6 +97,7 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
         () async {
           final feature = _feature;
           final name = super.className;
+          final outputDir = super.outputDir;
 
           _logger.info('Adding Bloc ...');
 
@@ -99,6 +105,7 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
             await _project.addBloc(
               name: name,
               featureName: feature,
+              outputDir: outputDir,
               platform: _platform,
               logger: _logger,
             );

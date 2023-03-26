@@ -223,6 +223,7 @@ class PlatformFeaturesDirectoryImpl extends DartPackageImpl
   Future<void> addBloc({
     required String name,
     required String featureName,
+    required String outputDir,
     required Logger logger,
   }) async {
     final featurePackage = this.featurePackage(featureName);
@@ -230,13 +231,18 @@ class PlatformFeaturesDirectoryImpl extends DartPackageImpl
       throw FeatureDoesNotExist();
     }
 
-    await featurePackage.addBloc(name: name, logger: logger);
+    await featurePackage.addBloc(
+      name: name,
+      outputDir: outputDir,
+      logger: logger,
+    );
   }
 
   @override
   Future<void> removeBloc({
     required String name,
     required String featureName,
+    required String dir,
     required Logger logger,
   }) async {
     final featurePackage = this.featurePackage(featureName);
@@ -244,13 +250,14 @@ class PlatformFeaturesDirectoryImpl extends DartPackageImpl
       throw FeatureDoesNotExist();
     }
 
-    await featurePackage.removeBloc(name: name, logger: logger);
+    await featurePackage.removeBloc(name: name, dir: dir, logger: logger);
   }
 
   @override
   Future<void> addCubit({
     required String name,
     required String featureName,
+    required String outputDir,
     required Logger logger,
   }) async {
     final featurePackage = this.featurePackage(featureName);
@@ -258,13 +265,18 @@ class PlatformFeaturesDirectoryImpl extends DartPackageImpl
       throw FeatureDoesNotExist();
     }
 
-    await featurePackage.addCubit(name: name, logger: logger);
+    await featurePackage.addCubit(
+      name: name,
+      outputDir: outputDir,
+      logger: logger,
+    );
   }
 
   @override
   Future<void> removeCubit({
     required String name,
     required String featureName,
+    required String dir,
     required Logger logger,
   }) async {
     final featurePackage = this.featurePackage(featureName);
@@ -272,7 +284,7 @@ class PlatformFeaturesDirectoryImpl extends DartPackageImpl
       throw FeatureDoesNotExist();
     }
 
-    await featurePackage.removeCubit(name: name, logger: logger);
+    await featurePackage.removeCubit(name: name, dir: dir, logger: logger);
   }
 }
 

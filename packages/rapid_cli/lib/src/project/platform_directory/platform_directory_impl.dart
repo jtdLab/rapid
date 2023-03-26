@@ -132,11 +132,13 @@ abstract class PlatformDirectoryImpl extends DartPackageImpl
   Future<void> addBloc({
     required String name,
     required String featureName,
+    required String outputDir,
     required Logger logger,
   }) async {
     await featuresDirectory.addBloc(
       name: name,
       featureName: featureName,
+      outputDir: outputDir,
       logger: logger,
     );
   }
@@ -145,11 +147,13 @@ abstract class PlatformDirectoryImpl extends DartPackageImpl
   Future<void> removeBloc({
     required String name,
     required String featureName,
+    required String dir,
     required Logger logger,
   }) async {
     await featuresDirectory.removeBloc(
       name: name,
       featureName: featureName,
+      dir: dir,
       logger: logger,
     );
   }
@@ -158,11 +162,13 @@ abstract class PlatformDirectoryImpl extends DartPackageImpl
   Future<void> addCubit({
     required String name,
     required String featureName,
+    required String outputDir,
     required Logger logger,
   }) async {
     await featuresDirectory.addCubit(
       name: name,
       featureName: featureName,
+      outputDir: outputDir,
       logger: logger,
     );
   }
@@ -171,11 +177,13 @@ abstract class PlatformDirectoryImpl extends DartPackageImpl
   Future<void> removeCubit({
     required String name,
     required String featureName,
+    required String dir,
     required Logger logger,
   }) async {
     await featuresDirectory.removeCubit(
       name: name,
       featureName: featureName,
+      dir: dir,
       logger: logger,
     );
   }

@@ -93,21 +93,25 @@ abstract class PlatformFeaturePackage
 
   Future<void> addBloc({
     required String name,
+    required String outputDir,
     required Logger logger,
   });
 
   Future<void> removeBloc({
     required String name,
+    required String dir,
     required Logger logger,
   });
 
   Future<void> addCubit({
     required String name,
+    required String outputDir,
     required Logger logger,
   });
 
   Future<void> removeCubit({
     required String name,
+    required String dir,
     required Logger logger,
   });
 }
@@ -238,6 +242,7 @@ abstract class LanguageArbFile
 
 typedef BlocBuilder = Bloc Function({
   required String name,
+  required String dir,
   required PlatformFeaturePackage platformFeaturePackage,
 });
 
@@ -249,10 +254,12 @@ abstract class Bloc
   /// {@macro bloc}
   factory Bloc({
     required String name,
+    required String dir,
     required PlatformFeaturePackage platformFeaturePackage,
   }) =>
       BlocImpl(
         name: name,
+        dir: dir,
         platformFeaturePackage: platformFeaturePackage,
       );
 
@@ -261,6 +268,7 @@ abstract class Bloc
 
 typedef CubitBuilder = Cubit Function({
   required String name,
+  required String dir,
   required PlatformFeaturePackage platformFeaturePackage,
 });
 
@@ -272,10 +280,12 @@ abstract class Cubit
   /// {@macro cubit}
   factory Cubit({
     required String name,
+    required String dir,
     required PlatformFeaturePackage platformFeaturePackage,
   }) =>
       CubitImpl(
         name: name,
+        dir: dir,
         platformFeaturePackage: platformFeaturePackage,
       );
 

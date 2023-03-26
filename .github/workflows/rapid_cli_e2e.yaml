@@ -129,8 +129,8 @@ jobs:
       - name: Setup Melos
         run: flutter pub global activate melos
 
-      - name: Setup Coverage
-        run: dart pub global activate coverage
+      - name: Setup Coverage Utils
+        run: flutter pub global activate coverage && flutter pub global activate test_cov_console && flutter pub global activate remove_from_coverage
 
       - name: Install Flutter dependencies
         run: flutter pub get

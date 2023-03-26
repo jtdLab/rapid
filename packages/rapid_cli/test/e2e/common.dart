@@ -690,7 +690,7 @@ Future<TestResult> _runFlutterOrDartTest({
       runInShell: true,
     );
 
-    final r = await Process.run(
+    await Process.run(
       'format_coverage',
       [
         '--lcov',
@@ -701,9 +701,6 @@ Future<TestResult> _runFlutterOrDartTest({
       workingDirectory: cwd,
       runInShell: true,
     );
-
-    print('Stderr: ${r.stderr}');
-    print('Stout: ${r.stdout}');
   }
 
   final String stderr = result.stderr;
@@ -746,9 +743,6 @@ Future<TestResult> _runFlutterOrDartTest({
       workingDirectory: cwd,
       runInShell: true,
     );
-
-    print(coverageResult.stderr);
-    print(coverageResult.stdout);
 
     // 100.00 when empty lcov
     totalCoverage = double.tryParse(

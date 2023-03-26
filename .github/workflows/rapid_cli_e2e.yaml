@@ -129,6 +129,9 @@ jobs:
       - name: Setup Melos
         run: flutter pub global activate melos
 
+      - name: Setup Coverage
+        run: dart pub global activate coverage
+
       - name: Install Flutter dependencies
         run: flutter pub get
 

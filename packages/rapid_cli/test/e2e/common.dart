@@ -575,7 +575,7 @@ Future<void> verifyTestsPass(
   int expectedFailedTests = 0,
   double expectedCoverage = 100,
 }) async {
-  final testResult = await _runFlutterTest(cwd: dir.path);
+  final testResult = await _runFlutterOrDartTest(cwd: dir.path);
 
   expect(testResult.failedTests, expectedFailedTests);
   expect(testResult.coverage, expectedCoverage);
@@ -641,7 +641,7 @@ Future<void> verifyNoFormattingIssues() async {
 /// This is needed because of https://github.com/flutter/flutter/issues/117158
 const _iosDevice = 'iPhone 11';
 
-/// Thrown when [_runFlutterTest] didnt find a test directory.
+/// Thrown when [_runFlutterOrDartTest] didnt find a test directory.
 class TestDirNotFound implements Exception {}
 
 class TestResult {
@@ -652,21 +652,38 @@ class TestResult {
   final double? coverage;
 }
 
-/// Runs `flutter test` in [cwd].
+/// Runs `flutter` or `dart` test` in [cwd].
 ///
 /// If [coverage] is true runs with `--coverage`
-Future<TestResult> _runFlutterTest({
+Future<TestResult> _runFlutterOrDartTest({
   required String cwd,
   bool coverage = true,
 }) async {
-  _println('Run "flutter test${coverage ? ' --coverage' : ''}" in $cwd\n');
+  // TODO required because of https://github.com/dart-lang/test/issues/1977
+  final pubspec = File(p.join(cwd, 'pubspec.yaml'));
+  final content = pubspec.readAsStringSync();
+  final hasFlutterTest = content.contains('flutter_test:');
 
-  final result = await Process.run(
-    'flutter',
-    ['test', if (coverage) '--coverage'],
-    workingDirectory: cwd,
-    runInShell: true,
-  );
+  late ProcessResult result;
+  if (hasFlutterTest) {
+    _println('Run "flutter test${coverage ? ' --coverage' : ''}" in $cwd\n');
+
+    result = await Process.run(
+      'flutter',
+      ['test', if (coverage) '--coverage'],
+      workingDirectory: cwd,
+      runInShell: true,
+    );
+  } else {
+    _println('Run "dart test${coverage ? ' --coverage' : ''}" in $cwd\n');
+
+    result = await Process.run(
+      'dart',
+      ['test'],
+      workingDirectory: cwd,
+      runInShell: true,
+    );
+  }
 
   final String stderr = result.stderr;
   final String stdout = result.stdout;

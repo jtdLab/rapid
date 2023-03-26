@@ -2,7 +2,6 @@ name: rapid_cli_e2e
 
 on:
   workflow_dispatch:
-  push: # TODO rm later
     branches:
       - "dev"
 

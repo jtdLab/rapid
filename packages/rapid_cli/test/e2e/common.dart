@@ -690,7 +690,7 @@ Future<TestResult> _runFlutterOrDartTest({
       runInShell: true,
     );
 
-    await Process.run(
+    final r = await Process.run(
       'format_coverage',
       [
         '--lcov',
@@ -701,6 +701,9 @@ Future<TestResult> _runFlutterOrDartTest({
       workingDirectory: cwd,
       runInShell: true,
     );
+
+    print(r.stderr);
+    print(r.stdout);
   }
 
   final String stderr = result.stderr;

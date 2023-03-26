@@ -2,8 +2,8 @@ import 'dart:io' as io;
 
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
-import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
@@ -185,11 +185,29 @@ class EntityImpl extends FileSystemEntityCollection
         _dir = dir,
         _domainPackage = domainPackage,
         super([
-          Directory(
-            path: p.join(domainPackage.path, 'lib', dir, name.snakeCase),
+          DartFile(
+            path: p.join(
+              domainPackage.path,
+              'lib',
+              dir,
+            ),
+            name: name.snakeCase,
           ),
-          Directory(
-            path: p.join(domainPackage.path, 'test', dir, name.snakeCase),
+          DartFile(
+            path: p.join(
+              domainPackage.path,
+              'lib',
+              dir,
+            ),
+            name: '${name.snakeCase}.freezed',
+          ),
+          DartFile(
+            path: p.join(
+              domainPackage.path,
+              'test',
+              dir,
+            ),
+            name: '${name.snakeCase}_test',
           ),
         ]);
 
@@ -227,8 +245,21 @@ class ServiceInterfaceImpl extends FileSystemEntityCollection
         _dir = dir,
         _name = name,
         super([
-          Directory(
-            path: p.join(domainPackage.path, 'lib', dir, name.snakeCase),
+          DartFile(
+            path: p.join(
+              domainPackage.path,
+              'lib',
+              dir,
+            ),
+            name: 'i_${name.snakeCase}_service',
+          ),
+          DartFile(
+            path: p.join(
+              domainPackage.path,
+              'lib',
+              dir,
+            ),
+            name: 'i_${name.snakeCase}_service.freezed',
           ),
         ]);
 
@@ -266,11 +297,29 @@ class ValueObjectImpl extends FileSystemEntityCollection
         _dir = dir,
         _name = name,
         super([
-          Directory(
-            path: p.join(domainPackage.path, 'lib', dir, name.snakeCase),
+          DartFile(
+            path: p.join(
+              domainPackage.path,
+              'lib',
+              dir,
+            ),
+            name: name.snakeCase,
           ),
-          Directory(
-            path: p.join(domainPackage.path, 'test', dir, name.snakeCase),
+          DartFile(
+            path: p.join(
+              domainPackage.path,
+              'lib',
+              dir,
+            ),
+            name: '${name.snakeCase}.freezed',
+          ),
+          DartFile(
+            path: p.join(
+              domainPackage.path,
+              'test',
+              dir,
+            ),
+            name: '${name.snakeCase}_test',
           ),
         ]);
 

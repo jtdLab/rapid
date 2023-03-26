@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:{{project_name.snakeCase()}}_domain/{{service_name.snakeCase()}}/i_{{service_name.snakeCase()}}_service.dart';
+import 'package:{{project_name.snakeCase()}}_{{#pathCase}}domain/{{{output_dir}}}{{/pathCase}}/i_{{service_name.snakeCase()}}_service.dart';
 
 // TODO: description
 @dev

@@ -2,8 +2,8 @@ import 'dart:io' as io;
 
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
-import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
@@ -203,23 +203,41 @@ class DataTransferObjectImpl extends FileSystemEntityCollection
         _dir = dir,
         _entityName = entityName,
         super([
-          Directory(
+          DartFile(
             path: p.join(
               infrastructurePackage.path,
               'lib',
               'src',
               dir,
-              entityName.snakeCase,
             ),
+            name: '${entityName.snakeCase}_dto',
           ),
-          Directory(
+          DartFile(
+            path: p.join(
+              infrastructurePackage.path,
+              'lib',
+              'src',
+              dir,
+            ),
+            name: '${entityName.snakeCase}_dto.freezed',
+          ),
+          DartFile(
+            path: p.join(
+              infrastructurePackage.path,
+              'lib',
+              'src',
+              dir,
+            ),
+            name: '${entityName.snakeCase}_dto.g',
+          ),
+          DartFile(
             path: p.join(
               infrastructurePackage.path,
               'test',
               'src',
               dir,
-              entityName.snakeCase,
             ),
+            name: '${entityName.snakeCase}_dto_test',
           ),
         ]);
 
@@ -254,28 +272,28 @@ class ServiceImplementationImpl extends FileSystemEntityCollection
     required String serviceName,
     required String dir,
     required InfrastructurePackage infrastructurePackage,
-  })  : _infrastructurePackage = infrastructurePackage,
-        _dir = dir,
+  })  : _name = name,
         _serviceName = serviceName,
-        _name = name,
+        _dir = dir,
+        _infrastructurePackage = infrastructurePackage,
         super([
-          Directory(
+          DartFile(
             path: p.join(
               infrastructurePackage.path,
               'lib',
               'src',
               dir,
-              serviceName.snakeCase,
             ),
+            name: '${name.snakeCase}_${serviceName.snakeCase}_service',
           ),
-          Directory(
+          DartFile(
             path: p.join(
               infrastructurePackage.path,
               'test',
               'src',
               dir,
-              serviceName.snakeCase,
             ),
+            name: '${name.snakeCase}_${serviceName.snakeCase}_service_test',
           ),
         ]);
 

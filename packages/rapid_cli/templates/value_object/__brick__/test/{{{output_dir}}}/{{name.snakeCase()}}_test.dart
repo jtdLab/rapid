@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 import 'package:dartz/dartz.dart';
-import 'package:{{project_name}}_{{#pathCase}}domain/{{{output_dir}}}{{/pathCase}}/{{name.snakeCase()}}/{{name.snakeCase()}}.dart';
+import 'package:{{project_name}}_{{#pathCase}}domain/{{{output_dir}}}{{/pathCase}}/{{name.snakeCase()}}.dart';
 
 void main() {
   group('{{name.pascalCase()}}', () {

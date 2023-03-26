@@ -326,11 +326,11 @@ List<File> entityFiles({
   String? outputDir,
 }) =>
     [
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
           '${name.snakeCase}.dart')),
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
           '${name.snakeCase}.freezed.dart')),
-      File(p.join(domainPackage.path, 'test', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'test', outputDir ?? '',
           '${name.snakeCase}_test.dart')),
     ];
 
@@ -339,11 +339,11 @@ List<File> valueObjectFiles({
   String? outputDir,
 }) =>
     [
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
           '${name.snakeCase}.dart')),
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
           '${name.snakeCase}.freezed.dart')),
-      File(p.join(domainPackage.path, 'test', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'test', outputDir ?? '',
           '${name.snakeCase}_test.dart')),
     ];
 
@@ -352,9 +352,9 @@ List<File> serviceInterfaceFiles({
   String? outputDir,
 }) =>
     [
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
           'i_${name.snakeCase}_service.dart')),
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
           'i_${name.snakeCase}_service.freezed.dart')),
     ];
 
@@ -364,13 +364,13 @@ List<File> dataTransferObjectFiles({
 }) =>
     [
       File(p.join(infrastructurePackage.path, 'lib', 'src', outputDir ?? '',
-          entity.snakeCase, '${entity.snakeCase}_dto.dart')),
+          '${entity.snakeCase}_dto.dart')),
       File(p.join(infrastructurePackage.path, 'lib', 'src', outputDir ?? '',
-          entity.snakeCase, '${entity.snakeCase}_dto.freezed.dart')),
+          '${entity.snakeCase}_dto.freezed.dart')),
       File(p.join(infrastructurePackage.path, 'lib', 'src', outputDir ?? '',
-          entity.snakeCase, '${entity.snakeCase}_dto.g.dart')),
+          '${entity.snakeCase}_dto.g.dart')),
       File(p.join(infrastructurePackage.path, 'test', 'src', outputDir ?? '',
-          entity.snakeCase, '${entity.snakeCase}_dto_test.dart')),
+          '${entity.snakeCase}_dto_test.dart')),
     ];
 
 List<File> serviceImplementationFiles({
@@ -385,7 +385,6 @@ List<File> serviceImplementationFiles({
           'lib',
           'src',
           outputDir ?? '',
-          serviceName.snakeCase,
           '${name.snakeCase}_${serviceName.snakeCase}_service.dart',
         ),
       ),
@@ -395,7 +394,6 @@ List<File> serviceImplementationFiles({
           'test',
           'src',
           outputDir ?? '',
-          serviceName.snakeCase,
           '${name.snakeCase}_${serviceName.snakeCase}_service_test.dart',
         ),
       ),

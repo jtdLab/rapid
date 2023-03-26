@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:project_none_domain/foo_bar/foo_bar.dart';
+import 'package:project_none_domain/foo_bar.dart';
 
 void main() {
   group('FooBar', () {

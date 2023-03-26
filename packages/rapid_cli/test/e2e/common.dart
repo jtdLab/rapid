@@ -680,6 +680,8 @@ Future<TestResult> _runFlutterOrDartTest({
     _println(
         'Run "dart test${coverage ? ' --coverage="coverage" format_coverage --lcov --in=coverage --out=coverage/coverage.lcov --report-on=lib' : ''}" in $cwd\n');
 
+    print('Before');
+
     result = await Process.run(
       'dart',
       [
@@ -689,6 +691,8 @@ Future<TestResult> _runFlutterOrDartTest({
       workingDirectory: cwd,
       runInShell: true,
     );
+
+    print('After');
 
     final r = await Process.run(
       'format_coverage',
@@ -701,6 +705,8 @@ Future<TestResult> _runFlutterOrDartTest({
       workingDirectory: cwd,
       runInShell: true,
     );
+
+    print('End');
 
     print(r.stderr);
     print(r.stdout);

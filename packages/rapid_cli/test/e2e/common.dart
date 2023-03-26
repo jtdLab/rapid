@@ -680,8 +680,6 @@ Future<TestResult> _runFlutterOrDartTest({
     _println(
         'Run "dart test${coverage ? ' --coverage="coverage" format_coverage --lcov --in=coverage --out=coverage/coverage.lcov --report-on=lib' : ''}" in $cwd\n');
 
-    print('Before');
-
     result = await Process.run(
       'dart',
       [
@@ -691,8 +689,6 @@ Future<TestResult> _runFlutterOrDartTest({
       workingDirectory: cwd,
       runInShell: true,
     );
-
-    print('After');
 
     final r = await Process.run(
       'format_coverage',
@@ -706,10 +702,8 @@ Future<TestResult> _runFlutterOrDartTest({
       runInShell: true,
     );
 
-    print('End');
-
-    print(r.stderr);
-    print(r.stdout);
+    print('Stderr: ${r.stderr}');
+    print('Stout: ${r.stdout}');
   }
 
   final String stderr = result.stderr;
@@ -752,6 +746,9 @@ Future<TestResult> _runFlutterOrDartTest({
       workingDirectory: cwd,
       runInShell: true,
     );
+
+    print(coverageResult.stderr);
+    print(coverageResult.stdout);
 
     // 100.00 when empty lcov
     totalCoverage = double.tryParse(

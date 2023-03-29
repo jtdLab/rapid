@@ -8,8 +8,8 @@ part of 'color_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class ProjectWindowsColorTheme
-    extends ThemeExtension<ProjectWindowsColorTheme> {
+class ProjectWindowsColorTheme extends ThemeExtension<ProjectWindowsColorTheme>
+    with DiagnosticableTreeMixin {
   const ProjectWindowsColorTheme({
     required this.primary,
     required this.secondary,
@@ -55,6 +55,15 @@ class ProjectWindowsColorTheme
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ProjectWindowsColorTheme'))
+      ..add(DiagnosticsProperty('primary', primary))
+      ..add(DiagnosticsProperty('secondary', secondary));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -70,11 +79,4 @@ class ProjectWindowsColorTheme
         const DeepCollectionEquality().hash(primary),
         const DeepCollectionEquality().hash(secondary));
   }
-}
-
-extension ProjectWindowsColorThemeBuildContextProps on BuildContext {
-  ProjectWindowsColorTheme get _projectWindowsColorTheme =>
-      Theme.of(this).extension<ProjectWindowsColorTheme>()!;
-  Color get primary => _projectWindowsColorTheme.primary;
-  Color get secondary => _projectWindowsColorTheme.secondary;
 }

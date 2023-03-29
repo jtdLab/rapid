@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
@@ -38,9 +39,22 @@ abstract class PlatformAddFeatureCommand extends Command<int>
     required Platform platform,
     Logger? logger,
     required Project project,
+    MelosBootstrapCommand? melosBootstrap,
+    FlutterPubGetCommand? flutterPubGet,
+    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+    FlutterGenl10nCommand? flutterGenl10n,
+    DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project {
+        _project = project,
+        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
+        _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
       ..addSeparator('')
       ..addOption(
@@ -61,6 +75,12 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   final Platform _platform;
   final Logger _logger;
   final Project _project;
+  final MelosBootstrapCommand _melosBootstrap;
+  final FlutterPubGetCommand _flutterPubGet;
+  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+  final FlutterGenl10nCommand _flutterGenl10n;
+  final DartFormatFixCommand _dartFormatFix;
 
   @override
   String get name => 'feature';
@@ -98,10 +118,36 @@ abstract class PlatformAddFeatureCommand extends Command<int>
             await _project.addFeature(
               name: name,
               description: description,
-              routing: routing,
+              //  routing: routing, // TODO refactor
               platform: _platform,
               logger: _logger,
             );
+
+            final platformDirectory =
+                _project.platformDirectory(platform: _platform);
+            final rootPackage = platformDirectory.rootPackage;
+            final featurePackage =
+                platformDirectory.featuresDirectory.featurePackage(name);
+
+            await _melosBootstrap(
+              cwd: _project.path,
+              logger: _logger,
+              scope: [
+                rootPackage.packageName(),
+                featurePackage.packageName(),
+              ],
+            );
+
+            await _flutterPubGet(cwd: rootPackage.path, logger: _logger);
+            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: rootPackage.path,
+              logger: _logger,
+            );
+
+            await _flutterGenl10n(cwd: featurePackage.path, logger: _logger);
+
+            await _dartFormatFix(cwd: _project.path, logger: _logger);
+
             // TODO add hint how to register a page in the routing feature
             _logger
               ..info('')

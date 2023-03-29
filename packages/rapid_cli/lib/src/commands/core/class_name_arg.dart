@@ -1,4 +1,5 @@
 import 'package:args/command_runner.dart';
+import 'package:meta/meta.dart';
 
 import 'overridable_arg_results.dart';
 import 'validate_class_name.dart';
@@ -6,6 +7,7 @@ import 'validate_class_name.dart';
 /// Adds `className` getter.
 mixin ClassNameGetter on OverridableArgResults {
   /// Gets the class name specified by the user.
+  @protected
   String get className => _validateClassNameArg(argResults.rest);
 
   /// Validates whether [args] contains ONLY a valid dart class name.

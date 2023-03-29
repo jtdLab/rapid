@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -25,9 +26,8 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'activate linux (fast)',
-        () async {
+      group('activate linux', () {
+        Future<void> performTest({bool slow = false}) async {
           // Arrange
           await setupProject();
 
@@ -42,69 +42,51 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          verifyDoExist({
+          final platformPackages = platformDependentPackages([Platform.linux]);
+          final featurePackages = [
+            featurePackage('app', Platform.linux),
+            featurePackage('home_page', Platform.linux),
+          ];
+          verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDirs(Platform.linux),
-            featurePackage('app', Platform.linux),
-            featurePackage('home_page', Platform.linux),
-            featurePackage('routing', Platform.linux),
-          });
+            ...platformPackages,
+            ...featurePackages,
+          ]);
           verifyDoNotExist(
-            allPlatformDirs.without(platformDirs(Platform.linux)),
-          );
-        },
-        tags: ['fast'],
-      );
-
-      test(
-        'activate linux',
-        () async {
-          // Arrange
-          await setupProject();
-
-          // Act
-          final commandResult = await commandRunner.run(
-            ['activate', 'linux'],
+            allPlatformDependentPackages.without(platformPackages),
           );
 
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
+          verifyDoNotHaveTests([
+            ...platformIndependentPackagesWithoutTests,
+            ...platformDependentPackagesWithoutTests(Platform.linux)
+          ]);
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.linux),
+            ...featurePackages,
+          ]);
 
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
+          if (slow) {
+            final failedIntegrationTests = await runFlutterIntegrationTest(
+              platformRootPackage(Platform.linux),
+              pathToTests: 'integration_test/development_test.dart',
+              platform: Platform.linux,
+            );
+            expect(failedIntegrationTests, 0);
+          }
+        }
 
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDirs(Platform.linux),
-            featurePackage('app', Platform.linux),
-            featurePackage('home_page', Platform.linux),
-            featurePackage('routing', Platform.linux),
-          });
-          verifyDoNotExist(
-              allPlatformDirs.without(platformDirs(Platform.linux)));
+        test(
+          '',
+          () => performTest(),
+        );
 
-          verifyDoNotHaveTests({
-            domainPackage,
-            infrastructurePackage,
-            featurePackage('routing', Platform.linux),
-          });
-          await verifyTestsPassWith100PercentCoverage({
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
-            featurePackage('app', Platform.linux),
-            featurePackage('home_page', Platform.linux),
-            platformUiPackage(Platform.linux),
-          });
-
-          final failedIntegrationTests = await runFlutterIntegrationTest(
-            cwd: appPackage.path,
-            pathToTests: 'integration_test/development_test.dart',
-            platform: Platform.linux,
-          );
-          expect(failedIntegrationTests, 0);
-        },
-        tags: ['linux'],
-      );
+        test(
+          '(slow)',
+          () => performTest(slow: true),
+          tags: ['linux'],
+        );
+      });
     },
     timeout: const Timeout(Duration(minutes: 24)),
   );

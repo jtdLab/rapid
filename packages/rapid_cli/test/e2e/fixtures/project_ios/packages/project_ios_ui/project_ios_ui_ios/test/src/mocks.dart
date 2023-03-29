@@ -29,11 +29,6 @@ class FakeRouterDelegate extends RouterDelegate<Object> {
   Future<void> setNewRoutePath(Object configuration) async {}
 }
 
-class FakeRouteInformationParser extends RouteInformationParser<Object> {
-  @override
-  Future<Object> parseRouteInformation(
-    RouteInformation routeInformation,
-  ) async {
-    return 0;
-  }
+class FakeRouterConfig extends RouterConfig<Object> {
+  FakeRouterConfig() : super(routerDelegate: FakeRouterDelegate());
 }

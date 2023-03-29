@@ -8,8 +8,8 @@ part of 'color_theme.dart';
 // ThemeTailorGenerator
 // **************************************************************************
 
-class ProjectAndroidColorTheme
-    extends ThemeExtension<ProjectAndroidColorTheme> {
+class ProjectAndroidColorTheme extends ThemeExtension<ProjectAndroidColorTheme>
+    with DiagnosticableTreeMixin {
   const ProjectAndroidColorTheme({
     required this.primary,
     required this.secondary,
@@ -55,6 +55,15 @@ class ProjectAndroidColorTheme
   }
 
   @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'ProjectAndroidColorTheme'))
+      ..add(DiagnosticsProperty('primary', primary))
+      ..add(DiagnosticsProperty('secondary', secondary));
+  }
+
+  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
@@ -70,11 +79,4 @@ class ProjectAndroidColorTheme
         const DeepCollectionEquality().hash(primary),
         const DeepCollectionEquality().hash(secondary));
   }
-}
-
-extension ProjectAndroidColorThemeBuildContextProps on BuildContext {
-  ProjectAndroidColorTheme get _projectAndroidColorTheme =>
-      Theme.of(this).extension<ProjectAndroidColorTheme>()!;
-  Color get primary => _projectAndroidColorTheme.primary;
-  Color get secondary => _projectAndroidColorTheme.secondary;
 }

@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,35 +27,6 @@ void main() {
       });
 
       test(
-        'ios add feature (fast)',
-        () async {
-          // Arrange
-          const featureName = 'my_feature';
-          await setupProject(Platform.ios);
-
-          // Act
-          final commandResult = await commandRunner.run(
-            ['ios', 'add', 'feature', featureName],
-          );
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          final platformDependentDirs = platformDirs(Platform.ios);
-          final featureDir = featurePackage(featureName, Platform.ios);
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformDependentDirs,
-            featureDir,
-          ]);
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'ios add feature',
         () async {
           // Arrange
@@ -72,23 +44,25 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs(Platform.ios);
-          final featureDir = featurePackage(featureName, Platform.ios);
+          final featurePackages = [
+            featurePackage('app', Platform.ios),
+            featurePackage('home_page', Platform.ios),
+            featurePackage(featureName, Platform.ios),
+          ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-            featureDir,
+            ...platformDependentPackages([Platform.ios]),
+            ...featurePackages,
           ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
-            featurePackage('app', Platform.ios),
-            featureDir,
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.ios),
+            ...featurePackages,
           ]);
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 4)),
+    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

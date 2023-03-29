@@ -1,10 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/commands/core/platform_x.dart';
-import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:tabular/tabular.dart';
 
 /// {@template rapid_doctor}
 /// `rapid doctor` command shows information about an existing Rapid project.
@@ -29,7 +25,8 @@ class DoctorCommand extends Command<int> {
   @override
   String get description => 'Show information about an existing Rapid project.';
 
-  @override
+  // TODO refactor
+  /*  @override
   Future<int> run() => runWhen(
         [projectExistsAll(_project)],
         _logger,
@@ -115,6 +112,7 @@ class DoctorCommand extends Command<int> {
           return ExitCode.success.code;
         },
       );
+ */
 }
 
 extension on Iterable<String> {

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/ui/android/add/widget/widget.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -31,6 +32,8 @@ void main() {
     late Logger logger;
 
     late Project project;
+
+    late DartFormatFixCommand dartFormatFix;
 
     late ArgResults argResults;
     late String? outputDir;
@@ -65,6 +68,7 @@ void main() {
       command = UiAndroidAddWidgetCommand(
         logger: logger,
         project: project,
+        dartFormatFix: dartFormatFix,
       )..argResultOverrides = argResults;
     });
 

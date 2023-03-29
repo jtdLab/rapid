@@ -9,6 +9,8 @@ class WindowsFeatureAddCubitCommand extends PlatformFeatureAddCubitCommand {
   WindowsFeatureAddCubitCommand({
     super.logger,
     required super.project,
+    super.flutterPubGet,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.windows,
         );

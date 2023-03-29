@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
+import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
@@ -12,29 +12,32 @@ import '../../common.dart';
 import '../../mocks.dart';
 
 InfrastructurePackage _getInfrastructurePackage({
+  DomainPackage? domainPackage,
   Project? project,
   GeneratorBuilder? generator,
+  DataTransferObjectBuilder? dataTransferObjectBuilder,
+  ServiceImplementationBuilder? serviceImplementationBuilder,
 }) {
   return InfrastructurePackage(
+    domainPackage: domainPackage ?? getDomainPackage(),
     project: project ?? getProject(),
-    generator: generator ?? (_) async => getMasonGenerator(),
-  );
+  )
+    ..generatorOverrides = generator
+    ..dataTransferObjectOverrides = dataTransferObjectBuilder
+    ..serviceImplementationOverrides = serviceImplementationBuilder;
 }
 
 DataTransferObject _getDataTransferObject({
   required String entityName,
   required String dir,
   InfrastructurePackage? infrastructurePackage,
-  DartFormatFixCommand? dartFormatFix,
   GeneratorBuilder? generator,
 }) {
   return DataTransferObject(
     entityName: entityName,
     dir: dir,
     infrastructurePackage: infrastructurePackage ?? getInfrastructurePackage(),
-    dartFormatFix: dartFormatFix ?? getDartFormatFix().call,
-    generator: generator ?? (_) async => getMasonGenerator(),
-  );
+  )..generatorOverrides = generator;
 }
 
 ServiceImplementation _getServiceImplementation({
@@ -42,7 +45,6 @@ ServiceImplementation _getServiceImplementation({
   required String serviceName,
   required String dir,
   InfrastructurePackage? infrastructurePackage,
-  DartFormatFixCommand? dartFormatFix,
   GeneratorBuilder? generator,
 }) {
   return ServiceImplementation(
@@ -50,9 +52,7 @@ ServiceImplementation _getServiceImplementation({
     serviceName: serviceName,
     dir: dir,
     infrastructurePackage: infrastructurePackage ?? getInfrastructurePackage(),
-    dartFormatFix: dartFormatFix ?? getDartFormatFix().call,
-    generator: generator ?? (_) async => getMasonGenerator(),
-  );
+  )..generatorOverrides = generator;
 }
 
 void main() {
@@ -115,51 +115,234 @@ void main() {
       );
     });
 
-    test('.dataTransferObject()', () {
-      // Arrange
-      final infrastructurePackage = _getInfrastructurePackage();
+    group('.addDataTransferObject()', () {
+      test('completes successfully with correct output', () {
+        // Arrange
+        final dataTransferObject = getDataTransferObject();
+        when(() => dataTransferObject.existsAny()).thenReturn(false);
+        final dataTransferObjectBuilder = getDataTransferObjectBuilder(
+          dataTransferObject,
+        );
+        final infrastructurePackage = _getInfrastructurePackage(
+          dataTransferObjectBuilder: dataTransferObjectBuilder,
+        );
 
-      // Act + Assert
-      expect(
-        infrastructurePackage.dataTransferObject(
+        // Act
+        final logger = FakeLogger();
+        infrastructurePackage.addDataTransferObject(
           entityName: 'Cool',
-          dir: 'data_transfer_object/path',
-        ),
-        isA<DataTransferObject>()
-            .having((dto) => dto.entityName, 'entityName', 'Cool')
-            .having((dto) => dto.dir, 'dir', 'data_transfer_object/path')
-            .having(
-              (dto) => dto.infrastructurePackage,
-              'infrastructurePackage',
-              infrastructurePackage,
-            ),
-      );
+          outputDir: 'my/dir',
+          logger: logger,
+        );
+
+        // Act + Assert
+        verify(
+          () => dataTransferObjectBuilder(
+            entityName: 'Cool',
+            dir: 'my/dir',
+            infrastructurePackage: infrastructurePackage,
+          ),
+        ).called(1);
+        verify(() => dataTransferObject.create(logger: logger)).called(1);
+      });
+
+      test(
+          'throws DataTransferObjectAlreadyExists when dataTransferObject exists',
+          () {
+        // Arrange
+        final dataTransferObject = getDataTransferObject();
+        when(() => dataTransferObject.existsAny()).thenReturn(true);
+        final dataTransferObjectBuilder = getDataTransferObjectBuilder(
+          dataTransferObject,
+        );
+        final infrastructurePackage = _getInfrastructurePackage(
+          dataTransferObjectBuilder: dataTransferObjectBuilder,
+        );
+
+        // Act + Assert
+        expect(
+          () => infrastructurePackage.addDataTransferObject(
+            entityName: 'Cool',
+            outputDir: 'my/dir',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<DataTransferObjectAlreadyExists>()),
+        );
+      });
     });
 
-    test('.serviceImplementation()', () {
-      // Arrange
-      final infrastructurePackage = _getInfrastructurePackage();
+    group('.removeDataTransferObject()', () {
+      test('completes successfully with correct output', () {
+        // Arrange
+        final dataTransferObject = getDataTransferObject();
+        when(() => dataTransferObject.existsAny()).thenReturn(true);
+        final dataTransferObjectBuilder = getDataTransferObjectBuilder(
+          dataTransferObject,
+        );
+        final infrastructurePackage = _getInfrastructurePackage(
+          dataTransferObjectBuilder: dataTransferObjectBuilder,
+        );
 
-      // Act + Assert
-      expect(
-        infrastructurePackage.serviceImplementation(
+        // Act
+        final logger = FakeLogger();
+        infrastructurePackage.removeDataTransferObject(
+          name: 'CoolDto',
+          dir: 'my/dir',
+          logger: logger,
+        );
+
+        // Act + Assert
+        verify(
+          () => dataTransferObjectBuilder(
+            entityName: 'Cool',
+            dir: 'my/dir',
+            infrastructurePackage: infrastructurePackage,
+          ),
+        ).called(1);
+        verify(() => dataTransferObject.delete(logger: logger)).called(1);
+      });
+
+      test(
+          'throws DataTransferObjectDoesNotExist when dataTransferObject does not exist',
+          () {
+        // Arrange
+        final dataTransferObject = getDataTransferObject();
+        when(() => dataTransferObject.existsAny()).thenReturn(false);
+        final dataTransferObjectBuilder = getDataTransferObjectBuilder(
+          dataTransferObject,
+        );
+        final infrastructurePackage = _getInfrastructurePackage(
+          dataTransferObjectBuilder: dataTransferObjectBuilder,
+        );
+
+        // Act + Assert
+        expect(
+          () => infrastructurePackage.removeDataTransferObject(
+            name: 'CoolDto',
+            dir: 'my/dir',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<DataTransferObjectDoesNotExist>()),
+        );
+      });
+    });
+
+    group('.addServiceImplementation()', () {
+      test('completes successfully with correct output', () {
+        // Arrange
+        final serviceImplementation = getServiceImplementation();
+        when(() => serviceImplementation.existsAny()).thenReturn(false);
+        final serviceImplementationBuilder = getServiceImplementationBuilder(
+          serviceImplementation,
+        );
+        final infrastructurePackage = _getInfrastructurePackage(
+          serviceImplementationBuilder: serviceImplementationBuilder,
+        );
+
+        // Act
+        final logger = FakeLogger();
+        infrastructurePackage.addServiceImplementation(
           name: 'Fake',
-          serviceName: 'MyService',
-          dir: 'service_implementation/path',
-        ),
-        isA<ServiceImplementation>()
-            .having((si) => si.serviceName, 'serviceName', 'MyService')
-            .having(
-              (si) => si.dir,
-              'dir',
-              'service_implementation/path',
-            )
-            .having(
-              (si) => si.infrastructurePackage,
-              'infrastructurePackage',
-              infrastructurePackage,
-            ),
-      );
+          serviceName: 'Cool',
+          outputDir: 'my/dir',
+          logger: logger,
+        );
+
+        // Act + Assert
+        verify(
+          () => serviceImplementationBuilder(
+            name: 'Fake',
+            serviceName: 'Cool',
+            dir: 'my/dir',
+            infrastructurePackage: infrastructurePackage,
+          ),
+        ).called(1);
+        verify(() => serviceImplementation.create(logger: logger)).called(1);
+      });
+
+      test(
+          'throws ServiceImplementationAlreadyExists when service implementation exists',
+          () {
+        // Arrange
+        final serviceImplementation = getServiceImplementation();
+        when(() => serviceImplementation.existsAny()).thenReturn(true);
+        final serviceImplementationBuilder = getServiceImplementationBuilder(
+          serviceImplementation,
+        );
+        final infrastructurePackage = _getInfrastructurePackage(
+          serviceImplementationBuilder: serviceImplementationBuilder,
+        );
+
+        // Act + Assert
+        expect(
+          () => infrastructurePackage.addServiceImplementation(
+            name: 'Fake',
+            serviceName: 'Cool',
+            outputDir: 'my/dir',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<ServiceImplementationAlreadyExists>()),
+        );
+      });
+    });
+
+    group('.removeServiceImplementation()', () {
+      test('completes successfully with correct output', () {
+        // Arrange
+        final serviceImplementation = getServiceImplementation();
+        when(() => serviceImplementation.existsAny()).thenReturn(true);
+        final serviceImplementationBuilder = getServiceImplementationBuilder(
+          serviceImplementation,
+        );
+        final infrastructurePackage = _getInfrastructurePackage(
+          serviceImplementationBuilder: serviceImplementationBuilder,
+        );
+
+        // Act
+        final logger = FakeLogger();
+        infrastructurePackage.removeServiceImplementation(
+          name: 'Fake',
+          serviceName: 'Cool',
+          dir: 'my/dir',
+          logger: logger,
+        );
+
+        // Act + Assert
+        verify(
+          () => serviceImplementationBuilder(
+            name: 'Fake',
+            serviceName: 'Cool',
+            dir: 'my/dir',
+            infrastructurePackage: infrastructurePackage,
+          ),
+        ).called(1);
+        verify(() => serviceImplementation.delete(logger: logger)).called(1);
+      });
+
+      test(
+          'throws ServiceImplementationDoesNotExist when service implementation does not exist',
+          () {
+        // Arrange
+        final serviceImplementation = getServiceImplementation();
+        when(() => serviceImplementation.existsAny()).thenReturn(false);
+        final serviceImplementationBuilder = getServiceImplementationBuilder(
+          serviceImplementation,
+        );
+        final infrastructurePackage = _getInfrastructurePackage(
+          serviceImplementationBuilder: serviceImplementationBuilder,
+        );
+
+        // Act + Assert
+        expect(
+          () => infrastructurePackage.removeServiceImplementation(
+            name: 'Fake',
+            serviceName: 'Cool',
+            dir: 'my/dir',
+            logger: FakeLogger(),
+          ),
+          throwsA(isA<ServiceImplementationDoesNotExist>()),
+        );
+      });
     });
   });
 
@@ -167,41 +350,6 @@ void main() {
     setUpAll(() {
       registerFallbackValue(FakeLogger());
       registerFallbackValue(FakeDirectoryGeneratorTarget());
-    });
-
-    test('.entityName', () {
-      // Arrange
-      final dataTransferObject = _getDataTransferObject(
-        entityName: 'MyEntity',
-        dir: '.',
-      );
-
-      // Act + Assert
-      expect(dataTransferObject.entityName, 'MyEntity');
-    });
-
-    test('.dir', () {
-      // Arrange
-      final dataTransferObject = _getDataTransferObject(
-        entityName: 'MyEntity',
-        dir: 'data_transfer_object/path',
-      );
-
-      // Act + Assert
-      expect(dataTransferObject.dir, 'data_transfer_object/path');
-    });
-
-    test('.infrastructurePackage', () {
-      // Arrange
-      final infrastructurePackage = getInfrastructurePackage();
-      final dataTransferObject = _getDataTransferObject(
-        entityName: 'MyEntity',
-        dir: '.',
-        infrastructurePackage: infrastructurePackage,
-      );
-
-      // Act + Assert
-      expect(dataTransferObject.infrastructurePackage, infrastructurePackage);
     });
 
     group('create', () {
@@ -215,13 +363,11 @@ void main() {
           when(() => infrastructurePackage.path)
               .thenReturn('infrastructure_package/path');
           when(() => infrastructurePackage.project).thenReturn(project);
-          final dartFormatFix = getDartFormatFix();
           final generator = getMasonGenerator();
           final dataTransferObject = _getDataTransferObject(
-            entityName: 'MyEntity',
+            entityName: 'MyDataTransferObject',
             dir: 'data_transfer_object/path',
             infrastructurePackage: infrastructurePackage,
-            dartFormatFix: dartFormatFix,
             generator: (_) async => generator,
           );
 
@@ -243,15 +389,9 @@ void main() {
               ),
               vars: <String, dynamic>{
                 'project_name': 'my_project',
-                'entity_name': 'MyEntity',
+                'dataTransferObject_name': 'MyDataTransferObject',
                 'output_dir': 'data_transfer_object/path',
               },
-              logger: logger,
-            ),
-          ).called(1);
-          verify(
-            () => dartFormatFix(
-              cwd: 'infrastructure_package/path',
               logger: logger,
             ),
           ).called(1);
@@ -338,47 +478,6 @@ void main() {
       registerFallbackValue(FakeDirectoryGeneratorTarget());
     });
 
-    test('.serviceName', () {
-      // Arrange
-      final serviceImplementation = _getServiceImplementation(
-        name: 'Fake',
-        serviceName: 'MyService',
-        dir: '.',
-      );
-
-      // Act + Assert
-      expect(serviceImplementation.serviceName, 'MyService');
-    });
-
-    test('.dir', () {
-      // Arrange
-      final serviceImplementation = _getServiceImplementation(
-        name: 'Fake',
-        serviceName: 'MyService',
-        dir: 'service_implementation/path',
-      );
-
-      // Act + Assert
-      expect(serviceImplementation.dir, 'service_implementation/path');
-    });
-
-    test('.infrastructurePackage', () {
-      // Arrange
-      final infrastructurePackage = getInfrastructurePackage();
-      final serviceImplementation = _getServiceImplementation(
-        name: 'Fake',
-        serviceName: 'MyService',
-        dir: '.',
-        infrastructurePackage: infrastructurePackage,
-      );
-
-      // Act + Assert
-      expect(
-        serviceImplementation.infrastructurePackage,
-        infrastructurePackage,
-      );
-    });
-
     group('.create()', () {
       test(
         'completes successfully with correct output',
@@ -390,14 +489,12 @@ void main() {
           when(() => infrastructurePackage.path)
               .thenReturn('infrastructure_package/path');
           when(() => infrastructurePackage.project).thenReturn(project);
-          final dartFormatFix = getDartFormatFix();
           final generator = getMasonGenerator();
           final serviceImplementation = _getServiceImplementation(
             name: 'Fake',
             serviceName: 'MyService',
             dir: 'service_implementation/path',
             infrastructurePackage: infrastructurePackage,
-            dartFormatFix: dartFormatFix,
             generator: (_) async => generator,
           );
 
@@ -423,12 +520,6 @@ void main() {
                 'service_name': 'MyService',
                 'output_dir': 'service_implementation/path',
               },
-              logger: logger,
-            ),
-          ).called(1);
-          verify(
-            () => dartFormatFix(
-              cwd: 'infrastructure_package/path',
               logger: logger,
             ),
           ).called(1);

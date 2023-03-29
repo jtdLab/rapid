@@ -11,7 +11,7 @@ class DirectoryImpl implements Directory {
   DirectoryImpl({
     String path = '.',
   }) : _directory = io.Directory(
-          p.normalize(p.join(path)),
+          p.normalize(path),
         );
 
   /// The underlying native directory.

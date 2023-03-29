@@ -1,8 +1,9 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -23,55 +24,6 @@ void main() {
       tearDown(() {
         Directory.current = cwd;
       });
-
-      test(
-        'infrastructure add data_transfer_object (fast)',
-        () async {
-          // Arrange
-          await setupProject();
-          final entity = 'FooBar';
-          final outputDir = 'foo';
-          await addEntity();
-          await addEntity(outputDir: outputDir);
-
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            [
-              'infrastructure',
-              'add',
-              'data_transfer_object',
-              '--entity',
-              entity,
-            ],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Act + Assert
-          final commandResultWithOutputDir = await commandRunner.run(
-            [
-              'infrastructure',
-              'add',
-              'data_transfer_object',
-              '--entity',
-              entity,
-              '--output-dir',
-              outputDir
-            ],
-          );
-          expect(commandResultWithOutputDir, equals(ExitCode.success.code));
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...dataTransferObjectFiles(entity: entity),
-            ...dataTransferObjectFiles(entity: entity, outputDir: outputDir),
-          });
-        },
-        tags: ['fast'],
-      );
 
       test(
         'infrastructure add data_transfer_object',

@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,68 +27,26 @@ void main() {
       });
 
       test(
-        'ui windows add widget (fast)',
-        () async {
-          // Arrange
-          await setupProject(Platform.windows);
-          final name = 'FooBar';
-
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            ['ui', 'windows', 'add', 'widget', name],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Act + Assert
-          final outputDir = 'foo';
-          final commandResultWithOutputDir = await commandRunner.run(
-            ['ui', 'windows', 'add', 'widget', name, '--output-dir', outputDir],
-          );
-          expect(commandResultWithOutputDir, equals(ExitCode.success.code));
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...widgetFiles(name: name, platform: Platform.windows),
-            ...widgetFiles(
-                name: name, outputDir: outputDir, platform: Platform.windows),
-          });
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'ui windows add widget',
         () async {
           // Arrange
           await setupProject(Platform.windows);
           final name = 'FooBar';
 
-          // Act + Assert
+          // Act
           final commandResult = await commandRunner.run(
             ['ui', 'windows', 'add', 'widget', name],
           );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Act + Assert
-          final outputDir = 'foo';
-          final commandResultWithOutputDir = await commandRunner.run(
-            ['ui', 'windows', 'add', 'widget', name, '--output-dir', outputDir],
-          );
-          expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
           // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
           verifyDoExist({
             ...platformIndependentPackages,
             ...widgetFiles(name: name, platform: Platform.windows),
-            ...widgetFiles(
-                name: name, outputDir: outputDir, platform: Platform.windows),
           });
 
           await verifyTestsPassWith100PercentCoverage({

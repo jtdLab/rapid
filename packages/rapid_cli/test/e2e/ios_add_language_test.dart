@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,34 +27,6 @@ void main() {
       });
 
       test(
-        'ios add language (fast)',
-        () async {
-          // Arrange
-          const language = 'fr';
-          await setupProject(Platform.ios);
-
-          // Act
-          final commandResult = await commandRunner.run(
-            ['ios', 'add', 'language', language],
-          );
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          final platformDependentDirs = platformDirs(Platform.ios);
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformDependentDirs,
-            ...languageFiles('home_page', Platform.ios, ['en', language]),
-          ]);
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'ios add language',
         () async {
           // Arrange
@@ -71,18 +44,21 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs(Platform.ios);
+          final featurePackages = [
+            featurePackage('app', Platform.ios),
+            featurePackage('home_page', Platform.ios),
+          ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentDirs,
+            ...platformDependentPackages([Platform.ios]),
+            ...featurePackages,
             ...languageFiles('home_page', Platform.ios, ['en', language]),
           ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
-            featurePackage('app', Platform.ios),
-            featurePackage('home_page', Platform.ios),
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.ios),
+            ...featurePackages,
           ]);
         },
       );

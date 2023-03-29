@@ -5,7 +5,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/app_package/app_package.dart';
 import 'package:rapid_cli/src/project/di_package/di_package.dart';
 import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/infrastructure_package/infrastructure_package.dart';
@@ -1742,7 +1741,7 @@ void main() {
               platform: platform,
               logger: FakeLogger(),
             ),
-            throwsA(isA<FeaturesHaveDiffrentLanguages>()),
+            throwsA(isA<FeaturesSupportDiffrentLanguages>()),
           );
           verify(() => platformDirectoryBuilder(platform: platform)).called(1);
         }
@@ -2012,7 +2011,7 @@ void main() {
               platform: platform,
               logger: FakeLogger(),
             ),
-            throwsA(isA<FeaturesHaveDiffrentLanguages>()),
+            throwsA(isA<FeaturesSupportDiffrentLanguages>()),
           );
           verify(() => platformDirectoryBuilder(platform: platform)).called(1);
         }
@@ -2331,7 +2330,7 @@ void main() {
               platform: platform,
               logger: FakeLogger(),
             ),
-            throwsA(isA<FeaturesHaveDiffrentLanguages>()),
+            throwsA(isA<FeaturesSupportDiffrentLanguages>()),
           );
           verify(() => platformDirectoryBuilder(platform: platform)).called(1);
         }

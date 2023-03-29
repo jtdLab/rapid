@@ -9,6 +9,9 @@ class IosRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   IosRemoveFeatureCommand({
     super.logger,
     required super.project,
+    super.melosBootstrap,
+    super.flutterPubGet,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.ios,
         );

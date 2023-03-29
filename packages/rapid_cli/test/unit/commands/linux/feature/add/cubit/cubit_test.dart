@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/linux/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -30,6 +31,11 @@ void main() {
     late Logger logger;
 
     late Project project;
+
+    late FlutterPubGetCommand flutterPubGet;
+
+    late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
     late ArgResults argResults;
     late String featureName;
@@ -63,6 +69,9 @@ void main() {
       command = LinuxFeatureAddCubitCommand(
         logger: logger,
         project: project,
+        flutterPubGet: flutterPubGet,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
       )..argResultOverrides = argResults;
     });
 

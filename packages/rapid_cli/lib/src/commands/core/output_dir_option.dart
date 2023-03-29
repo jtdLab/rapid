@@ -1,4 +1,5 @@
 import 'package:args/args.dart';
+import 'package:meta/meta.dart';
 
 import 'overridable_arg_results.dart';
 
@@ -23,5 +24,6 @@ mixin OutputDirGetter on OverridableArgResults {
   /// Gets the output directory specified by the user.
   ///
   /// Returns [_defaultOutputDir] when no output directory was specified.
+  @protected
   String get outputDir => argResults['output-dir'] ?? _defaultOutputDir;
 }

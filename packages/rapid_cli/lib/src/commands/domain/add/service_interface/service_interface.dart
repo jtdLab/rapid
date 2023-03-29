@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -15,8 +16,10 @@ class DomainAddServiceInterfaceCommand extends Command<int>
   DomainAddServiceInterfaceCommand({
     Logger? logger,
     required Project project,
+    DartFormatFixCommand? dartFormatFix,
   })  : _logger = logger ?? Logger(),
-        _project = project {
+        _project = project,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
       ..addSeparator('')
       ..addOutputDirOption(
@@ -26,6 +29,7 @@ class DomainAddServiceInterfaceCommand extends Command<int>
 
   final Logger _logger;
   final Project _project;
+  final DartFormatFixCommand _dartFormatFix;
 
   @override
   String get name => 'service_interface';
@@ -57,6 +61,9 @@ class DomainAddServiceInterfaceCommand extends Command<int>
               outputDir: outputDir,
               logger: _logger,
             );
+
+            final domainPackage = _project.domainPackage;
+            await _dartFormatFix(cwd: domainPackage.path, logger: _logger);
 
             _logger
               ..info('')

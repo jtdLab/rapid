@@ -11,16 +11,14 @@ ProjectIosApp _getProjectIosApp({
   Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-  required RouteInformationParser<Object> routeInformationParser,
-  required RouterDelegate<Object> routerDelegate,
+  required RouterConfig<Object> routerConfig,
   Brightness? brightness,
 }) {
   return ProjectIosApp(
     locale: locale,
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
-    routeInformationParser: routeInformationParser,
-    routerDelegate: routerDelegate,
+    routerConfig: routerConfig,
     brightness: brightness,
   );
 }
@@ -46,14 +44,12 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final projectIosApp = _getProjectIosApp(
         locale: const Locale('en'),
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
         brightness: Brightness.light,
       );
 
@@ -70,8 +66,7 @@ void main() {
         [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
       );
       expect(cupertinoApp.locale, const Locale('en'));
-      expect(cupertinoApp.routeInformationParser, routeInformationParser);
-      expect(cupertinoApp.routerDelegate, routerDelegate);
+      expect(cupertinoApp.routerConfig, routerConfig);
       expect(cupertinoApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
       expect(theme.data.extensions.values.toSet(), lightExtensions);
@@ -82,14 +77,12 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final projectIosApp = _getProjectIosApp(
         locale: const Locale('en'),
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
         brightness: Brightness.dark,
       );
 
@@ -106,8 +99,7 @@ void main() {
         [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
       );
       expect(cupertinoApp.locale, const Locale('en'));
-      expect(cupertinoApp.routeInformationParser, routeInformationParser);
-      expect(cupertinoApp.routerDelegate, routerDelegate);
+      expect(cupertinoApp.routerConfig, routerConfig);
       expect(cupertinoApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
       expect(theme.data.extensions.values.toSet(), darkExtensions);

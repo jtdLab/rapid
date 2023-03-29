@@ -5,17 +5,16 @@ import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/app_package/app_package.dart';
-import 'package:rapid_cli/src/project/app_package/platform_native_directory/platform_native_directory.dart';
 import 'package:rapid_cli/src/project/di_package/di_package.dart';
 import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/logging_package/logging_package.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/platform_ui_package/platform_ui_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/project/ui_package/ui_package.dart';
+
+// TODO sort alphabetically
 
 // Mocks
 
@@ -162,11 +161,54 @@ class MockDomainPackage extends Mock implements DomainPackage {}
 
 class MockEntity extends Mock implements Entity {}
 
+abstract class _EntityBuilder {
+  Entity call({
+    required String name,
+    required String dir,
+    required DomainPackage domainPackage,
+  });
+}
+
+class MockEntityBuilder extends Mock implements _EntityBuilder {}
+
 class MockServiceInterface extends Mock implements ServiceInterface {}
+
+abstract class _ServiceInterfaceBuilder {
+  ServiceInterface call({
+    required String name,
+    required String dir,
+    required DomainPackage domainPackage,
+  });
+}
+
+class MockServiceInterfaceBuilder extends Mock
+    implements _ServiceInterfaceBuilder {}
 
 class MockServiceImplementation extends Mock implements ServiceImplementation {}
 
+abstract class _ServiceImplementationBuilder {
+  ServiceImplementation call({
+    required String name,
+    required String serviceName,
+    required String dir,
+    required InfrastructurePackage infrastructurePackage,
+  });
+}
+
+class MockServiceImplementationBuilder extends Mock
+    implements _ServiceImplementationBuilder {}
+
 class MockValueObject extends Mock implements ValueObject {}
+
+abstract class _ValueObjectBuilder {
+  ValueObject call({
+    required String name,
+    required String dir,
+    required DomainPackage domainPackage,
+  });
+}
+
+class MockValueObjectBuilder extends Mock implements _ValueObjectBuilder {}
 
 class MockInfrastructurePackage extends Mock implements InfrastructurePackage {}
 
@@ -218,7 +260,28 @@ class MockPlatformUiPackageBuilder extends Mock
 
 class MockDataTransferObject extends Mock implements DataTransferObject {}
 
+abstract class _DataTransferObjectBuilder {
+  DataTransferObject call({
+    required String entityName,
+    required String dir,
+    required InfrastructurePackage infrastructurePackage,
+  });
+}
+
+class MockDataTransferObjectBuilder extends Mock
+    implements _DataTransferObjectBuilder {}
+
 class MockWidget extends Mock implements Widget {}
+
+abstract class _WidgetBuilder {
+  Widget call({
+    required String name,
+    required String dir,
+    required PlatformUiPackage platformUiPackage,
+  });
+}
+
+class MockWidgetBuilder extends Mock implements _WidgetBuilder {}
 
 class MockBloc extends Mock implements Bloc {}
 
@@ -533,6 +596,19 @@ MockWidget getWidget() {
   return widget;
 }
 
+MockWidgetBuilder getWidgetBuilder(Widget widget) {
+  final widgetBuilder = MockWidgetBuilder();
+  when(
+    () => widgetBuilder(
+      name: any(named: 'name'),
+      dir: any(named: 'dir'),
+      platformUiPackage: any(named: 'platformUiPackage'),
+    ),
+  ).thenReturn(widget);
+
+  return widgetBuilder;
+}
+
 MockPlatformDirectoryBuilder getPlatfromDirectoryBuilder() {
   final platformDirectoryBuilder = MockPlatformDirectoryBuilder();
   final platformDirectory = getPlatformDirectory();
@@ -665,6 +741,19 @@ MockEntity getEntity() {
   return entity;
 }
 
+MockEntityBuilder getEntityBuilder(Entity entity) {
+  final entityBuilder = MockEntityBuilder();
+  when(
+    () => entityBuilder(
+      name: any(named: 'name'),
+      dir: any(named: 'dir'),
+      domainPackage: any(named: 'domainPackage'),
+    ),
+  ).thenReturn(entity);
+
+  return entityBuilder;
+}
+
 MockServiceInterface getServiceInterface() {
   final serviceInterface = MockServiceInterface();
   when(
@@ -674,6 +763,21 @@ MockServiceInterface getServiceInterface() {
   return serviceInterface;
 }
 
+MockServiceInterfaceBuilder getServiceInterfaceBuilder(
+  ServiceInterface serviceInterface,
+) {
+  final serviceInterfaceBuilder = MockServiceInterfaceBuilder();
+  when(
+    () => serviceInterfaceBuilder(
+      name: any(named: 'name'),
+      dir: any(named: 'dir'),
+      domainPackage: any(named: 'domainPackage'),
+    ),
+  ).thenReturn(serviceInterface);
+
+  return serviceInterfaceBuilder;
+}
+
 MockServiceImplementation getServiceImplementation() {
   final serviceImplementation = MockServiceImplementation();
   when(
@@ -681,6 +785,22 @@ MockServiceImplementation getServiceImplementation() {
   ).thenAnswer((_) async {});
 
   return serviceImplementation;
+}
+
+MockServiceImplementationBuilder getServiceImplementationBuilder(
+  ServiceImplementation serviceImplementation,
+) {
+  final serviceImplementationBuilder = MockServiceImplementationBuilder();
+  when(
+    () => serviceImplementationBuilder(
+      name: any(named: 'name'),
+      serviceName: any(named: 'serviceName'),
+      dir: any(named: 'dir'),
+      infrastructurePackage: any(named: 'infrastructurePackage'),
+    ),
+  ).thenReturn(serviceImplementation);
+
+  return serviceImplementationBuilder;
 }
 
 MockValueObject getValueObject() {
@@ -694,6 +814,19 @@ MockValueObject getValueObject() {
   ).thenAnswer((_) async {});
 
   return valueObject;
+}
+
+MockValueObjectBuilder getValueObjectBuilder(ValueObject valueObject) {
+  final valueObjectBuilder = MockValueObjectBuilder();
+  when(
+    () => valueObjectBuilder(
+      name: any(named: 'name'),
+      dir: any(named: 'dir'),
+      domainPackage: any(named: 'domainPackage'),
+    ),
+  ).thenReturn(valueObject);
+
+  return valueObjectBuilder;
 }
 
 MockInfrastructurePackage getInfrastructurePackage() {
@@ -794,6 +927,21 @@ MockDataTransferObject getDataTransferObject() {
   ).thenAnswer((_) async {});
 
   return dataTransferObject;
+}
+
+MockDataTransferObjectBuilder getDataTransferObjectBuilder(
+  DataTransferObject dataTransferObject,
+) {
+  final dataTransferObjectBuilder = MockDataTransferObjectBuilder();
+  when(
+    () => dataTransferObjectBuilder(
+      entityName: any(named: 'entityName'),
+      dir: any(named: 'dir'),
+      infrastructurePackage: any(named: 'infrastructurePackage'),
+    ),
+  ).thenReturn(dataTransferObject);
+
+  return dataTransferObjectBuilder;
 }
 
 MockIosNativeDirectory getIosNativeDirectory() {

@@ -10,16 +10,14 @@ ProjectWindowsApp _getProjectWindowsApp({
   Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-  required RouteInformationParser<Object> routeInformationParser,
-  required RouterDelegate<Object> routerDelegate,
+  required RouterConfig<Object> routerConfig,
   ThemeMode? themeMode,
 }) {
   return ProjectWindowsApp(
     locale: locale,
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
-    routeInformationParser: routeInformationParser,
-    routerDelegate: routerDelegate,
+    routerConfig: routerConfig,
     themeMode: themeMode,
   );
 }
@@ -44,13 +42,11 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final projectWindowsApp = _getProjectWindowsApp(
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
       );
 
       // Act
@@ -80,8 +76,15 @@ void main() {
           darkExtensions,
         ),
       );
-      expect(fluentApp.routeInformationParser, routeInformationParser);
-      expect(fluentApp.routerDelegate, routerDelegate);
+      expect(
+        fluentApp.routeInformationProvider,
+        routerConfig.routeInformationProvider,
+      );
+      expect(fluentApp.routerDelegate, routerConfig.routerDelegate);
+      expect(
+        fluentApp.routeInformationParser,
+        routerConfig.routeInformationParser,
+      );
       expect(fluentApp.home, null);
     });
   });

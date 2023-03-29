@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,45 +27,6 @@ void main() {
       });
 
       test(
-        'ios feature add bloc (fast)',
-        () async {
-          // Arrange
-          await setupProject(Platform.ios);
-          final name = 'FooBar';
-          final featureName = 'home_page';
-
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            [
-              'ios',
-              'feature',
-              'add',
-              'bloc',
-              name,
-              '--feature-name',
-              featureName,
-            ],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDirs(Platform.ios),
-            ...blocFiles(
-              name: name,
-              featureName: featureName,
-              platform: Platform.ios,
-            ),
-          });
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'ios feature add bloc',
         () async {
           // Arrange
@@ -80,7 +42,7 @@ void main() {
               'add',
               'bloc',
               name,
-              '--feature-name',
+              '--feature',
               featureName,
             ],
           );
@@ -90,9 +52,13 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
+          final appFeaturePackage = featurePackage('app', Platform.ios);
+          final feature = featurePackage(featureName, Platform.ios);
           verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDirs(Platform.ios),
+            ...platformDependentPackages([Platform.ios]),
+            appFeaturePackage,
+            feature,
             ...blocFiles(
               name: name,
               featureName: featureName,
@@ -100,13 +66,16 @@ void main() {
             ),
           });
 
-          await verifyTestsPass(
-            featurePackage(featureName, Platform.ios),
-            expectedCoverage: 78.57,
-          );
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.ios),
+            appFeaturePackage,
+          ]);
+          // TODO
+          await verifyTestsPass(feature, expectedCoverage: 80.0);
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 4)),
+    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

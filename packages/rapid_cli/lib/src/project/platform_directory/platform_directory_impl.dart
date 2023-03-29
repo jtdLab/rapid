@@ -1,14 +1,17 @@
 import 'package:collection/collection.dart';
+import 'package:mason/mason.dart';
+import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
-import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_features_directory.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_navigation_package/platform_navigation_package.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_root_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 import 'platform_directory.dart';
-import 'platform_feature_package/platform_feature_package.dart';
 
-class PlatformDirectoryImpl extends DartPackageImpl
+abstract class PlatformDirectoryImpl extends DartPackageImpl
     implements PlatformDirectory {
   PlatformDirectoryImpl(
     this.platform, {
@@ -20,11 +23,13 @@ class PlatformDirectoryImpl extends DartPackageImpl
             project.name(),
             '${project.name()}_${platform.name}',
           ),
-        ) {
-    appFeaturePackage = PlatformAppFeaturePackage(platform, project: project);
-    routingFeaturePackage =
-        PlatformRoutingFeaturePackage(platform, project: project);
-  }
+        );
+
+  @override
+  PlatformNavigationPackageBuilder? navigationPackageOverrides;
+
+  @override
+  PlatformFeaturesDirectoryBuilder? featuresDirectoryOverrides;
 
   @override
   final Platform platform;
@@ -33,52 +38,269 @@ class PlatformDirectoryImpl extends DartPackageImpl
   final Project project;
 
   @override
-  late final PlatformAppFeaturePackage appFeaturePackage;
+  PlatformNavigationPackage get navigationPackage =>
+      (navigationPackageOverrides ?? PlatformNavigationPackage.new)(
+        platform,
+        project: project,
+      );
 
   @override
-  late final PlatformRoutingFeaturePackage routingFeaturePackage;
+  PlatformFeaturesDirectory get featuresDirectory =>
+      (featuresDirectoryOverrides ?? PlatformFeaturesDirectory.new)(
+        platform,
+        project: project,
+      );
 
   @override
-  bool allFeaturesHaveSameLanguages() {
-    final featurePackages = [
-      appFeaturePackage,
-      ...customFeaturePackages(),
-    ];
+  String defaultLanguage() => featuresDirectory.defaultLanguage();
 
-    return EqualitySet.from(
-          DeepCollectionEquality.unordered(),
-          featurePackages.map((e) => e.supportedLanguages()),
-        ).length ==
-        1;
+  @override
+  Set<String> supportedLanguages() {
+    final rootPackageSupportedLanguages = rootPackage.supportedLanguages();
+
+    if (!DeepCollectionEquality.unordered().equals(
+      rootPackageSupportedLanguages,
+      featuresDirectory.supportedLanguages(),
+    )) {
+      throw Error(); // TODO more specific
+    }
+
+    return rootPackageSupportedLanguages;
   }
 
   @override
-  bool allFeaturesHaveSameDefaultLanguage() {
-    final featurePackages = [
-      appFeaturePackage,
-      ...customFeaturePackages(),
-    ];
+  Future<void> addFeature({
+    required String name,
+    required String description,
+    required Logger logger,
+  }) async {
+    await featuresDirectory.addFeature(
+      name: name,
+      description: description,
+      defaultLanguage: defaultLanguage(),
+      languages: supportedLanguages(),
+      logger: logger,
+    );
 
-    return featurePackages.map((e) => e.defaultLanguage()).toSet().length == 1;
+    await rootPackage.registerFeature(
+        packageName: '${project.name()}_${platform.name}_$name',
+        logger: logger);
   }
 
   @override
-  PlatformCustomFeaturePackage customFeaturePackage({required String name}) =>
-      PlatformCustomFeaturePackage(name, platform, project: project);
+  Future<void> removeFeature({
+    required String name,
+    required Logger logger,
+  }) async {
+    await rootPackage.unregisterFeature(
+        packageName: '${project.name()}_${platform.name}_$name',
+        logger: logger);
+
+    await featuresDirectory.removeFeature(name: name, logger: logger);
+  }
+
+  @mustCallSuper
+  @override
+  Future<void> addLanguage(
+    String language, {
+    required Logger logger,
+  }) async {
+    await featuresDirectory.addLanguage(language, logger: logger);
+  }
+
+  @mustCallSuper
+  @override
+  Future<void> removeLanguage(
+    String language, {
+    required Logger logger,
+  }) async {
+    await featuresDirectory.removeLanguage(language, logger: logger);
+  }
 
   @override
-  List<PlatformCustomFeaturePackage> customFeaturePackages() => list()
-      .whereType<Directory>()
-      .where((e) => !e.path.endsWith('routing') && !e.path.endsWith('app'))
-      .map(
-        (e) => PlatformCustomFeaturePackage(
-          p
-              .basename(e.path)
-              .replaceAll('${project.name()}_${platform.name}_', ''),
-          platform,
-          project: project,
-        ),
-      )
-      .toList()
-    ..sort((a, b) => a.name.compareTo(b.name));
+  Future<void> setDefaultLanguage(
+    String newDefaultLanguage, {
+    required Logger logger,
+  }) async {
+    await featuresDirectory.setDefaultLanguage(
+      newDefaultLanguage,
+      logger: logger,
+    );
+  }
+
+  @override
+  Future<void> addBloc({
+    required String name,
+    required String featureName,
+    required String outputDir,
+    required Logger logger,
+  }) async {
+    await featuresDirectory.addBloc(
+      name: name,
+      featureName: featureName,
+      outputDir: outputDir,
+      logger: logger,
+    );
+  }
+
+  @override
+  Future<void> removeBloc({
+    required String name,
+    required String featureName,
+    required String dir,
+    required Logger logger,
+  }) async {
+    await featuresDirectory.removeBloc(
+      name: name,
+      featureName: featureName,
+      dir: dir,
+      logger: logger,
+    );
+  }
+
+  @override
+  Future<void> addCubit({
+    required String name,
+    required String featureName,
+    required String outputDir,
+    required Logger logger,
+  }) async {
+    await featuresDirectory.addCubit(
+      name: name,
+      featureName: featureName,
+      outputDir: outputDir,
+      logger: logger,
+    );
+  }
+
+  @override
+  Future<void> removeCubit({
+    required String name,
+    required String featureName,
+    required String dir,
+    required Logger logger,
+  }) async {
+    await featuresDirectory.removeCubit(
+      name: name,
+      featureName: featureName,
+      dir: dir,
+      logger: logger,
+    );
+  }
+}
+
+class NoneIosDirectoryImpl extends PlatformDirectoryImpl
+    implements NoneIosDirectory {
+  NoneIosDirectoryImpl(
+    super.platform, {
+    required super.project,
+  }) : assert(platform != Platform.ios);
+
+  @override
+  NoneIosRootPackageBuilder? rootPackageOverrides;
+
+  @override
+  NoneIosRootPackage get rootPackage =>
+      (rootPackageOverrides ?? NoneIosRootPackage.new)(
+        platform,
+        project: project,
+      );
+
+  @override
+  Future<void> create({
+    String? description,
+    String? orgName,
+    required String language,
+    required Logger logger,
+  }) async {
+    await rootPackage.create(
+      description: description,
+      orgName: orgName,
+      logger: logger,
+    );
+
+    await navigationPackage.create(logger: logger);
+
+    await featuresDirectory.addFeature(
+      name: 'app',
+      description: 'The App feature.', // TODO platform info
+      defaultLanguage: language,
+      languages: {language},
+      logger: logger,
+    );
+
+    await featuresDirectory.addFeature(
+      name: 'home_page',
+      description: 'The Home Page feature.', // TODO platform info
+      defaultLanguage: language,
+      languages: {language},
+      logger: logger,
+    );
+  }
+}
+
+class IosDirectoryImpl extends PlatformDirectoryImpl implements IosDirectory {
+  IosDirectoryImpl({
+    required super.project,
+  }) : super(Platform.ios);
+
+  @override
+  IosRootPackageBuilder? rootPackageOverrides;
+
+  @override
+  IosRootPackage get rootPackage =>
+      (rootPackageOverrides ?? IosRootPackage.new)(
+        project: project,
+      );
+
+  @override
+  Future<void> create({
+    required String orgName,
+    required String language,
+    required Logger logger,
+  }) async {
+    await rootPackage.create(
+      orgName: orgName,
+      language: language,
+      logger: logger,
+    );
+
+    await navigationPackage.create(logger: logger);
+
+    await featuresDirectory.addFeature(
+      name: 'app',
+      description: 'The App feature.', // TODO platform info
+      defaultLanguage: language,
+      languages: {language},
+      logger: logger,
+    );
+
+    await featuresDirectory.addFeature(
+      name: 'home_page',
+      description: 'The Home Page feature.', // TODO platform info
+      defaultLanguage: language,
+      languages: {language},
+      logger: logger,
+    );
+  }
+
+  @override
+  Future<void> addLanguage(
+    String language, {
+    required Logger logger,
+  }) async {
+    await rootPackage.addLanguage(language, logger: logger);
+
+    await super.addLanguage(language, logger: logger);
+  }
+
+  @override
+  Future<void> removeLanguage(
+    String language, {
+    required Logger logger,
+  }) async {
+    await rootPackage.removeLanguage(language, logger: logger);
+
+    await super.removeLanguage(language, logger: logger);
+  }
 }

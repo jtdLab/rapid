@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -20,8 +21,17 @@ class DomainAddValueObjectCommand extends Command<int>
   DomainAddValueObjectCommand({
     Logger? logger,
     required Project project,
+    FlutterPubGetCommand? flutterPubGet,
+    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+    DartFormatFixCommand? dartFormatFix,
   })  : _logger = logger ?? Logger(),
-        _project = project {
+        _project = project,
+        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
       ..addSeparator('')
       ..addOutputDirOption(
@@ -37,6 +47,10 @@ class DomainAddValueObjectCommand extends Command<int>
 
   final Logger _logger;
   final Project _project;
+  final FlutterPubGetCommand _flutterPubGet;
+  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+  final DartFormatFixCommand _dartFormatFix;
 
   @override
   String get name => 'value_object';
@@ -71,6 +85,14 @@ class DomainAddValueObjectCommand extends Command<int>
               generics: generics,
               logger: _logger,
             );
+
+            final domainPackage = _project.domainPackage;
+            await _flutterPubGet(cwd: domainPackage.path, logger: _logger);
+            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+              cwd: domainPackage.path,
+              logger: _logger,
+            );
+            await _dartFormatFix(cwd: domainPackage.path, logger: _logger);
 
             _logger
               ..info('')

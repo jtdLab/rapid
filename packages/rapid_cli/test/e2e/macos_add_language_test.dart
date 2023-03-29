@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,34 +27,6 @@ void main() {
       });
 
       test(
-        'macos add language (fast)',
-        () async {
-          // Arrange
-          const language = 'fr';
-          await setupProject(Platform.macos);
-
-          // Act
-          final commandResult = await commandRunner.run(
-            ['macos', 'add', 'language', language],
-          );
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          final platformDependentDirs = platformDirs(Platform.macos);
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformDependentDirs,
-            ...languageFiles('home_page', Platform.macos, ['en', language]),
-          ]);
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'macos add language',
         () async {
           // Arrange
@@ -71,22 +44,25 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs(Platform.macos);
+          final featurePackages = [
+            featurePackage('app', Platform.macos),
+            featurePackage('home_page', Platform.macos),
+          ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentDirs,
+            ...platformDependentPackages([Platform.macos]),
+            ...featurePackages,
             ...languageFiles('home_page', Platform.macos, ['en', language]),
           ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
-            featurePackage('app', Platform.macos),
-            featurePackage('home_page', Platform.macos),
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.macos),
+            ...featurePackages,
           ]);
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 4)),
+    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

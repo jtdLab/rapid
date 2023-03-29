@@ -9,6 +9,8 @@ class MacosFeatureAddCubitCommand extends PlatformFeatureAddCubitCommand {
   MacosFeatureAddCubitCommand({
     super.logger,
     required super.project,
+    super.flutterPubGet,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.macos,
         );

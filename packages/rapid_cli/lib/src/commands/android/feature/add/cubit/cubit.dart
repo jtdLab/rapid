@@ -9,6 +9,8 @@ class AndroidFeatureAddCubitCommand extends PlatformFeatureAddCubitCommand {
   AndroidFeatureAddCubitCommand({
     super.logger,
     required super.project,
+    super.flutterPubGet,
+    super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(
           platform: Platform.android,
         );

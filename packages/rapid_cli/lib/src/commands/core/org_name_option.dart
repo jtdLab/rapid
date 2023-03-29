@@ -1,5 +1,6 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
+import 'package:meta/meta.dart';
 
 import 'overridable_arg_results.dart';
 
@@ -27,6 +28,7 @@ mixin OrgNameGetter on OverridableArgResults {
   /// Gets the organization name specified by the user.
   ///
   /// Returns [_defaultOrgName] when no organization name specified.
+  @protected
   String get orgName =>
       _validateOrgName(argResults['org-name'] ?? _defaultOrgName);
 

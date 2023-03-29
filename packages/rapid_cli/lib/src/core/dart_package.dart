@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/yaml_file.dart';
 
@@ -10,9 +11,11 @@ abstract class DartPackage implements Directory {
   /// {@macro dart_package}
   factory DartPackage({
     String path = '.',
-    PubspecFile? pubspecFile,
   }) =>
-      DartPackageImpl(path: path, pubspecFile: pubspecFile);
+      DartPackageImpl(path: path);
+
+  @visibleForTesting
+  PubspecFile? pubspecFileOverrides;
 
   /// The pubspec file of the dart package.
   PubspecFile get pubspecFile;

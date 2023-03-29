@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,35 +27,6 @@ void main() {
       });
 
       test(
-        'windows remove feature (fast)',
-        () async {
-          // Arrange
-          const featureName = 'foo_bar';
-          await setupProject(Platform.windows);
-          await addFeature(featureName, platform: Platform.windows);
-
-          // Act
-          final commandResult = await commandRunner.run(
-            ['windows', 'remove', 'feature', featureName],
-          );
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          final platformDependentDirs = platformDirs(Platform.windows);
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformDependentDirs,
-          ]);
-          verifyDoNotExist([featurePackage(featureName, Platform.windows)]);
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'windows remove feature',
         () async {
           // Arrange
@@ -73,21 +45,27 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs(Platform.windows);
+          final featurePackages = [
+            featurePackage('app', Platform.windows),
+            featurePackage('home_page', Platform.windows),
+          ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentDirs,
+            ...platformDependentPackages([Platform.windows]),
+            ...featurePackages,
           ]);
-          verifyDoNotExist([featurePackage(featureName, Platform.windows)]);
+          verifyDoNotExist([
+            featurePackage(featureName, Platform.windows),
+          ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
-            featurePackage('app', Platform.windows),
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.windows),
+            ...featurePackages,
           ]);
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 4)),
+    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

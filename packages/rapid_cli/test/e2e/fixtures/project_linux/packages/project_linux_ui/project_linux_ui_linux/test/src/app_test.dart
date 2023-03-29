@@ -10,16 +10,14 @@ ProjectLinuxApp _getProjectLinuxApp({
   Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-  required RouteInformationParser<Object> routeInformationParser,
-  required RouterDelegate<Object> routerDelegate,
+  required RouterConfig<Object> routerConfig,
   ThemeMode? themeMode,
 }) {
   return ProjectLinuxApp(
     locale: locale,
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
-    routeInformationParser: routeInformationParser,
-    routerDelegate: routerDelegate,
+    routerConfig: routerConfig,
     themeMode: themeMode,
   );
 }
@@ -44,13 +42,11 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final projectLinuxApp = _getProjectLinuxApp(
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
       );
 
       // Act
@@ -80,8 +76,7 @@ void main() {
           darkExtensions,
         ),
       );
-      expect(materialApp.routeInformationParser, routeInformationParser);
-      expect(materialApp.routerDelegate, routerDelegate);
+      expect(materialApp.routerConfig, routerConfig);
       expect(materialApp.home, null);
     });
   });

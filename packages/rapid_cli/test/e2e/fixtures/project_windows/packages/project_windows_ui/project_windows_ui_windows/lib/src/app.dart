@@ -9,8 +9,7 @@ abstract class ProjectWindowsApp extends StatelessWidget {
     this.locale,
     Iterable<Locale>? supportedLocales,
     Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routeInformationParser,
-    this.routerDelegate,
+    this.routerConfig,
     this.themeMode,
     this.home,
   })  : _localizationsDelegates = localizationsDelegates,
@@ -21,8 +20,7 @@ abstract class ProjectWindowsApp extends StatelessWidget {
     Locale? locale,
     required Iterable<Locale> supportedLocales,
     required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-    required RouteInformationParser<Object> routeInformationParser,
-    required RouterDelegate<Object> routerDelegate,
+    required RouterConfig<Object> routerConfig,
     ThemeMode? themeMode,
   }) = _ProjectWindowsApp;
 
@@ -42,8 +40,7 @@ abstract class ProjectWindowsApp extends StatelessWidget {
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
-  final RouteInformationParser<Object>? routeInformationParser;
-  final RouterDelegate<Object>? routerDelegate;
+  final RouterConfig<Object>? routerConfig;
   FluentThemeData get lightTheme =>
       FluentThemeData(extensions: lightExtensions);
   FluentThemeData get darkTheme => FluentThemeData(extensions: darkExtensions);
@@ -56,9 +53,9 @@ class _ProjectWindowsApp extends ProjectWindowsApp {
     super.key,
     super.locale,
     required Iterable<Locale> super.supportedLocales,
-    required super.localizationsDelegates,
-    required super.routeInformationParser,
-    required super.routerDelegate,
+    required Iterable<LocalizationsDelegate<dynamic>>
+        super.localizationsDelegates,
+    required RouterConfig<Object> super.routerConfig,
     super.themeMode,
   }) : super._();
 
@@ -68,8 +65,10 @@ class _ProjectWindowsApp extends ProjectWindowsApp {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: routeInformationParser,
-      routerDelegate: routerDelegate,
+      // TODO: migrate to routerConfig https://github.com/bdlukaa/fluent_ui/issues/781
+      routeInformationProvider: routerConfig?.routeInformationProvider,
+      routerDelegate: routerConfig?.routerDelegate,
+      routeInformationParser: routerConfig?.routeInformationParser,
       color: ProjectWindowsColorTheme.light.secondary,
       theme: lightTheme,
       darkTheme: darkTheme,

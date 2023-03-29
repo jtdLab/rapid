@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show Theme;
 import 'package:project_macos_ui_macos/src/scaffold_theme.dart';
 import 'package:macos_ui/macos_ui.dart';
 
@@ -15,8 +14,7 @@ class ProjectMacosScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        this.theme ?? Theme.of(context).extension<ProjectMacosScaffoldTheme>()!;
+    final theme = this.theme ?? context.projectMacosScaffoldTheme;
     final backgroundColor = theme.backgroundColor;
 
     return PlatformMenuBar(

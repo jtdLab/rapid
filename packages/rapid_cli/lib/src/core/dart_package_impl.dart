@@ -8,10 +8,14 @@ class DartPackageImpl extends DirectoryImpl implements DartPackage {
   DartPackageImpl({
     super.path,
     PubspecFile? pubspecFile,
-  }) : pubspecFile = pubspecFile ?? PubspecFile(path: path);
+  });
 
   @override
-  final PubspecFile pubspecFile;
+  PubspecFile? pubspecFileOverrides;
+
+  @override
+  PubspecFile get pubspecFile =>
+      pubspecFileOverrides ?? PubspecFile(path: path);
 
   @override
   String packageName() => pubspecFile.readName();

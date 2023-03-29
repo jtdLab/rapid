@@ -51,6 +51,17 @@ void main() {
 
     late MelosInstalledCommand melosInstalled;
 
+    late MelosBootstrapCommand melosBootstrap;
+
+    late FlutterPubGetCommand flutterPubGet;
+
+    late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+
+    late FlutterGenl10nCommand flutterGenl10n;
+
+    late DartFormatFixCommand dartFormatFix;
+
     late FlutterConfigEnablePlatformCommand flutterConfigEnableAndroid;
 
     late FlutterConfigEnablePlatformCommand flutterConfigEnableIos;
@@ -142,6 +153,12 @@ void main() {
         logger: logger,
         flutterInstalled: flutterInstalled,
         melosInstalled: melosInstalled,
+        melosBootstrap: melosBootstrap,
+        flutterPubGet: flutterPubGet,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+        flutterGenl10n: flutterGenl10n,
+        dartFormatFix: dartFormatFix,
         flutterConfigEnableAndroid: flutterConfigEnableAndroid,
         flutterConfigEnableIos: flutterConfigEnableIos,
         flutterConfigEnableLinux: flutterConfigEnableLinux,

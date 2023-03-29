@@ -12,8 +12,7 @@ This is under heavy development and not yet ready for real world use.
 | Package                                                                          | Description |
 | -------------------------------------------------------------------------------- | ----------- |
 | [rapid_cli](https://github.com/jtdLab/rapid/tree/main/packages/rapid_cli)        | Command Line Interface for development |
-| [rapid_di](https://github.com/jtdLab/rapid/tree/main/packages/rapid/rapid/rapid_di)          | Dependency Injection |
-| [rapid_domain](https://github.com/jtdLab/rapid/tree/main/packages/rapid/rapid/rapid_domain)          | Domain Layer |
+| [rapid_domain](https://github.com/jtdLab/rapid/tree/main/packages/rapid/rapid_domain)          | Domain Layer Utils |
 
 ## Well architectured Flutter apps. Fast ⚡
 
@@ -24,6 +23,7 @@ Rapid is based on carefully selected packages from the Flutter Community and bri
 | Task                   | Package                                 |
 | ---------------------- |:---------------------------------------:|
 | Project Management     | [melos](https://pub.dev/packages/melos) |
+| Code Generation        | [build_runner](https://pub.dev/packages/build_runner) |
 | Dependency Injection   | [getIt](https://pub.dev/packages/get_it), [injectable](https://pub.dev/packages/injectable) |
 | Routing                | [auto_route](https://pub.dev/packages/auto_route) |
 | Theming                | [theme_tailor](https://pub.dev/packages/theme_tailor) |

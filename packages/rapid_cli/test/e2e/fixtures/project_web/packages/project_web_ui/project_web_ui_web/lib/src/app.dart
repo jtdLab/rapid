@@ -8,8 +8,7 @@ abstract class ProjectWebApp extends StatelessWidget {
     this.locale,
     Iterable<Locale>? supportedLocales,
     Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routeInformationParser,
-    this.routerDelegate,
+    this.routerConfig,
     this.themeMode,
     this.home,
   })  : _localizationsDelegates = localizationsDelegates,
@@ -20,8 +19,7 @@ abstract class ProjectWebApp extends StatelessWidget {
     Locale? locale,
     required Iterable<Locale> supportedLocales,
     required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-    required RouteInformationParser<Object> routeInformationParser,
-    required RouterDelegate<Object> routerDelegate,
+    required RouterConfig<Object> routerConfig,
     ThemeMode? themeMode,
   }) = _ProjectWebApp;
 
@@ -41,8 +39,7 @@ abstract class ProjectWebApp extends StatelessWidget {
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
-  final RouteInformationParser<Object>? routeInformationParser;
-  final RouterDelegate<Object>? routerDelegate;
+  final RouterConfig<Object>? routerConfig;
   ThemeData get lightTheme => ThemeData(extensions: lightExtensions);
   ThemeData get darkTheme => ThemeData(extensions: darkExtensions);
   final ThemeMode? themeMode;
@@ -54,9 +51,9 @@ class _ProjectWebApp extends ProjectWebApp {
     super.key,
     super.locale,
     required Iterable<Locale> super.supportedLocales,
-    required super.localizationsDelegates,
-    required super.routeInformationParser,
-    required super.routerDelegate,
+    required Iterable<LocalizationsDelegate<dynamic>>
+        super.localizationsDelegates,
+    required RouterConfig<Object> super.routerConfig,
     super.themeMode,
   }) : super._();
 
@@ -66,8 +63,7 @@ class _ProjectWebApp extends ProjectWebApp {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: routeInformationParser,
-      routerDelegate: routerDelegate,
+      routerConfig: routerConfig,
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,

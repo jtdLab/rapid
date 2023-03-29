@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,45 +27,6 @@ void main() {
       });
 
       test(
-        'macos feature add bloc (fast)',
-        () async {
-          // Arrange
-          await setupProject(Platform.macos);
-          final name = 'FooBar';
-          final featureName = 'home_page';
-
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            [
-              'macos',
-              'feature',
-              'add',
-              'bloc',
-              name,
-              '--feature-name',
-              featureName,
-            ],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDirs(Platform.macos),
-            ...blocFiles(
-              name: name,
-              featureName: featureName,
-              platform: Platform.macos,
-            ),
-          });
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'macos feature add bloc',
         () async {
           // Arrange
@@ -80,7 +42,7 @@ void main() {
               'add',
               'bloc',
               name,
-              '--feature-name',
+              '--feature',
               featureName,
             ],
           );
@@ -90,9 +52,13 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
+          final appFeaturePackage = featurePackage('app', Platform.macos);
+          final feature = featurePackage(featureName, Platform.macos);
           verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDirs(Platform.macos),
+            ...platformDependentPackages([Platform.macos]),
+            appFeaturePackage,
+            feature,
             ...blocFiles(
               name: name,
               featureName: featureName,
@@ -100,13 +66,16 @@ void main() {
             ),
           });
 
-          await verifyTestsPass(
-            featurePackage(featureName, Platform.macos),
-            expectedCoverage: 82.35,
-          );
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.macos),
+            appFeaturePackage,
+          ]);
+          // TODO
+          await verifyTestsPass(feature, expectedCoverage: 83.33);
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 4)),
+    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

@@ -2,13 +2,14 @@ import 'dart:io' as io;
 
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/directory.dart';
+import 'package:rapid_cli/src/core/file.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
-import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 import 'platform_ui_package.dart';
@@ -16,26 +17,44 @@ import 'platform_ui_package_bundle.dart';
 import 'widget_bundle.dart';
 
 class PlatformUiPackageImpl extends DartPackageImpl
+    with OverridableGenerator, Generatable
     implements PlatformUiPackage {
   PlatformUiPackageImpl(
     this.platform, {
     required this.project,
-    ThemeExtensionsFile? themeExtensionsFile,
-    GeneratorBuilder? generator,
-  })  : _generator = generator ?? MasonGenerator.fromBundle,
-        super(
+  }) : super(
           path: p.join(
             project.path,
             'packages',
             '${project.name()}_ui',
             '${project.name()}_ui_${platform.name}',
           ),
-        ) {
-    this.themeExtensionsFile =
-        themeExtensionsFile ?? ThemeExtensionsFileImpl(platformUiPackage: this);
-  }
+        );
 
-  final GeneratorBuilder _generator;
+  Widget _widget({required String name, required String dir}) =>
+      (widgetOverrides ?? Widget.new)(
+        name: name,
+        dir: dir,
+        platformUiPackage: this,
+      );
+
+  ThemeExtensionsFile get _themeExtensionsFile =>
+      (themeExtensionsFileOverrides ?? ThemeExtensionsFileImpl.new)(
+        platformUiPackage: this,
+      );
+
+  BarrelFile get _barrelFile => (barrelFileOverrides ?? BarrelFile.new)(
+        platformUiPackage: this,
+      );
+
+  @override
+  WidgetBuilder? widgetOverrides;
+
+  @override
+  ThemeExtensionsFileBuilder? themeExtensionsFileOverrides;
+
+  @override
+  BarrelFileBuilder? barrelFileOverrides;
 
   @override
   final Platform platform;
@@ -44,17 +63,12 @@ class PlatformUiPackageImpl extends DartPackageImpl
   final Project project;
 
   @override
-  late final ThemeExtensionsFile themeExtensionsFile;
-
-  @override
-  Future<void> create({
-    required Logger logger,
-  }) async {
+  Future<void> create({required Logger logger}) async {
     final projectName = project.name();
 
-    final generator = await _generator(platformUiPackageBundle);
-    await generator.generate(
-      DirectoryGeneratorTarget(io.Directory(path)),
+    await generate(
+      name: 'ui package (${platform.name})',
+      bundle: platformUiPackageBundle,
       vars: <String, dynamic>{
         'project_name': projectName,
         'android': platform == Platform.android,
@@ -69,69 +83,118 @@ class PlatformUiPackageImpl extends DartPackageImpl
   }
 
   @override
-  Widget widget({
+  Future<void> addWidget({
+    required String name,
+    required String outputDir,
+    required Logger logger,
+  }) async {
+    final widget = _widget(name: name, dir: outputDir);
+    if (widget.existsAny()) {
+      // TODO maybe log which files
+      throw WidgetAlreadyExists();
+    }
+
+    await widget.create(logger: logger);
+    _themeExtensionsFile.addThemeExtension(name);
+
+    _barrelFile.addExport('src/${name.snakeCase}.dart');
+    _barrelFile.addExport('src/${name.snakeCase}_theme.dart');
+  }
+
+  @override
+  Future<void> removeWidget({
     required String name,
     required String dir,
-  }) =>
-      Widget(name: name, dir: dir, platformUiPackage: this);
+    required Logger logger,
+  }) async {
+    final widget = _widget(name: name, dir: dir);
+    if (!widget.existsAny()) {
+      throw WidgetDoesNotExist();
+    }
+
+    widget.delete(logger: logger);
+    _themeExtensionsFile.removeThemeExtension(name);
+    _barrelFile.removeExport('src/${name.snakeCase}.dart');
+    _barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
+  }
 }
 
-class WidgetImpl extends FileSystemEntityCollection implements Widget {
+class WidgetImpl extends FileSystemEntityCollection
+    with OverridableGenerator
+    implements Widget {
   WidgetImpl({
-    required this.name,
-    required this.dir,
-    required this.platformUiPackage,
-    DartFormatFixCommand? dartFormatFix,
-    GeneratorBuilder? generator,
-  })  : _dartFormatFix = dartFormatFix ?? Dart.formatFix,
-        _generator = generator ?? MasonGenerator.fromBundle,
+    required String name,
+    required String dir,
+    required PlatformUiPackage platformUiPackage,
+  })  : _platformUiPackage = platformUiPackage,
+        _name = name,
+        _dir = dir,
         super([
-          Directory(
+          DartFile(
             path: p.join(
               platformUiPackage.path,
               'lib',
               'src',
               dir,
-              name.snakeCase,
             ),
+            name: name.snakeCase,
           ),
-          Directory(
+          DartFile(
+            path: p.join(
+              platformUiPackage.path,
+              'lib',
+              'src',
+              dir,
+            ),
+            name: '${name.snakeCase}_theme',
+          ),
+          DartFile(
+            path: p.join(
+              platformUiPackage.path,
+              'lib',
+              'src',
+              dir,
+            ),
+            name: '${name.snakeCase}_theme.tailor',
+          ),
+          DartFile(
             path: p.join(
               platformUiPackage.path,
               'test',
               'src',
               dir,
-              name.snakeCase,
             ),
+            name: '${name.snakeCase}_test',
+          ),
+          DartFile(
+            path: p.join(
+              platformUiPackage.path,
+              'test',
+              'src',
+              dir,
+            ),
+            name: '${name.snakeCase}_theme_test',
           ),
         ]);
 
-  final DartFormatFixCommand _dartFormatFix;
-  final GeneratorBuilder _generator;
-
-  @override
-  final String name;
-
-  @override
-  final String dir;
-
-  @override
-  final PlatformUiPackage platformUiPackage;
+  final String _name;
+  final String _dir;
+  final PlatformUiPackage _platformUiPackage;
 
   @override
   Future<void> create({
     required Logger logger,
   }) async {
-    final projectName = platformUiPackage.project.name();
-    final platform = platformUiPackage.platform;
+    final projectName = _platformUiPackage.project.name();
+    final platform = _platformUiPackage.platform;
 
-    final generator = await _generator(widgetBundle);
+    final generator = await super.generator(widgetBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(io.Directory(platformUiPackage.path)),
+      DirectoryGeneratorTarget(io.Directory(_platformUiPackage.path)),
       vars: <String, dynamic>{
         'project_name': projectName,
-        'name': name,
-        'output_dir': dir,
+        'name': _name,
+        'output_dir': _dir,
         'android': platform == Platform.android,
         'ios': platform == Platform.ios,
         'linux': platform == Platform.linux,
@@ -141,16 +204,15 @@ class WidgetImpl extends FileSystemEntityCollection implements Widget {
       },
       logger: logger,
     );
-
-    await _dartFormatFix(cwd: platformUiPackage.path, logger: logger);
   }
 }
 
 class ThemeExtensionsFileImpl extends DartFileImpl
     implements ThemeExtensionsFile {
   ThemeExtensionsFileImpl({
-    required this.platformUiPackage,
-  }) : super(
+    required PlatformUiPackage platformUiPackage,
+  })  : _platformUiPackage = platformUiPackage,
+        super(
           path: p.join(
             platformUiPackage.path,
             'lib',
@@ -159,15 +221,11 @@ class ThemeExtensionsFileImpl extends DartFileImpl
           name: 'theme_extensions',
         );
 
-  @override
-  final PlatformUiPackage platformUiPackage;
+  final PlatformUiPackage _platformUiPackage;
 
   @override
-  void addThemeExtension(Widget widget) {
-    final projectName = widget.platformUiPackage.project.name();
-    final name = widget.name;
-
-    addImport('${name.snakeCase}/${name.snakeCase}_theme.dart');
+  void addThemeExtension(String name) {
+    final projectName = _platformUiPackage.project.name();
 
     final themes = ['light', 'dark']; // TODO read from file
 
@@ -189,11 +247,8 @@ class ThemeExtensionsFileImpl extends DartFileImpl
   }
 
   @override
-  void removeThemeExtension(Widget widget) {
-    final projectName = widget.platformUiPackage.project.name();
-    final name = widget.name;
-
-    removeImport('${name.snakeCase}/${name.snakeCase}_theme.dart');
+  void removeThemeExtension(String name) {
+    final projectName = _platformUiPackage.project.name();
 
     final themes = ['light', 'dark']; // TODO read from file
 
@@ -210,4 +265,16 @@ class ThemeExtensionsFileImpl extends DartFileImpl
       }
     }
   }
+}
+
+class BarrelFileImpl extends DartFileImpl implements BarrelFile {
+  BarrelFileImpl({
+    required PlatformUiPackage platformUiPackage,
+  }) : super(
+          path: p.join(
+            platformUiPackage.path,
+            'lib',
+          ),
+          name: platformUiPackage.packageName(),
+        );
 }

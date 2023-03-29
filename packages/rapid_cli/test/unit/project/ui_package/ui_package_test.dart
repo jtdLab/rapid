@@ -14,8 +14,7 @@ UiPackage _getUiPackage({
 }) {
   return UiPackage(
     project: project,
-    generator: generator ?? (_) async => getMasonGenerator(),
-  );
+  )..generatorOverrides = generator;
 }
 
 void main() {
@@ -36,15 +35,6 @@ void main() {
         uiPackage.path,
         'project/path/packages/my_project_ui/my_project_ui',
       );
-    });
-
-    test('.project', () {
-      // Arrange
-      final project = getProject();
-      final uiPackage = _getUiPackage(project: project);
-
-      // Act + Assert
-      expect(uiPackage.project, project);
     });
 
     group('.create()', () {

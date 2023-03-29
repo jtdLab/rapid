@@ -13,6 +13,7 @@ mixin OverridableArgResults on Command<int> {
   ArgResults? argResultOverrides;
 
   /// The argResults that contain parameters specified by the user.
+  @protected
   @override
   ArgResults get argResults => argResultOverrides ?? super.argResults!;
 }

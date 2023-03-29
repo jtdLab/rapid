@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,69 +27,29 @@ void main() {
       });
 
       test(
-        'ui windows remove widget (fast)',
-        () async {
-          // Arrange
-          await setupProject(Platform.windows);
-          final name = 'FooBar';
-          final dir = 'foo';
-          widgetFiles(name: name, platform: Platform.windows).create();
-          widgetFiles(name: name, outputDir: dir, platform: Platform.windows)
-              .create();
-
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            ['ui', 'windows', 'remove', 'widget', name],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Act + Assert
-          final commandResultWithOutputDir = await commandRunner.run(
-            ['ui', 'windows', 'remove', 'widget', name, '--dir', dir],
-          );
-          expect(commandResultWithOutputDir, equals(ExitCode.success.code));
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist({
-            ...widgetFiles(name: name, platform: Platform.windows),
-            ...widgetFiles(
-                name: name, outputDir: dir, platform: Platform.windows),
-          });
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'ui windows remove widget',
         () async {
           // Arrange
           await setupProject(Platform.windows);
           final name = 'FooBar';
-          final dir = 'foo';
           widgetFiles(name: name, platform: Platform.windows).create();
-          widgetFiles(name: name, outputDir: dir, platform: Platform.windows)
-              .create();
+          await addPlatformUiPackageThemeExtensionsFile(
+            name,
+            platform: Platform.windows,
+          );
+          await addPlatformUiPackageBarrelFile(
+            name,
+            platform: Platform.windows,
+          );
 
-          // Act + Assert
+          // Act
           final commandResult = await commandRunner.run(
             ['ui', 'windows', 'remove', 'widget', name],
           );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Act + Assert
-
-          final commandResultWithOutputDir = await commandRunner.run(
-            ['ui', 'windows', 'remove', 'widget', name, '--dir', dir],
-          );
-          expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
           // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
@@ -97,8 +58,6 @@ void main() {
           });
           verifyDoNotExist({
             ...widgetFiles(name: name, platform: Platform.windows),
-            ...widgetFiles(
-                name: name, outputDir: dir, platform: Platform.windows),
           });
 
           await verifyTestsPassWith100PercentCoverage({

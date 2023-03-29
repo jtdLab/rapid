@@ -44,7 +44,45 @@ int _compareImports(String a, String b) {
   }
 }
 
+/// Sorts exports after dart standard
+///
+/// ```dart
+/// dart:***
+/// ... more dart exports
+/// package:***
+/// ... more package exports
+/// foo.dart
+/// ... more relative exports
+/// ```
+int _compareExports(String a, String b) {
+  if (a.startsWith('export \'dart')) {
+    if (b.startsWith('export \'dart')) {
+      return a.compareTo(b);
+    }
+
+    return -1;
+  } else if (a.startsWith('export \'package')) {
+    if (b.startsWith('export \'dart')) {
+      return 1;
+    } else if (b.startsWith('export \'package')) {
+      return a.compareTo(b);
+    }
+
+    return -1;
+  } else {
+    if (b.startsWith('export \'dart')) {
+      return 1;
+    } else if (b.startsWith('export \'package')) {
+      return 1;
+    }
+
+    return a.compareTo(b);
+  }
+}
+
 final _importRegExp = RegExp('import \'([a-z_/.:]+)\'( as [a-z]+)?;');
+final _exportRegExp =
+    RegExp('export \'([a-z_/.:]+)\' (:?hide|show) [A-Z]+[A-z1-9]*;');
 
 class DartFileImpl extends FileImpl implements DartFile {
   DartFileImpl({
@@ -86,6 +124,41 @@ class DartFileImpl extends FileImpl implements DartFile {
                     updatedImports.indexOf(e) ==
                         updatedImports.lastIndexWhere(
                             (e) => e.startsWith('import \'package:'))
+                ? [e, '']
+                : [e],
+          )
+          .join('\n'),
+    );
+    write(output);
+  }
+
+  @override
+  void addExport(String export) {
+    final contents = read();
+
+    final existingExports =
+        contents.split('\n').where((line) => _exportRegExp.hasMatch(line));
+    if (existingExports.contains('export \'$export\';')) {
+      return;
+    }
+
+    final updatedExports = [...existingExports, 'export \'$export\';'];
+    updatedExports.sort(_compareExports);
+
+    final output = contents.replaceRange(
+      // start of old exports
+      contents.indexOf(_exportRegExp),
+      // end of old exports
+      contents.indexOf('\n', contents.lastIndexOf(_exportRegExp)),
+      // add empty line after last dart and package export
+      updatedExports
+          .expand(
+            (e) => updatedExports.indexOf(e) ==
+                        updatedExports.lastIndexWhere(
+                            (e) => e.startsWith('export \'dart:')) ||
+                    updatedExports.indexOf(e) ==
+                        updatedExports.lastIndexWhere(
+                            (e) => e.startsWith('export \'package:'))
                 ? [e, '']
                 : [e],
           )
@@ -269,6 +342,25 @@ class DartFileImpl extends FileImpl implements DartFile {
 
     final regExp = RegExp(
       r"import[\s]+\'" + import + r"\'([\s]+as[\s]+[a-z]+)?;" + r"[\s]{1}",
+    );
+    final match = regExp.firstMatch(contents);
+    if (match == null) {
+      return;
+    }
+    final output = contents.replaceRange(match.start, match.end, '');
+
+    write(output);
+  }
+
+  @override
+  void removeExport(String export) {
+    final contents = read();
+
+    final regExp = RegExp(
+      r"export[\s]+\'" +
+          export +
+          r"\'([\s]+(:?hide|show)[\s]+[A-Z]+[A-z1-9]*)?;" +
+          r"[\s]{1}",
     );
     final match = regExp.firstMatch(contents);
     if (match == null) {

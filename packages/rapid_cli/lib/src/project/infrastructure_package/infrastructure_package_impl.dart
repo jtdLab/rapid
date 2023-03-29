@@ -2,11 +2,11 @@ import 'dart:io' as io;
 
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
-import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
-import 'package:rapid_cli/src/core/generator_builder.dart';
+import 'package:rapid_cli/src/project/core/generator_mixins.dart';
+import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/infrastructure_package/data_transfer_object_bundle.dart';
 import 'package:rapid_cli/src/project/infrastructure_package/service_implementation_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -15,12 +15,12 @@ import 'infrastructure_package.dart';
 import 'infrastructure_package_bundle.dart';
 
 class InfrastructurePackageImpl extends DartPackageImpl
+    with OverridableGenerator, Generatable
     implements InfrastructurePackage {
-  /// {@macro infrastructure_package}
   InfrastructurePackageImpl({
+    required DomainPackage domainPackage,
     required this.project,
-    GeneratorBuilder? generator,
-  })  : _generator = generator ?? MasonGenerator.fromBundle,
+  })  : _domainPackage = domainPackage,
         super(
           path: p.join(
             project.path,
@@ -30,7 +30,61 @@ class InfrastructurePackageImpl extends DartPackageImpl
           ),
         );
 
-  final GeneratorBuilder _generator;
+  Entity _entity({
+    required String name,
+    required String dir,
+  }) =>
+      (entityOverrides ?? Entity.new)(
+        name: name,
+        dir: dir,
+        domainPackage: _domainPackage,
+      );
+
+  ServiceInterface _serviceInterface({
+    required String name,
+    required String dir,
+  }) =>
+      (serviceInterfaceOverrides ?? ServiceInterface.new)(
+        name: name,
+        dir: dir,
+        domainPackage: _domainPackage,
+      );
+
+  DataTransferObject _dataTransferObject({
+    required String entityName,
+    required String dir,
+  }) =>
+      (dataTransferObjectOverrides ?? DataTransferObject.new)(
+        entityName: entityName,
+        dir: dir,
+        infrastructurePackage: this,
+      );
+
+  ServiceImplementation _serviceImplementation({
+    required String name,
+    required String serviceName,
+    required String dir,
+  }) =>
+      (serviceImplementationOverrides ?? ServiceImplementation.new)(
+        name: name,
+        serviceName: serviceName,
+        dir: dir,
+        infrastructurePackage: this,
+      );
+
+  @override
+  EntityBuilder? entityOverrides;
+
+  @override
+  ServiceInterfaceBuilder? serviceInterfaceOverrides;
+
+  @override
+  DataTransferObjectBuilder? dataTransferObjectOverrides;
+
+  @override
+  ServiceImplementationBuilder? serviceImplementationOverrides;
+
+  final DomainPackage _domainPackage;
 
   @override
   final Project project;
@@ -41,9 +95,9 @@ class InfrastructurePackageImpl extends DartPackageImpl
   }) async {
     final projectName = project.name();
 
-    final generator = await _generator(infrastructurePackageBundle);
-    await generator.generate(
-      DirectoryGeneratorTarget(io.Directory(path)),
+    await generate(
+      name: 'infrastructure package',
+      bundle: infrastructurePackageBundle,
       vars: <String, dynamic>{
         'project_name': projectName,
       },
@@ -52,167 +106,218 @@ class InfrastructurePackageImpl extends DartPackageImpl
   }
 
   @override
-  DataTransferObject dataTransferObject({
+  Future<void> addDataTransferObject({
     required String entityName,
-    required String dir,
-  }) =>
-      DataTransferObject(
-        entityName: entityName,
-        dir: dir,
-        infrastructurePackage: this,
-      );
+    required String outputDir,
+    required Logger logger,
+  }) async {
+    final entity = _entity(name: entityName, dir: outputDir);
+    if (!entity.existsAll()) {
+      throw EntityDoesNotExist();
+    }
+
+    final dataTransferObject = _dataTransferObject(
+      entityName: entityName,
+      dir: outputDir,
+    );
+    if (dataTransferObject.existsAny()) {
+      throw DataTransferObjectAlreadyExists();
+    }
+
+    await dataTransferObject.create(logger: logger);
+  }
 
   @override
-  ServiceImplementation serviceImplementation({
+  Future<void> removeDataTransferObject({
+    required String name,
+    required String dir,
+    required Logger logger,
+  }) async {
+    final dataTransferObject = _dataTransferObject(
+      // TODO good ? maybe pass the entity
+      entityName: name.replaceAll('Dto', ''),
+      dir: dir,
+    );
+    if (!dataTransferObject.existsAny()) {
+      throw DataTransferObjectDoesNotExist();
+    }
+
+    dataTransferObject.delete(logger: logger);
+  }
+
+  @override
+  Future<void> addServiceImplementation({
+    required String name,
+    required String serviceName,
+    required String outputDir,
+    required Logger logger,
+  }) async {
+    final serviceInterface = _serviceInterface(
+      name: serviceName,
+      dir: outputDir,
+    );
+    if (!serviceInterface.existsAll()) {
+      throw ServiceInterfaceDoesNotExist();
+    }
+
+    final serviceImplementation = _serviceImplementation(
+      name: name,
+      serviceName: serviceName,
+      dir: outputDir,
+    );
+    if (serviceImplementation.existsAny()) {
+      throw ServiceImplementationAlreadyExists();
+    }
+
+    await serviceImplementation.create(logger: logger);
+  }
+
+  @override
+  Future<void> removeServiceImplementation({
     required String name,
     required String serviceName,
     required String dir,
-  }) =>
-      ServiceImplementation(
-        name: name,
-        serviceName: serviceName,
-        dir: dir,
-        infrastructurePackage: this,
-      );
+    required Logger logger,
+  }) async {
+    final serviceImplementation = _serviceImplementation(
+      name: name,
+      serviceName: serviceName,
+      dir: dir,
+    );
+    if (!serviceImplementation.existsAny()) {
+      throw ServiceImplementationDoesNotExist();
+    }
+
+    serviceImplementation.delete(logger: logger);
+  }
 }
 
 class DataTransferObjectImpl extends FileSystemEntityCollection
+    with OverridableGenerator
     implements DataTransferObject {
   DataTransferObjectImpl({
-    required this.entityName,
-    required this.dir,
-    required this.infrastructurePackage,
-    DartFormatFixCommand? dartFormatFix, // TODO needed ?
-    GeneratorBuilder? generator,
-  })  : _dartFormatFix = dartFormatFix ?? Dart.formatFix,
-        _generator = generator ?? MasonGenerator.fromBundle,
+    required String entityName,
+    required String dir,
+    required InfrastructurePackage infrastructurePackage,
+  })  : _infrastructurePackage = infrastructurePackage,
+        _dir = dir,
+        _entityName = entityName,
         super([
-          Directory(
-            path: p.normalize(
-              p.join(
-                infrastructurePackage.path,
-                'lib',
-                'src',
-                dir,
-                entityName.snakeCase,
-              ),
+          DartFile(
+            path: p.join(
+              infrastructurePackage.path,
+              'lib',
+              'src',
+              dir,
             ),
+            name: '${entityName.snakeCase}_dto',
           ),
-          Directory(
-            path: p.normalize(
-              p.join(
-                infrastructurePackage.path,
-                'test',
-                'src',
-                dir,
-                entityName.snakeCase,
-              ),
+          DartFile(
+            path: p.join(
+              infrastructurePackage.path,
+              'lib',
+              'src',
+              dir,
             ),
+            name: '${entityName.snakeCase}_dto.freezed',
+          ),
+          DartFile(
+            path: p.join(
+              infrastructurePackage.path,
+              'lib',
+              'src',
+              dir,
+            ),
+            name: '${entityName.snakeCase}_dto.g',
+          ),
+          DartFile(
+            path: p.join(
+              infrastructurePackage.path,
+              'test',
+              'src',
+              dir,
+            ),
+            name: '${entityName.snakeCase}_dto_test',
           ),
         ]);
 
-  final DartFormatFixCommand _dartFormatFix;
-  final GeneratorBuilder _generator;
-
-  @override
-  final String entityName;
-
-  @override
-  final String dir;
-
-  @override
-  final InfrastructurePackage infrastructurePackage;
+  final String _entityName;
+  final String _dir;
+  final InfrastructurePackage _infrastructurePackage;
 
   @override
   Future<void> create({
     required Logger logger,
   }) async {
-    final projectName = infrastructurePackage.project.name();
+    final projectName = _infrastructurePackage.project.name();
 
-    final generator = await _generator(dataTransferObjectBundle);
+    final generator = await super.generator(dataTransferObjectBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(io.Directory(infrastructurePackage.path)),
+      DirectoryGeneratorTarget(io.Directory(_infrastructurePackage.path)),
       vars: <String, dynamic>{
         'project_name': projectName,
-        'entity_name': entityName,
-        'output_dir': dir,
+        'entity_name': _entityName,
+        'output_dir': _dir,
       },
       logger: logger,
     );
-
-    await _dartFormatFix(cwd: infrastructurePackage.path, logger: logger);
   }
 }
 
 class ServiceImplementationImpl extends FileSystemEntityCollection
+    with OverridableGenerator
     implements ServiceImplementation {
   ServiceImplementationImpl({
-    required this.name,
-    required this.serviceName,
-    required this.dir,
-    required this.infrastructurePackage,
-    DartFormatFixCommand? dartFormatFix,
-    GeneratorBuilder? generator,
-  })  : _dartFormatFix = dartFormatFix ?? Dart.formatFix,
-        _generator = generator ?? MasonGenerator.fromBundle,
+    required String name,
+    required String serviceName,
+    required String dir,
+    required InfrastructurePackage infrastructurePackage,
+  })  : _name = name,
+        _serviceName = serviceName,
+        _dir = dir,
+        _infrastructurePackage = infrastructurePackage,
         super([
-          Directory(
-            path: p.normalize(
-              p.join(
-                infrastructurePackage.path,
-                'lib',
-                'src',
-                dir,
-                serviceName.snakeCase,
-              ),
+          DartFile(
+            path: p.join(
+              infrastructurePackage.path,
+              'lib',
+              'src',
+              dir,
             ),
+            name: '${name.snakeCase}_${serviceName.snakeCase}_service',
           ),
-          Directory(
-            path: p.normalize(
-              p.join(
-                infrastructurePackage.path,
-                'test',
-                'src',
-                dir,
-                serviceName.snakeCase,
-              ),
+          DartFile(
+            path: p.join(
+              infrastructurePackage.path,
+              'test',
+              'src',
+              dir,
             ),
+            name: '${name.snakeCase}_${serviceName.snakeCase}_service_test',
           ),
         ]);
 
-  final DartFormatFixCommand _dartFormatFix;
-  final GeneratorBuilder _generator;
-
-  @override
-  final String name;
-
-  @override
-  final String serviceName;
-
-  @override
-  final String dir;
-
-  @override
-  final InfrastructurePackage infrastructurePackage;
+  final String _name;
+  final String _serviceName;
+  final String _dir;
+  final InfrastructurePackage _infrastructurePackage;
 
   @override
   Future<void> create({
     required Logger logger,
   }) async {
-    final projectName = infrastructurePackage.project.name();
+    final projectName = _infrastructurePackage.project.name();
 
-    final generator = await _generator(serviceImplementationBundle);
+    final generator = await super.generator(serviceImplementationBundle);
     await generator.generate(
-      DirectoryGeneratorTarget(io.Directory(infrastructurePackage.path)),
+      DirectoryGeneratorTarget(io.Directory(_infrastructurePackage.path)),
       vars: <String, dynamic>{
         'project_name': projectName,
-        'name': name,
-        'service_name': serviceName,
-        'output_dir': dir,
+        'name': _name,
+        'service_name': _serviceName,
+        'output_dir': _dir,
       },
       logger: logger,
     );
-
-    await _dartFormatFix(cwd: infrastructurePackage.path, logger: logger);
   }
 }

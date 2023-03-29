@@ -7,6 +7,8 @@ import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// The default description.
@@ -22,6 +24,12 @@ class CreateCommand extends Command<int>
     Logger? logger,
     FlutterInstalledCommand? flutterInstalled,
     MelosInstalledCommand? melosInstalled,
+    MelosBootstrapCommand? melosBootstrap,
+    FlutterPubGetCommand? flutterPubGet,
+    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+    FlutterGenl10nCommand? flutterGenl10n,
+    DartFormatFixCommand? dartFormatFix,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableAndroid,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableIos,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableLinux,
@@ -32,6 +40,13 @@ class CreateCommand extends Command<int>
   })  : _logger = logger ?? Logger(),
         _flutterInstalled = flutterInstalled ?? Flutter.installed,
         _melosInstalled = melosInstalled ?? Melos.installed,
+        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
+                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
+        _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix,
         _flutterConfigEnableAndroid =
             flutterConfigEnableAndroid ?? Flutter.configEnableAndroid,
         _flutterConfigEnableIos =
@@ -119,6 +134,12 @@ class CreateCommand extends Command<int>
   final Logger _logger;
   final FlutterInstalledCommand _flutterInstalled;
   final MelosInstalledCommand _melosInstalled;
+  final MelosBootstrapCommand _melosBootstrap;
+  final FlutterPubGetCommand _flutterPubGet;
+  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+  final FlutterGenl10nCommand _flutterGenl10n;
+  final DartFormatFixCommand _dartFormatFix;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableAndroid;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableIos;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableLinux;
@@ -149,13 +170,14 @@ class CreateCommand extends Command<int>
         () async {
           final outputDir = super.outputDir;
           final project = _project(path: outputDir);
-          if (!project.isEmpty) {
+          if (project.exists() && !project.isEmpty) {
             _logger
               ..info('')
               ..err('Output directory must be empty.');
 
             return ExitCode.config.code;
           }
+
           final projectName = _projectName;
           final description = _description;
           final orgName = super.orgName;
@@ -168,7 +190,7 @@ class CreateCommand extends Command<int>
           final web = _web || _all;
           final windows = _windows || _desktop || _all;
 
-          _logger.info('Creating Rapid project ...');
+          _logger.info('Creating Rapid App ...');
 
           await project.create(
             projectName: projectName,
@@ -184,6 +206,33 @@ class CreateCommand extends Command<int>
             windows: windows,
             logger: _logger,
           );
+
+          // TODO rm and replace with templated .lock and .pubspecoverrides
+          await _melosBootstrap(cwd: project.path, logger: _logger);
+          for (final platform in [
+            if (android) Platform.android,
+            if (ios) Platform.ios,
+            if (linux) Platform.linux,
+            if (macos) Platform.macos,
+            if (web) Platform.web,
+            if (windows) Platform.windows,
+          ]) {
+            final platformDirectory = project.platformDirectory(
+              platform: platform,
+            );
+            final featuresDirectory = platformDirectory.featuresDirectory;
+            final appFeaturePackage = featuresDirectory
+                .featurePackage<PlatformAppFeaturePackage>('app');
+            final homePageFeaturePackage =
+                featuresDirectory.featurePackage('home_page');
+
+            await _flutterGenl10n(cwd: appFeaturePackage.path, logger: _logger);
+            await _flutterGenl10n(
+              cwd: homePageFeaturePackage.path,
+              logger: _logger,
+            );
+          }
+          await _dartFormatFix(cwd: project.path, logger: _logger);
 
           if (android) {
             await _flutterConfigEnableAndroid(logger: _logger);

@@ -37,3 +37,15 @@ class FakeRouteInformationParser extends RouteInformationParser<Object> {
     return 0;
   }
 }
+
+class FakeRouterConfig extends RouterConfig<Object> {
+  final RouteInformationParser<Object> _routeInformationParser;
+
+  FakeRouterConfig()
+      : _routeInformationParser = FakeRouteInformationParser(),
+        super(routerDelegate: FakeRouterDelegate());
+
+  @override
+  RouteInformationParser<Object>? get routeInformationParser =>
+      _routeInformationParser;
+}

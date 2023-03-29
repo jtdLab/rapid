@@ -9,6 +9,8 @@ class AndroidRemoveLanguageCommand extends PlatformRemoveLanguageCommand {
   AndroidRemoveLanguageCommand({
     super.logger,
     required super.project,
+    super.flutterGenl10n,
+    super.dartFormatFix,
   }) : super(
           platform: Platform.android,
         );

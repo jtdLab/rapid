@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/web/add/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -31,6 +32,17 @@ void main() {
     late Logger logger;
 
     late Project project;
+
+    late MelosBootstrapCommand melosBootstrap;
+
+    late FlutterPubGetCommand flutterPubGet;
+
+    late FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+
+    late FlutterGenl10nCommand flutterGenl10n;
+
+    late DartFormatFixCommand dartFormatFix;
 
     late ArgResults argResults;
     late String? description;
@@ -68,6 +80,12 @@ void main() {
       command = WebAddFeatureCommand(
         logger: logger,
         project: project,
+        melosBootstrap: melosBootstrap,
+        flutterPubGet: flutterPubGet,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs:
+            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+        flutterGenl10n: flutterGenl10n,
+        dartFormatFix: dartFormatFix,
       )..argResultOverrides = argResults;
     });
 

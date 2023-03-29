@@ -9,8 +9,7 @@ abstract class ProjectIosApp extends StatelessWidget {
     this.locale,
     Iterable<Locale>? supportedLocales,
     Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routeInformationParser,
-    this.routerDelegate,
+    this.routerConfig,
     this.brightness,
     this.home,
   })  : _localizationsDelegates = localizationsDelegates,
@@ -21,8 +20,7 @@ abstract class ProjectIosApp extends StatelessWidget {
     Locale? locale,
     required Iterable<Locale> supportedLocales,
     required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-    required RouteInformationParser<Object> routeInformationParser,
-    required RouterDelegate<Object> routerDelegate,
+    required RouterConfig<Object> routerConfig,
     Brightness? brightness,
   }) = _ProjectIosApp;
 
@@ -42,8 +40,7 @@ abstract class ProjectIosApp extends StatelessWidget {
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
-  final RouteInformationParser<Object>? routeInformationParser;
-  final RouterDelegate<Object>? routerDelegate;
+  final RouterConfig<Object>? routerConfig;
   final Brightness? brightness;
   final Widget? home;
 
@@ -70,9 +67,9 @@ class _ProjectIosApp extends ProjectIosApp {
     super.key,
     super.locale,
     required Iterable<Locale> super.supportedLocales,
-    required super.localizationsDelegates,
-    required super.routeInformationParser,
-    required super.routerDelegate,
+    required Iterable<LocalizationsDelegate<dynamic>>
+        super.localizationsDelegates,
+    required RouterConfig<Object> super.routerConfig,
     super.brightness,
   }) : super._();
 
@@ -82,8 +79,7 @@ class _ProjectIosApp extends ProjectIosApp {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routeInformationParser: routeInformationParser,
-      routerDelegate: routerDelegate,
+      routerConfig: routerConfig,
       builder: _builder,
     );
   }

@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,69 +27,29 @@ void main() {
       });
 
       test(
-        'ui macos remove widget (fast)',
-        () async {
-          // Arrange
-          await setupProject(Platform.macos);
-          final name = 'FooBar';
-          final dir = 'foo';
-          widgetFiles(name: name, platform: Platform.macos).create();
-          widgetFiles(name: name, outputDir: dir, platform: Platform.macos)
-              .create();
-
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            ['ui', 'macos', 'remove', 'widget', name],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Act + Assert
-          final commandResultWithOutputDir = await commandRunner.run(
-            ['ui', 'macos', 'remove', 'widget', name, '--dir', dir],
-          );
-          expect(commandResultWithOutputDir, equals(ExitCode.success.code));
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist({
-            ...widgetFiles(name: name, platform: Platform.macos),
-            ...widgetFiles(
-                name: name, outputDir: dir, platform: Platform.macos),
-          });
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'ui macos remove widget',
         () async {
           // Arrange
           await setupProject(Platform.macos);
           final name = 'FooBar';
-          final dir = 'foo';
           widgetFiles(name: name, platform: Platform.macos).create();
-          widgetFiles(name: name, outputDir: dir, platform: Platform.macos)
-              .create();
+          await addPlatformUiPackageThemeExtensionsFile(
+            name,
+            platform: Platform.macos,
+          );
+          await addPlatformUiPackageBarrelFile(
+            name,
+            platform: Platform.macos,
+          );
 
-          // Act + Assert
+          // Act
           final commandResult = await commandRunner.run(
             ['ui', 'macos', 'remove', 'widget', name],
           );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Act + Assert
-
-          final commandResultWithOutputDir = await commandRunner.run(
-            ['ui', 'macos', 'remove', 'widget', name, '--dir', dir],
-          );
-          expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
           // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
@@ -97,8 +58,6 @@ void main() {
           });
           verifyDoNotExist({
             ...widgetFiles(name: name, platform: Platform.macos),
-            ...widgetFiles(
-                name: name, outputDir: dir, platform: Platform.macos),
           });
 
           await verifyTestsPassWith100PercentCoverage({

@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,45 +27,6 @@ void main() {
       });
 
       test(
-        'linux feature add bloc (fast)',
-        () async {
-          // Arrange
-          await setupProject(Platform.linux);
-          final name = 'FooBar';
-          final featureName = 'home_page';
-
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            [
-              'linux',
-              'feature',
-              'add',
-              'bloc',
-              name,
-              '--feature-name',
-              featureName,
-            ],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDirs(Platform.linux),
-            ...blocFiles(
-              name: name,
-              featureName: featureName,
-              platform: Platform.linux,
-            ),
-          });
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'linux feature add bloc',
         () async {
           // Arrange
@@ -80,7 +42,7 @@ void main() {
               'add',
               'bloc',
               name,
-              '--feature-name',
+              '--feature',
               featureName,
             ],
           );
@@ -90,9 +52,13 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
+          final appFeaturePackage = featurePackage('app', Platform.linux);
+          final feature = featurePackage(featureName, Platform.linux);
           verifyDoExist({
             ...platformIndependentPackages,
-            ...platformDirs(Platform.linux),
+            ...platformDependentPackages([Platform.linux]),
+            appFeaturePackage,
+            feature,
             ...blocFiles(
               name: name,
               featureName: featureName,
@@ -100,13 +66,16 @@ void main() {
             ),
           });
 
-          await verifyTestsPass(
-            featurePackage(featureName, Platform.linux),
-            expectedCoverage: 78.57,
-          );
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.linux),
+            appFeaturePackage,
+          ]);
+          // TODO
+          await verifyTestsPass(feature, expectedCoverage: 80.0);
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 4)),
+    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

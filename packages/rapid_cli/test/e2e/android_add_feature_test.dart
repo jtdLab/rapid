@@ -1,9 +1,10 @@
 @Tags(['e2e'])
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
-import 'dart:io';
 
 import 'common.dart';
 
@@ -26,35 +27,6 @@ void main() {
       });
 
       test(
-        'android add feature (fast)',
-        () async {
-          // Arrange
-          const featureName = 'my_feature';
-          await setupProject(Platform.android);
-
-          // Act
-          final commandResult = await commandRunner.run(
-            ['android', 'add', 'feature', featureName],
-          );
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-
-          final platformDependentDirs = platformDirs(Platform.android);
-          final featureDir = featurePackage(featureName, Platform.android);
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformDependentDirs,
-            featureDir,
-          ]);
-        },
-        tags: ['fast'],
-      );
-
-      test(
         'android add feature',
         () async {
           // Arrange
@@ -72,19 +44,21 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
 
-          final platformDependentDirs = platformDirs(Platform.android);
-          final featureDir = featurePackage(featureName, Platform.android);
+          final featurePackages = [
+            featurePackage('app', Platform.android),
+            featurePackage('home_page', Platform.android),
+            featurePackage(featureName, Platform.android),
+          ];
           verifyDoExist([
             ...platformIndependentPackages,
-            ...platformDependentDirs,
-            featureDir,
+            ...platformDependentPackages([Platform.android]),
+            ...featurePackages,
           ]);
 
           await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackages
-                .without({domainPackage, infrastructurePackage}),
-            featurePackage('app', Platform.android),
-            featureDir,
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.android),
+            ...featurePackages,
           ]);
         },
       );

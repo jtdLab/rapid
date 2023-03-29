@@ -1,6 +1,4 @@
 tags:
-  pull-request-only:
-    skip: "Should only be run during pull request"
   e2e:
     skip: "End to end tests should be run in parallel with other unit tests"
   android:
@@ -15,7 +13,3 @@ tags:
     skip: "Should only run in an Web environment with a device ready to use"
   windows:
     skip: "Should only run in an Windows environment with a device ready to use"
-  fast:
-    skip: "Fast e2e tests for quick feedback"
-  tweak:
-    skip: "Should only run when fixing issues in ci"

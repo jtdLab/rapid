@@ -13,8 +13,7 @@ class ProjectAndroidScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = this.theme ??
-        Theme.of(context).extension<ProjectAndroidScaffoldTheme>()!;
+    final theme = this.theme ?? context.projectAndroidScaffoldTheme;
     final backgroundColor = theme.backgroundColor;
 
     return Scaffold(

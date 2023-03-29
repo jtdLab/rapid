@@ -1,19 +1,19 @@
 name: rapid
 
 packages:
-  - packages/rapid/rapid/rapid
-  - packages/rapid/rapid/rapid_di
+  - packages/rapid/rapid/rapid_domain
+  - packages/rapid/rapid_test/rapid_test_domain
   - packages/rapid_cli
 
 command:
   bootstrap:
-    usePubspecOverrides: true
     # https://github.com/dart-lang/pub/issues/3404)
     runPubGetInParallel: false
 
 ide:
   intellij: false
 
+# TODO update to melos 3.0.0 via https://melos.invertase.dev/guides/migrations
 scripts:
   postbootstrap: melos run setup-pre-commit-hook
   postclean: |
@@ -34,9 +34,65 @@ scripts:
        - Requires `node` (can be installed via Brew on macOS).
 
   format:
-    run: melos exec -- "dart format . --fix"
+    run: |
+      dart format packages/rapid --fix && \
+      dart format packages/rapid_cli/bin --fix && \
+      dart format packages/rapid_cli/lib --fix && \
+      dart format packages/rapid_cli/test --fix
     description: Format the project
 
   analyze:
-    run: melos exec -- "flutter analyze"
+    run: |
+      flutter analyze packages/rapid && \
+      flutter analyze packages/rapid_cli/bin && \
+      flutter analyze packages/rapid_cli/lib && \
+      flutter analyze packages/apid_cli/test
     description: Analyze the project
+
+  fix:
+    exec: dart fix --apply
+    description: Apply code fixes
+
+  fix:dry:
+    exec: dart fix --dry-run
+    description: Code fixes in dry mode
+
+  dev:activate:
+    exec: dart pub global activate --source path .
+    description: Locally activate rapid_cli for development.
+    packageFilters:
+      scope: "rapid_cli"
+
+  dev:create:
+    run: | 
+      melos dev:activate
+      rm -r -f packages/rapid_cli/tmp && \
+      rapid create foo_bar -o packages/rapid_cli/tmp --ios
+    description: Run rapid create for tinkering with single platform.
+
+  dev:create:none:
+    run: | 
+      melos dev:activate
+      rm -r -f packages/rapid_cli/tmp && \
+      rapid create foo_bar -o packages/rapid_cli/tmp
+    description: Run rapid create for tinkering with no platform.
+
+  dev:create:all:
+    run: | 
+      melos dev:activate
+      rm -r -f packages/rapid_cli/tmp && \
+      rapid create foo_bar -o packages/rapid_cli/tmp --all
+    description: Run rapid create for tinkering with all platforms.
+
+  tool:bundles:
+    exec: sh tool/bundles.sh
+    description: Regenerate fresh bundles from templates.
+    packageFilters:
+      scope: "rapid_cli"
+
+  # TODO this does not find any packages when run melos bs for some reason
+  tool:fixtures:
+    exec: sh tool/fixtures.sh
+    description: Regenerate fresh fixtures for e2e testing.
+    packageFilters:
+      scope: "rapid_cli"

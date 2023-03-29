@@ -92,75 +92,160 @@ Future<void> addServiceInterface({String? outputDir}) async {
 }
 
 Future<void> addFeature(String name, {required Platform platform}) async {
-  final pubspecFile = File(
-    p.join(
-      platformDir(platform).path,
-      'project_${platform.name}_${platform.name}_$name',
-      'pubspec.yaml',
-    ),
-  );
+  final feature = featurePackage(name, platform);
+  final pubspecFile = File(p.join(feature.path, 'pubspec.yaml'));
 
   await pubspecFile.create(recursive: true);
   await pubspecFile.writeAsString('name: $name');
 }
 
+Future<void> addPlatformUiPackageThemeExtensionsFile(
+  String widgetName, {
+  required Platform platform,
+}) async {
+  final content = [
+    if (platform == Platform.ios || platform == Platform.macos)
+      "import 'package:flutter/material.dart' show ThemeExtension;",
+    "import 'package:project_${platform.name}_ui_${platform.name}/project_${platform.name}_ui_${platform.name}.dart';",
+    '',
+    'final lightExtensions = <ThemeExtension>[',
+    '  ${projectName.pascalCase}ColorTheme.light,',
+    '  ${projectName.pascalCase}ScaffoldTheme.light,',
+    '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.light,',
+    '];',
+    '',
+    'final darkExtensions = <ThemeExtension>[',
+    '  ${projectName.pascalCase}ColorTheme.dark,',
+    '  ${projectName.pascalCase}ScaffoldTheme.dark,',
+    '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.dark,',
+    '];',
+  ].join('\n');
+
+  await File(
+    p.join(
+      platformUiPackage(platform).path,
+      'lib',
+      'src',
+      'theme_extensions.dart',
+    ),
+  ).writeAsString(content);
+}
+
+Future<void> addPlatformUiPackageBarrelFile(
+  String widgetName, {
+  required Platform platform,
+}) async {
+  await File(
+    p.join(
+      platformUiPackage(platform).path,
+      'lib',
+      '${projectName}_ui_${platform.name}.dart',
+    ),
+  ).writeAsString(
+    '''
+export 'src/foo_bar.dart';
+export 'src/foo_bar_theme.dart';
+''',
+    mode: FileMode.append,
+  );
+}
+
 late String projectName;
 
-/// The app package containing all setup.
-final appPackage = Directory(p.join('packages', projectName, projectName));
-
-/// The dependency injection package.
 final diPackage =
     Directory(p.join('packages', projectName, '${projectName}_di'));
 
-/// The domain package.
 final domainPackage =
     Directory(p.join('packages', projectName, '${projectName}_domain'));
 
-/// The infrastructure package.
 final infrastructurePackage =
     Directory(p.join('packages', projectName, '${projectName}_infrastructure'));
 
-/// The logging package.
 final loggingPackage =
     Directory(p.join('packages', projectName, '${projectName}_logging'));
 
-/// The directory of [platform] containing platform specific features.
 Directory platformDir(Platform platform) => Directory(
     p.join('packages', projectName, '${projectName}_${platform.name}'));
 
-/// The platform-independent ui package.
+Directory platformRootPackage(Platform platform) => Directory(
+      p.join(
+        'packages',
+        projectName,
+        '${projectName}_${platform.name}',
+        '${projectName}_${platform.name}',
+      ),
+    );
+
+Directory platformFeaturesDir(Platform platform) => Directory(
+      p.join(
+        'packages',
+        projectName,
+        '${projectName}_${platform.name}',
+        '${projectName}_${platform.name}_features',
+      ),
+    );
+
+Directory featurePackage(String name, Platform platform) => Directory(
+      p.join(
+        platformFeaturesDir(platform).path,
+        '${projectName}_${platform.name}_$name',
+      ),
+    );
+
+Directory platformNavigationPackage(Platform platform) => Directory(
+      p.join(
+        'packages',
+        projectName,
+        '${projectName}_${platform.name}',
+        '${projectName}_${platform.name}_navigation',
+      ),
+    );
+
 final uiPackage =
     Directory(p.join('packages', '${projectName}_ui', '${projectName}_ui'));
 
-/// The package of [feature] on platform.
-Directory featurePackage(String feature, Platform platform) => Directory(p.join(
-    platformDir(platform).path, '${projectName}_${platform.name}_$feature'));
+Directory platformUiPackage(Platform platform) => Directory(
+      p.join(
+        'packages',
+        '${projectName}_ui',
+        '${projectName}_ui_${platform.name}',
+      ),
+    );
 
-/// The ui package of [platform].
-Directory platformUiPackage(Platform platform) => Directory(p.join(
-    'packages', '${projectName}_ui', '${projectName}_ui_${platform.name}'));
-
-/// All platform independent packages.
-final platformIndependentPackages = [
-  appPackage,
+final platformIndependentPackagesWithTests = [
   diPackage,
-  domainPackage,
-  infrastructurePackage,
   loggingPackage,
-  uiPackage
+  uiPackage,
 ];
 
-/// All [platform]-dependent dirs of the test project.
-List<Directory> platformDirs(Platform platform) => [
-      Directory(p.join(appPackage.path, platform.name)),
-      platformDir(platform),
+final platformIndependentPackagesWithoutTests = [
+  domainPackage,
+  infrastructurePackage,
+];
+
+final platformIndependentPackages = [
+  ...platformIndependentPackagesWithTests,
+  ...platformIndependentPackagesWithoutTests,
+];
+
+List<Directory> platformDependentPackagesWithTests(Platform platform) => [
+      platformRootPackage(platform),
       platformUiPackage(platform),
     ];
 
-List<Directory> get allPlatformDirs => Platform.values
-    .map((e) => platformDirs(e))
-    .fold(<Directory>[], (prev, curr) => prev + curr).toList();
+List<Directory> platformDependentPackagesWithoutTests(Platform platform) => [
+      platformNavigationPackage(platform),
+    ];
+
+List<Directory> platformDependentPackages(List<Platform> platforms) => [
+      for (final platform in platforms) ...[
+        ...platformDependentPackagesWithTests(platform),
+        ...platformDependentPackagesWithoutTests(platform),
+      ]
+    ];
+
+List<Directory> get allPlatformDependentPackages =>
+    platformDependentPackages(Platform.values);
 
 List<File> blocFiles({
   required String name,
@@ -169,38 +254,46 @@ List<File> blocFiles({
   String? outputDir,
 }) =>
     [
-      File(p.join(
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_bloc.dart')),
-      File(p.join(
+          '${name.snakeCase}_bloc.dart',
+        ),
+      ),
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_bloc.freezed.dart')),
-      File(p.join(
+          '${name.snakeCase}_bloc.freezed.dart',
+        ),
+      ),
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_event.dart')),
-      File(p.join(
+          '${name.snakeCase}_event.dart',
+        ),
+      ),
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_state.dart')),
+          '${name.snakeCase}_state.dart',
+        ),
+      ),
     ];
 
 List<File> cubitFiles({
@@ -210,30 +303,36 @@ List<File> cubitFiles({
   String? outputDir,
 }) =>
     [
-      File(p.join(
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_cubit.dart')),
-      File(p.join(
+          '${name.snakeCase}_cubit.dart',
+        ),
+      ),
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_cubit.freezed.dart')),
-      File(p.join(
+          '${name.snakeCase}_cubit.freezed.dart',
+        ),
+      ),
+      File(
+        p.join(
           featurePackage(featureName, platform).path,
           'lib',
           'src',
           'application',
           outputDir ?? '',
-          name.snakeCase,
-          '${name.snakeCase}_state.dart')),
+          '${name.snakeCase}_state.dart',
+        ),
+      ),
     ];
 
 List<File> entityFiles({
@@ -241,11 +340,11 @@ List<File> entityFiles({
   String? outputDir,
 }) =>
     [
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
           '${name.snakeCase}.dart')),
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
           '${name.snakeCase}.freezed.dart')),
-      File(p.join(domainPackage.path, 'test', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'test', outputDir ?? '',
           '${name.snakeCase}_test.dart')),
     ];
 
@@ -254,11 +353,11 @@ List<File> valueObjectFiles({
   String? outputDir,
 }) =>
     [
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
           '${name.snakeCase}.dart')),
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
           '${name.snakeCase}.freezed.dart')),
-      File(p.join(domainPackage.path, 'test', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'test', outputDir ?? '',
           '${name.snakeCase}_test.dart')),
     ];
 
@@ -267,9 +366,9 @@ List<File> serviceInterfaceFiles({
   String? outputDir,
 }) =>
     [
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
           'i_${name.snakeCase}_service.dart')),
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '', name.snakeCase,
+      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
           'i_${name.snakeCase}_service.freezed.dart')),
     ];
 
@@ -279,13 +378,13 @@ List<File> dataTransferObjectFiles({
 }) =>
     [
       File(p.join(infrastructurePackage.path, 'lib', 'src', outputDir ?? '',
-          entity.snakeCase, '${entity.snakeCase}_dto.dart')),
+          '${entity.snakeCase}_dto.dart')),
       File(p.join(infrastructurePackage.path, 'lib', 'src', outputDir ?? '',
-          entity.snakeCase, '${entity.snakeCase}_dto.freezed.dart')),
+          '${entity.snakeCase}_dto.freezed.dart')),
       File(p.join(infrastructurePackage.path, 'lib', 'src', outputDir ?? '',
-          entity.snakeCase, '${entity.snakeCase}_dto.g.dart')),
+          '${entity.snakeCase}_dto.g.dart')),
       File(p.join(infrastructurePackage.path, 'test', 'src', outputDir ?? '',
-          entity.snakeCase, '${entity.snakeCase}_dto_test.dart')),
+          '${entity.snakeCase}_dto_test.dart')),
     ];
 
 List<File> serviceImplementationFiles({
@@ -300,7 +399,6 @@ List<File> serviceImplementationFiles({
           'lib',
           'src',
           outputDir ?? '',
-          serviceName.snakeCase,
           '${name.snakeCase}_${serviceName.snakeCase}_service.dart',
         ),
       ),
@@ -310,7 +408,6 @@ List<File> serviceImplementationFiles({
           'test',
           'src',
           outputDir ?? '',
-          serviceName.snakeCase,
           '${name.snakeCase}_${serviceName.snakeCase}_service_test.dart',
         ),
       ),
@@ -318,7 +415,6 @@ List<File> serviceImplementationFiles({
 
 List<File> widgetFiles({
   required String name,
-  String? outputDir,
   required Platform platform,
 }) =>
     [
@@ -327,8 +423,6 @@ List<File> widgetFiles({
           platformUiPackage(platform).path,
           'lib',
           'src',
-          outputDir ?? '',
-          name.snakeCase,
           '${name.snakeCase}_theme.dart',
         ),
       ),
@@ -337,8 +431,6 @@ List<File> widgetFiles({
           platformUiPackage(platform).path,
           'lib',
           'src',
-          outputDir ?? '',
-          name.snakeCase,
           '${name.snakeCase}_theme.tailor.dart',
         ),
       ),
@@ -347,8 +439,6 @@ List<File> widgetFiles({
           platformUiPackage(platform).path,
           'lib',
           'src',
-          outputDir ?? '',
-          name.snakeCase,
           '${name.snakeCase}.dart',
         ),
       ),
@@ -357,8 +447,6 @@ List<File> widgetFiles({
           platformUiPackage(platform).path,
           'test',
           'src',
-          outputDir ?? '',
-          name.snakeCase,
           '${name.snakeCase}_theme_test.dart',
         ),
       ),
@@ -367,8 +455,6 @@ List<File> widgetFiles({
           platformUiPackage(platform).path,
           'test',
           'src',
-          outputDir ?? '',
-          name.snakeCase,
           '${name.snakeCase}_test.dart',
         ),
       ),
@@ -423,6 +509,36 @@ extension IterableX<E extends FileSystemEntity> on Iterable<E> {
   }
 }
 
+extension StringX on String {
+  List<Platform> toPlatforms() {
+    switch (this) {
+      case 'android':
+        return [Platform.android];
+      case 'ios':
+        return [Platform.ios];
+      case 'linux':
+        return [Platform.linux];
+      case 'macos':
+        return [Platform.macos];
+      case 'web':
+        return [Platform.web];
+      case 'windows':
+        return [Platform.windows];
+      case 'mobile':
+        return [Platform.android, Platform.ios];
+      case 'desktop':
+        return [Platform.linux, Platform.macos, Platform.windows];
+      case 'all':
+        return Platform.values;
+      default:
+        throw ArgumentError(
+          'Invalid String which does not represent a platform group.',
+          this,
+        );
+    }
+  }
+}
+
 /// Verifys wheter ALL [entities] exist on disk.
 void verifyDoExist(Iterable<FileSystemEntity> entities) {
   for (final entity in entities) {
@@ -459,7 +575,7 @@ Future<void> verifyTestsPass(
   int expectedFailedTests = 0,
   double expectedCoverage = 100,
 }) async {
-  final testResult = await _runFlutterTest(cwd: dir.path);
+  final testResult = await _runFlutterOrDartTest(cwd: dir.path);
 
   expect(testResult.failedTests, expectedFailedTests);
   expect(testResult.coverage, expectedCoverage);
@@ -525,7 +641,7 @@ Future<void> verifyNoFormattingIssues() async {
 /// This is needed because of https://github.com/flutter/flutter/issues/117158
 const _iosDevice = 'iPhone 11';
 
-/// Thrown when [_runFlutterTest] didnt find a test directory.
+/// Thrown when [_runFlutterOrDartTest] didnt find a test directory.
 class TestDirNotFound implements Exception {}
 
 class TestResult {
@@ -536,21 +652,56 @@ class TestResult {
   final double? coverage;
 }
 
-/// Runs `flutter test` in [cwd].
+/// Runs `flutter` or `dart` test` in [cwd].
 ///
 /// If [coverage] is true runs with `--coverage`
-Future<TestResult> _runFlutterTest({
+Future<TestResult> _runFlutterOrDartTest({
   required String cwd,
   bool coverage = true,
 }) async {
-  _println('Run "flutter test${coverage ? ' --coverage' : ''}" in $cwd\n');
+  // TODO required because of https://github.com/dart-lang/test/issues/1977
+  final pubspec = File(p.join(cwd, 'pubspec.yaml'));
+  final content = pubspec.readAsStringSync();
+  final hasFlutterTest = content.contains('flutter_test:');
 
-  final result = await Process.run(
-    'flutter',
-    ['test', if (coverage) '--coverage'],
-    workingDirectory: cwd,
-    runInShell: true,
-  );
+  late ProcessResult result;
+  if (hasFlutterTest) {
+    _println('Run "flutter test${coverage ? ' --coverage' : ''}" in $cwd\n');
+
+    result = await Process.run(
+      'flutter',
+      ['test', if (coverage) '--coverage'],
+      workingDirectory: cwd,
+      runInShell: true,
+    );
+  } else {
+    // dart test --coverage="coverage" format_coverage --lcov --in=coverage --out=coverage/coverage.lcov --report-on=lib
+
+    _println(
+        'Run "dart test${coverage ? ' --coverage="coverage" format_coverage --lcov --in=coverage --out=coverage/coverage.lcov --report-on=lib' : ''}" in $cwd\n');
+
+    result = await Process.run(
+      'dart',
+      [
+        'test',
+        '--coverage=coverage',
+      ],
+      workingDirectory: cwd,
+      runInShell: true,
+    );
+
+    await Process.run(
+      'format_coverage',
+      [
+        '--lcov',
+        '--in=coverage',
+        '--out=coverage/lcov.info',
+        '--report-on=lib',
+      ],
+      workingDirectory: cwd,
+      runInShell: true,
+    );
+  }
 
   final String stderr = result.stderr;
   final String stdout = result.stdout;
@@ -616,11 +767,12 @@ Future<TestResult> _runFlutterTest({
 /// for the given [platform].
 ///
 /// Returns the amount of failed tests.
-Future<int> runFlutterIntegrationTest({
-  required String cwd,
+Future<int> runFlutterIntegrationTest(
+  Directory dir, {
   String pathToTests = '.',
   required Platform platform,
 }) async {
+  final cwd = dir.path;
   late final ProcessResult result;
   if (platform == Platform.web) {
     await Process.start(

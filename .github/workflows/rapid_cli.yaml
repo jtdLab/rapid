@@ -2,6 +2,8 @@ name: rapid_cli
 
 on:
   push:
+    branches:
+      - "main"
     paths:
       - "packages/rapid_cli/**"
       - ".github/workflows/rapid_cli.yaml"

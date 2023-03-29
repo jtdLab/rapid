@@ -34,3 +34,6 @@ pubspec_overrides.yaml
 
 # Coverage
 coverage/
+
+# Dev
+tmp

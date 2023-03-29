@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -17,8 +18,10 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
   InfrastructureAddDataTransferObjectCommand({
     Logger? logger,
     required Project project,
+    DartFormatFixCommand? dartFormatFix,
   })  : _logger = logger ?? Logger(),
-        _project = project {
+        _project = project,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
       ..addSeparator('')
       ..addOption(
@@ -34,6 +37,7 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
 
   final Logger _logger;
   final Project _project;
+  final DartFormatFixCommand _dartFormatFix;
 
   @override
   String get name => 'data_transfer_object';
@@ -63,6 +67,12 @@ class InfrastructureAddDataTransferObjectCommand extends Command<int>
             await _project.addDataTransferObject(
               entityName: entity,
               outputDir: outputDir,
+              logger: _logger,
+            );
+
+            final infrastructurePackage = _project.infrastructurePackage;
+            await _dartFormatFix(
+              cwd: infrastructurePackage.path,
               logger: _logger,
             );
 

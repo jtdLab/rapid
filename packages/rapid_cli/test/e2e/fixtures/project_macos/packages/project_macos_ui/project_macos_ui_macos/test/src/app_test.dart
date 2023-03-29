@@ -12,16 +12,14 @@ ProjectMacosApp _getProjectMacosApp({
   Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-  required RouteInformationParser<Object> routeInformationParser,
-  required RouterDelegate<Object> routerDelegate,
+  required RouterConfig<Object> routerConfig,
   Brightness? brightness,
 }) {
   return ProjectMacosApp(
     locale: locale,
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
-    routeInformationParser: routeInformationParser,
-    routerDelegate: routerDelegate,
+    routerConfig: routerConfig,
     brightness: brightness,
   );
 }
@@ -47,14 +45,12 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final projectMacosApp = _getProjectMacosApp(
         locale: const Locale('en'),
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
         brightness: Brightness.light,
       );
 
@@ -70,8 +66,15 @@ void main() {
         [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
       );
       expect(macosApp.locale, const Locale('en'));
-      expect(macosApp.routeInformationParser, routeInformationParser);
-      expect(macosApp.routerDelegate, routerDelegate);
+      expect(
+        macosApp.routeInformationProvider,
+        routerConfig.routeInformationProvider,
+      );
+      expect(macosApp.routerDelegate, routerConfig.routerDelegate);
+      expect(
+        macosApp.routeInformationParser,
+        routerConfig.routeInformationParser,
+      );
       expect(macosApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
       expect(theme.data.extensions.values.toSet(), lightExtensions);
@@ -82,14 +85,12 @@ void main() {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
-      final routeInformationParser = FakeRouteInformationParser();
-      final routerDelegate = FakeRouterDelegate();
+      final routerConfig = FakeRouterConfig();
       final projectMacosApp = _getProjectMacosApp(
         locale: const Locale('en'),
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
-        routeInformationParser: routeInformationParser,
-        routerDelegate: routerDelegate,
+        routerConfig: routerConfig,
         brightness: Brightness.dark,
       );
 
@@ -105,8 +106,15 @@ void main() {
         [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
       );
       expect(macosApp.locale, const Locale('en'));
-      expect(macosApp.routeInformationParser, routeInformationParser);
-      expect(macosApp.routerDelegate, routerDelegate);
+      expect(
+        macosApp.routeInformationProvider,
+        routerConfig.routeInformationProvider,
+      );
+      expect(macosApp.routerDelegate, routerConfig.routerDelegate);
+      expect(
+        macosApp.routeInformationParser,
+        routerConfig.routeInformationParser,
+      );
       expect(macosApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
       expect(theme.data.extensions.values.toSet(), darkExtensions);

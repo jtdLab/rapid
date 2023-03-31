@@ -3,12 +3,12 @@ import 'package:rapid_cli/src/core/directory_impl.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file_impl.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
+import 'package:rapid_cli/src/project/domain_dir/domain_directory.dart';
+import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_directory.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
 import 'package:rapid_cli/src/project/platform_ui_package/platform_ui_package.dart';
 
 import 'di_package/di_package.dart';
-import 'infrastructure_package/infrastructure_package.dart';
 import 'logging_package/logging_package.dart';
 import 'project.dart';
 import 'project_bundle.dart';
@@ -26,10 +26,10 @@ class ProjectImpl extends DirectoryImpl
   DiPackageBuilder? diPackageOverrides;
 
   @override
-  DomainPackageBuilder? domainPackageOverrides;
+  DomainDirectoryBuilder? domainDirectoryOverrides;
 
   @override
-  InfrastructurePackageBuilder? infrastructurePackageOverrides;
+  InfrastructureDirectoryBuilder? infrastructureDirectoryOverrides;
 
   @override
   LoggingPackageBuilder? loggingPackageOverrides;
@@ -52,14 +52,15 @@ class ProjectImpl extends DirectoryImpl
       (diPackageOverrides ?? DiPackage.new)(project: this);
 
   @override
-  DomainPackage get domainPackage =>
-      (domainPackageOverrides ?? DomainPackage.new)(project: this);
+  DomainDirectory get domainDirectory =>
+      (domainDirectoryOverrides ?? DomainDirectory.new)(
+        project: this,
+      );
 
   @override
-  InfrastructurePackage get infrastructurePackage =>
-      (infrastructurePackageOverrides ?? InfrastructurePackage.new)(
+  InfrastructureDirectory get infrastructureDirectory =>
+      (infrastructureDirectoryOverrides ?? InfrastructureDirectory.new)(
         project: this,
-        domainPackage: domainPackage,
       );
 
   @override
@@ -95,8 +96,10 @@ class ProjectImpl extends DirectoryImpl
   bool existsAll() =>
       melosFile.exists() &&
       diPackage.exists() &&
-      domainPackage.exists() &&
-      infrastructurePackage.exists() &&
+      // TODO use domainDir.exists directly ?
+      domainDirectory.domainPackage(name: '').exists() &&
+      // TODO use infraDir.exists directly ?
+      infrastructureDirectory.infrastructurePackage(name: '').exists() &&
       loggingPackage.exists() &&
       uiPackage.exists();
 
@@ -104,8 +107,10 @@ class ProjectImpl extends DirectoryImpl
   bool existsAny() =>
       melosFile.exists() ||
       diPackage.exists() ||
-      domainPackage.exists() ||
-      infrastructurePackage.exists() ||
+      // TODO use domainDir.exists directly ?
+      domainDirectory.domainPackage(name: '').exists() ||
+      // TODO use infra.exists directly ?
+      infrastructureDirectory.infrastructurePackage(name: '').exists() ||
       loggingPackage.exists() ||
       uiPackage.exists();
 
@@ -149,8 +154,12 @@ class ProjectImpl extends DirectoryImpl
       windows: windows,
       logger: logger,
     );
-    await domainPackage.create(logger: logger);
-    await infrastructurePackage.create(logger: logger);
+    // TODO use domainDir.create directly
+    await domainDirectory.domainPackage(name: '').create(logger: logger);
+    // TODO use infraDir.create directly
+    await infrastructureDirectory
+        .infrastructurePackage(name: '')
+        .create(logger: logger);
     await loggingPackage.create(logger: logger);
     await uiPackage.create(logger: logger);
 
@@ -290,13 +299,39 @@ class ProjectImpl extends DirectoryImpl
   }
 
   @override
+  Future<void> addSubDomain({
+    required String name,
+    required Logger logger,
+  }) async {
+    final domainDirectory = this.domainDirectory;
+    await domainDirectory.addDomainPackage(name: name);
+
+    final infrastructureDirectory = this.infrastructureDirectory;
+    await infrastructureDirectory.addInfrastructurePackage(name: name);
+  }
+
+  @override
+  Future<void> removeSubDomain({
+    required String name,
+    required Logger logger,
+  }) async {
+    final domainDirectory = this.domainDirectory;
+    await domainDirectory.removeDomainPackage(name: name);
+
+    final infrastructureDirectory = this.infrastructureDirectory;
+    await infrastructureDirectory.removenfrastructurePackage(name: name);
+  }
+
+  @override
   Future<void> addEntity({
     required String name,
+    required String domainName,
     required String outputDir,
     required Logger logger,
   }) async {
-    await domainPackage.addEntity(
+    await domainDirectory.addEntity(
       name: name,
+      domainName: domainName,
       outputDir: outputDir,
       logger: logger,
     );
@@ -305,20 +340,28 @@ class ProjectImpl extends DirectoryImpl
   @override
   Future<void> removeEntity({
     required String name,
+    required String domainName,
     required String dir,
     required Logger logger,
   }) async {
-    await domainPackage.removeEntity(name: name, dir: dir, logger: logger);
+    await domainDirectory.removeEntity(
+      name: name,
+      domainName: domainName,
+      dir: dir,
+      logger: logger,
+    );
   }
 
   @override
   Future<void> addServiceInterface({
     required String name,
+    required String domainName,
     required String outputDir,
     required Logger logger,
   }) async {
-    await domainPackage.addServiceInterface(
+    await domainDirectory.addServiceInterface(
       name: name,
+      domainName: domainName,
       outputDir: outputDir,
       logger: logger,
     );
@@ -327,11 +370,13 @@ class ProjectImpl extends DirectoryImpl
   @override
   Future<void> removeServiceInterface({
     required String name,
+    required String domainName,
     required String dir,
     required Logger logger,
   }) async {
-    await domainPackage.removeServiceInterface(
+    await domainDirectory.removeServiceInterface(
       name: name,
+      domainName: domainName,
       dir: dir,
       logger: logger,
     );
@@ -340,13 +385,15 @@ class ProjectImpl extends DirectoryImpl
   @override
   Future<void> addValueObject({
     required String name,
+    required String domainName,
     required String outputDir,
     required String type,
     required String generics,
     required Logger logger,
   }) async {
-    await domainPackage.addValueObject(
+    await domainDirectory.addValueObject(
       name: name,
+      domainName: domainName,
       outputDir: outputDir,
       type: type,
       generics: generics,
@@ -357,20 +404,28 @@ class ProjectImpl extends DirectoryImpl
   @override
   Future<void> removeValueObject({
     required String name,
+    required String domainName,
     required String dir,
     required Logger logger,
   }) async {
-    await domainPackage.removeValueObject(name: name, dir: dir, logger: logger);
+    await domainDirectory.removeValueObject(
+      name: name,
+      domainName: domainName,
+      dir: dir,
+      logger: logger,
+    );
   }
 
   @override
   Future<void> addDataTransferObject({
     required String entityName,
+    required String domainName,
     required String outputDir,
     required Logger logger,
   }) async {
-    await infrastructurePackage.addDataTransferObject(
+    await infrastructureDirectory.addDataTransferObject(
       entityName: entityName,
+      domainName: domainName,
       outputDir: outputDir,
       logger: logger,
     );
@@ -379,11 +434,13 @@ class ProjectImpl extends DirectoryImpl
   @override
   Future<void> removeDataTransferObject({
     required String name,
+    required String domainName,
     required String dir,
     required Logger logger,
   }) async {
-    await infrastructurePackage.removeDataTransferObject(
+    await infrastructureDirectory.removeDataTransferObject(
       name: name,
+      domainName: domainName,
       dir: dir,
       logger: logger,
     );
@@ -392,12 +449,14 @@ class ProjectImpl extends DirectoryImpl
   @override
   Future<void> addServiceImplementation({
     required String name,
+    required String domainName,
     required String serviceName,
     required String outputDir,
     required Logger logger,
   }) async {
-    await infrastructurePackage.addServiceImplementation(
+    await infrastructureDirectory.addServiceImplementation(
       name: name,
+      domainName: domainName,
       serviceName: serviceName,
       outputDir: outputDir,
       logger: logger,
@@ -407,12 +466,14 @@ class ProjectImpl extends DirectoryImpl
   @override
   Future<void> removeServiceImplementation({
     required String name,
+    required String domainName,
     required String serviceName,
     required String dir,
     required Logger logger,
   }) async {
-    await infrastructurePackage.removeServiceImplementation(
+    await infrastructureDirectory.removeServiceImplementation(
       name: name,
+      domainName: domainName,
       serviceName: serviceName,
       dir: dir,
       logger: logger,

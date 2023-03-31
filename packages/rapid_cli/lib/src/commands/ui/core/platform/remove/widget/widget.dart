@@ -84,7 +84,7 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
               ..success('Removed ${_platform.prettyName} Widget $name.');
 
             return ExitCode.success.code;
-          } on WidgetAlreadyExists {
+          } on WidgetDoesNotExist {
             _logger
               ..info('')
               ..err('${_platform.prettyName} Widget $name not found.');

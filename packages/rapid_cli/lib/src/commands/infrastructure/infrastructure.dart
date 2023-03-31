@@ -1,7 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/commands/infrastructure/add/add.dart';
-import 'package:rapid_cli/src/commands/infrastructure/remove/remove.dart';
+import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/sub_infrastructure.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template infrastructure_command}
@@ -13,8 +12,7 @@ class InfrastructureCommand extends Command<int> {
     Logger? logger,
     required Project project,
   }) {
-    addSubcommand(InfrastructureAddCommand(project: project));
-    addSubcommand(InfrastructureRemoveCommand(project: project));
+    addSubcommand(InfrastructureSubinfrastructureCommand(project: project));
   }
 
   @override

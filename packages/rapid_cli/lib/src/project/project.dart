@@ -4,10 +4,10 @@ import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
+import 'package:rapid_cli/src/project/domain_dir/domain_directory.dart';
+import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_directory.dart';
 
 import 'di_package/di_package.dart';
-import 'infrastructure_package/infrastructure_package.dart';
 import 'logging_package/logging_package.dart';
 import 'platform_directory/platform_directory.dart';
 import 'platform_ui_package/platform_ui_package.dart';
@@ -70,6 +70,10 @@ class LanguageArbFileAlreadyExists implements Exception {}
 
 class LanguageArbFileDoesNotExists implements Exception {}
 
+class SubDomainAlreadyExists implements Exception {}
+
+class SubDomainDoesNotExist implements Exception {}
+
 /// Signature for method that returns the [Project] for [path].
 typedef ProjectBuilder = Project Function({String path});
 
@@ -87,10 +91,10 @@ abstract class Project implements Directory, OverridableGenerator {
   DiPackageBuilder? diPackageOverrides;
 
   @visibleForTesting
-  DomainPackageBuilder? domainPackageOverrides;
+  DomainDirectoryBuilder? domainDirectoryOverrides;
 
   @visibleForTesting
-  InfrastructurePackageBuilder? infrastructurePackageOverrides;
+  InfrastructureDirectoryBuilder? infrastructureDirectoryOverrides;
 
   @visibleForTesting
   LoggingPackageBuilder? loggingPackageOverrides;
@@ -108,9 +112,9 @@ abstract class Project implements Directory, OverridableGenerator {
 
   DiPackage get diPackage;
 
-  DomainPackage get domainPackage;
+  DomainDirectory get domainDirectory;
 
-  InfrastructurePackage get infrastructurePackage;
+  InfrastructureDirectory get infrastructureDirectory;
 
   LoggingPackage get loggingPackage;
 
@@ -189,32 +193,47 @@ abstract class Project implements Directory, OverridableGenerator {
     required Logger logger,
   });
 
+  Future<void> addSubDomain({
+    required String name,
+    required Logger logger,
+  });
+
+  Future<void> removeSubDomain({
+    required String name,
+    required Logger logger,
+  });
+
   Future<void> addEntity({
     required String name,
+    required String domainName,
     required String outputDir,
     required Logger logger,
   });
 
   Future<void> removeEntity({
     required String name,
+    required String domainName,
     required String dir,
     required Logger logger,
   });
 
   Future<void> addServiceInterface({
     required String name,
+    required String domainName,
     required String outputDir,
     required Logger logger,
   });
 
   Future<void> removeServiceInterface({
     required String name,
+    required String domainName,
     required String dir,
     required Logger logger,
   });
 
   Future<void> addValueObject({
     required String name,
+    required String domainName,
     required String outputDir,
     required String type,
     required String generics,
@@ -223,24 +242,28 @@ abstract class Project implements Directory, OverridableGenerator {
 
   Future<void> removeValueObject({
     required String name,
+    required String domainName,
     required String dir,
     required Logger logger,
   });
 
   Future<void> addDataTransferObject({
     required String entityName,
+    required String domainName,
     required String outputDir,
     required Logger logger,
   });
 
   Future<void> removeDataTransferObject({
     required String name,
+    required String domainName,
     required String dir,
     required Logger logger,
   });
 
   Future<void> addServiceImplementation({
     required String name,
+    required String domainName,
     required String serviceName,
     required String outputDir,
     required Logger logger,
@@ -248,6 +271,7 @@ abstract class Project implements Directory, OverridableGenerator {
 
   Future<void> removeServiceImplementation({
     required String name,
+    required String domainName,
     required String serviceName,
     required String dir,
     required Logger logger,

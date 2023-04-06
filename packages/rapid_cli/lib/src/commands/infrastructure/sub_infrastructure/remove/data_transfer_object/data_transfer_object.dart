@@ -79,13 +79,13 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
 
             _logger
               ..info('')
-              ..success('Removed Data Transfer Object ${name}Dto.');
+              ..success('Removed Data Transfer Object ${entityName}Dto.');
 
             return ExitCode.success.code;
           } else {
             _logger
               ..info('')
-              ..err('Data Transfer Object ${name}Dto does not exist.');
+              ..err('Data Transfer Object ${entityName}Dto does not exist.');
 
             return ExitCode.config.code;
           }

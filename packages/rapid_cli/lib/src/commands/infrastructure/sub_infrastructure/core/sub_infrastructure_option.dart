@@ -21,18 +21,20 @@ mixin SubInfrastructureGetter on OverridableArgResults {
   ///
   /// Throws [UsageException] when invalid subinfrastructure name.
   @protected
-  String get subInfrastructure =>
+  String? get subInfrastructure =>
       _validateSubInfrastructure(argResults['sub-infrastructure']);
 
   /// Validates whether `subInfrastructure` is a valid subinfrastructure name.
   ///
   /// Returns `subInfrastructure` when valid.
-  String _validateSubInfrastructure(String? subInfrastructure) {
+  String? _validateSubInfrastructure(String? subInfrastructure) {
     if (subInfrastructure == null) {
-      throw UsageException(
+      // TODO can be null?
+      return null;
+/*       throw UsageException(
         'No option specified for the subinfrastructure.',
         usage,
-      );
+      ); */
     }
 
     final isValid = isValidPackageName(subInfrastructure);

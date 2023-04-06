@@ -22,17 +22,19 @@ mixin SubDomainGetter on OverridableArgResults {
   ///
   /// Throws [UsageException] when invalid subdomain name.
   @protected
-  String get subDomain => _validateSubDomain(argResults['sub-domain']);
+  String? get subDomain => _validateSubDomain(argResults['sub-domain']);
 
   /// Validates whether `subDomain` is a valid subdomain name.
   ///
   /// Returns `subDomain` when valid.
-  String _validateSubDomain(String? subDomain) {
+  String? _validateSubDomain(String? subDomain) {
     if (subDomain == null) {
-      throw UsageException(
+      // TODO can be null?
+      return null;
+/*       throw UsageException(
         'No option specified for the subdomain.',
         usage,
-      );
+      ); */
     }
 
     final isValid = isValidPackageName(subDomain);

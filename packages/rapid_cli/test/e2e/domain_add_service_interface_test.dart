@@ -26,7 +26,7 @@ void main() {
       });
 
       test(
-        'domain add service_interface',
+        'domain sub_domain add service_interface',
         () async {
           // Arrange
           await setupProject();
@@ -34,15 +34,17 @@ void main() {
 
           // Act + Assert
           final commandResult = await commandRunner.run(
-            ['domain', 'add', 'service_interface', name],
+            ['domain', 'sub_domain', 'add', 'service_interface', name],
           );
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
           final outputDir = 'foo';
+          // TODO test sub-domain
           final commandResultWithOutputDir = await commandRunner.run(
             [
               'domain',
+              'sub_domain',
               'add',
               'service_interface',
               name,
@@ -64,7 +66,7 @@ void main() {
           });
 
           verifyDoNotHaveTests({
-            domainPackage,
+            domainPackage(),
           });
         },
       );

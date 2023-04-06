@@ -26,12 +26,11 @@ void main() {
       });
 
       test(
-        'infrastructure remove data_transfer_object',
+        'infrastructure sub_infrastructure remove data_transfer_object',
         () async {
           // Arrange
           await setupProject();
           final entityName = 'FooBar';
-          final name = '${entityName}Dto';
           final outputDir = 'foo';
           dataTransferObjectFiles(entity: entityName).create();
           dataTransferObjectFiles(entity: entityName, outputDir: outputDir)
@@ -39,17 +38,27 @@ void main() {
 
           // Act + Assert
           final commandResult = await commandRunner.run(
-            ['infrastructure', 'remove', 'data_transfer_object', name],
+            [
+              'infrastructure',
+              'sub_infrastructure',
+              'remove',
+              'data_transfer_object',
+              '--entity',
+              entityName
+            ],
           );
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
+          // TODO test sub-infrastructure
           final commandResultWithOutputDir = await commandRunner.run(
             [
               'infrastructure',
+              'sub_infrastructure',
               'remove',
               'data_transfer_object',
-              name,
+              '--entity',
+              entityName,
               '--dir',
               outputDir
             ],
@@ -70,7 +79,7 @@ void main() {
           });
 
           verifyDoNotHaveTests({
-            infrastructurePackage,
+            infrastructurePackage(),
           });
         },
       );

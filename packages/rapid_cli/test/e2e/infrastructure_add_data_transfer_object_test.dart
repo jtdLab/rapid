@@ -26,7 +26,7 @@ void main() {
       });
 
       test(
-        'infrastructure add data_transfer_object',
+        'infrastructure sub_infrastructure add data_transfer_object',
         () async {
           // Arrange
           await setupProject();
@@ -39,6 +39,7 @@ void main() {
           final commandResult = await commandRunner.run(
             [
               'infrastructure',
+              'sub_infrastructure',
               'add',
               'data_transfer_object',
               '--entity',
@@ -48,9 +49,11 @@ void main() {
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
+          // TODO test sub-infrastructure
           final commandResultWithOutputDir = await commandRunner.run(
             [
               'infrastructure',
+              'sub_infrastructure',
               'add',
               'data_transfer_object',
               '--entity',
@@ -72,7 +75,7 @@ void main() {
           });
 
           await verifyTestsPassWith100PercentCoverage({
-            infrastructurePackage,
+            infrastructurePackage(),
           });
         },
       );

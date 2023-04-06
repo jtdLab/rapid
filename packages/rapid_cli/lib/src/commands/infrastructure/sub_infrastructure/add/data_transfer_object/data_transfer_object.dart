@@ -89,20 +89,20 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
 
               _logger
                 ..info('')
-                ..success('Added Data Transfer Object ${entity}Dto.');
+                ..success('Added Data Transfer Object ${entityName}Dto.');
 
               return ExitCode.success.code;
             } else {
               _logger
                 ..info('')
-                ..err('Data Transfer Object ${entity}Dto already exists.');
+                ..err('Data Transfer Object ${entityName}Dto already exists.');
 
               return ExitCode.config.code;
             }
           } else {
             _logger
               ..info('')
-              ..err('Entity $entity does not exist.');
+              ..err('Entity $entityName does not exist.');
 
             return ExitCode.config.code;
           }

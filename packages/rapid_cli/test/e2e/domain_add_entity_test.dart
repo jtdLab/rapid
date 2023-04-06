@@ -26,7 +26,7 @@ void main() {
       });
 
       test(
-        'domain add entity',
+        'domain sub_domain add entity',
         () async {
           // Arrange
           await setupProject();
@@ -34,14 +34,29 @@ void main() {
 
           // Act + Assert
           final commandResult = await commandRunner.run(
-            ['domain', 'add', 'entity', name],
+            [
+              'domain',
+              'sub_domain',
+              'add',
+              'entity',
+              name,
+            ],
           );
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
+          // TODO test sub-domain
           final outputDir = 'foo';
           final commandResultWithOutputDir = await commandRunner.run(
-            ['domain', 'add', 'entity', name, '--output-dir', outputDir],
+            [
+              'domain',
+              'sub_domain',
+              'add',
+              'entity',
+              name,
+              '--output-dir',
+              outputDir
+            ],
           );
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
@@ -56,7 +71,7 @@ void main() {
           });
 
           await verifyTestsPassWith100PercentCoverage({
-            domainPackage,
+            domainPackage(),
           });
         },
       );

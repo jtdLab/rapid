@@ -20,6 +20,8 @@ vars:
     type: string
   output_dir:
     type: string
+  output_dir_is_cwd:
+    type: boolean
   has_subdomain_name:
     type: boolean
   subdomain_name:

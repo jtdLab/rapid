@@ -26,7 +26,7 @@ void main() {
       });
 
       test(
-        'infrastructure add service_implementation',
+        'infrastructure sub_infrastructure add service_implementation',
         () async {
           // Arrange
           await setupProject();
@@ -40,6 +40,7 @@ void main() {
           final commandResult = await commandRunner.run(
             [
               'infrastructure',
+              'sub_infrastructure',
               'add',
               'service_implementation',
               name,
@@ -50,9 +51,11 @@ void main() {
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
+          // TODO test sub-infrastructure
           final commandResultWithOutputDir = await commandRunner.run(
             [
               'infrastructure',
+              'sub_infrastructure',
               'add',
               'service_implementation',
               name,
@@ -81,7 +84,7 @@ void main() {
             ),
           });
 
-          await verifyTestsPass(infrastructurePackage, expectedCoverage: 0);
+          await verifyTestsPass(infrastructurePackage(), expectedCoverage: 0);
         },
       );
     },

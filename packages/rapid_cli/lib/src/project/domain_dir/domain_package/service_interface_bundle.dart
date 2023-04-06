@@ -22,7 +22,7 @@ final serviceInterfaceBundle = MasonBundle.fromJson(<String, dynamic>{
   "hooks": [],
   "name": "service_interface",
   "description":
-      "A brick generating an service_interface of the domain package of a Rapid project.",
+      "A brick generating an service_interface of a domain package of a Rapid project.",
   "version": "0.1.0",
   "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {

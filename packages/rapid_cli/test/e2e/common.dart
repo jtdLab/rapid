@@ -73,21 +73,24 @@ Future<void> setupProject([Platform? activatedPlatform]) async {
   }
 }
 
-Future<void> addEntity({String? outputDir}) async {
+Future<void> addEntity({String? subDomainName, String? outputDir}) async {
   await copyPath(
     p.join(fixturesPath, 'entity', 'lib'),
-    p.join(domainPackage.path, 'lib', outputDir ?? ''),
+    p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? ''),
   );
   await copyPath(
     p.join(fixturesPath, 'entity', 'test'),
-    p.join(domainPackage.path, 'test', outputDir ?? ''),
+    p.join(domainPackage(subDomainName).path, 'test', outputDir ?? ''),
   );
 }
 
-Future<void> addServiceInterface({String? outputDir}) async {
+Future<void> addServiceInterface({
+  String? subDomainName,
+  String? outputDir,
+}) async {
   await copyPath(
     p.join(fixturesPath, 'service_interface'),
-    p.join(domainPackage.path, 'lib', outputDir ?? ''),
+    p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? ''),
   );
 }
 
@@ -155,14 +158,28 @@ late String projectName;
 final diPackage =
     Directory(p.join('packages', projectName, '${projectName}_di'));
 
-final domainPackage =
+final domainDirectory =
     Directory(p.join('packages', projectName, '${projectName}_domain'));
 
-final infrastructurePackage =
+final infrastructureDirectory =
     Directory(p.join('packages', projectName, '${projectName}_infrastructure'));
 
 final loggingPackage =
     Directory(p.join('packages', projectName, '${projectName}_logging'));
+
+Directory domainPackage([String? name]) => Directory(
+      p.join(
+        domainDirectory.path,
+        '${projectName}_domain${name != null ? '_$name' : ''}',
+      ),
+    );
+
+Directory infrastructurePackage([String? name]) => Directory(
+      p.join(
+        infrastructureDirectory.path,
+        '${projectName}_infrastructure${name != null ? '_$name' : ''}',
+      ),
+    );
 
 Directory platformDir(Platform platform) => Directory(
     p.join('packages', projectName, '${projectName}_${platform.name}'));
@@ -219,8 +236,8 @@ final platformIndependentPackagesWithTests = [
 ];
 
 final platformIndependentPackagesWithoutTests = [
-  domainPackage,
-  infrastructurePackage,
+  domainPackage(),
+  infrastructurePackage(),
 ];
 
 final platformIndependentPackages = [
@@ -337,65 +354,70 @@ List<File> cubitFiles({
 
 List<File> entityFiles({
   required String name,
+  String? subDomainName,
   String? outputDir,
 }) =>
     [
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
+      File(p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? '',
           '${name.snakeCase}.dart')),
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
+      File(p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? '',
           '${name.snakeCase}.freezed.dart')),
-      File(p.join(domainPackage.path, 'test', outputDir ?? '',
+      File(p.join(domainPackage(subDomainName).path, 'test', outputDir ?? '',
           '${name.snakeCase}_test.dart')),
     ];
 
 List<File> valueObjectFiles({
   required String name,
+  String? subDomainName,
   String? outputDir,
 }) =>
     [
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
+      File(p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? '',
           '${name.snakeCase}.dart')),
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
+      File(p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? '',
           '${name.snakeCase}.freezed.dart')),
-      File(p.join(domainPackage.path, 'test', outputDir ?? '',
+      File(p.join(domainPackage(subDomainName).path, 'test', outputDir ?? '',
           '${name.snakeCase}_test.dart')),
     ];
 
 List<File> serviceInterfaceFiles({
   required String name,
+  String? subDomainName,
   String? outputDir,
 }) =>
     [
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
+      File(p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? '',
           'i_${name.snakeCase}_service.dart')),
-      File(p.join(domainPackage.path, 'lib', outputDir ?? '',
+      File(p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? '',
           'i_${name.snakeCase}_service.freezed.dart')),
     ];
 
 List<File> dataTransferObjectFiles({
   required String entity,
+  String? subInfrastructureName,
   String? outputDir,
 }) =>
     [
-      File(p.join(infrastructurePackage.path, 'lib', 'src', outputDir ?? '',
-          '${entity.snakeCase}_dto.dart')),
-      File(p.join(infrastructurePackage.path, 'lib', 'src', outputDir ?? '',
-          '${entity.snakeCase}_dto.freezed.dart')),
-      File(p.join(infrastructurePackage.path, 'lib', 'src', outputDir ?? '',
-          '${entity.snakeCase}_dto.g.dart')),
-      File(p.join(infrastructurePackage.path, 'test', 'src', outputDir ?? '',
-          '${entity.snakeCase}_dto_test.dart')),
+      File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib',
+          'src', outputDir ?? '', '${entity.snakeCase}_dto.dart')),
+      File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib',
+          'src', outputDir ?? '', '${entity.snakeCase}_dto.freezed.dart')),
+      File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib',
+          'src', outputDir ?? '', '${entity.snakeCase}_dto.g.dart')),
+      File(p.join(infrastructurePackage(subInfrastructureName).path, 'test',
+          'src', outputDir ?? '', '${entity.snakeCase}_dto_test.dart')),
     ];
 
 List<File> serviceImplementationFiles({
   required String name,
   required String serviceName,
+  String? subInfrastructureName,
   String? outputDir,
 }) =>
     [
       File(
         p.join(
-          infrastructurePackage.path,
+          infrastructurePackage(subInfrastructureName).path,
           'lib',
           'src',
           outputDir ?? '',
@@ -404,7 +426,7 @@ List<File> serviceImplementationFiles({
       ),
       File(
         p.join(
-          infrastructurePackage.path,
+          infrastructurePackage(subInfrastructureName).path,
           'test',
           'src',
           outputDir ?? '',

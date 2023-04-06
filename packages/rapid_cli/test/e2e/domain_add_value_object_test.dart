@@ -26,7 +26,7 @@ void main() {
       });
 
       test(
-        'domain add value_object',
+        'domain sub_domain add value_object',
         () async {
           // Arrange
           await setupProject();
@@ -34,14 +34,23 @@ void main() {
 
           // Act + Assert
           final commandResult = await commandRunner.run(
-            ['domain', 'add', 'value_object', name],
+            ['domain', 'sub_domain', 'add', 'value_object', name],
           );
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
           final outputDir = 'foo';
+          // TODO test sub-domain
           final commandResultWithOutputDir = await commandRunner.run(
-            ['domain', 'add', 'value_object', name, '--output-dir', outputDir],
+            [
+              'domain',
+              'sub_domain',
+              'add',
+              'value_object',
+              name,
+              '--output-dir',
+              outputDir
+            ],
           );
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 

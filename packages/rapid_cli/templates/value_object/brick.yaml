@@ -1,5 +1,5 @@
 name: value_object
-description: A brick generating a value object of the domain package of a Rapid project.
+description: A brick generating a value object of a domain package of a Rapid project.
 
 version: 0.1.0
 
@@ -20,6 +20,8 @@ vars:
     type: string
   output_dir:
     type: string
+  output_dir_is_cwd:
+    type: boolean
   type:
     type: string
   generics:

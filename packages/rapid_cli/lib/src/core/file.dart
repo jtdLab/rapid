@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/core/file_impl.dart';
 
 import 'file_system_entity.dart';
@@ -31,5 +30,5 @@ abstract class File implements FileSystemEntity {
 
   /// Deletes the file.
   @override
-  void delete({required Logger logger});
+  void delete();
 }

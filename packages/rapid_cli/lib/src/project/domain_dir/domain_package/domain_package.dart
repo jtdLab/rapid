@@ -1,15 +1,12 @@
-import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/domain_dir/domain_directory.dart';
 import 'package:rapid_cli/src/project/domain_dir/domain_package/domain_package_impl.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 typedef DomainPackageBuilder = DomainPackage Function({
-  required String name,
-  required DomainDirectory domainDirectory,
+  String? name,
   required Project project,
 });
 
@@ -21,16 +18,13 @@ typedef DomainPackageBuilder = DomainPackage Function({
 abstract class DomainPackage implements DartPackage, OverridableGenerator {
   /// {@macro domain_package}
   factory DomainPackage({
-    required String name,
+    String? name,
     required Project project,
   }) =>
       DomainPackageImpl(
         name: name,
         project: project,
       );
-
-  @visibleForTesting
-  DomainPackageBuilder? domainPackageOverrides;
 
   @visibleForTesting
   EntityBuilder? entityOverrides;
@@ -41,48 +35,59 @@ abstract class DomainPackage implements DartPackage, OverridableGenerator {
   @visibleForTesting
   ValueObjectBuilder? valueObjectOverrides;
 
-  String get name;
+  String? get name;
 
   Project get project;
 
-  Future<void> create({required Logger logger});
-
-  Future<void> addEntity({
-    required String name,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeEntity({
+  Entity entity({
     required String name,
     required String dir,
-    required Logger logger,
   });
 
-  Future<void> addServiceInterface({
-    required String name,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeServiceInterface({
+  ServiceInterface serviceInterface({
     required String name,
     required String dir,
-    required Logger logger,
   });
 
-  Future<void> addValueObject({
+  ValueObject valueObject({
+    required String name,
+    required String dir,
+  });
+
+  Future<void> create();
+
+  // TODO consider required !
+
+  Future<Entity> addEntity({
+    required String name,
+    required String outputDir,
+  });
+
+  Future<Entity> removeEntity({
+    required String name,
+    required String dir,
+  });
+
+  Future<ServiceInterface> addServiceInterface({
+    required String name,
+    required String outputDir,
+  });
+
+  Future<ServiceInterface> removeServiceInterface({
+    required String name,
+    required String dir,
+  });
+
+  Future<ValueObject> addValueObject({
     required String name,
     required String outputDir,
     required String type,
     required String generics,
-    required Logger logger,
   });
 
-  Future<void> removeValueObject({
+  Future<ValueObject> removeValueObject({
     required String name,
     required String dir,
-    required Logger logger,
   });
 }
 
@@ -109,7 +114,7 @@ abstract class Entity
         domainPackage: domainPackage,
       );
 
-  Future<void> create({required Logger logger});
+  Future<void> create();
 }
 
 typedef ServiceInterfaceBuilder = ServiceInterface Function({
@@ -135,7 +140,7 @@ abstract class ServiceInterface
         domainPackage: domainPackage,
       );
 
-  Future<void> create({required Logger logger});
+  Future<void> create();
 }
 
 typedef ValueObjectBuilder = ValueObject Function({
@@ -164,6 +169,5 @@ abstract class ValueObject
   Future<void> create({
     required String type,
     required String generics,
-    required Logger logger,
   });
 }

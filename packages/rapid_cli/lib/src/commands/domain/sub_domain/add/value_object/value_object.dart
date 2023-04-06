@@ -1,10 +1,11 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
+import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
+import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 // TODO fix the template needs super class from rapid
@@ -16,23 +17,33 @@ const _defaultType = 'String';
 /// `rapid domain sub_domain add value_object` command adds value object to the domain part of an existing Rapid project.
 /// {@endtemplate}
 class DomainSubDomainAddValueObjectCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter, OutputDirGetter {
+    with
+        OverridableArgResults,
+        ClassNameGetter,
+        SubDomainGetter,
+        OutputDirGetter {
   /// {@macro domain_sub_domain_add_value_object_command}
   DomainSubDomainAddValueObjectCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     DartFormatFixCommand? dartFormatFix,
   })  : _logger = logger ?? Logger(),
-        _project = project,
+        _project = project ?? Project(),
         _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
         _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
+      ..addSeparator('')
+      ..addSubDomainOption(
+        help:
+            'The name of the subdomain this new value object will be added to.\n'
+            'This must be the name of an existing subdomain.',
+      )
       ..addSeparator('')
       ..addOutputDirOption(
         help: 'The output directory relative to <domain_package>/lib/ .',
@@ -59,7 +70,8 @@ class DomainSubDomainAddValueObjectCommand extends Command<int>
   List<String> get aliases => ['vo'];
 
   @override
-  String get invocation => 'rapid domain sub_domain add value_object <name> [arguments]';
+  String get invocation =>
+      'rapid domain sub_domain add value_object <name> [arguments]';
 
   @override
   String get description =>
@@ -71,22 +83,23 @@ class DomainSubDomainAddValueObjectCommand extends Command<int>
         _logger,
         () async {
           final name = super.className;
+          final domainName = super.subDomain;
           final outputDir = super.outputDir;
           final type = _type;
           final generics = _generics;
 
           _logger.info('Adding Value Object ...');
 
-          try {
-            await _project.addValueObject(
-              name: name,
-              outputDir: outputDir,
-              type: type,
-              generics: generics,
-              logger: _logger,
-            );
+          final domainDirectory = _project.domainDirectory;
+          final domainPackage = domainDirectory.domainPackage(name: domainName);
+          final valueObject = domainPackage.valueObject(
+            name: name,
+            dir: outputDir,
+          );
 
-            final domainPackage = _project.domainPackage;
+          if (!valueObject.existsAny()) {
+            await valueObject.create(type: type, generics: generics);
+
             await _flutterPubGet(cwd: domainPackage.path, logger: _logger);
             await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
               cwd: domainPackage.path,
@@ -96,13 +109,13 @@ class DomainSubDomainAddValueObjectCommand extends Command<int>
 
             _logger
               ..info('')
-              ..success('Added Value Object ${name.pascalCase}.');
+              ..success('Added Value Object $name.');
 
             return ExitCode.success.code;
-          } on ValueObjectAlreadyExists {
+          } else {
             _logger
               ..info('')
-              ..err('Value Object $name already exists.');
+              ..err('Entity or Value Object $name already exists.');
 
             return ExitCode.config.code;
           }

@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:{{project_name.snakeCase()}}_{{#pathCase}}domain/{{{output_dir}}}{{/pathCase}}/{{entity_name.snakeCase()}}.dart';
+import 'package:{{project_name.snakeCase()}}_{{#pathCase}}domain{{#has_subdomain_name}}_{{subdomain_name}}{{/has_subdomain_name}}/{{{output_dir}}}{{/pathCase}}/{{entity_name.snakeCase()}}.dart';
 
 part '{{entity_name.snakeCase()}}_dto.freezed.dart';
 part '{{entity_name.snakeCase()}}_dto.g.dart';

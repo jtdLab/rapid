@@ -10,7 +10,7 @@ class InfrastructureCommand extends Command<int> {
   /// {@macro infrastructure_command}
   InfrastructureCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) {
     addSubcommand(InfrastructureSubinfrastructureCommand(project: project));
   }

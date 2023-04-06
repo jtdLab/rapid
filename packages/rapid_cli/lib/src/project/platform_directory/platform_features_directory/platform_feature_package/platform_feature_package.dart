@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/arb_file.dart';
 import 'package:rapid_cli/src/core/dart_file.dart';
@@ -65,55 +64,63 @@ abstract class PlatformFeaturePackage
 
   Set<String> supportedLanguages();
 
-  bool supportsLanguage(String language);
-
   String defaultLanguage();
+
+  Bloc bloc({required String name, required String dir});
+
+  Cubit cubit({required String name, required String dir});
 
   Future<void> create({
     String? description,
+    bool routing,
     required String defaultLanguage,
     required Set<String> languages,
-    required Logger logger,
   });
 
-  Future<void> setDefaultLanguage(
-    String newDefaultLanguage, {
-    required Logger logger,
-  });
+  Future<void> setDefaultLanguage(String newDefaultLanguage);
 
-  Future<void> addLanguage({
-    required String language,
-    required Logger logger,
-  });
+  Future<void> addLanguage(String language);
 
-  Future<void> removeLanguage({
-    required String language,
-    required Logger logger,
-  });
+  Future<void> removeLanguage(String language);
 
-  Future<void> addBloc({
-    required String name,
-    required String outputDir,
-    required Logger logger,
-  });
+  // TODO consider required !
 
-  Future<void> removeBloc({
+  Future<Bloc> addBloc({
     required String name,
     required String dir,
-    required Logger logger,
   });
 
-  Future<void> addCubit({
-    required String name,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeCubit({
+  Future<Bloc> removeBloc({
     required String name,
     required String dir,
-    required Logger logger,
   });
+
+  Future<Cubit> addCubit({
+    required String name,
+    required String dir,
+  });
+
+  Future<Cubit> removeCubit({
+    required String name,
+    required String dir,
+  });
+}
+
+/// {@template platform_app_feature_package}
+/// Abstraction of a platform app feature package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_app`
+/// {@endtemplate}
+abstract class PlatformAppFeaturePackage implements PlatformFeaturePackage {
+  /// {@macro platform_app_feature_package}
+  factory PlatformAppFeaturePackage(
+    Platform platform, {
+    required Project project,
+  }) =>
+      PlatformAppFeaturePackageImpl(
+        platform,
+        project: project,
+      );
 }
 
 /// Thrown when [L10nFile.readTemplateArbFile] fails to read the `template-arb-file` property.
@@ -186,24 +193,26 @@ abstract class ArbDirectory implements Directory {
   @visibleForTesting
   LanguageArbFileBuilder? languageArbFileOverrides;
 
-  PlatformFeaturePackage get platformFeaturePackage;
+  PlatformFeaturePackage
+      get platformFeaturePackage; // TODO needs to be visible?
+
+  LanguageArbFile languageArbFile({required String language});
 
   List<LanguageArbFile> languageArbFiles();
 
   Future<void> create({
     required Set<String> languages,
-    required Logger logger,
     List<Map<String, dynamic>> Function(String language)? translations,
   });
 
+  // TODO consider required ?
+
   Future<void> addLanguageArbFile({
     required String language,
-    required Logger logger,
   });
 
   Future<void> removeLanguageArbFile({
     required String language,
-    required Logger logger,
   });
 }
 
@@ -231,7 +240,7 @@ abstract class LanguageArbFile
 
   String get language;
 
-  Future<void> create({required Logger logger});
+  Future<void> create();
 
   void addTranslation({
     required String name,
@@ -263,7 +272,7 @@ abstract class Bloc
         platformFeaturePackage: platformFeaturePackage,
       );
 
-  Future<void> create({required Logger logger});
+  Future<void> create();
 }
 
 typedef CubitBuilder = Cubit Function({
@@ -289,22 +298,5 @@ abstract class Cubit
         platformFeaturePackage: platformFeaturePackage,
       );
 
-  Future<void> create({required Logger logger});
-}
-
-/// {@template platform_app_feature_package}
-/// Abstraction of a platform app feature package of a Rapid project.
-///
-/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_app`
-/// {@endtemplate}
-abstract class PlatformAppFeaturePackage implements PlatformFeaturePackage {
-  /// {@macro platform_app_feature_package}
-  factory PlatformAppFeaturePackage(
-    Platform platform, {
-    required Project project,
-  }) =>
-      PlatformAppFeaturePackageImpl(
-        platform,
-        project: project,
-      );
+  Future<void> create();
 }

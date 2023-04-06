@@ -2,12 +2,12 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/cubit/cubit.dart';
-import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
+import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/platform/feature/core/feature_option.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/ios/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/linux/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/macos/feature/add/cubit/cubit.dart';
@@ -32,27 +32,29 @@ import 'package:rapid_cli/src/project/project.dart';
 ///  * [WindowsFeatureAddCubitCommand]
 /// {@endtemplate}
 abstract class PlatformFeatureAddCubitCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter, OutputDirGetter {
+    with
+        OverridableArgResults,
+        ClassNameGetter,
+        FeatureGetter,
+        OutputDirGetter {
   /// {@macro platform_feature_add_cubit_command}
   PlatformFeatureAddCubitCommand({
     required Platform platform,
     Logger? logger,
-    required Project project,
+    Project? project,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project,
+        _project = project ?? Project(),
         _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs {
     argParser
       ..addSeparator('')
-      ..addOption(
-        'feature',
-        abbr: 'f',
+      ..addFeatureOption(
         help: 'The name of the feature this new cubit will be added to.\n'
             'This must be the name of an existing ${_platform.prettyName} feature.',
       )
@@ -92,78 +94,53 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
         ],
         _logger,
         () async {
-          final feature = _feature;
           final name = super.className;
+          final featureName = super.feature;
           final outputDir = super.outputDir;
 
           _logger.info('Adding Cubit ...');
 
-          try {
-            await _project.addCubit(
-              name: name,
-              featureName: feature,
-              outputDir: outputDir,
-              platform: _platform,
-              logger: _logger,
-            );
+          final platformDirectory =
+              _project.platformDirectory(platform: _platform);
+          final featuresDirectory = platformDirectory.featuresDirectory;
+          final featurePackage =
+              featuresDirectory.featurePackage(name: featureName);
+          if (featurePackage.exists()) {
+            final cubit = featurePackage.cubit(name: name, dir: outputDir);
+            if (!cubit.existsAny()) {
+              await cubit.create();
 
-            final platformDirectory =
-                _project.platformDirectory(platform: _platform);
-            final featurePackage =
-                platformDirectory.featuresDirectory.featurePackage(feature);
-            await _flutterPubGet(cwd: featurePackage.path, logger: _logger);
-            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: featurePackage.path,
-              logger: _logger,
-            );
-
-            _logger
-              ..info('')
-              ..success(
-                'Added ${name.pascalCase}Cubit to ${_platform.prettyName} feature $feature.',
+              await _flutterPubGet(cwd: featurePackage.path, logger: _logger);
+              await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                cwd: featurePackage.path,
+                logger: _logger,
               );
 
-            return ExitCode.success.code;
-          } on FeatureDoesNotExist {
+              _logger
+                ..info('')
+                ..success(
+                  'Added ${name}Cubit to ${_platform.prettyName} feature $featureName.',
+                );
+
+              return ExitCode.success.code;
+            } else {
+              _logger
+                ..info('')
+                ..err(
+                  'The ${name}Cubit does already exist in $featureName on ${_platform.prettyName}.',
+                );
+
+              return ExitCode.config.code;
+            }
+          } else {
             _logger
               ..info('')
               ..err(
-                'The feature $feature does not exist on ${_platform.prettyName}.',
-              );
-
-            return ExitCode.config.code;
-          } on CubitAlreadyExists {
-            _logger
-              ..info('')
-              ..err(
-                'The cubit $name does already exist in $feature on ${_platform.prettyName}.',
+                'The feature $featureName does not exist on ${_platform.prettyName}.',
               );
 
             return ExitCode.config.code;
           }
         },
       );
-
-  /// Gets the name the feature the cubit should be added to.
-  String get _feature {
-    final raw = argResults['feature'] as String?;
-
-    if (raw == null) {
-      throw UsageException(
-        'No option specified for the feature.',
-        usage,
-      );
-    }
-
-    final isValid = isValidPackageName(raw);
-    if (!isValid) {
-      throw UsageException(
-        '"$raw" is not a valid package name.\n\n'
-        'See https://dart.dev/tools/pub/pubspec#name for more information.',
-        usage,
-      );
-    }
-
-    return raw;
-  }
 }

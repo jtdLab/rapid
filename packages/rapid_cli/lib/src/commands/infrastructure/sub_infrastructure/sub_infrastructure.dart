@@ -11,7 +11,7 @@ class InfrastructureSubinfrastructureCommand extends Command<int> {
   /// {@macro infrastructure_sub_infrastructure_command}
   InfrastructureSubinfrastructureCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) {
     addSubcommand(InfrastructureSubInfrastructureAddCommand(project: project));
     addSubcommand(
@@ -21,6 +21,9 @@ class InfrastructureSubinfrastructureCommand extends Command<int> {
 
   @override
   String get name => 'sub_infrastructure';
+
+  @override
+  List<String> get aliases => ['sub', 'si'];
 
   @override
   String get invocation =>

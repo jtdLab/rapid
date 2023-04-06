@@ -11,7 +11,7 @@ class AndroidSetCommand extends PlatformSetCommand {
   /// {@macro android_set_command}
   AndroidSetCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.android,
           defaultLanguageCommand: AndroidSetDefaultLanguageCommand(

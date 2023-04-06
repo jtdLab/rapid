@@ -4,16 +4,16 @@
 # sh tool/bundles.sh
 
 # Rebundles all mason templates and ships the fresh bundles to rapid_cli package.
-# (name, location, destination) 
+# (name, location, destination)
 templates=(
     "arb_file templates/arb_file lib/src/project/platform_directory/platform_features_directory/platform_feature_package"
     "bloc templates/bloc lib/src/project/platform_directory/platform_features_directory/platform_feature_package"
     "cubit templates/cubit lib/src/project/platform_directory/platform_features_directory/platform_feature_package"
-    "data_transfer_object templates/data_transfer_object lib/src/project/infrastructure_package"
+    "data_transfer_object templates/data_transfer_object lib/src/project/infrastructure_dir/infrastructure_package"
     "di_package templates/di_package lib/src/project/di_package"
-    "domain_package templates/domain_package lib/src/project/domain_package"
-    "entity templates/entity lib/src/project/domain_package"
-    "infrastructure_package templates/infrastructure_package lib/src/project/infrastructure_package"
+    "domain_package templates/domain_package lib/src/project/domain_dir/domain_package"
+    "entity templates/entity lib/src/project/domain_dir/domain_package"
+    "infrastructure_package templates/infrastructure_package lib/src/project/infrastructure_dir/infrastructure_package"
     "logging_package templates/logging_package lib/src/project/logging_package"
     "platform_app_feature_package templates/platform_app_feature_package lib/src/project/platform_directory/platform_features_directory/platform_feature_package"
     "platform_feature_package templates/platform_feature_package lib/src/project/platform_directory/platform_features_directory/platform_feature_package"
@@ -27,10 +27,10 @@ templates=(
     "windows_native_directory templates/platform_root_package/windows_native_directory lib/src/project/platform_directory/platform_root_package/platform_native_directory"
     "platform_ui_package templates/platform_ui_package lib/src/project/platform_ui_package"
     "project templates/project lib/src/project"
-    "service_implementation templates/service_implementation lib/src/project/infrastructure_package"
-    "service_interface templates/service_interface lib/src/project/domain_package"
+    "service_implementation templates/service_implementation lib/src/project/infrastructure_dir/infrastructure_package"
+    "service_interface templates/service_interface lib/src/project/domain_dir/domain_package"
     "ui_package templates/ui_package lib/src/project/ui_package"
-    "value_object templates/value_object lib/src/project/domain_package"
+    "value_object templates/value_object lib/src/project/domain_dir/domain_package"
     "widget templates/widget lib/src/project/platform_ui_package"
 )
 

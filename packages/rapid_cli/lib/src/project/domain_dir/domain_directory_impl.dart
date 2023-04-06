@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/directory_impl.dart';
 import 'package:rapid_cli/src/project/domain_dir/domain_directory.dart';
@@ -24,103 +23,33 @@ class DomainDirectoryImpl extends DirectoryImpl implements DomainDirectory {
   DomainPackageBuilder? domainPackageOverrides;
 
   @override
-  DomainPackage domainPackage({required String name}) =>
+  DomainPackage domainPackage({String? name}) =>
       (domainPackageOverrides ?? DomainPackage.new)(
         name: name,
         project: _project,
       );
 
   @override
-  Future<void> addEntity({
-    required String name,
-    required String domainName,
-    required String outputDir,
-    required Logger logger,
-  }) async {
-    final domainPackage = this.domainPackage(name: domainName);
-    await domainPackage.addEntity(
-      name: name,
-      outputDir: outputDir,
-      logger: logger,
-    );
+  Future<DomainPackage> addDomainPackage({required String name}) async {
+    final domainPackage = this.domainPackage(name: name);
+
+    if (domainPackage.exists()) {
+      throw RapidException('The sub domain package $name does already exists');
+    }
+
+    await domainPackage.create();
+    return domainPackage;
   }
 
   @override
-  Future<void> addServiceInterface({
-    required String name,
-    required String domainName,
-    required String outputDir,
-    required Logger logger,
-  }) async {
-    final domainPackage = this.domainPackage(name: domainName);
-    await domainPackage.addServiceInterface(
-      name: name,
-      outputDir: outputDir,
-      logger: logger,
-    );
-  }
+  Future<DomainPackage> removeDomainPackage({required String name}) async {
+    final domainPackage = this.domainPackage(name: name);
 
-  @override
-  Future<void> addValueObject({
-    required String name,
-    required String domainName,
-    required String outputDir,
-    required String type,
-    required String generics,
-    required Logger logger,
-  }) async {
-    final domainPackage = this.domainPackage(name: domainName);
-    await domainPackage.addValueObject(
-      name: name,
-      outputDir: outputDir,
-      type: type,
-      generics: generics,
-      logger: logger,
-    );
-  }
+    if (!domainPackage.exists()) {
+      throw RapidException('The sub domain package $name does not exist');
+    }
 
-  @override
-  Future<void> removeEntity({
-    required String name,
-    required String domainName,
-    required String dir,
-    required Logger logger,
-  }) async {
-    final domainPackage = this.domainPackage(name: domainName);
-    await domainPackage.removeEntity(
-      name: name,
-      dir: dir,
-      logger: logger,
-    );
-  }
-
-  @override
-  Future<void> removeServiceInterface({
-    required String name,
-    required String domainName,
-    required String dir,
-    required Logger logger,
-  }) async {
-    final domainPackage = this.domainPackage(name: domainName);
-    await domainPackage.removeServiceInterface(
-      name: name,
-      dir: dir,
-      logger: logger,
-    );
-  }
-
-  @override
-  Future<void> removeValueObject({
-    required String name,
-    required String domainName,
-    required String dir,
-    required Logger logger,
-  }) async {
-    final domainPackage = this.domainPackage(name: domainName);
-    await domainPackage.removeValueObject(
-      name: name,
-      dir: dir,
-      logger: logger,
-    );
+    domainPackage.delete();
+    return domainPackage;
   }
 }

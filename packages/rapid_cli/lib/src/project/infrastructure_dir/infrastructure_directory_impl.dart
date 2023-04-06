@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/directory_impl.dart';
 import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_directory.dart';
@@ -25,73 +24,41 @@ class InfrastructureDirectoryImpl extends DirectoryImpl
   InfrastructurePackageBuilder? infrastructurePackageOverrides;
 
   @override
-  InfrastructurePackage infrastructurePackage({required String name}) =>
+  InfrastructurePackage infrastructurePackage({String? name}) =>
       (infrastructurePackageOverrides ?? InfrastructurePackage.new)(
         name: name,
         project: _project,
       );
 
   @override
-  Future<void> addDataTransferObject({
-    required String entityName,
-    required String domainName,
-    required String outputDir,
-    required Logger logger,
+  Future<InfrastructurePackage> addInfrastructurePackage({
+    required String name,
   }) async {
-    final infrastructurePackage = this.infrastructurePackage(name: domainName);
-    await infrastructurePackage.addDataTransferObject(
-      entityName: entityName,
-      outputDir: outputDir,
-      logger: logger,
-    );
+    final infrastructurePackage = this.infrastructurePackage(name: name);
+
+    if (infrastructurePackage.exists()) {
+      throw RapidException(
+        'The sub infrastructure package $name does already exists',
+      );
+    }
+
+    await infrastructurePackage.create();
+    return infrastructurePackage;
   }
 
   @override
-  Future<void> addServiceImplementation({
+  Future<InfrastructurePackage> removeInfrastructurePackage({
     required String name,
-    required String domainName,
-    required String serviceName,
-    required String outputDir,
-    required Logger logger,
   }) async {
-    final infrastructurePackage = this.infrastructurePackage(name: domainName);
-    await infrastructurePackage.addServiceImplementation(
-      name: name,
-      serviceName: serviceName,
-      outputDir: outputDir,
-      logger: logger,
-    );
-  }
+    final infrastructurePackage = this.infrastructurePackage(name: name);
 
-  @override
-  Future<void> removeDataTransferObject({
-    required String name,
-    required String domainName,
-    required String dir,
-    required Logger logger,
-  }) async {
-    final infrastructurePackage = this.infrastructurePackage(name: domainName);
-    await infrastructurePackage.removeDataTransferObject(
-      name: name,
-      dir: dir,
-      logger: logger,
-    );
-  }
+    if (!infrastructurePackage.exists()) {
+      throw RapidException(
+        'The sub infrastructure package $name does not exist',
+      );
+    }
 
-  @override
-  Future<void> removeServiceImplementation({
-    required String name,
-    required String domainName,
-    required String serviceName,
-    required String dir,
-    required Logger logger,
-  }) async {
-    final infrastructurePackage = this.infrastructurePackage(name: domainName);
-    await infrastructurePackage.removeServiceImplementation(
-      name: name,
-      serviceName: serviceName,
-      dir: dir,
-      logger: logger,
-    );
+    infrastructurePackage.delete();
+    return infrastructurePackage;
   }
 }

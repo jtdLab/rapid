@@ -8,7 +8,7 @@ class WebRemoveLanguageCommand extends PlatformRemoveLanguageCommand {
   /// {@macro web_remove_language_command}
   WebRemoveLanguageCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.flutterGenl10n,
     super.dartFormatFix,
   }) : super(

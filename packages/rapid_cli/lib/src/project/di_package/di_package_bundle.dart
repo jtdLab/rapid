@@ -81,35 +81,6 @@ final diPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     "type": "text"
   },
   "vars": {
-    "project_name": {"type": "string", "description": "The project name"},
-    "example": {
-      "type": "boolean",
-      "description":
-          "Wheter the project contains example features and their tests"
-    },
-    "android": {
-      "type": "boolean",
-      "description": "The project supports the Android platform"
-    },
-    "ios": {
-      "type": "boolean",
-      "description": "The project supports the iOS platform"
-    },
-    "web": {
-      "type": "boolean",
-      "description": "The project supports the Web platform"
-    },
-    "linux": {
-      "type": "boolean",
-      "description": "The project supports the Linux platform"
-    },
-    "macos": {
-      "type": "boolean",
-      "description": "The project supports the macOS platform"
-    },
-    "windows": {
-      "type": "boolean",
-      "description": "The project supports the Windows platform"
-    }
+    "project_name": {"type": "string", "description": "The project name"}
   }
 });

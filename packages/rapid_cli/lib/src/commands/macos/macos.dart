@@ -14,7 +14,7 @@ class MacosCommand extends PlatformCommand {
   /// {@macro macos_command}
   MacosCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.macos,
           addCommand: MacosAddCommand(logger: logger, project: project),

@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:{{project_name}}_{{#pathCase}}domain/{{{output_dir}}}{{/pathCase}}/{{name.snakeCase()}}.dart';
+import 'package:{{project_name}}_{{#pathCase}}domain{{#has_subdomain_name}}_{{subdomain_name}}{{/has_subdomain_name}}/{{{output_dir}}}{{/pathCase}}/{{name.snakeCase()}}.dart';
 
 void main() {
   group('{{name.pascalCase()}}', () {

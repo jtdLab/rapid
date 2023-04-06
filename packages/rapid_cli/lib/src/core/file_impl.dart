@@ -1,6 +1,5 @@
 import 'dart:io' as io;
 
-import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 
 import 'directory.dart';
@@ -46,5 +45,5 @@ class FileImpl implements File {
   void write(String contents) => _file.writeAsStringSync(contents, flush: true);
 
   @override
-  void delete({required Logger logger}) => _file.deleteSync(recursive: true);
+  void delete() => _file.deleteSync(recursive: true);
 }

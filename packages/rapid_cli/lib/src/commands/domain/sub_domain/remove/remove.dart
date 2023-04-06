@@ -12,11 +12,12 @@ class DomainSubDomainRemoveCommand extends Command<int> {
   /// {@macro domain_sub_domain_remove_command}
   DomainSubDomainRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) {
     addSubcommand(DomainSubDomainRemoveEntityCommand(project: project));
     addSubcommand(
-        DomainSubDomainRemoveServiceInterfaceCommand(project: project));
+      DomainSubDomainRemoveServiceInterfaceCommand(project: project),
+    );
     addSubcommand(DomainSubDomainRemoveValueObjectCommand(project: project));
   }
 

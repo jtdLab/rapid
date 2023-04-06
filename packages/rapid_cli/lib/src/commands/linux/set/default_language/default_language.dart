@@ -8,7 +8,7 @@ class LinuxSetDefaultLanguageCommand extends PlatformSetDefaultLanguageCommand {
   /// {@macro linux_set_default_language_command}
   LinuxSetDefaultLanguageCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.flutterGenl10n,
     super.dartFormatFix,
   }) : super(

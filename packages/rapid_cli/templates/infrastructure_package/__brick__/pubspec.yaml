@@ -1,5 +1,5 @@
-name: {{project_name}}_infrastructure
-description: Infrastructure layer of {{project_name.titleCase()}}.
+name: {{project_name}}_infrastructure{{#has_name}}_{{name}}{{/has_name}}
+description: TODO
 version: 0.0.1
 publish_to: none
 
@@ -12,7 +12,7 @@ dependencies:
   json_annotation: ^4.8.0
   injectable: ^2.1.0
   {{project_name}}_logging:
-  {{project_name}}_domain:
+  {{project_name}}_domain{{#has_name}}_{{name}}{{/has_name}}:
 
 dev_dependencies:
   lints: ^2.0.1

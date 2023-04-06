@@ -22,3 +22,7 @@ vars:
     type: string
   output_dir:
     type: string
+  has_subinfrastructure_name:
+    type: boolean
+  subinfrastructure_name:
+    type: string

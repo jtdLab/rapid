@@ -11,7 +11,7 @@ class InfrastructureSubInfrastructureRemoveCommand extends Command<int> {
   /// {@macro infrastructure_sub_infrastructure_remove_command}
   InfrastructureSubInfrastructureRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) {
     addSubcommand(
       InfrastructureSubInfrastructureRemoveDataTransferObjectCommand(

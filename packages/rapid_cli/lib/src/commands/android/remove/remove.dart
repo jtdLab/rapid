@@ -12,7 +12,7 @@ class AndroidRemoveCommand extends PlatformRemoveCommand {
   /// {@macro android_remove_command}
   AndroidRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.android,
           featureCommand:

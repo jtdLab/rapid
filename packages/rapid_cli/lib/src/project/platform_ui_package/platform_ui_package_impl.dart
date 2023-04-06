@@ -2,6 +2,7 @@ import 'dart:io' as io;
 
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
@@ -29,30 +30,14 @@ class PlatformUiPackageImpl extends DartPackageImpl
           ),
         );
 
-  Widget _widget({required String name, required String dir}) =>
-      (widgetOverrides ?? Widget.new)(
-        name: name,
-        dir: dir,
-        platformUiPackage: this,
-      );
-
-  ThemeExtensionsFile get _themeExtensionsFile =>
-      (themeExtensionsFileOverrides ?? ThemeExtensionsFileImpl.new)(
-        platformUiPackage: this,
-      );
-
-  BarrelFile get _barrelFile => (barrelFileOverrides ?? BarrelFile.new)(
-        platformUiPackage: this,
-      );
-
   @override
-  WidgetBuilder? widgetOverrides;
+  BarrelFileBuilder? barrelFileOverrides;
 
   @override
   ThemeExtensionsFileBuilder? themeExtensionsFileOverrides;
 
   @override
-  BarrelFileBuilder? barrelFileOverrides;
+  WidgetBuilder? widgetOverrides;
 
   @override
   final Platform platform;
@@ -61,11 +46,32 @@ class PlatformUiPackageImpl extends DartPackageImpl
   final Project project;
 
   @override
-  Future<void> create({required Logger logger}) async {
+  BarrelFile get barrelFile => (barrelFileOverrides ?? BarrelFile.new)(
+        platformUiPackage: this,
+      );
+
+  @override
+  ThemeExtensionsFile get themeExtensionsFile =>
+      (themeExtensionsFileOverrides ?? ThemeExtensionsFileImpl.new)(
+        platformUiPackage: this,
+      );
+
+  @override
+  Widget widget({
+    required String name,
+    required String dir,
+  }) =>
+      (widgetOverrides ?? Widget.new)(
+        name: name,
+        dir: dir,
+        platformUiPackage: this,
+      );
+
+  @override
+  Future<void> create() async {
     final projectName = project.name();
 
     await generate(
-      name: 'ui package (${platform.name})',
       bundle: platformUiPackageBundle,
       vars: <String, dynamic>{
         'project_name': projectName,
@@ -76,44 +82,49 @@ class PlatformUiPackageImpl extends DartPackageImpl
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
       },
-      logger: logger,
     );
   }
 
   @override
-  Future<void> addWidget({
+  Future<Widget> addWidget({
     required String name,
-    required String outputDir,
-    required Logger logger,
+    required String dir,
   }) async {
-    final widget = _widget(name: name, dir: outputDir);
+    final widget = this.widget(name: name, dir: dir);
     if (widget.existsAny()) {
-      // TODO maybe log which files
-      throw WidgetAlreadyExists();
+      throw RapidException(
+        'The ${platform.prettyName} Widget $name at $dir already exists',
+      );
     }
 
-    await widget.create(logger: logger);
-    _themeExtensionsFile.addThemeExtension(name);
-
-    _barrelFile.addExport('src/${name.snakeCase}.dart');
-    _barrelFile.addExport('src/${name.snakeCase}_theme.dart');
+    await widget.create();
+    themeExtensionsFile.addThemeExtension(name);
+    barrelFile.addExport(
+        'src/${name.snakeCase}.dart'); // TODO doesnt work with dir != '.'
+    barrelFile.addExport(
+        'src/${name.snakeCase}_theme.dart'); // TODO doesnt work with dir != '.'
+    return widget;
   }
 
   @override
-  Future<void> removeWidget({
+  Future<Widget> removeWidget({
     required String name,
     required String dir,
-    required Logger logger,
   }) async {
-    final widget = _widget(name: name, dir: dir);
+    final widget = this.widget(name: name, dir: dir);
     if (!widget.existsAny()) {
-      throw WidgetDoesNotExist();
+      throw RapidException(
+        'The ${platform.prettyName} Widget $name at $dir does not exist',
+      );
     }
 
-    widget.delete(logger: logger);
-    _themeExtensionsFile.removeThemeExtension(name);
-    _barrelFile.removeExport('src/${name.snakeCase}.dart');
-    _barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
+    widget.delete();
+    themeExtensionsFile.removeThemeExtension(name);
+    barrelFile.removeExport(
+        'src/${name.snakeCase}.dart'); // TODO doesnt work with dir != '.'
+    barrelFile.removeExport(
+        'src/${name.snakeCase}_theme.dart'); // TODO doesnt work with dir != '.'
+    return widget;
   }
 }
 
@@ -180,9 +191,7 @@ class WidgetImpl extends FileSystemEntityCollection
   final PlatformUiPackage _platformUiPackage;
 
   @override
-  Future<void> create({
-    required Logger logger,
-  }) async {
+  Future<void> create() async {
     final projectName = _platformUiPackage.project.name();
     final platform = _platformUiPackage.platform;
 
@@ -200,7 +209,6 @@ class WidgetImpl extends FileSystemEntityCollection
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
       },
-      logger: logger,
     );
   }
 }

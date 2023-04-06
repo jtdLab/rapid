@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/plist_file.dart';
@@ -38,7 +37,6 @@ abstract class NoneIosNativeDirectory extends PlatformNativeDirectory {
   Future<void> create({
     String? description,
     String? orgName,
-    required Logger logger,
   });
 }
 
@@ -66,7 +64,6 @@ abstract class IosNativeDirectory extends PlatformNativeDirectory {
   Future<void> create({
     required String orgName,
     required String language,
-    required Logger logger,
   });
 
   void addLanguage({required String language});

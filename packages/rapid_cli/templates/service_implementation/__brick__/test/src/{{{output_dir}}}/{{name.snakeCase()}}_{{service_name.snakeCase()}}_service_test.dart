@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:{{project_name.snakeCase()}}_{{#pathCase}}infrastructure/src/{{{output_dir}}}{{/pathCase}}/{{name.snakeCase()}}_{{service_name.snakeCase()}}_service.dart';
+import 'package:{{project_name.snakeCase()}}_{{#pathCase}}infrastructure{{#has_subinfrastructure_name}}_{{subinfrastructure_name}}{{/has_subinfrastructure_name}}/src/{{{output_dir}}}{{/pathCase}}/{{name.snakeCase()}}_{{service_name.snakeCase()}}_service.dart';
 
 void main() {
   group('{{name.pascalCase()}}{{service_name.pascalCase()}}Service', () {

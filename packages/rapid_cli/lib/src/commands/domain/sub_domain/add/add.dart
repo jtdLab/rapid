@@ -12,7 +12,7 @@ class DomainSubDomainAddCommand extends Command<int> {
   /// {@macro domain_sub_domain_add_command}
   DomainSubDomainAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) {
     addSubcommand(DomainSubDomainAddEntityCommand(project: project));
     addSubcommand(DomainSubDomainAddServiceInterfaceCommand(project: project));

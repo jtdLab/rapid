@@ -12,7 +12,7 @@ class UiWebCommand extends UiPlatformCommand {
   /// {@macro ui_web_command}
   UiWebCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.web,
           addCommand: UiWebAddCommand(logger: logger, project: project),

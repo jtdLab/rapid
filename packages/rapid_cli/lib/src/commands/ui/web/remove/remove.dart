@@ -11,7 +11,7 @@ class UiWebRemoveCommand extends UiPlatformRemoveCommand {
   /// {@macro ui_web_remove_command}
   UiWebRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.web,
           widgetCommand:

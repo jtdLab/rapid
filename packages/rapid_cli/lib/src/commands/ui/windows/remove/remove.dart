@@ -11,7 +11,7 @@ class UiWindowsRemoveCommand extends UiPlatformRemoveCommand {
   /// {@macro ui_windows_remove_command}
   UiWindowsRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.windows,
           widgetCommand:

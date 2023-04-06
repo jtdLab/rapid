@@ -9,7 +9,7 @@ class WindowsSetDefaultLanguageCommand
   /// {@macro windows_set_default_language_command}
   WindowsSetDefaultLanguageCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.flutterGenl10n,
     super.dartFormatFix,
   }) : super(

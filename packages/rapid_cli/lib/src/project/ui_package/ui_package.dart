@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -20,5 +19,6 @@ abstract class UiPackage implements DartPackage, OverridableGenerator {
         project: project,
       );
 
-  Future<void> create({required Logger logger});
+  /// Creates the ui package.
+  Future<void> create();
 }

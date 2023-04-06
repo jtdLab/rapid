@@ -1,23 +1,30 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
+import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
+import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template domain_sub_domain_remove_value_object_command}
 /// `rapid domain sub_domain remove value_object` command removes value object from the domain part of an existing Rapid project.
 /// {@endtemplate}
 class DomainSubDomainRemoveValueObjectCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter, DirGetter {
+    with OverridableArgResults, ClassNameGetter, SubDomainGetter, DirGetter {
   /// {@macro domain_sub_domain_remove_value_object_command}
   DomainSubDomainRemoveValueObjectCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   })  : _logger = logger ?? Logger(),
-        _project = project {
+        _project = project ?? Project() {
     argParser
+      ..addSeparator('')
+      ..addSubDomainOption(
+        help:
+            'The name of the subdomain this new value object will be added to.\n'
+            'This must be the name of an existing subdomain.',
+      )
       ..addSeparator('')
       ..addDirOption(
         help: 'The directory relative to <domain_package>/lib/ .',
@@ -47,26 +54,26 @@ class DomainSubDomainRemoveValueObjectCommand extends Command<int>
         _logger,
         () async {
           final name = super.className;
+          final domainName = super.subDomain;
           final dir = super.dir;
 
           _logger.info('Removing Value Object ...');
 
-          try {
-            await _project.removeValueObject(
-              name: name,
-              dir: dir,
-              logger: _logger,
-            );
+          final domainDirectory = _project.domainDirectory;
+          final domainPackage = domainDirectory.domainPackage(name: domainName);
+          final valueObject = domainPackage.valueObject(name: name, dir: dir);
+          if (valueObject.existsAny()) {
+            valueObject.delete();
 
             _logger
               ..info('')
-              ..success('Removed Value Object ${name.pascalCase}.');
+              ..success('Removed Value Object $name.');
 
             return ExitCode.success.code;
-          } on ValueObjectDoesNotExist {
+          } else {
             _logger
               ..info('')
-              ..err('Value Object $name not found.');
+              ..err('Value Object $name does not exist.');
 
             return ExitCode.config.code;
           }

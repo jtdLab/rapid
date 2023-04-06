@@ -10,7 +10,7 @@ class DomainRemoveCommand extends Command<int> {
   /// {@macro domain_remove_command}
   DomainRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) {
     addSubcommand(DomainRemoveSubDomainCommand(project: project));
   }

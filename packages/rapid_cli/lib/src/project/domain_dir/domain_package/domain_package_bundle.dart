@@ -23,15 +23,16 @@ final domainPackageBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
-      "path": "lib/{{project_name}}_domain.dart",
+      "path":
+          "lib/{{project_name}}_domain{{#has_name}}_{{name}}{{/has_name}}.dart",
       "data":
-          "Ly8vIERvbWFpbiBMYXllciBmb3Ige3twcm9qZWN0X25hbWUudGl0bGVDYXNlKCl9fS4KLy8vCi8vLyBUbyB1c2UsIGltcG9ydCBgcGFja2FnZTp7e3Byb2plY3RfbmFtZX19X2RvbWFpbi97e3Byb2plY3RfbmFtZX19X2RvbWFpbi5kYXJ0YC4KbGlicmFyeSB7e3Byb2plY3RfbmFtZX19X2RvbWFpbjsK",
+          "Ly8vIFRPRE86IGRlc2NyaXB0aW9uIGhlcmUKLy8vCi8vLyBUbyB1c2UsIGltcG9ydCBgcGFja2FnZTp7e3Byb2plY3RfbmFtZX19X2RvbWFpbnt7I2hhc19uYW1lfX1fe3tuYW1lfX17ey9oYXNfbmFtZX19L3t7cHJvamVjdF9uYW1lfX1fZG9tYWlue3sjaGFzX25hbWV9fV97e25hbWV9fXt7L2hhc19uYW1lfX0uZGFydGAuCmxpYnJhcnkge3twcm9qZWN0X25hbWV9fV9kb21haW57eyNoYXNfbmFtZX19X3t7bmFtZX19e3svaGFzX25hbWV9fTsK",
       "type": "text"
     },
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZToge3twcm9qZWN0X25hbWV9fV9kb21haW4KZGVzY3JpcHRpb246IERvbWFpbiBsYXllciBvZiB7e3Byb2plY3RfbmFtZS50aXRsZUNhc2UoKX19Lgp2ZXJzaW9uOiAwLjAuMQpwdWJsaXNoX3RvOiBub25lCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTIuMTkuNCA8My4wLjAiCgpkZXBlbmRlbmNpZXM6CiAgcmFwaWRfZG9tYWluOgogICAgZ2l0OgogICAgICB1cmw6IGh0dHBzOi8vZ2l0aHViLmNvbS9qdGRMYWIvcmFwaWQuZ2l0CiAgICAgIHBhdGg6IHBhY2thZ2VzL3JhcGlkL3JhcGlkX2RvbWFpbgogIGRhcnR6OiBeMC4xMC4xCiAgZmFrZXI6IF4yLjEuMAogIGZyZWV6ZWRfYW5ub3RhdGlvbjogXjIuMi4wCgpkZXZfZGVwZW5kZW5jaWVzOgogIGxpbnRzOiBeMi4wLjEKICB0ZXN0OiBeMS4yMy4xCiAgYnVpbGRfcnVubmVyOiBeMi4zLjIKICBmcmVlemVkOiBeMi4zLjIK",
+          "bmFtZToge3twcm9qZWN0X25hbWV9fV9kb21haW57eyNoYXNfbmFtZX19X3t7bmFtZX19e3svaGFzX25hbWV9fQpkZXNjcmlwdGlvbjogVE9ETwp2ZXJzaW9uOiAwLjAuMQpwdWJsaXNoX3RvOiBub25lCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTIuMTkuNCA8My4wLjAiCgpkZXBlbmRlbmNpZXM6CiAgcmFwaWRfZG9tYWluOgogICAgZ2l0OgogICAgICB1cmw6IGh0dHBzOi8vZ2l0aHViLmNvbS9qdGRMYWIvcmFwaWQuZ2l0CiAgICAgIHBhdGg6IHBhY2thZ2VzL3JhcGlkL3JhcGlkX2RvbWFpbgogIGRhcnR6OiBeMC4xMC4xCiAgZmFrZXI6IF4yLjEuMAogIGZyZWV6ZWRfYW5ub3RhdGlvbjogXjIuMi4wCgpkZXZfZGVwZW5kZW5jaWVzOgogIGxpbnRzOiBeMi4wLjEKICB0ZXN0OiBeMS4yMy4xCiAgYnVpbGRfcnVubmVyOiBeMi4zLjIKICBmcmVlemVkOiBeMi4zLjIK",
       "type": "text"
     },
     {
@@ -57,6 +58,8 @@ final domainPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     "type": "text"
   },
   "vars": {
-    "project_name": {"type": "string", "description": "The project name"}
+    "project_name": {"type": "string", "description": "The project name"},
+    "has_name": {"type": "boolean", "description": "Wheter name is not null"},
+    "name": {"type": "string", "description": "The package name"}
   }
 });

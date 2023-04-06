@@ -8,7 +8,7 @@ class UiAndroidAddWidgetCommand extends UiPlatformAddWidgetCommand {
   /// {@macro ui_android_add_widget_command}
   UiAndroidAddWidgetCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.dartFormatFix,
   }) : super(
           platform: Platform.android,

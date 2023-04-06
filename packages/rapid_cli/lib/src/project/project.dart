@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -14,65 +13,14 @@ import 'platform_ui_package/platform_ui_package.dart';
 import 'project_impl.dart';
 import 'ui_package/ui_package.dart';
 
-// TODO move to source
+class RapidException implements Exception {
+  final String message;
 
-class FeatureDoesNotExist implements Exception {}
+  RapidException([this.message = '']);
 
-class FeatureAlreadyExists implements Exception {}
-
-class NoFeaturesFound implements Exception {}
-
-class FeaturesSupportDiffrentLanguages implements Exception {}
-
-class FeaturesHaveDiffrentDefaultLanguage implements Exception {}
-
-class FeaturesAlreadySupportLanguage implements Exception {}
-
-class FeaturesDoNotSupportLanguage implements Exception {}
-
-class UnableToRemoveDefaultLanguage implements Exception {}
-
-class DefaultLanguageAlreadySetToRequestedLanguage implements Exception {}
-
-class EntityAlreadyExists implements Exception {}
-
-class EntityDoesNotExist implements Exception {}
-
-class ServiceInterfaceAlreadyExists implements Exception {}
-
-class ServiceInterfaceDoesNotExist implements Exception {}
-
-class ValueObjectAlreadyExists implements Exception {}
-
-class ValueObjectDoesNotExist implements Exception {}
-
-class DataTransferObjectAlreadyExists implements Exception {}
-
-class DataTransferObjectDoesNotExist implements Exception {}
-
-class ServiceImplementationAlreadyExists implements Exception {}
-
-class ServiceImplementationDoesNotExist implements Exception {}
-
-class BlocAlreadyExists implements Exception {}
-
-class BlocDoesNotExist implements Exception {}
-
-class CubitAlreadyExists implements Exception {}
-
-class CubitDoesNotExist implements Exception {}
-
-class WidgetAlreadyExists implements Exception {}
-
-class WidgetDoesNotExist implements Exception {}
-
-class LanguageArbFileAlreadyExists implements Exception {}
-
-class LanguageArbFileDoesNotExists implements Exception {}
-
-class SubDomainAlreadyExists implements Exception {}
-
-class SubDomainDoesNotExist implements Exception {}
+  @override
+  String toString() => 'RapidException($message)';
+}
 
 /// Signature for method that returns the [Project] for [path].
 typedef ProjectBuilder = Project Function({String path});
@@ -140,187 +88,7 @@ abstract class Project implements Directory, OverridableGenerator {
     required String orgName,
     required String language,
     required bool example,
-    required bool android,
-    required bool ios,
-    required bool linux,
-    required bool macos,
-    required bool web,
-    required bool windows,
-    required Logger logger,
-  });
-
-  Future<void> addPlatform(
-    Platform platform, {
-    String? description,
-    String? orgName,
-    required String language,
-    required Logger logger,
-  });
-
-  Future<void> removePlatform(
-    Platform platform, {
-    required Logger logger,
-  });
-
-  Future<void> addFeature({
-    required String name,
-    required String description,
-    required Platform platform,
-    required Logger logger,
-  });
-
-  Future<void> removeFeature({
-    required String name,
-    required Platform platform,
-    required Logger logger,
-  });
-
-  Future<void> addLanguage(
-    String language, {
-    required Platform platform,
-    required Logger logger,
-  });
-
-  Future<void> removeLanguage(
-    String language, {
-    required Platform platform,
-    required Logger logger,
-  });
-
-  Future<void> setDefaultLanguage(
-    String newDefaultLanguage, {
-    required Platform platform,
-    required Logger logger,
-  });
-
-  Future<void> addSubDomain({
-    required String name,
-    required Logger logger,
-  });
-
-  Future<void> removeSubDomain({
-    required String name,
-    required Logger logger,
-  });
-
-  Future<void> addEntity({
-    required String name,
-    required String domainName,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeEntity({
-    required String name,
-    required String domainName,
-    required String dir,
-    required Logger logger,
-  });
-
-  Future<void> addServiceInterface({
-    required String name,
-    required String domainName,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeServiceInterface({
-    required String name,
-    required String domainName,
-    required String dir,
-    required Logger logger,
-  });
-
-  Future<void> addValueObject({
-    required String name,
-    required String domainName,
-    required String outputDir,
-    required String type,
-    required String generics,
-    required Logger logger,
-  });
-
-  Future<void> removeValueObject({
-    required String name,
-    required String domainName,
-    required String dir,
-    required Logger logger,
-  });
-
-  Future<void> addDataTransferObject({
-    required String entityName,
-    required String domainName,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeDataTransferObject({
-    required String name,
-    required String domainName,
-    required String dir,
-    required Logger logger,
-  });
-
-  Future<void> addServiceImplementation({
-    required String name,
-    required String domainName,
-    required String serviceName,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeServiceImplementation({
-    required String name,
-    required String domainName,
-    required String serviceName,
-    required String dir,
-    required Logger logger,
-  });
-
-  Future<void> addBloc({
-    required String name,
-    required String featureName,
-    required String outputDir,
-    required Platform platform,
-    required Logger logger,
-  });
-
-  Future<void> removeBloc({
-    required String name,
-    required String featureName,
-    required String dir,
-    required Platform platform,
-    required Logger logger,
-  });
-
-  Future<void> addCubit({
-    required String name,
-    required String featureName,
-    required String outputDir,
-    required Platform platform,
-    required Logger logger,
-  });
-
-  Future<void> removeCubit({
-    required String name,
-    required String featureName,
-    required String dir,
-    required Platform platform,
-    required Logger logger,
-  });
-
-  Future<void> addWidget({
-    required String name,
-    required String outputDir,
-    required Platform platform,
-    required Logger logger,
-  });
-
-  Future<void> removeWidget({
-    required String name,
-    required String dir,
-    required Platform platform,
-    required Logger logger,
+    required Set<Platform> platforms,
   });
 }
 

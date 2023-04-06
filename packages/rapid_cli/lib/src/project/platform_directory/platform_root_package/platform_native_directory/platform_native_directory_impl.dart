@@ -37,7 +37,6 @@ class NoneIosNativeDirectoryImpl extends PlatformNativeDirectoryImpl
   Future<void> create({
     String? description,
     String? orgName,
-    required Logger logger,
   }) async {
     final projectName = _rootPackage.project.name();
     final platform = _rootPackage.platform;
@@ -56,14 +55,12 @@ class NoneIosNativeDirectoryImpl extends PlatformNativeDirectoryImpl
     }
 
     await generate(
-      name: 'native directory (${platform.name})',
       bundle: bundle,
       vars: <String, dynamic>{
         'project_name': projectName,
         if (description != null) 'description': description,
         if (orgName != null) 'org_name': orgName,
       },
-      logger: logger,
     );
   }
 }
@@ -84,19 +81,16 @@ class IosNativeDirectoryImpl extends PlatformNativeDirectoryImpl
   Future<void> create({
     required String orgName,
     required String language,
-    required Logger logger,
   }) async {
     final projectName = _rootPackage.project.name();
 
     await generate(
-      name: 'native directory (ios)',
       bundle: iosNativeDirectoryBundle,
       vars: <String, dynamic>{
         'project_name': projectName,
         'org_name': orgName,
         'language': language, // TODO update ios template
       },
-      logger: logger,
     );
   }
 

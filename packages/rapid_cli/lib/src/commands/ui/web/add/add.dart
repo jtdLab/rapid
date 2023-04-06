@@ -11,7 +11,7 @@ class UiWebAddCommand extends UiPlatformAddCommand {
   /// {@macro ui_web_add_command}
   UiWebAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.web,
           widgetCommand:

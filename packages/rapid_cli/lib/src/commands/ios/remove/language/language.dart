@@ -8,7 +8,7 @@ class IosRemoveLanguageCommand extends PlatformRemoveLanguageCommand {
   /// {@macro ios_remove_language_command}
   IosRemoveLanguageCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.flutterGenl10n,
     super.dartFormatFix,
   }) : super(

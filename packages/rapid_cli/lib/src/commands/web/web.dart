@@ -14,7 +14,7 @@ class WebCommand extends PlatformCommand {
   /// {@macro web_command}
   WebCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.web,
           addCommand: WebAddCommand(logger: logger, project: project),

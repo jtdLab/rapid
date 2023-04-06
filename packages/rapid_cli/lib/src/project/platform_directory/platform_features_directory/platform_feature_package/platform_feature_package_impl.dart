@@ -51,20 +51,6 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
         platformFeaturePackage: this,
       );
 
-  Bloc _bloc({required String name, required String dir}) =>
-      (blocOverrides ?? Bloc.new)(
-        name: name,
-        dir: dir,
-        platformFeaturePackage: this,
-      );
-
-  Cubit _cubit({required String name, required String dir}) =>
-      (cubitOverrides ?? Cubit.new)(
-        name: name,
-        dir: dir,
-        platformFeaturePackage: this,
-      );
-
   @override
   L10nFileBuilder? l10nFileOverrides;
 
@@ -90,16 +76,31 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   final Project project;
 
   @override
+  Bloc bloc({required String name, required String dir}) =>
+      (blocOverrides ?? Bloc.new)(
+        name: name,
+        dir: dir,
+        platformFeaturePackage: this,
+      );
+
+  @override
+  Cubit cubit({required String name, required String dir}) =>
+      (cubitOverrides ?? Cubit.new)(
+        name: name,
+        dir: dir,
+        platformFeaturePackage: this,
+      );
+
+  @override
   Future<void> create({
     String? description,
+    bool routing = true,
     required String defaultLanguage,
     required Set<String> languages,
-    required Logger logger,
   }) async {
     final projectName = project.name();
 
     await generate(
-      name: '$name feature package (${platform.name})',
       bundle: platformFeaturePackageBundle,
       vars: <String, dynamic>{
         'name': name,
@@ -112,16 +113,14 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
         'default_language': defaultLanguage,
-        'routable': true, // TODO make customizable by user
+        'routable': routing,
         'route_name':
             name.pascalCase.replaceAll('Page', '').replaceAll('Screen', ''),
       },
-      logger: logger,
     );
 
     await _arbDirectory.create(
       languages: languages,
-      logger: logger,
       translations: (language) => [
         {
           'name': 'title',
@@ -137,10 +136,6 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
       _arbDirectory.languageArbFiles().map((e) => e.language).toSet();
 
   @override
-  bool supportsLanguage(String language) =>
-      supportedLanguages().contains(language);
-
-  @override
   String defaultLanguage() {
     final templateArbFile = _l10nFile.readTemplateArbFile();
 
@@ -148,10 +143,7 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   }
 
   @override
-  Future<void> setDefaultLanguage(
-    String newDefaultLanguage, {
-    required Logger logger,
-  }) async {
+  Future<void> setDefaultLanguage(String newDefaultLanguage) async {
     final l10nFile = _l10nFile;
     final templateArbFile = l10nFile.readTemplateArbFile();
     final newTemplateArbFile = templateArbFile.replaceRange(
@@ -163,87 +155,119 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   }
 
   @override
-  Future<void> addLanguage({
-    required String language,
-    required Logger logger,
-  }) async {
-    await _arbDirectory.addLanguageArbFile(language: language, logger: logger);
+  Future<void> addLanguage(String language) async {
+    await _arbDirectory.addLanguageArbFile(language: language);
   }
 
   @override
-  Future<void> removeLanguage({
-    required String language,
-    required Logger logger,
-  }) async {
-    await _arbDirectory.removeLanguageArbFile(
-      language: language,
-      logger: logger,
-    );
+  Future<void> removeLanguage(String language) async {
+    await _arbDirectory.removeLanguageArbFile(language: language);
 
     final languageLocalizationsFile = _languageLocalizationsFile(language);
     if (languageLocalizationsFile.exists()) {
-      languageLocalizationsFile.delete(logger: logger);
+      languageLocalizationsFile.delete();
     }
   }
 
   @override
-  Future<void> addBloc({
+  Future<Bloc> addBloc({
     required String name,
-    required String outputDir,
-    required Logger logger,
+    required String dir,
   }) async {
-    final bloc = _bloc(name: name, dir: outputDir);
+    final bloc = this.bloc(name: name, dir: dir);
     if (bloc.existsAny()) {
-      throw BlocAlreadyExists();
+      throw RapidException('The ${name}Bloc at $dir already exists');
     }
 
-    await bloc.create(logger: logger);
+    await bloc.create();
+
+    return bloc;
   }
 
   @override
-  Future<void> removeBloc({
+  Future<Bloc> removeBloc({
     required String name,
     required String dir,
-    required Logger logger,
   }) async {
-    final bloc = _bloc(name: name, dir: dir);
+    final bloc = this.bloc(name: name, dir: dir);
     if (!bloc.existsAny()) {
-      throw BlocDoesNotExist();
+      throw RapidException('The ${name}Bloc at $dir does not exist');
     }
 
-    bloc.delete(logger: logger);
+    bloc.delete();
+
+    return bloc;
   }
 
   @override
-  Future<void> addCubit({
-    required String name,
-    required String outputDir,
-    required Logger logger,
-  }) async {
-    final cubit = _cubit(name: name, dir: outputDir);
-    if (cubit.existsAny()) {
-      throw CubitAlreadyExists();
-    }
-
-    await cubit.create(logger: logger);
-  }
-
-  @override
-  Future<void> removeCubit({
+  Future<Cubit> addCubit({
     required String name,
     required String dir,
-    required Logger logger,
   }) async {
-    final cubit = _cubit(name: name, dir: dir);
-    if (!cubit.existsAny()) {
-      throw CubitDoesNotExist();
+    final cubit = this.cubit(name: name, dir: dir);
+    if (cubit.existsAny()) {
+      throw RapidException('The ${name}Cubit at $dir already exists');
     }
 
-    cubit.delete(logger: logger);
+    await cubit.create();
+
+    return cubit;
+  }
+
+  @override
+  Future<Cubit> removeCubit({
+    required String name,
+    required String dir,
+  }) async {
+    final cubit = this.cubit(name: name, dir: dir);
+    if (!cubit.existsAny()) {
+      throw RapidException('The ${name}Cubit at $dir does not exist');
+    }
+
+    cubit.delete();
+
+    return cubit;
   }
 
   @override
   int compareTo(PlatformFeaturePackage other) => name.compareTo(other.name);
+}
+
+class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
+    implements PlatformAppFeaturePackage {
+  PlatformAppFeaturePackageImpl(
+    Platform platform, {
+    required super.project,
+  }) : super('app', platform);
+
+  @override
+  Future<void> create({
+    String? description,
+    bool routing = false,
+    required String defaultLanguage,
+    required Set<String> languages,
+  }) async {
+    final projectName = project.name();
+
+    await generate(
+      bundle: platformAppFeaturePackageBundle,
+      vars: <String, dynamic>{
+        'project_name': projectName,
+        'android': platform == Platform.android,
+        'ios': platform == Platform.ios,
+        'linux': platform == Platform.linux,
+        'macos': platform == Platform.macos,
+        'web': platform == Platform.web,
+        'windows': platform == Platform.windows,
+        'default_language': defaultLanguage,
+        'routable': routing,
+        'route_name':
+            name.pascalCase.replaceAll('Page', '').replaceAll('Screen', ''),
+      },
+    );
+
+    await _arbDirectory.create(languages: languages);
+  }
 }
 
 class L10nFileImpl extends YamlFileImpl implements L10nFile {
@@ -301,17 +325,18 @@ class ArbDirectoryImpl extends DirectoryImpl implements ArbDirectory {
           ),
         );
 
-  LanguageArbFile _languageArbFile({required String language}) =>
-      (languageArbFileOverrides ?? LanguageArbFile.new)(
-        language: language,
-        arbDirectory: this,
-      );
-
   @override
   LanguageArbFileBuilder? languageArbFileOverrides;
 
   @override
   final PlatformFeaturePackage platformFeaturePackage;
+
+  @override
+  LanguageArbFile languageArbFile({required String language}) =>
+      (languageArbFileOverrides ?? LanguageArbFile.new)(
+        language: language,
+        arbDirectory: this,
+      );
 
   @override
   List<LanguageArbFile> languageArbFiles() => list()
@@ -330,13 +355,12 @@ class ArbDirectoryImpl extends DirectoryImpl implements ArbDirectory {
   @override
   Future<void> create({
     required Set<String> languages,
-    required Logger logger,
     List<Map<String, dynamic>> Function(String language)? translations,
   }) async {
     for (final language in languages) {
-      final languageArbFile = _languageArbFile(language: language);
+      final languageArbFile = this.languageArbFile(language: language);
 
-      await languageArbFile.create(logger: logger);
+      await languageArbFile.create();
       if (translations != null) {
         final languageTranslation = translations(language);
         for (final t in languageTranslation) {
@@ -351,29 +375,31 @@ class ArbDirectoryImpl extends DirectoryImpl implements ArbDirectory {
   }
 
   @override
-  Future<void> addLanguageArbFile({
+  Future<LanguageArbFile> addLanguageArbFile({
     required String language,
-    required Logger logger,
   }) async {
-    final languageArbFile = _languageArbFile(language: language);
+    final languageArbFile = this.languageArbFile(language: language);
     if (languageArbFile.exists()) {
-      throw LanguageArbFileAlreadyExists();
+      throw RapidException('The file $language.arb already exists');
     }
 
-    await languageArbFile.create(logger: logger);
+    await languageArbFile.create();
+
+    return languageArbFile;
   }
 
   @override
-  Future<void> removeLanguageArbFile({
+  Future<LanguageArbFile> removeLanguageArbFile({
     required String language,
-    required Logger logger,
   }) async {
-    final languageArbFile = _languageArbFile(language: language);
+    final languageArbFile = this.languageArbFile(language: language);
     if (!languageArbFile.exists()) {
-      throw LanguageArbFileDoesNotExists();
+      throw RapidException('The file $language.arb does not exist');
     }
 
-    languageArbFile.delete(logger: logger);
+    languageArbFile.delete();
+
+    return languageArbFile;
   }
 }
 
@@ -395,7 +421,7 @@ class LanguageArbFileImpl extends ArbFileImpl
   final String language;
 
   @override
-  Future<void> create({required Logger logger}) async {
+  Future<void> create() async {
     final featureName = _arbDirectory.platformFeaturePackage.name;
 
     final generator = await super.generator(arbFileBundle);
@@ -405,7 +431,6 @@ class LanguageArbFileImpl extends ArbFileImpl
         'feature_name': featureName,
         'language': language,
       },
-      logger: logger,
     );
   }
 
@@ -481,7 +506,7 @@ class BlocImpl extends FileSystemEntityCollection
   final PlatformFeaturePackage _platformFeaturePackage;
 
   @override
-  Future<void> create({required Logger logger}) async {
+  Future<void> create() async {
     final projectName = _platformFeaturePackage.project.name();
     final platform = _platformFeaturePackage.platform.name;
     final featureName = _platformFeaturePackage.name;
@@ -496,7 +521,6 @@ class BlocImpl extends FileSystemEntityCollection
         'platform': platform,
         'feature_name': featureName,
       },
-      logger: logger,
     );
   }
 }
@@ -549,7 +573,7 @@ class CubitImpl extends FileSystemEntityCollection
   final PlatformFeaturePackage _platformFeaturePackage;
 
   @override
-  Future<void> create({required Logger logger}) async {
+  Future<void> create() async {
     final projectName = _platformFeaturePackage.project.name();
     final platform = _platformFeaturePackage.platform.name;
     final featureName = _platformFeaturePackage.name;
@@ -564,43 +588,6 @@ class CubitImpl extends FileSystemEntityCollection
         'platform': platform,
         'feature_name': featureName,
       },
-      logger: logger,
     );
-  }
-}
-
-class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
-    implements PlatformAppFeaturePackage {
-  PlatformAppFeaturePackageImpl(
-    Platform platform, {
-    required super.project,
-  }) : super('app', platform);
-
-  @override
-  Future<void> create({
-    String? description,
-    required String defaultLanguage,
-    required Set<String> languages,
-    required Logger logger,
-  }) async {
-    final projectName = project.name();
-
-    await generate(
-      name: 'app feature package (${platform.name})',
-      bundle: platformAppFeaturePackageBundle,
-      vars: <String, dynamic>{
-        'project_name': projectName,
-        'android': platform == Platform.android,
-        'ios': platform == Platform.ios,
-        'linux': platform == Platform.linux,
-        'macos': platform == Platform.macos,
-        'web': platform == Platform.web,
-        'windows': platform == Platform.windows,
-        'default_language': defaultLanguage,
-      },
-      logger: logger,
-    );
-
-    await _arbDirectory.create(languages: languages, logger: logger);
   }
 }

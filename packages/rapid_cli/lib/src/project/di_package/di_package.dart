@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/di_package/di_package_impl.dart';
@@ -20,13 +19,6 @@ abstract class DiPackage implements DartPackage, OverridableGenerator {
         project: project,
       );
 
-  Future<void> create({
-    required bool android,
-    required bool ios,
-    required bool linux,
-    required bool macos,
-    required bool web,
-    required bool windows,
-    required Logger logger,
-  });
+  /// Creates the di package.
+  Future<void> create();
 }

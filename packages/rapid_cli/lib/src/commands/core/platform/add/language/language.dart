@@ -2,10 +2,11 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/language/language.dart';
+import 'package:rapid_cli/src/commands/core/language_rest.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/platform/core/platform_feature_packages_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/commands/core/validate_language.dart';
 import 'package:rapid_cli/src/commands/ios/add/language/language.dart';
 import 'package:rapid_cli/src/commands/linux/add/language/language.dart';
 import 'package:rapid_cli/src/commands/macos/add/language/language.dart';
@@ -32,25 +33,24 @@ import 'package:rapid_cli/src/project/project.dart';
 ///  * [WindowsAddLanguageCommand]
 /// {@endtemplate}
 abstract class PlatformAddLanguageCommand extends Command<int>
-    with OverridableArgResults {
+    with OverridableArgResults, LanguageGetter {
   /// {@macro platform_add_language_command}
   PlatformAddLanguageCommand({
-    required Platform platform,
+    required this.platform,
     Logger? logger,
-    required Project project,
+    Project? project,
     FlutterGenl10nCommand? flutterGenl10n,
     DartFormatFixCommand? dartFormatFix,
-  })  : _platform = platform,
-        _logger = logger ?? Logger(),
-        _project = project,
-        _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
-        _dartFormatFix = dartFormatFix ?? Dart.formatFix;
+  })  : logger = logger ?? Logger(),
+        project = project ?? Project(),
+        flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
+        dartFormatFix = dartFormatFix ?? Dart.formatFix;
 
-  final Platform _platform;
-  final Logger _logger;
-  final Project _project;
-  final FlutterGenl10nCommand _flutterGenl10n;
-  final DartFormatFixCommand _dartFormatFix;
+  final Platform platform;
+  final Logger logger;
+  final Project project;
+  final FlutterGenl10nCommand flutterGenl10n;
+  final DartFormatFixCommand dartFormatFix;
 
   @override
   String get name => 'language';
@@ -59,116 +59,90 @@ abstract class PlatformAddLanguageCommand extends Command<int>
   List<String> get aliases => ['lang'];
 
   @override
-  String get invocation => 'rapid ${_platform.name} add language <language>';
+  String get invocation => 'rapid ${platform.name} add language <language>';
 
   @override
   String get description =>
-      'Add a language to the ${_platform.prettyName} part of an existing Rapid project.';
+      'Add a language to the ${platform.prettyName} part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
+          projectExistsAll(project),
           platformIsActivated(
-            _platform,
-            _project,
-            '${_platform.prettyName} is not activated.',
+            platform,
+            project,
+            '${platform.prettyName} is not activated.',
           ),
         ],
-        _logger,
+        logger,
         () async {
-          final language = _language;
+          final language = super.language;
 
-          _logger.info('Adding Language ...');
+          logger.info('Adding Language ...');
 
-          try {
-            await _project.addLanguage(
-              language,
-              platform: _platform,
-              logger: _logger,
-            );
+          final platformDirectory =
+              project.platformDirectory(platform: platform);
+          final featurePackages =
+              platformDirectory.featuresDirectory.featurePackages();
 
-            final platformDirectory =
-                _project.platformDirectory(platform: _platform);
-            final featurePackages =
-                platformDirectory.featuresDirectory.featurePackages();
-            for (final featurePackage in featurePackages) {
-              await _flutterGenl10n(cwd: featurePackage.path, logger: _logger);
-            }
-            await _dartFormatFix(cwd: _project.path, logger: _logger);
-
-            // TODO add hint how to work with localization
-            _logger
-              ..info('')
-              ..success(
-                'Added $language to the ${_platform.prettyName} part of your project.',
-              );
-
-            return ExitCode.success.code;
-          } on NoFeaturesFound {
-            _logger
+          if (featurePackages.isEmpty) {
+            logger
               ..info('')
               ..err(
-                'No ${_platform.prettyName} features found!\n'
-                'Run "rapid ${_platform.name} add feature" to add your first ${_platform.prettyName} feature.',
+                'No ${platform.prettyName} features found!\n'
+                'Run "rapid ${platform.name} add feature" to add your first ${platform.prettyName} feature.',
               );
 
             return ExitCode.config.code;
-          } on FeaturesSupportDiffrentLanguages {
-            _logger
+          }
+
+          if (!featurePackages.supportSameLanguages()) {
+            logger
               ..info('')
               ..err(
-                  'The ${_platform.prettyName} part of your project is corrupted.\n'
-                  'Because not all features support the same languages.\n\n'
-                  'Run "rapid doctor" to see which features are affected.');
+                'The ${platform.prettyName} part of your project is corrupted.\n'
+                'Because not all features support the same languages.\n\n'
+                'Run "rapid doctor" to see which features are affected.',
+              );
 
             return ExitCode.config.code;
-          } on FeaturesHaveDiffrentDefaultLanguage {
-            _logger
+          }
+
+          if (!featurePackages.haveSameDefaultLanguage()) {
+            logger
               ..info('')
               ..err(
-                  'The ${_platform.prettyName} part of your project is corrupted.\n'
-                  'Because not all features have the same default language.\n\n'
-                  'Run "rapid doctor" to see which features are affected.');
+                'The ${platform.prettyName} part of your project is corrupted.\n'
+                'Because not all features have the same default language.\n\n'
+                'Run "rapid doctor" to see which features are affected.',
+              );
 
             return ExitCode.config.code;
-          } on FeaturesAlreadySupportLanguage {
-            _logger
+          }
+
+          if (featurePackages.supportLanguage(language)) {
+            logger
               ..info('')
               ..err('The language "$language" is already present.');
 
             return ExitCode.config.code;
           }
+
+          for (final featurePackage in featurePackages) {
+            await featurePackage.addLanguage(language);
+            await flutterGenl10n(cwd: featurePackage.path, logger: logger);
+          }
+          await dartFormatFix(cwd: project.path, logger: logger);
+
+          // TODO add hint how to work with localization
+          logger
+            ..info('')
+            ..success(
+              'Added $language to the ${platform.prettyName} part of your project.',
+            );
+
+          return ExitCode.success.code;
         },
       );
-
-  String get _language => _validateLanguageArg(argResults.rest);
-
-  /// Validates whether [language] is valid language.
-  ///
-  /// Returns [language] when valid.
-  String _validateLanguageArg(List<String> args) {
-    if (args.isEmpty) {
-      throw UsageException(
-        'No option specified for the language.',
-        usage,
-      );
-    }
-
-    if (args.length > 1) {
-      throw UsageException('Multiple languages specified.', usage);
-    }
-
-    final language = args.first;
-    final isValid = isValidLanguage(language);
-    if (!isValid) {
-      throw UsageException(
-        '"$language" is not a valid language.\n\n'
-        'See https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry for more information.',
-        usage,
-      );
-    }
-
-    return language;
-  }
 }

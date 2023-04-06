@@ -34,7 +34,7 @@ DataTransferObject _getDataTransferObject({
   GeneratorBuilder? generator,
 }) {
   return DataTransferObject(
-    entityName: entityName,
+    name: entityName,
     dir: dir,
     infrastructurePackage: infrastructurePackage ?? getInfrastructurePackage(),
   )..generatorOverrides = generator;
@@ -130,7 +130,7 @@ void main() {
         // Act
         final logger = FakeLogger();
         infrastructurePackage.addDataTransferObject(
-          entityName: 'Cool',
+          name: 'Cool',
           outputDir: 'my/dir',
           logger: logger,
         );
@@ -162,7 +162,7 @@ void main() {
         // Act + Assert
         expect(
           () => infrastructurePackage.addDataTransferObject(
-            entityName: 'Cool',
+            name: 'Cool',
             outputDir: 'my/dir',
             logger: FakeLogger(),
           ),

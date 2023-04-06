@@ -8,7 +8,7 @@ class UiMacosRemoveWidgetCommand extends UiPlatformRemoveWidgetCommand {
   /// {@macro ui_macos_remove_widget_command}
   UiMacosRemoveWidgetCommand({
     super.logger,
-    required super.project,
+    super.project,
   }) : super(
           platform: Platform.macos,
         );

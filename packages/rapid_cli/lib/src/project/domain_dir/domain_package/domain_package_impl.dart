@@ -18,7 +18,7 @@ class DomainPackageImpl extends DartPackageImpl
     with OverridableGenerator, Generatable
     implements DomainPackage {
   DomainPackageImpl({
-    required this.name,
+    this.name,
     required this.project,
   }) : super(
           path: p.join(
@@ -26,42 +26,9 @@ class DomainPackageImpl extends DartPackageImpl
             'packages',
             project.name(),
             '${project.name()}_domain',
-            '${project.name()}_domain_$name',
+            '${project.name()}_domain${name != null ? '_$name' : ''}',
           ),
         );
-
-  Entity _entity({
-    required String name,
-    required String dir,
-  }) =>
-      (entityOverrides?.call ?? Entity.new)(
-        name: name,
-        dir: dir,
-        domainPackage: this,
-      );
-
-  ServiceInterface _serviceInterface({
-    required String name,
-    required String dir,
-  }) =>
-      (serviceInterfaceOverrides?.call ?? ServiceInterface.new)(
-        name: name,
-        dir: dir,
-        domainPackage: this,
-      );
-
-  ValueObject _valueObject({
-    required String name,
-    required String dir,
-  }) =>
-      (valueObjectOverrides?.call ?? ValueObject.new)(
-        name: name,
-        dir: dir,
-        domainPackage: this,
-      );
-
-  @override
-  DomainPackageBuilder? domainPackageOverrides;
 
   @override
   EntityBuilder? entityOverrides;
@@ -73,112 +40,142 @@ class DomainPackageImpl extends DartPackageImpl
   ValueObjectBuilder? valueObjectOverrides;
 
   @override
-  final String name;
+  final String? name;
 
   @override
   final Project project;
 
   @override
-  Future<void> create({required Logger logger}) async {
+  Entity entity({
+    required String name,
+    required String dir,
+  }) =>
+      (entityOverrides?.call ?? Entity.new)(
+        name: name,
+        dir: dir,
+        domainPackage: this,
+      );
+
+  @override
+  ServiceInterface serviceInterface({
+    required String name,
+    required String dir,
+  }) =>
+      (serviceInterfaceOverrides?.call ?? ServiceInterface.new)(
+        name: name,
+        dir: dir,
+        domainPackage: this,
+      );
+
+  @override
+  ValueObject valueObject({
+    required String name,
+    required String dir,
+  }) =>
+      (valueObjectOverrides?.call ?? ValueObject.new)(
+        name: name,
+        dir: dir,
+        domainPackage: this,
+      );
+
+  @override
+  Future<void> create() async {
     final projectName = project.name();
 
     await generate(
-      name: 'domain package',
       bundle: domainPackageBundle,
       vars: <String, dynamic>{
         'project_name': projectName,
+        'has_name': name != null,
+        'name': name,
       },
-      logger: logger,
     );
   }
 
   @override
-  Future<void> addEntity({
+  Future<Entity> addEntity({
     required String name,
     required String outputDir,
-    required Logger logger,
   }) async {
-    final entity = _entity(name: name, dir: outputDir);
+    final entity = this.entity(name: name, dir: outputDir);
     if (entity.existsAny()) {
-      // TODO maybe log which files
-      throw EntityAlreadyExists();
+      throw RapidException('The $name at $outputDir already exists');
     }
 
-    await entity.create(logger: logger);
+    await entity.create();
+    return entity;
   }
 
   @override
-  Future<void> removeEntity({
+  Future<Entity> removeEntity({
     required String name,
     required String dir,
-    required Logger logger,
   }) async {
-    final entity = _entity(name: name, dir: dir);
+    final entity = this.entity(name: name, dir: dir);
     if (!entity.existsAny()) {
-      throw EntityDoesNotExist();
+      throw RapidException('The $name at $dir does not exist');
     }
 
-    entity.delete(logger: logger);
+    entity.delete();
+    return entity;
   }
 
   @override
-  Future<void> addServiceInterface({
+  Future<ServiceInterface> addServiceInterface({
     required String name,
     required String outputDir,
-    required Logger logger,
   }) async {
-    final serviceInterface = _serviceInterface(name: name, dir: outputDir);
+    final serviceInterface = this.serviceInterface(name: name, dir: outputDir);
     if (serviceInterface.existsAny()) {
-      // TODO maybe log which files
-      throw ServiceInterfaceAlreadyExists();
+      throw RapidException('The I${name}Service at $outputDir already exists');
     }
 
-    await serviceInterface.create(logger: logger);
+    await serviceInterface.create();
+    return serviceInterface;
   }
 
   @override
-  Future<void> removeServiceInterface({
+  Future<ServiceInterface> removeServiceInterface({
     required String name,
     required String dir,
-    required Logger logger,
   }) async {
-    final serviceInterface = _serviceInterface(name: name, dir: dir);
+    final serviceInterface = this.serviceInterface(name: name, dir: dir);
     if (!serviceInterface.existsAny()) {
-      throw ServiceInterfaceDoesNotExist();
+      throw RapidException('The I${name}Service at $dir does not exists');
     }
 
-    serviceInterface.delete(logger: logger);
+    serviceInterface.delete();
+    return serviceInterface;
   }
 
   @override
-  Future<void> addValueObject({
+  Future<ValueObject> addValueObject({
     required String name,
     required String outputDir,
     required String type,
     required String generics,
-    required Logger logger,
   }) async {
-    final valueObject = _valueObject(name: name, dir: outputDir);
+    final valueObject = this.valueObject(name: name, dir: outputDir);
     if (valueObject.existsAny()) {
-      // TODO maybe log which files
-      throw ValueObjectAlreadyExists();
+      throw RapidException('The $name at $outputDir already exists');
     }
 
-    await valueObject.create(type: type, generics: generics, logger: logger);
+    await valueObject.create(type: type, generics: generics);
+    return valueObject;
   }
 
   @override
-  Future<void> removeValueObject({
+  Future<ValueObject> removeValueObject({
     required String name,
     required String dir,
-    required Logger logger,
   }) async {
-    final valueObject = _valueObject(name: name, dir: dir);
+    final valueObject = this.valueObject(name: name, dir: dir);
     if (!valueObject.existsAny()) {
-      throw ValueObjectDoesNotExist();
+      throw RapidException('The $name at $dir does not exist');
     }
 
-    valueObject.delete(logger: logger);
+    valueObject.delete();
+    return valueObject;
   }
 }
 
@@ -224,10 +221,9 @@ class EntityImpl extends FileSystemEntityCollection
   final DomainPackage _domainPackage;
 
   @override
-  Future<void> create({
-    required Logger logger,
-  }) async {
+  Future<void> create() async {
     final projectName = _domainPackage.project.name();
+    final subDomainName = _domainPackage.name;
 
     final generator = await super.generator(entityBundle);
     await generator.generate(
@@ -236,8 +232,9 @@ class EntityImpl extends FileSystemEntityCollection
         'project_name': projectName,
         'name': _name,
         'output_dir': _dir,
+        'has_subdomain_name': subDomainName != null,
+        'subdomain_name': subDomainName,
       },
-      logger: logger,
     );
   }
 }
@@ -276,9 +273,7 @@ class ServiceInterfaceImpl extends FileSystemEntityCollection
   final DomainPackage _domainPackage;
 
   @override
-  Future<void> create({
-    required Logger logger,
-  }) async {
+  Future<void> create() async {
     final projectName = _domainPackage.project.name();
 
     final generator = await super.generator(serviceInterfaceBundle);
@@ -289,7 +284,6 @@ class ServiceInterfaceImpl extends FileSystemEntityCollection
         'name': _name,
         'output_dir': _dir,
       },
-      logger: logger,
     );
   }
 }
@@ -339,9 +333,9 @@ class ValueObjectImpl extends FileSystemEntityCollection
   Future<void> create({
     required String type,
     required String generics,
-    required Logger logger,
   }) async {
     final projectName = _domainPackage.project.name();
+    final subDomainName = _domainPackage.name;
 
     final generator = await super.generator(valueObjectBundle);
     await generator.generate(
@@ -352,8 +346,9 @@ class ValueObjectImpl extends FileSystemEntityCollection
         'output_dir': _dir,
         'type': type,
         'generics': generics,
+        'has_subdomain_name': subDomainName != null,
+        'subdomain_name': subDomainName,
       },
-      logger: logger,
     );
   }
 }

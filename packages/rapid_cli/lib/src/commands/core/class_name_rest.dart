@@ -6,13 +6,13 @@ import 'validate_class_name.dart';
 
 /// Adds `className` getter.
 mixin ClassNameGetter on OverridableArgResults {
-  /// Gets the class name specified by the user.
+  /// Gets the class name specified as the first positional argument.
   @protected
   String get className => _validateClassNameArg(argResults.rest);
 
-  /// Validates whether [args] contains ONLY a valid dart class name.
+  /// Validates whether [args] contains a valid class name as the first element.
   ///
-  /// Returns the first element when valid.
+  /// Returns the class name when valid.
   String _validateClassNameArg(List<String> args) {
     if (args.isEmpty) {
       throw UsageException(

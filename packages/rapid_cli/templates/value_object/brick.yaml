@@ -24,3 +24,7 @@ vars:
     type: string
   generics:
     type: string
+  has_subdomain_name:
+    type: boolean
+  subdomain_name:
+    type: string

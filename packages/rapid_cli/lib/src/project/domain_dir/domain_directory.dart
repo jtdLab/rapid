@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/project/domain_dir/domain_directory_impl.dart';
@@ -27,49 +26,18 @@ abstract class DomainDirectory extends Directory {
   @visibleForTesting
   DomainPackageBuilder? domainPackageOverrides;
 
-  DomainPackage domainPackage({required String name});
+  /// Returns the [DomainPackage] with [name].
+  DomainPackage domainPackage({String? name});
 
-  Future<void> addEntity({
-    required String name,
-    required String domainName,
-    required String outputDir,
-    required Logger logger,
-  });
+  // TODO consider required !
 
-  Future<void> removeEntity({
-    required String name,
-    required String domainName,
-    required String dir,
-    required Logger logger,
-  });
+  /// Adds the [DomainPackage] with [name] and returns it.
+  ///
+  /// Throws [SubDomainAlreadyExists] when the [DomainPackage] already exists.
+  Future<DomainPackage> addDomainPackage({required String name});
 
-  Future<void> addServiceInterface({
-    required String name,
-    required String domainName,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeServiceInterface({
-    required String name,
-    required String domainName,
-    required String dir,
-    required Logger logger,
-  });
-
-  Future<void> addValueObject({
-    required String name,
-    required String domainName,
-    required String outputDir,
-    required String type,
-    required String generics,
-    required Logger logger,
-  });
-
-  Future<void> removeValueObject({
-    required String name,
-    required String domainName,
-    required String dir,
-    required Logger logger,
-  });
+  /// Removes the [DomainPackage] with [name] and returns it.
+  ///
+  /// Throws [SubDomainDoesNotExist] when the [DomainPackage] does not exist.
+  Future<DomainPackage> removeDomainPackage({required String name});
 }

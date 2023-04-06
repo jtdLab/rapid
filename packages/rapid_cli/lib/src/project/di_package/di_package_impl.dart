@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
@@ -26,30 +25,14 @@ class DiPackageImpl extends DartPackageImpl
   final Project _project;
 
   @override
-  Future<void> create({
-    required bool android,
-    required bool ios,
-    required bool linux,
-    required bool macos,
-    required bool web,
-    required bool windows,
-    required Logger logger,
-  }) async {
+  Future<void> create() async {
     final projectName = _project.name();
 
     await generate(
-      name: 'di package',
       bundle: diPackageBundle,
       vars: <String, dynamic>{
         'project_name': projectName,
-        'android': android,
-        'ios': ios,
-        'linux': linux,
-        'macos': macos,
-        'web': web,
-        'windows': windows,
       },
-      logger: logger,
     );
   }
 }

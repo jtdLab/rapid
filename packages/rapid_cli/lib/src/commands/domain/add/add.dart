@@ -10,7 +10,7 @@ class DomainAddCommand extends Command<int> {
   /// {@macro domain_add_command}
   DomainAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) {
     addSubcommand(DomainAddSubDomainCommand(project: project));
   }

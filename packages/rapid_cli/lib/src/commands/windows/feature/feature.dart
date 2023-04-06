@@ -1,6 +1,7 @@
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/commands/windows/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/feature.dart';
+import 'package:rapid_cli/src/commands/windows/feature/add/add.dart';
+import 'package:rapid_cli/src/commands/windows/feature/remove/remove.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -11,10 +12,12 @@ class WindowsFeatureCommand extends PlatformFeatureCommand {
   /// {@macro windows_feature_command}
   WindowsFeatureCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.windows,
           addCommand:
               WindowsFeatureAddCommand(logger: logger, project: project),
+          removeCommand:
+              WindowsFeatureRemoveCommand(logger: logger, project: project),
         );
 }

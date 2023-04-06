@@ -1,11 +1,12 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
+import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
+import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/service_option.dart';
+import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template infrastructure_sub_infrastructure_add_service_implementation_command}
@@ -13,23 +14,29 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@endtemplate}
 class InfrastructureSubInfrastructureAddServiceImplementationCommand
     extends Command<int>
-    with OverridableArgResults, ClassNameGetter, OutputDirGetter {
+    with
+        OverridableArgResults,
+        ClassNameGetter,
+        SubInfrastructureGetter,
+        ServiceGetter,
+        OutputDirGetter {
   /// {@macro infrastructure_sub_infrastructure_add_service_implementation_command}
   InfrastructureSubInfrastructureAddServiceImplementationCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
     DartFormatFixCommand? dartFormatFix,
   })  : _logger = logger ?? Logger(),
-        _project = project,
+        _project = project ?? Project(),
         _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
       ..addSeparator('')
-      ..addOption(
-        'service',
+      ..addSubInfrastructureOption(
         help:
-            'The name of the service interface the service implementation is related to.',
-        abbr: 's',
+            'The name of the subinfrastructure this new service implementation will be added to.\n'
+            'This must be the name of an existing subinfrastructure.',
       )
+      ..addSeparator('')
+      ..addServiceOption()
       ..addOutputDirOption(
         help:
             'The output directory relative to <infrastructure_package>/lib/src .',
@@ -60,76 +67,61 @@ class InfrastructureSubInfrastructureAddServiceImplementationCommand
         _logger,
         () async {
           final name = super.className;
-          final service = _service;
+          final infrastructureName = super.subInfrastructure;
+          final serviceName = super.service;
           final outputDir = super.outputDir;
 
           _logger.info('Adding Service Implementation ...');
 
-          try {
-            await _project.addServiceImplementation(
+          final domainDirectory = _project.domainDirectory;
+          final domainPackage =
+              domainDirectory.domainPackage(name: infrastructureName);
+          final serviceInterface =
+              domainPackage.serviceInterface(name: serviceName, dir: outputDir);
+          if (serviceInterface.existsAll()) {
+            final infrastructureDirectory = _project.infrastructureDirectory;
+            final infrastructurePackage = infrastructureDirectory
+                .infrastructurePackage(name: infrastructureName);
+            final serviceImplementation =
+                infrastructurePackage.serviceImplementation(
               name: name,
-              serviceName: service,
-              outputDir: outputDir,
-              logger: _logger,
+              serviceName: serviceName,
+              dir: outputDir,
             );
 
-            final infrastructurePackage = _project.infrastructurePackage;
-            await _dartFormatFix(
-              cwd: infrastructurePackage.path,
-              logger: _logger,
-            );
+            if (!serviceImplementation.existsAny()) {
+              await serviceImplementation.create();
 
-            // Move component name to the component as a getter
-            // TODO better hint containg related service etc
-            _logger
-              ..info('')
-              ..success(
-                'Added Service Implementation ${name.pascalCase}${service.pascalCase}Service.',
+              await _dartFormatFix(
+                cwd: infrastructurePackage.path,
+                logger: _logger,
               );
 
-            return ExitCode.success.code;
-          } on ServiceInterfaceDoesNotExist {
-            _logger
-              ..info('')
-              ..err(
-                'Service Interface I${service}Service does not exist.',
-              );
+              // Move component name to the component as a getter
+              // TODO better hint containg related service etc
+              _logger
+                ..info('')
+                ..success(
+                  'Added Service Implementation $name${serviceName}Service.',
+                );
 
-            return ExitCode.config.code;
-          } on ServiceImplementationAlreadyExists {
+              return ExitCode.success.code;
+            } else {
+              _logger
+                ..info('')
+                ..err(
+                  'Service Implementation $name${serviceName}Service already exists.',
+                );
+
+              return ExitCode.config.code;
+            }
+          } else {
             _logger
               ..info('')
-              ..err(
-                'Service Implementation ${name.pascalCase}${service.pascalCase}Service already exists.',
-              );
+              ..err('Service Interface I${serviceName}Service does not exist.');
 
             return ExitCode.config.code;
           }
         },
       );
-
-  /// Gets the name of the service interface this service implementation is related to.
-  String get _service => _validateServiceArg(argResults['service']);
-
-  /// Validates whether `service` is a valid service name.
-  ///
-  /// Returns `service` when valid.
-  String _validateServiceArg(String? service) {
-    if (service == null) {
-      throw UsageException(
-        'No option specified for the service.',
-        usage,
-      );
-    }
-
-    final isValid = isValidClassName(service);
-    if (!isValid) {
-      throw UsageException(
-        '"$service" is not a valid dart class name.',
-        usage,
-      );
-    }
-
-    return service;
-  }
 }

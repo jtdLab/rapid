@@ -11,7 +11,7 @@ class UiMacosAddCommand extends UiPlatformAddCommand {
   /// {@macro ui_macos_add_command}
   UiMacosAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.macos,
           widgetCommand:

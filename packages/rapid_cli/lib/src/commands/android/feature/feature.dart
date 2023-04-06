@@ -1,5 +1,6 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/add.dart';
+import 'package:rapid_cli/src/commands/android/feature/remove/remove.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -11,10 +12,12 @@ class AndroidFeatureCommand extends PlatformFeatureCommand {
   /// {@macro android_feature_command}
   AndroidFeatureCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.android,
           addCommand:
               AndroidFeatureAddCommand(logger: logger, project: project),
+          removeCommand:
+              AndroidFeatureRemoveCommand(logger: logger, project: project),
         );
 }

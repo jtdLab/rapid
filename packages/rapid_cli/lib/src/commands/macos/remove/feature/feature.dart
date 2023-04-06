@@ -8,7 +8,7 @@ class MacosRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   /// {@macro macos_remove_feature_command}
   MacosRemoveFeatureCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.melosBootstrap,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,

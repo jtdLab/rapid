@@ -8,7 +8,7 @@ class LinuxRemoveLanguageCommand extends PlatformRemoveLanguageCommand {
   /// {@macro linux_remove_language_command}
   LinuxRemoveLanguageCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.flutterGenl10n,
     super.dartFormatFix,
   }) : super(

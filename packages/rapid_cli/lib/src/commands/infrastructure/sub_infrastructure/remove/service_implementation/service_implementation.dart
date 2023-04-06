@@ -1,10 +1,11 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
+import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
+import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/service_option.dart';
+import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template infrastructure_sub_infrastructure_remove_service_implementation_command}
@@ -12,21 +13,27 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@endtemplate}
 class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
     extends Command<int>
-    with OverridableArgResults, ClassNameGetter, DirGetter {
+    with
+        OverridableArgResults,
+        ClassNameGetter,
+        SubInfrastructureGetter,
+        ServiceGetter,
+        DirGetter {
   /// {@macro infrastructure_sub_infrastructure_remove_service_implementation_command}
   InfrastructureSubInfrastructureRemoveServiceImplementationCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   })  : _logger = logger ?? Logger(),
-        _project = project {
+        _project = project ?? Project() {
     argParser
       ..addSeparator('')
-      ..addOption(
-        'service',
+      ..addSubInfrastructureOption(
         help:
-            'The name of the service interface the service implementation is related to.',
-        abbr: 's',
+            'The name of the subinfrastructure the service implementation will be removed from.\n'
+            'This must be the name of an existing subinfrastructure.',
       )
+      ..addSeparator('')
+      ..addServiceOption()
       ..addDirOption(
         help: 'The directory relative to <infrastructure_package>/lib/ .',
       );
@@ -55,60 +62,40 @@ class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
         _logger,
         () async {
           final name = super.className;
-          final service = _service;
+          final infrastructureName = super.subInfrastructure;
+          final serviceName = super.service;
           final dir = super.dir;
 
           _logger.info('Removing Service Implementation ...');
 
-          try {
-            await _project.removeServiceImplementation(
-              name: name,
-              serviceName: service,
-              dir: dir,
-              logger: _logger,
-            );
+          final infrastructureDirectory = _project.infrastructureDirectory;
+          final infrastructurePackage = infrastructureDirectory
+              .infrastructurePackage(name: infrastructureName);
+          final serviceImplementation =
+              infrastructurePackage.serviceImplementation(
+            name: name,
+            serviceName: serviceName,
+            dir: dir,
+          );
+          if (serviceImplementation.existsAny()) {
+            serviceImplementation.delete();
 
             _logger
               ..info('')
               ..success(
-                'Removed Service Implementation ${name.pascalCase}${service.pascalCase}Service.',
+                'Removed Service Implementation $name${serviceName}Service.',
               );
 
             return ExitCode.success.code;
-          } on ServiceImplementationDoesNotExist {
+          } else {
             _logger
               ..info('')
               ..err(
-                'Service Implementation ${name.pascalCase}${service.pascalCase}Service not found.',
+                'Service Implementation $name${serviceName}Service does not exist.',
               );
 
             return ExitCode.config.code;
           }
         },
       );
-
-  /// Gets the name of the service interface this service implementation is related to.
-  String get _service => _validateServiceArg(argResults['service']);
-
-  /// Validates whether `service` is a valid service name.
-  ///
-  /// Returns `service` when valid.
-  String _validateServiceArg(String? service) {
-    if (service == null) {
-      throw UsageException(
-        'No option specified for the service.',
-        usage,
-      );
-    }
-
-    final isValid = isValidClassName(service);
-    if (!isValid) {
-      throw UsageException(
-        '"$service" is not a valid dart class name.',
-        usage,
-      );
-    }
-
-    return service;
-  }
 }

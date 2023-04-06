@@ -192,39 +192,35 @@ class CreateCommand extends Command<int>
 
           _logger.info('Creating Rapid App ...');
 
-          await project.create(
-            projectName: projectName,
-            description: description,
-            orgName: orgName,
-            language: language,
-            example: example,
-            android: android,
-            ios: ios,
-            linux: linux,
-            macos: macos,
-            web: web,
-            windows: windows,
-            logger: _logger,
-          );
-
-          // TODO rm and replace with templated .lock and .pubspecoverrides
-          await _melosBootstrap(cwd: project.path, logger: _logger);
-          for (final platform in [
+          final platforms = {
             if (android) Platform.android,
             if (ios) Platform.ios,
             if (linux) Platform.linux,
             if (macos) Platform.macos,
             if (web) Platform.web,
             if (windows) Platform.windows,
-          ]) {
+          };
+
+          await project.create(
+            projectName: projectName,
+            description: description,
+            orgName: orgName,
+            language: language,
+            example: example,
+            platforms: platforms,
+          );
+
+          // TODO rm and replace with templated .lock and .pubspecoverrides
+          await _melosBootstrap(cwd: project.path, logger: _logger);
+          for (final platform in platforms) {
             final platformDirectory = project.platformDirectory(
               platform: platform,
             );
             final featuresDirectory = platformDirectory.featuresDirectory;
             final appFeaturePackage = featuresDirectory
-                .featurePackage<PlatformAppFeaturePackage>('app');
+                .featurePackage<PlatformAppFeaturePackage>(name: 'app');
             final homePageFeaturePackage =
-                featuresDirectory.featurePackage('home_page');
+                featuresDirectory.featurePackage(name: 'home_page');
 
             await _flutterGenl10n(cwd: appFeaturePackage.path, logger: _logger);
             await _flutterGenl10n(

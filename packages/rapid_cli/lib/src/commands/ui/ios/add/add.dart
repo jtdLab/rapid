@@ -11,7 +11,7 @@ class UiIosAddCommand extends UiPlatformAddCommand {
   /// {@macro ui_ios_add_command}
   UiIosAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.ios,
           widgetCommand:

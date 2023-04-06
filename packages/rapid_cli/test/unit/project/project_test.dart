@@ -2886,7 +2886,7 @@ void main() {
         final infrastructurePackage = getInfrastructurePackage();
         when(
           () => infrastructurePackage.dataTransferObject(
-            entityName: 'FooBar',
+            name: 'FooBar',
             dir: 'data_transfer_object/path',
           ),
         ).thenReturn(dataTransferObject);
@@ -2912,7 +2912,7 @@ void main() {
         ).called(1);
         verify(
           () => infrastructurePackage.dataTransferObject(
-            entityName: 'FooBar',
+            name: 'FooBar',
             dir: 'data_transfer_object/path',
           ),
         ).called(1);
@@ -2964,7 +2964,7 @@ void main() {
         final infrastructurePackage = getInfrastructurePackage();
         when(
           () => infrastructurePackage.dataTransferObject(
-            entityName: 'FooBar',
+            name: 'FooBar',
             dir: 'data_transfer_object/path',
           ),
         ).thenReturn(dataTransferObject);
@@ -2993,7 +2993,7 @@ void main() {
         final infrastructurePackage = getInfrastructurePackage();
         when(
           () => infrastructurePackage.dataTransferObject(
-            entityName: 'FooBar',
+            name: 'FooBar',
             dir: 'data_transfer_object/path',
           ),
         ).thenReturn(dataTransferObject);
@@ -3012,7 +3012,7 @@ void main() {
         // Assert
         verify(
           () => infrastructurePackage.dataTransferObject(
-            entityName: 'FooBar',
+            name: 'FooBar',
             dir: 'data_transfer_object/path',
           ),
         ).called(1);
@@ -3028,7 +3028,7 @@ void main() {
         final infrastructurePackage = getInfrastructurePackage();
         when(
           () => infrastructurePackage.dataTransferObject(
-            entityName: 'FooBar',
+            name: 'FooBar',
             dir: 'data_transfer_object/path',
           ),
         ).thenReturn(dataTransferObject);

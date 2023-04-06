@@ -1,6 +1,7 @@
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/commands/web/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/feature.dart';
+import 'package:rapid_cli/src/commands/web/feature/add/add.dart';
+import 'package:rapid_cli/src/commands/web/feature/remove/remove.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -11,9 +12,11 @@ class WebFeatureCommand extends PlatformFeatureCommand {
   /// {@macro web_feature_command}
   WebFeatureCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.web,
           addCommand: WebFeatureAddCommand(logger: logger, project: project),
+          removeCommand:
+              WebFeatureRemoveCommand(logger: logger, project: project),
         );
 }

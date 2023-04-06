@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_directory_impl.dart';
@@ -27,35 +26,22 @@ abstract class InfrastructureDirectory extends Directory {
   @visibleForTesting
   InfrastructurePackageBuilder? infrastructurePackageOverrides;
 
-  InfrastructurePackage infrastructurePackage({required String name});
+  /// Returns the [InfrastructurePackage] with [name].
+  InfrastructurePackage infrastructurePackage({String? name});
 
-  Future<void> addDataTransferObject({
-    required String entityName,
-    required String domainName,
-    required String outputDir,
-    required Logger logger,
+  // TODO consider required !
+
+  /// Adds the [InfrastructurePackage] with [name] and returns it.
+  ///
+  /// Throws [SubInfrastructureAlreadyExists] when the [DomainPackage] already exists.
+  Future<InfrastructurePackage> addInfrastructurePackage({
+    required String name,
   });
 
-  Future<void> removeDataTransferObject({
+  /// Removes the [InfrastructurePackage] with [name] and returns it.
+  ///
+  /// Throws [SubInfrastructureDoesNotExist] when the [InfrastructurePackage] does not exist.
+  Future<InfrastructurePackage> removeInfrastructurePackage({
     required String name,
-    required String domainName,
-    required String dir,
-    required Logger logger,
-  });
-
-  Future<void> addServiceImplementation({
-    required String name,
-    required String domainName,
-    required String serviceName,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeServiceImplementation({
-    required String name,
-    required String domainName,
-    required String serviceName,
-    required String dir,
-    required Logger logger,
   });
 }

@@ -8,7 +8,7 @@ class LinuxRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   /// {@macro linux_remove_feature_command}
   LinuxRemoveFeatureCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.melosBootstrap,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,

@@ -8,7 +8,7 @@ class WindowsAddLanguageCommand extends PlatformAddLanguageCommand {
   /// {@macro windows_add_language_command}
   WindowsAddLanguageCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.flutterGenl10n,
     super.dartFormatFix,
   }) : super(

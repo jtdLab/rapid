@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
@@ -8,7 +7,7 @@ import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/
 import 'package:rapid_cli/src/project/project.dart';
 
 typedef InfrastructurePackageBuilder = InfrastructurePackage Function({
-  required String name,
+  String? name,
   required Project project,
 });
 
@@ -21,7 +20,7 @@ abstract class InfrastructurePackage
     implements DartPackage, OverridableGenerator {
   /// {@macro infrastructure_package}
   factory InfrastructurePackage({
-    required String name,
+    String? name,
     required Project project,
   }) =>
       InfrastructurePackageImpl(
@@ -44,41 +43,50 @@ abstract class InfrastructurePackage
   @visibleForTesting
   ServiceImplementationBuilder? serviceImplementationOverrides;
 
-  String get name;
+  String? get name;
 
   Project get project;
 
-  Future<void> create({required Logger logger});
-
-  Future<void> addDataTransferObject({
-    required String entityName,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeDataTransferObject({
+  DataTransferObject dataTransferObject({
     required String name,
     required String dir,
-    required Logger logger,
   });
 
-  Future<void> addServiceImplementation({
-    required String name,
-    required String serviceName,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeServiceImplementation({
+  ServiceImplementation serviceImplementation({
     required String name,
     required String serviceName,
     required String dir,
-    required Logger logger,
+  });
+
+  Future<void> create();
+
+  // TODO consider required !
+
+  Future<DataTransferObject> addDataTransferObject({
+    required String name,
+    required String dir,
+  });
+
+  Future<DataTransferObject> removeDataTransferObject({
+    required String name,
+    required String dir,
+  });
+
+  Future<ServiceImplementation> addServiceImplementation({
+    required String name,
+    required String serviceName,
+    required String dir,
+  });
+
+  Future<ServiceImplementation> removeServiceImplementation({
+    required String name,
+    required String serviceName,
+    required String dir,
   });
 }
 
 typedef DataTransferObjectBuilder = DataTransferObject Function({
-  required String entityName,
+  required String name,
   required String dir,
   required InfrastructurePackage infrastructurePackage,
 });
@@ -90,17 +98,17 @@ abstract class DataTransferObject
     implements FileSystemEntityCollection, OverridableGenerator {
   /// {@macro data_transfer_object}
   factory DataTransferObject({
-    required String entityName,
+    required String name,
     required String dir,
     required InfrastructurePackage infrastructurePackage,
   }) =>
       DataTransferObjectImpl(
-        entityName: entityName,
+        name: name,
         dir: dir,
         infrastructurePackage: infrastructurePackage,
       );
 
-  Future<void> create({required Logger logger});
+  Future<void> create();
 }
 
 typedef ServiceImplementationBuilder = ServiceImplementation Function({
@@ -129,5 +137,5 @@ abstract class ServiceImplementation
         infrastructurePackage: infrastructurePackage,
       );
 
-  Future<void> create({required Logger logger});
+  Future<void> create();
 }

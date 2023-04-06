@@ -11,7 +11,7 @@ class UiAndroidAddCommand extends UiPlatformAddCommand {
   /// {@macro ui_android_add_command}
   UiAndroidAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.android,
           widgetCommand:

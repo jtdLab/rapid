@@ -18,7 +18,7 @@ class InfrastructurePackageImpl extends DartPackageImpl
     with OverridableGenerator, Generatable
     implements InfrastructurePackage {
   InfrastructurePackageImpl({
-    required this.name,
+    this.name,
     required this.project,
   }) : super(
           path: p.join(
@@ -26,51 +26,9 @@ class InfrastructurePackageImpl extends DartPackageImpl
             'packages',
             project.name(),
             '${project.name()}_infrastructure',
-            '${project.name()}_infrastructure_$name',
+            '${project.name()}_infrastructure${name != null ? '_$name' : ''}',
           ),
         );
-
-  Entity _entity({
-    required String name,
-    required String dir,
-  }) =>
-      (entityOverrides ?? Entity.new)(
-        name: name,
-        dir: dir,
-        domainPackage: DomainPackage(name: name, project: project),
-      );
-
-  ServiceInterface _serviceInterface({
-    required String name,
-    required String dir,
-  }) =>
-      (serviceInterfaceOverrides ?? ServiceInterface.new)(
-        name: name,
-        dir: dir,
-        domainPackage: DomainPackage(name: name, project: project),
-      );
-
-  DataTransferObject _dataTransferObject({
-    required String entityName,
-    required String dir,
-  }) =>
-      (dataTransferObjectOverrides ?? DataTransferObject.new)(
-        entityName: entityName,
-        dir: dir,
-        infrastructurePackage: this,
-      );
-
-  ServiceImplementation _serviceImplementation({
-    required String name,
-    required String serviceName,
-    required String dir,
-  }) =>
-      (serviceImplementationOverrides ?? ServiceImplementation.new)(
-        name: name,
-        serviceName: serviceName,
-        dir: dir,
-        infrastructurePackage: this,
-      );
 
   @override
   DomainPackageBuilder? domainPackageOverrides;
@@ -88,111 +46,123 @@ class InfrastructurePackageImpl extends DartPackageImpl
   ServiceImplementationBuilder? serviceImplementationOverrides;
 
   @override
-  final String name;
+  final String? name;
 
   @override
   final Project project;
 
   @override
-  Future<void> create({
-    required Logger logger,
-  }) async {
+  DataTransferObject dataTransferObject({
+    required String name,
+    required String dir,
+  }) =>
+      (dataTransferObjectOverrides ?? DataTransferObject.new)(
+        name: name,
+        dir: dir,
+        infrastructurePackage: this,
+      );
+
+  @override
+  ServiceImplementation serviceImplementation({
+    required String name,
+    required String serviceName,
+    required String dir,
+  }) =>
+      (serviceImplementationOverrides ?? ServiceImplementation.new)(
+        name: name,
+        serviceName: serviceName,
+        dir: dir,
+        infrastructurePackage: this,
+      );
+
+  @override
+  Future<void> create() async {
     final projectName = project.name();
 
     await generate(
-      name: 'infrastructure package',
       bundle: infrastructurePackageBundle,
       vars: <String, dynamic>{
         'project_name': projectName,
+        'has_name': name != null,
+        'name': name,
       },
-      logger: logger,
     );
   }
 
   @override
-  Future<void> addDataTransferObject({
-    required String entityName,
-    required String outputDir,
-    required Logger logger,
-  }) async {
-    final entity = _entity(name: entityName, dir: outputDir);
-    if (!entity.existsAll()) {
-      throw EntityDoesNotExist();
-    }
-
-    final dataTransferObject = _dataTransferObject(
-      entityName: entityName,
-      dir: outputDir,
-    );
-    if (dataTransferObject.existsAny()) {
-      throw DataTransferObjectAlreadyExists();
-    }
-
-    await dataTransferObject.create(logger: logger);
-  }
-
-  @override
-  Future<void> removeDataTransferObject({
+  Future<DataTransferObject> addDataTransferObject({
     required String name,
     required String dir,
-    required Logger logger,
   }) async {
-    final dataTransferObject = _dataTransferObject(
-      // TODO good ? maybe pass the entity
-      entityName: name.replaceAll('Dto', ''),
+    final dataTransferObject = this.dataTransferObject(
+      name: name,
+      dir: dir,
+    );
+    if (dataTransferObject.existsAny()) {
+      throw RapidException('The ${name}Dto at $dir already exists');
+    }
+
+    await dataTransferObject.create();
+    return dataTransferObject;
+  }
+
+  @override
+  Future<DataTransferObject> removeDataTransferObject({
+    required String name,
+    required String dir,
+  }) async {
+    final dataTransferObject = this.dataTransferObject(
+      name: name,
       dir: dir,
     );
     if (!dataTransferObject.existsAny()) {
-      throw DataTransferObjectDoesNotExist();
+      throw RapidException('The ${name}Dto at $dir does not exist');
     }
 
-    dataTransferObject.delete(logger: logger);
+    dataTransferObject.delete();
+    return dataTransferObject;
   }
 
   @override
-  Future<void> addServiceImplementation({
-    required String name,
-    required String serviceName,
-    required String outputDir,
-    required Logger logger,
-  }) async {
-    final serviceInterface = _serviceInterface(
-      name: serviceName,
-      dir: outputDir,
-    );
-    if (!serviceInterface.existsAll()) {
-      throw ServiceInterfaceDoesNotExist();
-    }
-
-    final serviceImplementation = _serviceImplementation(
-      name: name,
-      serviceName: serviceName,
-      dir: outputDir,
-    );
-    if (serviceImplementation.existsAny()) {
-      throw ServiceImplementationAlreadyExists();
-    }
-
-    await serviceImplementation.create(logger: logger);
-  }
-
-  @override
-  Future<void> removeServiceImplementation({
+  Future<ServiceImplementation> addServiceImplementation({
     required String name,
     required String serviceName,
     required String dir,
-    required Logger logger,
   }) async {
-    final serviceImplementation = _serviceImplementation(
+    final serviceImplementation = this.serviceImplementation(
+      name: name,
+      serviceName: serviceName,
+      dir: dir,
+    );
+    if (serviceImplementation.existsAny()) {
+      throw RapidException(
+        'The $name${serviceName}Service at $dir already exists',
+      );
+    }
+
+    await serviceImplementation.create();
+    return serviceImplementation;
+  }
+
+  @override
+  Future<ServiceImplementation> removeServiceImplementation({
+    required String name,
+    required String serviceName,
+    required String dir,
+  }) async {
+    final serviceImplementation = this.serviceImplementation(
       name: name,
       serviceName: serviceName,
       dir: dir,
     );
     if (!serviceImplementation.existsAny()) {
-      throw ServiceImplementationDoesNotExist();
+      throw RapidException(
+        'The $name${serviceName}Service at $dir does not exist',
+      );
     }
 
-    serviceImplementation.delete(logger: logger);
+    serviceImplementation.delete();
+    return serviceImplementation;
   }
 }
 
@@ -200,12 +170,12 @@ class DataTransferObjectImpl extends FileSystemEntityCollection
     with OverridableGenerator
     implements DataTransferObject {
   DataTransferObjectImpl({
-    required String entityName,
+    required String name,
     required String dir,
     required InfrastructurePackage infrastructurePackage,
   })  : _infrastructurePackage = infrastructurePackage,
         _dir = dir,
-        _entityName = entityName,
+        _name = name,
         super([
           DartFile(
             path: p.join(
@@ -214,7 +184,7 @@ class DataTransferObjectImpl extends FileSystemEntityCollection
               'src',
               dir,
             ),
-            name: '${entityName.snakeCase}_dto',
+            name: '${name.snakeCase}_dto',
           ),
           DartFile(
             path: p.join(
@@ -223,7 +193,7 @@ class DataTransferObjectImpl extends FileSystemEntityCollection
               'src',
               dir,
             ),
-            name: '${entityName.snakeCase}_dto.freezed',
+            name: '${name.snakeCase}_dto.freezed',
           ),
           DartFile(
             path: p.join(
@@ -232,7 +202,7 @@ class DataTransferObjectImpl extends FileSystemEntityCollection
               'src',
               dir,
             ),
-            name: '${entityName.snakeCase}_dto.g',
+            name: '${name.snakeCase}_dto.g',
           ),
           DartFile(
             path: p.join(
@@ -241,29 +211,29 @@ class DataTransferObjectImpl extends FileSystemEntityCollection
               'src',
               dir,
             ),
-            name: '${entityName.snakeCase}_dto_test',
+            name: '${name.snakeCase}_dto_test',
           ),
         ]);
 
-  final String _entityName;
+  final String _name;
   final String _dir;
   final InfrastructurePackage _infrastructurePackage;
 
   @override
-  Future<void> create({
-    required Logger logger,
-  }) async {
+  Future<void> create() async {
     final projectName = _infrastructurePackage.project.name();
+    final subInfrastructureName = _infrastructurePackage.name;
 
     final generator = await super.generator(dataTransferObjectBundle);
     await generator.generate(
       DirectoryGeneratorTarget(io.Directory(_infrastructurePackage.path)),
       vars: <String, dynamic>{
         'project_name': projectName,
-        'entity_name': _entityName,
+        'entity_name': _name,
         'output_dir': _dir,
+        'has_subinfrastructure_name': subInfrastructureName != null,
+        'subinfrastructure_name': subInfrastructureName,
       },
-      logger: logger,
     );
   }
 }
@@ -307,10 +277,9 @@ class ServiceImplementationImpl extends FileSystemEntityCollection
   final InfrastructurePackage _infrastructurePackage;
 
   @override
-  Future<void> create({
-    required Logger logger,
-  }) async {
+  Future<void> create() async {
     final projectName = _infrastructurePackage.project.name();
+    final subInfrastructureName = _infrastructurePackage.name;
 
     final generator = await super.generator(serviceImplementationBundle);
     await generator.generate(
@@ -320,8 +289,9 @@ class ServiceImplementationImpl extends FileSystemEntityCollection
         'name': _name,
         'service_name': _serviceName,
         'output_dir': _dir,
+        'has_subinfrastructure_name': subInfrastructureName != null,
+        'subinfrastructure_name': subInfrastructureName,
       },
-      logger: logger,
     );
   }
 }

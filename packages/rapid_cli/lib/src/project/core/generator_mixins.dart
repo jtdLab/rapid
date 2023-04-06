@@ -5,6 +5,8 @@ import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 
+// TODO combine ?
+
 mixin OverridableGenerator {
   @visibleForTesting
   GeneratorBuilder? generatorOverrides;
@@ -19,19 +21,11 @@ mixin Generatable on Directory, OverridableGenerator {
   Future<void> generate({
     required MasonBundle bundle,
     required Map<String, dynamic> vars,
-    required String name,
-    required Logger logger,
   }) async {
-    final progress = logger.progress('Generating $name files ...');
     final generator = await this.generator(bundle);
-    final files = await generator.generate(
+    await generator.generate(
       DirectoryGeneratorTarget(io.Directory(path)),
       vars: vars,
-      logger: logger,
     );
-    for (final file in files) {
-      logger.detail(file.path);
-    }
-    progress.complete('Generated $name files.');
   }
 }

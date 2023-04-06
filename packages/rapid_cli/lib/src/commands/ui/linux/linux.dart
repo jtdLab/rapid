@@ -12,7 +12,7 @@ class UiLinuxCommand extends UiPlatformCommand {
   /// {@macro ui_linux_command}
   UiLinuxCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.linux,
           addCommand: UiLinuxAddCommand(logger: logger, project: project),

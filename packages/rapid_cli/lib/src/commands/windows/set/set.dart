@@ -11,7 +11,7 @@ class WindowsSetCommand extends PlatformSetCommand {
   /// {@macro windows_set_command}
   WindowsSetCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.windows,
           defaultLanguageCommand: WindowsSetDefaultLanguageCommand(

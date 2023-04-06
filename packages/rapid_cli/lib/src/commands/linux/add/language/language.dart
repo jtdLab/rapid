@@ -8,7 +8,7 @@ class LinuxAddLanguageCommand extends PlatformAddLanguageCommand {
   /// {@macro linux_add_language_command}
   LinuxAddLanguageCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.flutterGenl10n,
     super.dartFormatFix,
   }) : super(

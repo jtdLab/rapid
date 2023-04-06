@@ -11,7 +11,7 @@ class DomainSubdomainCommand extends Command<int> {
   /// {@macro domain_sub_domain_command}
   DomainSubdomainCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) {
     addSubcommand(DomainSubDomainAddCommand(project: project));
     addSubcommand(DomainSubDomainRemoveCommand(project: project));
@@ -19,6 +19,9 @@ class DomainSubdomainCommand extends Command<int> {
 
   @override
   String get name => 'sub_domain';
+
+  @override
+  List<String> get aliases => ['sub', 'sd'];
 
   @override
   String get invocation => 'rapid domain sub_domain <subcommand>';

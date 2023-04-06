@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/logging_package/logging_package_impl.dart';
@@ -22,5 +21,6 @@ abstract class LoggingPackage implements DartPackage, OverridableGenerator {
         project: project,
       );
 
-  Future<void> create({required Logger logger});
+  /// Creates the logging package.
+  Future<void> create();
 }

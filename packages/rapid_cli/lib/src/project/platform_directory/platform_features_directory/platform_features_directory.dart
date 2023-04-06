@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -36,67 +35,7 @@ abstract class PlatformFeaturesDirectory implements Directory {
 
   Project get project;
 
-  T featurePackage<T extends PlatformFeaturePackage>(String name);
+  T featurePackage<T extends PlatformFeaturePackage>({required String name});
 
   List<PlatformFeaturePackage> featurePackages();
-
-  String defaultLanguage();
-
-  Set<String> supportedLanguages();
-
-  Future<void> addFeature({
-    required String name,
-    String? description,
-    required String defaultLanguage,
-    required Set<String> languages,
-    required Logger logger,
-  });
-
-  Future<void> removeFeature({
-    required String name,
-    required Logger logger,
-  });
-
-  Future<void> addLanguage(
-    String language, {
-    required Logger logger,
-  });
-
-  Future<void> removeLanguage(
-    String language, {
-    required Logger logger,
-  });
-
-  Future<void> setDefaultLanguage(
-    String newDefaultLanguage, {
-    required Logger logger,
-  });
-
-  Future<void> addBloc({
-    required String name,
-    required String featureName,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeBloc({
-    required String name,
-    required String featureName,
-    required String dir,
-    required Logger logger,
-  });
-
-  Future<void> addCubit({
-    required String name,
-    required String featureName,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeCubit({
-    required String name,
-    required String featureName,
-    required String dir,
-    required Logger logger,
-  });
 }

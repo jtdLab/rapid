@@ -8,7 +8,7 @@ class WebAddLanguageCommand extends PlatformAddLanguageCommand {
   /// {@macro web_add_language_command}
   WebAddLanguageCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.flutterGenl10n,
     super.dartFormatFix,
   }) : super(

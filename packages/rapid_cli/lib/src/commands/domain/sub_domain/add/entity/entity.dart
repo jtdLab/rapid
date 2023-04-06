@@ -1,26 +1,36 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
+import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
+import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template domain_sub_domain_add_entity_command}
 /// `rapid domain sub_domain add entity` command adds entity to the domain part of an existing Rapid project.
 /// {@endtemplate}
 class DomainSubDomainAddEntityCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter, OutputDirGetter {
+    with
+        OverridableArgResults,
+        ClassNameGetter,
+        SubDomainGetter,
+        OutputDirGetter {
   /// {@macro domain_sub_domain_add_entity_command}
   DomainSubDomainAddEntityCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
     DartFormatFixCommand? dartFormatFix,
   })  : _logger = logger ?? Logger(),
-        _project = project,
+        _project = project ?? Project(),
         _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
+      ..addSeparator('')
+      ..addSubDomainOption(
+        help: 'The name of the subdomain this new entity will be added to.\n'
+            'This must be the name of an existing subdomain.',
+      )
       ..addSeparator('')
       ..addOutputDirOption(
         help: 'The output directory relative to <domain_package>/lib/ .',
@@ -35,7 +45,8 @@ class DomainSubDomainAddEntityCommand extends Command<int>
   String get name => 'entity';
 
   @override
-  String get invocation => 'rapid domain sub_domain add entity <name> [arguments]';
+  String get invocation =>
+      'rapid domain sub_domain add entity <name> [arguments]';
 
   @override
   String get description =>
@@ -47,29 +58,28 @@ class DomainSubDomainAddEntityCommand extends Command<int>
         _logger,
         () async {
           final name = super.className;
+          final domainName = super.subDomain;
           final outputDir = super.outputDir;
 
           _logger.info('Adding Entity ...');
 
-          try {
-            await _project.addEntity(
-              name: name,
-              outputDir: outputDir,
-              logger: _logger,
-            );
+          final domainDirectory = _project.domainDirectory;
+          final domainPackage = domainDirectory.domainPackage(name: domainName);
+          final entity = domainPackage.entity(name: name, dir: outputDir);
+          if (!entity.existsAny()) {
+            await entity.create();
 
-            final domainPackage = _project.domainPackage;
             await _dartFormatFix(cwd: domainPackage.path, logger: _logger);
 
             _logger
               ..info('')
-              ..success('Added Entity ${name.pascalCase}.');
+              ..success('Added Entity $name.');
 
             return ExitCode.success.code;
-          } on EntityAlreadyExists {
+          } else {
             _logger
               ..info('')
-              ..err('Entity $name already exists.');
+              ..err('Entity or ValueObject $name already exists.');
 
             return ExitCode.config.code;
           }

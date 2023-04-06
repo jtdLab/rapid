@@ -11,7 +11,7 @@ class UiAndroidRemoveCommand extends UiPlatformRemoveCommand {
   /// {@macro ui_android_remove_command}
   UiAndroidRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.android,
           widgetCommand:

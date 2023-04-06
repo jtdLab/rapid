@@ -12,7 +12,7 @@ class WindowsFeatureAddCommand extends PlatformFeatureAddCommand {
   /// {@macro windows_feature_add_command}
   WindowsFeatureAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.windows,
           blocCommand:

@@ -11,7 +11,7 @@ class InfrastructureSubInfrastructureAddCommand extends Command<int> {
   /// {@macro infrastructure_sub_infrastructure_add_command}
   InfrastructureSubInfrastructureAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) {
     addSubcommand(
       InfrastructureSubInfrastructureAddDataTransferObjectCommand(

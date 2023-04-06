@@ -11,7 +11,7 @@ class UiLinuxAddCommand extends UiPlatformAddCommand {
   /// {@macro ui_linux_add_command}
   UiLinuxAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.linux,
           widgetCommand:

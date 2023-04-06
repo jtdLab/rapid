@@ -1,6 +1,5 @@
-import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
-import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_directory_impl.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_features_directory.dart';
@@ -19,7 +18,7 @@ typedef PlatformDirectoryBuilder = PlatformDirectory Function({
 ///
 /// Location: `packages/<project name>/<project name>_<platform>`
 /// {@endtemplate}
-abstract class PlatformDirectory implements DartPackage {
+abstract class PlatformDirectory implements Directory {
   @visibleForTesting
   PlatformNavigationPackageBuilder? navigationPackageOverrides;
 
@@ -35,64 +34,6 @@ abstract class PlatformDirectory implements DartPackage {
   PlatformNavigationPackage get navigationPackage;
 
   PlatformFeaturesDirectory get featuresDirectory;
-
-  String defaultLanguage();
-
-  Set<String> supportedLanguages();
-
-  Future<void> addFeature({
-    required String name,
-    required String description,
-    required Logger logger,
-  });
-
-  Future<void> removeFeature({
-    required String name,
-    required Logger logger,
-  });
-
-  Future<void> addLanguage(
-    String language, {
-    required Logger logger,
-  });
-
-  Future<void> removeLanguage(
-    String language, {
-    required Logger logger,
-  });
-
-  Future<void> setDefaultLanguage(
-    String newDefaultLanguage, {
-    required Logger logger,
-  });
-
-  Future<void> addBloc({
-    required String name,
-    required String featureName,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeBloc({
-    required String name,
-    required String featureName,
-    required String dir,
-    required Logger logger,
-  });
-
-  Future<void> addCubit({
-    required String name,
-    required String featureName,
-    required String outputDir,
-    required Logger logger,
-  });
-
-  Future<void> removeCubit({
-    required String name,
-    required String featureName,
-    required String dir,
-    required Logger logger,
-  });
 }
 
 /// {@template none_ios_directory}
@@ -111,14 +52,15 @@ abstract class NoneIosDirectory extends PlatformDirectory {
       NoneIosDirectoryImpl(platform, project: project);
 
   @visibleForTesting
-  NoneIosRootPackageBuilder?
-      rootPackageOverrides; // TODO why no pass it via constructor
+  NoneIosRootPackageBuilder? rootPackageOverrides;
+
+  @override
+  NoneIosRootPackage get rootPackage;
 
   Future<void> create({
     String? description,
     String? orgName,
     required String language,
-    required Logger logger,
   });
 }
 
@@ -137,9 +79,11 @@ abstract class IosDirectory extends PlatformDirectory {
   @visibleForTesting
   IosRootPackageBuilder? rootPackageOverrides;
 
+  @override
+  IosRootPackage get rootPackage;
+
   Future<void> create({
     required String orgName,
     required String language,
-    required Logger logger,
   });
 }

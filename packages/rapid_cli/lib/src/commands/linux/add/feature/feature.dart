@@ -8,7 +8,7 @@ class LinuxAddFeatureCommand extends PlatformAddFeatureCommand {
   /// {@macro linux_add_feature_command}
   LinuxAddFeatureCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.melosBootstrap,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,

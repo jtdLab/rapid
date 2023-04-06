@@ -12,7 +12,7 @@ class LinuxFeatureAddCommand extends PlatformFeatureAddCommand {
   /// {@macro linux_feature_add_command}
   LinuxFeatureAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.linux,
           blocCommand:

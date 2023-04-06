@@ -12,7 +12,7 @@ class MacosRemoveCommand extends PlatformRemoveCommand {
   /// {@macro macos_remove_command}
   MacosRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.macos,
           featureCommand:

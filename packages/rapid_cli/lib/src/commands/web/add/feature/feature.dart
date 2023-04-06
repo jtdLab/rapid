@@ -8,7 +8,7 @@ class WebAddFeatureCommand extends PlatformAddFeatureCommand {
   /// {@macro web_add_feature_command}
   WebAddFeatureCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.melosBootstrap,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,

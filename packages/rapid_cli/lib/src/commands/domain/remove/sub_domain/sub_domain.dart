@@ -1,27 +1,34 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/commands/core/dart_package_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template domain_remove_sub_domain_command}
 /// `rapid domain remove sub_domain` command remove subdomains from the domain part of an existing Rapid project.
 /// {@endtemplate}
 class DomainRemoveSubDomainCommand extends Command<int>
-    with OverridableArgResults {
+    with OverridableArgResults, DartPackageNameGetter {
   /// {@macro domain_remove_sub_domain_command}
   DomainRemoveSubDomainCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
+    MelosBootstrapCommand? melosBootstrap,
   })  : _logger = logger ?? Logger(),
-        _project = project;
+        _project = project ?? Project(),
+        _melosBootstrap = melosBootstrap ?? Melos.bootstrap;
 
   final Logger _logger;
   final Project _project;
+  final MelosBootstrapCommand _melosBootstrap;
 
   @override
-  String get name => 'remove';
+  String get name => 'sub_domain';
+
+  @override
+  List<String> get aliases => ['sub', 'sd'];
 
   @override
   String get invocation => 'rapid domain remove sub_domain <name>';
@@ -35,22 +42,42 @@ class DomainRemoveSubDomainCommand extends Command<int>
         [projectExistsAll(_project)],
         _logger,
         () async {
-          final name = _name;
+          final name = super.dartPackageName;
 
-          _logger.info('Removing sub domain ...');
+          _logger.info('Removing subdomain ...');
 
-          try {
-            await _project.removeSubDomain(
-              name: name,
-              logger: _logger,
-            );
+          final domainDirectory = _project.domainDirectory;
+          final domainPackage = domainDirectory.domainPackage(name: name);
+          if (domainPackage.exists()) {
+            final infrastructureDirectory = _project.infrastructureDirectory;
+            final infrastructurePackage =
+                infrastructureDirectory.infrastructurePackage(name: name);
+            if (infrastructurePackage.exists()) {
+              domainPackage.delete();
+              infrastructurePackage.delete();
 
-            _logger
-              ..info('')
-              ..success('Removed sub domain $name.');
+              await _melosBootstrap(
+                cwd: _project.path,
+                scope: [
+                  domainPackage.packageName(),
+                  infrastructurePackage.packageName(),
+                ],
+                logger: _logger,
+              );
 
-            return ExitCode.success.code;
-          } on SubDomainDoesNotExist {
+              _logger
+                ..info('')
+                ..success('Removed subdomain $name.');
+
+              return ExitCode.success.code;
+            } else {
+              _logger
+                ..info('')
+                ..err('The subinfrastructure "$name" does not exist.');
+
+              return ExitCode.config.code;
+            }
+          } else {
             _logger
               ..info('')
               ..err('The subdomain "$name" does not exist.');
@@ -59,34 +86,4 @@ class DomainRemoveSubDomainCommand extends Command<int>
           }
         },
       );
-
-  String get _name => _validateNameArg(argResults.rest);
-
-  /// Validates whether [name] is valid feature name.
-  ///
-  /// Returns [name] when valid.
-  String _validateNameArg(List<String> args) {
-    if (args.isEmpty) {
-      throw UsageException(
-        'No option specified for the name.',
-        usage,
-      );
-    }
-
-    if (args.length > 1) {
-      throw UsageException('Multiple names specified.', usage);
-    }
-
-    final name = args.first;
-    final isValid = isValidPackageName(name);
-    if (!isValid) {
-      throw UsageException(
-        '"$name" is not a valid package name.\n\n'
-        'See https://dart.dev/tools/pub/pubspec#name for more information.',
-        usage,
-      );
-    }
-
-    return name;
-  }
 }

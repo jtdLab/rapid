@@ -20,14 +20,14 @@ final entityBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "test/{{{output_dir}}}/{{name.snakeCase()}}_test.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOnRlc3QvdGVzdC5kYXJ0JzsKaW1wb3J0ICdwYWNrYWdlOnt7cHJvamVjdF9uYW1lfX1fe3sjcGF0aENhc2V9fWRvbWFpbi97e3tvdXRwdXRfZGlyfX19e3svcGF0aENhc2V9fS97e25hbWUuc25ha2VDYXNlKCl9fS5kYXJ0JzsKCnZvaWQgbWFpbigpIHsKICBncm91cCgne3tuYW1lLnBhc2NhbENhc2UoKX19JywgKCkgewogICAgZ3JvdXAoJy4oKScsICgpIHsKICAgICAgdGVzdCgnJywgKCkgewogICAgICAgIC8vIEFycmFuZ2UgKyBBY3QKICAgICAgICBmaW5hbCB7e25hbWUuY2FtZWxDYXNlKCl9fSA9IHt7bmFtZS5wYXNjYWxDYXNlKCl9fShpZDogJ3NvbWVfaWQnKTsKCiAgICAgICAgLy8gQXNzZXJ0CiAgICAgICAgZXhwZWN0KHt7bmFtZS5jYW1lbENhc2UoKX19LmlkLCAnc29tZV9pZCcpOwogICAgICB9KTsKICAgIH0pOwoKICAgIGdyb3VwKCcucmFuZG9tKCknLCAoKSB7CiAgICAgIHRlc3QoJycsICgpIHsKICAgICAgICAvLyBBcnJhbmdlICsgQWN0CiAgICAgICAgZmluYWwge3tuYW1lLmNhbWVsQ2FzZSgpfX0gPSB7e25hbWUucGFzY2FsQ2FzZSgpfX0ucmFuZG9tKCk7CgogICAgICAgIC8vIEFzc2VydAogICAgICAgIGV4cGVjdCh7e25hbWUuY2FtZWxDYXNlKCl9fS5pZCwgaXNOb3ROdWxsKTsKICAgICAgfSk7CgogICAgICB0ZXN0KAogICAgICAgICdyZXR1cm5zIGRpZmZlcmVudCBpbnN0YW5jZXMnLAogICAgICAgICgpIHsKICAgICAgICAgIC8vIEFycmFuZ2UgKyBBY3QKICAgICAgICAgIGZpbmFsIGluc3RhbmNlMSA9IHt7bmFtZS5wYXNjYWxDYXNlKCl9fS5yYW5kb20oKTsKICAgICAgICAgIGZpbmFsIGluc3RhbmNlMiA9IHt7bmFtZS5wYXNjYWxDYXNlKCl9fS5yYW5kb20oKTsKCiAgICAgICAgICAvLyBBc3NlcnQKICAgICAgICAgIGV4cGVjdChpbnN0YW5jZTEsIGlzTm90KGluc3RhbmNlMikpOwogICAgICAgIH0sCiAgICAgICAgcmV0cnk6IDUsCiAgICAgICk7CiAgICB9KTsKICB9KTsKfQo=",
+          "aW1wb3J0ICdwYWNrYWdlOnRlc3QvdGVzdC5kYXJ0JzsKaW1wb3J0ICdwYWNrYWdlOnt7cHJvamVjdF9uYW1lfX1fe3sjcGF0aENhc2V9fWRvbWFpbnt7I2hhc19zdWJkb21haW5fbmFtZX19X3t7c3ViZG9tYWluX25hbWV9fXt7L2hhc19zdWJkb21haW5fbmFtZX19L3t7e291dHB1dF9kaXJ9fX17ey9wYXRoQ2FzZX19L3t7bmFtZS5zbmFrZUNhc2UoKX19LmRhcnQnOwoKdm9pZCBtYWluKCkgewogIGdyb3VwKCd7e25hbWUucGFzY2FsQ2FzZSgpfX0nLCAoKSB7CiAgICBncm91cCgnLigpJywgKCkgewogICAgICB0ZXN0KCcnLCAoKSB7CiAgICAgICAgLy8gQXJyYW5nZSArIEFjdAogICAgICAgIGZpbmFsIHt7bmFtZS5jYW1lbENhc2UoKX19ID0ge3tuYW1lLnBhc2NhbENhc2UoKX19KGlkOiAnc29tZV9pZCcpOwoKICAgICAgICAvLyBBc3NlcnQKICAgICAgICBleHBlY3Qoe3tuYW1lLmNhbWVsQ2FzZSgpfX0uaWQsICdzb21lX2lkJyk7CiAgICAgIH0pOwogICAgfSk7CgogICAgZ3JvdXAoJy5yYW5kb20oKScsICgpIHsKICAgICAgdGVzdCgnJywgKCkgewogICAgICAgIC8vIEFycmFuZ2UgKyBBY3QKICAgICAgICBmaW5hbCB7e25hbWUuY2FtZWxDYXNlKCl9fSA9IHt7bmFtZS5wYXNjYWxDYXNlKCl9fS5yYW5kb20oKTsKCiAgICAgICAgLy8gQXNzZXJ0CiAgICAgICAgZXhwZWN0KHt7bmFtZS5jYW1lbENhc2UoKX19LmlkLCBpc05vdE51bGwpOwogICAgICB9KTsKCiAgICAgIHRlc3QoCiAgICAgICAgJ3JldHVybnMgZGlmZmVyZW50IGluc3RhbmNlcycsCiAgICAgICAgKCkgewogICAgICAgICAgLy8gQXJyYW5nZSArIEFjdAogICAgICAgICAgZmluYWwgaW5zdGFuY2UxID0ge3tuYW1lLnBhc2NhbENhc2UoKX19LnJhbmRvbSgpOwogICAgICAgICAgZmluYWwgaW5zdGFuY2UyID0ge3tuYW1lLnBhc2NhbENhc2UoKX19LnJhbmRvbSgpOwoKICAgICAgICAgIC8vIEFzc2VydAogICAgICAgICAgZXhwZWN0KGluc3RhbmNlMSwgaXNOb3QoaW5zdGFuY2UyKSk7CiAgICAgICAgfSwKICAgICAgICByZXRyeTogNSwKICAgICAgKTsKICAgIH0pOwogIH0pOwp9Cg==",
       "type": "text"
     }
   ],
   "hooks": [],
   "name": "entity",
   "description":
-      "A brick generating an entity of the domain package of a Rapid project.",
+      "A brick generating an entity of a domain package of a Rapid project.",
   "version": "0.1.0",
   "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {
@@ -43,6 +43,8 @@ final entityBundle = MasonBundle.fromJson(<String, dynamic>{
   "vars": {
     "project_name": {"type": "string"},
     "name": {"type": "string"},
-    "output_dir": {"type": "string"}
+    "output_dir": {"type": "string"},
+    "has_subdomain_name": {"type": "boolean"},
+    "subdomain_name": {"type": "string"}
   }
 });

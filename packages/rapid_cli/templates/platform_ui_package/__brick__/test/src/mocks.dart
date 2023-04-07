@@ -49,27 +49,7 @@ class FakeRouterConfig extends RouterConfig<Object> {
   RouteInformationParser<Object>? get routeInformationParser =>
       _routeInformationParser;
 }
-{{/macos}}{{#windows}}class FakeRouteInformationParser extends RouteInformationParser<Object> {
-  @override
-  Future<Object> parseRouteInformation(
-    RouteInformation routeInformation,
-  ) async {
-    return 0;
-  }
-}
-
-class FakeRouterConfig extends RouterConfig<Object> {
-  final RouteInformationParser<Object> _routeInformationParser;
-
-  FakeRouterConfig()
-      : _routeInformationParser = FakeRouteInformationParser(),
-        super(routerDelegate: FakeRouterDelegate());
-
-  @override
-  RouteInformationParser<Object>? get routeInformationParser =>
-      _routeInformationParser;
-}
-{{/windows}}{{^macos}}{{^windows}}class FakeRouterConfig extends RouterConfig<Object> {
+{{/macos}}{{^macos}}class FakeRouterConfig extends RouterConfig<Object> {
   FakeRouterConfig() : super(routerDelegate: FakeRouterDelegate());
 }
-{{/windows}}{{/macos}}
+{{/macos}}

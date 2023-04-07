@@ -17,8 +17,8 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^6.0.0+1{{/routable}}
-  injectable: ^2.1.0
+  {{#routable}}auto_route: ^6.0.5{{/routable}}
+  injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_android:
@@ -31,8 +31,8 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   build_runner: ^2.3.2
   freezed: ^2.3.2
-  {{#routable}}auto_route_generator: ^6.0.0{{/routable}}
-  injectable_generator: ^2.1.4
+  {{#routable}}auto_route_generator: ^6.0.3{{/routable}}
+  injectable_generator: ^2.1.5
   mocktail: ^0.3.0
   {{project_name}}_android_app:
 
@@ -91,8 +91,8 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^6.0.0+1{{/routable}}
-  injectable: ^2.1.0
+  {{#routable}}auto_route: ^6.0.5{{/routable}}
+  injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_ios:
@@ -105,8 +105,8 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   build_runner: ^2.3.2
   freezed: ^2.3.2
-  {{#routable}}auto_route_generator: ^6.0.0{{/routable}}
-  injectable_generator: ^2.1.4
+  {{#routable}}auto_route_generator: ^6.0.3{{/routable}}
+  injectable_generator: ^2.1.5
   mocktail: ^0.3.0
   {{project_name}}_ios_app:
 
@@ -165,8 +165,8 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^6.0.0+1{{/routable}}
-  injectable: ^2.1.0
+  {{#routable}}auto_route: ^6.0.5{{/routable}}
+  injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_linux:
@@ -179,8 +179,8 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   build_runner: ^2.3.2
   freezed: ^2.3.2
-  {{#routable}}auto_route_generator: ^6.0.0{{/routable}}
-  injectable_generator: ^2.1.4
+  {{#routable}}auto_route_generator: ^6.0.3{{/routable}}
+  injectable_generator: ^2.1.5
   mocktail: ^0.3.0
   {{project_name}}_linux_app:
 
@@ -239,8 +239,8 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^6.0.0+1{{/routable}}
-  injectable: ^2.1.0
+  {{#routable}}auto_route: ^6.0.5{{/routable}}
+  injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_macos:
@@ -253,8 +253,8 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   build_runner: ^2.3.2
   freezed: ^2.3.2
-  {{#routable}}auto_route_generator: ^6.0.0{{/routable}}
-  injectable_generator: ^2.1.4
+  {{#routable}}auto_route_generator: ^6.0.3{{/routable}}
+  injectable_generator: ^2.1.5
   mocktail: ^0.3.0
   {{project_name}}_macos_app:
 
@@ -313,8 +313,8 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^6.0.0+1{{/routable}}
-  injectable: ^2.1.0
+  {{#routable}}auto_route: ^6.0.5{{/routable}}
+  injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_web:
@@ -327,8 +327,8 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   build_runner: ^2.3.2
   freezed: ^2.3.2
-  {{#routable}}auto_route_generator: ^6.0.0{{/routable}}
-  injectable_generator: ^2.1.4
+  {{#routable}}auto_route_generator: ^6.0.3{{/routable}}
+  injectable_generator: ^2.1.5
   mocktail: ^0.3.0
   {{project_name}}_web_app:
 
@@ -387,8 +387,8 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^6.0.0+1{{/routable}}
-  injectable: ^2.1.0
+  {{#routable}}auto_route: ^6.0.5{{/routable}}
+  injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_windows:
@@ -401,8 +401,8 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   build_runner: ^2.3.2
   freezed: ^2.3.2
-  {{#routable}}auto_route_generator: ^6.0.0{{/routable}}
-  injectable_generator: ^2.1.4
+  {{#routable}}auto_route_generator: ^6.0.3{{/routable}}
+  injectable_generator: ^2.1.5
   mocktail: ^0.3.0
   {{project_name}}_windows_app:
 

@@ -564,11 +564,9 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      // TODO: migrate to routerConfig https://github.com/bdlukaa/fluent_ui/issues/781
-      routeInformationProvider: routerConfig?.routeInformationProvider,
-      routerDelegate: routerConfig?.routerDelegate,
-      routeInformationParser: routerConfig?.routeInformationParser,
-      color: {{project_name.pascalCase()}}ColorTheme.light.secondary,
+      routerConfig: routerConfig,
+      // TODO: https://github.com/bdlukaa/fluent_ui/pull/803
+      backButtonDispatcher: null,
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,

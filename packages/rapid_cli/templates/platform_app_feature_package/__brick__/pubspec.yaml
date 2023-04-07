@@ -17,8 +17,8 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  injectable: ^2.1.0
-  auto_route: ^6.0.0+1
+  injectable: ^2.1.1
+  auto_route: ^6.0.5
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_android:
@@ -30,7 +30,7 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   build_runner: ^2.3.2
   freezed: ^2.3.2
-  injectable_generator: ^2.1.4
+  injectable_generator: ^2.1.5
   mocktail: ^0.3.0
 
 # For information on the generic Dart part of this file, see the
@@ -88,8 +88,8 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  injectable: ^2.1.0
-  auto_route: ^6.0.0+1
+  injectable: ^2.1.1
+  auto_route: ^6.0.5
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_ios:
@@ -101,7 +101,7 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   build_runner: ^2.3.2
   freezed: ^2.3.2
-  injectable_generator: ^2.1.4
+  injectable_generator: ^2.1.5
   mocktail: ^0.3.0
 
 # For information on the generic Dart part of this file, see the
@@ -159,8 +159,8 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  injectable: ^2.1.0
-  auto_route: ^6.0.0+1
+  injectable: ^2.1.1
+  auto_route: ^6.0.5
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_linux:
@@ -172,7 +172,7 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   build_runner: ^2.3.2
   freezed: ^2.3.2
-  injectable_generator: ^2.1.4
+  injectable_generator: ^2.1.5
   mocktail: ^0.3.0
 
 # For information on the generic Dart part of this file, see the
@@ -230,8 +230,8 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  injectable: ^2.1.0
-  auto_route: ^6.0.0+1
+  injectable: ^2.1.1
+  auto_route: ^6.0.5
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_macos:
@@ -243,7 +243,7 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   build_runner: ^2.3.2
   freezed: ^2.3.2
-  injectable_generator: ^2.1.4
+  injectable_generator: ^2.1.5
   mocktail: ^0.3.0
 
 # For information on the generic Dart part of this file, see the
@@ -301,8 +301,8 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  injectable: ^2.1.0
-  auto_route: ^6.0.0+1
+  injectable: ^2.1.1
+  auto_route: ^6.0.5
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_web:
@@ -314,7 +314,7 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   build_runner: ^2.3.2
   freezed: ^2.3.2
-  injectable_generator: ^2.1.4
+  injectable_generator: ^2.1.5
   mocktail: ^0.3.0
 
 # For information on the generic Dart part of this file, see the
@@ -372,8 +372,8 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  injectable: ^2.1.0
-  auto_route: ^6.0.0+1
+  injectable: ^2.1.1
+  auto_route: ^6.0.5
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_windows:
@@ -385,7 +385,7 @@ dev_dependencies:
   flutter_lints: ^2.0.1
   build_runner: ^2.3.2
   freezed: ^2.3.2
-  injectable_generator: ^2.1.4
+  injectable_generator: ^2.1.5
   mocktail: ^0.3.0
 
 # For information on the generic Dart part of this file, see the

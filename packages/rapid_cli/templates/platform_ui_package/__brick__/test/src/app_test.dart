@@ -765,15 +765,7 @@ void main() {
           darkExtensions,
         ),
       );
-      expect(
-        fluentApp.routeInformationProvider,
-        routerConfig.routeInformationProvider,
-      );
-      expect(fluentApp.routerDelegate, routerConfig.routerDelegate);
-      expect(
-        fluentApp.routeInformationParser,
-        routerConfig.routeInformationParser,
-      );
+      expect(fluentApp.routerConfig, routerConfig);
       expect(fluentApp.home, null);
     });
   });

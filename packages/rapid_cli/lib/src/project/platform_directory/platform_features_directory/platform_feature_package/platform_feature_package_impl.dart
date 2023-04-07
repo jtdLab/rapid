@@ -231,6 +231,16 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
 
   @override
   int compareTo(PlatformFeaturePackage other) => name.compareTo(other.name);
+
+  @override
+  bool operator ==(Object other) =>
+      other is PlatformFeaturePackage &&
+      name == other.name &&
+      platform == other.platform &&
+      project == other.project;
+
+  @override
+  int get hashCode => Object.hash(name, platform, project);
 }
 
 class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl

@@ -16,6 +16,12 @@ typedef MelosCleanCommand = Future<void> Function({
   required Logger logger,
 });
 
+/// Signature for the [Melos.exec] method.
+typedef MelosExecFlutterPubGetCommand = Future<void> Function({
+  String cwd,
+  required Logger logger,
+});
+
 /// Melos CLI
 abstract class Melos {
   /// Determine whether melos is installed.
@@ -92,6 +98,30 @@ abstract class Melos {
       await _Cmd.run(
         'melos',
         ['clean'],
+        workingDirectory: cwd,
+        logger: logger,
+      );
+    } catch (_) {
+      progress.fail();
+      rethrow;
+    }
+
+    progress.complete();
+  }
+
+  /// Run "flutter pub get" in every package of the workspace (`melos exec flutter pub get`).
+  static Future<void> execFlutterPubGet({
+    String cwd = '.',
+    required Logger logger,
+  }) async {
+    final progress = logger.progress(
+      'Running "melos exec flutter pub get" in $cwd ',
+    );
+
+    try {
+      await _Cmd.run(
+        'melos',
+        ['exec', 'flutter pub get'],
         workingDirectory: cwd,
         logger: logger,
       );

@@ -24,10 +24,7 @@ class CreateCommand extends Command<int>
     Logger? logger,
     FlutterInstalledCommand? flutterInstalled,
     MelosInstalledCommand? melosInstalled,
-    MelosBootstrapCommand? melosBootstrap,
-    FlutterPubGetCommand? flutterPubGet,
-    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+    MelosExecFlutterPubGetCommand? melosExecFlutterPubGet,
     FlutterGenl10nCommand? flutterGenl10n,
     DartFormatFixCommand? dartFormatFix,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableAndroid,
@@ -40,11 +37,8 @@ class CreateCommand extends Command<int>
   })  : _logger = logger ?? Logger(),
         _flutterInstalled = flutterInstalled ?? Flutter.installed,
         _melosInstalled = melosInstalled ?? Melos.installed,
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
+        _melosExecFlutterPubGet =
+            melosExecFlutterPubGet ?? Melos.execFlutterPubGet,
         _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
         _dartFormatFix = dartFormatFix ?? Dart.formatFix,
         _flutterConfigEnableAndroid =
@@ -134,10 +128,7 @@ class CreateCommand extends Command<int>
   final Logger _logger;
   final FlutterInstalledCommand _flutterInstalled;
   final MelosInstalledCommand _melosInstalled;
-  final MelosBootstrapCommand _melosBootstrap;
-  final FlutterPubGetCommand _flutterPubGet;
-  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+  final MelosExecFlutterPubGetCommand _melosExecFlutterPubGet;
   final FlutterGenl10nCommand _flutterGenl10n;
   final DartFormatFixCommand _dartFormatFix;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableAndroid;
@@ -210,8 +201,7 @@ class CreateCommand extends Command<int>
             platforms: platforms,
           );
 
-          // TODO rm and replace with templated .lock and .pubspecoverrides
-          await _melosBootstrap(cwd: project.path, logger: _logger);
+          await _melosExecFlutterPubGet(cwd: project.path, logger: _logger);
           for (final platform in platforms) {
             final platformDirectory = project.platformDirectory(
               platform: platform,

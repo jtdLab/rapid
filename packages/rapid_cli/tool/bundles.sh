@@ -2,10 +2,9 @@
 
 # Run from packages/rapid_cli
 # sh tool/bundles.sh
+# sh tool/bundles.sh --dry-run to see which templates dependencies can be updated.
 
-# Updates dart + flutter sdks and the version of dependencies of all package mason templates
-
-#!/bin/bash
+# Updates templates dependencies to specified versions and rubundles them.
 
 # SDK versions
 declare -a sdks=(
@@ -20,11 +19,12 @@ declare -a packages=(
     "bloc_concurrency=^0.2.1"
     "bloc_test=^9.1.1"
     "bloc=^8.1.1"
-    "build_runner=^2.3.2"
+    "build_runner=^2.3.3"
     "cupertino_icons=^1.0.5"
     "dartz=^0.10.1"
     "faker=^2.1.0"
     "fluent_ui=^4.4.2"
+    "flutter_bloc=^8.1.2"
     "flutter_lints=^2.0.1"
     "freezed_annotation=^2.2.0"
     "freezed=^2.3.2"
@@ -36,16 +36,34 @@ declare -a packages=(
     "json_serializable=^6.6.1"
     "lints=^2.0.1"
     "macos_ui=^1.12.2"
+    "melos=^3.0.1"
     "meta=^1.8.0"
     "mocktail=^0.3.0"
     "test=^1.24.1"
     "theme_tailor_annotation=^1.1.1"
     "theme_tailor=^1.1.2"
+    "url_strategy=^0.2.0"
     "yaru_icons=^1.0.4"
     "yaru=^0.6.2"
 )
 
+echo "Packages with available updates:"
+for package in "${packages[@]}"; do
+    PACKAGE_NAME="${package%=*}"
+    CURRENT_VERSION="${package#*=}"
+    LATEST_VERSION=$(curl -s "https://pub.dev/api/packages/$PACKAGE_NAME" | grep -oE '"latest":{"version":"[^"]+' | sed 's/.*:"//')
+
+    if [[ "^$LATEST_VERSION" != "$CURRENT_VERSION" ]]; then
+        echo "$PACKAGE_NAME: $CURRENT_VERSION -> $LATEST_VERSION"
+    fi
+done
+
+if [[ "$1" == "--dry-run" ]]; then
+    exit 0
+fi
+
 declare -a packageTemplatePaths=(
+    "templates/project"
     "templates/di_package"
     "templates/domain_package"
     "templates/infrastructure_package"
@@ -69,11 +87,13 @@ for path in "${packageTemplatePaths[@]}"; do
     for package in "${packages[@]}"; do
         name="${package%=*}"
         version="${package#*=}"
-        echo $name
-        echo $version
+        # TODO test and flutter test corrupt
+        # sed -i '' -E "s/^(.+[.}]+)$name:[[:blank:]]*\^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+(.*)$/\1$name: $version\2/" "$pubspec_path"
         sed -i '' -E "s/^(.+)$name:[[:blank:]]*\^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+(.*)$/\1$name: $version\2/" "$pubspec_path"
     done
 done
+
+# TODO Regenerate pubspec.lock and dependency_overrides.yaml in every package
 
 # # Rebundles all mason templates and ships the fresh bundles to rapid_cli package.
 # # (name, location, destination)

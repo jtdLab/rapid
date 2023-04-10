@@ -4,7 +4,60 @@
 # sh tool/bundles.sh
 # sh tool/bundles.sh --dry-run to see which templates dependencies can be updated.
 
-# Updates templates dependencies to specified versions and rubundles them.
+function create_dart_project() {
+    local project_name="${1:?Please provide the project name as the first argument}"
+    local project_path="${2:?Please provide the project path as the second argument}"
+
+    # Save the current directory
+    local oldpwd="$(pwd)"
+
+    # Create project directory and cd into it
+    mkdir -p "${project_path}/${project_name}"
+    cd "${project_path}/${project_name}" || return 1
+
+    # Create pubspec.yaml file
+    cat <<EOF >pubspec.yaml
+name: ${project_name}
+description: A minimal Dart project
+version: 0.1.0
+EOF
+
+    # Success message
+    echo "Created '${project_name}' at ${project_path}/${project_name}"
+
+    # Return to the original directory
+    cd "$oldpwd" || return 1
+}
+
+platforms=("android" "ios" "linux" "macos" "web" "windows")
+project_name="xxxxx_project_xxxxx"
+
+for platform in "${platforms[@]}"; do
+    create_dart_project "${project_name}_ui_${platform}" "tmp/packages/${project_name}_ui"
+    create_dart_project "${project_name}_${platform}" "tmp/packages/${project_name}/${project_name}_${platform}"
+    create_dart_project "${project_name}_${platform}_navigation" "tmp/packages/${project_name}/${project_name}_${platform}"
+    create_dart_project "${project_name}_${platform}_app" "tmp/packages/${project_name}/${project_name}_${platform}/${project_name}_${platform}_features"
+    create_dart_project "${project_name}_${platform}_home_page" "tmp/packages/${project_name}/${project_name}_${platform}/${project_name}_${platform}_features"
+done
+
+create_dart_project "${project_name}_di" "tmp/packages/${project_name}"
+create_dart_project "${project_name}_domain" "tmp/packages/${project_name}/${project_name}_domain"
+create_dart_project "${project_name}_infrastructure" "tmp/packages/${project_name}/${project_name}_infrastructure"
+create_dart_project "${project_name}_logging" "tmp/packages/${project_name}"
+create_dart_project "${project_name}_ui" "tmp/packages/${project_name}_ui"
+
+cat <<EOF >tmp/melos.yaml
+name: ${project_name}_workspace
+
+packages:
+  - packages/*
+EOF
+
+echo "Created melos.yaml file."
+
+exit 0
+
+# Updates templates dependencies to specified versions and rebundles them.
 
 # SDK versions
 declare -a sdks=(
@@ -92,6 +145,28 @@ for path in "${packageTemplatePaths[@]}"; do
 done
 
 # TODO Regenerate pubspec.lock and dependency_overrides.yaml in every package
+
+function create_dart_project() {
+    local project_name="${1:?Please provide the project name as the first argument}"
+    local project_path="${2:?Please provide the project path as the second argument}"
+
+    # Create project directory and cd into it
+    mkdir -p "${project_path}/${project_name}"
+    cd "${project_path}/${project_name}" || return 1
+
+    # Create pubspec.yaml file
+    cat <<EOF >pubspec.yaml
+name: ${project_name}
+description: A minimal Dart project
+version: 0.1.0
+EOF
+
+    # Success message
+    echo "Created minimal Dart project '${project_name}' at ${project_path}/${project_name}"
+}
+
+create_dart_project mimi tmp/mimi
+create_dart_project fofo tmp/fofo
 
 # # Rebundles all mason templates and ships the fresh bundles to rapid_cli package.
 # # (name, location, destination)

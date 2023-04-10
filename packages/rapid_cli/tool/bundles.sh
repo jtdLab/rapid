@@ -14,8 +14,8 @@ declare -a sdks=(
 
 # Other package versions
 declare -a packages=(
-    "auto_route=^6.0.5"
-    "auto_route_generator=^6.0.3"
+    "auto_route=^6.1.0"
+    "auto_route_generator=^6.1.0"
     "bloc_concurrency=^0.2.1"
     "bloc_test=^9.1.1"
     "bloc=^8.1.1"
@@ -87,9 +87,7 @@ for path in "${packageTemplatePaths[@]}"; do
     for package in "${packages[@]}"; do
         name="${package%=*}"
         version="${package#*=}"
-        # TODO test and flutter test corrupt
-        # sed -i '' -E "s/^(.+[.}]+)$name:[[:blank:]]*\^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+(.*)$/\1$name: $version\2/" "$pubspec_path"
-        sed -i '' -E "s/^(.+)$name:[[:blank:]]*\^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+(.*)$/\1$name: $version\2/" "$pubspec_path"
+        sed -i '' -E "s/^([[:blank:]]*{[[:blank:]]*{[[:blank:]]*#[[:blank:]]*[a-z_]+[[:blank:]]*}[[:blank:]]*}|[[:blank:]]*)$name:[[:blank:]]*\^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+(.*)$/\1$name: $version\2/" "$pubspec_path"
     done
 done
 

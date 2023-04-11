@@ -332,31 +332,25 @@ for ((i = 0; i < ${#platformDependent[@]}; i++)); do
     # Read the contents of $pubspecPath
     contents=$(cat "$pubspecPath")
 
-    # Wrap the contents with {{#cool}}...{{/cool}}
     wrapped_contents="{{#$platform}}\n${contents}\n{{/$platform}}"
 
     # Check if $brick_path/pubspec.lock exists
     if [ -e "$brick_path/pubspec.lock" ]; then
-        # Append the wrapped contents to $brick_path/pubspec.lock
-        echo -e "$wrapped_contents" >>"$brick_path/pubspec.lock"
+        cat "$wrapped_contents" >>"$brick_path/pubspec.lock"
     else
-        # Create $brick_path/pubspec.lock and write the wrapped contents to it
-        echo -e "$wrapped_contents" >"$brick_path/pubspec.lock"
+        cp "$wrapped_contents" "$brick_path/pubspec.lock"
     fi
 
     # Read the contents of $pubspecPath
     contents=$(cat "$dependency_overrides_path")
 
-    # Wrap the contents with {{#cool}}...{{/cool}}
     wrapped_contents="{{#$platform}}\n${contents}\n{{/$platform}}"
 
     # Check if $brick_path/pubspec_overrides.yaml exists
     if [ -e "$brick_path/pubspec_overrides.yaml" ]; then
-        # Append the contents of $dependency_overrides_path to $brick_path/pubspec_overrides.yaml
-        cat "$dependency_overrides_path" >>"$brick_path/pubspec_overrides.yaml"
+        cat "$wrapped_contents" >>"$brick_path/pubspec_overrides.yaml"
     else
-        # Create $brick_path/pubspec_overrides.yaml and copy the contents of $dependency_overrides_path to it
-        cp "$dependency_overrides_path" "$brick_path/pubspec_overrides.yaml"
+        cp "$wrapped_contents" "$brick_path/pubspec_overrides.yaml"
     fi
 
 done

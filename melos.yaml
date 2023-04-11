@@ -4,6 +4,7 @@ packages:
   - packages/rapid/rapid/rapid_domain
   - packages/rapid/rapid_test/rapid_test_domain
   - packages/rapid_cli
+  - packages/rapid_cli/templates/tmp/packages/**
 
 command:
   bootstrap:

@@ -224,41 +224,61 @@ platform_home_page_feature_package_macos_path="tmp/packages/${project_name}/${pr
 platform_home_page_feature_package_web_path="tmp/packages/${project_name}/${project_name}_web/${project_name}_web_features/${project_name}_web_home_page"
 platform_home_page_feature_package_windows_path="tmp/packages/${project_name}/${project_name}_windows/${project_name}_windows_features/${project_name}_windows_home_page"
 
-declare -a outputPaths=(
-    $platform_ui_package_android_path
-    $platform_ui_package_ios_path
-    $platform_ui_package_linux_path
-    $platform_ui_package_macos_path
-    $platform_ui_package_web_path
-    $platform_ui_package_windows_path
+ui_package_path="tmp/packages/${project_name}_ui/${project_name}_ui"
 
-    $platform_root_package_android_path
-    $platform_root_package_ios_path
-    $platform_root_package_linux_path
-    $platform_root_package_macos_path
-    $platform_root_package_web_path
-    $platform_root_package_windows_path
+di_package_path="tmp/packages/${project_name}/${project_name}_di"
 
-    $platform_navigation_package_android_path
-    $platform_navigation_package_ios_path
-    $platform_navigation_package_linux_path
-    $platform_navigation_package_macos_path
-    $platform_navigation_package_web_path
-    $platform_navigation_package_windows_path
+logging_package_path="tmp/packages/${project_name}/${project_name}_logging"
 
-    $platform_app_feature_package_android_path
-    $platform_app_feature_package_ios_path
-    $platform_app_feature_package_linux_path
-    $platform_app_feature_package_macos_path
-    $platform_app_feature_package_web_path
-    $platform_app_feature_package_windows_path
+domain_package_path="tmp/packages/${project_name}/${project_name}_domain/${project_name}_domain"
 
-    $platform_home_page_feature_package_android_path
-    $platform_home_page_feature_package_ios_path
-    $platform_home_page_feature_package_linux_path
-    $platform_home_page_feature_package_macos_path
-    $platform_home_page_feature_package_web_path
-    $platform_home_page_feature_package_windows_path
+infrastructure_package_path="tmp/packages/${project_name}/${project_name}_infrastructure/${project_name}_infrastructure"
+
+outputPaths=(
+    "platform_ui_package $platform_ui_package_android_path"
+    "platform_ui_package $platform_ui_package_ios_path"
+    "platform_ui_package $platform_ui_package_linux_path"
+    "platform_ui_package $platform_ui_package_macos_path"
+    "platform_ui_package $platform_ui_package_web_path"
+    "platform_ui_package $platform_ui_package_windows_path"
+
+    "platform_root_package $platform_root_package_android_path"
+    "platform_root_package $platform_root_package_ios_path"
+    "platform_root_package $platform_root_package_linux_path"
+    "platform_root_package $platform_root_package_macos_path"
+    "platform_root_package $platform_root_package_web_path"
+    "platform_root_package $platform_root_package_windows_path"
+
+    "platform_navigation_package $platform_navigation_package_android_path"
+    "platform_navigation_package $platform_navigation_package_ios_path"
+    "platform_navigation_package $platform_navigation_package_linux_path"
+    "platform_navigation_package $platform_navigation_package_macos_path"
+    "platform_navigation_package $platform_navigation_package_web_path"
+    "platform_navigation_package $platform_navigation_package_windows_path"
+
+    "platform_app_feature_package $platform_app_feature_package_android_path"
+    "platform_app_feature_package $platform_app_feature_package_ios_path"
+    "platform_app_feature_package $platform_app_feature_package_linux_path"
+    "platform_app_feature_package $platform_app_feature_package_macos_path"
+    "platform_app_feature_package $platform_app_feature_package_web_path"
+    "platform_app_feature_package $platform_app_feature_package_windows_path"
+
+    "platform_home_page_feature_package $platform_home_page_feature_package_android_path"
+    "platform_home_page_feature_package $platform_home_page_feature_package_ios_path"
+    "platform_home_page_feature_package $platform_home_page_feature_package_linux_path"
+    "platform_home_page_feature_package $platform_home_page_feature_package_macos_path"
+    "platform_home_page_feature_package $platform_home_page_feature_package_web_path"
+    "platform_home_page_feature_package $platform_home_page_feature_package_windows_path"
+
+    "ui_package $ui_package_path"
+
+    "di_package $di_package_path"
+
+    "logging_package $logging_package_path"
+
+    "domain_package $domain_package_path"
+
+    "infrastructure_package $infrastructure_package_path"
 )
 
 cd templates
@@ -306,40 +326,52 @@ mason make "platform_feature_package" --on-conflict append -o $platform_home_pag
 mason make "platform_feature_package" --on-conflict append -o $platform_home_page_feature_package_windows_path --name home_page --description swag --project_name $project_name --example false --android false --ios false --linux false --macos false --web false --windows true --default_language de --routable false --route_name none
 
 # UI Package
-mason make "ui_package" --on-conflict append -o "tmp/packages/${project_name}_ui/${project_name}_ui" --project_name $project_name
+mason make "ui_package" --on-conflict append -o $ui_package_path --project_name $project_name
 
 # DI Package
-mason make "di_package" --on-conflict append -o "tmp/packages/${project_name}/${project_name}_di" --project_name $project_name
+mason make "di_package" --on-conflict append -o $di_package_path --project_name $project_name
 
 # Logging Package
-mason make "logging_package" --on-conflict append -o "tmp/packages/${project_name}/${project_name}_logging" --project_name $project_name
+mason make "logging_package" --on-conflict append -o $logging_package_path --project_name $project_name
 
 # Domain Package
-mason make "domain_package" --on-conflict append -o "tmp/packages/${project_name}/${project_name}_domain/${project_name}_domain" --project_name $project_name --has_name false --name ""
+mason make "domain_package" --on-conflict append -o $domain_package_path --project_name $project_name --has_name false --name ""
 
 # Infrastructure Package
-mason make "infrastructure_package" --on-conflict append -o "tmp/packages/${project_name}/${project_name}_infrastructure/${project_name}_infrastructure" --project_name $project_name --has_name false --name ""
+mason make "infrastructure_package" --on-conflict append -o $infrastructure_package_path --project_name $project_name --has_name false --name ""
 
+melos bs
+
+# Templatify pubspec.locks and pubspec_overrides.yamls
 for path in "${outputPaths[@]}"; do
-    rm "$path/pubspec.lock" "$path/pubspec_overrides.yaml"
+    template_name=$(echo "$path" | cut -d ' ' -f 1)
+    template_path=$(echo "$path" | cut -d ' ' -f 2)
+    brick_path="$template_name/__brick__"
+    pubspecPath="$template_path/pubspec.lock"
+    dependency_overrides_path="$template_path/pubspec_overrides.yaml"
+
+    # Replace project_name in pubspec.lock
+    sed -i "s/${project_name}/{{project_name}}/g" "$pubspecPath"
+
+    # Replace project_name in pubspec_overrides.yaml
+    sed -i "s/${project_name}/{{project_name}}/g" "$dependency_overrides_path"
+
+    cp $pubspecPath $brick_path/pubspec.lock
+    cp $dependency_overrides_path $brick_path/pubspec_overrides.yaml
 done
 
 cd ..
 
-melos bs
-
-# TODO copy all generated pubspec.lock and dependency_overrides.yaml back into the template
-
 # Rebundles all mason templates and ships the fresh bundles to rapid_cli package.
 
-# for template in "${templates[@]}"; do
-#     template_name=$(echo "$template" | cut -d ' ' -f 1)
-#     template_location=$(echo "$template" | cut -d ' ' -f 2)
-#     destination_dir=$(echo "$template" | cut -d ' ' -f 3)
+for template in "${templates[@]}"; do
+    template_name=$(echo "$template" | cut -d ' ' -f 1)
+    template_location=$(echo "$template" | cut -d ' ' -f 2)
+    destination_dir=$(echo "$template" | cut -d ' ' -f 3)
 
-#     echo "Rebundling template $template_name..."
-#     mason bundle "$template_location" -t dart
-#     mv "${template_name}_bundle.dart" "$destination_dir"
-# done
+    echo "Rebundling template $template_name..."
+    mason bundle "$template_location" -t dart
+    mv "${template_name}_bundle.dart" "$destination_dir"
+done
 
-# dart format lib --fix
+dart format lib --fix

@@ -40,8 +40,8 @@ declare -a packages=(
     "meta=^1.8.0"
     "mocktail=^0.3.0"
     "test=^1.24.1"
-    "theme_tailor_annotation=^1.1.1"
-    "theme_tailor=^1.1.2"
+    "theme_tailor_annotation=^1.2.0"
+    "theme_tailor=^1.2.0"
     "url_strategy=^0.2.0"
     "yaru_icons=^1.0.4"
     "yaru=^0.6.2"
@@ -243,79 +243,79 @@ mason make "infrastructure_package" --on-conflict append -o $infrastructure_pack
 melos bs
 
 platformDependent=(
-    "platform_ui_package $platform_ui_package_android_path"
-    "platform_ui_package $platform_ui_package_ios_path"
-    "platform_ui_package $platform_ui_package_linux_path"
-    "platform_ui_package $platform_ui_package_macos_path"
-    "platform_ui_package $platform_ui_package_web_path"
-    "platform_ui_package $platform_ui_package_windows_path"
+    # "platform_ui_package $platform_ui_package_android_path"
+    # "platform_ui_package $platform_ui_package_ios_path"
+    # "platform_ui_package $platform_ui_package_linux_path"
+    # "platform_ui_package $platform_ui_package_macos_path"
+    # "platform_ui_package $platform_ui_package_web_path"
+    # "platform_ui_package $platform_ui_package_windows_path"
 
-    "platform_root_package $platform_root_package_android_path"
-    "platform_root_package $platform_root_package_ios_path"
-    "platform_root_package $platform_root_package_linux_path"
-    "platform_root_package $platform_root_package_macos_path"
-    "platform_root_package $platform_root_package_web_path"
-    "platform_root_package $platform_root_package_windows_path"
+    # "platform_root_package $platform_root_package_android_path"
+    # "platform_root_package $platform_root_package_ios_path"
+    # "platform_root_package $platform_root_package_linux_path"
+    # "platform_root_package $platform_root_package_macos_path"
+    # "platform_root_package $platform_root_package_web_path"
+    # "platform_root_package $platform_root_package_windows_path"
 
-    "platform_navigation_package $platform_navigation_package_android_path"
-    "platform_navigation_package $platform_navigation_package_ios_path"
-    "platform_navigation_package $platform_navigation_package_linux_path"
-    "platform_navigation_package $platform_navigation_package_macos_path"
-    "platform_navigation_package $platform_navigation_package_web_path"
-    "platform_navigation_package $platform_navigation_package_windows_path"
+    # "platform_navigation_package $platform_navigation_package_android_path"
+    # "platform_navigation_package $platform_navigation_package_ios_path"
+    # "platform_navigation_package $platform_navigation_package_linux_path"
+    # "platform_navigation_package $platform_navigation_package_macos_path"
+    # "platform_navigation_package $platform_navigation_package_web_path"
+    # "platform_navigation_package $platform_navigation_package_windows_path"
 
-    "platform_app_feature_package $platform_app_feature_package_android_path"
-    "platform_app_feature_package $platform_app_feature_package_ios_path"
-    "platform_app_feature_package $platform_app_feature_package_linux_path"
-    "platform_app_feature_package $platform_app_feature_package_macos_path"
-    "platform_app_feature_package $platform_app_feature_package_web_path"
-    "platform_app_feature_package $platform_app_feature_package_windows_path"
+    # "platform_app_feature_package $platform_app_feature_package_android_path"
+    # "platform_app_feature_package $platform_app_feature_package_ios_path"
+    # "platform_app_feature_package $platform_app_feature_package_linux_path"
+    # "platform_app_feature_package $platform_app_feature_package_macos_path"
+    # "platform_app_feature_package $platform_app_feature_package_web_path"
+    # "platform_app_feature_package $platform_app_feature_package_windows_path"
 
-    "platform_home_page_feature_package $platform_home_page_feature_package_android_path"
-    "platform_home_page_feature_package $platform_home_page_feature_package_ios_path"
-    "platform_home_page_feature_package $platform_home_page_feature_package_linux_path"
-    "platform_home_page_feature_package $platform_home_page_feature_package_macos_path"
-    "platform_home_page_feature_package $platform_home_page_feature_package_web_path"
-    "platform_home_page_feature_package $platform_home_page_feature_package_windows_path"
+    # "platform_feature_package $platform_home_page_feature_package_android_path"
+    # "platform_feature_package $platform_home_page_feature_package_ios_path"
+    # "platform_feature_package $platform_home_page_feature_package_linux_path"
+    # "platform_feature_package $platform_home_page_feature_package_macos_path"
+    # "platform_feature_package $platform_home_page_feature_package_web_path"
+    "platform_feature_package $platform_home_page_feature_package_windows_path"
 )
 
 platformIndependent=(
-    "ui_package $ui_package_path"
+    # "ui_package $ui_package_path"
 
-    "di_package $di_package_path"
+    # "di_package $di_package_path"
 
-    "logging_package $logging_package_path"
+    # "logging_package $logging_package_path"
 
-    "domain_package $domain_package_path"
+    # "domain_package $domain_package_path"
 
-    "infrastructure_package $infrastructure_package_path"
+    # "infrastructure_package $infrastructure_package_path"
 )
 
 # Templatify pubspec.locks and pubspec_overrides.yamls
 for ((i = 0; i < ${#platformDependent[@]}; i++)); do
     path=${platformDependent[$i]}
 
-    platform=""
-    case $((i % 6)) in
-    0)
-        platform="android"
-        ;;
-    1)
-        platform="ios"
-        ;;
-    2)
-        platform="linux"
-        ;;
-    3)
-        platform="macos"
-        ;;
-    4)
-        platform="web"
-        ;;
-    5)
-        platform="windows"
-        ;;
-    esac
+    platform="windows"
+    # case $((i % 6)) in
+    # 0)
+    #     platform="android"
+    #     ;;
+    # 1)
+    #     platform="ios"
+    #     ;;
+    # 2)
+    #     platform="linux"
+    #     ;;
+    # 3)
+    #     platform="macos"
+    #     ;;
+    # 4)
+    #     platform="web"
+    #     ;;
+    # 5)
+    #     platform="windows"
+    #     ;;
+    # esac
 
     template_name=$(echo "$path" | cut -d ' ' -f 1)
     template_path=$(echo "$path" | cut -d ' ' -f 2)
@@ -323,11 +323,14 @@ for ((i = 0; i < ${#platformDependent[@]}; i++)); do
     pubspecPath="$template_path/pubspec.lock"
     dependency_overrides_path="$template_path/pubspec_overrides.yaml"
 
+    rm $brick_path/pubspec.lock
+    rm $brick_path/pubspec_overrides.yaml
+
     # Replace project_name in pubspec.lock
-    sed -i "s/${project_name}/{{project_name}}/g" "$pubspecPath"
+    sed -i "" "s/${project_name}/{{project_name}}/g" "$pubspecPath"
 
     # Replace project_name in pubspec_overrides.yaml
-    sed -i "s/${project_name}/{{project_name}}/g" "$dependency_overrides_path"
+    sed -i "" "s/${project_name}/{{project_name}}/g" "$dependency_overrides_path"
 
     # Read the contents of $pubspecPath
     contents=$(cat "$pubspecPath")
@@ -338,7 +341,20 @@ for ((i = 0; i < ${#platformDependent[@]}; i++)); do
     if [ -e "$brick_path/pubspec.lock" ]; then
         cat "$wrapped_contents" >>"$brick_path/pubspec.lock"
     else
-        cp "$wrapped_contents" "$brick_path/pubspec.lock"
+        # Get the current directory
+        orig_dir=$(pwd)
+
+        # Change into the output directory
+        cd "$brick_path"
+        echo ORG DIR: $orig_dir
+        echo BRICK PATH: $brick_path
+        ls
+
+        # Write the contents to the pubspec.lock file
+        cat "$wrapped_contents" >"pubspec.lock"
+
+        # Change back to the original directory
+        cd "$orig_dir"
     fi
 
     # Read the contents of $pubspecPath
@@ -350,7 +366,17 @@ for ((i = 0; i < ${#platformDependent[@]}; i++)); do
     if [ -e "$brick_path/pubspec_overrides.yaml" ]; then
         cat "$wrapped_contents" >>"$brick_path/pubspec_overrides.yaml"
     else
-        cp "$wrapped_contents" "$brick_path/pubspec_overrides.yaml"
+        # Get the current directory
+        orig_dir=$(pwd)
+
+        # Change into the output directory
+        cd "$brick_path"
+
+        # Write the contents to the pubspec_overrides.yaml file
+        cat "$wrapped_contents" >"pubspec_overrides.yaml"
+
+        # Change back to the original directory
+        cd "$orig_dir"
     fi
 
 done
@@ -362,11 +388,14 @@ for path in "${platformIndependent[@]}"; do
     pubspecPath="$template_path/pubspec.lock"
     dependency_overrides_path="$template_path/pubspec_overrides.yaml"
 
+    rm $brick_path/pubspec.lock
+    rm $brick_path/pubspec_overrides.yaml
+
     # Replace project_name in pubspec.lock
-    sed -i "s/${project_name}/{{project_name}}/g" "$pubspecPath"
+    sed -i "" "s/${project_name}/{{project_name}}/g" "$pubspecPath"
 
     # Replace project_name in pubspec_overrides.yaml
-    sed -i "s/${project_name}/{{project_name}}/g" "$dependency_overrides_path"
+    sed -i "" "s/${project_name}/{{project_name}}/g" "$dependency_overrides_path"
 
     cp $pubspecPath $brick_path/pubspec.lock
     cp $dependency_overrides_path $brick_path/pubspec_overrides.yaml

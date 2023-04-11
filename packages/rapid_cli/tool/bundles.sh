@@ -91,59 +91,6 @@ for path in "${packageTemplatePaths[@]}"; do
     done
 done
 
-# bis hier NICE
-
-# TODO Regenerate pubspec.lock and dependency_overrides.yaml in every package
-
-# function create_dart_project() {
-#     local project_name="${1:?Please provide the project name as the first argument}"
-#     local project_path="${2:?Please provide the project path as the second argument}"
-
-#     # Save the current directory
-#     local oldpwd="$(pwd)"
-
-#     # Create project directory and cd into it
-#     mkdir -p "${project_path}/${project_name}"
-#     cd "${project_path}/${project_name}" || return 1
-
-#     # Create pubspec.yaml file
-#     cat <<EOF >pubspec.yaml
-# name: ${project_name}
-# description: A minimal Dart project
-# version: 0.1.0
-
-# environment:
-#   sdk: ">=2.19.6 <3.0.0"
-# EOF
-
-#     # Success message
-#     echo "Created '${project_name}' at ${project_path}/${project_name}"
-
-#     # Return to the original directory
-#     cd "$oldpwd" || return 1
-# }
-
-# platforms=("android" "ios" "linux" "macos" "web" "windows")
-
-# project_name="xxxxx_project_xxxxx"
-
-# for platform in "${platforms[@]}"; do
-#     mason make "templates/platform_ui_package" -c {project_name: $project_name}
-#     create_dart_project "${project_name}_ui_${platform}" "tmp/packages/${project_name}_ui"
-#     create_dart_project "${project_name}_${platform}" "tmp/packages/${project_name}/${project_name}_${platform}"
-#     create_dart_project "${project_name}_${platform}_navigation" "tmp/packages/${project_name}/${project_name}_${platform}"
-#     create_dart_project "${project_name}_${platform}_app" "tmp/packages/${project_name}/${project_name}_${platform}/${project_name}_${platform}_features"
-#     create_dart_project "${project_name}_${platform}_home_page" "tmp/packages/${project_name}/${project_name}_${platform}/${project_name}_${platform}_features"
-# done
-
-# create_dart_project "${project_name}_di" "tmp/packages/${project_name}"
-# create_dart_project "${project_name}_domain" "tmp/packages/${project_name}/${project_name}_domain"
-# create_dart_project "${project_name}_infrastructure" "tmp/packages/${project_name}/${project_name}_infrastructure"
-# create_dart_project "${project_name}_logging" "tmp/packages/${project_name}"
-# create_dart_project "${project_name}_ui" "tmp/packages/${project_name}_ui"
-
-# melos bs
-
 # (name, location, destination)
 templates=(
     "arb_file templates/arb_file lib/src/project/platform_directory/platform_features_directory/platform_feature_package"
@@ -234,53 +181,6 @@ domain_package_path="tmp/packages/${project_name}/${project_name}_domain/${proje
 
 infrastructure_package_path="tmp/packages/${project_name}/${project_name}_infrastructure/${project_name}_infrastructure"
 
-outputPaths=(
-    "platform_ui_package $platform_ui_package_android_path"
-    "platform_ui_package $platform_ui_package_ios_path"
-    "platform_ui_package $platform_ui_package_linux_path"
-    "platform_ui_package $platform_ui_package_macos_path"
-    "platform_ui_package $platform_ui_package_web_path"
-    "platform_ui_package $platform_ui_package_windows_path"
-
-    "platform_root_package $platform_root_package_android_path"
-    "platform_root_package $platform_root_package_ios_path"
-    "platform_root_package $platform_root_package_linux_path"
-    "platform_root_package $platform_root_package_macos_path"
-    "platform_root_package $platform_root_package_web_path"
-    "platform_root_package $platform_root_package_windows_path"
-
-    "platform_navigation_package $platform_navigation_package_android_path"
-    "platform_navigation_package $platform_navigation_package_ios_path"
-    "platform_navigation_package $platform_navigation_package_linux_path"
-    "platform_navigation_package $platform_navigation_package_macos_path"
-    "platform_navigation_package $platform_navigation_package_web_path"
-    "platform_navigation_package $platform_navigation_package_windows_path"
-
-    "platform_app_feature_package $platform_app_feature_package_android_path"
-    "platform_app_feature_package $platform_app_feature_package_ios_path"
-    "platform_app_feature_package $platform_app_feature_package_linux_path"
-    "platform_app_feature_package $platform_app_feature_package_macos_path"
-    "platform_app_feature_package $platform_app_feature_package_web_path"
-    "platform_app_feature_package $platform_app_feature_package_windows_path"
-
-    "platform_home_page_feature_package $platform_home_page_feature_package_android_path"
-    "platform_home_page_feature_package $platform_home_page_feature_package_ios_path"
-    "platform_home_page_feature_package $platform_home_page_feature_package_linux_path"
-    "platform_home_page_feature_package $platform_home_page_feature_package_macos_path"
-    "platform_home_page_feature_package $platform_home_page_feature_package_web_path"
-    "platform_home_page_feature_package $platform_home_page_feature_package_windows_path"
-
-    "ui_package $ui_package_path"
-
-    "di_package $di_package_path"
-
-    "logging_package $logging_package_path"
-
-    "domain_package $domain_package_path"
-
-    "infrastructure_package $infrastructure_package_path"
-)
-
 cd templates
 
 rm -r tmp
@@ -342,8 +242,126 @@ mason make "infrastructure_package" --on-conflict append -o $infrastructure_pack
 
 melos bs
 
+platformDependent=(
+    "platform_ui_package $platform_ui_package_android_path"
+    "platform_ui_package $platform_ui_package_ios_path"
+    "platform_ui_package $platform_ui_package_linux_path"
+    "platform_ui_package $platform_ui_package_macos_path"
+    "platform_ui_package $platform_ui_package_web_path"
+    "platform_ui_package $platform_ui_package_windows_path"
+
+    "platform_root_package $platform_root_package_android_path"
+    "platform_root_package $platform_root_package_ios_path"
+    "platform_root_package $platform_root_package_linux_path"
+    "platform_root_package $platform_root_package_macos_path"
+    "platform_root_package $platform_root_package_web_path"
+    "platform_root_package $platform_root_package_windows_path"
+
+    "platform_navigation_package $platform_navigation_package_android_path"
+    "platform_navigation_package $platform_navigation_package_ios_path"
+    "platform_navigation_package $platform_navigation_package_linux_path"
+    "platform_navigation_package $platform_navigation_package_macos_path"
+    "platform_navigation_package $platform_navigation_package_web_path"
+    "platform_navigation_package $platform_navigation_package_windows_path"
+
+    "platform_app_feature_package $platform_app_feature_package_android_path"
+    "platform_app_feature_package $platform_app_feature_package_ios_path"
+    "platform_app_feature_package $platform_app_feature_package_linux_path"
+    "platform_app_feature_package $platform_app_feature_package_macos_path"
+    "platform_app_feature_package $platform_app_feature_package_web_path"
+    "platform_app_feature_package $platform_app_feature_package_windows_path"
+
+    "platform_home_page_feature_package $platform_home_page_feature_package_android_path"
+    "platform_home_page_feature_package $platform_home_page_feature_package_ios_path"
+    "platform_home_page_feature_package $platform_home_page_feature_package_linux_path"
+    "platform_home_page_feature_package $platform_home_page_feature_package_macos_path"
+    "platform_home_page_feature_package $platform_home_page_feature_package_web_path"
+    "platform_home_page_feature_package $platform_home_page_feature_package_windows_path"
+)
+
+platformIndependent=(
+    "ui_package $ui_package_path"
+
+    "di_package $di_package_path"
+
+    "logging_package $logging_package_path"
+
+    "domain_package $domain_package_path"
+
+    "infrastructure_package $infrastructure_package_path"
+)
+
 # Templatify pubspec.locks and pubspec_overrides.yamls
-for path in "${outputPaths[@]}"; do
+for ((i = 0; i < ${#platformDependent[@]}; i++)); do
+    path=${platformDependent[$i]}
+
+    platform=""
+    case $((i % 6)) in
+    0)
+        platform="android"
+        ;;
+    1)
+        platform="ios"
+        ;;
+    2)
+        platform="linux"
+        ;;
+    3)
+        platform="macos"
+        ;;
+    4)
+        platform="web"
+        ;;
+    5)
+        platform="windows"
+        ;;
+    esac
+
+    template_name=$(echo "$path" | cut -d ' ' -f 1)
+    template_path=$(echo "$path" | cut -d ' ' -f 2)
+    brick_path="$template_name/__brick__"
+    pubspecPath="$template_path/pubspec.lock"
+    dependency_overrides_path="$template_path/pubspec_overrides.yaml"
+
+    # Replace project_name in pubspec.lock
+    sed -i "s/${project_name}/{{project_name}}/g" "$pubspecPath"
+
+    # Replace project_name in pubspec_overrides.yaml
+    sed -i "s/${project_name}/{{project_name}}/g" "$dependency_overrides_path"
+
+    # Read the contents of $pubspecPath
+    contents=$(cat "$pubspecPath")
+
+    # Wrap the contents with {{#cool}}...{{/cool}}
+    wrapped_contents="{{#$platform}}\n${contents}\n{{/$platform}}"
+
+    # Check if $brick_path/pubspec.lock exists
+    if [ -e "$brick_path/pubspec.lock" ]; then
+        # Append the wrapped contents to $brick_path/pubspec.lock
+        echo -e "$wrapped_contents" >>"$brick_path/pubspec.lock"
+    else
+        # Create $brick_path/pubspec.lock and write the wrapped contents to it
+        echo -e "$wrapped_contents" >"$brick_path/pubspec.lock"
+    fi
+
+    # Read the contents of $pubspecPath
+    contents=$(cat "$dependency_overrides_path")
+
+    # Wrap the contents with {{#cool}}...{{/cool}}
+    wrapped_contents="{{#$platform}}\n${contents}\n{{/$platform}}"
+
+    # Check if $brick_path/pubspec_overrides.yaml exists
+    if [ -e "$brick_path/pubspec_overrides.yaml" ]; then
+        # Append the contents of $dependency_overrides_path to $brick_path/pubspec_overrides.yaml
+        cat "$dependency_overrides_path" >>"$brick_path/pubspec_overrides.yaml"
+    else
+        # Create $brick_path/pubspec_overrides.yaml and copy the contents of $dependency_overrides_path to it
+        cp "$dependency_overrides_path" "$brick_path/pubspec_overrides.yaml"
+    fi
+
+done
+
+for path in "${platformIndependent[@]}"; do
     template_name=$(echo "$path" | cut -d ' ' -f 1)
     template_path=$(echo "$path" | cut -d ' ' -f 2)
     brick_path="$template_name/__brick__"

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO format pubspec.lock and pubspec_overrides.yaml do not contain unnecessary empty lines
+
 # Run from packages/rapid_cli
 # sh tool/bundles.sh
 # sh tool/bundles.sh --dry-run to see which templates dependencies can be updated.

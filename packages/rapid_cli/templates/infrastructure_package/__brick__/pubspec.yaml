@@ -4,7 +4,7 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.4 <3.0.0"
+  sdk: ">=2.19.6 <3.0.0"
 
 dependencies:
   dartz: ^0.10.1
@@ -17,7 +17,7 @@ dependencies:
 dev_dependencies:
   lints: ^2.0.1
   test: ^1.24.1
-  build_runner: ^2.3.2
+  build_runner: ^2.3.3
   freezed: ^2.3.2
   injectable_generator: ^2.1.5
   json_serializable: ^6.6.1

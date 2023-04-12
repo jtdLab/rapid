@@ -26,7 +26,7 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZToge3twcm9qZWN0X25hbWV9fV93b3Jrc3BhY2UKCmVudmlyb25tZW50OgogIHNkazogIj49Mi4xOS40IDwzLjAuMCIKICAKZGV2X2RlcGVuZGVuY2llczoKICBtZWxvczogXjMuMC4wCg==",
+          "bmFtZToge3twcm9qZWN0X25hbWV9fV93b3Jrc3BhY2UKCmVudmlyb25tZW50OgogIHNkazogIj49Mi4xOS42IDwzLjAuMCIKICAKZGV2X2RlcGVuZGVuY2llczoKICBtZWxvczogXjMuMC4xCg==",
       "type": "text"
     },
     {"path": "README.md", "data": "VE9ETwo=", "type": "text"}

@@ -514,20 +514,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  {{project_name}}_domain:
-    dependency: "direct main"
-    description:
-      path: "../../{{project_name}}_domain/{{project_name}}_domain"
-      relative: true
-    source: path
-    version: "0.0.1"
-  {{project_name}}_logging:
-    dependency: "direct main"
-    description:
-      path: "../../{{project_name}}_logging"
-      relative: true
-    source: path
-    version: "0.0.1"
   term_glyph:
     dependency: transitive
     description:
@@ -608,6 +594,20 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  {{project_name}}_domain:
+    dependency: "direct main"
+    description:
+      path: "../../{{project_name}}_domain/{{project_name}}_domain"
+      relative: true
+    source: path
+    version: "0.0.1"
+  {{project_name}}_logging:
+    dependency: "direct main"
+    description:
+      path: "../../{{project_name}}_logging"
+      relative: true
+    source: path
+    version: "0.0.1"
   yaml:
     dependency: transitive
     description:
@@ -617,4 +617,4 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=2.19.4 <3.0.0"
+  dart: ">=2.19.6 <3.0.0"

@@ -281,13 +281,9 @@ platformDependent=(
 
 platformIndependent=(
     "ui_package $ui_package_path"
-
     "di_package $di_package_path"
-
     "logging_package $logging_package_path"
-
     "domain_package $domain_package_path"
-
     "infrastructure_package $infrastructure_package_path"
 )
 
@@ -323,7 +319,7 @@ for ((i = 0; i < ${#platformDependent[@]}; i++)); do
     pubspecPath="$template_path/pubspec.lock"
     dependency_overrides_path="$template_path/pubspec_overrides.yaml"
 
-    if [ "$i" -eq 0 ]; then
+    if [ "$((i % 6))" -eq 0 ]; then
         rm "$brick_path/pubspec.lock"
         rm "$brick_path/pubspec_overrides.yaml"
     fi
@@ -356,26 +352,28 @@ for ((i = 0; i < ${#platformDependent[@]}; i++)); do
         cd "$orig_dir"
     fi
 
-    # Read the contents of $pubspecPath
+    # Read the contents of $dependency_overrides_path
     contents=$(cat "$dependency_overrides_path")
 
     wrapped_contents="{{#$platform}}\n${contents}\n{{/$platform}}"
 
-    # Check if $brick_path/pubspec_overrides.yaml exists
-    if [ -e "$brick_path/pubspec_overrides.yaml" ]; then
-        echo "$wrapped_contents" >>"$brick_path/pubspec_overrides.yaml"
-    else
-        # Get the current directory
-        orig_dir=$(pwd)
+    if [ "$template_name" != "platform_navigation_package" ]; then
+        # Check if $brick_path/pubspec_overrides.yaml exists
+        if [ -e "$brick_path/pubspec_overrides.yaml" ]; then
+            echo "$wrapped_contents" >>"$brick_path/pubspec_overrides.yaml"
+        else
+            # Get the current directory
+            orig_dir=$(pwd)
 
-        # Change into the output directory
-        cd "$brick_path"
+            # Change into the output directory
+            cd "$brick_path"
 
-        # Write the contents to the pubspec_overrides.yaml file
-        echo "$wrapped_contents" >"pubspec_overrides.yaml"
+            # Write the contents to the pubspec_overrides.yaml file
+            echo "$wrapped_contents" >"pubspec_overrides.yaml"
 
-        # Change back to the original directory
-        cd "$orig_dir"
+            # Change back to the original directory
+            cd "$orig_dir"
+        fi
     fi
 
 done

@@ -150,12 +150,12 @@ platform_root_package_macos_path="tmp/packages/${project_name}/${project_name}_m
 platform_root_package_web_path="tmp/packages/${project_name}/${project_name}_web/${project_name}_web"
 platform_root_package_windows_path="tmp/packages/${project_name}/${project_name}_windows/${project_name}_windows"
 
-platform_navigation_package_android_path="tmp/packages/${project_name}/${project_name}_android/${project_name}_navigation"
-platform_navigation_package_ios_path="tmp/packages/${project_name}/${project_name}_ios/${project_name}_navigation"
-platform_navigation_package_linux_path="tmp/packages/${project_name}/${project_name}_linux/${project_name}_navigation"
-platform_navigation_package_macos_path="tmp/packages/${project_name}/${project_name}_macos/${project_name}_navigation"
-platform_navigation_package_web_path="tmp/packages/${project_name}/${project_name}_web/${project_name}_navigation"
-platform_navigation_package_windows_path="tmp/packages/${project_name}/${project_name}_windows/${project_name}_navigation"
+platform_navigation_package_android_path="tmp/packages/${project_name}/${project_name}_android/${project_name}_android_navigation"
+platform_navigation_package_ios_path="tmp/packages/${project_name}/${project_name}_ios/${project_name}_ios_navigation"
+platform_navigation_package_linux_path="tmp/packages/${project_name}/${project_name}_linux/${project_name}_linux_navigation"
+platform_navigation_package_macos_path="tmp/packages/${project_name}/${project_name}_macos/${project_name}_macos_navigation"
+platform_navigation_package_web_path="tmp/packages/${project_name}/${project_name}_web/${project_name}_web_navigation"
+platform_navigation_package_windows_path="tmp/packages/${project_name}/${project_name}_windows/${project_name}_windows_navigation"
 
 platform_app_feature_package_android_path="tmp/packages/${project_name}/${project_name}_android/${project_name}_android_features/${project_name}_android_app"
 platform_app_feature_package_ios_path="tmp/packages/${project_name}/${project_name}_ios/${project_name}_ios_features/${project_name}_ios_app"

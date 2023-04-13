@@ -1,11 +1,17 @@
 {{#android}}
 
+
+
 # melos_managed_dependency_overrides: {{project_name}}_ui
 dependency_overrides:
   {{project_name}}_ui:
     path: ../{{project_name}}_ui
 {{/android}}
 {{#ios}}
+
+
+
+
 
 
 # melos_managed_dependency_overrides: {{project_name}}_ui
@@ -17,12 +23,26 @@ dependency_overrides:
 
 
 
+
+
+
+
+
+
 # melos_managed_dependency_overrides: {{project_name}}_ui
 dependency_overrides:
   {{project_name}}_ui:
     path: ../{{project_name}}_ui
 {{/linux}}
 {{#macos}}
+
+
+
+
+
+
+
+
 
 
 
@@ -38,12 +58,34 @@ dependency_overrides:
 
 
 
+
+
+
+
+
+
+
+
+
+
 # melos_managed_dependency_overrides: {{project_name}}_ui
 dependency_overrides:
   {{project_name}}_ui:
     path: ../{{project_name}}_ui
 {{/web}}
 {{#windows}}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

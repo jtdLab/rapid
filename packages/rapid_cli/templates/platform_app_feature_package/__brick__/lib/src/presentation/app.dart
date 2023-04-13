@@ -35,7 +35,6 @@ abstract class App extends StatelessWidget {
     ThemeMode? themeMode,
   }) = _AppTestWidget;
 
-  List<Locale> get supportedLocales;
   List<LocalizationsDelegate> get localizationsDelegates;
   final RootStackRouter? router;
 }
@@ -49,9 +48,9 @@ class _App extends App {
     this.routerObserverBuilder,
   }) : super._();
 
+  
   final List<AutoRouterObserver> Function()? routerObserverBuilder;
 
-  @override
   final List<Locale> supportedLocales;
   @override
   final List<LocalizationsDelegate> localizationsDelegates;
@@ -86,7 +85,6 @@ class _AppTest extends App {
   final AutoRouterObserver? routerObserver;
   final ThemeMode? themeMode;
 
-  @override
   List<Locale> get supportedLocales => [locale];
   @override
   List<LocalizationsDelegate> get localizationsDelegates =>
@@ -123,8 +121,6 @@ class _AppTestWidget extends App {
   final Widget widget;
   final ThemeMode? themeMode;
 
-  @override
-  List<Locale> get supportedLocales => [locale];
   @override
   List<LocalizationsDelegate> get localizationsDelegates =>
       [localizationsDelegate];
@@ -177,7 +173,6 @@ abstract class App extends StatelessWidget {
     Brightness? brightness,
   }) = _AppTestWidget;
 
-  List<Locale> get supportedLocales;
   List<LocalizationsDelegate> get localizationsDelegates;
   final RootStackRouter? router;
 }
@@ -193,7 +188,6 @@ class _App extends App {
 
   final List<AutoRouterObserver> Function()? routerObserverBuilder;
 
-  @override
   final List<Locale> supportedLocales;
   @override
   final List<LocalizationsDelegate> localizationsDelegates;
@@ -228,7 +222,6 @@ class _AppTest extends App {
   final AutoRouterObserver? routerObserver;
   final Brightness? brightness;
 
-  @override
   List<Locale> get supportedLocales => [locale];
   @override
   List<LocalizationsDelegate> get localizationsDelegates =>
@@ -265,8 +258,6 @@ class _AppTestWidget extends App {
   final Widget widget;
   final Brightness? brightness;
 
-  @override
-  List<Locale> get supportedLocales => [locale];
   @override
   List<LocalizationsDelegate> get localizationsDelegates =>
       [localizationsDelegate];
@@ -319,7 +310,6 @@ abstract class App extends StatelessWidget {
     ThemeMode? themeMode,
   }) = _AppTestWidget;
 
-  List<Locale> get supportedLocales;
   List<LocalizationsDelegate> get localizationsDelegates;
   final RootStackRouter? router;
 }
@@ -335,7 +325,6 @@ class _App extends App {
 
   final List<AutoRouterObserver> Function()? routerObserverBuilder;
 
-  @override
   final List<Locale> supportedLocales;
   @override
   final List<LocalizationsDelegate> localizationsDelegates;
@@ -370,7 +359,6 @@ class _AppTest extends App {
   final AutoRouterObserver? routerObserver;
   final ThemeMode? themeMode;
 
-  @override
   List<Locale> get supportedLocales => [locale];
   @override
   List<LocalizationsDelegate> get localizationsDelegates =>
@@ -407,8 +395,6 @@ class _AppTestWidget extends App {
   final Widget widget;
   final ThemeMode? themeMode;
 
-  @override
-  List<Locale> get supportedLocales => [locale];
   @override
   List<LocalizationsDelegate> get localizationsDelegates =>
       [localizationsDelegate];
@@ -461,7 +447,6 @@ abstract class App extends StatelessWidget {
     Brightness? brightness,
   }) = _AppTestWidget;
 
-  List<Locale> get supportedLocales;
   List<LocalizationsDelegate> get localizationsDelegates;
   final RootStackRouter? router;
 }
@@ -477,7 +462,6 @@ class _App extends App {
 
   final List<AutoRouterObserver> Function()? routerObserverBuilder;
 
-  @override
   final List<Locale> supportedLocales;
   @override
   final List<LocalizationsDelegate> localizationsDelegates;
@@ -512,7 +496,6 @@ class _AppTest extends App {
   final AutoRouterObserver? routerObserver;
   final Brightness? brightness;
 
-  @override
   List<Locale> get supportedLocales => [locale];
   @override
   List<LocalizationsDelegate> get localizationsDelegates =>
@@ -549,8 +532,6 @@ class _AppTestWidget extends App {
   final Widget widget;
   final Brightness? brightness;
 
-  @override
-  List<Locale> get supportedLocales => [locale];
   @override
   List<LocalizationsDelegate> get localizationsDelegates =>
       [localizationsDelegate];
@@ -603,7 +584,6 @@ abstract class App extends StatelessWidget {
     ThemeMode? themeMode,
   }) = _AppTestWidget;
 
-  List<Locale> get supportedLocales;
   List<LocalizationsDelegate> get localizationsDelegates;
   final RootStackRouter? router;
 }
@@ -619,7 +599,6 @@ class _App extends App {
 
   final List<AutoRouterObserver> Function()? routerObserverBuilder;
 
-  @override
   final List<Locale> supportedLocales;
   @override
   final List<LocalizationsDelegate> localizationsDelegates;
@@ -654,7 +633,6 @@ class _AppTest extends App {
   final AutoRouterObserver? routerObserver;
   final ThemeMode? themeMode;
 
-  @override
   List<Locale> get supportedLocales => [locale];
   @override
   List<LocalizationsDelegate> get localizationsDelegates =>
@@ -691,8 +669,6 @@ class _AppTestWidget extends App {
   final Widget widget;
   final ThemeMode? themeMode;
 
-  @override
-  List<Locale> get supportedLocales => [locale];
   @override
   List<LocalizationsDelegate> get localizationsDelegates =>
       [localizationsDelegate];
@@ -745,7 +721,6 @@ abstract class App extends StatelessWidget {
     ThemeMode? themeMode,
   }) = _AppTestWidget;
 
-  List<Locale> get supportedLocales;
   List<LocalizationsDelegate> get localizationsDelegates;
   final RootStackRouter? router;
 }
@@ -761,7 +736,6 @@ class _App extends App {
 
   final List<AutoRouterObserver> Function()? routerObserverBuilder;
 
-  @override
   final List<Locale> supportedLocales;
   @override
   final List<LocalizationsDelegate> localizationsDelegates;
@@ -796,7 +770,6 @@ class _AppTest extends App {
   final AutoRouterObserver? routerObserver;
   final ThemeMode? themeMode;
 
-  @override
   List<Locale> get supportedLocales => [locale];
   @override
   List<LocalizationsDelegate> get localizationsDelegates =>
@@ -833,8 +806,6 @@ class _AppTestWidget extends App {
   final Widget widget;
   final ThemeMode? themeMode;
 
-  @override
-  List<Locale> get supportedLocales => [locale];
   @override
   List<LocalizationsDelegate> get localizationsDelegates =>
       [localizationsDelegate];

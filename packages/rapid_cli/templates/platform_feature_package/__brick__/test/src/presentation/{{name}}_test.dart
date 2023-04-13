@@ -4,7 +4,7 @@ import 'helpers/helpers.dart';
 
 void main() {
   group('{{name.pascalCase()}}', () {
-    testWidgets('renders correctly ({{default_language}})', (tester) async {
+{{#routable}}    testWidgets('renders correctly ({{default_language}})', (tester) async {
       // Act
       await tester.pumpApp(
         initialRoutes: [
@@ -16,6 +16,16 @@ void main() {
       // Assert
       expect(find.byType({{project_name.pascalCase()}}Scaffold), findsOneWidget);
       expect(find.text('{{name.titleCase()}} title for {{default_language}}'), findsOneWidget);
-    });
+    });{{/routable}}{{^routable}}    testWidgets('renders correctly ({{default_language}})', (tester) async {
+      // Act
+      await tester.pumpAppWidget(
+        widget: const {{name.pascalCase()}}(),
+        locale: const Locale('{{default_language}}'),
+      );
+
+      // Assert
+      expect(find.byType({{project_name.pascalCase()}}Scaffold), findsOneWidget);
+      expect(find.text('{{name.titleCase()}} title for {{default_language}}'), findsOneWidget);
+    });{{/routable}}
   });
 }

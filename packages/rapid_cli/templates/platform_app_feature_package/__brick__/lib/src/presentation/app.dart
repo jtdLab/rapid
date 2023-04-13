@@ -4,7 +4,7 @@ import 'package:{{project_name}}_ui_android/{{project_name}}_ui_android.dart';
 abstract class App extends StatelessWidget {
   const App._({
     super.key,
-    required this.router,
+    this.router,
   });
 
   const factory App({
@@ -26,9 +26,18 @@ abstract class App extends StatelessWidget {
     ThemeMode? themeMode,
   }) = _AppTest;
 
+  @visibleForTesting
+  const factory App.testWidget({
+    Key? key,
+    required Widget widget,
+    Locale locale,
+    required LocalizationsDelegate localizationsDelegate,
+    ThemeMode? themeMode,
+  }) = _AppTestWidget;
+
   List<Locale> get supportedLocales;
   List<LocalizationsDelegate> get localizationsDelegates;
-  final RootStackRouter router;
+  final RootStackRouter? router;
 }
 
 class _App extends App {
@@ -36,7 +45,7 @@ class _App extends App {
     super.key,
     required this.supportedLocales,
     required this.localizationsDelegates,
-    required super.router,
+    required RootStackRouter super.router,
     this.routerObserverBuilder,
   }) : super._();
 
@@ -52,7 +61,7 @@ class _App extends App {
     return {{project_name.pascalCase()}}App(
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routerConfig: router.config(
+      routerConfig: router!.config(
         navigatorObservers: routerObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
@@ -65,7 +74,7 @@ class _AppTest extends App {
     super.key,
     this.locale = const Locale('en'),
     required this.localizationsDelegate,
-    required super.router,
+    required RootStackRouter super.router,
     this.initialRoutes,
     this.routerObserver,
     this.themeMode,
@@ -89,12 +98,44 @@ class _AppTest extends App {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routerConfig: router.config(
+      routerConfig: router!.config(
         initialRoutes: initialRoutes,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
+      themeMode: themeMode,
+    );
+  }
+}
+
+class _AppTestWidget extends App {
+  const _AppTestWidget({
+    super.key,
+    required this.widget,
+    this.locale = const Locale('en'),
+    required this.localizationsDelegate,
+    this.themeMode,
+  }) : super._();
+
+  final Locale locale;
+  final LocalizationsDelegate localizationsDelegate;
+  final Widget widget;
+  final ThemeMode? themeMode;
+
+  @override
+  List<Locale> get supportedLocales => [locale];
+  @override
+  List<LocalizationsDelegate> get localizationsDelegates =>
+      [localizationsDelegate];
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: invalid_use_of_visible_for_testing_member
+    return {{project_name.pascalCase()}}App.test(
+      locale: locale,
+      localizationsDelegates: localizationsDelegates,
+      home: widget,
       themeMode: themeMode,
     );
   }
@@ -105,7 +146,7 @@ import 'package:{{project_name}}_ui_ios/{{project_name}}_ui_ios.dart';
 abstract class App extends StatelessWidget {
   const App._({
     super.key,
-    required this.router,
+    this.router,
   });
 
   const factory App({
@@ -127,9 +168,18 @@ abstract class App extends StatelessWidget {
     Brightness? brightness,
   }) = _AppTest;
 
+  @visibleForTesting
+  const factory App.testWidget({
+    Key? key,
+    required Widget widget,
+    Locale locale,
+    required LocalizationsDelegate localizationsDelegate,
+    Brightness? brightness,
+  }) = _AppTestWidget;
+
   List<Locale> get supportedLocales;
   List<LocalizationsDelegate> get localizationsDelegates;
-  final RootStackRouter router;
+  final RootStackRouter? router;
 }
 
 class _App extends App {
@@ -137,7 +187,7 @@ class _App extends App {
     super.key,
     required this.supportedLocales,
     required this.localizationsDelegates,
-    required super.router,
+    required RootStackRouter super.router,
     this.routerObserverBuilder,
   }) : super._();
 
@@ -153,7 +203,7 @@ class _App extends App {
     return {{project_name.pascalCase()}}App(
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routerConfig: router.config(
+      routerConfig: router!.config(
         navigatorObservers: routerObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
@@ -166,7 +216,7 @@ class _AppTest extends App {
     super.key,
     this.locale = const Locale('en'),
     required this.localizationsDelegate,
-    required super.router,
+    required RootStackRouter super.router,
     this.initialRoutes,
     this.routerObserver,
     this.brightness,
@@ -190,12 +240,44 @@ class _AppTest extends App {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routerConfig: router.config(
+      routerConfig: router!.config(
         initialRoutes: initialRoutes,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
+      brightness: brightness,
+    );
+  }
+}
+
+class _AppTestWidget extends App {
+  const _AppTestWidget({
+    super.key,
+    required this.widget,
+    this.locale = const Locale('en'),
+    required this.localizationsDelegate,
+    this.brightness,
+  }) : super._();
+
+  final Locale locale;
+  final LocalizationsDelegate localizationsDelegate;
+  final Widget widget;
+  final Brightness? brightness;
+
+  @override
+  List<Locale> get supportedLocales => [locale];
+  @override
+  List<LocalizationsDelegate> get localizationsDelegates =>
+      [localizationsDelegate];
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: invalid_use_of_visible_for_testing_member
+    return {{project_name.pascalCase()}}App.test(
+      locale: locale,
+      localizationsDelegates: localizationsDelegates,
+      home: widget,
       brightness: brightness,
     );
   }
@@ -206,7 +288,7 @@ import 'package:{{project_name}}_ui_linux/{{project_name}}_ui_linux.dart';
 abstract class App extends StatelessWidget {
   const App._({
     super.key,
-    required this.router,
+    this.router,
   });
 
   const factory App({
@@ -228,9 +310,18 @@ abstract class App extends StatelessWidget {
     ThemeMode? themeMode,
   }) = _AppTest;
 
+  @visibleForTesting
+  const factory App.testWidget({
+    Key? key,
+    required Widget widget,
+    Locale locale,
+    required LocalizationsDelegate localizationsDelegate,
+    ThemeMode? themeMode,
+  }) = _AppTestWidget;
+
   List<Locale> get supportedLocales;
   List<LocalizationsDelegate> get localizationsDelegates;
-  final RootStackRouter router;
+  final RootStackRouter? router;
 }
 
 class _App extends App {
@@ -238,7 +329,7 @@ class _App extends App {
     super.key,
     required this.supportedLocales,
     required this.localizationsDelegates,
-    required super.router,
+    required RootStackRouter super.router,
     this.routerObserverBuilder,
   }) : super._();
 
@@ -254,7 +345,7 @@ class _App extends App {
     return {{project_name.pascalCase()}}App(
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routerConfig: router.config(
+      routerConfig: router!.config(
         navigatorObservers: routerObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
@@ -267,7 +358,7 @@ class _AppTest extends App {
     super.key,
     this.locale = const Locale('en'),
     required this.localizationsDelegate,
-    required super.router,
+    required RootStackRouter super.router,
     this.initialRoutes,
     this.routerObserver,
     this.themeMode,
@@ -291,12 +382,44 @@ class _AppTest extends App {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routerConfig: router.config(
+      routerConfig: router!.config(
         initialRoutes: initialRoutes,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
+      themeMode: themeMode,
+    );
+  }
+}
+
+class _AppTestWidget extends App {
+  const _AppTestWidget({
+    super.key,
+    required this.widget,
+    this.locale = const Locale('en'),
+    required this.localizationsDelegate,
+    this.themeMode,
+  }) : super._();
+
+  final Locale locale;
+  final LocalizationsDelegate localizationsDelegate;
+  final Widget widget;
+  final ThemeMode? themeMode;
+
+  @override
+  List<Locale> get supportedLocales => [locale];
+  @override
+  List<LocalizationsDelegate> get localizationsDelegates =>
+      [localizationsDelegate];
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: invalid_use_of_visible_for_testing_member
+    return {{project_name.pascalCase()}}App.test(
+      locale: locale,
+      localizationsDelegates: localizationsDelegates,
+      home: widget,
       themeMode: themeMode,
     );
   }
@@ -307,7 +430,7 @@ import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';
 abstract class App extends StatelessWidget {
   const App._({
     super.key,
-    required this.router,
+    this.router,
   });
 
   const factory App({
@@ -329,9 +452,18 @@ abstract class App extends StatelessWidget {
     Brightness? brightness,
   }) = _AppTest;
 
+  @visibleForTesting
+  const factory App.testWidget({
+    Key? key,
+    required Widget widget,
+    Locale locale,
+    required LocalizationsDelegate localizationsDelegate,
+    Brightness? brightness,
+  }) = _AppTestWidget;
+
   List<Locale> get supportedLocales;
   List<LocalizationsDelegate> get localizationsDelegates;
-  final RootStackRouter router;
+  final RootStackRouter? router;
 }
 
 class _App extends App {
@@ -339,7 +471,7 @@ class _App extends App {
     super.key,
     required this.supportedLocales,
     required this.localizationsDelegates,
-    required super.router,
+    required RootStackRouter super.router,
     this.routerObserverBuilder,
   }) : super._();
 
@@ -355,7 +487,7 @@ class _App extends App {
     return {{project_name.pascalCase()}}App(
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routerConfig: router.config(
+      routerConfig: router!.config(
         navigatorObservers: routerObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
@@ -368,7 +500,7 @@ class _AppTest extends App {
     super.key,
     this.locale = const Locale('en'),
     required this.localizationsDelegate,
-    required super.router,
+    required RootStackRouter super.router,
     this.initialRoutes,
     this.routerObserver,
     this.brightness,
@@ -392,12 +524,44 @@ class _AppTest extends App {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routerConfig: router.config(
+      routerConfig: router!.config(
         initialRoutes: initialRoutes,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
+      brightness: brightness,
+    );
+  }
+}
+
+class _AppTestWidget extends App {
+  const _AppTestWidget({
+    super.key,
+    required this.widget,
+    this.locale = const Locale('en'),
+    required this.localizationsDelegate,
+    this.brightness
+  }) : super._();
+
+  final Locale locale;
+  final LocalizationsDelegate localizationsDelegate;
+  final Widget widget;
+  final Brightness? brightness;
+
+  @override
+  List<Locale> get supportedLocales => [locale];
+  @override
+  List<LocalizationsDelegate> get localizationsDelegates =>
+      [localizationsDelegate];
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: invalid_use_of_visible_for_testing_member
+    return {{project_name.pascalCase()}}App.test(
+      locale: locale,
+      localizationsDelegates: localizationsDelegates,
+      home: widget,
       brightness: brightness,
     );
   }
@@ -408,7 +572,7 @@ import 'package:{{project_name}}_ui_web/{{project_name}}_ui_web.dart';
 abstract class App extends StatelessWidget {
   const App._({
     super.key,
-    required this.router,
+    this.router,
   });
 
   const factory App({
@@ -430,9 +594,18 @@ abstract class App extends StatelessWidget {
     ThemeMode? themeMode,
   }) = _AppTest;
 
+  @visibleForTesting
+  const factory App.testWidget({
+    Key? key,
+    required Widget widget,
+    Locale locale,
+    required LocalizationsDelegate localizationsDelegate,
+    ThemeMode? themeMode,
+  }) = _AppTestWidget;
+
   List<Locale> get supportedLocales;
   List<LocalizationsDelegate> get localizationsDelegates;
-  final RootStackRouter router;
+  final RootStackRouter? router;
 }
 
 class _App extends App {
@@ -440,7 +613,7 @@ class _App extends App {
     super.key,
     required this.supportedLocales,
     required this.localizationsDelegates,
-    required super.router,
+    required RootStackRouter super.router,
     this.routerObserverBuilder,
   }) : super._();
 
@@ -456,7 +629,7 @@ class _App extends App {
     return {{project_name.pascalCase()}}App(
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routerConfig: router.config(
+      routerConfig: router!.config(
         navigatorObservers: routerObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
@@ -469,7 +642,7 @@ class _AppTest extends App {
     super.key,
     this.locale = const Locale('en'),
     required this.localizationsDelegate,
-    required super.router,
+    required RootStackRouter super.router,
     this.initialRoutes,
     this.routerObserver,
     this.themeMode,
@@ -493,12 +666,44 @@ class _AppTest extends App {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routerConfig: router.config(
+      routerConfig: router!.config(
         initialRoutes: initialRoutes,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
+      themeMode: themeMode,
+    );
+  }
+}
+
+class _AppTestWidget extends App {
+  const _AppTestWidget({
+    super.key,
+    required this.widget,
+    this.locale = const Locale('en'),
+    required this.localizationsDelegate,
+    this.themeMode,
+  }) : super._();
+
+  final Locale locale;
+  final LocalizationsDelegate localizationsDelegate;
+  final Widget widget;
+  final ThemeMode? themeMode;
+
+  @override
+  List<Locale> get supportedLocales => [locale];
+  @override
+  List<LocalizationsDelegate> get localizationsDelegates =>
+      [localizationsDelegate];
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: invalid_use_of_visible_for_testing_member
+    return {{project_name.pascalCase()}}App.test(
+      locale: locale,
+      localizationsDelegates: localizationsDelegates,
+      home: widget,
       themeMode: themeMode,
     );
   }
@@ -509,7 +714,7 @@ import 'package:{{project_name}}_ui_windows/{{project_name}}_ui_windows.dart';
 abstract class App extends StatelessWidget {
   const App._({
     super.key,
-    required this.router,
+    this.router,
   });
 
   const factory App({
@@ -531,9 +736,18 @@ abstract class App extends StatelessWidget {
     ThemeMode? themeMode,
   }) = _AppTest;
 
+  @visibleForTesting
+  const factory App.testWidget({
+    Key? key,
+    required Widget widget,
+    Locale locale,
+    required LocalizationsDelegate localizationsDelegate,
+    ThemeMode? themeMode,
+  }) = _AppTestWidget;
+
   List<Locale> get supportedLocales;
   List<LocalizationsDelegate> get localizationsDelegates;
-  final RootStackRouter router;
+  final RootStackRouter? router;
 }
 
 class _App extends App {
@@ -541,7 +755,7 @@ class _App extends App {
     super.key,
     required this.supportedLocales,
     required this.localizationsDelegates,
-    required super.router,
+    required RootStackRouter super.router,
     this.routerObserverBuilder,
   }) : super._();
 
@@ -557,7 +771,7 @@ class _App extends App {
     return {{project_name.pascalCase()}}App(
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routerConfig: router.config(
+      routerConfig: router!.config(
         navigatorObservers: routerObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
@@ -570,7 +784,7 @@ class _AppTest extends App {
     super.key,
     this.locale = const Locale('en'),
     required this.localizationsDelegate,
-    required super.router,
+    required RootStackRouter super.router,
     this.initialRoutes,
     this.routerObserver,
     this.themeMode,
@@ -594,12 +808,44 @@ class _AppTest extends App {
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      routerConfig: router.config(
+      routerConfig: router!.config(
         initialRoutes: initialRoutes,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
+      themeMode: themeMode,
+    );
+  }
+}
+
+class _AppTestWidget extends App {
+  const _AppTestWidget({
+    super.key,
+    required this.widget,
+    this.locale = const Locale('en'),
+    required this.localizationsDelegate,
+    this.themeMode,
+  }) : super._();
+
+  final Locale locale;
+  final LocalizationsDelegate localizationsDelegate;
+  final Widget widget;
+  final ThemeMode? themeMode;
+
+  @override
+  List<Locale> get supportedLocales => [locale];
+  @override
+  List<LocalizationsDelegate> get localizationsDelegates =>
+      [localizationsDelegate];
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: invalid_use_of_visible_for_testing_member
+    return {{project_name.pascalCase()}}App.test(
+      locale: locale,
+      localizationsDelegates: localizationsDelegates,
+      home: widget,
       themeMode: themeMode,
     );
   }

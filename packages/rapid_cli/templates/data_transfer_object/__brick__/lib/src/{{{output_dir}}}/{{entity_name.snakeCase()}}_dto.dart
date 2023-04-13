@@ -8,7 +8,7 @@ part '{{entity_name.snakeCase()}}_dto.g.dart';
 class {{entity_name.pascalCase()}}Dto with _${{entity_name.pascalCase()}}Dto {
   const factory {{entity_name.pascalCase()}}Dto({
     required String id,
-   // TODO: more fields
+    // TODO: more fields
   }) = _{{entity_name.pascalCase()}}Dto;
 
   const {{entity_name.pascalCase()}}Dto._();

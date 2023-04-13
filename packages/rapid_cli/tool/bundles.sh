@@ -1,10 +1,15 @@
 #!/bin/bash
 
 # TODO format pubspec.lock and pubspec_overrides.yaml do not contain unnecessary empty lines
+# TODO regen platform directory from flutter create
 
 # Run from packages/rapid_cli
 # sh tool/bundles.sh
 # sh tool/bundles.sh --dry-run to see which templates dependencies can be updated.
+# flutter create . --description XXDESCXX --org xxx.xxx.xxx --project-name xlx --platforms android,ios,linux,macos,web,windows
+# git clean -dfX
+# replace desc org and project name in paths and file content
+# copy from temp dir to templates
 
 # Updates templates dependencies to specified versions and rebundles them.
 

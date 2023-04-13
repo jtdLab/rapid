@@ -6,68 +6,73 @@
 # Run from packages/rapid_cli
 # sh tool/bundles.sh
 # sh tool/bundles.sh --dry-run to see which templates dependencies can be updated.
-# flutter create . --description XXDESCXX --org xxx.xxx.xxx --project-name xlx --platforms android,ios,linux,macos,web,windows
-# git clean -dfX
-# replace desc org and project name in paths and file content
-# copy from temp dir to templates
 
 # Updates templates dependencies to specified versions and rebundles them.
 
-# SDK versions
-declare -a sdks=(
-    "sdk=>=2.19.6 <3.0.0"
-    "flutter=>=3.7.10"
-)
-
-# Other package versions
-declare -a packages=(
-    "auto_route=^6.1.0"
-    "auto_route_generator=^6.1.0"
-    "bloc_concurrency=^0.2.1"
-    "bloc_test=^9.1.1"
-    "bloc=^8.1.1"
-    "build_runner=^2.3.3"
-    "cupertino_icons=^1.0.5"
-    "dartz=^0.10.1"
-    "faker=^2.1.0"
-    "fluent_ui=^4.4.2"
-    "flutter_bloc=^8.1.2"
-    "flutter_lints=^2.0.1"
-    "freezed_annotation=^2.2.0"
-    "freezed=^2.3.2"
-    "get_it=^7.2.0"
-    "injectable_generator=^2.1.5"
-    "injectable=^2.1.1"
-    "intl=any"
-    "json_annotation=^4.8.0"
-    "json_serializable=^6.6.1"
-    "lints=^2.0.1"
-    "macos_ui=^1.12.2"
-    "melos=^3.0.1"
-    "meta=^1.8.0"
-    "mocktail=^0.3.0"
-    "test=^1.24.1"
-    "theme_tailor_annotation=^1.2.0"
-    "theme_tailor=^1.2.0"
-    "url_strategy=^0.2.0"
-    "yaru_icons=^1.0.4"
-    "yaru=^0.6.2"
-)
-
-echo "Packages with available updates:"
-for package in "${packages[@]}"; do
-    PACKAGE_NAME="${package%=*}"
-    CURRENT_VERSION="${package#*=}"
-    LATEST_VERSION=$(curl -s "https://pub.dev/api/packages/$PACKAGE_NAME" | grep -oE '"latest":{"version":"[^"]+' | sed 's/.*:"//')
-
-    if [[ "^$LATEST_VERSION" != "$CURRENT_VERSION" ]]; then
-        echo "$PACKAGE_NAME: $CURRENT_VERSION -> $LATEST_VERSION"
-    fi
-done
-
 if [[ "$1" == "--dry-run" ]]; then
+    # SDK versions
+    declare -a sdks=(
+        "sdk=>=2.19.6 <3.0.0"
+        "flutter=>=3.7.10"
+    )
+
+    # Other package versions
+    declare -a packages=(
+        "auto_route=^6.1.0"
+        "auto_route_generator=^6.1.0"
+        "bloc_concurrency=^0.2.1"
+        "bloc_test=^9.1.1"
+        "bloc=^8.1.1"
+        "build_runner=^2.3.3"
+        "cupertino_icons=^1.0.5"
+        "dartz=^0.10.1"
+        "faker=^2.1.0"
+        "fluent_ui=^4.4.2"
+        "flutter_bloc=^8.1.2"
+        "flutter_lints=^2.0.1"
+        "freezed_annotation=^2.2.0"
+        "freezed=^2.3.2"
+        "get_it=^7.2.0"
+        "injectable_generator=^2.1.5"
+        "injectable=^2.1.1"
+        "intl=any"
+        "json_annotation=^4.8.0"
+        "json_serializable=^6.6.1"
+        "lints=^2.0.1"
+        "macos_ui=^1.12.2"
+        "melos=^3.0.1"
+        "meta=^1.8.0"
+        "mocktail=^0.3.0"
+        "test=^1.24.1"
+        "theme_tailor_annotation=^1.2.0"
+        "theme_tailor=^1.2.0"
+        "url_strategy=^0.2.0"
+        "yaru_icons=^1.0.4"
+        "yaru=^0.6.2"
+    )
+
+    echo "Packages with available updates:"
+    for package in "${packages[@]}"; do
+        PACKAGE_NAME="${package%=*}"
+        CURRENT_VERSION="${package#*=}"
+        LATEST_VERSION=$(curl -s "https://pub.dev/api/packages/$PACKAGE_NAME" | grep -oE '"latest":{"version":"[^"]+' | sed 's/.*:"//')
+
+        if [[ "^$LATEST_VERSION" != "$CURRENT_VERSION" ]]; then
+            echo "$PACKAGE_NAME: $CURRENT_VERSION -> $LATEST_VERSION"
+        fi
+    done
+
     exit 0
 fi
+
+rm -r xxx
+flutter create xxx --description XXDESCXX --org xxx.xxx.xxx --project-name xlx --platforms android,ios,linux,macos,web,windows
+cd xxx
+git clean -dfX
+
+# TODO replace desc org and project name in paths and file content
+# copy from xxx dir to templates
+exit 0
 
 declare -a packageTemplatePaths=(
     "templates/project"

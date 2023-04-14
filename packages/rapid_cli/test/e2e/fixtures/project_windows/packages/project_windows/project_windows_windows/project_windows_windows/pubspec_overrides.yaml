@@ -22,6 +22,12 @@
 
 
 
+
+
+
+
+
+
 # melos_managed_dependency_overrides: project_windows_di,project_windows_domain,project_windows_infrastructure,project_windows_logging,project_windows_ui,project_windows_ui_windows,project_windows_windows_app,project_windows_windows_home_page,project_windows_windows_navigation
 dependency_overrides:
   project_windows_di:

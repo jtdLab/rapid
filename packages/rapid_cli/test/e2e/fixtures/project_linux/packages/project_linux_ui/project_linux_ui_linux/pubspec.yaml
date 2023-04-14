@@ -13,7 +13,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   theme_tailor_annotation: ^1.2.0
-  yaru: ^0.6.2
+  yaru: ^0.7.0
   yaru_icons: ^1.0.4
   project_linux_ui:
 

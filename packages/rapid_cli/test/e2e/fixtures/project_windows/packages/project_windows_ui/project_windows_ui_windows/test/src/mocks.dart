@@ -12,6 +12,11 @@ class FakeLocalizationsDelegate extends LocalizationsDelegate<dynamic> {
   bool shouldReload(covariant LocalizationsDelegate old) => false;
 }
 
+class FakeRouteInformationProvider extends Fake
+    implements RouteInformationProvider {}
+
+class FakeRouteInformationParser extends RouteInformationParser<Object> {}
+
 class FakeRouterDelegate extends RouterDelegate<Object> {
   @override
   void addListener(VoidCallback listener) {}
@@ -30,5 +35,10 @@ class FakeRouterDelegate extends RouterDelegate<Object> {
 }
 
 class FakeRouterConfig extends RouterConfig<Object> {
-  FakeRouterConfig() : super(routerDelegate: FakeRouterDelegate());
+  FakeRouterConfig()
+      : super(
+          routeInformationProvider: FakeRouteInformationProvider(),
+          routeInformationParser: FakeRouteInformationParser(),
+          routerDelegate: FakeRouterDelegate(),
+        );
 }

@@ -92,30 +92,12 @@ for placeholder in "${placeholders[@]}"; do
     find . -type f ! -name "*.ico" ! -name "*.png" -exec sed -i "" "s/\([[:<:]]\)${to_replace}\([[:>:]]\)/${new_string}/g" {} +
 done
 
-# TODO add initial lang to ios
-# <key>CFBundleLocalizations</key>
-# add {{language}} to info plist
-#		<array>
-#			<string>{{language}}</string>
-#		</array>
-
-file_path="ios/Runner/Info.plist"
-string_to_insert="<key>CFBundleLocalizations</key>/<array>/[[:blank:]]*<string>{{language}}</string>/</array>/"
-
-#sed '/dict/a \insert text here' "$file_path"
-#sed -i "/<dict>/a\ $string_to_insert" "$file_path"
-#sed -i '' '0,/<dict>/s#<dict>#<dict>\'"$string_to_insert"'#' "$file_path"
-
-# file_path="ios/Runner/Info.plist"
-# string_to_insert='\
-# <key>CFBundleLocalizations</key>\
-# <array>\
-#     <string>{{language}}</string>\
-# </array>\
-# '
-
-# # Insert the string after the first occurrence of "<dict>"
-# sed -i '' '0,/<dict>/s#<dict>#<dict>\n'"$string_to_insert"'#' "$file_path"
+sed -i '' '5i\
+	<key>CFBundleLocalizations</key>\
+    <array>\
+        <string>{{language}}</string>\
+    </array>\
+' "ios/Runner/Info.plist"
 
 # Rename android kotlin path
 

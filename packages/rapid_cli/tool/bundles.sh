@@ -65,13 +65,74 @@ if [[ "$1" == "--dry-run" ]]; then
     exit 0
 fi
 
-rm -r xxx
-flutter create xxx --description XXDESCXX --org xxx.xxx.xxx --project-name xlx --platforms android,ios,linux,macos,web,windows
+description="XXDESCXX"
+org_name="xxx.xxx.xxx"
+project_name="xlx"
+
+flutter create xxx --description $description --org $org_name --project-name $project_name --platforms android,ios,linux,macos,web,windows
 cd xxx
 git clean -dfX
 
-# TODO replace desc org and project name in paths and file content
-# copy from xxx dir to templates
+placeholders=(
+    "$description {{description}}"
+    "$org_name {{org_name}}"
+    "$project_name {{project_name}}"
+    "Xlx {{project_name.titleCase()}}"
+)
+for placeholder in "${placeholders[@]}"; do
+    to_replace=$(echo "$placeholder" | cut -d ' ' -f 1)
+    new_string=$(echo "$placeholder" | cut -d ' ' -f 2)
+
+    find . -type f ! -name "*.ico" ! -name "*.png" -exec sed -i "" "s/\([[:<:]]\)${to_replace}\([[:>:]]\)/${new_string}/g" {} +
+done
+
+# TODO add initial lang to ios
+<key>CFBundleLocalizations</key>
+# add {{language}} to info plist
+#		<array>
+#			<string>{{language}}</string>
+#		</array>
+
+file_path="ios/Runner/Info.plist"
+string_to_insert="<key>CFBundleLocalizations</key>/<array>/[[:blank:]]*<string>{{language}}</string>/</array>/"
+
+#sed '/dict/a \insert text here' "$file_path"
+#sed -i "/<dict>/a\ $string_to_insert" "$file_path"
+#sed -i '' '0,/<dict>/s#<dict>#<dict>\'"$string_to_insert"'#' "$file_path"
+
+# file_path="ios/Runner/Info.plist"
+# string_to_insert='\
+# <key>CFBundleLocalizations</key>\
+# <array>\
+#     <string>{{language}}</string>\
+# </array>\
+# '
+
+# # Insert the string after the first occurrence of "<dict>"
+# sed -i '' '0,/<dict>/s#<dict>#<dict>\n'"$string_to_insert"'#' "$file_path"
+
+# Rename android kotlin path 
+
+file_path="android/app/src/main/kotlin/xxx/xxx/xxx/xlx/MainActivity.kt"
+# Split the file path into directory and file name
+dir_path="$(dirname $file_path)"
+file_name="$(basename $file_path)"
+
+new_dir_path="${dir_path/xxx\/xxx\/xxx\/$project_name/{{org_name.pathCase()}}/{{project_name}}}"
+
+# Create the new directory path if it doesn't exist
+mkdir -p "$new_dir_path"
+
+# Rename the file to the new directory path
+mv "$file_path" "$new_dir_path/$file_name"
+rm -r "android/app/src/main/kotlin/xxx"
+
+rm -r "../templates/platform_root_package/android_native_directory/__brick__"
+mkdir -p "../templates/platform_root_package/android_native_directory/__brick__"
+mv "android" "../templates/platform_root_package/android_native_directory/__brick__"
+
+rm -r xxx
+cd ..
 exit 0
 
 declare -a packageTemplatePaths=(
@@ -145,8 +206,6 @@ templates=(
 #     mason add $template_name --path $template_location
 # done
 # cd ..
-
-project_name="xlx"
 
 platform_ui_package_android_path="tmp/packages/${project_name}_ui/${project_name}_ui_android"
 platform_ui_package_ios_path="tmp/packages/${project_name}_ui/${project_name}_ui_ios"

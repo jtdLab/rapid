@@ -2623,26 +2623,10 @@ packages:
     dependency: transitive
     description:
       name: yaru
-      sha256: "1d1fb60359a92f91cc7e6a76fd3046474b9734d2fb97b7a7189bb1e2ca66929f"
+      sha256: b0fbb5bd5fd835a530b3afab3783939b704615db4d94f2a0c4fa59e1104f399f
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.2"
-  yaru_color_generator:
-    dependency: transitive
-    description:
-      name: yaru_color_generator
-      sha256: "78b96cefc4eef763e4786f891ce336cdd55ef8edc55494c4bea2bc9d10ef9c96"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.0"
-  yaru_colors:
-    dependency: transitive
-    description:
-      name: yaru_colors
-      sha256: "42814cafa3c4a6876962559ae9d8b9ff088a59635e649e4eae86d35905496063"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.7"
+    version: "0.7.0"
   yaru_icons:
     dependency: transitive
     description:

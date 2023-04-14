@@ -1,56 +1,56 @@
 #!/bin/bash
 
 # TODO format pubspec.lock and pubspec_overrides.yaml do not contain unnecessary empty lines
-# TODO regen platform directory from flutter create
 
+############################################################################################
 # Run from packages/rapid_cli
 # sh tool/bundles.sh
 # sh tool/bundles.sh --dry-run to see which templates dependencies can be updated.
+############################################################################################
 
-# Updates templates dependencies to specified versions and rebundles them.
+sdks=(
+    "sdk=>=2.19.6 <3.0.0"
+    "flutter=>=3.7.10"
+)
+
+packages=(
+    "auto_route=^6.1.0"
+    "auto_route_generator=^6.1.0"
+    "bloc_concurrency=^0.2.1"
+    "bloc_test=^9.1.1"
+    "bloc=^8.1.1"
+    "build_runner=^2.3.3"
+    "cupertino_icons=^1.0.5"
+    "dartz=^0.10.1"
+    "faker=^2.1.0"
+    "fluent_ui=^4.4.2"
+    "flutter_bloc=^8.1.2"
+    "flutter_lints=^2.0.1"
+    "freezed_annotation=^2.2.0"
+    "freezed=^2.3.2"
+    "get_it=^7.2.0"
+    "injectable_generator=^2.1.5"
+    "injectable=^2.1.1"
+    "intl=any"
+    "json_annotation=^4.8.0"
+    "json_serializable=^6.6.1"
+    "lints=^2.0.1"
+    "macos_ui=^1.12.2"
+    "melos=^3.0.1"
+    "meta=^1.8.0"
+    "mocktail=^0.3.0"
+    "test=^1.24.1"
+    "theme_tailor_annotation=^1.2.0"
+    "theme_tailor=^1.2.0"
+    "url_strategy=^0.2.0"
+    "yaru_icons=^1.0.4"
+    "yaru=^0.7.0"
+)
 
 if [[ "$1" == "--dry-run" ]]; then
-    # SDK versions
-    declare -a sdks=(
-        "sdk=>=2.19.6 <3.0.0"
-        "flutter=>=3.7.10"
-    )
-
-    # Other package versions
-    declare -a packages=(
-        "auto_route=^6.1.0"
-        "auto_route_generator=^6.1.0"
-        "bloc_concurrency=^0.2.1"
-        "bloc_test=^9.1.1"
-        "bloc=^8.1.1"
-        "build_runner=^2.3.3"
-        "cupertino_icons=^1.0.5"
-        "dartz=^0.10.1"
-        "faker=^2.1.0"
-        "fluent_ui=^4.4.2"
-        "flutter_bloc=^8.1.2"
-        "flutter_lints=^2.0.1"
-        "freezed_annotation=^2.2.0"
-        "freezed=^2.3.2"
-        "get_it=^7.2.0"
-        "injectable_generator=^2.1.5"
-        "injectable=^2.1.1"
-        "intl=any"
-        "json_annotation=^4.8.0"
-        "json_serializable=^6.6.1"
-        "lints=^2.0.1"
-        "macos_ui=^1.12.2"
-        "melos=^3.0.1"
-        "meta=^1.8.0"
-        "mocktail=^0.3.0"
-        "test=^1.24.1"
-        "theme_tailor_annotation=^1.2.0"
-        "theme_tailor=^1.2.0"
-        "url_strategy=^0.2.0"
-        "yaru_icons=^1.0.4"
-        "yaru=^0.6.2"
-    )
-
+    ############################################################################################
+    # Check for new package releases
+    ############################################################################################
     echo "Packages with available updates:"
     for package in "${packages[@]}"; do
         PACKAGE_NAME="${package%=*}"
@@ -65,9 +65,15 @@ if [[ "$1" == "--dry-run" ]]; then
     exit 0
 fi
 
+# some global util
+platforms=("android" "ios" "linux" "macos" "web" "windows")
+project_name="xlx"
+
+############################################################################################
+# Regenerate the platform directories of the platform root directory
+############################################################################################
 description="XXDESCXX"
 org_name="xxx.xxx.xxx"
-project_name="xlx"
 
 flutter create xxx --description $description --org $org_name --project-name $project_name --platforms android,ios,linux,macos,web,windows
 cd xxx
@@ -120,8 +126,6 @@ file_name="$(basename $file_path)"
 
 new_dir_path="android/app/src/main/kotlin/{{org_name.pathCase()}}/{{project_name}}"
 
-echo $new_dir_path
-
 # Create the new directory path if it doesn't exist
 mkdir -p "$new_dir_path"
 
@@ -129,9 +133,6 @@ mkdir -p "$new_dir_path"
 mv "$file_path" "$new_dir_path/$file_name"
 rm -r "android/app/src/main/kotlin/xxx"
 rm -r "android/app/src/main/kotlin/xxx.xxx.xxx\\"
-
-# List of platforms
-platforms=("android" "ios" "linux" "macos" "web" "windows")
 
 # Loop through platforms
 for platform in "${platforms[@]}"; do
@@ -148,9 +149,11 @@ done
 cd ..
 rm -r xxx
 
-exit 0
+############################################################################################
+# Update pubspec.yamls of package templates to new sdk and package versions
+############################################################################################
 
-declare -a packageTemplatePaths=(
+packageTemplatePaths=(
     "templates/project"
     "templates/di_package"
     "templates/domain_package"
@@ -178,6 +181,10 @@ for path in "${packageTemplatePaths[@]}"; do
         sed -i '' -E "s/^([[:blank:]]*{[[:blank:]]*{[[:blank:]]*#[[:blank:]]*[a-z_]+[[:blank:]]*}[[:blank:]]*}|[[:blank:]]*)$name:[[:blank:]]*\^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+(.*)$/\1$name: $version\2/" "$pubspec_path"
     done
 done
+
+############################################################################################
+# Update pubspec.yamls of package templates to new sdk and package versions
+############################################################################################
 
 # (name, location, destination)
 templates=(
@@ -209,7 +216,9 @@ templates=(
     "widget templates/widget lib/src/project/platform_ui_package"
 )
 
-# Generate dummy project to regenerat pubspec.lock and pubspec_overrides.yaml
+############################################################################################
+# Rengerated pubspec.lock and pubspec_overrides.yaml of package templates
+############################################################################################
 
 # # TODO: Is this required all time?
 # cd templates
@@ -258,13 +267,9 @@ platform_home_page_feature_package_web_path="tmp/packages/${project_name}/${proj
 platform_home_page_feature_package_windows_path="tmp/packages/${project_name}/${project_name}_windows/${project_name}_windows_features/${project_name}_windows_home_page"
 
 ui_package_path="tmp/packages/${project_name}_ui/${project_name}_ui"
-
 di_package_path="tmp/packages/${project_name}/${project_name}_di"
-
 logging_package_path="tmp/packages/${project_name}/${project_name}_logging"
-
 domain_package_path="tmp/packages/${project_name}/${project_name}_domain/${project_name}_domain"
-
 infrastructure_package_path="tmp/packages/${project_name}/${project_name}_infrastructure/${project_name}_infrastructure"
 
 cd templates
@@ -425,17 +430,7 @@ for ((i = 0; i < ${#platformDependent[@]}; i++)); do
     if [ -e "$brick_path/pubspec.lock" ]; then
         echo "$wrapped_contents" >>"$brick_path/pubspec.lock"
     else
-        # Get the current directory
-        orig_dir=$(pwd)
-
-        # Change into the output directory
-        cd "$brick_path"
-
-        # Write the contents to the pubspec.lock file
-        echo "$wrapped_contents" >"pubspec.lock"
-
-        # Change back to the original directory
-        cd "$orig_dir"
+        echo "$wrapped_contents" >"$brick_path/pubspec.lock"
     fi
 
     # Read the contents of $dependency_overrides_path
@@ -448,17 +443,7 @@ for ((i = 0; i < ${#platformDependent[@]}; i++)); do
         if [ -e "$brick_path/pubspec_overrides.yaml" ]; then
             echo "$wrapped_contents" >>"$brick_path/pubspec_overrides.yaml"
         else
-            # Get the current directory
-            orig_dir=$(pwd)
-
-            # Change into the output directory
-            cd "$brick_path"
-
-            # Write the contents to the pubspec_overrides.yaml file
-            echo "$wrapped_contents" >"pubspec_overrides.yaml"
-
-            # Change back to the original directory
-            cd "$orig_dir"
+            echo "$wrapped_contents" >"$brick_path/pubspec_overrides.yaml"
         fi
     fi
 
@@ -486,7 +471,9 @@ done
 
 cd ..
 
-# Rebundles all mason templates and ships the fresh bundles to rapid_cli package.
+############################################################################################
+# Rebundles all templates and ship the fresh bundles to rapid_cli package.
+############################################################################################
 
 for template in "${templates[@]}"; do
     template_name=$(echo "$template" | cut -d ' ' -f 1)

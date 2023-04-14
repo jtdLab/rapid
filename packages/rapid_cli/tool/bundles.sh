@@ -87,7 +87,7 @@ for placeholder in "${placeholders[@]}"; do
 done
 
 # TODO add initial lang to ios
-<key>CFBundleLocalizations</key>
+# <key>CFBundleLocalizations</key>
 # add {{language}} to info plist
 #		<array>
 #			<string>{{language}}</string>
@@ -111,14 +111,16 @@ string_to_insert="<key>CFBundleLocalizations</key>/<array>/[[:blank:]]*<string>{
 # # Insert the string after the first occurrence of "<dict>"
 # sed -i '' '0,/<dict>/s#<dict>#<dict>\n'"$string_to_insert"'#' "$file_path"
 
-# Rename android kotlin path 
+# Rename android kotlin path
 
 file_path="android/app/src/main/kotlin/xxx/xxx/xxx/xlx/MainActivity.kt"
 # Split the file path into directory and file name
 dir_path="$(dirname $file_path)"
 file_name="$(basename $file_path)"
 
-new_dir_path="${dir_path/xxx\/xxx\/xxx\/$project_name/{{org_name.pathCase()}}/{{project_name}}}"
+new_dir_path="android/app/src/main/kotlin/{{org_name.pathCase()}}/{{project_name}}"
+
+echo $new_dir_path
 
 # Create the new directory path if it doesn't exist
 mkdir -p "$new_dir_path"
@@ -126,13 +128,26 @@ mkdir -p "$new_dir_path"
 # Rename the file to the new directory path
 mv "$file_path" "$new_dir_path/$file_name"
 rm -r "android/app/src/main/kotlin/xxx"
+rm -r "android/app/src/main/kotlin/xxx.xxx.xxx\\"
 
-rm -r "../templates/platform_root_package/android_native_directory/__brick__"
-mkdir -p "../templates/platform_root_package/android_native_directory/__brick__"
-mv "android" "../templates/platform_root_package/android_native_directory/__brick__"
+# List of platforms
+platforms=("android" "ios" "linux" "macos" "web" "windows")
 
-rm -r xxx
+# Loop through platforms
+for platform in "${platforms[@]}"; do
+    # Remove the __brick__ directory for this platform
+    rm -r "../templates/platform_root_package/${platform}_native_directory/__brick__"
+
+    # Create the __brick__ directory for this platform
+    mkdir -p "../templates/platform_root_package/${platform}_native_directory/__brick__"
+
+    # Copy files to the __brick__ directory for this platform
+    cp -r "${platform}/.gitignore" "${platform}"/* "../templates/platform_root_package/${platform}_native_directory/__brick__/"
+done
+
 cd ..
+rm -r xxx
+
 exit 0
 
 declare -a packageTemplatePaths=(

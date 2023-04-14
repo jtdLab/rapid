@@ -87,6 +87,11 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
             if (!dataTransferObject.existsAny()) {
               await dataTransferObject.create();
 
+              await _dartFormatFix(
+                cwd: infrastructurePackage.path,
+                logger: _logger,
+              );
+
               _logger
                 ..info('')
                 ..success('Added Data Transfer Object ${entityName}Dto.');

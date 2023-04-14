@@ -59,8 +59,6 @@ class DomainSubDomainRemoveServiceInterfaceCommand extends Command<int>
 
           _logger.info('Removing Service Interface ...');
 
-          print('HUUHUHUHUH');
-
           final domainDirectory = _project.domainDirectory;
           final domainPackage = domainDirectory.domainPackage(name: domainName);
           final serviceInterface =

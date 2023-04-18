@@ -1,179 +1,93 @@
-{{#android}}import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
-import 'package:{{project_name}}_di/{{project_name}}_di.dart';
-import 'package:{{project_name}}_logging/{{project_name}}_logging.dart';
+{{#android}}import 'package:{{project_name}}_di/{{project_name}}_di.dart';
 import 'package:{{project_name}}_android/run_on_android.dart';
-import 'package:{{project_name}}_android_app/{{project_name}}_android_app.dart';
+import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 
 import 'bootstrap.dart';
 import 'injection.dart';
-import 'localizations_delegates.dart';
-import 'router.dart';
-import 'router_observer.dart';
 
 void main() => runOnAndroid(() async {
       configureDependencies(Environment.dev, Platform.android);
+      // TODO: add Android development setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
-      // TODO: add more android development setup here
+      // TODO: add Android development setup here (post WidgetsFlutterBinding.ensureInitialized())
 
-      final logger = getIt<{{project_name.pascalCase()}}Logger>();
-      final router = Router();
-      final app = App(
-        supportedLocales: supportedLocales,
-        localizationsDelegates: localizationsDelegates,
-        router: router,
-        routerObserverBuilder: () => [
-          {{project_name.pascalCase()}}RouterObserver(logger),
-        ],
-      );
-      await bootstrap(app, logger);
+      await bootstrap();
     });
-{{/android}}{{#ios}}import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
-import 'package:{{project_name}}_di/{{project_name}}_di.dart';
-import 'package:{{project_name}}_logging/{{project_name}}_logging.dart';
+{{/android}}{{#ios}}import 'package:{{project_name}}_di/{{project_name}}_di.dart';
 import 'package:{{project_name}}_ios/run_on_ios.dart';
-import 'package:{{project_name}}_ios_app/{{project_name}}_ios_app.dart';
+import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 
 import 'bootstrap.dart';
 import 'injection.dart';
-import 'localizations_delegates.dart';
-import 'router.dart';
-import 'router_observer.dart';
 
 void main() => runOnIos(() async {
       configureDependencies(Environment.dev, Platform.ios);
+      // TODO: add iOS development setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
-      // TODO: add more ios development setup here
+      // TODO: add iOS development setup here (post WidgetsFlutterBinding.ensureInitialized())
 
-      final logger = getIt<{{project_name.pascalCase()}}Logger>();
-      final router = Router();
-      final app = App(
-        supportedLocales: supportedLocales,
-        localizationsDelegates: localizationsDelegates,
-        router: router,
-        routerObserverBuilder: () => [
-          {{project_name.pascalCase()}}RouterObserver(logger),
-        ],
-      );
-      await bootstrap(app, logger);
+      await bootstrap();
     });
-{{/ios}}{{#web}}
-import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
-import 'package:{{project_name}}_di/{{project_name}}_di.dart';
-import 'package:{{project_name}}_logging/{{project_name}}_logging.dart';
+{{/ios}}{{#web}}import 'package:{{project_name}}_di/{{project_name}}_di.dart';
 import 'package:{{project_name}}_web/run_on_web.dart';
-import 'package:{{project_name}}_web_app/{{project_name}}_web_app.dart';
+import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 import 'package:url_strategy/url_strategy.dart';
 
 import 'bootstrap.dart';
 import 'injection.dart';
-import 'localizations_delegates.dart';
-import 'router.dart';
-import 'router_observer.dart';
 
 void main() => runOnWeb(() async {
       configureDependencies(Environment.dev, Platform.web);
       setPathUrlStrategy();
+      // TODO: add Web development setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
-      // TODO: add more web development setup here
+      // TODO: add Web development setup here (post WidgetsFlutterBinding.ensureInitialized())
 
-      final logger = getIt<{{project_name.pascalCase()}}Logger>();
-      final router = Router();
-      final app = App(
-        supportedLocales: supportedLocales,
-        localizationsDelegates: localizationsDelegates,
-        router: router,
-        routerObserverBuilder: () => [
-          {{project_name.pascalCase()}}RouterObserver(logger),
-        ],
-      );
-      await bootstrap(app, logger);
+      await bootstrap();
     });
-{{/web}}{{#linux}}import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
-import 'package:{{project_name}}_di/{{project_name}}_di.dart';
-import 'package:{{project_name}}_logging/{{project_name}}_logging.dart';
+{{/web}}{{#linux}}import 'package:{{project_name}}_di/{{project_name}}_di.dart';
 import 'package:{{project_name}}_linux/run_on_linux.dart';
-import 'package:{{project_name}}_linux_app/{{project_name}}_linux_app.dart';
+import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 
 import 'bootstrap.dart';
 import 'injection.dart';
-import 'localizations_delegates.dart';
-import 'router.dart';
-import 'router_observer.dart';
 
 void main() => runOnLinux(() async {
       configureDependencies(Environment.dev, Platform.linux);
+      // TODO: add Linux development setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
-      // TODO: add more linux development setup here
+      // TODO: add Linux development setup here (post WidgetsFlutterBinding.ensureInitialized())
 
-      final logger = getIt<{{project_name.pascalCase()}}Logger>();
-      final router = Router();
-      final app = App(
-        supportedLocales: supportedLocales,
-        localizationsDelegates: localizationsDelegates,
-        router: router,
-        routerObserverBuilder: () => [
-          {{project_name.pascalCase()}}RouterObserver(logger),
-        ],
-      );
-      await bootstrap(app, logger);
+      await bootstrap();
     });
-{{/linux}}{{#macos}}
-import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
-import 'package:{{project_name}}_di/{{project_name}}_di.dart';
-import 'package:{{project_name}}_logging/{{project_name}}_logging.dart';
+{{/linux}}{{#macos}}import 'package:{{project_name}}_di/{{project_name}}_di.dart';
 import 'package:{{project_name}}_macos/run_on_macos.dart';
-import 'package:{{project_name}}_macos_app/{{project_name}}_macos_app.dart';
+import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 
 import 'bootstrap.dart';
 import 'injection.dart';
-import 'localizations_delegates.dart';
-import 'router.dart';
-import 'router_observer.dart';
 
 void main() => runOnMacos(() async {
       configureDependencies(Environment.dev, Platform.macos);
+      // TODO: add macOS development setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
-      // TODO: add more macos development setup here
+      // TODO: add macOS development setup here (post WidgetsFlutterBinding.ensureInitialized())
 
-      final logger = getIt<{{project_name.pascalCase()}}Logger>();
-      final router = Router();
-      final app = App(
-        supportedLocales: supportedLocales,
-        localizationsDelegates: localizationsDelegates,
-        router: router,
-        routerObserverBuilder: () => [
-          {{project_name.pascalCase()}}RouterObserver(logger),
-        ],
-      );
-      await bootstrap(app, logger);
+      await bootstrap();
     });
-{{/macos}}{{#windows}}import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
-import 'package:{{project_name}}_di/{{project_name}}_di.dart';
-import 'package:{{project_name}}_logging/{{project_name}}_logging.dart';
+{{/macos}}{{#windows}}import 'package:{{project_name}}_di/{{project_name}}_di.dart';
 import 'package:{{project_name}}_windows/run_on_windows.dart';
-import 'package:{{project_name}}_windows_app/{{project_name}}_windows_app.dart';
+import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 
 import 'bootstrap.dart';
 import 'injection.dart';
-import 'localizations_delegates.dart';
-import 'router.dart';
-import 'router_observer.dart';
 
 void main() => runOnWindows(() async {
       configureDependencies(Environment.dev, Platform.windows);
+      // TODO: add Windows development setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
-      // TODO: add more windows development setup here
+      // TODO: add Windows development setup here (post WidgetsFlutterBinding.ensureInitialized())
 
-      final logger = getIt<{{project_name.pascalCase()}}Logger>();
-      final router = Router();
-      final app = App(
-        supportedLocales: supportedLocales,
-        localizationsDelegates: localizationsDelegates,
-        router: router,
-        routerObserverBuilder: () => [
-          {{project_name.pascalCase()}}RouterObserver(logger),
-        ],
-      );
-      await bootstrap(app, logger);
+      await bootstrap();
     });
 {{/windows}}

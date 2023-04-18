@@ -87,7 +87,7 @@ jobs:
   build_windows:
     defaults:
       run:
-        working-directory: example\packages\example\example_windows\example_windows
+        working-directory: example/packages/example/example_windows/example_windows
     runs-on: windows-latest
     steps:
       - run: git config --global core.longpaths true

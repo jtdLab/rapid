@@ -14,8 +14,8 @@ sdks=(
 )
 
 packages=(
-    "auto_route=^6.1.0"
-    "auto_route_generator=^6.1.0"
+    "auto_route=^6.2.0"
+    "auto_route_generator=^6.2.0"
     "bloc_concurrency=^0.2.1"
     "bloc_test=^9.1.1"
     "bloc=^8.1.1"
@@ -23,7 +23,7 @@ packages=(
     "cupertino_icons=^1.0.5"
     "dartz=^0.10.1"
     "faker=^2.1.0"
-    "fluent_ui=^4.4.2"
+    "fluent_ui=^4.5.0"
     "flutter_bloc=^8.1.2"
     "flutter_lints=^2.0.1"
     "freezed_annotation=^2.2.0"

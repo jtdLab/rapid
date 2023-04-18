@@ -38,10 +38,10 @@ packages:
     dependency: "direct main"
     description:
       name: auto_route
-      sha256: c012d5c631f9a201f07203a7084742618a1cef5e4d9f7b1e4fde6bc6158dd134
+      sha256: "40405e4af1552697b2a6696bf17a9770679c9bb3fa792986ca3a2469bc345486"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.0"
+    version: "6.2.0"
   bloc:
     dependency: "direct main"
     description:
@@ -807,10 +807,10 @@ packages:
     dependency: "direct main"
     description:
       name: auto_route
-      sha256: c012d5c631f9a201f07203a7084742618a1cef5e4d9f7b1e4fde6bc6158dd134
+      sha256: "40405e4af1552697b2a6696bf17a9770679c9bb3fa792986ca3a2469bc345486"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.0"
+    version: "6.2.0"
   bloc:
     dependency: "direct main"
     description:
@@ -1584,10 +1584,10 @@ packages:
     dependency: "direct main"
     description:
       name: auto_route
-      sha256: c012d5c631f9a201f07203a7084742618a1cef5e4d9f7b1e4fde6bc6158dd134
+      sha256: "40405e4af1552697b2a6696bf17a9770679c9bb3fa792986ca3a2469bc345486"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.0"
+    version: "6.2.0"
   bloc:
     dependency: "direct main"
     description:
@@ -2393,10 +2393,10 @@ packages:
     dependency: "direct main"
     description:
       name: auto_route
-      sha256: c012d5c631f9a201f07203a7084742618a1cef5e4d9f7b1e4fde6bc6158dd134
+      sha256: "40405e4af1552697b2a6696bf17a9770679c9bb3fa792986ca3a2469bc345486"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.0"
+    version: "6.2.0"
   bloc:
     dependency: "direct main"
     description:
@@ -3178,10 +3178,10 @@ packages:
     dependency: "direct main"
     description:
       name: auto_route
-      sha256: c012d5c631f9a201f07203a7084742618a1cef5e4d9f7b1e4fde6bc6158dd134
+      sha256: "40405e4af1552697b2a6696bf17a9770679c9bb3fa792986ca3a2469bc345486"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.0"
+    version: "6.2.0"
   bloc:
     dependency: "direct main"
     description:
@@ -3947,10 +3947,10 @@ packages:
     dependency: "direct main"
     description:
       name: auto_route
-      sha256: c012d5c631f9a201f07203a7084742618a1cef5e4d9f7b1e4fde6bc6158dd134
+      sha256: "40405e4af1552697b2a6696bf17a9770679c9bb3fa792986ca3a2469bc345486"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.0"
+    version: "6.2.0"
   bloc:
     dependency: "direct main"
     description:
@@ -4163,10 +4163,10 @@ packages:
     dependency: transitive
     description:
       name: fluent_ui
-      sha256: "6e9859514a4cf385f21b115f79939c232a9f6c99da5034d42b3965cc2cdcb12c"
+      sha256: dad68fd0d7df9240232ec02f658c66256cda4722c922718a966f9878a36bd7a3
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.2"
+    version: "4.5.0"
   flutter:
     dependency: "direct main"
     description: flutter

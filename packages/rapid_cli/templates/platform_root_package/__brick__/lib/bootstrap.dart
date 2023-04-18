@@ -27,6 +27,6 @@ Future<void> bootstrap() async {
       routerObserverBuilder: () => [
         {{project_name.pascalCase()}}RouterObserver(logger),
       ],
-    )
+    ),
   );
 }

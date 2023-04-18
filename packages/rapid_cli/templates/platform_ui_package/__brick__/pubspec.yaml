@@ -318,7 +318,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   theme_tailor_annotation: ^1.2.0
-  fluent_ui: ^4.4.2
+  fluent_ui: ^4.5.0
   {{project_name}}_ui:
 
 dev_dependencies:

@@ -765,10 +765,7 @@ void main() {
           darkExtensions,
         ),
       );
-      // TODO: https://github.com/bdlukaa/fluent_ui/pull/803
-      expect(fluentApp.routeInformationProvider, isNotNull);
-      expect(fluentApp.routeInformationParser, isNotNull);
-      expect(fluentApp.routerDelegate, isNotNull);
+      expect(fluentApp.routerConfig, routerConfig);
       expect(fluentApp.home, null);
     });
   });

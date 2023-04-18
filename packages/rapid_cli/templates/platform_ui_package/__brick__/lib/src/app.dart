@@ -563,10 +563,7 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      // TODO: https://github.com/bdlukaa/fluent_ui/pull/803
-      routeInformationParser: routerConfig?.routeInformationParser,
-      routeInformationProvider: routerConfig?.routeInformationProvider,
-      routerDelegate: routerConfig?.routerDelegate,
+      routerConfig: routerConfig,
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,

@@ -13,6 +13,7 @@ import 'package:example_infrastructure/example_infrastructure.dart' as _i4;
 import 'package:example_ios_app/example_ios_app.dart' as _i5;
 import 'package:example_ios_home_page/example_ios_home_page.dart' as _i6;
 import 'package:example_ios_login_page/example_ios_login_page.dart' as _i7;
+import 'package:example_ios_sign_up_page/example_ios_sign_up_page.dart' as _i8;
 import 'package:example_logging/example_logging.dart' as _i3;
 import 'package:get_it/get_it.dart' as _i1;
 import 'package:injectable/injectable.dart' as _i2;
@@ -33,6 +34,7 @@ extension GetItInjectableX on _i1.GetIt {
     await _i5.ExampleIosAppPackageModule().init(gh);
     await _i6.ExampleIosHomePagePackageModule().init(gh);
     await _i7.ExampleIosLoginPagePackageModule().init(gh);
+    await _i8.ExampleIosSignUpPagePackageModule().init(gh);
     return this;
   }
 }

@@ -41,6 +41,7 @@ dependencies:
   example_ios_app:
   example_ios_home_page:
   example_ios_login_page:
+  example_ios_sign_up_page:
 
 dev_dependencies:
   flutter_test:

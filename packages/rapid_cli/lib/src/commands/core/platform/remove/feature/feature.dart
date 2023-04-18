@@ -99,7 +99,6 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
               ..remove(featurePackage);
 
             for (final remainingFeaturePackage in remainingFeaturePackages) {
-              print(remainingFeaturePackage.packageName());
               final pubspecFile = remainingFeaturePackage.pubspecFile;
               pubspecFile.removeDependency(featurePackage.packageName());
             }

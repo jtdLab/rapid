@@ -20,30 +20,21 @@ mixin _$LoginEvent {
   TResult when<TResult extends Object?>({
     required TResult Function(String newUsername) usernameChanged,
     required TResult Function(String newPassword) passwordChanged,
-    required TResult Function() signInPressed,
-    required TResult Function() signInWithFacebookPressed,
-    required TResult Function() signInWithGooglePressed,
-    required TResult Function() signInWithApplePressed,
+    required TResult Function() loginPressed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String newUsername)? usernameChanged,
     TResult? Function(String newPassword)? passwordChanged,
-    TResult? Function()? signInPressed,
-    TResult? Function()? signInWithFacebookPressed,
-    TResult? Function()? signInWithGooglePressed,
-    TResult? Function()? signInWithApplePressed,
+    TResult? Function()? loginPressed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String newUsername)? usernameChanged,
     TResult Function(String newPassword)? passwordChanged,
-    TResult Function()? signInPressed,
-    TResult Function()? signInWithFacebookPressed,
-    TResult Function()? signInWithGooglePressed,
-    TResult Function()? signInWithApplePressed,
+    TResult Function()? loginPressed,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -51,35 +42,21 @@ mixin _$LoginEvent {
   TResult map<TResult extends Object?>({
     required TResult Function(_UsernameChanged value) usernameChanged,
     required TResult Function(_PasswordChanged value) passwordChanged,
-    required TResult Function(_LoginPressed value) signInPressed,
-    required TResult Function(_LoginWithFacebookPressed value)
-        signInWithFacebookPressed,
-    required TResult Function(_LoginWithGooglePressed value)
-        signInWithGooglePressed,
-    required TResult Function(_LoginWithApplePressed value)
-        signInWithApplePressed,
+    required TResult Function(_LoginPressed value) loginPressed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_UsernameChanged value)? usernameChanged,
     TResult? Function(_PasswordChanged value)? passwordChanged,
-    TResult? Function(_LoginPressed value)? signInPressed,
-    TResult? Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult? Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult? Function(_LoginWithApplePressed value)? signInWithApplePressed,
+    TResult? Function(_LoginPressed value)? loginPressed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_UsernameChanged value)? usernameChanged,
     TResult Function(_PasswordChanged value)? passwordChanged,
-    TResult Function(_LoginPressed value)? signInPressed,
-    TResult Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult Function(_LoginWithApplePressed value)? signInWithApplePressed,
+    TResult Function(_LoginPressed value)? loginPressed,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -170,10 +147,7 @@ class _$_UsernameChanged implements _UsernameChanged {
   TResult when<TResult extends Object?>({
     required TResult Function(String newUsername) usernameChanged,
     required TResult Function(String newPassword) passwordChanged,
-    required TResult Function() signInPressed,
-    required TResult Function() signInWithFacebookPressed,
-    required TResult Function() signInWithGooglePressed,
-    required TResult Function() signInWithApplePressed,
+    required TResult Function() loginPressed,
   }) {
     return usernameChanged(newUsername);
   }
@@ -183,10 +157,7 @@ class _$_UsernameChanged implements _UsernameChanged {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String newUsername)? usernameChanged,
     TResult? Function(String newPassword)? passwordChanged,
-    TResult? Function()? signInPressed,
-    TResult? Function()? signInWithFacebookPressed,
-    TResult? Function()? signInWithGooglePressed,
-    TResult? Function()? signInWithApplePressed,
+    TResult? Function()? loginPressed,
   }) {
     return usernameChanged?.call(newUsername);
   }
@@ -196,10 +167,7 @@ class _$_UsernameChanged implements _UsernameChanged {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String newUsername)? usernameChanged,
     TResult Function(String newPassword)? passwordChanged,
-    TResult Function()? signInPressed,
-    TResult Function()? signInWithFacebookPressed,
-    TResult Function()? signInWithGooglePressed,
-    TResult Function()? signInWithApplePressed,
+    TResult Function()? loginPressed,
     required TResult orElse(),
   }) {
     if (usernameChanged != null) {
@@ -213,13 +181,7 @@ class _$_UsernameChanged implements _UsernameChanged {
   TResult map<TResult extends Object?>({
     required TResult Function(_UsernameChanged value) usernameChanged,
     required TResult Function(_PasswordChanged value) passwordChanged,
-    required TResult Function(_LoginPressed value) signInPressed,
-    required TResult Function(_LoginWithFacebookPressed value)
-        signInWithFacebookPressed,
-    required TResult Function(_LoginWithGooglePressed value)
-        signInWithGooglePressed,
-    required TResult Function(_LoginWithApplePressed value)
-        signInWithApplePressed,
+    required TResult Function(_LoginPressed value) loginPressed,
   }) {
     return usernameChanged(this);
   }
@@ -229,11 +191,7 @@ class _$_UsernameChanged implements _UsernameChanged {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_UsernameChanged value)? usernameChanged,
     TResult? Function(_PasswordChanged value)? passwordChanged,
-    TResult? Function(_LoginPressed value)? signInPressed,
-    TResult? Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult? Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult? Function(_LoginWithApplePressed value)? signInWithApplePressed,
+    TResult? Function(_LoginPressed value)? loginPressed,
   }) {
     return usernameChanged?.call(this);
   }
@@ -243,11 +201,7 @@ class _$_UsernameChanged implements _UsernameChanged {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_UsernameChanged value)? usernameChanged,
     TResult Function(_PasswordChanged value)? passwordChanged,
-    TResult Function(_LoginPressed value)? signInPressed,
-    TResult Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult Function(_LoginWithApplePressed value)? signInWithApplePressed,
+    TResult Function(_LoginPressed value)? loginPressed,
     required TResult orElse(),
   }) {
     if (usernameChanged != null) {
@@ -334,10 +288,7 @@ class _$_PasswordChanged implements _PasswordChanged {
   TResult when<TResult extends Object?>({
     required TResult Function(String newUsername) usernameChanged,
     required TResult Function(String newPassword) passwordChanged,
-    required TResult Function() signInPressed,
-    required TResult Function() signInWithFacebookPressed,
-    required TResult Function() signInWithGooglePressed,
-    required TResult Function() signInWithApplePressed,
+    required TResult Function() loginPressed,
   }) {
     return passwordChanged(newPassword);
   }
@@ -347,10 +298,7 @@ class _$_PasswordChanged implements _PasswordChanged {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String newUsername)? usernameChanged,
     TResult? Function(String newPassword)? passwordChanged,
-    TResult? Function()? signInPressed,
-    TResult? Function()? signInWithFacebookPressed,
-    TResult? Function()? signInWithGooglePressed,
-    TResult? Function()? signInWithApplePressed,
+    TResult? Function()? loginPressed,
   }) {
     return passwordChanged?.call(newPassword);
   }
@@ -360,10 +308,7 @@ class _$_PasswordChanged implements _PasswordChanged {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String newUsername)? usernameChanged,
     TResult Function(String newPassword)? passwordChanged,
-    TResult Function()? signInPressed,
-    TResult Function()? signInWithFacebookPressed,
-    TResult Function()? signInWithGooglePressed,
-    TResult Function()? signInWithApplePressed,
+    TResult Function()? loginPressed,
     required TResult orElse(),
   }) {
     if (passwordChanged != null) {
@@ -377,13 +322,7 @@ class _$_PasswordChanged implements _PasswordChanged {
   TResult map<TResult extends Object?>({
     required TResult Function(_UsernameChanged value) usernameChanged,
     required TResult Function(_PasswordChanged value) passwordChanged,
-    required TResult Function(_LoginPressed value) signInPressed,
-    required TResult Function(_LoginWithFacebookPressed value)
-        signInWithFacebookPressed,
-    required TResult Function(_LoginWithGooglePressed value)
-        signInWithGooglePressed,
-    required TResult Function(_LoginWithApplePressed value)
-        signInWithApplePressed,
+    required TResult Function(_LoginPressed value) loginPressed,
   }) {
     return passwordChanged(this);
   }
@@ -393,11 +332,7 @@ class _$_PasswordChanged implements _PasswordChanged {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_UsernameChanged value)? usernameChanged,
     TResult? Function(_PasswordChanged value)? passwordChanged,
-    TResult? Function(_LoginPressed value)? signInPressed,
-    TResult? Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult? Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult? Function(_LoginWithApplePressed value)? signInWithApplePressed,
+    TResult? Function(_LoginPressed value)? loginPressed,
   }) {
     return passwordChanged?.call(this);
   }
@@ -407,11 +342,7 @@ class _$_PasswordChanged implements _PasswordChanged {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_UsernameChanged value)? usernameChanged,
     TResult Function(_PasswordChanged value)? passwordChanged,
-    TResult Function(_LoginPressed value)? signInPressed,
-    TResult Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult Function(_LoginWithApplePressed value)? signInWithApplePressed,
+    TResult Function(_LoginPressed value)? loginPressed,
     required TResult orElse(),
   }) {
     if (passwordChanged != null) {
@@ -454,7 +385,7 @@ class _$_LoginPressed implements _LoginPressed {
 
   @override
   String toString() {
-    return 'LoginEvent.signInPressed()';
+    return 'LoginEvent.loginPressed()';
   }
 
   @override
@@ -471,12 +402,9 @@ class _$_LoginPressed implements _LoginPressed {
   TResult when<TResult extends Object?>({
     required TResult Function(String newUsername) usernameChanged,
     required TResult Function(String newPassword) passwordChanged,
-    required TResult Function() signInPressed,
-    required TResult Function() signInWithFacebookPressed,
-    required TResult Function() signInWithGooglePressed,
-    required TResult Function() signInWithApplePressed,
+    required TResult Function() loginPressed,
   }) {
-    return signInPressed();
+    return loginPressed();
   }
 
   @override
@@ -484,12 +412,9 @@ class _$_LoginPressed implements _LoginPressed {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String newUsername)? usernameChanged,
     TResult? Function(String newPassword)? passwordChanged,
-    TResult? Function()? signInPressed,
-    TResult? Function()? signInWithFacebookPressed,
-    TResult? Function()? signInWithGooglePressed,
-    TResult? Function()? signInWithApplePressed,
+    TResult? Function()? loginPressed,
   }) {
-    return signInPressed?.call();
+    return loginPressed?.call();
   }
 
   @override
@@ -497,14 +422,11 @@ class _$_LoginPressed implements _LoginPressed {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String newUsername)? usernameChanged,
     TResult Function(String newPassword)? passwordChanged,
-    TResult Function()? signInPressed,
-    TResult Function()? signInWithFacebookPressed,
-    TResult Function()? signInWithGooglePressed,
-    TResult Function()? signInWithApplePressed,
+    TResult Function()? loginPressed,
     required TResult orElse(),
   }) {
-    if (signInPressed != null) {
-      return signInPressed();
+    if (loginPressed != null) {
+      return loginPressed();
     }
     return orElse();
   }
@@ -514,15 +436,9 @@ class _$_LoginPressed implements _LoginPressed {
   TResult map<TResult extends Object?>({
     required TResult Function(_UsernameChanged value) usernameChanged,
     required TResult Function(_PasswordChanged value) passwordChanged,
-    required TResult Function(_LoginPressed value) signInPressed,
-    required TResult Function(_LoginWithFacebookPressed value)
-        signInWithFacebookPressed,
-    required TResult Function(_LoginWithGooglePressed value)
-        signInWithGooglePressed,
-    required TResult Function(_LoginWithApplePressed value)
-        signInWithApplePressed,
+    required TResult Function(_LoginPressed value) loginPressed,
   }) {
-    return signInPressed(this);
+    return loginPressed(this);
   }
 
   @override
@@ -530,13 +446,9 @@ class _$_LoginPressed implements _LoginPressed {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_UsernameChanged value)? usernameChanged,
     TResult? Function(_PasswordChanged value)? passwordChanged,
-    TResult? Function(_LoginPressed value)? signInPressed,
-    TResult? Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult? Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult? Function(_LoginWithApplePressed value)? signInWithApplePressed,
+    TResult? Function(_LoginPressed value)? loginPressed,
   }) {
-    return signInPressed?.call(this);
+    return loginPressed?.call(this);
   }
 
   @override
@@ -544,15 +456,11 @@ class _$_LoginPressed implements _LoginPressed {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_UsernameChanged value)? usernameChanged,
     TResult Function(_PasswordChanged value)? passwordChanged,
-    TResult Function(_LoginPressed value)? signInPressed,
-    TResult Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult Function(_LoginWithApplePressed value)? signInWithApplePressed,
+    TResult Function(_LoginPressed value)? loginPressed,
     required TResult orElse(),
   }) {
-    if (signInPressed != null) {
-      return signInPressed(this);
+    if (loginPressed != null) {
+      return loginPressed(this);
     }
     return orElse();
   }
@@ -560,402 +468,6 @@ class _$_LoginPressed implements _LoginPressed {
 
 abstract class _LoginPressed implements LoginEvent {
   const factory _LoginPressed() = _$_LoginPressed;
-}
-
-/// @nodoc
-abstract class _$$_LoginWithFacebookPressedCopyWith<$Res> {
-  factory _$$_LoginWithFacebookPressedCopyWith(
-          _$_LoginWithFacebookPressed value,
-          $Res Function(_$_LoginWithFacebookPressed) then) =
-      __$$_LoginWithFacebookPressedCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$_LoginWithFacebookPressedCopyWithImpl<$Res>
-    extends _$LoginEventCopyWithImpl<$Res, _$_LoginWithFacebookPressed>
-    implements _$$_LoginWithFacebookPressedCopyWith<$Res> {
-  __$$_LoginWithFacebookPressedCopyWithImpl(_$_LoginWithFacebookPressed _value,
-      $Res Function(_$_LoginWithFacebookPressed) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$_LoginWithFacebookPressed implements _LoginWithFacebookPressed {
-  const _$_LoginWithFacebookPressed();
-
-  @override
-  String toString() {
-    return 'LoginEvent.signInWithFacebookPressed()';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$_LoginWithFacebookPressed);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String newUsername) usernameChanged,
-    required TResult Function(String newPassword) passwordChanged,
-    required TResult Function() signInPressed,
-    required TResult Function() signInWithFacebookPressed,
-    required TResult Function() signInWithGooglePressed,
-    required TResult Function() signInWithApplePressed,
-  }) {
-    return signInWithFacebookPressed();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String newUsername)? usernameChanged,
-    TResult? Function(String newPassword)? passwordChanged,
-    TResult? Function()? signInPressed,
-    TResult? Function()? signInWithFacebookPressed,
-    TResult? Function()? signInWithGooglePressed,
-    TResult? Function()? signInWithApplePressed,
-  }) {
-    return signInWithFacebookPressed?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String newUsername)? usernameChanged,
-    TResult Function(String newPassword)? passwordChanged,
-    TResult Function()? signInPressed,
-    TResult Function()? signInWithFacebookPressed,
-    TResult Function()? signInWithGooglePressed,
-    TResult Function()? signInWithApplePressed,
-    required TResult orElse(),
-  }) {
-    if (signInWithFacebookPressed != null) {
-      return signInWithFacebookPressed();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_UsernameChanged value) usernameChanged,
-    required TResult Function(_PasswordChanged value) passwordChanged,
-    required TResult Function(_LoginPressed value) signInPressed,
-    required TResult Function(_LoginWithFacebookPressed value)
-        signInWithFacebookPressed,
-    required TResult Function(_LoginWithGooglePressed value)
-        signInWithGooglePressed,
-    required TResult Function(_LoginWithApplePressed value)
-        signInWithApplePressed,
-  }) {
-    return signInWithFacebookPressed(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_UsernameChanged value)? usernameChanged,
-    TResult? Function(_PasswordChanged value)? passwordChanged,
-    TResult? Function(_LoginPressed value)? signInPressed,
-    TResult? Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult? Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult? Function(_LoginWithApplePressed value)? signInWithApplePressed,
-  }) {
-    return signInWithFacebookPressed?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_UsernameChanged value)? usernameChanged,
-    TResult Function(_PasswordChanged value)? passwordChanged,
-    TResult Function(_LoginPressed value)? signInPressed,
-    TResult Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult Function(_LoginWithApplePressed value)? signInWithApplePressed,
-    required TResult orElse(),
-  }) {
-    if (signInWithFacebookPressed != null) {
-      return signInWithFacebookPressed(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _LoginWithFacebookPressed implements LoginEvent {
-  const factory _LoginWithFacebookPressed() = _$_LoginWithFacebookPressed;
-}
-
-/// @nodoc
-abstract class _$$_LoginWithGooglePressedCopyWith<$Res> {
-  factory _$$_LoginWithGooglePressedCopyWith(_$_LoginWithGooglePressed value,
-          $Res Function(_$_LoginWithGooglePressed) then) =
-      __$$_LoginWithGooglePressedCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$_LoginWithGooglePressedCopyWithImpl<$Res>
-    extends _$LoginEventCopyWithImpl<$Res, _$_LoginWithGooglePressed>
-    implements _$$_LoginWithGooglePressedCopyWith<$Res> {
-  __$$_LoginWithGooglePressedCopyWithImpl(_$_LoginWithGooglePressed _value,
-      $Res Function(_$_LoginWithGooglePressed) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$_LoginWithGooglePressed implements _LoginWithGooglePressed {
-  const _$_LoginWithGooglePressed();
-
-  @override
-  String toString() {
-    return 'LoginEvent.signInWithGooglePressed()';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$_LoginWithGooglePressed);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String newUsername) usernameChanged,
-    required TResult Function(String newPassword) passwordChanged,
-    required TResult Function() signInPressed,
-    required TResult Function() signInWithFacebookPressed,
-    required TResult Function() signInWithGooglePressed,
-    required TResult Function() signInWithApplePressed,
-  }) {
-    return signInWithGooglePressed();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String newUsername)? usernameChanged,
-    TResult? Function(String newPassword)? passwordChanged,
-    TResult? Function()? signInPressed,
-    TResult? Function()? signInWithFacebookPressed,
-    TResult? Function()? signInWithGooglePressed,
-    TResult? Function()? signInWithApplePressed,
-  }) {
-    return signInWithGooglePressed?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String newUsername)? usernameChanged,
-    TResult Function(String newPassword)? passwordChanged,
-    TResult Function()? signInPressed,
-    TResult Function()? signInWithFacebookPressed,
-    TResult Function()? signInWithGooglePressed,
-    TResult Function()? signInWithApplePressed,
-    required TResult orElse(),
-  }) {
-    if (signInWithGooglePressed != null) {
-      return signInWithGooglePressed();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_UsernameChanged value) usernameChanged,
-    required TResult Function(_PasswordChanged value) passwordChanged,
-    required TResult Function(_LoginPressed value) signInPressed,
-    required TResult Function(_LoginWithFacebookPressed value)
-        signInWithFacebookPressed,
-    required TResult Function(_LoginWithGooglePressed value)
-        signInWithGooglePressed,
-    required TResult Function(_LoginWithApplePressed value)
-        signInWithApplePressed,
-  }) {
-    return signInWithGooglePressed(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_UsernameChanged value)? usernameChanged,
-    TResult? Function(_PasswordChanged value)? passwordChanged,
-    TResult? Function(_LoginPressed value)? signInPressed,
-    TResult? Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult? Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult? Function(_LoginWithApplePressed value)? signInWithApplePressed,
-  }) {
-    return signInWithGooglePressed?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_UsernameChanged value)? usernameChanged,
-    TResult Function(_PasswordChanged value)? passwordChanged,
-    TResult Function(_LoginPressed value)? signInPressed,
-    TResult Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult Function(_LoginWithApplePressed value)? signInWithApplePressed,
-    required TResult orElse(),
-  }) {
-    if (signInWithGooglePressed != null) {
-      return signInWithGooglePressed(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _LoginWithGooglePressed implements LoginEvent {
-  const factory _LoginWithGooglePressed() = _$_LoginWithGooglePressed;
-}
-
-/// @nodoc
-abstract class _$$_LoginWithApplePressedCopyWith<$Res> {
-  factory _$$_LoginWithApplePressedCopyWith(_$_LoginWithApplePressed value,
-          $Res Function(_$_LoginWithApplePressed) then) =
-      __$$_LoginWithApplePressedCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$_LoginWithApplePressedCopyWithImpl<$Res>
-    extends _$LoginEventCopyWithImpl<$Res, _$_LoginWithApplePressed>
-    implements _$$_LoginWithApplePressedCopyWith<$Res> {
-  __$$_LoginWithApplePressedCopyWithImpl(_$_LoginWithApplePressed _value,
-      $Res Function(_$_LoginWithApplePressed) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$_LoginWithApplePressed implements _LoginWithApplePressed {
-  const _$_LoginWithApplePressed();
-
-  @override
-  String toString() {
-    return 'LoginEvent.signInWithApplePressed()';
-  }
-
-  @override
-  bool operator ==(dynamic other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$_LoginWithApplePressed);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String newUsername) usernameChanged,
-    required TResult Function(String newPassword) passwordChanged,
-    required TResult Function() signInPressed,
-    required TResult Function() signInWithFacebookPressed,
-    required TResult Function() signInWithGooglePressed,
-    required TResult Function() signInWithApplePressed,
-  }) {
-    return signInWithApplePressed();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String newUsername)? usernameChanged,
-    TResult? Function(String newPassword)? passwordChanged,
-    TResult? Function()? signInPressed,
-    TResult? Function()? signInWithFacebookPressed,
-    TResult? Function()? signInWithGooglePressed,
-    TResult? Function()? signInWithApplePressed,
-  }) {
-    return signInWithApplePressed?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String newUsername)? usernameChanged,
-    TResult Function(String newPassword)? passwordChanged,
-    TResult Function()? signInPressed,
-    TResult Function()? signInWithFacebookPressed,
-    TResult Function()? signInWithGooglePressed,
-    TResult Function()? signInWithApplePressed,
-    required TResult orElse(),
-  }) {
-    if (signInWithApplePressed != null) {
-      return signInWithApplePressed();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_UsernameChanged value) usernameChanged,
-    required TResult Function(_PasswordChanged value) passwordChanged,
-    required TResult Function(_LoginPressed value) signInPressed,
-    required TResult Function(_LoginWithFacebookPressed value)
-        signInWithFacebookPressed,
-    required TResult Function(_LoginWithGooglePressed value)
-        signInWithGooglePressed,
-    required TResult Function(_LoginWithApplePressed value)
-        signInWithApplePressed,
-  }) {
-    return signInWithApplePressed(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_UsernameChanged value)? usernameChanged,
-    TResult? Function(_PasswordChanged value)? passwordChanged,
-    TResult? Function(_LoginPressed value)? signInPressed,
-    TResult? Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult? Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult? Function(_LoginWithApplePressed value)? signInWithApplePressed,
-  }) {
-    return signInWithApplePressed?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_UsernameChanged value)? usernameChanged,
-    TResult Function(_PasswordChanged value)? passwordChanged,
-    TResult Function(_LoginPressed value)? signInPressed,
-    TResult Function(_LoginWithFacebookPressed value)?
-        signInWithFacebookPressed,
-    TResult Function(_LoginWithGooglePressed value)? signInWithGooglePressed,
-    TResult Function(_LoginWithApplePressed value)? signInWithApplePressed,
-    required TResult orElse(),
-  }) {
-    if (signInWithApplePressed != null) {
-      return signInWithApplePressed(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _LoginWithApplePressed implements LoginEvent {
-  const factory _LoginWithApplePressed() = _$_LoginWithApplePressed;
 }
 
 /// @nodoc

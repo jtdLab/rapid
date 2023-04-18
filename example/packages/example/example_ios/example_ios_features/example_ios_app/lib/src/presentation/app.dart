@@ -12,7 +12,7 @@ abstract class App extends StatelessWidget {
     required List<Locale> supportedLocales,
     required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
-    List<AutoRouterObserver> Function()? routerObserverBuilder,
+    List<NavigatorObserver> Function()? routerObserverBuilder,
   }) = _App;
 
   @visibleForTesting
@@ -22,7 +22,7 @@ abstract class App extends StatelessWidget {
     required LocalizationsDelegate localizationsDelegate,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
-    AutoRouterObserver? routerObserver,
+    NavigatorObserver? routerObserver,
     Brightness? brightness,
   }) = _AppTest;
 
@@ -48,7 +48,7 @@ class _App extends App {
     this.routerObserverBuilder,
   }) : super._();
 
-  final List<AutoRouterObserver> Function()? routerObserverBuilder;
+  final List<NavigatorObserver> Function()? routerObserverBuilder;
 
   final List<Locale> supportedLocales;
   @override
@@ -81,7 +81,7 @@ class _AppTest extends App {
   final Locale locale;
   final LocalizationsDelegate localizationsDelegate;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
-  final AutoRouterObserver? routerObserver;
+  final NavigatorObserver? routerObserver;
   final Brightness? brightness;
 
   List<Locale> get supportedLocales => [locale];

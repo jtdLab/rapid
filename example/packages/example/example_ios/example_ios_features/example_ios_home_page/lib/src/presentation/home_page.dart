@@ -11,7 +11,7 @@ class HomePage extends StatelessWidget {
     final title = context.l10n.title;
 
     return ExampleScaffold(
-      body: Center(
+      child: Center(
         child: Text(title),
       ),
     );

@@ -11,7 +11,7 @@ ExampleScaffold _getExampleScaffold({
 }) {
   return ExampleScaffold(
     theme: theme,
-    body: body,
+    child: body,
   );
 }
 

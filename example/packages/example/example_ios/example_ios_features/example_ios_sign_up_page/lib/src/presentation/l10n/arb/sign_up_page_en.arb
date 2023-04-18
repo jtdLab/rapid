@@ -1,7 +1,15 @@
 {
   "@@locale": "en",
-  "title": "Sign Up Page title for en",
-  "@title": {
-    "description": "Title text shown in the Sign Up Page"
-  }
+  "email": "Email address",
+  "errorInvalidEmailAddress": "Invalid email",
+  "errorInvalidEmailAndPasswordCombination": "Invalid email or password",
+  "username": "Username",
+  "errorInvalidUsername": "errorInvalidUsername - en",
+  "password": "Password",
+  "errorInvalidPassword": "errorInvalidPassword - en",
+  "passwordAgain": "Password again",
+  "errorPasswordsDontMatch": "Passwords don't match",
+  "signUp": "Sign up",
+  "signIn": "Sign in",
+  "alreadyHaveAnAccount": "Already have an account?"
 }

@@ -1,7 +1,10 @@
 {
   "@@locale": "en",
-  "title": "Login Page title for en",
-  "@title": {
-    "description": "Title text shown in the Login Page"
-  }
+  "username": "Username",
+  "password": "Password",
+  "forgotPassword": "Forgot password?",
+  "login": "Login",
+  "signUpNow": "Sign up now",
+  "orSignInWith": "Or Sign in with",
+  "dontHaveAnAccount": "Don't have an account?"
 }

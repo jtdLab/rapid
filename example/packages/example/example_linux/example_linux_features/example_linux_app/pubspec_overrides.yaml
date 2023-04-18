@@ -1,39 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # melos_managed_dependency_overrides: example_di,example_domain,example_ui,example_ui_linux
 dependency_overrides:
   example_di:
@@ -44,7 +8,3 @@ dependency_overrides:
     path: ../../../../example_ui/example_ui
   example_ui_linux:
     path: ../../../../example_ui/example_ui_linux
-
-
-
-

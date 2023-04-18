@@ -5,23 +5,27 @@
 part of 'scaffold_theme.dart';
 
 // **************************************************************************
-// ThemeTailorGenerator
+// TailorGenerator
 // **************************************************************************
 
 class ExampleScaffoldTheme extends ThemeExtension<ExampleScaffoldTheme>
     with DiagnosticableTreeMixin {
   const ExampleScaffoldTheme({
     required this.backgroundColor,
+    required this.padding,
   });
 
   final Color backgroundColor;
+  final EdgeInsets padding;
 
   static final ExampleScaffoldTheme light = ExampleScaffoldTheme(
     backgroundColor: _$ExampleScaffoldTheme.backgroundColor[0],
+    padding: _$ExampleScaffoldTheme.padding[0],
   );
 
   static final ExampleScaffoldTheme dark = ExampleScaffoldTheme(
     backgroundColor: _$ExampleScaffoldTheme.backgroundColor[1],
+    padding: _$ExampleScaffoldTheme.padding[1],
   );
 
   static final themes = [
@@ -32,9 +36,11 @@ class ExampleScaffoldTheme extends ThemeExtension<ExampleScaffoldTheme>
   @override
   ExampleScaffoldTheme copyWith({
     Color? backgroundColor,
+    EdgeInsets? padding,
   }) {
     return ExampleScaffoldTheme(
       backgroundColor: backgroundColor ?? this.backgroundColor,
+      padding: padding ?? this.padding,
     );
   }
 
@@ -44,6 +50,7 @@ class ExampleScaffoldTheme extends ThemeExtension<ExampleScaffoldTheme>
     if (other is! ExampleScaffoldTheme) return this;
     return ExampleScaffoldTheme(
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t)!,
+      padding: t < 0.5 ? padding : other.padding,
     );
   }
 
@@ -52,7 +59,8 @@ class ExampleScaffoldTheme extends ThemeExtension<ExampleScaffoldTheme>
     super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'ExampleScaffoldTheme'))
-      ..add(DiagnosticsProperty('backgroundColor', backgroundColor));
+      ..add(DiagnosticsProperty('backgroundColor', backgroundColor))
+      ..add(DiagnosticsProperty('padding', padding));
   }
 
   @override
@@ -61,13 +69,16 @@ class ExampleScaffoldTheme extends ThemeExtension<ExampleScaffoldTheme>
         (other.runtimeType == runtimeType &&
             other is ExampleScaffoldTheme &&
             const DeepCollectionEquality()
-                .equals(backgroundColor, other.backgroundColor));
+                .equals(backgroundColor, other.backgroundColor) &&
+            const DeepCollectionEquality().equals(padding, other.padding));
   }
 
   @override
   int get hashCode {
     return Object.hash(
-        runtimeType, const DeepCollectionEquality().hash(backgroundColor));
+        runtimeType,
+        const DeepCollectionEquality().hash(backgroundColor),
+        const DeepCollectionEquality().hash(padding));
   }
 }
 

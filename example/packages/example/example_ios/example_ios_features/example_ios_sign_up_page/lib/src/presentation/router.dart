@@ -9,7 +9,6 @@ import 'router.gr.dart';
 class SignUpPageRouter extends $SignUpPageRouter {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: SignUpRoute.page, path: '/'),
-        // TODO setup the routes of this feature here
+        AutoRoute(page: SignUpRoute.page, path: 'sign-up'),
       ];
 }

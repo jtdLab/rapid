@@ -6,8 +6,8 @@ class RapidLogo extends StatelessWidget {
   final double height;
 
   const RapidLogo({super.key})
-      : width = 150,
-        height = 150;
+      : width = 175,
+        height = 175;
 
   @override
   Widget build(BuildContext context) {

@@ -9,7 +9,6 @@ import 'router.gr.dart';
 class LoginPageRouter extends $LoginPageRouter {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: LoginRoute.page, path: '/'),
-        // TODO setup the routes of this feature here
+        AutoRoute(page: LoginRoute.page, path: ''),
       ];
 }

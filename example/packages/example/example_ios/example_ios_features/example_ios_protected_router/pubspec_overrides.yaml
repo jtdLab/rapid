@@ -1,28 +1,4 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# melos_managed_dependency_overrides: example_di,example_domain,example_ios_app,example_ios_navigation,example_ui,example_ui_ios,example_ios_home_page
+# melos_managed_dependency_overrides: example_di,example_domain,example_ios_app,example_ios_home_page,example_ios_navigation,example_ui,example_ui_ios
 dependency_overrides:
   example_di:
     path: ../../../example_di
@@ -38,8 +14,3 @@ dependency_overrides:
     path: ../../../../example_ui/example_ui
   example_ui_ios:
     path: ../../../../example_ui/example_ui_ios
-
-
-
-
-

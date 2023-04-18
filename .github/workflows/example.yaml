@@ -1,6 +1,9 @@
 name: example
 
 on:
+  push:
+    paths:
+      - example/**
   workflow_dispatch:
     branches:
       - "dev"

@@ -2,3 +2,5 @@
 ///
 /// To use, import `package:example_domain/example_domain.dart`.
 library example_domain;
+
+export 'i_auth_service.dart';

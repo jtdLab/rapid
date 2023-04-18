@@ -1,10 +1,10 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:example_android_home_page/src/presentation/l10n/l10n.dart';
-import 'package:example_ui_android/example_ui_android.dart';
+import 'package:example_ios_login_page/src/presentation/l10n/l10n.dart';
+import 'package:example_ui_ios/example_ui_ios.dart';
 
 @RoutePage()
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -40,6 +40,7 @@ dependencies:
   example_infrastructure:
   example_ios_app:
   example_ios_home_page:
+  example_ios_login_page:
 
 dev_dependencies:
   flutter_test:

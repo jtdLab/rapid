@@ -1,0 +1,7 @@
+{
+  "@@locale": "en",
+  "title": "Login Page title for en",
+  "@title": {
+    "description": "Title text shown in the Login Page"
+  }
+}

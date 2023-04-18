@@ -5,7 +5,7 @@
 part of 'color_theme.dart';
 
 // **************************************************************************
-// ThemeTailorGenerator
+// TailorGenerator
 // **************************************************************************
 
 class ExampleColorTheme extends ThemeExtension<ExampleColorTheme>

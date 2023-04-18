@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   theme_tailor_annotation: ^1.2.0
+  flutter_svg: ^2.0.5
 
 dev_dependencies:
   flutter_test:
@@ -25,16 +26,14 @@ dev_dependencies:
 flutter_gen:
   output: lib/src/
   # To add support for svg via flutter_svg package
-  # integrations:
-  #   flutter_svg: true
+  integrations:
+    flutter_svg: true
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # To add assets to your package, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/images/logo.svg
   #
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages

@@ -87,7 +87,6 @@ abstract class Project implements Directory, OverridableGenerator {
     required String description,
     required String orgName,
     required String language,
-    required bool example,
     required Set<Platform> platforms,
   });
 }

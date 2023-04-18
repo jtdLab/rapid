@@ -70,12 +70,6 @@ class CreateCommand extends Command<int>
       ..addLanguageOption(
         help: 'The language of the new project',
       )
-      ..addFlag(
-        'example',
-        help:
-            'Wheter the new project contains example features and their tests.',
-        negatable: false,
-      )
       ..addSeparator('')
       ..addFlag(
         'android',
@@ -173,7 +167,6 @@ class CreateCommand extends Command<int>
           final description = _description;
           final orgName = super.orgName;
           final language = super.language;
-          final example = _example;
           final android = _android || _mobile || _all;
           final ios = _ios || _mobile || _all;
           final linux = _linux || _desktop || _all;
@@ -197,7 +190,6 @@ class CreateCommand extends Command<int>
             description: description,
             orgName: orgName,
             language: language,
-            example: example,
             platforms: platforms,
           );
 
@@ -252,9 +244,6 @@ class CreateCommand extends Command<int>
 
   /// Gets the description for the project specified by the user.
   String get _description => argResults['desc'] ?? _defaultDescription;
-
-  /// Whether the user specified that the project will contain example features.
-  bool get _example => argResults['example'] ?? false;
 
   /// Whether the user specified that the project supports Android.
   bool get _android => (argResults['android'] ?? false);

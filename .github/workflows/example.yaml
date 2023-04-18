@@ -1,0 +1,99 @@
+name: example
+
+on:
+  push:
+    branches:
+      - "dev"
+    paths:
+      - "example/**"
+
+jobs:
+  build_android:
+    defaults:
+      run:
+        working-directory: example
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "zulu"
+          java-version: "11"
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter pub get
+      - run: flutter test
+      - run: flutter build apk --verbose
+      - run: flutter build appbundle --verbose
+
+  build_ios:
+    defaults:
+      run:
+        working-directory: example
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+          architecture: x64
+      - run: flutter pub get
+      - run: flutter test
+      - run: flutter build ios --release --no-codesign --verbose
+
+  build_linux:
+    defaults:
+      run:
+        working-directory: example
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ninja-build libgtk-3-dev
+      - run: flutter config --enable-linux-desktop
+      - run: flutter build linux --verbose
+
+  build_macos:
+    defaults:
+      run:
+        working-directory: example
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+          architecture: x64
+      - run: flutter config --enable-macos-desktop
+      - run: flutter build macos --verbose
+
+  build_web:
+    defaults:
+      run:
+        working-directory: example
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter pub get
+      - run: flutter build web --verbose
+
+  build_windows:
+    defaults:
+      run:
+        working-directory: example
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter config --enable-windows-desktop
+      - run: flutter build windows --verbose

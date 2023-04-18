@@ -1,0 +1,33 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# melos_managed_dependency_overrides: example_ui
+dependency_overrides:
+  example_ui:
+    path: ../example_ui
+
+
+
+
+

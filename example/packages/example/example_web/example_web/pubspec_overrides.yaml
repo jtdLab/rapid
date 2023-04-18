@@ -1,0 +1,82 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# melos_managed_dependency_overrides: example_di,example_domain,example_infrastructure,example_logging,example_ui,example_ui_web,example_web_app,example_web_home_page,example_web_navigation
+dependency_overrides:
+  example_di:
+    path: ../../example_di
+  example_domain:
+    path: ../../example_domain/example_domain
+  example_infrastructure:
+    path: ../../example_infrastructure/example_infrastructure
+  example_logging:
+    path: ../../example_logging
+  example_ui:
+    path: ../../../example_ui/example_ui
+  example_ui_web:
+    path: ../../../example_ui/example_ui_web
+  example_web_app:
+    path: ../example_web_features/example_web_app
+  example_web_home_page:
+    path: ../example_web_features/example_web_home_page
+  example_web_navigation:
+    path: ../example_web_navigation
+
+

@@ -6,6 +6,9 @@ on:
       - "dev"
     paths:
       - "example/**"
+  workflow_dispatch:
+    branches:
+      - "dev"
 
 jobs:
   build_android:

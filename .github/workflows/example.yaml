@@ -26,9 +26,8 @@ jobs:
         with:
           cache: true
       - run: flutter pub get
-      - run: flutter test
-      - run: flutter build apk -t lib/main_development --release --verbose
-      - run: flutter build appbundle -t lib/main_development --release --verbose
+      - run: flutter build apk -t lib/main_development.dart --release --verbose
+      - run: flutter build appbundle -t lib/main_development.dart --release --verbose
 
   build_ios:
     defaults:
@@ -43,7 +42,7 @@ jobs:
           architecture: x64
       - run: flutter pub get
       - run: flutter test
-      - run: flutter build ios -t lib/main_development --release --no-codesign --verbose
+      - run: flutter build ios -t lib/main_development.dart --release --no-codesign --verbose
 
   build_linux:
     defaults:
@@ -59,7 +58,7 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y ninja-build libgtk-3-dev
       - run: flutter config --enable-linux-desktop
-      - run: flutter build linux -t lib/main_development --release --verbose
+      - run: flutter build linux -t lib/main_development.dart --release --verbose
 
   build_macos:
     defaults:
@@ -73,7 +72,7 @@ jobs:
           cache: true
           architecture: x64
       - run: flutter config --enable-macos-desktop
-      - run: flutter build macos -t lib/main_development --release --verbose
+      - run: flutter build macos -t lib/main_development.dart --release --verbose
 
   build_web:
     defaults:
@@ -86,7 +85,7 @@ jobs:
         with:
           cache: true
       - run: flutter pub get
-      - run: flutter build web -t lib/main_development --verbose
+      - run: flutter build web -t lib/main_development.dart --verbose
 
   build_windows:
     defaults:
@@ -99,4 +98,4 @@ jobs:
         with:
           cache: true
       - run: flutter config --enable-windows-desktop
-      - run: flutter build windows -t lib/main_development --release --verbose
+      - run: flutter build windows -t lib/main_development.dart --release --verbose

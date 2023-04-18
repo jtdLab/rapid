@@ -90,6 +90,7 @@ jobs:
         working-directory: example/packages/example/example_windows/example_windows
     runs-on: windows-latest
     steps:
+      - run: git config --global core.longpaths true
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
         with:

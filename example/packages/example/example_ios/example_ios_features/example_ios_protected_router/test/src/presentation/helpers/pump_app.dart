@@ -16,7 +16,7 @@ extension WidgetTesterX on WidgetTester {
       App.test(
         locale: locale ?? const Locale('en'),
         localizationsDelegate: ExampleIosProtectedRouterLocalizations.delegate,
-        router: router ?? ProtectedRouterRouter(),
+        router: router ?? ProtectedRouter(),
         initialRoutes: initialRoutes,
         routerObserver: observer,
         brightness: brightness,

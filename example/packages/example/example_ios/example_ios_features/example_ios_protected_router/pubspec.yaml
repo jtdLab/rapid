@@ -23,6 +23,7 @@ dependencies:
   example_domain:
   example_ui_ios:
   example_ios_navigation:
+  example_ios_home_page:
 
 dev_dependencies:
   flutter_test:

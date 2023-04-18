@@ -11,6 +11,7 @@ dependencies:
   freezed_annotation: ^2.2.0
   json_annotation: ^4.8.0
   injectable: ^2.1.1
+  rxdart: ^0.27.7
   example_logging:
   example_domain:
 

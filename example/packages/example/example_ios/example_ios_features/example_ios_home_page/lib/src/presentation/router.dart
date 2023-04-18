@@ -9,7 +9,6 @@ import 'router.gr.dart';
 class HomePageRouter extends $HomePageRouter {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: HomeRoute.page, path: '/'),
-        // TODO setup the routes of this feature here
+        AutoRoute(page: HomeRoute.page, path: ''),
       ];
 }

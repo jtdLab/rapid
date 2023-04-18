@@ -12,8 +12,8 @@ abstract class IAuthService {
   bool isAuthenticated();
 
   /// Log in with [username] and [password].
-  Future<Either<AuthServiceLoginInWithUsernameAndPasswordFailure, Unit>>
-      loginInWithUsernameAndPassword({
+  Future<Either<AuthServiceLoginWithUsernameAndPasswordFailure, Unit>>
+      loginWithUsernameAndPassword({
     required Username username,
     required Password password,
   });
@@ -32,12 +32,12 @@ abstract class IAuthService {
 
 /// Failure union that belongs to [IAuthService.loginInWithUsernameAndPassword].
 @freezed
-class AuthServiceLoginInWithUsernameAndPasswordFailure
-    with _$AuthServiceLoginInWithUsernameAndPasswordFailure {
-  const factory AuthServiceLoginInWithUsernameAndPasswordFailure.serverError() =
-      _AuthServiceLoginInWithUsernameAndPasswordServerError;
-  const factory AuthServiceLoginInWithUsernameAndPasswordFailure.invalidUsernameAndPasswordCombination() =
-      _AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination;
+class AuthServiceLoginWithUsernameAndPasswordFailure
+    with _$AuthServiceLoginWithUsernameAndPasswordFailure {
+  const factory AuthServiceLoginWithUsernameAndPasswordFailure.serverError() =
+      _AuthServiceLoginWithUsernameAndPasswordServerError;
+  const factory AuthServiceLoginWithUsernameAndPasswordFailure.invalidUsernameAndPasswordCombination() =
+      _AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination;
 }
 
 /// Failure union that belongs to [IAuthService.signOut].

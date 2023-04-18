@@ -15,7 +15,7 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$AuthServiceLoginInWithUsernameAndPasswordFailure {
+mixin _$AuthServiceLoginWithUsernameAndPasswordFailure {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() serverError,
@@ -38,10 +38,10 @@ mixin _$AuthServiceLoginInWithUsernameAndPasswordFailure {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(
-            _AuthServiceLoginInWithUsernameAndPasswordServerError value)
+            _AuthServiceLoginWithUsernameAndPasswordServerError value)
         serverError,
     required TResult Function(
-            _AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
+            _AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
                 value)
         invalidUsernameAndPasswordCombination,
   }) =>
@@ -49,21 +49,20 @@ mixin _$AuthServiceLoginInWithUsernameAndPasswordFailure {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(
-            _AuthServiceLoginInWithUsernameAndPasswordServerError value)?
+            _AuthServiceLoginWithUsernameAndPasswordServerError value)?
         serverError,
     TResult? Function(
-            _AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
+            _AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
                 value)?
         invalidUsernameAndPasswordCombination,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(
-            _AuthServiceLoginInWithUsernameAndPasswordServerError value)?
+    TResult Function(_AuthServiceLoginWithUsernameAndPasswordServerError value)?
         serverError,
     TResult Function(
-            _AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
+            _AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
                 value)?
         invalidUsernameAndPasswordCombination,
     required TResult orElse(),
@@ -72,20 +71,19 @@ mixin _$AuthServiceLoginInWithUsernameAndPasswordFailure {
 }
 
 /// @nodoc
-abstract class $AuthServiceLoginInWithUsernameAndPasswordFailureCopyWith<$Res> {
-  factory $AuthServiceLoginInWithUsernameAndPasswordFailureCopyWith(
-          AuthServiceLoginInWithUsernameAndPasswordFailure value,
-          $Res Function(AuthServiceLoginInWithUsernameAndPasswordFailure)
-              then) =
-      _$AuthServiceLoginInWithUsernameAndPasswordFailureCopyWithImpl<$Res,
-          AuthServiceLoginInWithUsernameAndPasswordFailure>;
+abstract class $AuthServiceLoginWithUsernameAndPasswordFailureCopyWith<$Res> {
+  factory $AuthServiceLoginWithUsernameAndPasswordFailureCopyWith(
+          AuthServiceLoginWithUsernameAndPasswordFailure value,
+          $Res Function(AuthServiceLoginWithUsernameAndPasswordFailure) then) =
+      _$AuthServiceLoginWithUsernameAndPasswordFailureCopyWithImpl<$Res,
+          AuthServiceLoginWithUsernameAndPasswordFailure>;
 }
 
 /// @nodoc
-class _$AuthServiceLoginInWithUsernameAndPasswordFailureCopyWithImpl<$Res,
-        $Val extends AuthServiceLoginInWithUsernameAndPasswordFailure>
-    implements $AuthServiceLoginInWithUsernameAndPasswordFailureCopyWith<$Res> {
-  _$AuthServiceLoginInWithUsernameAndPasswordFailureCopyWithImpl(
+class _$AuthServiceLoginWithUsernameAndPasswordFailureCopyWithImpl<$Res,
+        $Val extends AuthServiceLoginWithUsernameAndPasswordFailure>
+    implements $AuthServiceLoginWithUsernameAndPasswordFailureCopyWith<$Res> {
+  _$AuthServiceLoginWithUsernameAndPasswordFailureCopyWithImpl(
       this._value, this._then);
 
   // ignore: unused_field
@@ -95,46 +93,44 @@ class _$AuthServiceLoginInWithUsernameAndPasswordFailureCopyWithImpl<$Res,
 }
 
 /// @nodoc
-abstract class _$$_AuthServiceLoginInWithUsernameAndPasswordServerErrorCopyWith<
+abstract class _$$_AuthServiceLoginWithUsernameAndPasswordServerErrorCopyWith<
     $Res> {
-  factory _$$_AuthServiceLoginInWithUsernameAndPasswordServerErrorCopyWith(
-          _$_AuthServiceLoginInWithUsernameAndPasswordServerError value,
-          $Res Function(_$_AuthServiceLoginInWithUsernameAndPasswordServerError)
+  factory _$$_AuthServiceLoginWithUsernameAndPasswordServerErrorCopyWith(
+          _$_AuthServiceLoginWithUsernameAndPasswordServerError value,
+          $Res Function(_$_AuthServiceLoginWithUsernameAndPasswordServerError)
               then) =
-      __$$_AuthServiceLoginInWithUsernameAndPasswordServerErrorCopyWithImpl<
-          $Res>;
+      __$$_AuthServiceLoginWithUsernameAndPasswordServerErrorCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$_AuthServiceLoginInWithUsernameAndPasswordServerErrorCopyWithImpl<
-        $Res>
-    extends _$AuthServiceLoginInWithUsernameAndPasswordFailureCopyWithImpl<$Res,
-        _$_AuthServiceLoginInWithUsernameAndPasswordServerError>
+class __$$_AuthServiceLoginWithUsernameAndPasswordServerErrorCopyWithImpl<$Res>
+    extends _$AuthServiceLoginWithUsernameAndPasswordFailureCopyWithImpl<$Res,
+        _$_AuthServiceLoginWithUsernameAndPasswordServerError>
     implements
-        _$$_AuthServiceLoginInWithUsernameAndPasswordServerErrorCopyWith<$Res> {
-  __$$_AuthServiceLoginInWithUsernameAndPasswordServerErrorCopyWithImpl(
-      _$_AuthServiceLoginInWithUsernameAndPasswordServerError _value,
-      $Res Function(_$_AuthServiceLoginInWithUsernameAndPasswordServerError)
+        _$$_AuthServiceLoginWithUsernameAndPasswordServerErrorCopyWith<$Res> {
+  __$$_AuthServiceLoginWithUsernameAndPasswordServerErrorCopyWithImpl(
+      _$_AuthServiceLoginWithUsernameAndPasswordServerError _value,
+      $Res Function(_$_AuthServiceLoginWithUsernameAndPasswordServerError)
           _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$_AuthServiceLoginInWithUsernameAndPasswordServerError
-    implements _AuthServiceLoginInWithUsernameAndPasswordServerError {
-  const _$_AuthServiceLoginInWithUsernameAndPasswordServerError();
+class _$_AuthServiceLoginWithUsernameAndPasswordServerError
+    implements _AuthServiceLoginWithUsernameAndPasswordServerError {
+  const _$_AuthServiceLoginWithUsernameAndPasswordServerError();
 
   @override
   String toString() {
-    return 'AuthServiceLoginInWithUsernameAndPasswordFailure.serverError()';
+    return 'AuthServiceLoginWithUsernameAndPasswordFailure.serverError()';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_AuthServiceLoginInWithUsernameAndPasswordServerError);
+            other is _$_AuthServiceLoginWithUsernameAndPasswordServerError);
   }
 
   @override
@@ -175,10 +171,10 @@ class _$_AuthServiceLoginInWithUsernameAndPasswordServerError
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(
-            _AuthServiceLoginInWithUsernameAndPasswordServerError value)
+            _AuthServiceLoginWithUsernameAndPasswordServerError value)
         serverError,
     required TResult Function(
-            _AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
+            _AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
                 value)
         invalidUsernameAndPasswordCombination,
   }) {
@@ -189,10 +185,10 @@ class _$_AuthServiceLoginInWithUsernameAndPasswordServerError
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(
-            _AuthServiceLoginInWithUsernameAndPasswordServerError value)?
+            _AuthServiceLoginWithUsernameAndPasswordServerError value)?
         serverError,
     TResult? Function(
-            _AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
+            _AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
                 value)?
         invalidUsernameAndPasswordCombination,
   }) {
@@ -202,11 +198,10 @@ class _$_AuthServiceLoginInWithUsernameAndPasswordServerError
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(
-            _AuthServiceLoginInWithUsernameAndPasswordServerError value)?
+    TResult Function(_AuthServiceLoginWithUsernameAndPasswordServerError value)?
         serverError,
     TResult Function(
-            _AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
+            _AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
                 value)?
         invalidUsernameAndPasswordCombination,
     required TResult orElse(),
@@ -218,52 +213,52 @@ class _$_AuthServiceLoginInWithUsernameAndPasswordServerError
   }
 }
 
-abstract class _AuthServiceLoginInWithUsernameAndPasswordServerError
-    implements AuthServiceLoginInWithUsernameAndPasswordFailure {
-  const factory _AuthServiceLoginInWithUsernameAndPasswordServerError() =
-      _$_AuthServiceLoginInWithUsernameAndPasswordServerError;
+abstract class _AuthServiceLoginWithUsernameAndPasswordServerError
+    implements AuthServiceLoginWithUsernameAndPasswordFailure {
+  const factory _AuthServiceLoginWithUsernameAndPasswordServerError() =
+      _$_AuthServiceLoginWithUsernameAndPasswordServerError;
 }
 
 /// @nodoc
-abstract class _$$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombinationCopyWith<
+abstract class _$$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombinationCopyWith<
     $Res> {
-  factory _$$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombinationCopyWith(
-          _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
+  factory _$$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombinationCopyWith(
+          _$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
               value,
           $Res Function(
-                  _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination)
+                  _$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination)
               then) =
-      __$$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombinationCopyWithImpl<
+      __$$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombinationCopyWithImpl<
           $Res>;
 }
 
 /// @nodoc
-class __$$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombinationCopyWithImpl<
+class __$$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombinationCopyWithImpl<
         $Res>
-    extends _$AuthServiceLoginInWithUsernameAndPasswordFailureCopyWithImpl<$Res,
-        _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination>
+    extends _$AuthServiceLoginWithUsernameAndPasswordFailureCopyWithImpl<$Res,
+        _$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination>
     implements
-        _$$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombinationCopyWith<
+        _$$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombinationCopyWith<
             $Res> {
-  __$$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombinationCopyWithImpl(
-      _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
+  __$$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombinationCopyWithImpl(
+      _$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
           _value,
       $Res Function(
-              _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination)
+              _$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination)
           _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
+class _$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
     implements
-        _AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination {
-  const _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination();
+        _AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination {
+  const _$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination();
 
   @override
   String toString() {
-    return 'AuthServiceLoginInWithUsernameAndPasswordFailure.invalidUsernameAndPasswordCombination()';
+    return 'AuthServiceLoginWithUsernameAndPasswordFailure.invalidUsernameAndPasswordCombination()';
   }
 
   @override
@@ -271,7 +266,7 @@ class _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordComb
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other
-                is _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination);
+                is _$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination);
   }
 
   @override
@@ -312,10 +307,10 @@ class _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordComb
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(
-            _AuthServiceLoginInWithUsernameAndPasswordServerError value)
+            _AuthServiceLoginWithUsernameAndPasswordServerError value)
         serverError,
     required TResult Function(
-            _AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
+            _AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
                 value)
         invalidUsernameAndPasswordCombination,
   }) {
@@ -326,10 +321,10 @@ class _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordComb
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(
-            _AuthServiceLoginInWithUsernameAndPasswordServerError value)?
+            _AuthServiceLoginWithUsernameAndPasswordServerError value)?
         serverError,
     TResult? Function(
-            _AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
+            _AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
                 value)?
         invalidUsernameAndPasswordCombination,
   }) {
@@ -339,11 +334,10 @@ class _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordComb
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(
-            _AuthServiceLoginInWithUsernameAndPasswordServerError value)?
+    TResult Function(_AuthServiceLoginWithUsernameAndPasswordServerError value)?
         serverError,
     TResult Function(
-            _AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
+            _AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
                 value)?
         invalidUsernameAndPasswordCombination,
     required TResult orElse(),
@@ -355,10 +349,10 @@ class _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordComb
   }
 }
 
-abstract class _AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
-    implements AuthServiceLoginInWithUsernameAndPasswordFailure {
-  const factory _AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination() =
-      _$_AuthServiceLoginInWithUsernameAndPasswordInvalidUsernameAndPasswordCombination;
+abstract class _AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination
+    implements AuthServiceLoginWithUsernameAndPasswordFailure {
+  const factory _AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination() =
+      _$_AuthServiceLoginWithUsernameAndPasswordInvalidUsernameAndPasswordCombination;
 }
 
 /// @nodoc

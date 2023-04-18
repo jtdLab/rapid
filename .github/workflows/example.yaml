@@ -1,12 +1,12 @@
 name: example
 
 on:
-  push:
-    paths:
-      - example/**
   workflow_dispatch:
     branches:
       - "dev"
+  push:
+    paths:
+      - example/**
 
 jobs:
   build_android:
@@ -87,11 +87,11 @@ jobs:
   build_windows:
     defaults:
       run:
-        working-directory: example/packages/example/example_windows/example_windows
+        working-directory: example\packages\example\example_windows\example_windows
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
       - run: git config --global core.longpaths true
+      - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
         with:
           cache: true

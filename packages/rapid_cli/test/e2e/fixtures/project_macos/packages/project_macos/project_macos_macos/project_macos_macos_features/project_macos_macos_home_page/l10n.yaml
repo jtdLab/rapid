@@ -1,0 +1,8 @@
+arb-dir: lib/src/presentation/l10n/arb
+output-class: ProjectMacosMacosHomePageLocalizations
+output-dir: lib/src/presentation/l10n
+template-arb-file: home_page_en.arb
+output-localization-file: project_macos_macos_home_page_localizations.dart
+nullable-getter: false
+synthetic-package: false
+header: // coverage:ignore-file

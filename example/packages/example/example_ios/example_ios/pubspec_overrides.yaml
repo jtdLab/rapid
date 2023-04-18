@@ -22,7 +22,7 @@
 
 
 
-# melos_managed_dependency_overrides: example_di,example_domain,example_infrastructure,example_ios_app,example_ios_home_page,example_ios_navigation,example_logging,example_ui,example_ui_ios,example_ios_login_page,example_ios_sign_up_page,example_ios_protected_router
+# melos_managed_dependency_overrides: example_di,example_domain,example_infrastructure,example_ios_app,example_ios_home_page,example_ios_navigation,example_logging,example_ui,example_ui_ios,example_ios_login_page,example_ios_sign_up_page,example_ios_protected_router,example_ios_public_router
 dependency_overrides:
   example_di:
     path: ../../example_di
@@ -40,6 +40,8 @@ dependency_overrides:
     path: ../example_ios_navigation
   example_ios_protected_router:
     path: ../example_ios_features/example_ios_protected_router
+  example_ios_public_router:
+    path: ../example_ios_features/example_ios_public_router
   example_ios_sign_up_page:
     path: ../example_ios_features/example_ios_sign_up_page
   example_logging:

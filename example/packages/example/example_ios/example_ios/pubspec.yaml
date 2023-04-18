@@ -43,6 +43,7 @@ dependencies:
   example_ios_login_page:
   example_ios_sign_up_page:
   example_ios_protected_router:
+  example_ios_public_router:
 
 dev_dependencies:
   flutter_test:

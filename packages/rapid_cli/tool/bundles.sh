@@ -25,6 +25,7 @@ packages=(
     "faker=^2.1.0"
     "fluent_ui=^4.5.0"
     "flutter_bloc=^8.1.2"
+    "flutter_gen_runner=^5.3.0"
     "flutter_lints=^2.0.1"
     "freezed_annotation=^2.2.0"
     "freezed=^2.3.2"

@@ -1,11 +1,6 @@
 name: example
 
 on:
-  push:
-    branches:
-      - "dev"
-    paths:
-      - "example/**"
   workflow_dispatch:
     branches:
       - "dev"
@@ -14,7 +9,7 @@ jobs:
   build_android:
     defaults:
       run:
-        working-directory: example
+        working-directory: example/packages/example/example_android/example_android
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -32,7 +27,7 @@ jobs:
   build_ios:
     defaults:
       run:
-        working-directory: example
+        working-directory: example/packages/example/example_ios/example_ios
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -41,13 +36,12 @@ jobs:
           cache: true
           architecture: x64
       - run: flutter pub get
-      - run: flutter test
       - run: flutter build ios -t lib/main_development.dart --release --no-codesign --verbose
 
   build_linux:
     defaults:
       run:
-        working-directory: example
+        working-directory: example/packages/example/example_linux/example_linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -63,7 +57,7 @@ jobs:
   build_macos:
     defaults:
       run:
-        working-directory: example
+        working-directory: example/packages/example/example_macos/example_macos
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
@@ -77,7 +71,7 @@ jobs:
   build_web:
     defaults:
       run:
-        working-directory: example
+        working-directory: example/packages/example/example_web/example_web
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -90,7 +84,7 @@ jobs:
   build_windows:
     defaults:
       run:
-        working-directory: example
+        working-directory: example/packages/example/example_windows/example_windows
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v3

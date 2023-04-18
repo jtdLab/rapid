@@ -9,6 +9,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final title = context.l10n.title;
+    
 
     return ExampleScaffold(
       body: Center(

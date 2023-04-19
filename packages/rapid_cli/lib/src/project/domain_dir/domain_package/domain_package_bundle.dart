@@ -8,7 +8,7 @@ final domainPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": ".gitignore",
       "data":
-          "IyBGaWxlcyBhbmQgZGlyZWN0b3JpZXMgY3JlYXRlZCBieSBwdWIuCi5kYXJ0X3Rvb2wvCi5wYWNrYWdlcwoKIyBDb252ZW50aW9uYWwgZGlyZWN0b3J5IGZvciBidWlsZCBvdXRwdXRzLgpidWlsZC8KCiMgT21pdCBjb21taXR0aW5nIHB1YnNwZWMubG9jayBmb3IgbGlicmFyeSBwYWNrYWdlczsgc2VlCiMgaHR0cHM6Ly9kYXJ0LmRldi9ndWlkZXMvbGlicmFyaWVzL3ByaXZhdGUtZmlsZXMjcHVic3BlY2xvY2suCnB1YnNwZWMubG9jawo=",
+          "IyBGaWxlcyBhbmQgZGlyZWN0b3JpZXMgY3JlYXRlZCBieSBwdWIuCi5kYXJ0X3Rvb2wvCi5wYWNrYWdlcwoKIyBDb252ZW50aW9uYWwgZGlyZWN0b3J5IGZvciBidWlsZCBvdXRwdXRzLgpidWlsZC8KCiMgT21pdCBjb21taXR0aW5nIHB1YnNwZWMubG9jayBmb3IgbGlicmFyeSBwYWNrYWdlczsgc2VlCiMgaHR0cHM6Ly9kYXJ0LmRldi9ndWlkZXMvbGlicmFyaWVzL3ByaXZhdGUtZmlsZXMjcHVic3BlY2xvY2suCnB1YnNwZWMubG9jawoKIyBDb252ZW50aW9uYWwgZGlyZWN0b3J5IGZvciBjb3ZlcmFnZSBvdXRwdXRzLgovY292ZXJhZ2UK",
       "type": "text"
     },
     {

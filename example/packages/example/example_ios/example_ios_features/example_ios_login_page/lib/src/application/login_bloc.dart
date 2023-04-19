@@ -57,37 +57,26 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async {
     await state.mapOrNull(
       initial: (initial) async {
-        await _login(
-          () => _authService.loginWithUsernameAndPassword(
-            username: initial.username,
-            password: initial.password,
-          ),
-          emit: emit,
-        );
-      },
-    );
-  }
+        await state.mapOrNull(
+          initial: (initial) async {
+            emit(const LoginState.loadInProgress());
 
-  /// Awaits [loginFuture] and then emits [LoginLoadFailure] if login failed.
-  Future<void> _login<T>(
-    Future<Either<T, Unit>> Function() loginFuture, {
-    required Emitter<LoginState> emit,
-  }) async {
-    await state.mapOrNull(
-      initial: (initial) async {
-        emit(const LoginState.loadInProgress());
+            // this adds some min. loading
+            await Future.delayed(const Duration(milliseconds: 500));
 
-        // this adds some minimal loading
-        await Future.delayed(const Duration(milliseconds: 500));
-
-        final loginResult = await loginFuture();
-        loginResult.fold(
-          (failure) {
-            emit(LoginState<T>.loadFailure(failure: failure));
-            emit(initial);
-          },
-          (_) {
-            emit(const LoginState.loadSuccess());
+            final loginResult = await _authService.loginWithUsernameAndPassword(
+              username: initial.username,
+              password: initial.password,
+            );
+            loginResult.fold(
+              (failure) {
+                emit(LoginState.loadFailure(failure: failure));
+                emit(initial);
+              },
+              (_) {
+                emit(const LoginState.loadSuccess());
+              },
+            );
           },
         );
       },

@@ -20,18 +20,19 @@ mixin ExampleToastMixin<T extends StatefulWidget> on State<T> {
     double fontSize = 16,
   }) {
     _fToast.showToast(
-      child: _ExampleToast(msg: msg, fontSize: fontSize),
+      child: ExampleToast(msg: msg, fontSize: fontSize),
       gravity: ToastGravity.BOTTOM,
       toastDuration: const Duration(seconds: 2),
     );
   }
 }
 
-class _ExampleToast extends StatelessWidget {
+class ExampleToast extends StatelessWidget {
   final String msg;
   final double fontSize;
 
-  const _ExampleToast({
+  const ExampleToast({
+    super.key,
     required this.msg,
     required this.fontSize,
   });

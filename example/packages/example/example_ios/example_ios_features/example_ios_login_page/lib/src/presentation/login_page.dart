@@ -7,55 +7,52 @@ import 'package:example_ui_ios/example_ui_ios.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
-class LoginPage extends StatefulWidget {
+class LoginPage extends StatefulWidget implements AutoRouteWrapper {
   const LoginPage({super.key});
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider(
+      create: (context) => getIt<LoginBloc>(),
+      child: this,
+    );
+  }
 
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
+// TODO: consider using https://pub.dev/packages/flutter_hooks
 class _LoginPageState extends State<LoginPage> with ExampleToastMixin {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<LoginBloc>(),
-      child: MultiBlocListener(
-        listeners: [
-          BlocListener<LoginBloc, LoginState>(
-            listenWhen: (_, current) =>
-                current is LoginLoadSuccess || current is LoginLoadFailure,
-            listener: (context, state) => state.mapOrNull(
-              loadSuccess: (failure) => _onAuthenticated(context),
-              loadFailure: (failure) => _onLoadFailure(context, failure),
-            ),
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<LoginBloc, LoginState>(
+          listenWhen: (_, current) =>
+              current is LoginLoadSuccess || current is LoginLoadFailure,
+          listener: (context, state) => state.mapOrNull(
+            loadSuccess: (_) => _onLoadSuccess(context),
+            loadFailure: (state) => _onLoadFailure(context, state),
           ),
-        ],
-        child: const LoginView(),
-      ),
+        ),
+      ],
+      child: const LoginView(),
     );
   }
 
-  void _onAuthenticated(BuildContext context) {
+  void _onLoadSuccess(BuildContext context) {
     getIt<IProtectedRouterNavigator>().replace(context);
   }
 
-  void _onLoadFailure(BuildContext context, LoginLoadFailure failure) {
-    // TODO switch error cases
-    showToast('An error occured');
-
-    /*  failure.failure.maybeWhen(
-      // TODO show server error feels not perfect
-      serverError: () => context.showToast(
-        context.l10n.errorServer.toUpperCase(),
+  void _onLoadFailure(BuildContext context, LoginLoadFailure state) {
+    final failure = state.failure;
+    failure.when(
+      serverError: () => showToast(context.l10n.errorServer),
+      invalidUsernameAndPasswordCombination: () => showToast(
+        context.l10n.errorInvalidUsernameAndPasswordCombination,
       ),
-      invalidEmailAndPasswordCombination: () => context.showToast(
-        context.l10n.errorInvalidEmailAndPasswordCombination.toUpperCase(),
-      ),
-      // TODO display other errors better
-      orElse: () => context.showToast(
-        context.l10n.errorUnexpected.toUpperCase(),
-      ),
-    ); */
+    );
   }
 }
 

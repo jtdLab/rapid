@@ -27,4 +27,11 @@ class ExampleIosLoginPageLocalizationsEn
 
   @override
   String get dontHaveAnAccount => 'Don\'t have an account?';
+
+  @override
+  String get errorServer => 'Server error. Try again later.';
+
+  @override
+  String get errorInvalidUsernameAndPasswordCombination =>
+      'Invalid username or password.';
 }

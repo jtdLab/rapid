@@ -471,13 +471,15 @@ abstract class _LoginPressed implements LoginEvent {
 }
 
 /// @nodoc
-mixin _$LoginState<T> {
+mixin _$LoginState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(Username username, Password password) initial,
     required TResult Function() loadInProgress,
     required TResult Function() loadSuccess,
-    required TResult Function(T failure) loadFailure,
+    required TResult Function(
+            AuthServiceLoginWithUsernameAndPasswordFailure failure)
+        loadFailure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -485,7 +487,8 @@ mixin _$LoginState<T> {
     TResult? Function(Username username, Password password)? initial,
     TResult? Function()? loadInProgress,
     TResult? Function()? loadSuccess,
-    TResult? Function(T failure)? loadFailure,
+    TResult? Function(AuthServiceLoginWithUsernameAndPasswordFailure failure)?
+        loadFailure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -493,47 +496,48 @@ mixin _$LoginState<T> {
     TResult Function(Username username, Password password)? initial,
     TResult Function()? loadInProgress,
     TResult Function()? loadSuccess,
-    TResult Function(T failure)? loadFailure,
+    TResult Function(AuthServiceLoginWithUsernameAndPasswordFailure failure)?
+        loadFailure,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(LoginInitial<T> value) initial,
-    required TResult Function(LoginLoadInProgress<T> value) loadInProgress,
-    required TResult Function(LoginLoadSuccess<T> value) loadSuccess,
-    required TResult Function(LoginLoadFailure<T> value) loadFailure,
+    required TResult Function(LoginInitial value) initial,
+    required TResult Function(LoginLoadInProgress value) loadInProgress,
+    required TResult Function(LoginLoadSuccess value) loadSuccess,
+    required TResult Function(LoginLoadFailure value) loadFailure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(LoginInitial<T> value)? initial,
-    TResult? Function(LoginLoadInProgress<T> value)? loadInProgress,
-    TResult? Function(LoginLoadSuccess<T> value)? loadSuccess,
-    TResult? Function(LoginLoadFailure<T> value)? loadFailure,
+    TResult? Function(LoginInitial value)? initial,
+    TResult? Function(LoginLoadInProgress value)? loadInProgress,
+    TResult? Function(LoginLoadSuccess value)? loadSuccess,
+    TResult? Function(LoginLoadFailure value)? loadFailure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(LoginInitial<T> value)? initial,
-    TResult Function(LoginLoadInProgress<T> value)? loadInProgress,
-    TResult Function(LoginLoadSuccess<T> value)? loadSuccess,
-    TResult Function(LoginLoadFailure<T> value)? loadFailure,
+    TResult Function(LoginInitial value)? initial,
+    TResult Function(LoginLoadInProgress value)? loadInProgress,
+    TResult Function(LoginLoadSuccess value)? loadSuccess,
+    TResult Function(LoginLoadFailure value)? loadFailure,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $LoginStateCopyWith<T, $Res> {
+abstract class $LoginStateCopyWith<$Res> {
   factory $LoginStateCopyWith(
-          LoginState<T> value, $Res Function(LoginState<T>) then) =
-      _$LoginStateCopyWithImpl<T, $Res, LoginState<T>>;
+          LoginState value, $Res Function(LoginState) then) =
+      _$LoginStateCopyWithImpl<$Res, LoginState>;
 }
 
 /// @nodoc
-class _$LoginStateCopyWithImpl<T, $Res, $Val extends LoginState<T>>
-    implements $LoginStateCopyWith<T, $Res> {
+class _$LoginStateCopyWithImpl<$Res, $Val extends LoginState>
+    implements $LoginStateCopyWith<$Res> {
   _$LoginStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
@@ -543,20 +547,20 @@ class _$LoginStateCopyWithImpl<T, $Res, $Val extends LoginState<T>>
 }
 
 /// @nodoc
-abstract class _$$LoginInitialCopyWith<T, $Res> {
+abstract class _$$LoginInitialCopyWith<$Res> {
   factory _$$LoginInitialCopyWith(
-          _$LoginInitial<T> value, $Res Function(_$LoginInitial<T>) then) =
-      __$$LoginInitialCopyWithImpl<T, $Res>;
+          _$LoginInitial value, $Res Function(_$LoginInitial) then) =
+      __$$LoginInitialCopyWithImpl<$Res>;
   @useResult
   $Res call({Username username, Password password});
 }
 
 /// @nodoc
-class __$$LoginInitialCopyWithImpl<T, $Res>
-    extends _$LoginStateCopyWithImpl<T, $Res, _$LoginInitial<T>>
-    implements _$$LoginInitialCopyWith<T, $Res> {
+class __$$LoginInitialCopyWithImpl<$Res>
+    extends _$LoginStateCopyWithImpl<$Res, _$LoginInitial>
+    implements _$$LoginInitialCopyWith<$Res> {
   __$$LoginInitialCopyWithImpl(
-      _$LoginInitial<T> _value, $Res Function(_$LoginInitial<T>) _then)
+      _$LoginInitial _value, $Res Function(_$LoginInitial) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
@@ -565,7 +569,7 @@ class __$$LoginInitialCopyWithImpl<T, $Res>
     Object? username = null,
     Object? password = null,
   }) {
-    return _then(_$LoginInitial<T>(
+    return _then(_$LoginInitial(
       username: null == username
           ? _value.username
           : username // ignore: cast_nullable_to_non_nullable
@@ -580,7 +584,7 @@ class __$$LoginInitialCopyWithImpl<T, $Res>
 
 /// @nodoc
 
-class _$LoginInitial<T> implements LoginInitial<T> {
+class _$LoginInitial implements LoginInitial {
   const _$LoginInitial({required this.username, required this.password});
 
   @override
@@ -590,14 +594,14 @@ class _$LoginInitial<T> implements LoginInitial<T> {
 
   @override
   String toString() {
-    return 'LoginState<$T>.initial(username: $username, password: $password)';
+    return 'LoginState.initial(username: $username, password: $password)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LoginInitial<T> &&
+            other is _$LoginInitial &&
             (identical(other.username, username) ||
                 other.username == username) &&
             (identical(other.password, password) ||
@@ -610,8 +614,8 @@ class _$LoginInitial<T> implements LoginInitial<T> {
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$LoginInitialCopyWith<T, _$LoginInitial<T>> get copyWith =>
-      __$$LoginInitialCopyWithImpl<T, _$LoginInitial<T>>(this, _$identity);
+  _$$LoginInitialCopyWith<_$LoginInitial> get copyWith =>
+      __$$LoginInitialCopyWithImpl<_$LoginInitial>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -619,7 +623,9 @@ class _$LoginInitial<T> implements LoginInitial<T> {
     required TResult Function(Username username, Password password) initial,
     required TResult Function() loadInProgress,
     required TResult Function() loadSuccess,
-    required TResult Function(T failure) loadFailure,
+    required TResult Function(
+            AuthServiceLoginWithUsernameAndPasswordFailure failure)
+        loadFailure,
   }) {
     return initial(username, password);
   }
@@ -630,7 +636,8 @@ class _$LoginInitial<T> implements LoginInitial<T> {
     TResult? Function(Username username, Password password)? initial,
     TResult? Function()? loadInProgress,
     TResult? Function()? loadSuccess,
-    TResult? Function(T failure)? loadFailure,
+    TResult? Function(AuthServiceLoginWithUsernameAndPasswordFailure failure)?
+        loadFailure,
   }) {
     return initial?.call(username, password);
   }
@@ -641,7 +648,8 @@ class _$LoginInitial<T> implements LoginInitial<T> {
     TResult Function(Username username, Password password)? initial,
     TResult Function()? loadInProgress,
     TResult Function()? loadSuccess,
-    TResult Function(T failure)? loadFailure,
+    TResult Function(AuthServiceLoginWithUsernameAndPasswordFailure failure)?
+        loadFailure,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -653,10 +661,10 @@ class _$LoginInitial<T> implements LoginInitial<T> {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(LoginInitial<T> value) initial,
-    required TResult Function(LoginLoadInProgress<T> value) loadInProgress,
-    required TResult Function(LoginLoadSuccess<T> value) loadSuccess,
-    required TResult Function(LoginLoadFailure<T> value) loadFailure,
+    required TResult Function(LoginInitial value) initial,
+    required TResult Function(LoginLoadInProgress value) loadInProgress,
+    required TResult Function(LoginLoadSuccess value) loadSuccess,
+    required TResult Function(LoginLoadFailure value) loadFailure,
   }) {
     return initial(this);
   }
@@ -664,10 +672,10 @@ class _$LoginInitial<T> implements LoginInitial<T> {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(LoginInitial<T> value)? initial,
-    TResult? Function(LoginLoadInProgress<T> value)? loadInProgress,
-    TResult? Function(LoginLoadSuccess<T> value)? loadSuccess,
-    TResult? Function(LoginLoadFailure<T> value)? loadFailure,
+    TResult? Function(LoginInitial value)? initial,
+    TResult? Function(LoginLoadInProgress value)? loadInProgress,
+    TResult? Function(LoginLoadSuccess value)? loadSuccess,
+    TResult? Function(LoginLoadFailure value)? loadFailure,
   }) {
     return initial?.call(this);
   }
@@ -675,10 +683,10 @@ class _$LoginInitial<T> implements LoginInitial<T> {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(LoginInitial<T> value)? initial,
-    TResult Function(LoginLoadInProgress<T> value)? loadInProgress,
-    TResult Function(LoginLoadSuccess<T> value)? loadSuccess,
-    TResult Function(LoginLoadFailure<T> value)? loadFailure,
+    TResult Function(LoginInitial value)? initial,
+    TResult Function(LoginLoadInProgress value)? loadInProgress,
+    TResult Function(LoginLoadSuccess value)? loadSuccess,
+    TResult Function(LoginLoadFailure value)? loadFailure,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -688,48 +696,48 @@ class _$LoginInitial<T> implements LoginInitial<T> {
   }
 }
 
-abstract class LoginInitial<T> implements LoginState<T> {
+abstract class LoginInitial implements LoginState {
   const factory LoginInitial(
       {required final Username username,
-      required final Password password}) = _$LoginInitial<T>;
+      required final Password password}) = _$LoginInitial;
 
   Username get username;
   Password get password;
   @JsonKey(ignore: true)
-  _$$LoginInitialCopyWith<T, _$LoginInitial<T>> get copyWith =>
+  _$$LoginInitialCopyWith<_$LoginInitial> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class _$$LoginLoadInProgressCopyWith<T, $Res> {
-  factory _$$LoginLoadInProgressCopyWith(_$LoginLoadInProgress<T> value,
-          $Res Function(_$LoginLoadInProgress<T>) then) =
-      __$$LoginLoadInProgressCopyWithImpl<T, $Res>;
+abstract class _$$LoginLoadInProgressCopyWith<$Res> {
+  factory _$$LoginLoadInProgressCopyWith(_$LoginLoadInProgress value,
+          $Res Function(_$LoginLoadInProgress) then) =
+      __$$LoginLoadInProgressCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$LoginLoadInProgressCopyWithImpl<T, $Res>
-    extends _$LoginStateCopyWithImpl<T, $Res, _$LoginLoadInProgress<T>>
-    implements _$$LoginLoadInProgressCopyWith<T, $Res> {
-  __$$LoginLoadInProgressCopyWithImpl(_$LoginLoadInProgress<T> _value,
-      $Res Function(_$LoginLoadInProgress<T>) _then)
+class __$$LoginLoadInProgressCopyWithImpl<$Res>
+    extends _$LoginStateCopyWithImpl<$Res, _$LoginLoadInProgress>
+    implements _$$LoginLoadInProgressCopyWith<$Res> {
+  __$$LoginLoadInProgressCopyWithImpl(
+      _$LoginLoadInProgress _value, $Res Function(_$LoginLoadInProgress) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$LoginLoadInProgress<T> implements LoginLoadInProgress<T> {
+class _$LoginLoadInProgress implements LoginLoadInProgress {
   const _$LoginLoadInProgress();
 
   @override
   String toString() {
-    return 'LoginState<$T>.loadInProgress()';
+    return 'LoginState.loadInProgress()';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LoginLoadInProgress<T>);
+        (other.runtimeType == runtimeType && other is _$LoginLoadInProgress);
   }
 
   @override
@@ -741,7 +749,9 @@ class _$LoginLoadInProgress<T> implements LoginLoadInProgress<T> {
     required TResult Function(Username username, Password password) initial,
     required TResult Function() loadInProgress,
     required TResult Function() loadSuccess,
-    required TResult Function(T failure) loadFailure,
+    required TResult Function(
+            AuthServiceLoginWithUsernameAndPasswordFailure failure)
+        loadFailure,
   }) {
     return loadInProgress();
   }
@@ -752,7 +762,8 @@ class _$LoginLoadInProgress<T> implements LoginLoadInProgress<T> {
     TResult? Function(Username username, Password password)? initial,
     TResult? Function()? loadInProgress,
     TResult? Function()? loadSuccess,
-    TResult? Function(T failure)? loadFailure,
+    TResult? Function(AuthServiceLoginWithUsernameAndPasswordFailure failure)?
+        loadFailure,
   }) {
     return loadInProgress?.call();
   }
@@ -763,7 +774,8 @@ class _$LoginLoadInProgress<T> implements LoginLoadInProgress<T> {
     TResult Function(Username username, Password password)? initial,
     TResult Function()? loadInProgress,
     TResult Function()? loadSuccess,
-    TResult Function(T failure)? loadFailure,
+    TResult Function(AuthServiceLoginWithUsernameAndPasswordFailure failure)?
+        loadFailure,
     required TResult orElse(),
   }) {
     if (loadInProgress != null) {
@@ -775,10 +787,10 @@ class _$LoginLoadInProgress<T> implements LoginLoadInProgress<T> {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(LoginInitial<T> value) initial,
-    required TResult Function(LoginLoadInProgress<T> value) loadInProgress,
-    required TResult Function(LoginLoadSuccess<T> value) loadSuccess,
-    required TResult Function(LoginLoadFailure<T> value) loadFailure,
+    required TResult Function(LoginInitial value) initial,
+    required TResult Function(LoginLoadInProgress value) loadInProgress,
+    required TResult Function(LoginLoadSuccess value) loadSuccess,
+    required TResult Function(LoginLoadFailure value) loadFailure,
   }) {
     return loadInProgress(this);
   }
@@ -786,10 +798,10 @@ class _$LoginLoadInProgress<T> implements LoginLoadInProgress<T> {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(LoginInitial<T> value)? initial,
-    TResult? Function(LoginLoadInProgress<T> value)? loadInProgress,
-    TResult? Function(LoginLoadSuccess<T> value)? loadSuccess,
-    TResult? Function(LoginLoadFailure<T> value)? loadFailure,
+    TResult? Function(LoginInitial value)? initial,
+    TResult? Function(LoginLoadInProgress value)? loadInProgress,
+    TResult? Function(LoginLoadSuccess value)? loadSuccess,
+    TResult? Function(LoginLoadFailure value)? loadFailure,
   }) {
     return loadInProgress?.call(this);
   }
@@ -797,10 +809,10 @@ class _$LoginLoadInProgress<T> implements LoginLoadInProgress<T> {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(LoginInitial<T> value)? initial,
-    TResult Function(LoginLoadInProgress<T> value)? loadInProgress,
-    TResult Function(LoginLoadSuccess<T> value)? loadSuccess,
-    TResult Function(LoginLoadFailure<T> value)? loadFailure,
+    TResult Function(LoginInitial value)? initial,
+    TResult Function(LoginLoadInProgress value)? loadInProgress,
+    TResult Function(LoginLoadSuccess value)? loadSuccess,
+    TResult Function(LoginLoadFailure value)? loadFailure,
     required TResult orElse(),
   }) {
     if (loadInProgress != null) {
@@ -810,40 +822,40 @@ class _$LoginLoadInProgress<T> implements LoginLoadInProgress<T> {
   }
 }
 
-abstract class LoginLoadInProgress<T> implements LoginState<T> {
-  const factory LoginLoadInProgress() = _$LoginLoadInProgress<T>;
+abstract class LoginLoadInProgress implements LoginState {
+  const factory LoginLoadInProgress() = _$LoginLoadInProgress;
 }
 
 /// @nodoc
-abstract class _$$LoginLoadSuccessCopyWith<T, $Res> {
-  factory _$$LoginLoadSuccessCopyWith(_$LoginLoadSuccess<T> value,
-          $Res Function(_$LoginLoadSuccess<T>) then) =
-      __$$LoginLoadSuccessCopyWithImpl<T, $Res>;
+abstract class _$$LoginLoadSuccessCopyWith<$Res> {
+  factory _$$LoginLoadSuccessCopyWith(
+          _$LoginLoadSuccess value, $Res Function(_$LoginLoadSuccess) then) =
+      __$$LoginLoadSuccessCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$LoginLoadSuccessCopyWithImpl<T, $Res>
-    extends _$LoginStateCopyWithImpl<T, $Res, _$LoginLoadSuccess<T>>
-    implements _$$LoginLoadSuccessCopyWith<T, $Res> {
+class __$$LoginLoadSuccessCopyWithImpl<$Res>
+    extends _$LoginStateCopyWithImpl<$Res, _$LoginLoadSuccess>
+    implements _$$LoginLoadSuccessCopyWith<$Res> {
   __$$LoginLoadSuccessCopyWithImpl(
-      _$LoginLoadSuccess<T> _value, $Res Function(_$LoginLoadSuccess<T>) _then)
+      _$LoginLoadSuccess _value, $Res Function(_$LoginLoadSuccess) _then)
       : super(_value, _then);
 }
 
 /// @nodoc
 
-class _$LoginLoadSuccess<T> implements LoginLoadSuccess<T> {
+class _$LoginLoadSuccess implements LoginLoadSuccess {
   const _$LoginLoadSuccess();
 
   @override
   String toString() {
-    return 'LoginState<$T>.loadSuccess()';
+    return 'LoginState.loadSuccess()';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LoginLoadSuccess<T>);
+        (other.runtimeType == runtimeType && other is _$LoginLoadSuccess);
   }
 
   @override
@@ -855,7 +867,9 @@ class _$LoginLoadSuccess<T> implements LoginLoadSuccess<T> {
     required TResult Function(Username username, Password password) initial,
     required TResult Function() loadInProgress,
     required TResult Function() loadSuccess,
-    required TResult Function(T failure) loadFailure,
+    required TResult Function(
+            AuthServiceLoginWithUsernameAndPasswordFailure failure)
+        loadFailure,
   }) {
     return loadSuccess();
   }
@@ -866,7 +880,8 @@ class _$LoginLoadSuccess<T> implements LoginLoadSuccess<T> {
     TResult? Function(Username username, Password password)? initial,
     TResult? Function()? loadInProgress,
     TResult? Function()? loadSuccess,
-    TResult? Function(T failure)? loadFailure,
+    TResult? Function(AuthServiceLoginWithUsernameAndPasswordFailure failure)?
+        loadFailure,
   }) {
     return loadSuccess?.call();
   }
@@ -877,7 +892,8 @@ class _$LoginLoadSuccess<T> implements LoginLoadSuccess<T> {
     TResult Function(Username username, Password password)? initial,
     TResult Function()? loadInProgress,
     TResult Function()? loadSuccess,
-    TResult Function(T failure)? loadFailure,
+    TResult Function(AuthServiceLoginWithUsernameAndPasswordFailure failure)?
+        loadFailure,
     required TResult orElse(),
   }) {
     if (loadSuccess != null) {
@@ -889,10 +905,10 @@ class _$LoginLoadSuccess<T> implements LoginLoadSuccess<T> {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(LoginInitial<T> value) initial,
-    required TResult Function(LoginLoadInProgress<T> value) loadInProgress,
-    required TResult Function(LoginLoadSuccess<T> value) loadSuccess,
-    required TResult Function(LoginLoadFailure<T> value) loadFailure,
+    required TResult Function(LoginInitial value) initial,
+    required TResult Function(LoginLoadInProgress value) loadInProgress,
+    required TResult Function(LoginLoadSuccess value) loadSuccess,
+    required TResult Function(LoginLoadFailure value) loadFailure,
   }) {
     return loadSuccess(this);
   }
@@ -900,10 +916,10 @@ class _$LoginLoadSuccess<T> implements LoginLoadSuccess<T> {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(LoginInitial<T> value)? initial,
-    TResult? Function(LoginLoadInProgress<T> value)? loadInProgress,
-    TResult? Function(LoginLoadSuccess<T> value)? loadSuccess,
-    TResult? Function(LoginLoadFailure<T> value)? loadFailure,
+    TResult? Function(LoginInitial value)? initial,
+    TResult? Function(LoginLoadInProgress value)? loadInProgress,
+    TResult? Function(LoginLoadSuccess value)? loadSuccess,
+    TResult? Function(LoginLoadFailure value)? loadFailure,
   }) {
     return loadSuccess?.call(this);
   }
@@ -911,10 +927,10 @@ class _$LoginLoadSuccess<T> implements LoginLoadSuccess<T> {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(LoginInitial<T> value)? initial,
-    TResult Function(LoginLoadInProgress<T> value)? loadInProgress,
-    TResult Function(LoginLoadSuccess<T> value)? loadSuccess,
-    TResult Function(LoginLoadFailure<T> value)? loadFailure,
+    TResult Function(LoginInitial value)? initial,
+    TResult Function(LoginLoadInProgress value)? loadInProgress,
+    TResult Function(LoginLoadSuccess value)? loadSuccess,
+    TResult Function(LoginLoadFailure value)? loadFailure,
     required TResult orElse(),
   }) {
     if (loadSuccess != null) {
@@ -924,72 +940,81 @@ class _$LoginLoadSuccess<T> implements LoginLoadSuccess<T> {
   }
 }
 
-abstract class LoginLoadSuccess<T> implements LoginState<T> {
-  const factory LoginLoadSuccess() = _$LoginLoadSuccess<T>;
+abstract class LoginLoadSuccess implements LoginState {
+  const factory LoginLoadSuccess() = _$LoginLoadSuccess;
 }
 
 /// @nodoc
-abstract class _$$LoginLoadFailureCopyWith<T, $Res> {
-  factory _$$LoginLoadFailureCopyWith(_$LoginLoadFailure<T> value,
-          $Res Function(_$LoginLoadFailure<T>) then) =
-      __$$LoginLoadFailureCopyWithImpl<T, $Res>;
+abstract class _$$LoginLoadFailureCopyWith<$Res> {
+  factory _$$LoginLoadFailureCopyWith(
+          _$LoginLoadFailure value, $Res Function(_$LoginLoadFailure) then) =
+      __$$LoginLoadFailureCopyWithImpl<$Res>;
   @useResult
-  $Res call({T failure});
+  $Res call({AuthServiceLoginWithUsernameAndPasswordFailure failure});
+
+  $AuthServiceLoginWithUsernameAndPasswordFailureCopyWith<$Res> get failure;
 }
 
 /// @nodoc
-class __$$LoginLoadFailureCopyWithImpl<T, $Res>
-    extends _$LoginStateCopyWithImpl<T, $Res, _$LoginLoadFailure<T>>
-    implements _$$LoginLoadFailureCopyWith<T, $Res> {
+class __$$LoginLoadFailureCopyWithImpl<$Res>
+    extends _$LoginStateCopyWithImpl<$Res, _$LoginLoadFailure>
+    implements _$$LoginLoadFailureCopyWith<$Res> {
   __$$LoginLoadFailureCopyWithImpl(
-      _$LoginLoadFailure<T> _value, $Res Function(_$LoginLoadFailure<T>) _then)
+      _$LoginLoadFailure _value, $Res Function(_$LoginLoadFailure) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? failure = freezed,
+    Object? failure = null,
   }) {
-    return _then(_$LoginLoadFailure<T>(
-      failure: freezed == failure
+    return _then(_$LoginLoadFailure(
+      failure: null == failure
           ? _value.failure
           : failure // ignore: cast_nullable_to_non_nullable
-              as T,
+              as AuthServiceLoginWithUsernameAndPasswordFailure,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $AuthServiceLoginWithUsernameAndPasswordFailureCopyWith<$Res> get failure {
+    return $AuthServiceLoginWithUsernameAndPasswordFailureCopyWith<$Res>(
+        _value.failure, (value) {
+      return _then(_value.copyWith(failure: value));
+    });
   }
 }
 
 /// @nodoc
 
-class _$LoginLoadFailure<T> implements LoginLoadFailure<T> {
+class _$LoginLoadFailure implements LoginLoadFailure {
   const _$LoginLoadFailure({required this.failure});
 
   @override
-  final T failure;
+  final AuthServiceLoginWithUsernameAndPasswordFailure failure;
 
   @override
   String toString() {
-    return 'LoginState<$T>.loadFailure(failure: $failure)';
+    return 'LoginState.loadFailure(failure: $failure)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LoginLoadFailure<T> &&
-            const DeepCollectionEquality().equals(other.failure, failure));
+            other is _$LoginLoadFailure &&
+            (identical(other.failure, failure) || other.failure == failure));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(failure));
+  int get hashCode => Object.hash(runtimeType, failure);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$LoginLoadFailureCopyWith<T, _$LoginLoadFailure<T>> get copyWith =>
-      __$$LoginLoadFailureCopyWithImpl<T, _$LoginLoadFailure<T>>(
-          this, _$identity);
+  _$$LoginLoadFailureCopyWith<_$LoginLoadFailure> get copyWith =>
+      __$$LoginLoadFailureCopyWithImpl<_$LoginLoadFailure>(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -997,7 +1022,9 @@ class _$LoginLoadFailure<T> implements LoginLoadFailure<T> {
     required TResult Function(Username username, Password password) initial,
     required TResult Function() loadInProgress,
     required TResult Function() loadSuccess,
-    required TResult Function(T failure) loadFailure,
+    required TResult Function(
+            AuthServiceLoginWithUsernameAndPasswordFailure failure)
+        loadFailure,
   }) {
     return loadFailure(failure);
   }
@@ -1008,7 +1035,8 @@ class _$LoginLoadFailure<T> implements LoginLoadFailure<T> {
     TResult? Function(Username username, Password password)? initial,
     TResult? Function()? loadInProgress,
     TResult? Function()? loadSuccess,
-    TResult? Function(T failure)? loadFailure,
+    TResult? Function(AuthServiceLoginWithUsernameAndPasswordFailure failure)?
+        loadFailure,
   }) {
     return loadFailure?.call(failure);
   }
@@ -1019,7 +1047,8 @@ class _$LoginLoadFailure<T> implements LoginLoadFailure<T> {
     TResult Function(Username username, Password password)? initial,
     TResult Function()? loadInProgress,
     TResult Function()? loadSuccess,
-    TResult Function(T failure)? loadFailure,
+    TResult Function(AuthServiceLoginWithUsernameAndPasswordFailure failure)?
+        loadFailure,
     required TResult orElse(),
   }) {
     if (loadFailure != null) {
@@ -1031,10 +1060,10 @@ class _$LoginLoadFailure<T> implements LoginLoadFailure<T> {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(LoginInitial<T> value) initial,
-    required TResult Function(LoginLoadInProgress<T> value) loadInProgress,
-    required TResult Function(LoginLoadSuccess<T> value) loadSuccess,
-    required TResult Function(LoginLoadFailure<T> value) loadFailure,
+    required TResult Function(LoginInitial value) initial,
+    required TResult Function(LoginLoadInProgress value) loadInProgress,
+    required TResult Function(LoginLoadSuccess value) loadSuccess,
+    required TResult Function(LoginLoadFailure value) loadFailure,
   }) {
     return loadFailure(this);
   }
@@ -1042,10 +1071,10 @@ class _$LoginLoadFailure<T> implements LoginLoadFailure<T> {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(LoginInitial<T> value)? initial,
-    TResult? Function(LoginLoadInProgress<T> value)? loadInProgress,
-    TResult? Function(LoginLoadSuccess<T> value)? loadSuccess,
-    TResult? Function(LoginLoadFailure<T> value)? loadFailure,
+    TResult? Function(LoginInitial value)? initial,
+    TResult? Function(LoginLoadInProgress value)? loadInProgress,
+    TResult? Function(LoginLoadSuccess value)? loadSuccess,
+    TResult? Function(LoginLoadFailure value)? loadFailure,
   }) {
     return loadFailure?.call(this);
   }
@@ -1053,10 +1082,10 @@ class _$LoginLoadFailure<T> implements LoginLoadFailure<T> {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(LoginInitial<T> value)? initial,
-    TResult Function(LoginLoadInProgress<T> value)? loadInProgress,
-    TResult Function(LoginLoadSuccess<T> value)? loadSuccess,
-    TResult Function(LoginLoadFailure<T> value)? loadFailure,
+    TResult Function(LoginInitial value)? initial,
+    TResult Function(LoginLoadInProgress value)? loadInProgress,
+    TResult Function(LoginLoadSuccess value)? loadSuccess,
+    TResult Function(LoginLoadFailure value)? loadFailure,
     required TResult orElse(),
   }) {
     if (loadFailure != null) {
@@ -1066,12 +1095,13 @@ class _$LoginLoadFailure<T> implements LoginLoadFailure<T> {
   }
 }
 
-abstract class LoginLoadFailure<T> implements LoginState<T> {
-  const factory LoginLoadFailure({required final T failure}) =
-      _$LoginLoadFailure<T>;
+abstract class LoginLoadFailure implements LoginState {
+  const factory LoginLoadFailure(
+      {required final AuthServiceLoginWithUsernameAndPasswordFailure
+          failure}) = _$LoginLoadFailure;
 
-  T get failure;
+  AuthServiceLoginWithUsernameAndPasswordFailure get failure;
   @JsonKey(ignore: true)
-  _$$LoginLoadFailureCopyWith<T, _$LoginLoadFailure<T>> get copyWith =>
+  _$$LoginLoadFailureCopyWith<_$LoginLoadFailure> get copyWith =>
       throw _privateConstructorUsedError;
 }

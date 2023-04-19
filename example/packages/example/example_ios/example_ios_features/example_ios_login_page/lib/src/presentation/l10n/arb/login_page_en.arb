@@ -6,5 +6,7 @@
   "login": "Login",
   "signUpNow": "Sign up now",
   "orSignInWith": "Or Sign in with",
-  "dontHaveAnAccount": "Don't have an account?"
+  "dontHaveAnAccount": "Don't have an account?",
+  "errorServer": "Server error. Try again later.",
+  "errorInvalidUsernameAndPasswordCombination": "Invalid username or password."
 }

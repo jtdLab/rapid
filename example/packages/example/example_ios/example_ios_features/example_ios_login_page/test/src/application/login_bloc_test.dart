@@ -67,10 +67,14 @@ void main() {
           () => performTest(const LoginState.loadSuccess()),
         );
 
-        // TODO failure = null
         test(
           'LoadFailure',
-          () => performTest(const LoginState.loadFailure(failure: null)),
+          () => performTest(
+            const LoginState.loadFailure(
+              failure:
+                  AuthServiceLoginWithUsernameAndPasswordFailure.serverError(),
+            ),
+          ),
         );
       });
     });
@@ -111,10 +115,14 @@ void main() {
           () => performTest(const LoginState.loadSuccess()),
         );
 
-        // TODO failure = null
         test(
           'LoadFailure',
-          () => performTest(const LoginState.loadFailure(failure: null)),
+          () => performTest(
+            const LoginState.loadFailure(
+              failure:
+                  AuthServiceLoginWithUsernameAndPasswordFailure.serverError(),
+            ),
+          ),
         );
       });
     });
@@ -227,10 +235,14 @@ void main() {
           () => performTest(const LoginState.loadSuccess()),
         );
 
-        // TODO failure = null
         test(
           'LoadFailure',
-          () => performTest(const LoginState.loadFailure(failure: null)),
+          () => performTest(
+            const LoginState.loadFailure(
+              failure:
+                  AuthServiceLoginWithUsernameAndPasswordFailure.serverError(),
+            ),
+          ),
         );
       });
     });

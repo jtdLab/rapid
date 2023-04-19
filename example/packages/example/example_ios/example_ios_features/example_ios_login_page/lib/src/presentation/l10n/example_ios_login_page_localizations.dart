@@ -135,6 +135,18 @@ abstract class ExampleIosLoginPageLocalizations {
   /// In en, this message translates to:
   /// **'Don\'t have an account?'**
   String get dontHaveAnAccount;
+
+  /// No description provided for @errorServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Server error. Try again later.'**
+  String get errorServer;
+
+  /// No description provided for @errorInvalidUsernameAndPasswordCombination.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid username or password.'**
+  String get errorInvalidUsernameAndPasswordCombination;
 }
 
 class _ExampleIosLoginPageLocalizationsDelegate

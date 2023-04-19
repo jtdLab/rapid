@@ -6,7 +6,6 @@ import 'package:example_ios_sign_up_page/src/presentation/l10n/l10n.dart';
 import 'package:example_ui_ios/example_ui_ios.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 @RoutePage()
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -90,7 +89,7 @@ class SignUpView extends StatelessWidget {
                           initial: (initial) =>
                               !initial.showErrorMessages ||
                               (initial.showErrorMessages &&
-                                  initial.email.isValid()),
+                                  initial.emailAddress.isValid()),
                           orElse: () => true,
                         ),
                         errorMessage: context.l10n.errorInvalidEmailAddress,
@@ -190,37 +189,31 @@ class SignUpView extends StatelessWidget {
   }
 
   void _onEmailChanged(BuildContext context, String email) {
-    context.read<SignUpBloc>().add(
-          SignUpEvent.emailChanged(newEmail: email),
-        );
+    context
+        .read<SignUpBloc>()
+        .add(SignUpEvent.emailChanged(newEmailAddress: email));
   }
 
   void _onUsernameChanged(BuildContext context, String username) {
-    context.read<SignUpBloc>().add(
-          SignUpEvent.usernameChanged(
-            newUsername: username,
-          ),
-        );
+    context
+        .read<SignUpBloc>()
+        .add(SignUpEvent.usernameChanged(newUsername: username));
   }
 
   void _onPasswordChanged(BuildContext context, String password) {
-    context.read<SignUpBloc>().add(
-          SignUpEvent.passwordChanged(newPassword: password),
-        );
+    context
+        .read<SignUpBloc>()
+        .add(SignUpEvent.passwordChanged(newPassword: password));
   }
 
   void _onPasswordAgainChanged(BuildContext context, String passwordAgain) {
-    context.read<SignUpBloc>().add(
-          SignUpEvent.passwordAgainChanged(
-            newPasswordAgain: passwordAgain,
-          ),
-        );
+    context
+        .read<SignUpBloc>()
+        .add(SignUpEvent.passwordAgainChanged(newPasswordAgain: passwordAgain));
   }
 
   void _onSignUpPressed(BuildContext context) {
-    context.read<SignUpBloc>().add(
-          const SignUpEvent.signUpPressed(),
-        );
+    context.read<SignUpBloc>().add(const SignUpEvent.signUpPressed());
   }
 
   void _onGotSignInPressed(BuildContext context) {

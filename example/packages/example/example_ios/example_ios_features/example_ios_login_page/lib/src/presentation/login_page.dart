@@ -142,21 +142,19 @@ class LoginView extends StatelessWidget {
   }
 
   void _onUsernameChanged(BuildContext context, String username) {
-    context.read<LoginBloc>().add(
-          LoginEvent.usernameChanged(newUsername: username),
-        );
+    context
+        .read<LoginBloc>()
+        .add(LoginEvent.usernameChanged(newUsername: username));
   }
 
   void _onPasswordChanged(BuildContext context, String password) {
-    context.read<LoginBloc>().add(
-          LoginEvent.passwordChanged(newPassword: password),
-        );
+    context
+        .read<LoginBloc>()
+        .add(LoginEvent.passwordChanged(newPassword: password));
   }
 
   void _onLoginPressed(BuildContext context) {
-    context.read<LoginBloc>().add(
-          const LoginEvent.loginPressed(),
-        );
+    context.read<LoginBloc>().add(const LoginEvent.loginPressed());
   }
 
   void _onGotSignUpPressed(BuildContext context) {

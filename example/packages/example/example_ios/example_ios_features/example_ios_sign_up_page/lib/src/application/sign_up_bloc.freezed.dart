@@ -18,7 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$SignUpEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String newEmail) emailChanged,
+    required TResult Function(String newEmailAddress) emailChanged,
     required TResult Function(String newUsername) usernameChanged,
     required TResult Function(String newPassword) passwordChanged,
     required TResult Function(String newPasswordAgain) passwordAgainChanged,
@@ -27,7 +27,7 @@ mixin _$SignUpEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String newEmail)? emailChanged,
+    TResult? Function(String newEmailAddress)? emailChanged,
     TResult? Function(String newUsername)? usernameChanged,
     TResult? Function(String newPassword)? passwordChanged,
     TResult? Function(String newPasswordAgain)? passwordAgainChanged,
@@ -36,7 +36,7 @@ mixin _$SignUpEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String newEmail)? emailChanged,
+    TResult Function(String newEmailAddress)? emailChanged,
     TResult Function(String newUsername)? usernameChanged,
     TResult Function(String newPassword)? passwordChanged,
     TResult Function(String newPasswordAgain)? passwordAgainChanged,
@@ -46,7 +46,7 @@ mixin _$SignUpEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_EmailChanged value) emailChanged,
+    required TResult Function(_EmailAddressChanged value) emailChanged,
     required TResult Function(_UsernameChanged value) usernameChanged,
     required TResult Function(_PasswordChanged value) passwordChanged,
     required TResult Function(_PasswordAgainChanged value) passwordAgainChanged,
@@ -55,7 +55,7 @@ mixin _$SignUpEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_EmailChanged value)? emailChanged,
+    TResult? Function(_EmailAddressChanged value)? emailChanged,
     TResult? Function(_UsernameChanged value)? usernameChanged,
     TResult? Function(_PasswordChanged value)? passwordChanged,
     TResult? Function(_PasswordAgainChanged value)? passwordAgainChanged,
@@ -64,7 +64,7 @@ mixin _$SignUpEvent {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_EmailChanged value)? emailChanged,
+    TResult Function(_EmailAddressChanged value)? emailChanged,
     TResult Function(_UsernameChanged value)? usernameChanged,
     TResult Function(_PasswordChanged value)? passwordChanged,
     TResult Function(_PasswordAgainChanged value)? passwordAgainChanged,
@@ -93,31 +93,31 @@ class _$SignUpEventCopyWithImpl<$Res, $Val extends SignUpEvent>
 }
 
 /// @nodoc
-abstract class _$$_EmailChangedCopyWith<$Res> {
-  factory _$$_EmailChangedCopyWith(
-          _$_EmailChanged value, $Res Function(_$_EmailChanged) then) =
-      __$$_EmailChangedCopyWithImpl<$Res>;
+abstract class _$$_EmailAddressChangedCopyWith<$Res> {
+  factory _$$_EmailAddressChangedCopyWith(_$_EmailAddressChanged value,
+          $Res Function(_$_EmailAddressChanged) then) =
+      __$$_EmailAddressChangedCopyWithImpl<$Res>;
   @useResult
-  $Res call({String newEmail});
+  $Res call({String newEmailAddress});
 }
 
 /// @nodoc
-class __$$_EmailChangedCopyWithImpl<$Res>
-    extends _$SignUpEventCopyWithImpl<$Res, _$_EmailChanged>
-    implements _$$_EmailChangedCopyWith<$Res> {
-  __$$_EmailChangedCopyWithImpl(
-      _$_EmailChanged _value, $Res Function(_$_EmailChanged) _then)
+class __$$_EmailAddressChangedCopyWithImpl<$Res>
+    extends _$SignUpEventCopyWithImpl<$Res, _$_EmailAddressChanged>
+    implements _$$_EmailAddressChangedCopyWith<$Res> {
+  __$$_EmailAddressChangedCopyWithImpl(_$_EmailAddressChanged _value,
+      $Res Function(_$_EmailAddressChanged) _then)
       : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? newEmail = null,
+    Object? newEmailAddress = null,
   }) {
-    return _then(_$_EmailChanged(
-      newEmail: null == newEmail
-          ? _value.newEmail
-          : newEmail // ignore: cast_nullable_to_non_nullable
+    return _then(_$_EmailAddressChanged(
+      newEmailAddress: null == newEmailAddress
+          ? _value.newEmailAddress
+          : newEmailAddress // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }
@@ -125,63 +125,64 @@ class __$$_EmailChangedCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_EmailChanged implements _EmailChanged {
-  const _$_EmailChanged({required this.newEmail});
+class _$_EmailAddressChanged implements _EmailAddressChanged {
+  const _$_EmailAddressChanged({required this.newEmailAddress});
 
   @override
-  final String newEmail;
+  final String newEmailAddress;
 
   @override
   String toString() {
-    return 'SignUpEvent.emailChanged(newEmail: $newEmail)';
+    return 'SignUpEvent.emailChanged(newEmailAddress: $newEmailAddress)';
   }
 
   @override
   bool operator ==(dynamic other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$_EmailChanged &&
-            (identical(other.newEmail, newEmail) ||
-                other.newEmail == newEmail));
+            other is _$_EmailAddressChanged &&
+            (identical(other.newEmailAddress, newEmailAddress) ||
+                other.newEmailAddress == newEmailAddress));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, newEmail);
+  int get hashCode => Object.hash(runtimeType, newEmailAddress);
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
-  _$$_EmailChangedCopyWith<_$_EmailChanged> get copyWith =>
-      __$$_EmailChangedCopyWithImpl<_$_EmailChanged>(this, _$identity);
+  _$$_EmailAddressChangedCopyWith<_$_EmailAddressChanged> get copyWith =>
+      __$$_EmailAddressChangedCopyWithImpl<_$_EmailAddressChanged>(
+          this, _$identity);
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String newEmail) emailChanged,
+    required TResult Function(String newEmailAddress) emailChanged,
     required TResult Function(String newUsername) usernameChanged,
     required TResult Function(String newPassword) passwordChanged,
     required TResult Function(String newPasswordAgain) passwordAgainChanged,
     required TResult Function() signUpPressed,
   }) {
-    return emailChanged(newEmail);
+    return emailChanged(newEmailAddress);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String newEmail)? emailChanged,
+    TResult? Function(String newEmailAddress)? emailChanged,
     TResult? Function(String newUsername)? usernameChanged,
     TResult? Function(String newPassword)? passwordChanged,
     TResult? Function(String newPasswordAgain)? passwordAgainChanged,
     TResult? Function()? signUpPressed,
   }) {
-    return emailChanged?.call(newEmail);
+    return emailChanged?.call(newEmailAddress);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String newEmail)? emailChanged,
+    TResult Function(String newEmailAddress)? emailChanged,
     TResult Function(String newUsername)? usernameChanged,
     TResult Function(String newPassword)? passwordChanged,
     TResult Function(String newPasswordAgain)? passwordAgainChanged,
@@ -189,7 +190,7 @@ class _$_EmailChanged implements _EmailChanged {
     required TResult orElse(),
   }) {
     if (emailChanged != null) {
-      return emailChanged(newEmail);
+      return emailChanged(newEmailAddress);
     }
     return orElse();
   }
@@ -197,7 +198,7 @@ class _$_EmailChanged implements _EmailChanged {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_EmailChanged value) emailChanged,
+    required TResult Function(_EmailAddressChanged value) emailChanged,
     required TResult Function(_UsernameChanged value) usernameChanged,
     required TResult Function(_PasswordChanged value) passwordChanged,
     required TResult Function(_PasswordAgainChanged value) passwordAgainChanged,
@@ -209,7 +210,7 @@ class _$_EmailChanged implements _EmailChanged {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_EmailChanged value)? emailChanged,
+    TResult? Function(_EmailAddressChanged value)? emailChanged,
     TResult? Function(_UsernameChanged value)? usernameChanged,
     TResult? Function(_PasswordChanged value)? passwordChanged,
     TResult? Function(_PasswordAgainChanged value)? passwordAgainChanged,
@@ -221,7 +222,7 @@ class _$_EmailChanged implements _EmailChanged {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_EmailChanged value)? emailChanged,
+    TResult Function(_EmailAddressChanged value)? emailChanged,
     TResult Function(_UsernameChanged value)? usernameChanged,
     TResult Function(_PasswordChanged value)? passwordChanged,
     TResult Function(_PasswordAgainChanged value)? passwordAgainChanged,
@@ -235,13 +236,13 @@ class _$_EmailChanged implements _EmailChanged {
   }
 }
 
-abstract class _EmailChanged implements SignUpEvent {
-  const factory _EmailChanged({required final String newEmail}) =
-      _$_EmailChanged;
+abstract class _EmailAddressChanged implements SignUpEvent {
+  const factory _EmailAddressChanged({required final String newEmailAddress}) =
+      _$_EmailAddressChanged;
 
-  String get newEmail;
+  String get newEmailAddress;
   @JsonKey(ignore: true)
-  _$$_EmailChangedCopyWith<_$_EmailChanged> get copyWith =>
+  _$$_EmailAddressChangedCopyWith<_$_EmailAddressChanged> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -310,7 +311,7 @@ class _$_UsernameChanged implements _UsernameChanged {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String newEmail) emailChanged,
+    required TResult Function(String newEmailAddress) emailChanged,
     required TResult Function(String newUsername) usernameChanged,
     required TResult Function(String newPassword) passwordChanged,
     required TResult Function(String newPasswordAgain) passwordAgainChanged,
@@ -322,7 +323,7 @@ class _$_UsernameChanged implements _UsernameChanged {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String newEmail)? emailChanged,
+    TResult? Function(String newEmailAddress)? emailChanged,
     TResult? Function(String newUsername)? usernameChanged,
     TResult? Function(String newPassword)? passwordChanged,
     TResult? Function(String newPasswordAgain)? passwordAgainChanged,
@@ -334,7 +335,7 @@ class _$_UsernameChanged implements _UsernameChanged {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String newEmail)? emailChanged,
+    TResult Function(String newEmailAddress)? emailChanged,
     TResult Function(String newUsername)? usernameChanged,
     TResult Function(String newPassword)? passwordChanged,
     TResult Function(String newPasswordAgain)? passwordAgainChanged,
@@ -350,7 +351,7 @@ class _$_UsernameChanged implements _UsernameChanged {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_EmailChanged value) emailChanged,
+    required TResult Function(_EmailAddressChanged value) emailChanged,
     required TResult Function(_UsernameChanged value) usernameChanged,
     required TResult Function(_PasswordChanged value) passwordChanged,
     required TResult Function(_PasswordAgainChanged value) passwordAgainChanged,
@@ -362,7 +363,7 @@ class _$_UsernameChanged implements _UsernameChanged {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_EmailChanged value)? emailChanged,
+    TResult? Function(_EmailAddressChanged value)? emailChanged,
     TResult? Function(_UsernameChanged value)? usernameChanged,
     TResult? Function(_PasswordChanged value)? passwordChanged,
     TResult? Function(_PasswordAgainChanged value)? passwordAgainChanged,
@@ -374,7 +375,7 @@ class _$_UsernameChanged implements _UsernameChanged {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_EmailChanged value)? emailChanged,
+    TResult Function(_EmailAddressChanged value)? emailChanged,
     TResult Function(_UsernameChanged value)? usernameChanged,
     TResult Function(_PasswordChanged value)? passwordChanged,
     TResult Function(_PasswordAgainChanged value)? passwordAgainChanged,
@@ -463,7 +464,7 @@ class _$_PasswordChanged implements _PasswordChanged {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String newEmail) emailChanged,
+    required TResult Function(String newEmailAddress) emailChanged,
     required TResult Function(String newUsername) usernameChanged,
     required TResult Function(String newPassword) passwordChanged,
     required TResult Function(String newPasswordAgain) passwordAgainChanged,
@@ -475,7 +476,7 @@ class _$_PasswordChanged implements _PasswordChanged {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String newEmail)? emailChanged,
+    TResult? Function(String newEmailAddress)? emailChanged,
     TResult? Function(String newUsername)? usernameChanged,
     TResult? Function(String newPassword)? passwordChanged,
     TResult? Function(String newPasswordAgain)? passwordAgainChanged,
@@ -487,7 +488,7 @@ class _$_PasswordChanged implements _PasswordChanged {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String newEmail)? emailChanged,
+    TResult Function(String newEmailAddress)? emailChanged,
     TResult Function(String newUsername)? usernameChanged,
     TResult Function(String newPassword)? passwordChanged,
     TResult Function(String newPasswordAgain)? passwordAgainChanged,
@@ -503,7 +504,7 @@ class _$_PasswordChanged implements _PasswordChanged {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_EmailChanged value) emailChanged,
+    required TResult Function(_EmailAddressChanged value) emailChanged,
     required TResult Function(_UsernameChanged value) usernameChanged,
     required TResult Function(_PasswordChanged value) passwordChanged,
     required TResult Function(_PasswordAgainChanged value) passwordAgainChanged,
@@ -515,7 +516,7 @@ class _$_PasswordChanged implements _PasswordChanged {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_EmailChanged value)? emailChanged,
+    TResult? Function(_EmailAddressChanged value)? emailChanged,
     TResult? Function(_UsernameChanged value)? usernameChanged,
     TResult? Function(_PasswordChanged value)? passwordChanged,
     TResult? Function(_PasswordAgainChanged value)? passwordAgainChanged,
@@ -527,7 +528,7 @@ class _$_PasswordChanged implements _PasswordChanged {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_EmailChanged value)? emailChanged,
+    TResult Function(_EmailAddressChanged value)? emailChanged,
     TResult Function(_UsernameChanged value)? usernameChanged,
     TResult Function(_PasswordChanged value)? passwordChanged,
     TResult Function(_PasswordAgainChanged value)? passwordAgainChanged,
@@ -617,7 +618,7 @@ class _$_PasswordAgainChanged implements _PasswordAgainChanged {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String newEmail) emailChanged,
+    required TResult Function(String newEmailAddress) emailChanged,
     required TResult Function(String newUsername) usernameChanged,
     required TResult Function(String newPassword) passwordChanged,
     required TResult Function(String newPasswordAgain) passwordAgainChanged,
@@ -629,7 +630,7 @@ class _$_PasswordAgainChanged implements _PasswordAgainChanged {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String newEmail)? emailChanged,
+    TResult? Function(String newEmailAddress)? emailChanged,
     TResult? Function(String newUsername)? usernameChanged,
     TResult? Function(String newPassword)? passwordChanged,
     TResult? Function(String newPasswordAgain)? passwordAgainChanged,
@@ -641,7 +642,7 @@ class _$_PasswordAgainChanged implements _PasswordAgainChanged {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String newEmail)? emailChanged,
+    TResult Function(String newEmailAddress)? emailChanged,
     TResult Function(String newUsername)? usernameChanged,
     TResult Function(String newPassword)? passwordChanged,
     TResult Function(String newPasswordAgain)? passwordAgainChanged,
@@ -657,7 +658,7 @@ class _$_PasswordAgainChanged implements _PasswordAgainChanged {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_EmailChanged value) emailChanged,
+    required TResult Function(_EmailAddressChanged value) emailChanged,
     required TResult Function(_UsernameChanged value) usernameChanged,
     required TResult Function(_PasswordChanged value) passwordChanged,
     required TResult Function(_PasswordAgainChanged value) passwordAgainChanged,
@@ -669,7 +670,7 @@ class _$_PasswordAgainChanged implements _PasswordAgainChanged {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_EmailChanged value)? emailChanged,
+    TResult? Function(_EmailAddressChanged value)? emailChanged,
     TResult? Function(_UsernameChanged value)? usernameChanged,
     TResult? Function(_PasswordChanged value)? passwordChanged,
     TResult? Function(_PasswordAgainChanged value)? passwordAgainChanged,
@@ -681,7 +682,7 @@ class _$_PasswordAgainChanged implements _PasswordAgainChanged {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_EmailChanged value)? emailChanged,
+    TResult Function(_EmailAddressChanged value)? emailChanged,
     TResult Function(_UsernameChanged value)? usernameChanged,
     TResult Function(_PasswordChanged value)? passwordChanged,
     TResult Function(_PasswordAgainChanged value)? passwordAgainChanged,
@@ -743,7 +744,7 @@ class _$_SignUpPressed implements _SignUpPressed {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String newEmail) emailChanged,
+    required TResult Function(String newEmailAddress) emailChanged,
     required TResult Function(String newUsername) usernameChanged,
     required TResult Function(String newPassword) passwordChanged,
     required TResult Function(String newPasswordAgain) passwordAgainChanged,
@@ -755,7 +756,7 @@ class _$_SignUpPressed implements _SignUpPressed {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String newEmail)? emailChanged,
+    TResult? Function(String newEmailAddress)? emailChanged,
     TResult? Function(String newUsername)? usernameChanged,
     TResult? Function(String newPassword)? passwordChanged,
     TResult? Function(String newPasswordAgain)? passwordAgainChanged,
@@ -767,7 +768,7 @@ class _$_SignUpPressed implements _SignUpPressed {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String newEmail)? emailChanged,
+    TResult Function(String newEmailAddress)? emailChanged,
     TResult Function(String newUsername)? usernameChanged,
     TResult Function(String newPassword)? passwordChanged,
     TResult Function(String newPasswordAgain)? passwordAgainChanged,
@@ -783,7 +784,7 @@ class _$_SignUpPressed implements _SignUpPressed {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_EmailChanged value) emailChanged,
+    required TResult Function(_EmailAddressChanged value) emailChanged,
     required TResult Function(_UsernameChanged value) usernameChanged,
     required TResult Function(_PasswordChanged value) passwordChanged,
     required TResult Function(_PasswordAgainChanged value) passwordAgainChanged,
@@ -795,7 +796,7 @@ class _$_SignUpPressed implements _SignUpPressed {
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_EmailChanged value)? emailChanged,
+    TResult? Function(_EmailAddressChanged value)? emailChanged,
     TResult? Function(_UsernameChanged value)? usernameChanged,
     TResult? Function(_PasswordChanged value)? passwordChanged,
     TResult? Function(_PasswordAgainChanged value)? passwordAgainChanged,
@@ -807,7 +808,7 @@ class _$_SignUpPressed implements _SignUpPressed {
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_EmailChanged value)? emailChanged,
+    TResult Function(_EmailAddressChanged value)? emailChanged,
     TResult Function(_UsernameChanged value)? usernameChanged,
     TResult Function(_PasswordChanged value)? passwordChanged,
     TResult Function(_PasswordAgainChanged value)? passwordAgainChanged,
@@ -829,7 +830,7 @@ abstract class _SignUpPressed implements SignUpEvent {
 mixin _$SignUpState<T> {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(EmailAddress email, Username username,
+    required TResult Function(EmailAddress emailAddress, Username username,
             Password password, Password passwordAgain, bool showErrorMessages)
         initial,
     required TResult Function() loadInProgress,
@@ -839,8 +840,8 @@ mixin _$SignUpState<T> {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(EmailAddress email, Username username, Password password,
-            Password passwordAgain, bool showErrorMessages)?
+    TResult? Function(EmailAddress emailAddress, Username username,
+            Password password, Password passwordAgain, bool showErrorMessages)?
         initial,
     TResult? Function()? loadInProgress,
     TResult? Function()? loadSuccess,
@@ -849,8 +850,8 @@ mixin _$SignUpState<T> {
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(EmailAddress email, Username username, Password password,
-            Password passwordAgain, bool showErrorMessages)?
+    TResult Function(EmailAddress emailAddress, Username username,
+            Password password, Password passwordAgain, bool showErrorMessages)?
         initial,
     TResult Function()? loadInProgress,
     TResult Function()? loadSuccess,
@@ -910,7 +911,7 @@ abstract class _$$SignUpInitialCopyWith<T, $Res> {
       __$$SignUpInitialCopyWithImpl<T, $Res>;
   @useResult
   $Res call(
-      {EmailAddress email,
+      {EmailAddress emailAddress,
       Username username,
       Password password,
       Password passwordAgain,
@@ -928,16 +929,16 @@ class __$$SignUpInitialCopyWithImpl<T, $Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? email = null,
+    Object? emailAddress = null,
     Object? username = null,
     Object? password = null,
     Object? passwordAgain = null,
     Object? showErrorMessages = null,
   }) {
     return _then(_$SignUpInitial<T>(
-      email: null == email
-          ? _value.email
-          : email // ignore: cast_nullable_to_non_nullable
+      emailAddress: null == emailAddress
+          ? _value.emailAddress
+          : emailAddress // ignore: cast_nullable_to_non_nullable
               as EmailAddress,
       username: null == username
           ? _value.username
@@ -963,14 +964,14 @@ class __$$SignUpInitialCopyWithImpl<T, $Res>
 
 class _$SignUpInitial<T> implements SignUpInitial<T> {
   const _$SignUpInitial(
-      {required this.email,
+      {required this.emailAddress,
       required this.username,
       required this.password,
       required this.passwordAgain,
       required this.showErrorMessages});
 
   @override
-  final EmailAddress email;
+  final EmailAddress emailAddress;
   @override
   final Username username;
   @override
@@ -982,7 +983,7 @@ class _$SignUpInitial<T> implements SignUpInitial<T> {
 
   @override
   String toString() {
-    return 'SignUpState<$T>.initial(email: $email, username: $username, password: $password, passwordAgain: $passwordAgain, showErrorMessages: $showErrorMessages)';
+    return 'SignUpState<$T>.initial(emailAddress: $emailAddress, username: $username, password: $password, passwordAgain: $passwordAgain, showErrorMessages: $showErrorMessages)';
   }
 
   @override
@@ -990,7 +991,8 @@ class _$SignUpInitial<T> implements SignUpInitial<T> {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SignUpInitial<T> &&
-            (identical(other.email, email) || other.email == email) &&
+            (identical(other.emailAddress, emailAddress) ||
+                other.emailAddress == emailAddress) &&
             (identical(other.username, username) ||
                 other.username == username) &&
             (identical(other.password, password) ||
@@ -1002,8 +1004,8 @@ class _$SignUpInitial<T> implements SignUpInitial<T> {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, email, username, password, passwordAgain, showErrorMessages);
+  int get hashCode => Object.hash(runtimeType, emailAddress, username, password,
+      passwordAgain, showErrorMessages);
 
   @JsonKey(ignore: true)
   @override
@@ -1014,35 +1016,36 @@ class _$SignUpInitial<T> implements SignUpInitial<T> {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(EmailAddress email, Username username,
+    required TResult Function(EmailAddress emailAddress, Username username,
             Password password, Password passwordAgain, bool showErrorMessages)
         initial,
     required TResult Function() loadInProgress,
     required TResult Function() loadSuccess,
     required TResult Function(T failure) loadFailure,
   }) {
-    return initial(email, username, password, passwordAgain, showErrorMessages);
+    return initial(
+        emailAddress, username, password, passwordAgain, showErrorMessages);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(EmailAddress email, Username username, Password password,
-            Password passwordAgain, bool showErrorMessages)?
+    TResult? Function(EmailAddress emailAddress, Username username,
+            Password password, Password passwordAgain, bool showErrorMessages)?
         initial,
     TResult? Function()? loadInProgress,
     TResult? Function()? loadSuccess,
     TResult? Function(T failure)? loadFailure,
   }) {
     return initial?.call(
-        email, username, password, passwordAgain, showErrorMessages);
+        emailAddress, username, password, passwordAgain, showErrorMessages);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(EmailAddress email, Username username, Password password,
-            Password passwordAgain, bool showErrorMessages)?
+    TResult Function(EmailAddress emailAddress, Username username,
+            Password password, Password passwordAgain, bool showErrorMessages)?
         initial,
     TResult Function()? loadInProgress,
     TResult Function()? loadSuccess,
@@ -1051,7 +1054,7 @@ class _$SignUpInitial<T> implements SignUpInitial<T> {
   }) {
     if (initial != null) {
       return initial(
-          email, username, password, passwordAgain, showErrorMessages);
+          emailAddress, username, password, passwordAgain, showErrorMessages);
     }
     return orElse();
   }
@@ -1096,13 +1099,13 @@ class _$SignUpInitial<T> implements SignUpInitial<T> {
 
 abstract class SignUpInitial<T> implements SignUpState<T> {
   const factory SignUpInitial(
-      {required final EmailAddress email,
+      {required final EmailAddress emailAddress,
       required final Username username,
       required final Password password,
       required final Password passwordAgain,
       required final bool showErrorMessages}) = _$SignUpInitial<T>;
 
-  EmailAddress get email;
+  EmailAddress get emailAddress;
   Username get username;
   Password get password;
   Password get passwordAgain;
@@ -1151,7 +1154,7 @@ class _$SignUpLoadInProgress<T> implements SignUpLoadInProgress<T> {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(EmailAddress email, Username username,
+    required TResult Function(EmailAddress emailAddress, Username username,
             Password password, Password passwordAgain, bool showErrorMessages)
         initial,
     required TResult Function() loadInProgress,
@@ -1164,8 +1167,8 @@ class _$SignUpLoadInProgress<T> implements SignUpLoadInProgress<T> {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(EmailAddress email, Username username, Password password,
-            Password passwordAgain, bool showErrorMessages)?
+    TResult? Function(EmailAddress emailAddress, Username username,
+            Password password, Password passwordAgain, bool showErrorMessages)?
         initial,
     TResult? Function()? loadInProgress,
     TResult? Function()? loadSuccess,
@@ -1177,8 +1180,8 @@ class _$SignUpLoadInProgress<T> implements SignUpLoadInProgress<T> {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(EmailAddress email, Username username, Password password,
-            Password passwordAgain, bool showErrorMessages)?
+    TResult Function(EmailAddress emailAddress, Username username,
+            Password password, Password passwordAgain, bool showErrorMessages)?
         initial,
     TResult Function()? loadInProgress,
     TResult Function()? loadSuccess,
@@ -1271,7 +1274,7 @@ class _$SignUpLoadSuccess<T> implements SignUpLoadSuccess<T> {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(EmailAddress email, Username username,
+    required TResult Function(EmailAddress emailAddress, Username username,
             Password password, Password passwordAgain, bool showErrorMessages)
         initial,
     required TResult Function() loadInProgress,
@@ -1284,8 +1287,8 @@ class _$SignUpLoadSuccess<T> implements SignUpLoadSuccess<T> {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(EmailAddress email, Username username, Password password,
-            Password passwordAgain, bool showErrorMessages)?
+    TResult? Function(EmailAddress emailAddress, Username username,
+            Password password, Password passwordAgain, bool showErrorMessages)?
         initial,
     TResult? Function()? loadInProgress,
     TResult? Function()? loadSuccess,
@@ -1297,8 +1300,8 @@ class _$SignUpLoadSuccess<T> implements SignUpLoadSuccess<T> {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(EmailAddress email, Username username, Password password,
-            Password passwordAgain, bool showErrorMessages)?
+    TResult Function(EmailAddress emailAddress, Username username,
+            Password password, Password passwordAgain, bool showErrorMessages)?
         initial,
     TResult Function()? loadInProgress,
     TResult Function()? loadSuccess,
@@ -1419,7 +1422,7 @@ class _$SignUpLoadFailure<T> implements SignUpLoadFailure<T> {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(EmailAddress email, Username username,
+    required TResult Function(EmailAddress emailAddress, Username username,
             Password password, Password passwordAgain, bool showErrorMessages)
         initial,
     required TResult Function() loadInProgress,
@@ -1432,8 +1435,8 @@ class _$SignUpLoadFailure<T> implements SignUpLoadFailure<T> {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(EmailAddress email, Username username, Password password,
-            Password passwordAgain, bool showErrorMessages)?
+    TResult? Function(EmailAddress emailAddress, Username username,
+            Password password, Password passwordAgain, bool showErrorMessages)?
         initial,
     TResult? Function()? loadInProgress,
     TResult? Function()? loadSuccess,
@@ -1445,8 +1448,8 @@ class _$SignUpLoadFailure<T> implements SignUpLoadFailure<T> {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(EmailAddress email, Username username, Password password,
-            Password passwordAgain, bool showErrorMessages)?
+    TResult Function(EmailAddress emailAddress, Username username,
+            Password password, Password passwordAgain, bool showErrorMessages)?
         initial,
     TResult Function()? loadInProgress,
     TResult Function()? loadSuccess,

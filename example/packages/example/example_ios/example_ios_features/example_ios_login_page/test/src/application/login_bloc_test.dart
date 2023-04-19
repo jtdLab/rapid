@@ -13,7 +13,6 @@ LoginBloc _getLoginBloc([IAuthService? authService]) {
 void main() {
   group('LoginBloc', () {
     setUpAll(() {
-      registerFallbackValue(EmailAddress.empty());
       registerFallbackValue(Username.empty());
       registerFallbackValue(Password.empty());
     });
@@ -206,14 +205,11 @@ void main() {
             testBloc<LoginBloc, LoginState>(
               build: () => _getLoginBloc(authService),
               seed: () => initialState,
-              act: (bloc) => bloc.add(
-                const LoginEvent.passwordChanged(newPassword: 'a'),
-              ),
+              act: (bloc) => bloc.add(const LoginEvent.loginPressed()),
               expect: () => [],
               verify: (_) {
                 verifyNever(
-                  () => authService.signUpWithEmailAndUsernameAndPassword(
-                    emailAddress: any(named: 'emailAddress'),
+                  () => authService.loginWithUsernameAndPassword(
                     username: any(named: 'username'),
                     password: any(named: 'password'),
                   ),

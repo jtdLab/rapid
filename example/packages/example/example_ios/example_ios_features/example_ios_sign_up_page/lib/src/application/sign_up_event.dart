@@ -3,8 +3,8 @@ part of 'sign_up_bloc.dart';
 @freezed
 class SignUpEvent with _$SignUpEvent {
   const factory SignUpEvent.emailChanged({
-    required String newEmail,
-  }) = _EmailChanged;
+    required String newEmailAddress,
+  }) = _EmailAddressChanged;
   const factory SignUpEvent.usernameChanged({
     required String newUsername,
   }) = _UsernameChanged;

@@ -18,7 +18,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   ) : super(
           // Set initial state
           SignUpState.initial(
-            email: EmailAddress.empty(),
+            emailAddress: EmailAddress.empty(),
             username: Username.empty(),
             password: Password.empty(),
             passwordAgain: Password.empty(),
@@ -26,24 +26,23 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
           ),
         ) {
     // Register event handlers
-    on<_EmailChanged>(_handleEmailChanged);
+    on<_EmailAddressChanged>(_handleEmailAddressChanged);
     on<_UsernameChanged>(_handleUsernameChanged);
     on<_PasswordChanged>(_handlePasswordChanged);
     on<_PasswordAgainChanged>(_handlePasswordAgainChanged);
     on<_SignUpPressed>((_, emit) async => _handleSignUpPressed(emit));
   }
 
-  /// Returns instance registered inside getIt.
-  factory SignUpBloc.getIt() => getIt<SignUpBloc>();
-
-  /// Handle incoming [_EmailChanged] event.
-  void _handleEmailChanged(
-    _EmailChanged event,
+  /// Handle incoming [_EmailAddressChanged] event.
+  void _handleEmailAddressChanged(
+    _EmailAddressChanged event,
     Emitter<SignUpState> emit,
   ) {
     state.mapOrNull(
       initial: (initial) {
-        emit(initial.copyWith(email: EmailAddress(event.newEmail)));
+        emit(
+          initial.copyWith(emailAddress: EmailAddress(event.newEmailAddress)),
+        );
       },
     );
   }
@@ -90,13 +89,13 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
   ) async {
     await state.mapOrNull(
       initial: (initial) async {
-        final isEmailValid = initial.email.isValid();
+        final isEmailAddressValid = initial.emailAddress.isValid();
         final isUsernameValid = initial.username.isValid();
         final isPasswordValid = initial.password.isValid();
         final isPasswordAgainValid = initial.passwordAgain.isValid();
         final passwordsMatch = initial.password == initial.passwordAgain;
 
-        if (isEmailValid &&
+        if (isEmailAddressValid &&
             isUsernameValid &&
             isPasswordValid &&
             isPasswordAgainValid &&
@@ -107,7 +106,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
 
           final signUpResult =
               await _authService.signUpWithEmailAndUsernameAndPassword(
-            emailAddress: initial.email,
+            emailAddress: initial.emailAddress,
             username: initial.username,
             password: initial.password,
           );

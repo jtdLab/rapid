@@ -7,9 +7,14 @@ import 'package:example_ui_ios/example_ui_ios.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
-class SignUpPage extends StatelessWidget {
+class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
 
+  @override
+  State<SignUpPage> createState() => _SignUpPageState();
+}
+
+class _SignUpPageState extends State<SignUpPage> with ExampleToastMixin {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -32,7 +37,7 @@ class SignUpPage extends StatelessWidget {
 
   void _onLoadFailure(BuildContext context, SignUpLoadFailure failure) {
     // TODO switch error cases
-    // showToast('An error occured');
+    showToast('An error occured');
 
     /* failure.failure.maybeWhen(
       // TODO show server error feels not perfect

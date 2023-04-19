@@ -3,7 +3,8 @@
 import 'example_ios_sign_up_page_localizations.dart';
 
 /// The translations for English (`en`).
-class ExampleIosSignUpPageLocalizationsEn extends ExampleIosSignUpPageLocalizations {
+class ExampleIosSignUpPageLocalizationsEn
+    extends ExampleIosSignUpPageLocalizations {
   ExampleIosSignUpPageLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
@@ -13,7 +14,8 @@ class ExampleIosSignUpPageLocalizationsEn extends ExampleIosSignUpPageLocalizati
   String get errorInvalidEmailAddress => 'Invalid email';
 
   @override
-  String get errorInvalidEmailAndPasswordCombination => 'Invalid email or password';
+  String get errorInvalidEmailAndPasswordCombination =>
+      'Invalid email or password';
 
   @override
   String get username => 'Username';

@@ -1,7 +1,8 @@
+import 'package:example_ui/example_ui.dart';
+import 'package:example_ui_ios/src/theme_extensions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Theme, ThemeData;
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:example_ui_ios/src/theme_extensions.dart';
 
 abstract class ExampleApp extends StatelessWidget {
   const ExampleApp._({
@@ -48,17 +49,20 @@ abstract class ExampleApp extends StatelessWidget {
     final brightness =
         this.brightness ?? MediaQuery.of(context).platformBrightness;
 
+    late final Widget theme;
     if (brightness == Brightness.light) {
-      return Theme(
+      theme = Theme(
         data: ThemeData(extensions: lightExtensions),
         child: child!,
       );
     } else {
-      return Theme(
+      theme = Theme(
         data: ThemeData(extensions: darkExtensions),
         child: child!,
       );
     }
+
+    return exampleToastBuilder(context, theme);
   }
 }
 

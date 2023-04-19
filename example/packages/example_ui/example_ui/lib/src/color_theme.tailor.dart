@@ -75,8 +75,7 @@ class ExampleColorTheme extends ThemeExtension<ExampleColorTheme>
   }
 
   @override
-  ExampleColorTheme lerp(
-      ThemeExtension<ExampleColorTheme>? other, double t) {
+  ExampleColorTheme lerp(ThemeExtension<ExampleColorTheme>? other, double t) {
     if (other is! ExampleColorTheme) return this;
     return ExampleColorTheme(
       background: Color.lerp(background, other.background, t)!,

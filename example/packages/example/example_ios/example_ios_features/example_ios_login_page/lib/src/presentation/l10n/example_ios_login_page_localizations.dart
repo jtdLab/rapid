@@ -60,15 +60,18 @@ import 'example_ios_login_page_localizations_en.dart';
 /// be consistent with the languages listed in the ExampleIosLoginPageLocalizations.supportedLocales
 /// property.
 abstract class ExampleIosLoginPageLocalizations {
-  ExampleIosLoginPageLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  ExampleIosLoginPageLocalizations(String locale)
+      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
   static ExampleIosLoginPageLocalizations of(BuildContext context) {
-    return Localizations.of<ExampleIosLoginPageLocalizations>(context, ExampleIosLoginPageLocalizations)!;
+    return Localizations.of<ExampleIosLoginPageLocalizations>(
+        context, ExampleIosLoginPageLocalizations)!;
   }
 
-  static const LocalizationsDelegate<ExampleIosLoginPageLocalizations> delegate = _ExampleIosLoginPageLocalizationsDelegate();
+  static const LocalizationsDelegate<ExampleIosLoginPageLocalizations>
+      delegate = _ExampleIosLoginPageLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -80,7 +83,8 @@ abstract class ExampleIosLoginPageLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
+      <LocalizationsDelegate<dynamic>>[
     delegate,
     GlobalMaterialLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
@@ -88,9 +92,7 @@ abstract class ExampleIosLoginPageLocalizations {
   ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[
-    Locale('en')
-  ];
+  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
 
   /// No description provided for @username.
   ///
@@ -135,33 +137,35 @@ abstract class ExampleIosLoginPageLocalizations {
   String get dontHaveAnAccount;
 }
 
-class _ExampleIosLoginPageLocalizationsDelegate extends LocalizationsDelegate<ExampleIosLoginPageLocalizations> {
+class _ExampleIosLoginPageLocalizationsDelegate
+    extends LocalizationsDelegate<ExampleIosLoginPageLocalizations> {
   const _ExampleIosLoginPageLocalizationsDelegate();
 
   @override
   Future<ExampleIosLoginPageLocalizations> load(Locale locale) {
-    return SynchronousFuture<ExampleIosLoginPageLocalizations>(lookupExampleIosLoginPageLocalizations(locale));
+    return SynchronousFuture<ExampleIosLoginPageLocalizations>(
+        lookupExampleIosLoginPageLocalizations(locale));
   }
 
   @override
-  bool isSupported(Locale locale) => <String>['en'].contains(locale.languageCode);
+  bool isSupported(Locale locale) =>
+      <String>['en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_ExampleIosLoginPageLocalizationsDelegate old) => false;
 }
 
-ExampleIosLoginPageLocalizations lookupExampleIosLoginPageLocalizations(Locale locale) {
-
-
+ExampleIosLoginPageLocalizations lookupExampleIosLoginPageLocalizations(
+    Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en': return ExampleIosLoginPageLocalizationsEn();
+    case 'en':
+      return ExampleIosLoginPageLocalizationsEn();
   }
 
   throw FlutterError(
-    'ExampleIosLoginPageLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-    'an issue with the localizations generation tool. Please file an issue '
-    'on GitHub with a reproducible sample app and the gen-l10n configuration '
-    'that was used.'
-  );
+      'ExampleIosLoginPageLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+      'an issue with the localizations generation tool. Please file an issue '
+      'on GitHub with a reproducible sample app and the gen-l10n configuration '
+      'that was used.');
 }

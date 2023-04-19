@@ -5,3 +5,4 @@ library example_ui;
 
 export 'src/color_theme.dart';
 export 'src/logo.dart';
+export 'src/toast.dart';

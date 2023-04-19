@@ -7,9 +7,14 @@ import 'package:example_ui_ios/example_ui_ios.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> with ExampleToastMixin {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -36,7 +41,7 @@ class LoginPage extends StatelessWidget {
 
   void _onLoadFailure(BuildContext context, LoginLoadFailure failure) {
     // TODO switch error cases
-    //showToast('An error occured');
+    showToast('An error occured');
 
     /*  failure.failure.maybeWhen(
       // TODO show server error feels not perfect

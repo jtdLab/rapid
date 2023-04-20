@@ -74,10 +74,14 @@ void main() {
           () => performTest(const SignUpState.loadSuccess()),
         );
 
-        // TODO failure = null
         test(
           'LoadFailure',
-          () => performTest(const SignUpState.loadFailure(failure: null)),
+          () => performTest(
+            const SignUpState.loadFailure(
+              failure: AuthServiceSignUpWithEmailAndUsernameAndPasswordFailure
+                  .serverError(),
+            ),
+          ),
         );
       });
     });
@@ -121,10 +125,14 @@ void main() {
           () => performTest(const SignUpState.loadSuccess()),
         );
 
-        // TODO failure = null
         test(
           'LoadFailure',
-          () => performTest(const SignUpState.loadFailure(failure: null)),
+          () => performTest(
+            const SignUpState.loadFailure(
+              failure: AuthServiceSignUpWithEmailAndUsernameAndPasswordFailure
+                  .serverError(),
+            ),
+          ),
         );
       });
     });
@@ -168,10 +176,14 @@ void main() {
           () => performTest(const SignUpState.loadSuccess()),
         );
 
-        // TODO failure = null
         test(
           'LoadFailure',
-          () => performTest(const SignUpState.loadFailure(failure: null)),
+          () => performTest(
+            const SignUpState.loadFailure(
+              failure: AuthServiceSignUpWithEmailAndUsernameAndPasswordFailure
+                  .serverError(),
+            ),
+          ),
         );
       });
     });
@@ -215,10 +227,14 @@ void main() {
           () => performTest(const SignUpState.loadSuccess()),
         );
 
-        // TODO failure = null
         test(
           'LoadFailure',
-          () => performTest(const SignUpState.loadFailure(failure: null)),
+          () => performTest(
+            const SignUpState.loadFailure(
+              failure: AuthServiceSignUpWithEmailAndUsernameAndPasswordFailure
+                  .serverError(),
+            ),
+          ),
         );
       });
     });
@@ -340,10 +356,14 @@ void main() {
           () => performTest(const SignUpState.loadSuccess()),
         );
 
-        // TODO failure = null
         test(
           'LoadFailure',
-          () => performTest(const SignUpState.loadFailure(failure: null)),
+          () => performTest(
+            const SignUpState.loadFailure(
+              failure: AuthServiceSignUpWithEmailAndUsernameAndPasswordFailure
+                  .serverError(),
+            ),
+          ),
         );
       });
     });

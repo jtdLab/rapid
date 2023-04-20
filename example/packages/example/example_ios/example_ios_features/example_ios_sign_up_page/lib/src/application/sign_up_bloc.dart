@@ -102,6 +102,7 @@ class SignUpBloc extends Bloc<SignUpEvent, SignUpState> {
             passwordsMatch) {
           emit(const SignUpState.loadInProgress());
 
+          // this adds some delay
           await Future.delayed(const Duration(milliseconds: 500));
 
           final signUpResult =

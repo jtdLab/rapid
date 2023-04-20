@@ -1,15 +1,17 @@
 {
   "@@locale": "en",
   "email": "Email address",
-  "errorInvalidEmailAddress": "Invalid email",
-  "errorInvalidEmailAndPasswordCombination": "Invalid email or password",
+  "errorInvalidEmailAddress": "Invalid email.",
   "username": "Username",
-  "errorInvalidUsername": "errorInvalidUsername - en",
+  "errorInvalidUsername": "Invalid username. Please use 3-15 characters and only include letters, numbers, ., -, and _.",
   "password": "Password",
-  "errorInvalidPassword": "errorInvalidPassword - en",
+  "errorInvalidPassword": "Invalid password. Please use 6-32 non-white space characters.",
   "passwordAgain": "Password again",
   "errorPasswordsDontMatch": "Passwords don't match",
   "signUp": "Sign up",
   "signIn": "Sign in",
-  "alreadyHaveAnAccount": "Already have an account?"
+  "alreadyHaveAnAccount": "Already have an account?",
+  "errorServer": "Server error. Try again later.",
+  "errorEmailAlreadyInUse": "Email already in use.",
+  "errorUsernameAlreadyInUse": "Username already in use."
 }

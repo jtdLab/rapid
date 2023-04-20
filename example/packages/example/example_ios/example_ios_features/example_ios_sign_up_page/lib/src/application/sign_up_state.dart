@@ -1,7 +1,7 @@
 part of 'sign_up_bloc.dart';
 
 @freezed
-class SignUpState<T> with _$SignUpState<T> {
+class SignUpState with _$SignUpState {
   const factory SignUpState.initial({
     required EmailAddress emailAddress,
     required Username username,
@@ -12,6 +12,6 @@ class SignUpState<T> with _$SignUpState<T> {
   const factory SignUpState.loadInProgress() = SignUpLoadInProgress;
   const factory SignUpState.loadSuccess() = SignUpLoadSuccess;
   const factory SignUpState.loadFailure({
-    required T failure,
-  }) = SignUpLoadFailure<T>;
+    required AuthServiceSignUpWithEmailAndUsernameAndPasswordFailure failure,
+  }) = SignUpLoadFailure;
 }

@@ -20,7 +20,7 @@ abstract class $SignUpPageRouter extends _i2.RootStackRouter {
     SignUpRoute.name: (routeData) {
       return _i2.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i1.SignUpPage(),
+        child: _i2.WrappedRoute(child: const _i1.SignUpPage()),
       );
     }
   };

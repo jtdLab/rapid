@@ -61,7 +61,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
           initial: (initial) async {
             emit(const LoginState.loadInProgress());
 
-            // this adds some min. loading
+            // this adds some delay
             await Future.delayed(const Duration(milliseconds: 500));
 
             final loginResult = await _authService.loginWithUsernameAndPassword(

@@ -14,3 +14,5 @@ class MockProtectedRouterNavigator extends Mock
     implements IProtectedRouterNavigator {}
 
 class FakeBuildContext extends Fake implements BuildContext {}
+
+class MockSignUpPageNavigator extends Mock implements ISignUpPageNavigator {}

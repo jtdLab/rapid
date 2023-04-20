@@ -28,6 +28,12 @@ Widget _loginPage(LoginBloc loginBloc) {
   );
 }
 
+Widget _loginPageWrapped() {
+  return Builder(
+    builder: (context) => const LoginPage().wrappedRoute(context),
+  );
+}
+
 void main() {
   group('LoginPage', () {
     setUpAll(() {
@@ -36,6 +42,27 @@ void main() {
 
     tearDown(() async {
       await getIt.reset();
+    });
+
+    testWidgets('injects LoginBloc', (tester) async {
+      await tester.setup();
+
+      final loginBloc = MockLoginBloc();
+      whenListen(
+        loginBloc,
+        const Stream<LoginState>.empty(),
+        initialState: LoginState.initial(
+          username: Username.empty(),
+          password: Password.empty(),
+        ),
+      );
+
+      getIt.registerSingleton<LoginBloc>(loginBloc);
+      await tester.pumpAppWidget(
+        widget: _loginPageWrapped(),
+      );
+      final context = tester.element(find.byType(LoginPage));
+      expect(context.read<LoginBloc>(), loginBloc);
     });
 
     group('renders correctly', () {
@@ -136,7 +163,7 @@ void main() {
       });
     });
 
-    testWidgets('navigates to protected router when [LoginLoadSuccess]',
+    testWidgets('replaces with protected router when [LoginLoadSuccess]',
         (tester) async {
       await tester.setup();
 
@@ -158,6 +185,106 @@ void main() {
         widget: _loginPage(loginBloc),
       );
       verify(() => protectedRouterNavigator.replace(any())).called(1);
+    });
+
+    testWidgets(
+        'navigates to sign up page when go-to-sign-up button is pressed',
+        (tester) async {
+      await tester.setup();
+
+      final signUpPageNavigator = MockSignUpPageNavigator();
+      getIt.registerSingleton<ISignUpPageNavigator>(signUpPageNavigator);
+      final loginBloc = MockLoginBloc();
+      whenListen(
+        loginBloc,
+        const Stream<LoginState>.empty(),
+        initialState: LoginState.initial(
+          username: Username.empty(),
+          password: Password.empty(),
+        ),
+      );
+
+      await tester.pumpAppWidget(
+        widget: _loginPage(loginBloc),
+      );
+      await tester.tap(
+        find.widgetWithText(ExampleLinkButton, 'Sign up now'),
+      );
+      verify(() => signUpPageNavigator.navigate(any())).called(1);
+    });
+
+    testWidgets('adds UsernameChanged to LoginBloc', (tester) async {
+      await tester.setup();
+
+      final loginBloc = MockLoginBloc();
+      whenListen(
+        loginBloc,
+        const Stream<LoginState>.empty(),
+        initialState: LoginState.initial(
+          username: Username.empty(),
+          password: Password.empty(),
+        ),
+      );
+
+      await tester.pumpAppWidget(
+        widget: _loginPage(loginBloc),
+      );
+      await tester.enterText(
+        find.widgetWithText(ExampleTextField, 'Username'),
+        'a',
+      );
+      verify(
+        () => loginBloc.add(const LoginEvent.usernameChanged(newUsername: 'a')),
+      );
+    });
+
+    testWidgets('adds PasswordChanged to LoginBloc', (tester) async {
+      await tester.setup();
+
+      final loginBloc = MockLoginBloc();
+      whenListen(
+        loginBloc,
+        const Stream<LoginState>.empty(),
+        initialState: LoginState.initial(
+          username: Username.empty(),
+          password: Password.empty(),
+        ),
+      );
+
+      await tester.pumpAppWidget(
+        widget: _loginPage(loginBloc),
+      );
+      await tester.enterText(
+        find.widgetWithText(ExampleTextField, 'Password'),
+        'a',
+      );
+      verify(
+        () => loginBloc.add(const LoginEvent.passwordChanged(newPassword: 'a')),
+      );
+    });
+
+    testWidgets('adds LoginPressed to LoginBloc', (tester) async {
+      await tester.setup();
+
+      final loginBloc = MockLoginBloc();
+      whenListen(
+        loginBloc,
+        const Stream<LoginState>.empty(),
+        initialState: LoginState.initial(
+          username: Username.empty(),
+          password: Password.empty(),
+        ),
+      );
+
+      await tester.pumpAppWidget(
+        widget: _loginPage(loginBloc),
+      );
+      await tester.tap(
+        find.widgetWithText(ExamplePrimaryButton, 'Login'),
+      );
+      verify(
+        () => loginBloc.add(const LoginEvent.loginPressed()),
+      );
     });
 
     group('shows toast when [LoginLoadFailure]', () {

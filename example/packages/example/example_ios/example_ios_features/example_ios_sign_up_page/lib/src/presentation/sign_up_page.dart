@@ -7,8 +7,16 @@ import 'package:example_ui_ios/example_ui_ios.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 @RoutePage()
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends StatefulWidget implements AutoRouteWrapper {
   const SignUpPage({super.key});
+
+  @override
+  Widget wrappedRoute(BuildContext context) {
+    return BlocProvider(
+      create: (context) => getIt<SignUpBloc>(),
+      child: this,
+    );
+  }
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
@@ -17,37 +25,29 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> with ExampleToastMixin {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => getIt<SignUpBloc>(),
-      child: BlocListener<SignUpBloc, SignUpState>(
-        listenWhen: (_, current) =>
-            current is SignUpLoadSuccess || current is SignUpLoadFailure,
-        listener: (context, state) => state.mapOrNull(
-          loadSuccess: (failure) => _onAuthenticated(context),
-          loadFailure: (failure) => _onLoadFailure(context, failure),
-        ),
-        child: const SignUpView(),
+    return BlocListener<SignUpBloc, SignUpState>(
+      listenWhen: (_, current) =>
+          current is SignUpLoadSuccess || current is SignUpLoadFailure,
+      listener: (context, state) => state.mapOrNull(
+        loadSuccess: (_) => _onLoadSuccess(context),
+        loadFailure: (state) => _onLoadFailure(context, state),
       ),
+      child: const SignUpView(),
     );
   }
 
-  void _onAuthenticated(BuildContext context) {
+  void _onLoadSuccess(BuildContext context) {
     getIt<IProtectedRouterNavigator>().replace(context);
   }
 
-  void _onLoadFailure(BuildContext context, SignUpLoadFailure failure) {
-    // TODO switch error cases
-    showToast('An error occured');
-
-    /* failure.failure.maybeWhen(
-      // TODO show server error feels not perfect
-      serverError: () =>
-          context.showToast(context.l10n.errorServer.toUpperCase()),
-      // TODO display other errors better
-      orElse: () => context.showToast(
-        context.l10n.errorUnexpected.toUpperCase(),
-      ),
-    ); */
+  void _onLoadFailure(BuildContext context, SignUpLoadFailure state) {
+    final failure = state.failure;
+    failure.whenOrNull(
+      serverError: () => showToast(context.l10n.errorServer),
+      emailAlreadyInUse: () => showToast(context.l10n.errorEmailAlreadyInUse),
+      usernameAlreadyInUse: () =>
+          showToast(context.l10n.errorUsernameAlreadyInUse),
+    );
   }
 }
 
@@ -193,28 +193,28 @@ class SignUpView extends StatelessWidget {
     );
   }
 
-  void _onEmailChanged(BuildContext context, String email) {
+  void _onEmailChanged(BuildContext context, String newEmailAddress) {
     context
         .read<SignUpBloc>()
-        .add(SignUpEvent.emailChanged(newEmailAddress: email));
+        .add(SignUpEvent.emailChanged(newEmailAddress: newEmailAddress));
   }
 
-  void _onUsernameChanged(BuildContext context, String username) {
+  void _onUsernameChanged(BuildContext context, String newUsername) {
     context
         .read<SignUpBloc>()
-        .add(SignUpEvent.usernameChanged(newUsername: username));
+        .add(SignUpEvent.usernameChanged(newUsername: newUsername));
   }
 
-  void _onPasswordChanged(BuildContext context, String password) {
+  void _onPasswordChanged(BuildContext context, String newPassword) {
     context
         .read<SignUpBloc>()
-        .add(SignUpEvent.passwordChanged(newPassword: password));
+        .add(SignUpEvent.passwordChanged(newPassword: newPassword));
   }
 
-  void _onPasswordAgainChanged(BuildContext context, String passwordAgain) {
-    context
-        .read<SignUpBloc>()
-        .add(SignUpEvent.passwordAgainChanged(newPasswordAgain: passwordAgain));
+  void _onPasswordAgainChanged(BuildContext context, String newPasswordAgain) {
+    context.read<SignUpBloc>().add(
+          SignUpEvent.passwordAgainChanged(newPasswordAgain: newPasswordAgain),
+        );
   }
 
   void _onSignUpPressed(BuildContext context) {

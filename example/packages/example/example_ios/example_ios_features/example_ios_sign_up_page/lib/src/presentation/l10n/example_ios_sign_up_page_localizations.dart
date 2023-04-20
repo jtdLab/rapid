@@ -60,18 +60,15 @@ import 'example_ios_sign_up_page_localizations_en.dart';
 /// be consistent with the languages listed in the ExampleIosSignUpPageLocalizations.supportedLocales
 /// property.
 abstract class ExampleIosSignUpPageLocalizations {
-  ExampleIosSignUpPageLocalizations(String locale)
-      : localeName = intl.Intl.canonicalizedLocale(locale.toString());
+  ExampleIosSignUpPageLocalizations(String locale) : localeName = intl.Intl.canonicalizedLocale(locale.toString());
 
   final String localeName;
 
   static ExampleIosSignUpPageLocalizations of(BuildContext context) {
-    return Localizations.of<ExampleIosSignUpPageLocalizations>(
-        context, ExampleIosSignUpPageLocalizations)!;
+    return Localizations.of<ExampleIosSignUpPageLocalizations>(context, ExampleIosSignUpPageLocalizations)!;
   }
 
-  static const LocalizationsDelegate<ExampleIosSignUpPageLocalizations>
-      delegate = _ExampleIosSignUpPageLocalizationsDelegate();
+  static const LocalizationsDelegate<ExampleIosSignUpPageLocalizations> delegate = _ExampleIosSignUpPageLocalizationsDelegate();
 
   /// A list of this localizations delegate along with the default localizations
   /// delegates.
@@ -83,8 +80,7 @@ abstract class ExampleIosSignUpPageLocalizations {
   /// Additional delegates can be added by appending to this list in
   /// MaterialApp. This list does not have to be used at all if a custom list
   /// of delegates is preferred or required.
-  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates =
-      <LocalizationsDelegate<dynamic>>[
+  static const List<LocalizationsDelegate<dynamic>> localizationsDelegates = <LocalizationsDelegate<dynamic>>[
     delegate,
     GlobalMaterialLocalizations.delegate,
     GlobalCupertinoLocalizations.delegate,
@@ -92,7 +88,9 @@ abstract class ExampleIosSignUpPageLocalizations {
   ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('en')
+  ];
 
   /// No description provided for @email.
   ///
@@ -103,14 +101,8 @@ abstract class ExampleIosSignUpPageLocalizations {
   /// No description provided for @errorInvalidEmailAddress.
   ///
   /// In en, this message translates to:
-  /// **'Invalid email'**
+  /// **'Invalid email.'**
   String get errorInvalidEmailAddress;
-
-  /// No description provided for @errorInvalidEmailAndPasswordCombination.
-  ///
-  /// In en, this message translates to:
-  /// **'Invalid email or password'**
-  String get errorInvalidEmailAndPasswordCombination;
 
   /// No description provided for @username.
   ///
@@ -121,7 +113,7 @@ abstract class ExampleIosSignUpPageLocalizations {
   /// No description provided for @errorInvalidUsername.
   ///
   /// In en, this message translates to:
-  /// **'errorInvalidUsername - en'**
+  /// **'Invalid username. Please use 3-15 characters and only include letters, numbers, ., -, and _.'**
   String get errorInvalidUsername;
 
   /// No description provided for @password.
@@ -133,7 +125,7 @@ abstract class ExampleIosSignUpPageLocalizations {
   /// No description provided for @errorInvalidPassword.
   ///
   /// In en, this message translates to:
-  /// **'errorInvalidPassword - en'**
+  /// **'Invalid password. Please use 6-32 non-white space characters.'**
   String get errorInvalidPassword;
 
   /// No description provided for @passwordAgain.
@@ -165,37 +157,53 @@ abstract class ExampleIosSignUpPageLocalizations {
   /// In en, this message translates to:
   /// **'Already have an account?'**
   String get alreadyHaveAnAccount;
+
+  /// No description provided for @errorServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Server error. Try again later.'**
+  String get errorServer;
+
+  /// No description provided for @errorEmailAlreadyInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Email already in use.'**
+  String get errorEmailAlreadyInUse;
+
+  /// No description provided for @errorUsernameAlreadyInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'Username already in use.'**
+  String get errorUsernameAlreadyInUse;
 }
 
-class _ExampleIosSignUpPageLocalizationsDelegate
-    extends LocalizationsDelegate<ExampleIosSignUpPageLocalizations> {
+class _ExampleIosSignUpPageLocalizationsDelegate extends LocalizationsDelegate<ExampleIosSignUpPageLocalizations> {
   const _ExampleIosSignUpPageLocalizationsDelegate();
 
   @override
   Future<ExampleIosSignUpPageLocalizations> load(Locale locale) {
-    return SynchronousFuture<ExampleIosSignUpPageLocalizations>(
-        lookupExampleIosSignUpPageLocalizations(locale));
+    return SynchronousFuture<ExampleIosSignUpPageLocalizations>(lookupExampleIosSignUpPageLocalizations(locale));
   }
 
   @override
-  bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+  bool isSupported(Locale locale) => <String>['en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_ExampleIosSignUpPageLocalizationsDelegate old) => false;
 }
 
-ExampleIosSignUpPageLocalizations lookupExampleIosSignUpPageLocalizations(
-    Locale locale) {
+ExampleIosSignUpPageLocalizations lookupExampleIosSignUpPageLocalizations(Locale locale) {
+
+
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
-    case 'en':
-      return ExampleIosSignUpPageLocalizationsEn();
+    case 'en': return ExampleIosSignUpPageLocalizationsEn();
   }
 
   throw FlutterError(
-      'ExampleIosSignUpPageLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+    'ExampleIosSignUpPageLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.'
+  );
 }

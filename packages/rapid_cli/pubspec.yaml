@@ -1,5 +1,5 @@
 name: rapid_cli
-description: Rapid is set of best practices, snippets and a cli to develop apps fast.
+description: Rapid is an architecture and corresponding CLI to develop Flutter apps fast.
 version: 0.0.1
 publish_to: none
 executables:

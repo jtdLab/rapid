@@ -37,10 +37,13 @@ jobs:
         run: melos dev:activate
 
       - name: Generate fixtures
-        run: echo "This is some content" > test/e2e/fixtures/example.txt
+        run: bash tool/fixtures.sh
 
-      # - name: Generate fixtures
-      #   run: bash tool/fixtures.sh
+      - name: Cache fixtures
+        uses: actions/cache@v3
+        with:
+          path: test/e2e/fixtures
+          key: fixtures-directory
 
   e2e:
     defaults:
@@ -147,8 +150,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: KUKU
-        run: cat test/e2e/fixtures/example.txt
+      - name: Get cached fixtures
+        uses: actions/cache/restore@v3
+        with:
+          path: test/e2e/fixtures
+          key: fixtures-directory
 
       # TODO
       # - run: sudo apt-get update -y

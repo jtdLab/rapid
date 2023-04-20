@@ -37,7 +37,7 @@ jobs:
         run: melos dev:activate
 
       - name: Generate fixtures
-        run: sh tool/fixtures.sh
+        run: bash tool/fixtures.sh
 
   e2e:
     defaults:

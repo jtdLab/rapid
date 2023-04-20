@@ -1,7 +1,7 @@
 name: rapid
 
 packages:
-  - packages/rapid/rapid/rapid_domain
+  - packages/rapid/rapid_domain
   - packages/rapid_cli
   - packages/rapid_cli/templates/tmp/packages/** # TODO rm atm required because of bundles.sh
 
@@ -85,13 +85,6 @@ scripts:
     description: Locally activate rapid_cli for development.
     packageFilters:
       scope: "rapid_cli"
-
-  dev:create:
-    run: |
-      melos dev:activate
-      rm -r -f packages/rapid_cli/tmp && \
-      rapid create foo_bar -o packages/rapid_cli/tmp --ios
-    description: Run rapid create for tinkering with single platform (iOS).
 
   dev:create:none:
     run: |

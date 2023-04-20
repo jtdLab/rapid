@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/activate/core/platform.dart';
 import 'package:rapid_cli/src/commands/core/language_option.dart';

@@ -36,9 +36,6 @@ jobs:
       - name: Setup Rapid CLI
         run: melos dev:activate
 
-      - name: Show bash version
-        run: sh --version
-
       - name: Generate fixtures
         run: sh tool/fixtures.sh
 

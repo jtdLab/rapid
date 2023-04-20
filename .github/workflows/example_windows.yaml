@@ -5,10 +5,22 @@ on:
     branches:
       - main
     paths:
+      - example/packages/example/example_di
+      - example/packages/example/example_domain
+      - example/packages/example/example_infrastructure
+      - example/packages/example/example_logging
       - example/packages/example/example_windows
       - example/packages/example_ui/example_ui
       - example/packages/example_ui/example_ui_windows
   pull_request:
+    paths:
+      - example/packages/example/example_di
+      - example/packages/example/example_domain
+      - example/packages/example/example_infrastructure
+      - example/packages/example/example_logging
+      - example/packages/example/example_windows
+      - example/packages/example_ui/example_ui
+      - example/packages/example_ui/example_ui_windows
   workflow_dispatch:
 
 jobs:

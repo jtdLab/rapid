@@ -1,0 +1,82 @@
+{
+    "bricks": {
+        "arb_file": {
+            "path": "arb_file"
+        },
+        "bloc": {
+            "path": "bloc"
+        },
+        "cubit": {
+            "path": "cubit"
+        },
+        "data_transfer_object": {
+            "path": "data_transfer_object"
+        },
+        "di_package": {
+            "path": "di_package"
+        },
+        "domain_package": {
+            "path": "domain_package"
+        },
+        "entity": {
+            "path": "entity"
+        },
+        "infrastructure_package": {
+            "path": "infrastructure_package"
+        },
+        "logging_package": {
+            "path": "logging_package"
+        },
+        "platform_app_feature_package": {
+            "path": "platform_app_feature_package"
+        },
+        "platform_feature_package": {
+            "path": "platform_feature_package"
+        },
+        "platform_navigation_package": {
+            "path": "platform_navigation_package"
+        },
+        "platform_root_package": {
+            "path": "platform_root_package"
+        },
+        "android_native_directory": {
+            "path": "platform_root_package/android_native_directory"
+        },
+        "ios_native_directory": {
+            "path": "platform_root_package/ios_native_directory"
+        },
+        "linux_native_directory": {
+            "path": "platform_root_package/linux_native_directory"
+        },
+        "macos_native_directory": {
+            "path": "platform_root_package/macos_native_directory"
+        },
+        "web_native_directory": {
+            "path": "platform_root_package/web_native_directory"
+        },
+        "windows_native_directory": {
+            "path": "platform_root_package/windows_native_directory"
+        },
+        "platform_ui_package": {
+            "path": "platform_ui_package"
+        },
+        "project": {
+            "path": "project"
+        },
+        "service_implementation": {
+            "path": "service_implementation"
+        },
+        "service_interface": {
+            "path": "service_interface"
+        },
+        "ui_package": {
+            "path": "ui_package"
+        },
+        "value_object": {
+            "path": "value_object"
+        },
+        "widget": {
+            "path": "widget"
+        }
+    }
+}

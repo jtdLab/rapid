@@ -19,7 +19,10 @@ void main() {
   group('ExampleScaffold', () {
     testWidgets('renders CupertinoPageScaffold correctly', (tester) async {
       // Arrange
-      const theme = ExampleScaffoldTheme(backgroundColor: Color(0xFF12FF12));
+      const theme = ExampleScaffoldTheme(
+        backgroundColor: Color(0xFF12FF12),
+        padding: EdgeInsets.all(1), // TODO
+      );
       final body = Container();
       final exampleScaffold = _getExampleScaffold(
         theme: theme,

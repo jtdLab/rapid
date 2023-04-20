@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:example_domain/example_domain.dart';
 import 'package:example_ios_login_page/src/application/application.dart';
@@ -16,3 +17,5 @@ class MockProtectedRouterNavigator extends Mock
 class FakeBuildContext extends Fake implements BuildContext {}
 
 class MockSignUpPageNavigator extends Mock implements ISignUpPageNavigator {}
+
+class MockStackRouter extends Mock implements StackRouter {}

@@ -146,11 +146,11 @@ abstract class ExampleIosSignUpPageLocalizations {
   /// **'Sign up'**
   String get signUp;
 
-  /// No description provided for @signIn.
+  /// No description provided for @login.
   ///
   /// In en, this message translates to:
-  /// **'Sign in'**
-  String get signIn;
+  /// **'Login'**
+  String get login;
 
   /// No description provided for @alreadyHaveAnAccount.
   ///

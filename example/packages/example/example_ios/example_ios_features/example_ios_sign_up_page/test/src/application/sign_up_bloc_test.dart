@@ -20,11 +20,11 @@ void main() {
 
     test('has initial state Initial', () {
       // Arrange
-      final loginBloc = _getSignUpBloc();
+      final signUpBloc = _getSignUpBloc();
 
       //  Act + Assert
       expect(
-        loginBloc.state,
+        signUpBloc.state,
         SignUpState.initial(
           emailAddress: EmailAddress.empty(),
           username: Username.empty(),
@@ -247,7 +247,7 @@ void main() {
       });
 
       blocTest<SignUpBloc, SignUpState>(
-        'emits [LoadInProgress, LoadSuccess] when login succeeds',
+        'emits [LoadInProgress, LoadSuccess] when sign up succeeds',
         setUp: () {
           when(
             () => authService.signUpWithEmailAndUsernameAndPassword(
@@ -282,8 +282,134 @@ void main() {
         },
       );
 
+      group('emits [Initial] when', () {
+        blocTest<SignUpBloc, SignUpState>(
+          'email address is invalid',
+          build: () => _getSignUpBloc(authService),
+          seed: () => SignUpState.initial(
+            emailAddress: EmailAddress('a'),
+            username: Username('foo123bar'),
+            password: Password('foo123'),
+            passwordAgain: Password('foo123'),
+            showErrorMessages: false,
+          ),
+          act: (bloc) => bloc.add(const SignUpEvent.signUpPressed()),
+          expect: () => [
+            SignUpState.initial(
+              emailAddress: EmailAddress('a'),
+              username: Username('foo123bar'),
+              password: Password('foo123'),
+              passwordAgain: Password('foo123'),
+              showErrorMessages: true,
+            ),
+          ],
+          verify: (_) {
+            verifyNever(
+              () => authService.signUpWithEmailAndUsernameAndPassword(
+                emailAddress: any(named: 'emailAddress'),
+                username: any(named: 'username'),
+                password: any(named: 'password'),
+              ),
+            );
+          },
+        );
+
+        blocTest<SignUpBloc, SignUpState>(
+          'username is invalid',
+          build: () => _getSignUpBloc(authService),
+          seed: () => SignUpState.initial(
+            emailAddress: EmailAddress('a.b@c'),
+            username: Username('a'),
+            password: Password('foo123'),
+            passwordAgain: Password('foo123'),
+            showErrorMessages: false,
+          ),
+          act: (bloc) => bloc.add(const SignUpEvent.signUpPressed()),
+          expect: () => [
+            SignUpState.initial(
+              emailAddress: EmailAddress('a.b@c'),
+              username: Username('a'),
+              password: Password('foo123'),
+              passwordAgain: Password('foo123'),
+              showErrorMessages: true,
+            ),
+          ],
+          verify: (_) {
+            verifyNever(
+              () => authService.signUpWithEmailAndUsernameAndPassword(
+                emailAddress: any(named: 'emailAddress'),
+                username: any(named: 'username'),
+                password: any(named: 'password'),
+              ),
+            );
+          },
+        );
+
+        blocTest<SignUpBloc, SignUpState>(
+          'password is invalid',
+          build: () => _getSignUpBloc(authService),
+          seed: () => SignUpState.initial(
+            emailAddress: EmailAddress('a.b@c'),
+            username: Username('foo123bar'),
+            password: Password('a'),
+            passwordAgain: Password('foo123'),
+            showErrorMessages: false,
+          ),
+          act: (bloc) => bloc.add(const SignUpEvent.signUpPressed()),
+          expect: () => [
+            SignUpState.initial(
+              emailAddress: EmailAddress('a.b@c'),
+              username: Username('foo123bar'),
+              password: Password('a'),
+              passwordAgain: Password('foo123'),
+              showErrorMessages: true,
+            ),
+          ],
+          verify: (_) {
+            verifyNever(
+              () => authService.signUpWithEmailAndUsernameAndPassword(
+                emailAddress: any(named: 'emailAddress'),
+                username: any(named: 'username'),
+                password: any(named: 'password'),
+              ),
+            );
+          },
+        );
+
+        blocTest<SignUpBloc, SignUpState>(
+          'password and password again do not match',
+          build: () => _getSignUpBloc(authService),
+          seed: () => SignUpState.initial(
+            emailAddress: EmailAddress('a.b@c'),
+            username: Username('foo123bar'),
+            password: Password('foo123'),
+            passwordAgain: Password('bar123'),
+            showErrorMessages: false,
+          ),
+          act: (bloc) => bloc.add(const SignUpEvent.signUpPressed()),
+          expect: () => [
+            SignUpState.initial(
+              emailAddress: EmailAddress('a.b@c'),
+              username: Username('foo123bar'),
+              password: Password('foo123'),
+              passwordAgain: Password('bar123'),
+              showErrorMessages: true,
+            ),
+          ],
+          verify: (_) {
+            verifyNever(
+              () => authService.signUpWithEmailAndUsernameAndPassword(
+                emailAddress: any(named: 'emailAddress'),
+                username: any(named: 'username'),
+                password: any(named: 'password'),
+              ),
+            );
+          },
+        );
+      });
+
       blocTest<SignUpBloc, SignUpState>(
-        'emits [Initial] when login fails',
+        'emits [LoadInProgress, LoadFailure, Initial] when sign up fails',
         setUp: () {
           when(
             () => authService.signUpWithEmailAndUsernameAndPassword(
@@ -294,37 +420,42 @@ void main() {
           ).thenAnswer(
             (_) async => left(
               const AuthServiceSignUpWithEmailAndUsernameAndPasswordFailure
-                  .invalidEmail(),
+                  .serverError(),
             ),
           );
         },
         build: () => _getSignUpBloc(authService),
         seed: () => SignUpState.initial(
-          emailAddress: EmailAddress('a'),
-          username: Username('b'),
-          password: Password('c'),
-          passwordAgain: Password('c'),
+          emailAddress: EmailAddress('a@b.c'),
+          username: Username('foo123bar'),
+          password: Password('foo123'),
+          passwordAgain: Password('foo123'),
           showErrorMessages: false,
         ),
         act: (bloc) => bloc.add(const SignUpEvent.signUpPressed()),
         wait: const Duration(milliseconds: 500),
         expect: () => [
+          const SignUpState.loadInProgress(),
+          const SignUpState.loadFailure(
+            failure: AuthServiceSignUpWithEmailAndUsernameAndPasswordFailure
+                .serverError(),
+          ),
           SignUpState.initial(
-            emailAddress: EmailAddress('a'),
-            username: Username('b'),
-            password: Password('c'),
-            passwordAgain: Password('c'),
+            emailAddress: EmailAddress('a@b.c'),
+            username: Username('foo123bar'),
+            password: Password('foo123'),
+            passwordAgain: Password('foo123'),
             showErrorMessages: true,
           ),
         ],
         verify: (_) {
-          verifyNever(
+          verify(
             () => authService.signUpWithEmailAndUsernameAndPassword(
-              emailAddress: EmailAddress('a'),
-              username: Username('b'),
-              password: Password('c'),
+              emailAddress: EmailAddress('a@b.c'),
+              username: Username('foo123bar'),
+              password: Password('foo123'),
             ),
-          );
+          ).called(1);
         },
       );
 

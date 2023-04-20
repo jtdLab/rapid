@@ -9,8 +9,11 @@ import 'router.gr.dart';
 @ios
 @LazySingleton(as: ILoginPageNavigator)
 class LoginPageNavigator implements ILoginPageNavigator {
+  @visibleForTesting
+  StackRouter? routerOverrides;
+
   @override
   void navigate(BuildContext context) {
-    context.router.navigate(const LoginRoute());
+    (routerOverrides ?? context.router).navigate(const LoginRoute());
   }
 }

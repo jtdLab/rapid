@@ -129,7 +129,7 @@ class LoginView extends StatelessWidget {
                       const SizedBox(width: 6),
                       ExampleLinkButton(
                         text: context.l10n.signUpNow,
-                        onPressed: () => _onGotSignUpPressed(context),
+                        onPressed: () => _onGoToSignUpPressed(context),
                       ),
                     ],
                   ),
@@ -159,7 +159,7 @@ class LoginView extends StatelessWidget {
     context.read<LoginBloc>().add(const LoginEvent.loginPressed());
   }
 
-  void _onGotSignUpPressed(BuildContext context) {
+  void _onGoToSignUpPressed(BuildContext context) {
     getIt<ISignUpPageNavigator>().navigate(context);
   }
 }

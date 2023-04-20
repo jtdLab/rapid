@@ -22,6 +22,7 @@ class SignUpPage extends StatefulWidget implements AutoRouteWrapper {
   State<SignUpPage> createState() => _SignUpPageState();
 }
 
+// TODO: consider using https://pub.dev/packages/flutter_hooks
 class _SignUpPageState extends State<SignUpPage> with ExampleToastMixin {
   @override
   Widget build(BuildContext context) {
@@ -176,8 +177,8 @@ class SignUpView extends StatelessWidget {
                           ),
                           const SizedBox(width: 6),
                           ExampleLinkButton(
-                            text: context.l10n.signIn,
-                            onPressed: () => _onGotSignInPressed(context),
+                            text: context.l10n.login,
+                            onPressed: () => _onGoToLoginPressed(context),
                           ),
                         ],
                       ),
@@ -221,7 +222,7 @@ class SignUpView extends StatelessWidget {
     context.read<SignUpBloc>().add(const SignUpEvent.signUpPressed());
   }
 
-  void _onGotSignInPressed(BuildContext context) {
+  void _onGoToLoginPressed(BuildContext context) {
     getIt<ILoginPageNavigator>().navigate(context);
   }
 }

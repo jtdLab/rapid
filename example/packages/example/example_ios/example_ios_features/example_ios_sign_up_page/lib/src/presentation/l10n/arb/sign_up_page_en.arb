@@ -9,7 +9,7 @@
   "passwordAgain": "Password again",
   "errorPasswordsDontMatch": "Passwords don't match",
   "signUp": "Sign up",
-  "signIn": "Sign in",
+  "login": "Login",
   "alreadyHaveAnAccount": "Already have an account?",
   "errorServer": "Server error. Try again later.",
   "errorEmailAlreadyInUse": "Email already in use.",

@@ -34,7 +34,7 @@ class ExampleIosSignUpPageLocalizationsEn extends ExampleIosSignUpPageLocalizati
   String get signUp => 'Sign up';
 
   @override
-  String get signIn => 'Sign in';
+  String get login => 'Login';
 
   @override
   String get alreadyHaveAnAccount => 'Already have an account?';

@@ -87,8 +87,10 @@ void main() {
           expect(find.byType(ExampleScaffold), findsOneWidget);
           expect(find.byType(RapidLogo), findsOneWidget);
           expect(find.text('Login').first, findsOneWidget);
-          expect(find.widgetWithText(ExampleTextField, 'Username'),
-              findsOneWidget);
+          expect(
+            find.widgetWithText(ExampleTextField, 'Username'),
+            findsOneWidget,
+          );
           final passwordTextFieldFinder =
               find.widgetWithText(ExampleTextField, 'Password');
           expect(passwordTextFieldFinder, findsOneWidget);
@@ -132,8 +134,10 @@ void main() {
           expect(find.byType(ExampleScaffold), findsOneWidget);
           expect(find.byType(RapidLogo), findsOneWidget);
           expect(find.text('Login').first, findsOneWidget);
-          expect(find.widgetWithText(ExampleTextField, 'Username'),
-              findsOneWidget);
+          expect(
+            find.widgetWithText(ExampleTextField, 'Username'),
+            findsOneWidget,
+          );
           final passwordTextFieldFinder =
               find.widgetWithText(ExampleTextField, 'Password');
           expect(passwordTextFieldFinder, findsOneWidget);
@@ -161,56 +165,6 @@ void main() {
           );
         });
       });
-    });
-
-    testWidgets('replaces with protected router when [LoginLoadSuccess]',
-        (tester) async {
-      await tester.setup();
-
-      final protectedRouterNavigator = MockProtectedRouterNavigator();
-      getIt.registerSingleton<IProtectedRouterNavigator>(
-        protectedRouterNavigator,
-      );
-      final loginBloc = MockLoginBloc();
-      whenListen(
-        loginBloc,
-        Stream<LoginState>.value(const LoginState.loadSuccess()),
-        initialState: LoginState.initial(
-          username: Username.empty(),
-          password: Password.empty(),
-        ),
-      );
-
-      await tester.pumpAppWidget(
-        widget: _loginPage(loginBloc),
-      );
-      verify(() => protectedRouterNavigator.replace(any())).called(1);
-    });
-
-    testWidgets(
-        'navigates to sign up page when go-to-sign-up button is pressed',
-        (tester) async {
-      await tester.setup();
-
-      final signUpPageNavigator = MockSignUpPageNavigator();
-      getIt.registerSingleton<ISignUpPageNavigator>(signUpPageNavigator);
-      final loginBloc = MockLoginBloc();
-      whenListen(
-        loginBloc,
-        const Stream<LoginState>.empty(),
-        initialState: LoginState.initial(
-          username: Username.empty(),
-          password: Password.empty(),
-        ),
-      );
-
-      await tester.pumpAppWidget(
-        widget: _loginPage(loginBloc),
-      );
-      await tester.tap(
-        find.widgetWithText(ExampleLinkButton, 'Sign up now'),
-      );
-      verify(() => signUpPageNavigator.navigate(any())).called(1);
     });
 
     testWidgets('adds UsernameChanged to LoginBloc', (tester) async {
@@ -285,6 +239,56 @@ void main() {
       verify(
         () => loginBloc.add(const LoginEvent.loginPressed()),
       );
+    });
+
+    testWidgets('replaces with protected router when [LoginLoadSuccess]',
+        (tester) async {
+      await tester.setup();
+
+      final protectedRouterNavigator = MockProtectedRouterNavigator();
+      getIt.registerSingleton<IProtectedRouterNavigator>(
+        protectedRouterNavigator,
+      );
+      final loginBloc = MockLoginBloc();
+      whenListen(
+        loginBloc,
+        Stream<LoginState>.value(const LoginState.loadSuccess()),
+        initialState: LoginState.initial(
+          username: Username.empty(),
+          password: Password.empty(),
+        ),
+      );
+
+      await tester.pumpAppWidget(
+        widget: _loginPage(loginBloc),
+      );
+      verify(() => protectedRouterNavigator.replace(any())).called(1);
+    });
+
+    testWidgets(
+        'navigates to sign up page when go-to-sign-up button is pressed',
+        (tester) async {
+      await tester.setup();
+
+      final signUpPageNavigator = MockSignUpPageNavigator();
+      getIt.registerSingleton<ISignUpPageNavigator>(signUpPageNavigator);
+      final loginBloc = MockLoginBloc();
+      whenListen(
+        loginBloc,
+        const Stream<LoginState>.empty(),
+        initialState: LoginState.initial(
+          username: Username.empty(),
+          password: Password.empty(),
+        ),
+      );
+
+      await tester.pumpAppWidget(
+        widget: _loginPage(loginBloc),
+      );
+      await tester.tap(
+        find.widgetWithText(ExampleLinkButton, 'Sign up now'),
+      );
+      verify(() => signUpPageNavigator.navigate(any())).called(1);
     });
 
     group('shows toast when [LoginLoadFailure]', () {

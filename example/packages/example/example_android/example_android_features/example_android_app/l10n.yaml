@@ -1,8 +1,0 @@
-arb-dir: lib/src/presentation/l10n/arb
-output-class: ExampleAndroidAppLocalizations
-output-dir: lib/src/presentation/l10n
-template-arb-file: app_en.arb
-output-localization-file: example_android_app_localizations.dart
-nullable-getter: false
-synthetic-package: false
-header: // coverage:ignore-file

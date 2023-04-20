@@ -1,10 +1,9 @@
 name: rapid
 
 packages:
-  # TODO maybe add example and rm the packages/rapid_cli/templates/tmp/packages/** if possible
   - packages/rapid/rapid/rapid_domain
   - packages/rapid_cli
-  - packages/rapid_cli/templates/tmp/packages/** # Required because of bundles.sh
+  - packages/rapid_cli/templates/tmp/packages/** # TODO rm atm required because of bundles.sh
 
 command:
   bootstrap:
@@ -111,12 +110,5 @@ scripts:
   tool:bundles:
     exec: sh tool/bundles.sh
     description: Regenerate fresh bundles from templates.
-    packageFilters:
-      scope: "rapid_cli"
-
-  # TODO this does not find any packages when run melos bs for some reason
-  tool:fixtures:
-    exec: sh tool/fixtures.sh
-    description: Regenerate fresh fixtures for e2e testing.
     packageFilters:
       scope: "rapid_cli"

@@ -1,7 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
-import 'package:rapid_cli/src/commands/core/dir_option.dart';
+import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -35,10 +34,10 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
   UiPlatformRemoveWidgetCommand({
     required Platform platform,
     Logger? logger,
-    required Project project,
+    Project? project,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project;
+        _project = project ?? Project();
 
   final Platform _platform;
   final Logger _logger;
@@ -71,20 +70,27 @@ abstract class UiPlatformRemoveWidgetCommand extends Command<int>
 
           _logger.info('Removing ${_platform.prettyName} Widget ...');
 
-          try {
-            await _project.removeWidget(
-              name: name,
-              dir: '.', // TODO not needed
-              platform: _platform,
-              logger: _logger,
-            );
+          final platformUiPackage =
+              _project.platformUiPackage(platform: _platform);
+          // TODO remove dir completly ?
+          final widget = platformUiPackage.widget(name: name, dir: '.');
+
+          if (widget.existsAny()) {
+            widget.delete();
+
+            final themeExtensionsFile = platformUiPackage.themeExtensionsFile;
+            themeExtensionsFile.removeThemeExtension(name);
+
+            final barrelFile = platformUiPackage.barrelFile;
+            barrelFile.removeExport('src/${name.snakeCase}.dart');
+            barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
 
             _logger
               ..info('')
               ..success('Removed ${_platform.prettyName} Widget $name.');
 
             return ExitCode.success.code;
-          } on WidgetAlreadyExists {
+          } else {
             _logger
               ..info('')
               ..err('${_platform.prettyName} Widget $name not found.');

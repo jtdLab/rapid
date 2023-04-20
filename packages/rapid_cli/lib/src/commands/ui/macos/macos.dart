@@ -12,7 +12,7 @@ class UiMacosCommand extends UiPlatformCommand {
   /// {@macro ui_macos_command}
   UiMacosCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.macos,
           addCommand: UiMacosAddCommand(logger: logger, project: project),

@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# Run fast infrastructure e2e tests
-
+############################################################################################
 # Run from packages/rapid_cli
-# sh tool/e2e_infra.sh 
+# sh tool/e2e_infra.sh
+############################################################################################
+# Runs fast infrastructure e2e tests
+############################################################################################
 
 testFiles=(
     "test/e2e/infrastructure_add_data_transfer_object_test.dart"
@@ -13,6 +15,5 @@ testFiles=(
 )
 
 for testFile in "${testFiles[@]}"; do
-flutter test $testFile --run-skipped -t e2e
+    flutter test $testFile --run-skipped -t e2e
 done
-

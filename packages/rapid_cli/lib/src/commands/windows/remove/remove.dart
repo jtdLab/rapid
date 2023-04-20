@@ -12,7 +12,7 @@ class WindowsRemoveCommand extends PlatformRemoveCommand {
   /// {@macro windows_remove_command}
   WindowsRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.windows,
           featureCommand:

@@ -11,7 +11,7 @@ class MacosSetCommand extends PlatformSetCommand {
   /// {@macro macos_set_command}
   MacosSetCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.macos,
           defaultLanguageCommand: MacosSetDefaultLanguageCommand(

@@ -8,7 +8,7 @@ class AndroidRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   /// {@macro android_remove_feature_command}
   AndroidRemoveFeatureCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.melosBootstrap,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,

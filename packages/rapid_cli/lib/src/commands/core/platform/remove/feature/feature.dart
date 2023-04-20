@@ -2,10 +2,10 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/remove/feature/feature.dart';
+import 'package:rapid_cli/src/commands/core/dart_package_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/ios/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/linux/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/macos/remove/feature/feature.dart';
@@ -30,19 +30,19 @@ import 'package:rapid_cli/src/project/project.dart';
 ///  * [WindowsRemoveFeatureCommand]
 /// {@endtemplate}
 abstract class PlatformRemoveFeatureCommand extends Command<int>
-    with OverridableArgResults {
+    with OverridableArgResults, DartPackageNameGetter {
   /// {@macro platform_remove_feature_command}
   PlatformRemoveFeatureCommand({
     required Platform platform,
     Logger? logger,
-    required Project project,
+    Project? project,
     MelosBootstrapCommand? melosBootstrap,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project,
+        _project = project ?? Project(),
         _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
@@ -82,22 +82,28 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
         ],
         _logger,
         () async {
-          final name = _name;
+          final name = super.dartPackageName;
 
           _logger.info('Removing Feature ...');
 
-          try {
-            await _project.removeFeature(
-              name: name,
-              platform: _platform,
-              logger: _logger,
-            );
-
-            final platformDirectory =
-                _project.platformDirectory(platform: _platform);
+          final platformDirectory =
+              _project.platformDirectory(platform: _platform);
+          final featuresDirectory = platformDirectory.featuresDirectory;
+          final featurePackage = featuresDirectory.featurePackage(name: name);
+          if (featurePackage.exists()) {
             final rootPackage = platformDirectory.rootPackage;
-            final remainingFeaturePackages =
-                platformDirectory.featuresDirectory.featurePackages();
+            // TODO if routing add router to root router list
+            await rootPackage.unregisterFeaturePackage(featurePackage);
+
+            final remainingFeaturePackages = featuresDirectory.featurePackages()
+              ..remove(featurePackage);
+
+            for (final remainingFeaturePackage in remainingFeaturePackages) {
+              final pubspecFile = remainingFeaturePackage.pubspecFile;
+              pubspecFile.removeDependency(featurePackage.packageName());
+            }
+
+            featurePackage.delete();
 
             await _melosBootstrap(
               cwd: _project.path,
@@ -119,7 +125,7 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
               ..success('Removed ${_platform.prettyName} feature $name.');
 
             return ExitCode.success.code;
-          } on FeatureDoesNotExist {
+          } else {
             _logger
               ..info('')
               ..err(
@@ -130,34 +136,4 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
           }
         },
       );
-
-  String get _name => _validateNameArg(argResults.rest);
-
-  /// Validates whether [name] is valid feature name.
-  ///
-  /// Returns [name] when valid.
-  String _validateNameArg(List<String> args) {
-    if (args.isEmpty) {
-      throw UsageException(
-        'No option specified for the name.',
-        usage,
-      );
-    }
-
-    if (args.length > 1) {
-      throw UsageException('Multiple names specified.', usage);
-    }
-
-    final name = args.first;
-    final isValid = isValidPackageName(name);
-    if (!isValid) {
-      throw UsageException(
-        '"$name" is not a valid package name.\n\n'
-        'See https://dart.dev/tools/pub/pubspec#name for more information.',
-        usage,
-      );
-    }
-
-    return name;
-  }
 }

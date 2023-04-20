@@ -12,7 +12,7 @@ class AndroidFeatureAddCommand extends PlatformFeatureAddCommand {
   /// {@macro android_feature_add_command}
   AndroidFeatureAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.android,
           blocCommand:

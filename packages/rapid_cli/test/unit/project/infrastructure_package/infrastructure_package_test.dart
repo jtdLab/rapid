@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
-import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
-import 'package:rapid_cli/src/project/infrastructure_package/infrastructure_package.dart';
+import 'package:rapid_cli/src/project/domain_dir/domain_package/domain_package.dart';
+import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 
@@ -34,7 +34,7 @@ DataTransferObject _getDataTransferObject({
   GeneratorBuilder? generator,
 }) {
   return DataTransferObject(
-    entityName: entityName,
+    name: entityName,
     dir: dir,
     infrastructurePackage: infrastructurePackage ?? getInfrastructurePackage(),
   )..generatorOverrides = generator;
@@ -130,7 +130,7 @@ void main() {
         // Act
         final logger = FakeLogger();
         infrastructurePackage.addDataTransferObject(
-          entityName: 'Cool',
+          name: 'Cool',
           outputDir: 'my/dir',
           logger: logger,
         );
@@ -162,7 +162,7 @@ void main() {
         // Act + Assert
         expect(
           () => infrastructurePackage.addDataTransferObject(
-            entityName: 'Cool',
+            name: 'Cool',
             outputDir: 'my/dir',
             logger: FakeLogger(),
           ),

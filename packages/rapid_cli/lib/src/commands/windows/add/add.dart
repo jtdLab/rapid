@@ -12,7 +12,7 @@ class WindowsAddCommand extends PlatformAddCommand {
   /// {@macro windows_add_command}
   WindowsAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.windows,
           featureCommand:

@@ -12,7 +12,7 @@ class LinuxRemoveCommand extends PlatformRemoveCommand {
   /// {@macro linux_remove_command}
   LinuxRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.linux,
           featureCommand:

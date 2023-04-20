@@ -8,7 +8,7 @@ class WindowsRemoveLanguageCommand extends PlatformRemoveLanguageCommand {
   /// {@macro windows_remove_language_command}
   WindowsRemoveLanguageCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.flutterGenl10n,
     super.dartFormatFix,
   }) : super(

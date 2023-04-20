@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
@@ -31,30 +30,39 @@ abstract class PlatformUiPackage implements DartPackage, OverridableGenerator {
       );
 
   @visibleForTesting
-  WidgetBuilder? widgetOverrides;
+  BarrelFileBuilder? barrelFileOverrides;
 
   @visibleForTesting
   ThemeExtensionsFileBuilder? themeExtensionsFileOverrides;
 
   @visibleForTesting
-  BarrelFileBuilder? barrelFileOverrides;
+  WidgetBuilder? widgetOverrides;
 
   Platform get platform;
 
   Project get project;
 
-  Future<void> create({required Logger logger});
+  BarrelFile get barrelFile;
 
-  Future<void> addWidget({
-    required String name,
-    required String outputDir,
-    required Logger logger,
-  });
+  ThemeExtensionsFile get themeExtensionsFile;
 
-  Future<void> removeWidget({
+  Widget widget({
     required String name,
     required String dir,
-    required Logger logger,
+  });
+
+  Future<void> create();
+
+  // TODO consider required !
+
+  Future<Widget> addWidget({
+    required String name,
+    required String dir,
+  });
+
+  Future<Widget> removeWidget({
+    required String name,
+    required String dir,
   });
 }
 
@@ -81,7 +89,7 @@ abstract class Widget
         platformUiPackage: platformUiPackage,
       );
 
-  Future<void> create({required Logger logger});
+  Future<void> create();
 }
 
 typedef ThemeExtensionsFileBuilder = ThemeExtensionsFile Function({

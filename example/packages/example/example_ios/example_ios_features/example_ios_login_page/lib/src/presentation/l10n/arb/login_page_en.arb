@@ -1,0 +1,12 @@
+{
+  "@@locale": "en",
+  "username": "Username",
+  "password": "Password",
+  "forgotPassword": "Forgot password?",
+  "login": "Login",
+  "signUpNow": "Sign up now",
+  "orSignInWith": "Or Sign in with",
+  "dontHaveAnAccount": "Don't have an account?",
+  "errorServer": "Server error. Try again later.",
+  "errorInvalidUsernameAndPasswordCombination": "Invalid username or password."
+}

@@ -1,6 +1,7 @@
 import 'package:args/command_runner.dart';
 import 'package:rapid_cli/src/commands/android/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/add/add.dart';
+import 'package:rapid_cli/src/commands/core/platform/feature/remove/remove.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/ios/feature/feature.dart';
 import 'package:rapid_cli/src/commands/linux/feature/feature.dart';
@@ -29,8 +30,10 @@ abstract class PlatformFeatureCommand extends Command<int> {
   PlatformFeatureCommand({
     required Platform platform,
     required PlatformFeatureAddCommand addCommand,
+    required PlatformFeatureRemoveCommand removeCommand,
   }) : _platform = platform {
     addSubcommand(addCommand);
+    addSubcommand(removeCommand);
   }
 
   final Platform _platform;

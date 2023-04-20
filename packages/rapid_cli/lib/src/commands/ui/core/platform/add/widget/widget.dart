@@ -1,8 +1,7 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
-import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
+import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -38,11 +37,11 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
   UiPlatformAddWidgetCommand({
     required Platform platform,
     Logger? logger,
-    required Project project,
+    Project? project,
     DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project,
+        _project = project ?? Project(),
         _dartFormatFix = dartFormatFix ?? Dart.formatFix;
 
   final Platform _platform;
@@ -77,17 +76,20 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
 
           _logger.info('Adding ${_platform.prettyName} Widget ...');
 
-          try {
-            await _project.addWidget(
-              name: name,
-              outputDir: '.', // TODO not needed param
-              platform: _platform,
-              logger: _logger,
-            );
+          final platformUiPackage =
+              _project.platformUiPackage(platform: _platform);
+          // TODO remove dir completly ?
+          final widget = platformUiPackage.widget(name: name, dir: '.');
+          if (!widget.existsAny()) {
+            await widget.create();
 
-            final platformUiPackage = _project.platformUiPackage(
-              platform: _platform,
-            );
+            final themeExtensionsFile = platformUiPackage.themeExtensionsFile;
+            themeExtensionsFile.addThemeExtension(name);
+
+            final barrelFile = platformUiPackage.barrelFile;
+            barrelFile.addExport('src/${name.snakeCase}.dart');
+            barrelFile.addExport('src/${name.snakeCase}_theme.dart');
+
             await _dartFormatFix(cwd: platformUiPackage.path, logger: _logger);
 
             _logger
@@ -95,7 +97,8 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
               ..success('Added ${_platform.prettyName} Widget $name.');
 
             return ExitCode.success.code;
-          } on WidgetAlreadyExists {
+          } else {
+            // TODO maybe log which files
             _logger
               ..info('')
               ..err(

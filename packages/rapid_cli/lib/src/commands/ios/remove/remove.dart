@@ -12,7 +12,7 @@ class IosRemoveCommand extends PlatformRemoveCommand {
   /// {@macro ios_remove_command}
   IosRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.ios,
           featureCommand:

@@ -1,6 +1,5 @@
 import 'dart:io' as io;
 
-import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 
 import 'directory.dart';
@@ -44,6 +43,5 @@ class DirectoryImpl implements Directory {
   DirectoryImpl get parent => DirectoryImpl(path: _directory.parent.path);
 
   @override
-  void delete({required Logger logger}) =>
-      _directory.deleteSync(recursive: true);
+  void delete() => _directory.deleteSync(recursive: true);
 }

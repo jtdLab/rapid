@@ -8,7 +8,7 @@ class UiLinuxRemoveWidgetCommand extends UiPlatformRemoveWidgetCommand {
   /// {@macro ui_linux_remove_widget_command}
   UiLinuxRemoveWidgetCommand({
     super.logger,
-    required super.project,
+    super.project,
   }) : super(
           platform: Platform.linux,
         );

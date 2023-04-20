@@ -11,7 +11,7 @@ class UiWindowsAddCommand extends UiPlatformAddCommand {
   /// {@macro ui_windows_add_command}
   UiWindowsAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.windows,
           widgetCommand:

@@ -8,7 +8,7 @@ class IosFeatureAddBlocCommand extends PlatformFeatureAddBlocCommand {
   /// {@macro ios_feature_add_bloc_command}
   IosFeatureAddBlocCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(

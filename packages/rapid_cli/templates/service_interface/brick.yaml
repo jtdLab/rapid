@@ -1,5 +1,5 @@
 name: service_interface
-description: A brick generating an service_interface of the domain package of a Rapid project.
+description: A brick generating an service_interface of a domain package of a Rapid project.
 
 version: 0.1.0
 

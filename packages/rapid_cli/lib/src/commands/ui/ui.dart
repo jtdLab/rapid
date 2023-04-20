@@ -15,7 +15,7 @@ class UiCommand extends Command<int> {
   /// {@macro ui_command}
   UiCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) {
     addSubcommand(UiAndroidCommand(logger: logger, project: project));
     addSubcommand(UiIosCommand(logger: logger, project: project));

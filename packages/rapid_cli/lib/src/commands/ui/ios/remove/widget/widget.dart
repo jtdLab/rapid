@@ -8,7 +8,7 @@ class UiIosRemoveWidgetCommand extends UiPlatformRemoveWidgetCommand {
   /// {@macro ui_ios_remove_widget_command}
   UiIosRemoveWidgetCommand({
     super.logger,
-    required super.project,
+    super.project,
   }) : super(
           platform: Platform.ios,
         );

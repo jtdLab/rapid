@@ -6,8 +6,8 @@ import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/di_package/di_package.dart';
-import 'package:rapid_cli/src/project/domain_package/domain_package.dart';
-import 'package:rapid_cli/src/project/infrastructure_package/infrastructure_package.dart';
+import 'package:rapid_cli/src/project/domain_dir/domain_package/domain_package.dart';
+import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/logging_package/logging_package.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
 import 'package:rapid_cli/src/project/platform_ui_package/platform_ui_package.dart';
@@ -2886,7 +2886,7 @@ void main() {
         final infrastructurePackage = getInfrastructurePackage();
         when(
           () => infrastructurePackage.dataTransferObject(
-            entityName: 'FooBar',
+            name: 'FooBar',
             dir: 'data_transfer_object/path',
           ),
         ).thenReturn(dataTransferObject);
@@ -2912,7 +2912,7 @@ void main() {
         ).called(1);
         verify(
           () => infrastructurePackage.dataTransferObject(
-            entityName: 'FooBar',
+            name: 'FooBar',
             dir: 'data_transfer_object/path',
           ),
         ).called(1);
@@ -2964,7 +2964,7 @@ void main() {
         final infrastructurePackage = getInfrastructurePackage();
         when(
           () => infrastructurePackage.dataTransferObject(
-            entityName: 'FooBar',
+            name: 'FooBar',
             dir: 'data_transfer_object/path',
           ),
         ).thenReturn(dataTransferObject);
@@ -2993,7 +2993,7 @@ void main() {
         final infrastructurePackage = getInfrastructurePackage();
         when(
           () => infrastructurePackage.dataTransferObject(
-            entityName: 'FooBar',
+            name: 'FooBar',
             dir: 'data_transfer_object/path',
           ),
         ).thenReturn(dataTransferObject);
@@ -3012,7 +3012,7 @@ void main() {
         // Assert
         verify(
           () => infrastructurePackage.dataTransferObject(
-            entityName: 'FooBar',
+            name: 'FooBar',
             dir: 'data_transfer_object/path',
           ),
         ).called(1);
@@ -3028,7 +3028,7 @@ void main() {
         final infrastructurePackage = getInfrastructurePackage();
         when(
           () => infrastructurePackage.dataTransferObject(
-            entityName: 'FooBar',
+            name: 'FooBar',
             dir: 'data_transfer_object/path',
           ),
         ).thenReturn(dataTransferObject);

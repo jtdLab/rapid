@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 
 import 'file_system_entity.dart';
@@ -20,16 +19,16 @@ abstract class FileSystemEntityCollection {
   bool existsAll() => _fileSystemEnties.every((e) => e.exists());
 
   /// Deletes the file system entity collection.
-  void delete({required Logger logger}) {
+  void delete() {
     for (final fileSystemEntity in _fileSystemEnties) {
       if (fileSystemEntity.exists()) {
-        fileSystemEntity.delete(logger: logger);
+        fileSystemEntity.delete();
       }
 
       final parent = fileSystemEntity.parent;
       if (_shouldDeleteParent(parent)) {
         if (parent.exists()) {
-          parent.delete(logger: logger);
+          parent.delete();
         }
       }
     }

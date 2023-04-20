@@ -1,5 +1,5 @@
 name: service_implementation
-description: A brick generating a service implementation of the infrastructure package of a Rapid project.
+description: A brick generating a service implementation of a infrastructure package of a Rapid project.
 
 version: 0.1.0
 
@@ -21,4 +21,10 @@ vars:
   service_name:
     type: string
   output_dir:
+    type: string
+  output_dir_is_cwd:
+    type: boolean
+  has_subinfrastructure_name:
+    type: boolean
+  subinfrastructure_name:
     type: string

@@ -8,7 +8,7 @@ class UiWebRemoveWidgetCommand extends UiPlatformRemoveWidgetCommand {
   /// {@macro ui_web_remove_widget_command}
   UiWebRemoveWidgetCommand({
     super.logger,
-    required super.project,
+    super.project,
   }) : super(
           platform: Platform.web,
         );

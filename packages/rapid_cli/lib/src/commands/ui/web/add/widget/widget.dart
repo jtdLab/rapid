@@ -8,7 +8,7 @@ class UiWebAddWidgetCommand extends UiPlatformAddWidgetCommand {
   /// {@macro ui_web_add_widget_command}
   UiWebAddWidgetCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.dartFormatFix,
   }) : super(
           platform: Platform.web,

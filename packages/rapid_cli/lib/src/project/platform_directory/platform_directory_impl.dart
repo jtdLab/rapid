@@ -1,8 +1,5 @@
-import 'package:collection/collection.dart';
-import 'package:mason/mason.dart';
-import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/core/dart_package_impl.dart';
+import 'package:rapid_cli/src/core/directory_impl.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_features_directory.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_navigation_package/platform_navigation_package.dart';
@@ -11,7 +8,7 @@ import 'package:rapid_cli/src/project/project.dart';
 
 import 'platform_directory.dart';
 
-abstract class PlatformDirectoryImpl extends DartPackageImpl
+abstract class PlatformDirectoryImpl extends DirectoryImpl
     implements PlatformDirectory {
   PlatformDirectoryImpl(
     this.platform, {
@@ -50,143 +47,6 @@ abstract class PlatformDirectoryImpl extends DartPackageImpl
         platform,
         project: project,
       );
-
-  @override
-  String defaultLanguage() => featuresDirectory.defaultLanguage();
-
-  @override
-  Set<String> supportedLanguages() {
-    final rootPackageSupportedLanguages = rootPackage.supportedLanguages();
-
-    if (!DeepCollectionEquality.unordered().equals(
-      rootPackageSupportedLanguages,
-      featuresDirectory.supportedLanguages(),
-    )) {
-      throw Error(); // TODO more specific
-    }
-
-    return rootPackageSupportedLanguages;
-  }
-
-  @override
-  Future<void> addFeature({
-    required String name,
-    required String description,
-    required Logger logger,
-  }) async {
-    await featuresDirectory.addFeature(
-      name: name,
-      description: description,
-      defaultLanguage: defaultLanguage(),
-      languages: supportedLanguages(),
-      logger: logger,
-    );
-
-    await rootPackage.registerFeature(
-        packageName: '${project.name()}_${platform.name}_$name',
-        logger: logger);
-  }
-
-  @override
-  Future<void> removeFeature({
-    required String name,
-    required Logger logger,
-  }) async {
-    await rootPackage.unregisterFeature(
-        packageName: '${project.name()}_${platform.name}_$name',
-        logger: logger);
-
-    await featuresDirectory.removeFeature(name: name, logger: logger);
-  }
-
-  @mustCallSuper
-  @override
-  Future<void> addLanguage(
-    String language, {
-    required Logger logger,
-  }) async {
-    await featuresDirectory.addLanguage(language, logger: logger);
-  }
-
-  @mustCallSuper
-  @override
-  Future<void> removeLanguage(
-    String language, {
-    required Logger logger,
-  }) async {
-    await featuresDirectory.removeLanguage(language, logger: logger);
-  }
-
-  @override
-  Future<void> setDefaultLanguage(
-    String newDefaultLanguage, {
-    required Logger logger,
-  }) async {
-    await featuresDirectory.setDefaultLanguage(
-      newDefaultLanguage,
-      logger: logger,
-    );
-  }
-
-  @override
-  Future<void> addBloc({
-    required String name,
-    required String featureName,
-    required String outputDir,
-    required Logger logger,
-  }) async {
-    await featuresDirectory.addBloc(
-      name: name,
-      featureName: featureName,
-      outputDir: outputDir,
-      logger: logger,
-    );
-  }
-
-  @override
-  Future<void> removeBloc({
-    required String name,
-    required String featureName,
-    required String dir,
-    required Logger logger,
-  }) async {
-    await featuresDirectory.removeBloc(
-      name: name,
-      featureName: featureName,
-      dir: dir,
-      logger: logger,
-    );
-  }
-
-  @override
-  Future<void> addCubit({
-    required String name,
-    required String featureName,
-    required String outputDir,
-    required Logger logger,
-  }) async {
-    await featuresDirectory.addCubit(
-      name: name,
-      featureName: featureName,
-      outputDir: outputDir,
-      logger: logger,
-    );
-  }
-
-  @override
-  Future<void> removeCubit({
-    required String name,
-    required String featureName,
-    required String dir,
-    required Logger logger,
-  }) async {
-    await featuresDirectory.removeCubit(
-      name: name,
-      featureName: featureName,
-      dir: dir,
-      logger: logger,
-    );
-  }
 }
 
 class NoneIosDirectoryImpl extends PlatformDirectoryImpl
@@ -211,30 +71,24 @@ class NoneIosDirectoryImpl extends PlatformDirectoryImpl
     String? description,
     String? orgName,
     required String language,
-    required Logger logger,
   }) async {
-    await rootPackage.create(
-      description: description,
-      orgName: orgName,
-      logger: logger,
-    );
+    await rootPackage.create(description: description, orgName: orgName);
 
-    await navigationPackage.create(logger: logger);
+    await navigationPackage.create();
 
-    await featuresDirectory.addFeature(
-      name: 'app',
+    final appFeaturePackage = featuresDirectory.featurePackage(name: 'app');
+    await appFeaturePackage.create(
       description: 'The App feature.', // TODO platform info
       defaultLanguage: language,
       languages: {language},
-      logger: logger,
     );
 
-    await featuresDirectory.addFeature(
-      name: 'home_page',
+    final homePageFeaturePackage =
+        featuresDirectory.featurePackage(name: 'home_page');
+    await homePageFeaturePackage.create(
       description: 'The Home Page feature.', // TODO platform info
       defaultLanguage: language,
       languages: {language},
-      logger: logger,
     );
   }
 }
@@ -257,50 +111,24 @@ class IosDirectoryImpl extends PlatformDirectoryImpl implements IosDirectory {
   Future<void> create({
     required String orgName,
     required String language,
-    required Logger logger,
   }) async {
-    await rootPackage.create(
-      orgName: orgName,
-      language: language,
-      logger: logger,
-    );
+    await rootPackage.create(orgName: orgName, language: language);
 
-    await navigationPackage.create(logger: logger);
+    await navigationPackage.create();
 
-    await featuresDirectory.addFeature(
-      name: 'app',
+    final appFeaturePackage = featuresDirectory.featurePackage(name: 'app');
+    await appFeaturePackage.create(
       description: 'The App feature.', // TODO platform info
       defaultLanguage: language,
       languages: {language},
-      logger: logger,
     );
 
-    await featuresDirectory.addFeature(
-      name: 'home_page',
+    final homePageFeaturePackage =
+        featuresDirectory.featurePackage(name: 'home_page');
+    await homePageFeaturePackage.create(
       description: 'The Home Page feature.', // TODO platform info
       defaultLanguage: language,
       languages: {language},
-      logger: logger,
     );
-  }
-
-  @override
-  Future<void> addLanguage(
-    String language, {
-    required Logger logger,
-  }) async {
-    await rootPackage.addLanguage(language, logger: logger);
-
-    await super.addLanguage(language, logger: logger);
-  }
-
-  @override
-  Future<void> removeLanguage(
-    String language, {
-    required Logger logger,
-  }) async {
-    await rootPackage.removeLanguage(language, logger: logger);
-
-    await super.removeLanguage(language, logger: logger);
   }
 }

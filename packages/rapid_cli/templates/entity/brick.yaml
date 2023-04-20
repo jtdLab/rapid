@@ -1,5 +1,5 @@
 name: entity
-description: A brick generating an entity of the domain package of a Rapid project.
+description: A brick generating an entity of a domain package of a Rapid project.
 
 version: 0.1.0
 
@@ -19,4 +19,10 @@ vars:
   name:
     type: string
   output_dir:
+    type: string
+  output_dir_is_cwd:
+    type: boolean
+  has_subdomain_name:
+    type: boolean
+  subdomain_name:
     type: string

@@ -69,7 +69,13 @@ abstract class DeactivatePlatformCommand extends Command<int>
         () async {
           _logger.info('Deactivating ${_platform.prettyName} ...');
 
-          await _project.removePlatform(_platform, logger: _logger);
+          final platformDirectory =
+              _project.platformDirectory(platform: _platform);
+          platformDirectory.delete();
+
+          final platformUiPackage =
+              _project.platformUiPackage(platform: _platform);
+          platformUiPackage.delete();
 
           _logger
             ..info('')

@@ -1,0 +1,30 @@
+name: example_linux
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - example/packages/example/example_linux
+      - example/packages/example_ui/example_ui
+      - example/packages/example_ui/example_ui_linux
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: example/packages/example/example_linux/example_linux
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ninja-build libgtk-3-dev
+      - run: flutter config --enable-linux-desktop
+      - run: flutter build linux -t lib/main_development.dart --release --verbose

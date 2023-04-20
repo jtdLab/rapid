@@ -4,7 +4,6 @@ import 'package:mason/mason.dart' hide packageVersion;
 import 'package:rapid_cli/src/commands/activate/activate.dart';
 import 'package:rapid_cli/src/commands/android/android.dart';
 import 'package:rapid_cli/src/commands/deactivate/deactivate.dart';
-import 'package:rapid_cli/src/commands/doctor/doctor.dart';
 import 'package:rapid_cli/src/commands/domain/domain.dart';
 import 'package:rapid_cli/src/commands/infrastructure/infrastructure.dart';
 import 'package:rapid_cli/src/commands/ios/ios.dart';
@@ -39,20 +38,19 @@ class RapidCommandRunner extends CommandRunner<int> {
         help: 'Enable verbose logging.',
         negatable: false,
       );
-    final p = project ?? Project(); // TODO need to pass down
-    addCommand(ActivateCommand(logger: _logger, project: p));
-    addCommand(AndroidCommand(logger: _logger, project: p));
+    addCommand(ActivateCommand(logger: _logger, project: project));
+    addCommand(AndroidCommand(logger: _logger, project: project));
     addCommand(CreateCommand(logger: _logger));
-    addCommand(DeactivateCommand(logger: _logger, project: p));
-    addCommand(DoctorCommand(logger: _logger, project: p));
-    addCommand(DomainCommand(logger: _logger, project: p));
-    addCommand(InfrastructureCommand(logger: _logger, project: p));
-    addCommand(IosCommand(logger: _logger, project: p));
-    addCommand(LinuxCommand(logger: _logger, project: p));
-    addCommand(MacosCommand(logger: _logger, project: p));
-    addCommand(UiCommand(logger: _logger, project: p));
-    addCommand(WebCommand(logger: _logger, project: p));
-    addCommand(WindowsCommand(logger: _logger, project: p));
+    addCommand(DeactivateCommand(logger: _logger, project: project));
+    // addCommand(DoctorCommand(logger: _logger, project: project)); // TODO use later
+    addCommand(DomainCommand(logger: _logger, project: project));
+    addCommand(InfrastructureCommand(logger: _logger, project: project));
+    addCommand(IosCommand(logger: _logger, project: project));
+    addCommand(LinuxCommand(logger: _logger, project: project));
+    addCommand(MacosCommand(logger: _logger, project: project));
+    addCommand(UiCommand(logger: _logger, project: project));
+    addCommand(WebCommand(logger: _logger, project: project));
+    addCommand(WindowsCommand(logger: _logger, project: project));
   }
 
   @override

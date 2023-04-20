@@ -12,7 +12,7 @@ class LinuxAddCommand extends PlatformAddCommand {
   /// {@macro linux_add_command}
   LinuxAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.linux,
           featureCommand:

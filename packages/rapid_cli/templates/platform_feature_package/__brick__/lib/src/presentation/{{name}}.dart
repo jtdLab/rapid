@@ -1,8 +1,8 @@
-{{#android}}import 'package:auto_route/auto_route.dart';
+{{#android}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
 import 'package:{{project_name}}_android_{{name}}/src/presentation/l10n/l10n.dart';
 import 'package:{{project_name}}_ui_android/{{project_name}}_ui_android.dart';
 
-@RoutePage()
+{{#routable}}@RoutePage(){{/routable}}
 class {{name.pascalCase()}} extends StatelessWidget {
   const {{name.pascalCase()}}({super.key});
 
@@ -17,11 +17,11 @@ class {{name.pascalCase()}} extends StatelessWidget {
     );
   }
 }
-{{/android}}{{#ios}}import 'package:auto_route/auto_route.dart';
+{{/android}}{{#ios}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
 import 'package:{{project_name}}_ios_{{name}}/src/presentation/l10n/l10n.dart';
 import 'package:{{project_name}}_ui_ios/{{project_name}}_ui_ios.dart';
 
-@RoutePage()
+{{#routable}}@RoutePage(){{/routable}}
 class {{name.pascalCase()}} extends StatelessWidget {
   const {{name.pascalCase()}}({super.key});
 
@@ -36,11 +36,11 @@ class {{name.pascalCase()}} extends StatelessWidget {
     );
   }
 }
-{{/ios}}{{#linux}}import 'package:auto_route/auto_route.dart';
+{{/ios}}{{#linux}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
 import 'package:{{project_name}}_linux_{{name}}/src/presentation/l10n/l10n.dart';
 import 'package:{{project_name}}_ui_linux/{{project_name}}_ui_linux.dart';
 
-@RoutePage()
+{{#routable}}@RoutePage(){{/routable}}
 class {{name.pascalCase()}} extends StatelessWidget {
   const {{name.pascalCase()}}({super.key});
 
@@ -55,11 +55,11 @@ class {{name.pascalCase()}} extends StatelessWidget {
     );
   }
 }
-{{/linux}}{{#macos}}import 'package:auto_route/auto_route.dart';
+{{/linux}}{{#macos}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
 import 'package:{{project_name}}_macos_{{name}}/src/presentation/l10n/l10n.dart';
 import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';
 
-@RoutePage()
+{{#routable}}@RoutePage(){{/routable}}
 class {{name.pascalCase()}} extends StatelessWidget {
   const {{name.pascalCase()}}({super.key});
 
@@ -80,11 +80,11 @@ class {{name.pascalCase()}} extends StatelessWidget {
     );
   }
 }
-{{/macos}}{{#web}}import 'package:auto_route/auto_route.dart';
+{{/macos}}{{#web}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
 import 'package:{{project_name}}_ui_web/{{project_name}}_ui_web.dart';
 import 'package:{{project_name}}_web_{{name}}/src/presentation/l10n/l10n.dart';
 
-@RoutePage()
+{{#routable}}@RoutePage(){{/routable}}
 class {{name.pascalCase()}} extends StatelessWidget {
   const {{name.pascalCase()}}({super.key});
 
@@ -99,11 +99,11 @@ class {{name.pascalCase()}} extends StatelessWidget {
     );
   }
 }
-{{/web}}{{#windows}}import 'package:auto_route/auto_route.dart';
+{{/web}}{{#windows}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
 import 'package:{{project_name}}_ui_windows/{{project_name}}_ui_windows.dart';
 import 'package:{{project_name}}_windows_{{name}}/src/presentation/l10n/l10n.dart';
 
-@RoutePage()
+{{#routable}}@RoutePage(){{/routable}}
 class {{name.pascalCase()}} extends StatelessWidget {
   const {{name.pascalCase()}}({super.key});
 

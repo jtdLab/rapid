@@ -11,7 +11,7 @@ class UiIosRemoveCommand extends UiPlatformRemoveCommand {
   /// {@macro ui_ios_remove_command}
   UiIosRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.ios,
           widgetCommand:

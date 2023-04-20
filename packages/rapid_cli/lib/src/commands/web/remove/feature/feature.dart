@@ -8,7 +8,7 @@ class WebRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   /// {@macro web_remove_feature_command}
   WebRemoveFeatureCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.melosBootstrap,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,

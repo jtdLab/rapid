@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
@@ -28,7 +27,5 @@ abstract class PlatformNavigationPackage
         project: project,
       );
 
-  Future<void> create({
-    required Logger logger,
-  });
+  Future<void> create();
 }

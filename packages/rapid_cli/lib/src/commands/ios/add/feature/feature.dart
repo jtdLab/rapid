@@ -8,7 +8,7 @@ class IosAddFeatureCommand extends PlatformAddFeatureCommand {
   /// {@macro ios_add_feature_command}
   IosAddFeatureCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.melosBootstrap,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,

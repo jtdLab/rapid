@@ -12,7 +12,7 @@ class UiWindowsCommand extends UiPlatformCommand {
   /// {@macro ui_windows_command}
   UiWindowsCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.windows,
           addCommand: UiWindowsAddCommand(logger: logger, project: project),

@@ -8,7 +8,7 @@ class UiWindowsAddWidgetCommand extends UiPlatformAddWidgetCommand {
   /// {@macro ui_windows_add_widget_command}
   UiWindowsAddWidgetCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.dartFormatFix,
   }) : super(
           platform: Platform.windows,

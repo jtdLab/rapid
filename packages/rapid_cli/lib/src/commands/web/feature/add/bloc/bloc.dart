@@ -8,7 +8,7 @@ class WebFeatureAddBlocCommand extends PlatformFeatureAddBlocCommand {
   /// {@macro web_feature_add_bloc_command}
   WebFeatureAddBlocCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(

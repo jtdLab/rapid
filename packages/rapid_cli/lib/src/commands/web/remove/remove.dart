@@ -12,7 +12,7 @@ class WebRemoveCommand extends PlatformRemoveCommand {
   /// {@macro web_remove_command}
   WebRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.web,
           featureCommand:

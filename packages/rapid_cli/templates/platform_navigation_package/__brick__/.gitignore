@@ -23,6 +23,7 @@ migrate_working_dir/
 
 # Flutter/Dart/Pub related
 **/doc/api/
+**/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -30,9 +31,11 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
+/coverage
 
-# Symbolication related
-app.*.symbols
+# Omit committing pubspec.lock for library packages; see
+# https://dart.dev/guides/libraries/private-files#pubspeclock.
+pubspec.lock
 
-# Obfuscation related
-app.*.map.json
+# Melos
+pubspec_overrides.yaml

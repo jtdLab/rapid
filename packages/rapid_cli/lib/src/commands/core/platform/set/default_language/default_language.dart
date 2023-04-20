@@ -2,10 +2,11 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/set/default_language/default_language.dart';
+import 'package:rapid_cli/src/commands/core/language_rest.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/platform/core/platform_feature_packages_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/commands/core/validate_language.dart';
 import 'package:rapid_cli/src/commands/ios/set/default_language/default_language.dart';
 import 'package:rapid_cli/src/commands/linux/set/default_language/default_language.dart';
 import 'package:rapid_cli/src/commands/macos/set/default_language/default_language.dart';
@@ -30,17 +31,17 @@ import 'package:rapid_cli/src/project/project.dart';
 ///  * [WindowsSetDefaultLanguageCommand]
 /// {@endtemplate}
 abstract class PlatformSetDefaultLanguageCommand extends Command<int>
-    with OverridableArgResults {
+    with OverridableArgResults, LanguageGetter {
   /// {@macro platform_set_default_language_command}
   PlatformSetDefaultLanguageCommand({
     required Platform platform,
     Logger? logger,
-    required Project project,
+    Project? project,
     FlutterGenl10nCommand? flutterGenl10n,
     DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project,
+        _project = project ?? Project(),
         _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
         _dartFormatFix = dartFormatFix ?? Dart.formatFix;
 
@@ -76,36 +77,16 @@ abstract class PlatformSetDefaultLanguageCommand extends Command<int>
         ],
         _logger,
         () async {
-          final language = _language;
+          final language = super.language;
 
           _logger.info('Setting default language ...');
 
-          try {
-            await _project.setDefaultLanguage(
-              language,
-              platform: _platform,
-              logger: _logger,
-            );
+          final platformDirectory =
+              _project.platformDirectory(platform: _platform);
+          final featurePackages =
+              platformDirectory.featuresDirectory.featurePackages();
 
-            final platformDirectory =
-                _project.platformDirectory(platform: _platform);
-            final featurePackages =
-                platformDirectory.featuresDirectory.featurePackages();
-            for (final featurePackage in featurePackages) {
-              await _flutterGenl10n(cwd: featurePackage.path, logger: _logger);
-            }
-            await _dartFormatFix(cwd: _project.path, logger: _logger);
-
-            // TODO add hint how to work with localization
-            _logger
-              ..info('')
-              ..success(
-                'Set $language as the default language of the ${_platform.prettyName} part of your project.',
-              );
-
-            return ExitCode.success.code;
-            // TODO Share error messages
-          } on NoFeaturesFound {
+          if (featurePackages.isEmpty) {
             _logger
               ..info('')
               ..err(
@@ -114,7 +95,9 @@ abstract class PlatformSetDefaultLanguageCommand extends Command<int>
               );
 
             return ExitCode.config.code;
-          } on FeaturesSupportDiffrentLanguages {
+          }
+
+          if (!featurePackages.supportSameLanguages()) {
             _logger
               ..info('')
               ..err(
@@ -123,7 +106,9 @@ abstract class PlatformSetDefaultLanguageCommand extends Command<int>
                   'Run "rapid doctor" to see which features are affected.');
 
             return ExitCode.config.code;
-          } on FeaturesHaveDiffrentDefaultLanguage {
+          }
+
+          if (!featurePackages.haveSameDefaultLanguage()) {
             _logger
               ..info('')
               ..err(
@@ -132,14 +117,18 @@ abstract class PlatformSetDefaultLanguageCommand extends Command<int>
                   'Run "rapid doctor" to see which features are affected.');
 
             return ExitCode.config.code;
-          } on FeaturesDoNotSupportLanguage {
+          }
+
+          if (!featurePackages.supportLanguage(language)) {
             // TODO better hint
             _logger
               ..info('')
               ..err('The language "$language" is not present.');
 
             return ExitCode.config.code;
-          } on DefaultLanguageAlreadySetToRequestedLanguage {
+          }
+
+          if (featurePackages.first.defaultLanguage() == language) {
             _logger
               ..info('')
               ..err(
@@ -148,38 +137,22 @@ abstract class PlatformSetDefaultLanguageCommand extends Command<int>
 
             return ExitCode.config.code;
           }
+
+          for (final featurePackage in featurePackages) {
+            await featurePackage.setDefaultLanguage(language);
+            await _flutterGenl10n(cwd: featurePackage.path, logger: _logger);
+          }
+          await _dartFormatFix(cwd: _project.path, logger: _logger);
+
+          // TODO add hint how to work with localization
+          _logger
+            ..info('')
+            ..success(
+              'Set $language as the default language of the ${_platform.prettyName} part of your project.',
+            );
+
+          return ExitCode.success.code;
+          // TODO Share error messages
         },
       );
-
-  String get _language => _validateLanguageArg(argResults.rest);
-
-  // TODO share with other commands
-
-  /// Validates whether [language] is valid language.
-  ///
-  /// Returns [language] when valid.
-  String _validateLanguageArg(List<String> args) {
-    if (args.isEmpty) {
-      throw UsageException(
-        'No option specified for the language.',
-        usage,
-      );
-    }
-
-    if (args.length > 1) {
-      throw UsageException('Multiple languages specified.', usage);
-    }
-
-    final language = args.first;
-    final isValid = isValidLanguage(language);
-    if (!isValid) {
-      throw UsageException(
-        '"$language" is not a valid language.\n\n'
-        'See https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry for more information.',
-        usage,
-      );
-    }
-
-    return language;
-  }
 }

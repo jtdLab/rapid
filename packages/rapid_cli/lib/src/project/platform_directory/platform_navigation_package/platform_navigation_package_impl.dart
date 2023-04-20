@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -30,11 +29,10 @@ class PlatformNavigationPackageImpl extends DartPackageImpl
   final Project _project;
 
   @override
-  Future<void> create({required Logger logger}) async {
+  Future<void> create() async {
     final projectName = _project.name();
 
     await generate(
-      name: 'navigation package (${_platform.name})',
       bundle: platformNavigationPackageBundle,
       vars: <String, dynamic>{
         'project_name': projectName,
@@ -45,7 +43,6 @@ class PlatformNavigationPackageImpl extends DartPackageImpl
         'web': _platform == Platform.web,
         'windows': _platform == Platform.windows,
       },
-      logger: logger,
     );
   }
 }

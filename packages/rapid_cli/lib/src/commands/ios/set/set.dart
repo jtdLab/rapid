@@ -11,7 +11,7 @@ class IosSetCommand extends PlatformSetCommand {
   /// {@macro ios_set_command}
   IosSetCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.ios,
           defaultLanguageCommand: IosSetDefaultLanguageCommand(

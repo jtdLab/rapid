@@ -12,7 +12,7 @@ class WebAddCommand extends PlatformAddCommand {
   /// {@macro web_add_command}
   WebAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.web,
           featureCommand:

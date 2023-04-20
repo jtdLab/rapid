@@ -8,7 +8,7 @@ class MacosSetDefaultLanguageCommand extends PlatformSetDefaultLanguageCommand {
   /// {@macro macos_set_default_language_command}
   MacosSetDefaultLanguageCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.flutterGenl10n,
     super.dartFormatFix,
   }) : super(

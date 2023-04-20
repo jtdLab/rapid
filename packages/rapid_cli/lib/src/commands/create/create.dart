@@ -24,10 +24,7 @@ class CreateCommand extends Command<int>
     Logger? logger,
     FlutterInstalledCommand? flutterInstalled,
     MelosInstalledCommand? melosInstalled,
-    MelosBootstrapCommand? melosBootstrap,
-    FlutterPubGetCommand? flutterPubGet,
-    FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
-        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
+    MelosExecFlutterPubGetCommand? melosExecFlutterPubGet,
     FlutterGenl10nCommand? flutterGenl10n,
     DartFormatFixCommand? dartFormatFix,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableAndroid,
@@ -40,11 +37,8 @@ class CreateCommand extends Command<int>
   })  : _logger = logger ?? Logger(),
         _flutterInstalled = flutterInstalled ?? Flutter.installed,
         _melosInstalled = melosInstalled ?? Melos.installed,
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-            flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
-                Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
+        _melosExecFlutterPubGet =
+            melosExecFlutterPubGet ?? Melos.execFlutterPubGet,
         _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
         _dartFormatFix = dartFormatFix ?? Dart.formatFix,
         _flutterConfigEnableAndroid =
@@ -75,12 +69,6 @@ class CreateCommand extends Command<int>
       )
       ..addLanguageOption(
         help: 'The language of the new project',
-      )
-      ..addFlag(
-        'example',
-        help:
-            'Wheter the new project contains example features and their tests.',
-        negatable: false,
       )
       ..addSeparator('')
       ..addFlag(
@@ -134,10 +122,7 @@ class CreateCommand extends Command<int>
   final Logger _logger;
   final FlutterInstalledCommand _flutterInstalled;
   final MelosInstalledCommand _melosInstalled;
-  final MelosBootstrapCommand _melosBootstrap;
-  final FlutterPubGetCommand _flutterPubGet;
-  final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+  final MelosExecFlutterPubGetCommand _melosExecFlutterPubGet;
   final FlutterGenl10nCommand _flutterGenl10n;
   final DartFormatFixCommand _dartFormatFix;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnableAndroid;
@@ -182,7 +167,6 @@ class CreateCommand extends Command<int>
           final description = _description;
           final orgName = super.orgName;
           final language = super.language;
-          final example = _example;
           final android = _android || _mobile || _all;
           final ios = _ios || _mobile || _all;
           final linux = _linux || _desktop || _all;
@@ -192,39 +176,33 @@ class CreateCommand extends Command<int>
 
           _logger.info('Creating Rapid App ...');
 
-          await project.create(
-            projectName: projectName,
-            description: description,
-            orgName: orgName,
-            language: language,
-            example: example,
-            android: android,
-            ios: ios,
-            linux: linux,
-            macos: macos,
-            web: web,
-            windows: windows,
-            logger: _logger,
-          );
-
-          // TODO rm and replace with templated .lock and .pubspecoverrides
-          await _melosBootstrap(cwd: project.path, logger: _logger);
-          for (final platform in [
+          final platforms = {
             if (android) Platform.android,
             if (ios) Platform.ios,
             if (linux) Platform.linux,
             if (macos) Platform.macos,
             if (web) Platform.web,
             if (windows) Platform.windows,
-          ]) {
+          };
+
+          await project.create(
+            projectName: projectName,
+            description: description,
+            orgName: orgName,
+            language: language,
+            platforms: platforms,
+          );
+
+          await _melosExecFlutterPubGet(cwd: project.path, logger: _logger);
+          for (final platform in platforms) {
             final platformDirectory = project.platformDirectory(
               platform: platform,
             );
             final featuresDirectory = platformDirectory.featuresDirectory;
             final appFeaturePackage = featuresDirectory
-                .featurePackage<PlatformAppFeaturePackage>('app');
+                .featurePackage<PlatformAppFeaturePackage>(name: 'app');
             final homePageFeaturePackage =
-                featuresDirectory.featurePackage('home_page');
+                featuresDirectory.featurePackage(name: 'home_page');
 
             await _flutterGenl10n(cwd: appFeaturePackage.path, logger: _logger);
             await _flutterGenl10n(
@@ -266,9 +244,6 @@ class CreateCommand extends Command<int>
 
   /// Gets the description for the project specified by the user.
   String get _description => argResults['desc'] ?? _defaultDescription;
-
-  /// Whether the user specified that the project will contain example features.
-  bool get _example => argResults['example'] ?? false;
 
   /// Whether the user specified that the project supports Android.
   bool get _android => (argResults['android'] ?? false);

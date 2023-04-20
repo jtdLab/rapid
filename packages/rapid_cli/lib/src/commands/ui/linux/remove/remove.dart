@@ -11,7 +11,7 @@ class UiLinuxRemoveCommand extends UiPlatformRemoveCommand {
   /// {@macro ui_linux_remove_command}
   UiLinuxRemoveCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.linux,
           widgetCommand:

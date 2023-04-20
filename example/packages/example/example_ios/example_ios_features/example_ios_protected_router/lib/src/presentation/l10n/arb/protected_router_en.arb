@@ -1,0 +1,7 @@
+{
+  "@@locale": "en",
+  "title": "Protected Router title for en",
+  "@title": {
+    "description": "Title text shown in the Protected Router"
+  }
+}

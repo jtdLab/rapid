@@ -1,0 +1,28 @@
+name: example_ios
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - example/packages/example/example_ios
+      - example/packages/example_ui/example_ui
+      - example/packages/example_ui/example_ui_ios
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: example/packages/example/example_ios/example_ios
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+          architecture: x64
+      - run: flutter pub get
+      - run: flutter build ios -t lib/main_development.dart --release --no-codesign --verbose

@@ -8,7 +8,7 @@ class UiAndroidRemoveWidgetCommand extends UiPlatformRemoveWidgetCommand {
   /// {@macro ui_android_remove_widget_command}
   UiAndroidRemoveWidgetCommand({
     super.logger,
-    required super.project,
+    super.project,
   }) : super(
           platform: Platform.android,
         );

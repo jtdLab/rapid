@@ -47,15 +47,19 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
   @override
   final Project project;
 
+  // TODO is this correct ??????
+  @override
+  String defaultLanguage() => supportedLanguages().first;
+
   @override
   Set<String> supportedLanguages() =>
       _localizationsDelegatesFile.supportedLocales();
 
   @override
-  Future<void> registerFeature({
-    required String packageName,
-    required Logger logger,
-  }) async {
+  Future<void> registerFeaturePackage(
+    PlatformFeaturePackage featurePackage,
+  ) async {
+    final packageName = featurePackage.packageName();
     pubspecFile.setDependency(packageName);
     _localizationsDelegatesFile.addLocalizationsDelegate(packageName);
 
@@ -64,10 +68,10 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
   }
 
   @override
-  Future<void> unregisterFeature({
-    required String packageName,
-    required Logger logger,
-  }) async {
+  Future<void> unregisterFeaturePackage(
+    PlatformFeaturePackage featurePackage,
+  ) async {
+    final packageName = featurePackage.packageName();
     pubspecFile.removeDependency(packageName);
     _localizationsDelegatesFile.removeLocalizationsDelegate(packageName);
 
@@ -95,12 +99,10 @@ class NoneIosRootPackageImpl extends PlatformRootPackageImpl
   Future<void> create({
     String? description,
     String? orgName,
-    required Logger logger,
   }) async {
     final projectName = project.name();
 
     await generate(
-      name: 'root package (${platform.name})',
       bundle: platformRootPackageBundle,
       vars: <String, dynamic>{
         'project_name': projectName,
@@ -112,13 +114,11 @@ class NoneIosRootPackageImpl extends PlatformRootPackageImpl
         'web': _platform == Platform.web,
         'windows': _platform == Platform.windows,
       },
-      logger: logger,
     );
 
-    _nativeDirectory.create(
+    await _nativeDirectory.create(
       description: description,
       orgName: orgName,
-      logger: logger,
     );
   }
 }
@@ -141,12 +141,10 @@ class IosRootPackageImpl extends PlatformRootPackageImpl
   Future<void> create({
     required String orgName,
     required String language,
-    required Logger logger,
   }) async {
     final projectName = project.name();
 
     await generate(
-      name: 'root package (ios)',
       bundle: platformRootPackageBundle,
       vars: <String, dynamic>{
         'project_name': projectName,
@@ -158,29 +156,21 @@ class IosRootPackageImpl extends PlatformRootPackageImpl
         'web': false,
         'windows': false,
       },
-      logger: logger,
     );
 
     await _nativeDirectory.create(
       orgName: orgName,
       language: language,
-      logger: logger,
     );
   }
 
   @override
-  Future<void> addLanguage(
-    String language, {
-    required Logger logger,
-  }) async {
+  Future<void> addLanguage(String language) async {
     _nativeDirectory.addLanguage(language: language);
   }
 
   @override
-  Future<void> removeLanguage(
-    String language, {
-    required Logger logger,
-  }) async {
+  Future<void> removeLanguage(String language) async {
     _nativeDirectory.removeLanguage(language: language);
   }
 }

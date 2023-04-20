@@ -2,10 +2,10 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/feature/feature.dart';
+import 'package:rapid_cli/src/commands/core/dart_package_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/ios/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/linux/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/macos/add/feature/feature.dart';
@@ -33,12 +33,12 @@ const _defaultDescription = 'A Rapid feature.';
 ///  * [WindowsAddFeatureCommand]
 /// {@endtemplate}
 abstract class PlatformAddFeatureCommand extends Command<int>
-    with OverridableArgResults {
+    with OverridableArgResults, DartPackageNameGetter {
   /// {@macro platform_add_feature_command}
   PlatformAddFeatureCommand({
     required Platform platform,
     Logger? logger,
-    required Project project,
+    Project? project,
     MelosBootstrapCommand? melosBootstrap,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
@@ -47,7 +47,7 @@ abstract class PlatformAddFeatureCommand extends Command<int>
     DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project,
+        _project = project ?? Project(),
         _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
@@ -108,26 +108,28 @@ abstract class PlatformAddFeatureCommand extends Command<int>
         ],
         _logger,
         () async {
-          final name = _name;
+          final name = super.dartPackageName;
           final description = _description;
           final routing = _routing;
 
           _logger.info('Adding Feature ...');
 
-          try {
-            await _project.addFeature(
-              name: name,
+          final platformDirectory =
+              _project.platformDirectory(platform: _platform);
+          final featuresDirectory = platformDirectory.featuresDirectory;
+          final featurePackage = featuresDirectory.featurePackage(name: name);
+          if (!featurePackage.exists()) {
+            final rootPackage = platformDirectory.rootPackage;
+            await featurePackage.create(
               description: description,
-              //  routing: routing, // TODO refactor
-              platform: _platform,
-              logger: _logger,
+              routing: routing,
+              // TODO default lang from featurs or from roots supported langs
+              defaultLanguage: rootPackage.defaultLanguage(),
+              languages: rootPackage.supportedLanguages(),
             );
 
-            final platformDirectory =
-                _project.platformDirectory(platform: _platform);
-            final rootPackage = platformDirectory.rootPackage;
-            final featurePackage =
-                platformDirectory.featuresDirectory.featurePackage(name);
+            // TODO if routing add router to root router list
+            await rootPackage.registerFeaturePackage(featurePackage);
 
             await _melosBootstrap(
               cwd: _project.path,
@@ -148,13 +150,13 @@ abstract class PlatformAddFeatureCommand extends Command<int>
 
             await _dartFormatFix(cwd: _project.path, logger: _logger);
 
-            // TODO add hint how to register a page in the routing feature
+            // TODO add link doc to navigation and routing approach
             _logger
               ..info('')
               ..success('Added ${_platform.prettyName} feature $name.');
 
             return ExitCode.success.code;
-          } on FeatureAlreadyExists {
+          } else {
             // TODO test
             _logger
               ..info('')
@@ -167,39 +169,9 @@ abstract class PlatformAddFeatureCommand extends Command<int>
         },
       );
 
-  String get _name => _validateNameArg(argResults.rest);
-
   /// Gets the description for the project specified by the user.
   String get _description => argResults['desc'] ?? _defaultDescription;
 
   /// Whether the user specified that the feature can be registered in the routing package.
   bool get _routing => argResults['routing'] ?? false;
-
-  /// Validates whether [name] is valid feature name.
-  ///
-  /// Returns [name] when valid.
-  String _validateNameArg(List<String> args) {
-    if (args.isEmpty) {
-      throw UsageException(
-        'No option specified for the name.',
-        usage,
-      );
-    }
-
-    if (args.length > 1) {
-      throw UsageException('Multiple names specified.', usage);
-    }
-
-    final name = args.first;
-    final isValid = isValidPackageName(name);
-    if (!isValid) {
-      throw UsageException(
-        '"$name" is not a valid package name.\n\n'
-        'See https://dart.dev/tools/pub/pubspec#name for more information.',
-        usage,
-      );
-    }
-
-    return name;
-  }
 }

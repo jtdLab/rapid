@@ -1,5 +1,5 @@
 name: data_transfer_object
-description: A brick generating a data transfer object of the infrastructure package of a Rapid project.
+description: A brick generating a data transfer object of a infrastructure package of a Rapid project.
 
 version: 0.1.0
 
@@ -19,4 +19,10 @@ vars:
   entity_name:
     type: string
   output_dir:
+    type: string
+  output_dir_is_cwd:
+    type: boolean
+  has_subinfrastructure_name:
+    type: boolean
+  subinfrastructure_name:
     type: string

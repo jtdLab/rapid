@@ -14,7 +14,7 @@ class LinuxCommand extends PlatformCommand {
   /// {@macro linux_command}
   LinuxCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.linux,
           addCommand: LinuxAddCommand(logger: logger, project: project),

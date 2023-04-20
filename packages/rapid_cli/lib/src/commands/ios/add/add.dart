@@ -12,7 +12,7 @@ class IosAddCommand extends PlatformAddCommand {
   /// {@macro ios_add_command}
   IosAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.ios,
           featureCommand:

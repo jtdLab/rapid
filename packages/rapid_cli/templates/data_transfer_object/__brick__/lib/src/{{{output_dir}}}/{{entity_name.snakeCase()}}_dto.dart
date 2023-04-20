@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:{{project_name.snakeCase()}}_{{#pathCase}}domain/{{{output_dir}}}{{/pathCase}}/{{entity_name.snakeCase()}}.dart';
+import 'package:{{project_name}}_domain{{#has_subinfrastructure_name}}_{{subinfrastructure_name}}{{/has_subinfrastructure_name}}{{^output_dir_is_cwd}}/{{{output_dir}}}{{/output_dir_is_cwd}}/{{entity_name.snakeCase()}}.dart';
 
 part '{{entity_name.snakeCase()}}_dto.freezed.dart';
 part '{{entity_name.snakeCase()}}_dto.g.dart';
@@ -8,7 +8,7 @@ part '{{entity_name.snakeCase()}}_dto.g.dart';
 class {{entity_name.pascalCase()}}Dto with _${{entity_name.pascalCase()}}Dto {
   const factory {{entity_name.pascalCase()}}Dto({
     required String id,
-   // TODO: more fields
+    // TODO: more fields
   }) = _{{entity_name.pascalCase()}}Dto;
 
   const {{entity_name.pascalCase()}}Dto._();

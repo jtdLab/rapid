@@ -11,7 +11,7 @@ class LinuxSetCommand extends PlatformSetCommand {
   /// {@macro linux_set_command}
   LinuxSetCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.linux,
           defaultLanguageCommand: LinuxSetDefaultLanguageCommand(

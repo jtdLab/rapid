@@ -1,0 +1,8 @@
+arb-dir: lib/src/presentation/l10n/arb
+output-class: ExampleIosSignUpPageLocalizations
+output-dir: lib/src/presentation/l10n
+template-arb-file: sign_up_page_en.arb
+output-localization-file: example_ios_sign_up_page_localizations.dart
+nullable-getter: false
+synthetic-package: false
+header: // coverage:ignore-file

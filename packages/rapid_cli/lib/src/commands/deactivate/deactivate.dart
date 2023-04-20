@@ -18,7 +18,7 @@ class DeactivateCommand extends Command<int> {
   /// {@macro deactivate_command}
   DeactivateCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) {
     addSubcommand(DeactivateAndroidCommand(logger: logger, project: project));
     addSubcommand(DeactivateIosCommand(logger: logger, project: project));

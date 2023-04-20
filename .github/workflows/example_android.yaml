@@ -1,0 +1,32 @@
+name: example_android
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - example/packages/example/example_android
+      - example/packages/example_ui/example_ui
+      - example/packages/example_ui/example_ui_android
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: example/packages/example/example_android/example_android
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v2
+        with:
+          distribution: zulu
+          java-version: 11
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+      - run: flutter pub get
+      - run: flutter build apk -t lib/main_development.dart --release --verbose
+      - run: flutter build appbundle -t lib/main_development.dart --release --verbose

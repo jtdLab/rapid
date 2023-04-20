@@ -1,0 +1,28 @@
+name: example_macos
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - example/packages/example/example_macos
+      - example/packages/example_ui/example_ui
+      - example/packages/example_ui/example_ui_macos
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: example/packages/example/example_macos/example_macos
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          cache: true
+          architecture: x64
+      - run: flutter config --enable-macos-desktop
+      - run: flutter build macos -t lib/main_development.dart --release --verbose

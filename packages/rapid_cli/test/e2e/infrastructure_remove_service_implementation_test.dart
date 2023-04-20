@@ -26,7 +26,7 @@ void main() {
       });
 
       test(
-        'infrastructure remove service_implementation',
+        'infrastructure sub_infrastructure remove service_implementation',
         () async {
           // Arrange
           await setupProject();
@@ -36,13 +36,16 @@ void main() {
           serviceImplementationFiles(name: name, serviceName: serviceName)
               .create();
           serviceImplementationFiles(
-                  name: name, serviceName: serviceName, outputDir: outputDir)
-              .create();
+            name: name,
+            serviceName: serviceName,
+            outputDir: outputDir,
+          ).create();
 
           // Act + Assert
           final commandResult = await commandRunner.run(
             [
               'infrastructure',
+              'sub_infrastructure',
               'remove',
               'service_implementation',
               name,
@@ -53,9 +56,11 @@ void main() {
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
+          // TODO test sub-infrastructure
           final commandResultWithOutputDir = await commandRunner.run(
             [
               'infrastructure',
+              'sub_infrastructure',
               'remove',
               'service_implementation',
               name,
@@ -81,7 +86,7 @@ void main() {
           });
 
           verifyDoNotHaveTests({
-            infrastructurePackage,
+            infrastructurePackage(),
           });
         },
       );

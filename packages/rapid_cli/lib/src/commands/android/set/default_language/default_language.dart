@@ -9,7 +9,7 @@ class AndroidSetDefaultLanguageCommand
   /// {@macro android_set_default_language_command}
   AndroidSetDefaultLanguageCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.flutterGenl10n,
     super.dartFormatFix,
   }) : super(

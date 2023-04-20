@@ -8,7 +8,7 @@ class UiWindowsRemoveWidgetCommand extends UiPlatformRemoveWidgetCommand {
   /// {@macro ui_windows_remove_widget_command}
   UiWindowsRemoveWidgetCommand({
     super.logger,
-    required super.project,
+    super.project,
   }) : super(
           platform: Platform.windows,
         );

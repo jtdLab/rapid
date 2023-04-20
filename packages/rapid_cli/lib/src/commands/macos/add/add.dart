@@ -12,7 +12,7 @@ class MacosAddCommand extends PlatformAddCommand {
   /// {@macro macos_add_command}
   MacosAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.macos,
           featureCommand:

@@ -501,7 +501,6 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
 {{/web}}{{#windows}}
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:{{project_name}}_ui/{{project_name}}_ui.dart';
 import 'package:{{project_name}}_ui_windows/src/theme_extensions.dart';
 
 abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
@@ -564,11 +563,7 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      // TODO: migrate to routerConfig https://github.com/bdlukaa/fluent_ui/issues/781
-      routeInformationProvider: routerConfig?.routeInformationProvider,
-      routerDelegate: routerConfig?.routerDelegate,
-      routeInformationParser: routerConfig?.routeInformationParser,
-      color: {{project_name.pascalCase()}}ColorTheme.light.secondary,
+      routerConfig: routerConfig,
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,

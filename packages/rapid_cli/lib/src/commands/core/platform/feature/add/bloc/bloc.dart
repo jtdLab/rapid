@@ -2,12 +2,12 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/bloc/bloc.dart';
-import 'package:rapid_cli/src/commands/core/class_name_arg.dart';
+import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/platform/feature/core/feature_option.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/commands/ios/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/linux/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/macos/feature/add/bloc/bloc.dart';
@@ -34,18 +34,22 @@ import 'package:rapid_cli/src/project/project.dart';
 ///  * [WindowsFeatureAddBlocCommand]
 /// {@endtemplate}
 abstract class PlatformFeatureAddBlocCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter, OutputDirGetter {
+    with
+        OverridableArgResults,
+        ClassNameGetter,
+        FeatureGetter,
+        OutputDirGetter {
   /// {@macro platform_feature_add_bloc_command}
   PlatformFeatureAddBlocCommand({
     required Platform platform,
     Logger? logger,
-    required Project project,
+    Project? project,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
         _logger = logger ?? Logger(),
-        _project = project,
+        _project = project ?? Project(),
         _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
@@ -53,9 +57,7 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
     argParser
       ..addSeparator('')
       // TODO add hint that its a dart package nameish string but not the full name of the related package
-      ..addOption(
-        'feature',
-        abbr: 'f',
+      ..addFeatureOption(
         help: 'The name of the feature this new bloc will be added to.\n'
             'This must be the name of an existing ${_platform.prettyName} feature.',
       )
@@ -95,78 +97,53 @@ abstract class PlatformFeatureAddBlocCommand extends Command<int>
         ],
         _logger,
         () async {
-          final feature = _feature;
           final name = super.className;
+          final featureName = super.feature;
           final outputDir = super.outputDir;
 
           _logger.info('Adding Bloc ...');
 
-          try {
-            await _project.addBloc(
-              name: name,
-              featureName: feature,
-              outputDir: outputDir,
-              platform: _platform,
-              logger: _logger,
-            );
+          final platformDirectory =
+              _project.platformDirectory(platform: _platform);
+          final featuresDirectory = platformDirectory.featuresDirectory;
+          final featurePackage =
+              featuresDirectory.featurePackage(name: featureName);
+          if (featurePackage.exists()) {
+            final bloc = featurePackage.bloc(name: name, dir: outputDir);
+            if (!bloc.existsAny()) {
+              await bloc.create();
 
-            final platformDirectory =
-                _project.platformDirectory(platform: _platform);
-            final featurePackage =
-                platformDirectory.featuresDirectory.featurePackage(feature);
-            await _flutterPubGet(cwd: featurePackage.path, logger: _logger);
-            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: featurePackage.path,
-              logger: _logger,
-            );
-
-            _logger
-              ..info('')
-              ..success(
-                'Added ${name.pascalCase}Bloc to ${_platform.prettyName} feature $feature.',
+              await _flutterPubGet(cwd: featurePackage.path, logger: _logger);
+              await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                cwd: featurePackage.path,
+                logger: _logger,
               );
 
-            return ExitCode.success.code;
-          } on FeatureDoesNotExist {
+              _logger
+                ..info('')
+                ..success(
+                  'Added ${name}Bloc to ${_platform.prettyName} feature $featureName.',
+                );
+
+              return ExitCode.success.code;
+            } else {
+              _logger
+                ..info('')
+                ..err(
+                  'The ${name}Bloc does already exist in $featureName on ${_platform.prettyName}.',
+                );
+
+              return ExitCode.config.code;
+            }
+          } else {
             _logger
               ..info('')
               ..err(
-                'The feature $feature does not exist on ${_platform.prettyName}.',
-              );
-
-            return ExitCode.config.code;
-          } on BlocAlreadyExists {
-            _logger
-              ..info('')
-              ..err(
-                'The bloc $name does already exist in $feature on ${_platform.prettyName}.',
+                'The feature $featureName does not exist on ${_platform.prettyName}.',
               );
 
             return ExitCode.config.code;
           }
         },
       );
-
-  /// Gets the name the feature the bloc should be added to.
-  String get _feature {
-    final raw = argResults['feature'] as String?;
-
-    if (raw == null) {
-      throw UsageException(
-        'No option specified for the feature.',
-        usage,
-      );
-    }
-
-    final isValid = isValidPackageName(raw);
-    if (!isValid) {
-      throw UsageException(
-        '"$raw" is not a valid package name.\n\n'
-        'See https://dart.dev/tools/pub/pubspec#name for more information.',
-        usage,
-      );
-    }
-
-    return raw;
-  }
 }

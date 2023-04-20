@@ -1,7 +1,7 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/core/platform/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/ios/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/ios/feature/add/cubit/cubit.dart';
-import 'package:rapid_cli/src/commands/core/platform/feature/add/add.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -12,7 +12,7 @@ class IosFeatureAddCommand extends PlatformFeatureAddCommand {
   /// {@macro ios_feature_add_command}
   IosFeatureAddCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.ios,
           blocCommand:

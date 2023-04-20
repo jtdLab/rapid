@@ -11,7 +11,7 @@ class WebSetCommand extends PlatformSetCommand {
   /// {@macro web_set_command}
   WebSetCommand({
     Logger? logger,
-    required Project project,
+    Project? project,
   }) : super(
           platform: Platform.web,
           defaultLanguageCommand: WebSetDefaultLanguageCommand(

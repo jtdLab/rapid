@@ -1,3 +1,4 @@
+# TODO clean up and use fixtures.sh to gen fixtures in the workflow
 name: rapid_cli_e2e_slow
 
 on:

@@ -8,7 +8,7 @@ class WindowsAddFeatureCommand extends PlatformAddFeatureCommand {
   /// {@macro windows_add_feature_command}
   WindowsAddFeatureCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.melosBootstrap,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,

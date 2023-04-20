@@ -26,7 +26,7 @@ void main() {
       });
 
       test(
-        'domain remove value_object',
+        'domain sub_domain remove value_object',
         () async {
           // Arrange
           await setupProject();
@@ -37,13 +37,22 @@ void main() {
 
           // Act + Assert
           final commandResult = await commandRunner.run(
-            ['domain', 'remove', 'value_object', name],
+            ['domain', 'sub_domain', 'remove', 'value_object', name],
           );
           expect(commandResult, equals(ExitCode.success.code));
 
           // Act + Assert
+          // TODO test sub-domain
           final commandResultWithOutputDir = await commandRunner.run(
-            ['domain', 'remove', 'value_object', name, '--dir', dir],
+            [
+              'domain',
+              'sub_domain',
+              'remove',
+              'value_object',
+              name,
+              '--dir',
+              dir
+            ],
           );
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
@@ -60,7 +69,7 @@ void main() {
           });
 
           verifyDoNotHaveTests({
-            domainPackage,
+            domainPackage(),
           });
         },
       );

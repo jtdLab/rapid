@@ -1,4 +1,3 @@
-import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
@@ -32,17 +31,13 @@ abstract class PlatformRootPackage
 
   Project get project;
 
+  String defaultLanguage();
+
   Set<String> supportedLanguages();
 
-  Future<void> registerFeature({
-    required String packageName,
-    required Logger logger,
-  });
+  Future<void> registerFeaturePackage(PlatformFeaturePackage featurePackage);
 
-  Future<void> unregisterFeature({
-    required String packageName,
-    required Logger logger,
-  });
+  Future<void> unregisterFeaturePackage(PlatformFeaturePackage featurePackage);
 }
 
 typedef NoneIosRootPackageBuilder = NoneIosRootPackage Function(
@@ -66,7 +61,6 @@ abstract class NoneIosRootPackage extends PlatformRootPackage {
   Future<void> create({
     String? description,
     String? orgName,
-    required Logger logger,
   });
 }
 
@@ -94,18 +88,11 @@ abstract class IosRootPackage extends PlatformRootPackage {
   Future<void> create({
     required String orgName,
     required String language,
-    required Logger logger,
   });
 
-  Future<void> addLanguage(
-    String language, {
-    required Logger logger,
-  });
+  Future<void> addLanguage(String language);
 
-  Future<void> removeLanguage(
-    String language, {
-    required Logger logger,
-  });
+  Future<void> removeLanguage(String language);
 }
 
 typedef LocalizationsDelegatesFileBuilder = LocalizationsDelegatesFile

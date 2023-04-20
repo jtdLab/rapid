@@ -8,7 +8,7 @@ class WindowsRemoveFeatureCommand extends PlatformRemoveFeatureCommand {
   /// {@macro windows_remove_feature_command}
   WindowsRemoveFeatureCommand({
     super.logger,
-    required super.project,
+    super.project,
     super.melosBootstrap,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,

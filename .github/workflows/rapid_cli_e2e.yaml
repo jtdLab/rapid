@@ -39,14 +39,11 @@ jobs:
       - name: Generate fixtures
         run: bash tool/fixtures.sh
 
-      - name: Show fixtures
-        run: ls test/e2e/fixtures   
-
       - name: Cache fixtures
         uses: actions/cache@v3
         with:
           path: test/e2e/fixtures
-          key: fixtures-directory
+          key: ${{ runner.os }}-fixtures
 
   e2e:
     defaults:
@@ -157,10 +154,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: test/e2e/fixtures
-          key: fixtures-directory
-
-      - name: Show fixtures
-        run: ls test/e2e/fixtures   
+          key: ${{ runner.os }}-fixtures
 
       # TODO
       # - run: sudo apt-get update -y

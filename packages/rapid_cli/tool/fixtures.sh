@@ -15,8 +15,7 @@ cd ..
 
 platforms=(android ios linux macos web windows)
 
-for platform in "${platforms[@]}"
-do
+for platform in "${platforms[@]}"; do
     echo "Generating fixture projects with $platform activated..."
     rm -r project_$platform
     mkdir project_$platform
@@ -25,5 +24,14 @@ do
     cd ..
 done
 
+# Manually adds template files that are unintentionally ignored by the .gitignores of the fixture
+files=$(find . -name 'pubspec_overrides.yaml' -o -name 'pubspec.lock')
+
+for file in $files; do
+    echo "git add --force $file..."
+    git add --force $file
+done
+
+# Cleanup
 dart format . --fix
 flutter analyze .

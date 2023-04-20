@@ -18,3 +18,6 @@ for platform in "${platforms[@]}"; do
     echo "Generating fixture projects with $platform activated..."
     rapid create project_$platform -o project_$platform --$platform
 done
+
+flutter analyze .
+dart format . --set-exit-if-changed

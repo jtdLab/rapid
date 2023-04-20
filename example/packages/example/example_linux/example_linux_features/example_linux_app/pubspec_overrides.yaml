@@ -1,0 +1,10 @@
+# melos_managed_dependency_overrides: example_di,example_domain,example_ui,example_ui_linux
+dependency_overrides:
+  example_di:
+    path: ../../../example_di
+  example_domain:
+    path: ../../../example_domain/example_domain
+  example_ui:
+    path: ../../../../example_ui/example_ui
+  example_ui_linux:
+    path: ../../../../example_ui/example_ui_linux

@@ -1,0 +1,7 @@
+{
+  "@@locale": "en",
+  "title": "Public Router title for en",
+  "@title": {
+    "description": "Title text shown in the Public Router"
+  }
+}

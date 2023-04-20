@@ -23,15 +23,3 @@ for platform in "${platforms[@]}"; do
     rapid create project_$platform --$platform
     cd ..
 done
-
-# Manually adds template files that are unintentionally ignored by the .gitignores of the fixture
-files=$(find . -name 'pubspec_overrides.yaml' -o -name 'pubspec.lock')
-
-for file in $files; do
-    echo "git add --force $file..."
-    git add --force $file
-done
-
-# Cleanup
-dart format . --fix
-flutter analyze .

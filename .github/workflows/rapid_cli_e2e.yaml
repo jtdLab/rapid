@@ -132,6 +132,9 @@ jobs:
       - name: Setup Coverage Utils
         run: flutter pub global activate coverage && flutter pub global activate test_cov_console && flutter pub global activate remove_from_coverage
 
+      - name: Generate fixtures
+        run: sh tool/fixtures.sh
+
       - name: Install Flutter dependencies
         run: flutter pub get
 

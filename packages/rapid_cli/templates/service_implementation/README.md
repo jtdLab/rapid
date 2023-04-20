@@ -1,3 +1,0 @@
-# service_implementation
-
-TODO

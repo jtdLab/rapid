@@ -1,3 +1,0 @@
-# domain_package
-
-TODO

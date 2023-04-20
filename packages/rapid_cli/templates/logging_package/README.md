@@ -1,3 +1,0 @@
-# logging_package
-
-TODO

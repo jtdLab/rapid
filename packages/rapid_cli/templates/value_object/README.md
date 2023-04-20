@@ -1,3 +1,0 @@
-# value_object
-
-TODO

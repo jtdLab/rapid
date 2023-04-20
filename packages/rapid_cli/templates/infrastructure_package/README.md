@@ -1,3 +1,0 @@
-# infrastructure_package
-
-TODO

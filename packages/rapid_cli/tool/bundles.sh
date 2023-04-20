@@ -5,9 +5,11 @@
 ############################################################################################
 # Run from packages/rapid_cli
 # sh tool/bundles.sh
-# sh tool/bundles.sh --dry-run to see which templates dependencies can be updated.
+# sh tool/bundles.sh --dry-run (to see which template dependencies have updates available)
 ############################################################################################
-
+# Upates templates, bundles and them to rapid_cli
+############################################################################################
+Ø
 sdks=(
     "sdk=>=2.19.6 <3.0.0"
     "flutter=>=3.7.10"

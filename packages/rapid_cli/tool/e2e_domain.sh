@@ -1,9 +1,11 @@
 #!/bin/bash
 
-# Run fast domain e2e tests
-
+############################################################################################
 # Run from packages/rapid_cli
-# sh tool/e2e_domain.sh 
+# sh tool/e2e_domain.sh
+############################################################################################
+# Runs fast domain e2e tests
+############################################################################################
 
 testFiles=(
     "test/e2e/domain_add_entity_test.dart"
@@ -15,6 +17,5 @@ testFiles=(
 )
 
 for testFile in "${testFiles[@]}"; do
-flutter test $testFile --run-skipped -t e2e
+    flutter test $testFile --run-skipped -t e2e
 done
-

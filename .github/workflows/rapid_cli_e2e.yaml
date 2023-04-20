@@ -39,7 +39,7 @@ jobs:
       - name: Cache fixtures
         uses: actions/cache@v3
         with:
-          path: test/e2e/fixtures
+          path: packages/rapid_cli/test/e2e/fixtures
           key: fixtures
 
       - name: Generate fixtures
@@ -153,7 +153,7 @@ jobs:
       - name: Get cached fixtures
         uses: actions/cache/restore@v3
         with:
-          path: test/e2e/fixtures
+          path: packages/rapid_cli/test/e2e/fixtures
           key: fixtures
 
       # TODO

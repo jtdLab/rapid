@@ -553,13 +553,11 @@ packages:
     source: hosted
     version: "1.2.2"
   rapid_domain:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      path: "packages/rapid/rapid_domain"
-      ref: HEAD
-      resolved-ref: "2b1024be2d7cfce04fc02c981a0bcd6c4e42d7fa"
-      url: "https://github.com/jtdLab/rapid.git"
-    source: git
+      path: "../../../../../../../rapid/rapid_domain"
+      relative: true
+    source: path
     version: "0.1.0"
   recase:
     dependency: transitive
@@ -1428,13 +1426,11 @@ packages:
     source: hosted
     version: "1.2.2"
   rapid_domain:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      path: "packages/rapid/rapid_domain"
-      ref: HEAD
-      resolved-ref: "2b1024be2d7cfce04fc02c981a0bcd6c4e42d7fa"
-      url: "https://github.com/jtdLab/rapid.git"
-    source: git
+      path: "../../../../../../../rapid/rapid_domain"
+      relative: true
+    source: path
     version: "0.1.0"
   recase:
     dependency: transitive
@@ -2311,13 +2307,11 @@ packages:
     source: hosted
     version: "1.2.2"
   rapid_domain:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      path: "packages/rapid/rapid_domain"
-      ref: HEAD
-      resolved-ref: "2b1024be2d7cfce04fc02c981a0bcd6c4e42d7fa"
-      url: "https://github.com/jtdLab/rapid.git"
-    source: git
+      path: "../../../../../../../rapid/rapid_domain"
+      relative: true
+    source: path
     version: "0.1.0"
   recase:
     dependency: transitive
@@ -3210,13 +3204,11 @@ packages:
     source: hosted
     version: "1.2.2"
   rapid_domain:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      path: "packages/rapid/rapid_domain"
-      ref: HEAD
-      resolved-ref: "2b1024be2d7cfce04fc02c981a0bcd6c4e42d7fa"
-      url: "https://github.com/jtdLab/rapid.git"
-    source: git
+      path: "../../../../../../../rapid/rapid_domain"
+      relative: true
+    source: path
     version: "0.1.0"
   recase:
     dependency: transitive
@@ -4082,13 +4074,11 @@ packages:
     source: hosted
     version: "1.2.2"
   rapid_domain:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      path: "packages/rapid/rapid_domain"
-      ref: HEAD
-      resolved-ref: "2b1024be2d7cfce04fc02c981a0bcd6c4e42d7fa"
-      url: "https://github.com/jtdLab/rapid.git"
-    source: git
+      path: "../../../../../../../rapid/rapid_domain"
+      relative: true
+    source: path
     version: "0.1.0"
   recase:
     dependency: transitive
@@ -4973,13 +4963,11 @@ packages:
     source: hosted
     version: "1.2.2"
   rapid_domain:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
-      path: "packages/rapid/rapid_domain"
-      ref: HEAD
-      resolved-ref: "2b1024be2d7cfce04fc02c981a0bcd6c4e42d7fa"
-      url: "https://github.com/jtdLab/rapid.git"
-    source: git
+      path: "../../../../../../../rapid/rapid_domain"
+      relative: true
+    source: path
     version: "0.1.0"
   recase:
     dependency: transitive

@@ -1,17 +1,19 @@
 name: rapid_cli_e2e
 
 on:
-  workflow_dispatch:
+  push:
     branches:
-      - "dev"
+      - main
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   generate-fixtures:
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: packages/rapid_cli
 
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
 
@@ -46,12 +48,11 @@ jobs:
         run: bash tool/fixtures.sh
 
   e2e:
+    runs-on: ubuntu-latest
+    needs: generate-fixtures
     defaults:
       run:
         working-directory: packages/rapid_cli
-
-    runs-on: ubuntu-latest
-    needs: generate-fixtures
 
     strategy:
       fail-fast: false

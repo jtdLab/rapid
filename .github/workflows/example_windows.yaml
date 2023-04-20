@@ -13,10 +13,11 @@ on:
 
 jobs:
   build:
+    runs-on: windows-latest
     defaults:
       run:
         working-directory: example/packages/example/example_windows/example_windows
-    runs-on: windows-latest
+
     steps:
       - run: git config --global core.longpaths true
       - uses: actions/checkout@v3

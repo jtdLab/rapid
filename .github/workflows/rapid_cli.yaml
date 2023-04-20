@@ -3,10 +3,10 @@ name: rapid_cli
 on:
   push:
     branches:
-      - "main"
+      - main
     paths:
-      - "packages/rapid_cli/**"
-      - ".github/workflows/rapid_cli.yaml"
+      - packages/rapid_cli/**
+      - .github/workflows/rapid_cli.yaml
       - "!packages/rapid_cli/README.md"
       - "!packages/rapid_cli/assets/**"
       - "!packages/rapid_cli/fixtures/**"
@@ -14,8 +14,8 @@ on:
 
   pull_request:
     paths:
-      - "packages/rapid_cli/**"
-      - ".github/workflows/rapid_cli.yaml"
+      - packages/rapid_cli/**
+      - .github/workflows/rapid_cli.yaml
       - "!packages/rapid_cli/README.md"
       - "!packages/rapid_cli/assets/**"
       - "!packages/rapid_cli/fixtures/**"
@@ -23,16 +23,15 @@ on:
 
 jobs:
   test:
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: packages/rapid_cli
 
-    runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # TODO needed?
 
       - name: Lint commit messages
         uses: wagoid/commitlint-github-action@v5

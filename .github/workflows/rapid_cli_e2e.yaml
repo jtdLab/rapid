@@ -36,14 +36,14 @@ jobs:
       - name: Setup Rapid CLI
         run: melos dev:activate
 
-      - name: Generate fixtures
-        run: bash tool/fixtures.sh
-
       - name: Cache fixtures
         uses: actions/cache@v3
         with:
           path: test/e2e/fixtures
-          key: ${{ runner.os }}-fixtures
+          key: fixtures
+
+      - name: Generate fixtures
+        run: bash tool/fixtures.sh
 
   e2e:
     defaults:
@@ -154,7 +154,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: test/e2e/fixtures
-          key: ${{ runner.os }}-fixtures
+          key: fixtures
 
       # TODO
       # - run: sudo apt-get update -y

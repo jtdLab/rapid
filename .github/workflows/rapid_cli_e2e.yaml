@@ -39,6 +39,9 @@ jobs:
       - name: Generate fixtures
         run: bash tool/fixtures.sh
 
+      - name: Show fixtures
+        run: ls test/e2e/fixtures   
+
       - name: Cache fixtures
         uses: actions/cache@v3
         with:
@@ -155,6 +158,9 @@ jobs:
         with:
           path: test/e2e/fixtures
           key: fixtures-directory
+
+      - name: Show fixtures
+        run: ls test/e2e/fixtures   
 
       # TODO
       # - run: sudo apt-get update -y

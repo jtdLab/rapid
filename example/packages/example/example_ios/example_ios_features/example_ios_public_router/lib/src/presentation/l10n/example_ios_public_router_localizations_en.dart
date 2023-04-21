@@ -6,7 +6,4 @@ import 'example_ios_public_router_localizations.dart';
 class ExampleIosPublicRouterLocalizationsEn
     extends ExampleIosPublicRouterLocalizations {
   ExampleIosPublicRouterLocalizationsEn([String locale = 'en']) : super(locale);
-
-  @override
-  String get title => 'Public Router title for en';
 }

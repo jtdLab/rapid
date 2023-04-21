@@ -93,12 +93,6 @@ abstract class ExampleIosPublicRouterLocalizations {
 
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('en')];
-
-  /// Title text shown in the Public Router
-  ///
-  /// In en, this message translates to:
-  /// **'Public Router title for en'**
-  String get title;
 }
 
 class _ExampleIosPublicRouterLocalizationsDelegate

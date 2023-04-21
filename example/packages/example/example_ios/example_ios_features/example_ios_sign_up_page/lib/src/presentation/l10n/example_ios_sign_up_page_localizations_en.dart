@@ -3,7 +3,8 @@
 import 'example_ios_sign_up_page_localizations.dart';
 
 /// The translations for English (`en`).
-class ExampleIosSignUpPageLocalizationsEn extends ExampleIosSignUpPageLocalizations {
+class ExampleIosSignUpPageLocalizationsEn
+    extends ExampleIosSignUpPageLocalizations {
   ExampleIosSignUpPageLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
@@ -16,19 +17,21 @@ class ExampleIosSignUpPageLocalizationsEn extends ExampleIosSignUpPageLocalizati
   String get username => 'Username';
 
   @override
-  String get errorInvalidUsername => 'Invalid username. Please use 3-15 characters and only include letters, numbers, ., -, and _.';
+  String get errorInvalidUsername =>
+      'Invalid username. Please use 3-15 characters and only include letters, numbers, ., -, and _.';
 
   @override
   String get password => 'Password';
 
   @override
-  String get errorInvalidPassword => 'Invalid password. Please use 6-32 non-white space characters.';
+  String get errorInvalidPassword =>
+      'Invalid password. Please use 6-32 non-white space characters.';
 
   @override
   String get passwordAgain => 'Password again';
 
   @override
-  String get errorPasswordsDontMatch => 'Passwords don\'t match';
+  String get errorPasswordsDontMatch => 'Passwords don\'t match.';
 
   @override
   String get signUp => 'Sign up';

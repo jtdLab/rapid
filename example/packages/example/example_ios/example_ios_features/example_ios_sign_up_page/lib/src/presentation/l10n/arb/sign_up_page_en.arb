@@ -7,7 +7,7 @@
   "password": "Password",
   "errorInvalidPassword": "Invalid password. Please use 6-32 non-white space characters.",
   "passwordAgain": "Password again",
-  "errorPasswordsDontMatch": "Passwords don't match",
+  "errorPasswordsDontMatch": "Passwords don't match.",
   "signUp": "Sign up",
   "login": "Login",
   "alreadyHaveAnAccount": "Already have an account?",

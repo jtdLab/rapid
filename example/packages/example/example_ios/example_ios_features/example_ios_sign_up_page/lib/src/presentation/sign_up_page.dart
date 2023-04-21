@@ -52,6 +52,7 @@ class _SignUpPageState extends State<SignUpPage> with ExampleToastMixin {
   }
 }
 
+// TODO: use FocusScopeNodes more granular
 class SignUpView extends StatelessWidget {
   const SignUpView({super.key});
 
@@ -77,9 +78,9 @@ class SignUpView extends StatelessWidget {
                 builder: (context, state) {
                   return Column(
                     children: [
-                      const SizedBox(height: 64),
+                      const SizedBox(height: 56),
                       const RapidLogo(),
-                      const SizedBox(height: 64),
+                      const SizedBox(height: 56),
                       Text(
                         context.l10n.signUp,
                         style: const TextStyle(fontWeight: FontWeight.bold),
@@ -145,8 +146,8 @@ class SignUpView extends StatelessWidget {
                           initial: (initial) =>
                               !initial.showErrorMessages ||
                               (initial.showErrorMessages &&
-                                  initial.password.isValid() &&
-                                  initial.password == initial.passwordAgain),
+                                  initial.password == initial.passwordAgain &&
+                                  initial.password.isValid()),
                           orElse: () => true,
                         ),
                         errorMessage: context.l10n.errorPasswordsDontMatch,

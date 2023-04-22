@@ -452,6 +452,8 @@ for ((i = 0; i < ${#platformDependent[@]}; i++)); do
         echo "$wrapped_contents" >"$brick_path/pubspec.lock"
     fi
 
+    sed -i "" "/^$/d" "$brick_path/pubspec.lock"
+
     # Read the contents of $dependency_overrides_path
     contents=$(cat "$dependency_overrides_path")
 
@@ -464,6 +466,8 @@ for ((i = 0; i < ${#platformDependent[@]}; i++)); do
         else
             echo "$wrapped_contents" >"$brick_path/pubspec_overrides.yaml"
         fi
+
+        sed -i "" "/^$/d" "$brick_path/pubspec_overrides.yaml"
     fi
 
 done

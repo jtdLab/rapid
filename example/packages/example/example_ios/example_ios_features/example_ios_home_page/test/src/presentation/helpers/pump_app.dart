@@ -15,7 +15,9 @@ extension WidgetTesterX on WidgetTester {
     await pumpWidget(
       App.test(
         locale: locale ?? const Locale('en'),
-        localizationsDelegate: ExampleIosHomePageLocalizations.delegate,
+        localizationsDelegates: const [
+          ExampleIosHomePageLocalizations.delegate,
+        ],
         router: router ?? HomePageRouter(),
         initialRoutes: initialRoutes,
         routerObserver: observer,
@@ -34,7 +36,9 @@ extension WidgetTesterX on WidgetTester {
       App.testWidget(
         widget: widget,
         locale: locale ?? const Locale('en'),
-        localizationsDelegate: ExampleIosHomePageLocalizations.delegate,
+        localizationsDelegates: const [
+          ExampleIosHomePageLocalizations.delegate,
+        ],
         brightness: brightness,
       ),
     );

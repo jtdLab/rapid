@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:example_domain/example_domain.dart';
 import 'package:example_ios_login_page/example_ios_login_page.dart';
 import 'package:example_ios_sign_up_page/example_ios_sign_up_page.dart';
+import 'package:mocktail/mocktail.dart';
 
 class MockLoginBloc extends MockBloc<LoginEvent, LoginState>
     implements LoginBloc {
@@ -33,3 +35,5 @@ class MockSignUpBloc extends MockBloc<SignUpEvent, SignUpState>
     );
   }
 }
+
+class MockStackRouter extends Mock implements StackRouter {}

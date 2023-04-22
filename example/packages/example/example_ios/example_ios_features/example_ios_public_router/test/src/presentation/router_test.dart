@@ -8,9 +8,13 @@ PublicRouter _publicRouter() {
 
 void main() {
   group('PublicRouter', () {
-    test('has single route', () {
+    test('.pagesMap', () {
       final publicRouter = _publicRouter();
-      expect(publicRouter.pagesMap, hasLength(1));
+      expect(publicRouter.pagesMap, hasLength(3));
+    });
+
+    test('.routes', () {
+      final publicRouter = _publicRouter();
       expect(publicRouter.routes, hasLength(1));
     });
 
@@ -32,7 +36,7 @@ void main() {
             .having(
               (e) => e.children?.routes,
               'children',
-              hasLength(2), // TODO
+              hasLength(2),
             ),
       );
     });

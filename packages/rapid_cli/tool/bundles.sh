@@ -216,50 +216,50 @@ templates=(
 # done
 # cd ..
 
-platform_ui_package_android_path="tmp/packages/${project_name}_ui/${project_name}_ui_android"
-platform_ui_package_ios_path="tmp/packages/${project_name}_ui/${project_name}_ui_ios"
-platform_ui_package_linux_path="tmp/packages/${project_name}_ui/${project_name}_ui_linux"
-platform_ui_package_macos_path="tmp/packages/${project_name}_ui/${project_name}_ui_macos"
-platform_ui_package_web_path="tmp/packages/${project_name}_ui/${project_name}_ui_web"
-platform_ui_package_windows_path="tmp/packages/${project_name}_ui/${project_name}_ui_windows"
+temp_dir=$(mktemp -d)
 
-platform_root_package_android_path="tmp/packages/${project_name}/${project_name}_android/${project_name}_android"
-platform_root_package_ios_path="tmp/packages/${project_name}/${project_name}_ios/${project_name}_ios"
-platform_root_package_linux_path="tmp/packages/${project_name}/${project_name}_linux/${project_name}_linux"
-platform_root_package_macos_path="tmp/packages/${project_name}/${project_name}_macos/${project_name}_macos"
-platform_root_package_web_path="tmp/packages/${project_name}/${project_name}_web/${project_name}_web"
-platform_root_package_windows_path="tmp/packages/${project_name}/${project_name}_windows/${project_name}_windows"
+platform_ui_package_android_path="${temp_dir}/tmp/packages/${project_name}_ui/${project_name}_ui_android"
+platform_ui_package_ios_path="${temp_dir}/tmp/packages/${project_name}_ui/${project_name}_ui_ios"
+platform_ui_package_linux_path="${temp_dir}/tmp/packages/${project_name}_ui/${project_name}_ui_linux"
+platform_ui_package_macos_path="${temp_dir}/tmp/packages/${project_name}_ui/${project_name}_ui_macos"
+platform_ui_package_web_path="${temp_dir}/tmp/packages/${project_name}_ui/${project_name}_ui_web"
+platform_ui_package_windows_path="${temp_dir}/tmp/packages/${project_name}_ui/${project_name}_ui_windows"
 
-platform_navigation_package_android_path="tmp/packages/${project_name}/${project_name}_android/${project_name}_android_navigation"
-platform_navigation_package_ios_path="tmp/packages/${project_name}/${project_name}_ios/${project_name}_ios_navigation"
-platform_navigation_package_linux_path="tmp/packages/${project_name}/${project_name}_linux/${project_name}_linux_navigation"
-platform_navigation_package_macos_path="tmp/packages/${project_name}/${project_name}_macos/${project_name}_macos_navigation"
-platform_navigation_package_web_path="tmp/packages/${project_name}/${project_name}_web/${project_name}_web_navigation"
-platform_navigation_package_windows_path="tmp/packages/${project_name}/${project_name}_windows/${project_name}_windows_navigation"
+platform_root_package_android_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_android/${project_name}_android"
+platform_root_package_ios_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_ios/${project_name}_ios"
+platform_root_package_linux_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_linux/${project_name}_linux"
+platform_root_package_macos_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_macos/${project_name}_macos"
+platform_root_package_web_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_web/${project_name}_web"
+platform_root_package_windows_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_windows/${project_name}_windows"
 
-platform_app_feature_package_android_path="tmp/packages/${project_name}/${project_name}_android/${project_name}_android_features/${project_name}_android_app"
-platform_app_feature_package_ios_path="tmp/packages/${project_name}/${project_name}_ios/${project_name}_ios_features/${project_name}_ios_app"
-platform_app_feature_package_linux_path="tmp/packages/${project_name}/${project_name}_linux/${project_name}_linux_features/${project_name}_linux_app"
-platform_app_feature_package_macos_path="tmp/packages/${project_name}/${project_name}_macos/${project_name}_macos_features/${project_name}_macos_app"
-platform_app_feature_package_web_path="tmp/packages/${project_name}/${project_name}_web/${project_name}_web_features/${project_name}_web_app"
-platform_app_feature_package_windows_path="tmp/packages/${project_name}/${project_name}_windows/${project_name}_windows_features/${project_name}_windows_app"
+platform_navigation_package_android_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_android/${project_name}_android_navigation"
+platform_navigation_package_ios_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_ios/${project_name}_ios_navigation"
+platform_navigation_package_linux_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_linux/${project_name}_linux_navigation"
+platform_navigation_package_macos_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_macos/${project_name}_macos_navigation"
+platform_navigation_package_web_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_web/${project_name}_web_navigation"
+platform_navigation_package_windows_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_windows/${project_name}_windows_navigation"
 
-platform_home_page_feature_package_android_path="tmp/packages/${project_name}/${project_name}_android/${project_name}_android_features/${project_name}_android_home_page"
-platform_home_page_feature_package_ios_path="tmp/packages/${project_name}/${project_name}_ios/${project_name}_ios_features/${project_name}_ios_home_page"
-platform_home_page_feature_package_linux_path="tmp/packages/${project_name}/${project_name}_linux/${project_name}_linux_features/${project_name}_linux_home_page"
-platform_home_page_feature_package_macos_path="tmp/packages/${project_name}/${project_name}_macos/${project_name}_macos_features/${project_name}_macos_home_page"
-platform_home_page_feature_package_web_path="tmp/packages/${project_name}/${project_name}_web/${project_name}_web_features/${project_name}_web_home_page"
-platform_home_page_feature_package_windows_path="tmp/packages/${project_name}/${project_name}_windows/${project_name}_windows_features/${project_name}_windows_home_page"
+platform_app_feature_package_android_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_android/${project_name}_android_features/${project_name}_android_app"
+platform_app_feature_package_ios_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_ios/${project_name}_ios_features/${project_name}_ios_app"
+platform_app_feature_package_linux_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_linux/${project_name}_linux_features/${project_name}_linux_app"
+platform_app_feature_package_macos_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_macos/${project_name}_macos_features/${project_name}_macos_app"
+platform_app_feature_package_web_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_web/${project_name}_web_features/${project_name}_web_app"
+platform_app_feature_package_windows_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_windows/${project_name}_windows_features/${project_name}_windows_app"
 
-ui_package_path="tmp/packages/${project_name}_ui/${project_name}_ui"
-di_package_path="tmp/packages/${project_name}/${project_name}_di"
-logging_package_path="tmp/packages/${project_name}/${project_name}_logging"
-domain_package_path="tmp/packages/${project_name}/${project_name}_domain/${project_name}_domain"
-infrastructure_package_path="tmp/packages/${project_name}/${project_name}_infrastructure/${project_name}_infrastructure"
+platform_home_page_feature_package_android_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_android/${project_name}_android_features/${project_name}_android_home_page"
+platform_home_page_feature_package_ios_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_ios/${project_name}_ios_features/${project_name}_ios_home_page"
+platform_home_page_feature_package_linux_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_linux/${project_name}_linux_features/${project_name}_linux_home_page"
+platform_home_page_feature_package_macos_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_macos/${project_name}_macos_features/${project_name}_macos_home_page"
+platform_home_page_feature_package_web_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_web/${project_name}_web_features/${project_name}_web_home_page"
+platform_home_page_feature_package_windows_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_windows/${project_name}_windows_features/${project_name}_windows_home_page"
+
+ui_package_path="${temp_dir}/tmp/packages/${project_name}_ui/${project_name}_ui"
+di_package_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_di"
+logging_package_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_logging"
+domain_package_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_domain/${project_name}_domain"
+infrastructure_package_path="${temp_dir}/tmp/packages/${project_name}/${project_name}_infrastructure/${project_name}_infrastructure"
 
 cd templates
-
-rm -r tmp
 
 # Platform UI Package
 mason make "platform_ui_package" --on-conflict append -o $platform_ui_package_android_path --project_name $project_name --example false --android true --ios false --linux false --macos false --web false --windows false
@@ -316,7 +316,41 @@ mason make "domain_package" --on-conflict append -o $domain_package_path --proje
 # Infrastructure Package
 mason make "infrastructure_package" --on-conflict append -o $infrastructure_package_path --project_name $project_name --has_name false --name ""
 
+current_dir=$(pwd)
+cd $temp_dir
+mkdir tmp
+cd tmp
+
+cat >pubspec.yaml <<EOL
+name: rapid_workspace
+
+environment:
+  sdk: ">=2.19.6 <3.0.0"
+  
+dev_dependencies:
+  melos: ^3.0.1
+EOL
+
+cat >melos.yaml <<EOL
+name: xlx
+
+packages:
+  - packages/**
+
+command:
+  bootstrap:
+    # https://github.com/dart-lang/pub/issues/3404)
+    runPubGetInParallel: false
+
+ide:
+  intellij: false
+EOL
+
+flutter pub get
+
 melos bs
+
+cd $current_dir
 
 platformDependent=(
     "platform_ui_package $platform_ui_package_android_path"

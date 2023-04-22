@@ -16,7 +16,9 @@ extension WidgetTesterX on WidgetTester {
     await pumpWidget(
       App.test(
         locale: locale ?? const Locale('{{default_language}}'),
-        localizationsDelegate: {{project_name.pascalCase()}}{{#android}}Android{{/android}}{{#ios}}Ios{{/ios}}{{#linux}}Linux{{/linux}}{{#macos}}Macos{{/macos}}{{#web}}Web{{/web}}{{#windows}}Windows{{/windows}}{{name.pascalCase()}}Localizations.delegate,
+        localizationsDelegates: const [
+         {{project_name.pascalCase()}}{{#android}}Android{{/android}}{{#ios}}Ios{{/ios}}{{#linux}}Linux{{/linux}}{{#macos}}Macos{{/macos}}{{#web}}Web{{/web}}{{#windows}}Windows{{/windows}}{{name.pascalCase()}}Localizations.delegate,
+        ],
         router: router ?? {{name.pascalCase()}}Router(),
         initialRoutes: initialRoutes,
         routerObserver: observer,
@@ -35,7 +37,9 @@ extension WidgetTesterX on WidgetTester {
       App.testWidget(
         widget: widget,
         locale: locale ?? const Locale('{{default_language}}'),
-        localizationsDelegate: {{project_name.pascalCase()}}{{#android}}Android{{/android}}{{#ios}}Ios{{/ios}}{{#linux}}Linux{{/linux}}{{#macos}}Macos{{/macos}}{{#web}}Web{{/web}}{{#windows}}Windows{{/windows}}{{name.pascalCase()}}Localizations.delegate,
+        localizationsDelegates: const [
+          {{project_name.pascalCase()}}{{#android}}Android{{/android}}{{#ios}}Ios{{/ios}}{{#linux}}Linux{{/linux}}{{#macos}}Macos{{/macos}}{{#web}}Web{{/web}}{{#windows}}Windows{{/windows}}{{name.pascalCase()}}Localizations.delegate,
+        ],
         {{#android}}themeMode: themeMode{{/android}}{{#ios}}brightness: brightness{{/ios}}{{#linux}}themeMode: themeMode{{/linux}}{{#macos}}brightness: brightness{{/macos}}{{#web}}themeMode: themeMode{{/web}}{{#windows}}themeMode: themeMode{{/windows}},
       ),
     );

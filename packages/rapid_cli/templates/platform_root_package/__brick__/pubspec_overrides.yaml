@@ -13,10 +13,9 @@
 
 
 
-# melos_managed_dependency_overrides: {{project_name}}_android_app,{{project_name}}_android_home_page,{{project_name}}_android_navigation,{{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_logging,{{project_name}}_ui,{{project_name}}_ui_android,rapid_domain
+
+# melos_managed_dependency_overrides: {{project_name}}_android_app,{{project_name}}_android_home_page,{{project_name}}_android_navigation,{{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_logging,{{project_name}}_ui,{{project_name}}_ui_android
 dependency_overrides:
-  rapid_domain:
-    path: ../../../../../../../rapid/rapid_domain
   {{project_name}}_android_app:
     path: ../{{project_name}}_android_features/{{project_name}}_android_app
   {{project_name}}_android_home_page:
@@ -65,10 +64,10 @@ dependency_overrides:
 
 
 
-# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_ios_app,{{project_name}}_ios_home_page,{{project_name}}_ios_navigation,{{project_name}}_logging,{{project_name}}_ui,{{project_name}}_ui_ios,rapid_domain
+
+
+# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_ios_app,{{project_name}}_ios_home_page,{{project_name}}_ios_navigation,{{project_name}}_logging,{{project_name}}_ui,{{project_name}}_ui_ios
 dependency_overrides:
-  rapid_domain:
-    path: ../../../../../../../rapid/rapid_domain
   {{project_name}}_di:
     path: ../../{{project_name}}_di
   {{project_name}}_domain:
@@ -131,10 +130,11 @@ dependency_overrides:
 
 
 
-# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_linux_app,{{project_name}}_linux_home_page,{{project_name}}_linux_navigation,{{project_name}}_logging,{{project_name}}_ui,{{project_name}}_ui_linux,rapid_domain
+
+
+
+# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_linux_app,{{project_name}}_linux_home_page,{{project_name}}_linux_navigation,{{project_name}}_logging,{{project_name}}_ui,{{project_name}}_ui_linux
 dependency_overrides:
-  rapid_domain:
-    path: ../../../../../../../rapid/rapid_domain
   {{project_name}}_di:
     path: ../../{{project_name}}_di
   {{project_name}}_domain:
@@ -211,10 +211,12 @@ dependency_overrides:
 
 
 
-# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_logging,{{project_name}}_macos_app,{{project_name}}_macos_home_page,{{project_name}}_macos_navigation,{{project_name}}_ui,{{project_name}}_ui_macos,rapid_domain
+
+
+
+
+# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_logging,{{project_name}}_macos_app,{{project_name}}_macos_home_page,{{project_name}}_macos_navigation,{{project_name}}_ui,{{project_name}}_ui_macos
 dependency_overrides:
-  rapid_domain:
-    path: ../../../../../../../rapid/rapid_domain
   {{project_name}}_di:
     path: ../../{{project_name}}_di
   {{project_name}}_domain:
@@ -305,10 +307,13 @@ dependency_overrides:
 
 
 
-# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_logging,{{project_name}}_ui,{{project_name}}_ui_web,{{project_name}}_web_app,{{project_name}}_web_home_page,{{project_name}}_web_navigation,rapid_domain
+
+
+
+
+
+# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_logging,{{project_name}}_ui,{{project_name}}_ui_web,{{project_name}}_web_app,{{project_name}}_web_home_page,{{project_name}}_web_navigation
 dependency_overrides:
-  rapid_domain:
-    path: ../../../../../../../rapid/rapid_domain
   {{project_name}}_di:
     path: ../../{{project_name}}_di
   {{project_name}}_domain:
@@ -413,10 +418,14 @@ dependency_overrides:
 
 
 
-# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_logging,{{project_name}}_ui,{{project_name}}_ui_windows,{{project_name}}_windows_app,{{project_name}}_windows_home_page,{{project_name}}_windows_navigation,rapid_domain
+
+
+
+
+
+
+# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_logging,{{project_name}}_ui,{{project_name}}_ui_windows,{{project_name}}_windows_app,{{project_name}}_windows_home_page,{{project_name}}_windows_navigation
 dependency_overrides:
-  rapid_domain:
-    path: ../../../../../../../rapid/rapid_domain
   {{project_name}}_di:
     path: ../../{{project_name}}_di
   {{project_name}}_domain:

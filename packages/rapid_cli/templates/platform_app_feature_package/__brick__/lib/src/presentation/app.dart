@@ -1,9 +1,11 @@
 {{#android}}import 'package:auto_route/auto_route.dart';
 import 'package:{{project_name}}_ui_android/{{project_name}}_ui_android.dart';
 
+
 abstract class App extends StatelessWidget {
   const App._({
     super.key,
+    required this.localizationsDelegates,
     this.router,
   });
 
@@ -19,7 +21,7 @@ abstract class App extends StatelessWidget {
   const factory App.test({
     Key? key,
     Locale locale,
-    required LocalizationsDelegate localizationsDelegate,
+    required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     AutoRouterObserver? routerObserver,
@@ -31,11 +33,11 @@ abstract class App extends StatelessWidget {
     Key? key,
     required Widget widget,
     Locale locale,
-    required LocalizationsDelegate localizationsDelegate,
+    required List<LocalizationsDelegate> localizationsDelegates,
     ThemeMode? themeMode,
   }) = _AppTestWidget;
 
-  List<LocalizationsDelegate> get localizationsDelegates;
+  final List<LocalizationsDelegate> localizationsDelegates;
   final RootStackRouter? router;
 }
 
@@ -43,17 +45,13 @@ class _App extends App {
   const _App({
     super.key,
     required this.supportedLocales,
-    required this.localizationsDelegates,
+    required super.localizationsDelegates,
     required RootStackRouter super.router,
     this.routerObserverBuilder,
   }) : super._();
 
-  
   final List<AutoRouterObserver> Function()? routerObserverBuilder;
-
   final List<Locale> supportedLocales;
-  @override
-  final List<LocalizationsDelegate> localizationsDelegates;
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +70,7 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required this.localizationsDelegate,
+    required super.localizationsDelegates,
     required RootStackRouter super.router,
     this.initialRoutes,
     this.routerObserver,
@@ -80,15 +78,11 @@ class _AppTest extends App {
   }) : super._();
 
   final Locale locale;
-  final LocalizationsDelegate localizationsDelegate;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
   final AutoRouterObserver? routerObserver;
   final ThemeMode? themeMode;
 
   List<Locale> get supportedLocales => [locale];
-  @override
-  List<LocalizationsDelegate> get localizationsDelegates =>
-      [localizationsDelegate];
 
   @override
   Widget build(BuildContext context) {
@@ -112,18 +106,13 @@ class _AppTestWidget extends App {
     super.key,
     required this.widget,
     this.locale = const Locale('en'),
-    required this.localizationsDelegate,
+    required super.localizationsDelegates,
     this.themeMode,
   }) : super._();
 
   final Locale locale;
-  final LocalizationsDelegate localizationsDelegate;
   final Widget widget;
   final ThemeMode? themeMode;
-
-  @override
-  List<LocalizationsDelegate> get localizationsDelegates =>
-      [localizationsDelegate];
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +131,7 @@ import 'package:{{project_name}}_ui_ios/{{project_name}}_ui_ios.dart';
 abstract class App extends StatelessWidget {
   const App._({
     super.key,
+    required this.localizationsDelegates,
     this.router,
   });
 
@@ -157,7 +147,7 @@ abstract class App extends StatelessWidget {
   const factory App.test({
     Key? key,
     Locale locale,
-    required LocalizationsDelegate localizationsDelegate,
+    required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     AutoRouterObserver? routerObserver,
@@ -169,11 +159,11 @@ abstract class App extends StatelessWidget {
     Key? key,
     required Widget widget,
     Locale locale,
-    required LocalizationsDelegate localizationsDelegate,
+    required List<LocalizationsDelegate> localizationsDelegates,
     Brightness? brightness,
   }) = _AppTestWidget;
 
-  List<LocalizationsDelegate> get localizationsDelegates;
+  final List<LocalizationsDelegate> localizationsDelegates;
   final RootStackRouter? router;
 }
 
@@ -181,16 +171,13 @@ class _App extends App {
   const _App({
     super.key,
     required this.supportedLocales,
-    required this.localizationsDelegates,
+    required super.localizationsDelegates,
     required RootStackRouter super.router,
     this.routerObserverBuilder,
   }) : super._();
 
   final List<AutoRouterObserver> Function()? routerObserverBuilder;
-
   final List<Locale> supportedLocales;
-  @override
-  final List<LocalizationsDelegate> localizationsDelegates;
 
   @override
   Widget build(BuildContext context) {
@@ -209,7 +196,7 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required this.localizationsDelegate,
+    required super.localizationsDelegates,
     required RootStackRouter super.router,
     this.initialRoutes,
     this.routerObserver,
@@ -217,15 +204,11 @@ class _AppTest extends App {
   }) : super._();
 
   final Locale locale;
-  final LocalizationsDelegate localizationsDelegate;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
   final AutoRouterObserver? routerObserver;
   final Brightness? brightness;
 
   List<Locale> get supportedLocales => [locale];
-  @override
-  List<LocalizationsDelegate> get localizationsDelegates =>
-      [localizationsDelegate];
 
   @override
   Widget build(BuildContext context) {
@@ -249,18 +232,13 @@ class _AppTestWidget extends App {
     super.key,
     required this.widget,
     this.locale = const Locale('en'),
-    required this.localizationsDelegate,
+    required super.localizationsDelegates,
     this.brightness,
   }) : super._();
 
   final Locale locale;
-  final LocalizationsDelegate localizationsDelegate;
   final Widget widget;
   final Brightness? brightness;
-
-  @override
-  List<LocalizationsDelegate> get localizationsDelegates =>
-      [localizationsDelegate];
 
   @override
   Widget build(BuildContext context) {
@@ -279,6 +257,7 @@ import 'package:{{project_name}}_ui_linux/{{project_name}}_ui_linux.dart';
 abstract class App extends StatelessWidget {
   const App._({
     super.key,
+    required this.localizationsDelegates,
     this.router,
   });
 
@@ -294,7 +273,7 @@ abstract class App extends StatelessWidget {
   const factory App.test({
     Key? key,
     Locale locale,
-    required LocalizationsDelegate localizationsDelegate,
+    required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     AutoRouterObserver? routerObserver,
@@ -306,11 +285,11 @@ abstract class App extends StatelessWidget {
     Key? key,
     required Widget widget,
     Locale locale,
-    required LocalizationsDelegate localizationsDelegate,
+    required List<LocalizationsDelegate> localizationsDelegates,
     ThemeMode? themeMode,
   }) = _AppTestWidget;
 
-  List<LocalizationsDelegate> get localizationsDelegates;
+  final List<LocalizationsDelegate> localizationsDelegates;
   final RootStackRouter? router;
 }
 
@@ -318,16 +297,13 @@ class _App extends App {
   const _App({
     super.key,
     required this.supportedLocales,
-    required this.localizationsDelegates,
+    required super.localizationsDelegates,
     required RootStackRouter super.router,
     this.routerObserverBuilder,
   }) : super._();
 
   final List<AutoRouterObserver> Function()? routerObserverBuilder;
-
   final List<Locale> supportedLocales;
-  @override
-  final List<LocalizationsDelegate> localizationsDelegates;
 
   @override
   Widget build(BuildContext context) {
@@ -346,7 +322,7 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required this.localizationsDelegate,
+    required super.localizationsDelegates,
     required RootStackRouter super.router,
     this.initialRoutes,
     this.routerObserver,
@@ -354,15 +330,11 @@ class _AppTest extends App {
   }) : super._();
 
   final Locale locale;
-  final LocalizationsDelegate localizationsDelegate;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
   final AutoRouterObserver? routerObserver;
   final ThemeMode? themeMode;
 
   List<Locale> get supportedLocales => [locale];
-  @override
-  List<LocalizationsDelegate> get localizationsDelegates =>
-      [localizationsDelegate];
 
   @override
   Widget build(BuildContext context) {
@@ -386,18 +358,13 @@ class _AppTestWidget extends App {
     super.key,
     required this.widget,
     this.locale = const Locale('en'),
-    required this.localizationsDelegate,
+    required super.localizationsDelegates,
     this.themeMode,
   }) : super._();
 
   final Locale locale;
-  final LocalizationsDelegate localizationsDelegate;
   final Widget widget;
   final ThemeMode? themeMode;
-
-  @override
-  List<LocalizationsDelegate> get localizationsDelegates =>
-      [localizationsDelegate];
 
   @override
   Widget build(BuildContext context) {
@@ -416,6 +383,7 @@ import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';
 abstract class App extends StatelessWidget {
   const App._({
     super.key,
+    required this.localizationsDelegates,
     this.router,
   });
 
@@ -431,7 +399,7 @@ abstract class App extends StatelessWidget {
   const factory App.test({
     Key? key,
     Locale locale,
-    required LocalizationsDelegate localizationsDelegate,
+    required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     AutoRouterObserver? routerObserver,
@@ -443,11 +411,11 @@ abstract class App extends StatelessWidget {
     Key? key,
     required Widget widget,
     Locale locale,
-    required LocalizationsDelegate localizationsDelegate,
+    required List<LocalizationsDelegate> localizationsDelegates,
     Brightness? brightness,
   }) = _AppTestWidget;
 
-  List<LocalizationsDelegate> get localizationsDelegates;
+  final List<LocalizationsDelegate> localizationsDelegates;
   final RootStackRouter? router;
 }
 
@@ -455,16 +423,13 @@ class _App extends App {
   const _App({
     super.key,
     required this.supportedLocales,
-    required this.localizationsDelegates,
+    required super.localizationsDelegates,
     required RootStackRouter super.router,
     this.routerObserverBuilder,
   }) : super._();
 
   final List<AutoRouterObserver> Function()? routerObserverBuilder;
-
   final List<Locale> supportedLocales;
-  @override
-  final List<LocalizationsDelegate> localizationsDelegates;
 
   @override
   Widget build(BuildContext context) {
@@ -483,7 +448,7 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required this.localizationsDelegate,
+    required super.localizationsDelegates,
     required RootStackRouter super.router,
     this.initialRoutes,
     this.routerObserver,
@@ -491,15 +456,11 @@ class _AppTest extends App {
   }) : super._();
 
   final Locale locale;
-  final LocalizationsDelegate localizationsDelegate;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
   final AutoRouterObserver? routerObserver;
   final Brightness? brightness;
 
   List<Locale> get supportedLocales => [locale];
-  @override
-  List<LocalizationsDelegate> get localizationsDelegates =>
-      [localizationsDelegate];
 
   @override
   Widget build(BuildContext context) {
@@ -523,18 +484,13 @@ class _AppTestWidget extends App {
     super.key,
     required this.widget,
     this.locale = const Locale('en'),
-    required this.localizationsDelegate,
+    required super.localizationsDelegates,
     this.brightness
   }) : super._();
 
   final Locale locale;
-  final LocalizationsDelegate localizationsDelegate;
   final Widget widget;
   final Brightness? brightness;
-
-  @override
-  List<LocalizationsDelegate> get localizationsDelegates =>
-      [localizationsDelegate];
 
   @override
   Widget build(BuildContext context) {
@@ -553,6 +509,7 @@ import 'package:{{project_name}}_ui_web/{{project_name}}_ui_web.dart';
 abstract class App extends StatelessWidget {
   const App._({
     super.key,
+    required this.localizationsDelegates,
     this.router,
   });
 
@@ -568,7 +525,7 @@ abstract class App extends StatelessWidget {
   const factory App.test({
     Key? key,
     Locale locale,
-    required LocalizationsDelegate localizationsDelegate,
+    required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     AutoRouterObserver? routerObserver,
@@ -580,11 +537,11 @@ abstract class App extends StatelessWidget {
     Key? key,
     required Widget widget,
     Locale locale,
-    required LocalizationsDelegate localizationsDelegate,
+    required List<LocalizationsDelegate> localizationsDelegates,
     ThemeMode? themeMode,
   }) = _AppTestWidget;
 
-  List<LocalizationsDelegate> get localizationsDelegates;
+  final List<LocalizationsDelegate> localizationsDelegates;
   final RootStackRouter? router;
 }
 
@@ -592,16 +549,13 @@ class _App extends App {
   const _App({
     super.key,
     required this.supportedLocales,
-    required this.localizationsDelegates,
+    required super.localizationsDelegates,
     required RootStackRouter super.router,
     this.routerObserverBuilder,
   }) : super._();
 
   final List<AutoRouterObserver> Function()? routerObserverBuilder;
-
   final List<Locale> supportedLocales;
-  @override
-  final List<LocalizationsDelegate> localizationsDelegates;
 
   @override
   Widget build(BuildContext context) {
@@ -620,7 +574,7 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required this.localizationsDelegate,
+    required super.localizationsDelegates,
     required RootStackRouter super.router,
     this.initialRoutes,
     this.routerObserver,
@@ -628,15 +582,11 @@ class _AppTest extends App {
   }) : super._();
 
   final Locale locale;
-  final LocalizationsDelegate localizationsDelegate;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
   final AutoRouterObserver? routerObserver;
   final ThemeMode? themeMode;
 
   List<Locale> get supportedLocales => [locale];
-  @override
-  List<LocalizationsDelegate> get localizationsDelegates =>
-      [localizationsDelegate];
 
   @override
   Widget build(BuildContext context) {
@@ -660,18 +610,13 @@ class _AppTestWidget extends App {
     super.key,
     required this.widget,
     this.locale = const Locale('en'),
-    required this.localizationsDelegate,
+    required super.localizationsDelegates,
     this.themeMode,
   }) : super._();
 
   final Locale locale;
-  final LocalizationsDelegate localizationsDelegate;
   final Widget widget;
   final ThemeMode? themeMode;
-
-  @override
-  List<LocalizationsDelegate> get localizationsDelegates =>
-      [localizationsDelegate];
 
   @override
   Widget build(BuildContext context) {
@@ -690,6 +635,7 @@ import 'package:{{project_name}}_ui_windows/{{project_name}}_ui_windows.dart';
 abstract class App extends StatelessWidget {
   const App._({
     super.key,
+    required this.localizationsDelegates,
     this.router,
   });
 
@@ -705,7 +651,7 @@ abstract class App extends StatelessWidget {
   const factory App.test({
     Key? key,
     Locale locale,
-    required LocalizationsDelegate localizationsDelegate,
+    required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     AutoRouterObserver? routerObserver,
@@ -717,11 +663,11 @@ abstract class App extends StatelessWidget {
     Key? key,
     required Widget widget,
     Locale locale,
-    required LocalizationsDelegate localizationsDelegate,
+    required List<LocalizationsDelegate> localizationsDelegates,
     ThemeMode? themeMode,
   }) = _AppTestWidget;
 
-  List<LocalizationsDelegate> get localizationsDelegates;
+  final List<LocalizationsDelegate> localizationsDelegates;
   final RootStackRouter? router;
 }
 
@@ -729,16 +675,13 @@ class _App extends App {
   const _App({
     super.key,
     required this.supportedLocales,
-    required this.localizationsDelegates,
+    required super.localizationsDelegates,
     required RootStackRouter super.router,
     this.routerObserverBuilder,
   }) : super._();
 
   final List<AutoRouterObserver> Function()? routerObserverBuilder;
-
   final List<Locale> supportedLocales;
-  @override
-  final List<LocalizationsDelegate> localizationsDelegates;
 
   @override
   Widget build(BuildContext context) {
@@ -757,7 +700,7 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required this.localizationsDelegate,
+    required super.localizationsDelegates,
     required RootStackRouter super.router,
     this.initialRoutes,
     this.routerObserver,
@@ -765,15 +708,11 @@ class _AppTest extends App {
   }) : super._();
 
   final Locale locale;
-  final LocalizationsDelegate localizationsDelegate;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
   final AutoRouterObserver? routerObserver;
   final ThemeMode? themeMode;
 
   List<Locale> get supportedLocales => [locale];
-  @override
-  List<LocalizationsDelegate> get localizationsDelegates =>
-      [localizationsDelegate];
 
   @override
   Widget build(BuildContext context) {
@@ -797,18 +736,13 @@ class _AppTestWidget extends App {
     super.key,
     required this.widget,
     this.locale = const Locale('en'),
-    required this.localizationsDelegate,
+    required super.localizationsDelegates,
     this.themeMode,
   }) : super._();
 
   final Locale locale;
-  final LocalizationsDelegate localizationsDelegate;
   final Widget widget;
   final ThemeMode? themeMode;
-
-  @override
-  List<LocalizationsDelegate> get localizationsDelegates =>
-      [localizationsDelegate];
 
   @override
   Widget build(BuildContext context) {

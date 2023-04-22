@@ -394,11 +394,13 @@ packages:
     source: hosted
     version: "1.2.2"
   rapid_domain:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
-      path: "../../../../../../../rapid/rapid_domain"
-      relative: true
-    source: path
+      path: "packages/rapid/rapid_domain"
+      ref: HEAD
+      resolved-ref: "5d6c269fd777503c61f141279751184de63a8efe"
+      url: "https://github.com/jtdLab/rapid.git"
+    source: git
     version: "0.1.0"
   recase:
     dependency: transitive

@@ -22,7 +22,7 @@ App _getApp({
 
 App _getAppTest({
   required Locale locale,
-  required LocalizationsDelegate<dynamic> localizationsDelegate,
+  required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
   List<PageRouteInfo<dynamic>>? initialRoutes,
   AutoRouterObserver? routerObserver,
@@ -30,7 +30,7 @@ App _getAppTest({
 }) {
   return App.test(
     locale: locale,
-    localizationsDelegate: localizationsDelegate,
+    localizationsDelegates: localizationsDelegates,
     router: router,
     initialRoutes: initialRoutes,
     routerObserver: routerObserver,
@@ -41,13 +41,13 @@ App _getAppTest({
 App _getAppTestWidget({
   required Widget widget,
   required Locale locale,
-  required LocalizationsDelegate<dynamic> localizationsDelegate,
+  required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   Brightness? brightness,
 }) {
   return App.testWidget(
     widget: widget,
     locale: locale,
-    localizationsDelegate: localizationsDelegate,
+    localizationsDelegates: localizationsDelegates,
     brightness: brightness,
   );
 }
@@ -116,7 +116,7 @@ void main() {
       final routerObserver = MockAutoRouterObserver();
       final app = _getAppTest(
         locale: const Locale('fr'),
-        localizationsDelegate: GlobalWidgetsLocalizations.delegate,
+        localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
         initialRoutes: const [FakePageRouteInfo()],
         routerObserver: routerObserver,
@@ -181,7 +181,7 @@ void main() {
       final app = _getAppTestWidget(
         widget: widget,
         locale: const Locale('fr'),
-        localizationsDelegate: GlobalWidgetsLocalizations.delegate,
+        localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         brightness: Brightness.dark,
       );
 

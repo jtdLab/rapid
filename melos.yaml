@@ -3,7 +3,6 @@ name: rapid
 packages:
   - packages/rapid/rapid_domain
   - packages/rapid_cli
-  - packages/rapid_cli/templates/tmp/packages/** # TODO rm atm required because of bundles.sh
 
 command:
   bootstrap:

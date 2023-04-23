@@ -18,6 +18,7 @@ extension on WidgetTester {
 
 ProtectedRouterRoute _protectedRouterRoute() {
   getIt.registerSingleton<AuthGuard>(MockAuthGuard());
+  getIt.registerSingleton<HomeBloc>(MockHomeBloc());
 
   return const ProtectedRouterRoute();
 }

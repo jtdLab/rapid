@@ -44,6 +44,7 @@ dependencies:
   example_ios_sign_up_page:
   example_ios_protected_router:
   example_ios_public_router:
+  example_infrastructure_markdown:
 
 dev_dependencies:
   flutter_test:

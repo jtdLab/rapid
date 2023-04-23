@@ -19,7 +19,7 @@ abstract class $HomePageRouter extends _i2.RootStackRouter {
     HomeRoute.name: (routeData) {
       return _i2.AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const _i1.HomePage(),
+        child: _i2.WrappedRoute(child: const _i1.HomePage()),
       );
     }
   };

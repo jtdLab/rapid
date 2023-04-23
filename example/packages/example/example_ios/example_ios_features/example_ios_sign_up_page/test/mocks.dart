@@ -6,7 +6,7 @@ import 'package:example_ios_sign_up_page/src/application/application.dart';
 import 'package:example_ui_ios/example_ui_ios.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockIAuthService extends Mock implements IAuthService {}
+class MockAuthService extends Mock implements IAuthService {}
 
 class MockSignUpBloc extends MockBloc<SignUpEvent, SignUpState>
     implements SignUpBloc {}

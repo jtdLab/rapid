@@ -94,11 +94,17 @@ abstract class ExampleIosHomePageLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[Locale('en')];
 
-  /// Title text shown in the Home Page
+  /// No description provided for @errorServer.
   ///
   /// In en, this message translates to:
-  /// **'Home Page title for en'**
-  String get title;
+  /// **'Server error. Try again later.'**
+  String get errorServer;
+
+  /// No description provided for @errorNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Resource not found.'**
+  String get errorNotFound;
 }
 
 class _ExampleIosHomePageLocalizationsDelegate

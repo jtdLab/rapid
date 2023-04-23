@@ -450,6 +450,7 @@ for ((i = 0; i < ${#platformDependent[@]}; i++)); do
         echo "$wrapped_contents" >>"$brick_path/pubspec.lock"
     else
         echo "$wrapped_contents" >"$brick_path/pubspec.lock"
+        git add --force $brick_path/pubspec.lock
     fi
 
     sed -i "" "/^$/d" "$brick_path/pubspec.lock"
@@ -465,6 +466,7 @@ for ((i = 0; i < ${#platformDependent[@]}; i++)); do
             echo "$wrapped_contents" >>"$brick_path/pubspec_overrides.yaml"
         else
             echo "$wrapped_contents" >"$brick_path/pubspec_overrides.yaml"
+            git add --force $brick_path/pubspec_overrides.yaml
         fi
 
         sed -i "" "/^$/d" "$brick_path/pubspec_overrides.yaml"
@@ -490,6 +492,8 @@ for path in "${platformIndependent[@]}"; do
 
     cp $pubspecPath $brick_path/pubspec.lock
     cp $dependency_overrides_path $brick_path/pubspec_overrides.yaml
+    git add --force $brick_path/pubspec.lock
+    git add --force $brick_path/pubspec_overrides.yaml
 done
 
 cd ..

@@ -56,6 +56,7 @@ class _LoginPageState extends State<LoginPage> with ExampleToastMixin {
   }
 }
 
+// TODO: use FocusScopeNodes more granular
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
 
@@ -78,9 +79,9 @@ class LoginView extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  const SizedBox(height: 64),
+                  const SizedBox(height: 56),
                   const RapidLogo(),
-                  const SizedBox(height: 64),
+                  const SizedBox(height: 96),
                   Text(
                     context.l10n.login,
                     style: const TextStyle(fontWeight: FontWeight.bold),
@@ -89,16 +90,16 @@ class LoginView extends StatelessWidget {
                   ExampleTextField(
                     placeholder: context.l10n.username,
                     textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.emailAddress,
                     onEditingComplete: () => node.nextFocus(),
-                    onChanged: (email) => _onUsernameChanged(context, email),
+                    onChanged: (username) =>
+                        _onUsernameChanged(context, username),
                   ),
                   const SizedBox(height: 16),
                   ExampleTextField(
-                    textInputAction: TextInputAction.done,
-                    onEditingComplete: () => node.unfocus(),
                     obscureText: true,
                     placeholder: context.l10n.password,
+                    textInputAction: TextInputAction.done,
+                    onEditingComplete: () => node.unfocus(),
                     onChanged: (password) =>
                         _onPasswordChanged(context, password),
                   ),

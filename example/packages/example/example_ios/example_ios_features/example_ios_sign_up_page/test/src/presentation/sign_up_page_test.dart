@@ -139,6 +139,95 @@ void main() {
         });
       });
 
+      group('when [SignUpInitial] showing error messages', () {
+        testWidgets('(en)', (tester) async {
+          await tester.setup();
+
+          final signUpBloc = MockSignUpBloc();
+          whenListen(
+            signUpBloc,
+            const Stream<SignUpState>.empty(),
+            initialState: SignUpState.initial(
+              emailAddress: EmailAddress.empty(),
+              username: Username.empty(),
+              password: Password.empty(),
+              passwordAgain: Password.empty(),
+              showErrorMessages: true,
+            ),
+          );
+
+          await tester.pumpAppWidget(
+            widget: _signUpPage(signUpBloc),
+            locale: const Locale('en'),
+          );
+          expect(find.byType(ExampleScaffold), findsOneWidget);
+          expect(find.byType(RapidLogo), findsOneWidget);
+          expect(find.text('Sign up').first, findsOneWidget);
+          final emailTextFieldFinder =
+              find.widgetWithText(ExampleTextField, 'Email address');
+          expect(emailTextFieldFinder, findsOneWidget);
+          final emailTextField =
+              tester.widget<ExampleTextField>(emailTextFieldFinder);
+          expect(emailTextField.obscureText, false);
+          expect(emailTextField.isValid, false);
+          expect(emailTextField.errorMessage, 'Invalid email.');
+          final usernameTextFieldFinder =
+              find.widgetWithText(ExampleTextField, 'Username');
+          expect(usernameTextFieldFinder, findsOneWidget);
+          final usernameTextField =
+              tester.widget<ExampleTextField>(usernameTextFieldFinder);
+          expect(usernameTextField.obscureText, false);
+          expect(usernameTextField.isValid, false);
+          expect(
+            usernameTextField.errorMessage,
+            'Invalid username. Please use 3-15 characters and only include letters, numbers, ., -, and _.',
+          );
+          final passwordTextFieldFinder =
+              find.widgetWithText(ExampleTextField, 'Password');
+          expect(passwordTextFieldFinder, findsOneWidget);
+          expect(
+            find.descendant(
+              of: passwordTextFieldFinder,
+              matching: find.byIcon(CupertinoIcons.eye_slash),
+            ),
+            findsOneWidget,
+          );
+          final passwordTextField =
+              tester.widget<ExampleTextField>(passwordTextFieldFinder);
+          expect(passwordTextField.obscureText, true);
+          expect(passwordTextField.isValid, false);
+          expect(
+            passwordTextField.errorMessage,
+            'Invalid password. Please use 6-32 non-white space characters.',
+          );
+          final passwordAgainTextFieldFinder =
+              find.widgetWithText(ExampleTextField, 'Password again');
+          expect(passwordAgainTextFieldFinder, findsOneWidget);
+          expect(
+            find.descendant(
+              of: passwordAgainTextFieldFinder,
+              matching: find.byIcon(CupertinoIcons.eye_slash),
+            ),
+            findsOneWidget,
+          );
+          final passwordAgainTextField =
+              tester.widget<ExampleTextField>(passwordAgainTextFieldFinder);
+          expect(passwordAgainTextField.obscureText, true);
+          expect(passwordAgainTextField.isValid, false);
+          expect(
+              passwordAgainTextField.errorMessage, 'Passwords don\'t match.');
+          expect(
+            find.widgetWithText(ExamplePrimaryButton, 'Sign up'),
+            findsOneWidget,
+          );
+          expect(find.text('Already have an account?'), findsOneWidget);
+          expect(
+            find.widgetWithText(ExampleLinkButton, 'Login'),
+            findsOneWidget,
+          );
+        });
+      });
+
       group('when [SignUpLoadInProgress]', () {
         testWidgets('(en)', (tester) async {
           await tester.setup();
@@ -490,6 +579,110 @@ void main() {
           ),
         );
       });
+    });
+
+    testWidgets('unfocuses text fields when screen is tapped', (tester) async {
+      Future<void> verifyUnfocusesTextField(Finder finder) async {
+        await tester.tap(finder);
+        await tester.pump();
+        expect(
+          FocusScope.of(tester.element(finder)).hasFocus,
+          true,
+        );
+        await tester.tapAt(const Offset(1, 1));
+        await tester.pump();
+        expect(
+          FocusScope.of(tester.element(finder)).hasFocus,
+          false,
+        );
+      }
+
+      await tester.setup();
+
+      final signUpBloc = MockSignUpBloc();
+      whenListen(
+        signUpBloc,
+        const Stream<SignUpState>.empty(),
+        initialState: SignUpState.initial(
+          emailAddress: EmailAddress.empty(),
+          username: Username.empty(),
+          password: Password.empty(),
+          passwordAgain: Password.empty(),
+          showErrorMessages: false,
+        ),
+      );
+
+      await tester.pumpAppWidget(
+        widget: _signUpPage(signUpBloc),
+      );
+      await verifyUnfocusesTextField(
+        find.widgetWithText(ExampleTextField, 'Email address'),
+      );
+      await verifyUnfocusesTextField(
+        find.widgetWithText(ExampleTextField, 'Username'),
+      );
+      await verifyUnfocusesTextField(
+        find.widgetWithText(ExampleTextField, 'Password'),
+      );
+      await verifyUnfocusesTextField(
+        find.widgetWithText(ExampleTextField, 'Password again'),
+      );
+    });
+
+    testWidgets('changes focus of text fields correctly when enter is pressed',
+        (tester) async {
+      await tester.setup();
+
+      final signUpBloc = MockSignUpBloc();
+      whenListen(
+        signUpBloc,
+        const Stream<SignUpState>.empty(),
+        initialState: SignUpState.initial(
+          emailAddress: EmailAddress.empty(),
+          username: Username.empty(),
+          password: Password.empty(),
+          passwordAgain: Password.empty(),
+          showErrorMessages: false,
+        ),
+      );
+
+      await tester.pumpAppWidget(
+        widget: _signUpPage(signUpBloc),
+      );
+      final emailTextFieldFinder =
+          find.widgetWithText(ExampleTextField, 'Email address');
+      final usernameTextFieldFinder =
+          find.widgetWithText(ExampleTextField, 'Username');
+      final passwordTextFieldFinder =
+          find.widgetWithText(ExampleTextField, 'Password');
+      final passwordAgainTextFieldFinder =
+          find.widgetWithText(ExampleTextField, 'Password again');
+      await tester.tap(emailTextFieldFinder);
+      await tester.pump();
+      await tester.testTextInput.receiveAction(TextInputAction.next);
+      await tester.pump();
+      expect(
+        FocusScope.of(tester.element(usernameTextFieldFinder)).hasFocus,
+        true,
+      );
+      await tester.testTextInput.receiveAction(TextInputAction.next);
+      await tester.pump();
+      expect(
+        FocusScope.of(tester.element(passwordTextFieldFinder)).hasFocus,
+        true,
+      );
+      await tester.testTextInput.receiveAction(TextInputAction.next);
+      await tester.pump();
+      expect(
+        FocusScope.of(tester.element(passwordAgainTextFieldFinder)).hasFocus,
+        true,
+      );
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+      expect(
+        FocusScope.of(tester.element(passwordAgainTextFieldFinder)).hasFocus,
+        false,
+      );
     });
   });
 }

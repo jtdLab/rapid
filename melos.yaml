@@ -1,10 +1,8 @@
 name: rapid
 
 packages:
-  # TODO maybe add example and rm the packages/rapid_cli/templates/tmp/packages/** if possible
-  - packages/rapid/rapid/rapid_domain
+  - packages/rapid/rapid_domain
   - packages/rapid_cli
-  - packages/rapid_cli/templates/tmp/packages/** # Required because of bundles.sh
 
 command:
   bootstrap:
@@ -87,13 +85,6 @@ scripts:
     packageFilters:
       scope: "rapid_cli"
 
-  dev:create:
-    run: |
-      melos dev:activate
-      rm -r -f packages/rapid_cli/tmp && \
-      rapid create foo_bar -o packages/rapid_cli/tmp --ios
-    description: Run rapid create for tinkering with single platform (iOS).
-
   dev:create:none:
     run: |
       melos dev:activate
@@ -111,12 +102,5 @@ scripts:
   tool:bundles:
     exec: sh tool/bundles.sh
     description: Regenerate fresh bundles from templates.
-    packageFilters:
-      scope: "rapid_cli"
-
-  # TODO this does not find any packages when run melos bs for some reason
-  tool:fixtures:
-    exec: sh tool/fixtures.sh
-    description: Regenerate fresh fixtures for e2e testing.
     packageFilters:
       scope: "rapid_cli"

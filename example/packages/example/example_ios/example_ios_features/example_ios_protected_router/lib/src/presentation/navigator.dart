@@ -9,8 +9,11 @@ import 'router.gr.dart';
 @ios
 @LazySingleton(as: IProtectedRouterNavigator)
 class ProtectedRouterNavigator implements IProtectedRouterNavigator {
+  @visibleForTesting
+  StackRouter? routerOverrides;
+
   @override
   void replace(BuildContext context) {
-    context.router.replace(const ProtectedRouterRoute());
+    (routerOverrides ?? context.router).replace(const ProtectedRouterRoute());
   }
 }

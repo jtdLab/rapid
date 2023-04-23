@@ -2,7 +2,6 @@ import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
-import 'package:rapid_cli/src/commands/core/validate_class_name.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 
 /// Adds feature option.

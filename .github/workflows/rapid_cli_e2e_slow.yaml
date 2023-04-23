@@ -3,16 +3,13 @@ name: rapid_cli_e2e_slow
 
 on:
   workflow_dispatch:
-    branches:
-      - "dev"
 
 jobs:
   e2e-android:
+    runs-on: macos-latest
     defaults:
       run:
         working-directory: packages/rapid_cli
-
-    runs-on: macos-latest
 
     # strategy:
     #   fail-fast: false
@@ -97,11 +94,10 @@ jobs:
           script: cd packages/rapid_cli && flutter test ${{ matrix.test }} -j 1 --run-skipped -t e2e,android
 
   e2e-ios:
+    runs-on: macos-latest
     defaults:
       run:
         working-directory: packages/rapid_cli
-
-    runs-on: macos-latest
 
     strategy:
       fail-fast: false
@@ -149,11 +145,10 @@ jobs:
         run: flutter test ${{ matrix.test }} -j 1 --run-skipped -t e2e,ios
 
   e2e-linux:
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: packages/rapid_cli
-
-    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
@@ -200,11 +195,10 @@ jobs:
           flutter test ${{ matrix.test }} -j 1 --run-skipped -t e2e,linux
 
   e2e-macos:
+    runs-on: macos-latest
     defaults:
       run:
         working-directory: packages/rapid_cli
-
-    runs-on: macos-latest
 
     strategy:
       fail-fast: false
@@ -244,11 +238,10 @@ jobs:
         run: flutter test ${{ matrix.test }} -j 1 --run-skipped -t e2e,macos
 
   e2e-web:
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: packages/rapid_cli
-
-    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
@@ -289,11 +282,10 @@ jobs:
         run: flutter test ${{ matrix.test }} -j 1 --run-skipped -t e2e,web
 
   e2e-windows:
+    runs-on: windows-latest
     defaults:
       run:
         working-directory: packages/rapid_cli
-
-    runs-on: windows-latest
 
     strategy:
       fail-fast: false

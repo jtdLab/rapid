@@ -1,8 +1,9 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter_test/flutter_test.dart';
 import 'package:example_ios_app/example_ios_app.dart';
+import 'package:example_ios_home_page/example_ios_home_page.dart';
 import 'package:example_ios_protected_router/example_ios_protected_router.dart';
 import 'package:example_ui_ios/example_ui_ios.dart';
+import 'package:flutter_test/flutter_test.dart';
 
 extension WidgetTesterX on WidgetTester {
   Future<void> pumpApp({
@@ -15,7 +16,10 @@ extension WidgetTesterX on WidgetTester {
     await pumpWidget(
       App.test(
         locale: locale ?? const Locale('en'),
-        localizationsDelegate: ExampleIosProtectedRouterLocalizations.delegate,
+        localizationsDelegates: const [
+          ExampleIosProtectedRouterLocalizations.delegate,
+          ExampleIosHomePageLocalizations.delegate,
+        ],
         router: router ?? ProtectedRouter(),
         initialRoutes: initialRoutes,
         routerObserver: observer,
@@ -34,7 +38,10 @@ extension WidgetTesterX on WidgetTester {
       App.testWidget(
         widget: widget,
         locale: locale ?? const Locale('en'),
-        localizationsDelegate: ExampleIosProtectedRouterLocalizations.delegate,
+        localizationsDelegates: const [
+          ExampleIosProtectedRouterLocalizations.delegate,
+          ExampleIosHomePageLocalizations.delegate,
+        ],
         brightness: brightness,
       ),
     );

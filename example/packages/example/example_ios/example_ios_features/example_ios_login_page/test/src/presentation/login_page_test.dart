@@ -352,5 +352,81 @@ void main() {
         );
       });
     });
+
+    testWidgets('unfocuses text fields when screen is tapped', (tester) async {
+      Future<void> verifyUnfocusesTextField(Finder finder) async {
+        await tester.tap(finder);
+        await tester.pump();
+        expect(
+          FocusScope.of(tester.element(finder)).hasFocus,
+          true,
+        );
+        await tester.tapAt(const Offset(1, 1));
+        await tester.pump();
+        expect(
+          FocusScope.of(tester.element(finder)).hasFocus,
+          false,
+        );
+      }
+
+      await tester.setup();
+
+      final loginBloc = MockLoginBloc();
+      whenListen(
+        loginBloc,
+        const Stream<LoginState>.empty(),
+        initialState: LoginState.initial(
+          username: Username.empty(),
+          password: Password.empty(),
+        ),
+      );
+
+      await tester.pumpAppWidget(
+        widget: _loginPage(loginBloc),
+      );
+      await verifyUnfocusesTextField(
+        find.widgetWithText(ExampleTextField, 'Username'),
+      );
+      await verifyUnfocusesTextField(
+        find.widgetWithText(ExampleTextField, 'Password'),
+      );
+    });
+
+    testWidgets('changes focus of text fields correctly when enter is pressed',
+        (tester) async {
+      await tester.setup();
+
+      final loginBloc = MockLoginBloc();
+      whenListen(
+        loginBloc,
+        const Stream<LoginState>.empty(),
+        initialState: LoginState.initial(
+          username: Username.empty(),
+          password: Password.empty(),
+        ),
+      );
+
+      await tester.pumpAppWidget(
+        widget: _loginPage(loginBloc),
+      );
+      final usernameTextFieldFinder =
+          find.widgetWithText(ExampleTextField, 'Username');
+      final passwordTextFieldFinder =
+          find.widgetWithText(ExampleTextField, 'Password');
+      await tester.tap(usernameTextFieldFinder);
+      await tester.pump();
+      await tester.testTextInput.receiveAction(TextInputAction.next);
+      await tester.pump();
+      expect(
+        FocusScope.of(tester.element(passwordTextFieldFinder)).hasFocus,
+        true,
+      );
+      await tester.testTextInput.receiveAction(TextInputAction.done);
+      await tester.pump();
+      expect(
+        FocusScope.of(tester.element(passwordTextFieldFinder)).hasFocus,
+        false,
+      );
+    });
   });
 }

@@ -1,9 +1,10 @@
 name: rapid_cli_e2e
 
 on:
-  push:
-    branches:
-      - main
+  # TODO
+  # push:
+  #   branches:
+  #     - main
   pull_request:
   workflow_dispatch:
 
@@ -42,7 +43,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: packages/rapid_cli/test/e2e/fixtures
-          key: fixtures
+          key: fixtures-${{ github.run_id }}
 
       - name: Generate fixtures
         run: bash tool/fixtures.sh
@@ -155,7 +156,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: packages/rapid_cli/test/e2e/fixtures
-          key: fixtures
+          key: fixtures-${{ github.run_id }}
 
       # TODO
       # - run: sudo apt-get update -y

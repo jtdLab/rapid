@@ -1,5 +1,5 @@
-![logo dark](https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/logo_black.png#gh-dark-mode-only)
-![logo light](https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/logo_white.png#gh-light-mode-only)
+![logo dark](https://raw.githubusercontent.com/jtdLab/rapid/main/assets/logo_black.png#gh-dark-mode-only)
+![logo light](https://raw.githubusercontent.com/jtdLab/rapid/main/assets/logo_white.png#gh-light-mode-only)
 
 ---
 
@@ -39,8 +39,8 @@ Special thanks to all developers/contributors of these packages ❤️
 
 ## Architecture
 
-![architecture dark](https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/overview_black.png#gh-dark-mode-only)
-![architecture light](https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/overview_white.png#gh-light-mode-only)
+![architecture dark](https://raw.githubusercontent.com/jtdLab/rapid/main/assets/overview_black.png#gh-dark-mode-only)
+![architecture light](https://raw.githubusercontent.com/jtdLab/rapid/main/assets/overview_white.png#gh-light-mode-only)
 
 ## Platform-independent Packages
 

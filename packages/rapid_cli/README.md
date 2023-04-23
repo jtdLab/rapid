@@ -1,5 +1,5 @@
-![logo dark](https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/logo_black.png#gh-dark-mode-only)
-![logo light](https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/logo_white.png#gh-light-mode-only)
+![logo dark](https://raw.githubusercontent.com/jtdLab/rapid/main/packages/rapid_cli/assets/logo_black.png#gh-dark-mode-only)
+![logo light](https://raw.githubusercontent.com/jtdLab/rapid/main/packages/rapid_cli/assets/logo_white.png#gh-light-mode-only)
 
 ---
 
@@ -11,7 +11,7 @@ Create well architectured Flutter Apps fast with Rapid CLI.
 
 ```sh
 # rapid requires melos >=3.0.0
-flutter pub global activate melos 
+flutter pub global activate melos
 ```
 
 ```sh

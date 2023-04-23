@@ -1,5 +1,5 @@
-<img src="./assets/logo_black.svg#gh-dark-mode-only" height="100">
-<img src="./assets/logo_white.svg#gh-light-mode-only" height="100">
+<img src="https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/logo_black.svg#gh-dark-mode-only" height="100">
+<img src="https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/logo_white.svg#gh-light-mode-only" height="100">
 
 ---
 
@@ -40,8 +40,8 @@ Special thanks to all developers/contributors of these packages ❤️
 
 ## Architecture
 
-<img src="./assets/overview_black.png#gh-dark-mode-only">
-<img src="./assets/overview_white.png#gh-light-mode-only">
+<img src="https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/overview_black.png#gh-dark-mode-only">
+<img src="https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/overview_white.png#gh-light-mode-only">
 
 ## Platform-independent Packages
 

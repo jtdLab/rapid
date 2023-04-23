@@ -1,5 +1,5 @@
-![logo dark](https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/logo_black.svg#gh-dark-mode-only)
-![logo light](https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/logo_white.svg#gh-light-mode-only)
+![logo dark](https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/logo_black.svg#gh-dark-mode-only =100x100)
+![logo light](https://raw.githubusercontent.com/jtdLab/rapid/dev/assets/logo_white.svg#gh-light-mode-only =100x100)
 
 ---
 

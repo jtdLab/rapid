@@ -32,7 +32,9 @@ class HomeView extends StatelessWidget {
     return ExampleScaffold(
       child: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) => state.map(
-          loadInProgress: (_) => Container(),
+          loadInProgress: (_) => const Center(
+            child: CupertinoActivityIndicator(),
+          ),
           loadSuccess: (state) => Markdown(data: state.readMe),
           loadFailure: (state) => Center(
             child: state.failure.map(

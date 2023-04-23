@@ -71,10 +71,16 @@ void main() {
         await tester.pumpAppWidget(
           widget: _homePage(homeBloc),
         );
-        final scaffold = find.byType(ExampleScaffold);
-        expect(scaffold, findsOneWidget);
+        final scaffoldFinder = find.byType(ExampleScaffold);
+        expect(scaffoldFinder, findsOneWidget);
+        final centerFinder = find.byType(Center);
         expect(
-          find.descendant(of: scaffold, matching: find.byType(Container)),
+          find.descendant(of: scaffoldFinder, matching: centerFinder),
+          findsOneWidget,
+        );
+        final activityIndicatorFinder = find.byType(CupertinoActivityIndicator);
+        expect(
+          find.descendant(of: centerFinder, matching: activityIndicatorFinder),
           findsOneWidget,
         );
       });

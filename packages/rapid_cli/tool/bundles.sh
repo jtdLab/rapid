@@ -262,59 +262,59 @@ infrastructure_package_path="${temp_dir}/tmp/packages/${project_name}/${project_
 cd templates
 
 # Platform UI Package
-mason make "platform_ui_package" --on-conflict append -o $platform_ui_package_android_path --project_name $project_name --example false --android true --ios false --linux false --macos false --web false --windows false
-mason make "platform_ui_package" --on-conflict append -o $platform_ui_package_ios_path --project_name $project_name --example false --android false --ios true --linux false --macos false --web false --windows false
-mason make "platform_ui_package" --on-conflict append -o $platform_ui_package_linux_path --project_name $project_name --example false --android false --ios false --linux true --macos false --web false --windows false
-mason make "platform_ui_package" --on-conflict append -o $platform_ui_package_macos_path --project_name $project_name --example false --android false --ios false --linux false --macos true --web false --windows false
-mason make "platform_ui_package" --on-conflict append -o $platform_ui_package_web_path --project_name $project_name --example false --android false --ios false --linux false --macos false --web true --windows false
-mason make "platform_ui_package" --on-conflict append -o $platform_ui_package_windows_path --project_name $project_name --example false --android false --ios false --linux false --macos false --web false --windows true
+mason make "platform_ui_package" --on-conflict overwrite -o $platform_ui_package_android_path --project_name $project_name --example false --android true --ios false --linux false --macos false --web false --windows false
+mason make "platform_ui_package" --on-conflict overwrite -o $platform_ui_package_ios_path --project_name $project_name --example false --android false --ios true --linux false --macos false --web false --windows false
+mason make "platform_ui_package" --on-conflict overwrite -o $platform_ui_package_linux_path --project_name $project_name --example false --android false --ios false --linux true --macos false --web false --windows false
+mason make "platform_ui_package" --on-conflict overwrite -o $platform_ui_package_macos_path --project_name $project_name --example false --android false --ios false --linux false --macos true --web false --windows false
+mason make "platform_ui_package" --on-conflict overwrite -o $platform_ui_package_web_path --project_name $project_name --example false --android false --ios false --linux false --macos false --web true --windows false
+mason make "platform_ui_package" --on-conflict overwrite -o $platform_ui_package_windows_path --project_name $project_name --example false --android false --ios false --linux false --macos false --web false --windows true
 
 # Platform Root Package
-mason make "platform_root_package" --on-conflict append -o $platform_root_package_android_path --project_name $project_name --description swag --android true --ios false --linux false --macos false --web false --windows false
-mason make "platform_root_package" --on-conflict append -o $platform_root_package_ios_path --project_name $project_name --description swag --android false --ios true --linux false --macos false --web false --windows false
-mason make "platform_root_package" --on-conflict append -o $platform_root_package_linux_path --project_name $project_name --description swag --android false --ios false --linux true --macos false --web false --windows false
-mason make "platform_root_package" --on-conflict append -o $platform_root_package_macos_path --project_name $project_name --description swag --android false --ios false --linux false --macos true --web false --windows false
-mason make "platform_root_package" --on-conflict append -o $platform_root_package_web_path --project_name $project_name --description swag --android false --ios false --linux false --macos false --web true --windows false
-mason make "platform_root_package" --on-conflict append -o $platform_root_package_windows_path --project_name $project_name --description swag --android false --ios false --linux false --macos false --web false --windows true
+mason make "platform_root_package" --on-conflict overwrite -o $platform_root_package_android_path --project_name $project_name --description swag --android true --ios false --linux false --macos false --web false --windows false
+mason make "platform_root_package" --on-conflict overwrite -o $platform_root_package_ios_path --project_name $project_name --description swag --android false --ios true --linux false --macos false --web false --windows false
+mason make "platform_root_package" --on-conflict overwrite -o $platform_root_package_linux_path --project_name $project_name --description swag --android false --ios false --linux true --macos false --web false --windows false
+mason make "platform_root_package" --on-conflict overwrite -o $platform_root_package_macos_path --project_name $project_name --description swag --android false --ios false --linux false --macos true --web false --windows false
+mason make "platform_root_package" --on-conflict overwrite -o $platform_root_package_web_path --project_name $project_name --description swag --android false --ios false --linux false --macos false --web true --windows false
+mason make "platform_root_package" --on-conflict overwrite -o $platform_root_package_windows_path --project_name $project_name --description swag --android false --ios false --linux false --macos false --web false --windows true
 
 # Platform Navigation Package
-mason make "platform_navigation_package" --on-conflict append -o $platform_navigation_package_android_path --project_name $project_name --android true --ios false --linux false --macos false --web false --windows false
-mason make "platform_navigation_package" --on-conflict append -o $platform_navigation_package_ios_path --project_name $project_name --android false --ios true --linux false --macos false --web false --windows false
-mason make "platform_navigation_package" --on-conflict append -o $platform_navigation_package_linux_path --project_name $project_name --android false --ios false --linux true --macos false --web false --windows false
-mason make "platform_navigation_package" --on-conflict append -o $platform_navigation_package_macos_path --project_name $project_name --android false --ios false --linux false --macos true --web false --windows false
-mason make "platform_navigation_package" --on-conflict append -o $platform_navigation_package_web_path --project_name $project_name --android false --ios false --linux false --macos false --web true --windows false
-mason make "platform_navigation_package" --on-conflict append -o $platform_navigation_package_windows_path --project_name $project_name --android false --ios false --linux false --macos false --web false --windows true
+mason make "platform_navigation_package" --on-conflict overwrite -o $platform_navigation_package_android_path --project_name $project_name --android true --ios false --linux false --macos false --web false --windows false
+mason make "platform_navigation_package" --on-conflict overwrite -o $platform_navigation_package_ios_path --project_name $project_name --android false --ios true --linux false --macos false --web false --windows false
+mason make "platform_navigation_package" --on-conflict overwrite -o $platform_navigation_package_linux_path --project_name $project_name --android false --ios false --linux true --macos false --web false --windows false
+mason make "platform_navigation_package" --on-conflict overwrite -o $platform_navigation_package_macos_path --project_name $project_name --android false --ios false --linux false --macos true --web false --windows false
+mason make "platform_navigation_package" --on-conflict overwrite -o $platform_navigation_package_web_path --project_name $project_name --android false --ios false --linux false --macos false --web true --windows false
+mason make "platform_navigation_package" --on-conflict overwrite -o $platform_navigation_package_windows_path --project_name $project_name --android false --ios false --linux false --macos false --web false --windows true
 
 # Platform App Feature Package
-mason make "platform_app_feature_package" --on-conflict append -o $platform_app_feature_package_android_path --project_name $project_name --example false --android true --ios false --linux false --macos false --web false --windows false --default_language de
-mason make "platform_app_feature_package" --on-conflict append -o $platform_app_feature_package_ios_path --project_name $project_name --example false --android false --ios true --linux false --macos false --web false --windows false --default_language de
-mason make "platform_app_feature_package" --on-conflict append -o $platform_app_feature_package_linux_path --project_name $project_name --example false --android false --ios false --linux true --macos false --web false --windows false --default_language de
-mason make "platform_app_feature_package" --on-conflict append -o $platform_app_feature_package_macos_path --project_name $project_name --example false --android false --ios false --linux false --macos true --web false --windows false --default_language de
-mason make "platform_app_feature_package" --on-conflict append -o $platform_app_feature_package_web_path --project_name $project_name --example false --android false --ios false --linux false --macos false --web true --windows false --default_language de
-mason make "platform_app_feature_package" --on-conflict append -o $platform_app_feature_package_windows_path --project_name $project_name --example false --android false --ios false --linux false --macos false --web false --windows true --default_language de
+mason make "platform_app_feature_package" --on-conflict overwrite -o $platform_app_feature_package_android_path --project_name $project_name --example false --android true --ios false --linux false --macos false --web false --windows false --default_language de
+mason make "platform_app_feature_package" --on-conflict overwrite -o $platform_app_feature_package_ios_path --project_name $project_name --example false --android false --ios true --linux false --macos false --web false --windows false --default_language de
+mason make "platform_app_feature_package" --on-conflict overwrite -o $platform_app_feature_package_linux_path --project_name $project_name --example false --android false --ios false --linux true --macos false --web false --windows false --default_language de
+mason make "platform_app_feature_package" --on-conflict overwrite -o $platform_app_feature_package_macos_path --project_name $project_name --example false --android false --ios false --linux false --macos true --web false --windows false --default_language de
+mason make "platform_app_feature_package" --on-conflict overwrite -o $platform_app_feature_package_web_path --project_name $project_name --example false --android false --ios false --linux false --macos false --web true --windows false --default_language de
+mason make "platform_app_feature_package" --on-conflict overwrite -o $platform_app_feature_package_windows_path --project_name $project_name --example false --android false --ios false --linux false --macos false --web false --windows true --default_language de
 
 # Platform Home Page Feature Package
-mason make "platform_feature_package" --on-conflict append -o $platform_home_page_feature_package_android_path --name home_page --description swag --project_name $project_name --example false --android true --ios false --linux false --macos false --web false --windows false --default_language de --routable false --route_name none
-mason make "platform_feature_package" --on-conflict append -o $platform_home_page_feature_package_ios_path --name home_page --description swag --project_name $project_name --example false --android false --ios true --linux false --macos false --web false --windows false --default_language de --routable false --route_name none
-mason make "platform_feature_package" --on-conflict append -o $platform_home_page_feature_package_linux_path --name home_page --description swag --project_name $project_name --example false --android false --ios false --linux true --macos false --web false --windows false --default_language de --routable false --route_name none
-mason make "platform_feature_package" --on-conflict append -o $platform_home_page_feature_package_macos_path --name home_page --description swag --project_name $project_name --example false --android false --ios false --linux false --macos true --web false --windows false --default_language de --routable false --route_name none
-mason make "platform_feature_package" --on-conflict append -o $platform_home_page_feature_package_web_path --name home_page --description swag --project_name $project_name --example false --android false --ios false --linux false --macos false --web true --windows false --default_language de --routable false --route_name none
-mason make "platform_feature_package" --on-conflict append -o $platform_home_page_feature_package_windows_path --name home_page --description swag --project_name $project_name --example false --android false --ios false --linux false --macos false --web false --windows true --default_language de --routable false --route_name none
+mason make "platform_feature_package" --on-conflict overwrite -o $platform_home_page_feature_package_android_path --name home_page --description swag --project_name $project_name --example false --android true --ios false --linux false --macos false --web false --windows false --default_language de --routable false --route_name none
+mason make "platform_feature_package" --on-conflict overwrite -o $platform_home_page_feature_package_ios_path --name home_page --description swag --project_name $project_name --example false --android false --ios true --linux false --macos false --web false --windows false --default_language de --routable false --route_name none
+mason make "platform_feature_package" --on-conflict overwrite -o $platform_home_page_feature_package_linux_path --name home_page --description swag --project_name $project_name --example false --android false --ios false --linux true --macos false --web false --windows false --default_language de --routable false --route_name none
+mason make "platform_feature_package" --on-conflict overwrite -o $platform_home_page_feature_package_macos_path --name home_page --description swag --project_name $project_name --example false --android false --ios false --linux false --macos true --web false --windows false --default_language de --routable false --route_name none
+mason make "platform_feature_package" --on-conflict overwrite -o $platform_home_page_feature_package_web_path --name home_page --description swag --project_name $project_name --example false --android false --ios false --linux false --macos false --web true --windows false --default_language de --routable false --route_name none
+mason make "platform_feature_package" --on-conflict overwrite -o $platform_home_page_feature_package_windows_path --name home_page --description swag --project_name $project_name --example false --android false --ios false --linux false --macos false --web false --windows true --default_language de --routable false --route_name none
 
 # UI Package
-mason make "ui_package" --on-conflict append -o $ui_package_path --project_name $project_name
+mason make "ui_package" --on-conflict overwrite -o $ui_package_path --project_name $project_name
 
 # DI Package
-mason make "di_package" --on-conflict append -o $di_package_path --project_name $project_name
+mason make "di_package" --on-conflict overwrite -o $di_package_path --project_name $project_name
 
 # Logging Package
-mason make "logging_package" --on-conflict append -o $logging_package_path --project_name $project_name
+mason make "logging_package" --on-conflict overwrite -o $logging_package_path --project_name $project_name
 
 # Domain Package
-mason make "domain_package" --on-conflict append -o $domain_package_path --project_name $project_name --has_name false --name ""
+mason make "domain_package" --on-conflict overwrite -o $domain_package_path --project_name $project_name --has_name false --name ""
 
 # Infrastructure Package
-mason make "infrastructure_package" --on-conflict append -o $infrastructure_package_path --project_name $project_name --has_name false --name ""
+mason make "infrastructure_package" --on-conflict overwrite -o $infrastructure_package_path --project_name $project_name --has_name false --name ""
 
 current_dir=$(pwd)
 cd $temp_dir

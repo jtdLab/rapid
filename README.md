@@ -27,10 +27,10 @@ Rapid is based on carefully selected packages from the Flutter Community and bri
 | Dependency Injection   | [getIt](https://pub.dev/packages/get_it), [injectable](https://pub.dev/packages/injectable) |
 | Routing                | [auto_route](https://pub.dev/packages/auto_route) |
 | Theming                | [theme_tailor](https://pub.dev/packages/theme_tailor) |
-| Localization           | [flutter_localizations](https://docs.flutter.dev/development/accessibility-and-localization/internationalization) |
+| Localization           | [flutter_localizations](https://docs.flutter.dev/development/accessibility-and-localization/internationalization), [intl](https://pub.dev/packages/intl) |
 | State Management       | [bloc](https://pub.dev/packages/bloc) |
 | Immutability           | [freezed](https://pub.dev/packages/freezed) |
-| Serialization          | [json_serializable](https://pub.dev/packages/json_serializable) |
+| (De-)Serialization          | [json_serializable](https://pub.dev/packages/json_serializable) |
 | Explicit Error Handling | [dartz](https://pub.dev/packages/dartz) |
 | Stringless APIs  | [flutter_gen](https://pub.dev/packages/flutter_gen) |
 | Testing          | [mocktail](https://pub.dev/packages/mocktail), [bloc_test](https://pub.dev/packages/bloc_test) |

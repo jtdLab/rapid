@@ -8,7 +8,7 @@ final diPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": ".gitignore",
       "data":
-          "IyBGaWxlcyBhbmQgZGlyZWN0b3JpZXMgY3JlYXRlZCBieSBwdWIuCi5kYXJ0X3Rvb2wvCi5wYWNrYWdlcwoKIyBDb252ZW50aW9uYWwgZGlyZWN0b3J5IGZvciBidWlsZCBvdXRwdXRzLgpidWlsZC8KCiMgQ29udmVudGlvbmFsIGRpcmVjdG9yeSBmb3IgY292ZXJhZ2Ugb3V0cHV0cy4KL2NvdmVyYWdlCgojIE9taXQgY29tbWl0dGluZyBwdWJzcGVjLmxvY2sgZm9yIGxpYnJhcnkgcGFja2FnZXM7IHNlZQojIGh0dHBzOi8vZGFydC5kZXYvZ3VpZGVzL2xpYnJhcmllcy9wcml2YXRlLWZpbGVzI3B1YnNwZWNsb2NrLgpwdWJzcGVjLmxvY2sKCiMgTWVsb3MKcHVic3BlY19vdmVycmlkZXMueWFtbAo=",
+          "IyBGaWxlcyBhbmQgZGlyZWN0b3JpZXMgY3JlYXRlZCBieSBwdWIuCi5kYXJ0X3Rvb2wvCi5wYWNrYWdlcwoKIyBDb252ZW50aW9uYWwgZGlyZWN0b3J5IGZvciBidWlsZCBvdXRwdXRzLgpidWlsZC8KCiMgQ29udmVudGlvbmFsIGRpcmVjdG9yeSBmb3IgY292ZXJhZ2Ugb3V0cHV0cy4KL2NvdmVyYWdlCgojIE9taXQgY29tbWl0dGluZyBwdWJzcGVjLmxvY2sgZm9yIGxpYnJhcnkgcGFja2FnZXM7IHNlZQojIGh0dHBzOi8vZGFydC5kZXYvZ3VpZGVzL2xpYnJhcmllcy9wcml2YXRlLWZpbGVzI3B1YnNwZWNsb2NrLgpwdWJzcGVjLmxvY2sK",
       "type": "text"
     },
     {

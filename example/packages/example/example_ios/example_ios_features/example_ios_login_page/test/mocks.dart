@@ -6,7 +6,7 @@ import 'package:example_ios_navigation/example_ios_navigation.dart';
 import 'package:example_ui_ios/example_ui_ios.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockIAuthService extends Mock implements IAuthService {}
+class MockAuthService extends Mock implements IAuthService {}
 
 class MockLoginBloc extends MockBloc<LoginEvent, LoginState>
     implements LoginBloc {}

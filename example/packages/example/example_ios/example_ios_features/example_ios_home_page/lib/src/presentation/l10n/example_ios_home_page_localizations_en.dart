@@ -8,5 +8,8 @@ class ExampleIosHomePageLocalizationsEn
   ExampleIosHomePageLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get title => 'Home Page title for en';
+  String get errorServer => 'Server error. Try again later.';
+
+  @override
+  String get errorNotFound => 'Resource not found.';
 }

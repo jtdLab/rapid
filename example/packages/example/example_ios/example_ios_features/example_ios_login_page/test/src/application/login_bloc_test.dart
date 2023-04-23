@@ -7,7 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import '../../mocks.dart';
 
 LoginBloc _getLoginBloc([IAuthService? authService]) {
-  return LoginBloc(authService ?? MockIAuthService());
+  return LoginBloc(authService ?? MockAuthService());
 }
 
 void main() {
@@ -131,7 +131,7 @@ void main() {
       late IAuthService authService;
 
       setUp(() {
-        authService = MockIAuthService();
+        authService = MockAuthService();
       });
 
       blocTest<LoginBloc, LoginState>(

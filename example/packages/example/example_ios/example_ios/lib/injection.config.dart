@@ -10,6 +10,8 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:example_infrastructure/example_infrastructure.dart' as _i4;
+import 'package:example_infrastructure_markdown/example_infrastructure_markdown.dart'
+    as _i11;
 import 'package:example_ios_app/example_ios_app.dart' as _i5;
 import 'package:example_ios_home_page/example_ios_home_page.dart' as _i6;
 import 'package:example_ios_login_page/example_ios_login_page.dart' as _i7;
@@ -41,6 +43,7 @@ extension GetItInjectableX on _i1.GetIt {
     await _i8.ExampleIosSignUpPagePackageModule().init(gh);
     await _i9.ExampleIosProtectedRouterPackageModule().init(gh);
     await _i10.ExampleIosPublicRouterPackageModule().init(gh);
+    await _i11.ExampleInfrastructureMarkdownPackageModule().init(gh);
     return this;
   }
 }

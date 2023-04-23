@@ -60,3 +60,21 @@ scripts:
         - integration_test
       dependsOn:
         - integration_test
+
+  coverage:
+    exec: test_cov_console -t
+    description: |
+      Run `test_cov_console -t` in a package.
+       - Requires `test_cov_console` (can be installed via `dart pub global activate test_cov_console`).
+    packageFilters:
+      fileExists:
+        - coverage/lcov.info
+
+  coverage:html:
+    exec: genhtml coverage/lcov.info -o coverage/html
+    description: |
+      Run `genhtml coverage/lcov.info -o coverage/html` in a package.
+       - Requires `lcov` (can be installed via `brew install lcov` on macOS).
+    packageFilters:
+      fileExists:
+        - coverage/lcov.info

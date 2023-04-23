@@ -1,5 +1,6 @@
 import 'package:example_di/example_di.dart';
 import 'package:example_infrastructure/example_infrastructure.dart';
+import 'package:example_infrastructure_markdown/example_infrastructure_markdown.dart';
 import 'package:example_ios_app/example_ios_app.dart';
 import 'package:example_ios_home_page/example_ios_home_page.dart';
 import 'package:example_ios_login_page/example_ios_login_page.dart';
@@ -24,6 +25,7 @@ import 'injection.config.dart';
     ExampleIosSignUpPagePackageModule,
     ExampleIosProtectedRouterPackageModule,
     ExampleIosPublicRouterPackageModule,
+    ExampleInfrastructureMarkdownPackageModule
   ],
 )
 void configureDependencies(String environment, String platform) => getIt.init(

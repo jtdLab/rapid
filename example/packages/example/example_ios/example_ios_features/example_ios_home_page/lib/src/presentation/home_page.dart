@@ -35,7 +35,10 @@ class HomeView extends StatelessWidget {
           loadInProgress: (_) => const Center(
             child: CupertinoActivityIndicator(),
           ),
-          loadSuccess: (state) => Markdown(data: state.readMe),
+          loadSuccess: (state) => Markdown(
+            data: state.readMe,
+            imageBuilder: (uri, _, __) => _buildImage(context, uri: uri),
+          ),
           loadFailure: (state) => Center(
             child: state.failure.map(
               serverError: (_) => Text(context.l10n.errorServer),
@@ -45,5 +48,21 @@ class HomeView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildImage(
+    BuildContext context, {
+    required Uri uri,
+  }) {
+    final isDark = uri.pathSegments.last.split('.').first.endsWith('_black');
+
+    // TODO: consider getting brightness from the theme?
+    final brightness = MediaQuery.of(context).platformBrightness;
+    if ((!isDark && brightness == Brightness.light) ||
+        (isDark && brightness == Brightness.dark)) {
+      return Image.network(uri.toString());
+    } else {
+      return Container();
+    }
   }
 }

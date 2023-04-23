@@ -5,6 +5,7 @@ import 'package:example_ios_home_page/src/presentation/l10n/l10n.dart';
 import 'package:example_ui_ios/example_ui_ios.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 @RoutePage()
 class HomePage extends StatelessWidget implements AutoRouteWrapper {
@@ -38,6 +39,7 @@ class HomeView extends StatelessWidget {
           loadSuccess: (state) => Markdown(
             data: state.readMe,
             imageBuilder: (uri, _, __) => _buildImage(context, uri: uri),
+            onTapLink: (_, href, __) => href != null ? _launchUrl(href) : null,
           ),
           loadFailure: (state) => Center(
             child: state.failure.map(
@@ -63,6 +65,12 @@ class HomeView extends StatelessWidget {
       return Image.network(uri.toString());
     } else {
       return Container();
+    }
+  }
+
+  Future<void> _launchUrl(String url) async {
+    if (!await launchUrl(Uri.parse(url))) {
+      throw Exception('Could not launch $url');
     }
   }
 }

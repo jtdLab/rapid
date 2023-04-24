@@ -80,7 +80,7 @@ class SignUpView extends StatelessWidget {
                     children: [
                       const SizedBox(height: 56),
                       const RapidLogo(),
-                      const SizedBox(height: 56),
+                      const SizedBox(height: 48),
                       Text(
                         context.l10n.signUp,
                         style: const TextStyle(fontWeight: FontWeight.bold),

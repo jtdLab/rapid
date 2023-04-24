@@ -6,9 +6,5 @@ import 'package:{{project_name}}_domain{{#has_subinfrastructure_name}}_{{subinfr
 @dev
 @LazySingleton(as: I{{service_name.pascalCase()}}Service)
 class {{name.pascalCase()}}{{service_name.pascalCase()}}Service implements I{{service_name.pascalCase()}}Service {
- @override
-  Either<{{service_name.pascalCase()}}ServiceMyMethodFailure, dynamic> myMethod() {
-    // TODO: implement
-    throw UnimplementedError();
-  }
+  // TODO: implement
 }

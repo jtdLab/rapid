@@ -32,10 +32,10 @@ class {{name.pascalCase()}}{{{generics}}} extends ValueObject<{{{type}}}> {
     final faker = Faker();
 
     if (isValid) {
-      // TODO implement: return instance holding random value
+      // TODO: implement: return instance holding random value
       throw UnimplementedError();
     } else {
-      // TODO implement: return instance holding random failure
+      // TODO: implement: return instance holding random failure
       throw UnimplementedError();
     }
   }
@@ -70,5 +70,5 @@ class {{name.pascalCase()}}Failure{{{generics}}} extends ValueFailure<{{{type}}}
   const factory {{name.pascalCase()}}Failure.failureA({
     required {{{type}}} failedValue,
   }) = _FailureA;
-  // TODO: other failures
+  // TODO: add more failure cases
 }

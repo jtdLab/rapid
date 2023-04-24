@@ -15,10 +15,6 @@ void main() {
       expect({{name.camelCase()}}{{service_name.pascalCase()}}Service, isNotNull);
     });
 
-    group('.myMethod()', () {
-      test('TODO description', () {
-        // TODO implement
-      });
-    });
+    // TODO: implement
   });
 }

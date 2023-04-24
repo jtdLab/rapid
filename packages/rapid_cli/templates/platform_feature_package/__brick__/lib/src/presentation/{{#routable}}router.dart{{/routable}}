@@ -10,6 +10,6 @@ class {{name.pascalCase()}}Router extends ${{name.pascalCase()}}Router {
   @override
   List<AutoRoute> get routes => [
         AutoRoute(page: {{route_name}}Route.page, path: '/'),
-        // TODO setup the routes of this feature here
+        // TODO: setup routes of this feature here
       ];
 }

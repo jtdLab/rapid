@@ -64,6 +64,11 @@ final uiPackageBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
+      "path": "test/mocks.dart",
+      "data": "Ly8gVE9ETzogYWRkIG1vY2tzIGFuZCBmYWtlcyBoZXJlCg==",
+      "type": "text"
+    },
+    {
       "path": "test/src/color_theme_test.dart",
       "data":
           "aW1wb3J0ICdkYXJ0OnVpJzsKCmltcG9ydCAncGFja2FnZTpmbHV0dGVyX3Rlc3QvZmx1dHRlcl90ZXN0LmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6e3twcm9qZWN0X25hbWV9fV91aS9zcmMvY29sb3JfdGhlbWUuZGFydCc7Cgp2b2lkIG1haW4oKSB7CiAgZ3JvdXAoJ3t7cHJvamVjdF9uYW1lLnBhc2NhbENhc2UoKX19Q29sb3JUaGVtZScsICgpIHsKICAgIGdyb3VwKCcubGlnaHQnLCAoKSB7CiAgICAgIGZpbmFsIGxpZ2h0ID0ge3twcm9qZWN0X25hbWUucGFzY2FsQ2FzZSgpfX1Db2xvclRoZW1lLmxpZ2h0OwoKICAgICAgdGVzdCgnLnByaW1hcnknLCAoKSB7CiAgICAgICAgZXhwZWN0KGxpZ2h0LnByaW1hcnksIGNvbnN0IENvbG9yKDB4RkZGRkZGRkYpKTsKICAgICAgfSk7CgogICAgICB0ZXN0KCcuc2Vjb25kYXJ5JywgKCkgewogICAgICAgIGV4cGVjdChsaWdodC5zZWNvbmRhcnksIGNvbnN0IENvbG9yKDB4RkYzMjc3QjQpKTsKICAgICAgfSk7CiAgICB9KTsKCiAgICBncm91cCgnLmRhcmsnLCAoKSB7CiAgICAgIGZpbmFsIGRhcmsgPSB7e3Byb2plY3RfbmFtZS5wYXNjYWxDYXNlKCl9fUNvbG9yVGhlbWUuZGFyazsKCiAgICAgIHRlc3QoJy5wcmltYXJ5JywgKCkgewogICAgICAgIGV4cGVjdChkYXJrLnByaW1hcnksIGNvbnN0IENvbG9yKDB4RkYyMjIyMjIpKTsKICAgICAgfSk7CgogICAgICB0ZXN0KCcuc2Vjb25kYXJ5JywgKCkgewogICAgICAgIGV4cGVjdChkYXJrLnNlY29uZGFyeSwgY29uc3QgQ29sb3IoMHhGRjI4NEQ3MikpOwogICAgICB9KTsKICAgIH0pOwogIH0pOwp9Cg==",

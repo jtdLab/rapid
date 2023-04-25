@@ -4,7 +4,7 @@ import 'package:{{project_name}}_ui_android/{{project_name}}_ui_android.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'mocks.dart';
+import '../../mocks.dart';
 
 App _getApp({
   required List<Locale> supportedLocales,

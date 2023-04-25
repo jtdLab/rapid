@@ -22,3 +22,5 @@ class FakeRouter extends RootStackRouter {
 }
 
 class MockAutoRouterObserver extends Mock implements AutoRouterObserver {}
+
+// TODO: add mocks and fakes here

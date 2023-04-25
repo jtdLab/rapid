@@ -31,6 +31,8 @@ jobs:
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.7.10'
+          channel: 'stable'
           cache: true
 
       - name: Setup Melos
@@ -171,6 +173,8 @@ jobs:
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: '3.7.10'
+          channel: 'stable'
           cache: true
 
       - name: Setup Melos

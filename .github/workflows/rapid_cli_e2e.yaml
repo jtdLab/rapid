@@ -38,6 +38,9 @@ jobs:
       - name: Setup Melos
         run: flutter pub global activate melos
 
+      - name: Setup Mason CLI
+        run: dart pub global activate mason_cli
+
       - name: Setup Rapid CLI
         run: melos dev:activate
 

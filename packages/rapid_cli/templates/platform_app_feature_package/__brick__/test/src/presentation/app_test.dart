@@ -210,7 +210,7 @@ import 'package:{{project_name}}_ui_ios/{{project_name}}_ui_ios.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'mocks.dart';
+import '../../mocks.dart';
 
 App _getApp({
   required List<Locale> supportedLocales,
@@ -416,7 +416,7 @@ import 'package:{{project_name}}_ui_linux/{{project_name}}_ui_linux.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'mocks.dart';
+import '../../mocks.dart';
 
 App _getApp({
   required List<Locale> supportedLocales,
@@ -622,7 +622,7 @@ import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'mocks.dart';
+import '../../mocks.dart';
 
 App _getApp({
   required List<Locale> supportedLocales,
@@ -828,7 +828,7 @@ import 'package:{{project_name}}_ui_web/{{project_name}}_ui_web.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'mocks.dart';
+import '../../mocks.dart';
 
 App _getApp({
   required List<Locale> supportedLocales,
@@ -1034,7 +1034,7 @@ import 'package:{{project_name}}_ui_windows/{{project_name}}_ui_windows.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'mocks.dart';
+import '../../mocks.dart';
 
 App _getApp({
   required List<Locale> supportedLocales,

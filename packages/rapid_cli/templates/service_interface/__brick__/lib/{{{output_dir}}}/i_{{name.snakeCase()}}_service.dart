@@ -1,5 +1,5 @@
-import 'package:dartz/dartz.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+// import 'package:dartz/dartz.dart';
+// import 'package:freezed_annotation/freezed_annotation.dart';
 
 part '{{#snakeCase}}i_{{name}}_service{{/snakeCase}}.freezed.dart';
 

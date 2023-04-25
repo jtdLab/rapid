@@ -30,7 +30,7 @@ abstract class IAuthService {
   });
 }
 
-/// Failure union that belongs to [IAuthService.loginInWithUsernameAndPassword].
+/// Failure union that belongs to [IAuthService.loginWithUsernameAndPassword].
 @freezed
 class AuthServiceLoginWithUsernameAndPasswordFailure
     with _$AuthServiceLoginWithUsernameAndPasswordFailure {

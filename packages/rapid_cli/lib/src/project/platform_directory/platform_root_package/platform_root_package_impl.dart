@@ -4,6 +4,7 @@ import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
+import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_native_directory/platform_native_directory.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -60,9 +61,7 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
     PlatformFeaturePackage featurePackage,
   ) async {
     final packageName = featurePackage.packageName();
-    pubspecFile.setDependency(packageName);
     _localizationsDelegatesFile.addLocalizationsDelegate(packageName);
-
     pubspecFile.setDependency(packageName);
     _injectionFile.addFeaturePackage(packageName);
   }
@@ -72,9 +71,25 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
     PlatformFeaturePackage featurePackage,
   ) async {
     final packageName = featurePackage.packageName();
-    pubspecFile.removeDependency(packageName);
     _localizationsDelegatesFile.removeLocalizationsDelegate(packageName);
+    pubspecFile.removeDependency(packageName);
+    _injectionFile.removeFeaturePackage(packageName);
+  }
 
+  @override
+  Future<void> registerInfrastructurePackage(
+    InfrastructurePackage infrastructurePackage,
+  ) async {
+    final packageName = infrastructurePackage.packageName();
+    pubspecFile.setDependency(packageName);
+    _injectionFile.addFeaturePackage(packageName);
+  }
+
+  @override
+  Future<void> unregisterInfrastructurePackage(
+    InfrastructurePackage infrastructurePackage,
+  ) async {
+    final packageName = infrastructurePackage.packageName();
     pubspecFile.removeDependency(packageName);
     _injectionFile.removeFeaturePackage(packageName);
   }

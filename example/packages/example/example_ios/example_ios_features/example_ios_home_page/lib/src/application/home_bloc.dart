@@ -14,7 +14,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final IMarkdownService _markdownService;
 
   static const _readMeEndpoint =
-      'https://raw.githubusercontent.com/jtdLab/rapid/dev/README.md';
+      'https://raw.githubusercontent.com/jtdLab/rapid/main/README.md';
 
   HomeBloc(this._markdownService)
       : super(

@@ -14,22 +14,26 @@ class ExampleTextFieldTheme extends ThemeExtension<ExampleTextFieldTheme>
     required this.color,
     required this.cursorColor,
     required this.errorColor,
+    required this.textColor,
   });
 
   final Color color;
   final Color cursorColor;
   final Color errorColor;
+  final Color textColor;
 
   static final ExampleTextFieldTheme light = ExampleTextFieldTheme(
     color: _$ExampleTextFieldTheme.color[0],
     cursorColor: _$ExampleTextFieldTheme.cursorColor[0],
     errorColor: _$ExampleTextFieldTheme.errorColor[0],
+    textColor: _$ExampleTextFieldTheme.textColor[0],
   );
 
   static final ExampleTextFieldTheme dark = ExampleTextFieldTheme(
     color: _$ExampleTextFieldTheme.color[1],
     cursorColor: _$ExampleTextFieldTheme.cursorColor[1],
     errorColor: _$ExampleTextFieldTheme.errorColor[1],
+    textColor: _$ExampleTextFieldTheme.textColor[1],
   );
 
   static final themes = [
@@ -42,11 +46,13 @@ class ExampleTextFieldTheme extends ThemeExtension<ExampleTextFieldTheme>
     Color? color,
     Color? cursorColor,
     Color? errorColor,
+    Color? textColor,
   }) {
     return ExampleTextFieldTheme(
       color: color ?? this.color,
       cursorColor: cursorColor ?? this.cursorColor,
       errorColor: errorColor ?? this.errorColor,
+      textColor: textColor ?? this.textColor,
     );
   }
 
@@ -58,6 +64,7 @@ class ExampleTextFieldTheme extends ThemeExtension<ExampleTextFieldTheme>
       color: Color.lerp(color, other.color, t)!,
       cursorColor: Color.lerp(cursorColor, other.cursorColor, t)!,
       errorColor: Color.lerp(errorColor, other.errorColor, t)!,
+      textColor: Color.lerp(textColor, other.textColor, t)!,
     );
   }
 
@@ -68,7 +75,8 @@ class ExampleTextFieldTheme extends ThemeExtension<ExampleTextFieldTheme>
       ..add(DiagnosticsProperty('type', 'ExampleTextFieldTheme'))
       ..add(DiagnosticsProperty('color', color))
       ..add(DiagnosticsProperty('cursorColor', cursorColor))
-      ..add(DiagnosticsProperty('errorColor', errorColor));
+      ..add(DiagnosticsProperty('errorColor', errorColor))
+      ..add(DiagnosticsProperty('textColor', textColor));
   }
 
   @override
@@ -80,7 +88,8 @@ class ExampleTextFieldTheme extends ThemeExtension<ExampleTextFieldTheme>
             const DeepCollectionEquality()
                 .equals(cursorColor, other.cursorColor) &&
             const DeepCollectionEquality()
-                .equals(errorColor, other.errorColor));
+                .equals(errorColor, other.errorColor) &&
+            const DeepCollectionEquality().equals(textColor, other.textColor));
   }
 
   @override
@@ -89,7 +98,8 @@ class ExampleTextFieldTheme extends ThemeExtension<ExampleTextFieldTheme>
         runtimeType,
         const DeepCollectionEquality().hash(color),
         const DeepCollectionEquality().hash(cursorColor),
-        const DeepCollectionEquality().hash(errorColor));
+        const DeepCollectionEquality().hash(errorColor),
+        const DeepCollectionEquality().hash(textColor));
   }
 }
 

@@ -25,6 +25,7 @@ dependencies:
   example_domain_markdown:
   example_ui_ios:
   example_ios_navigation:
+  url_launcher: ^6.1.10
 
 dev_dependencies:
   flutter_test:

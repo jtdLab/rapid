@@ -48,21 +48,33 @@ abstract class ExampleApp extends StatelessWidget {
   Widget _builder(BuildContext context, Widget? child) {
     final brightness =
         this.brightness ?? MediaQuery.of(context).platformBrightness;
+    final textColor = brightness == Brightness.light
+        ? ExampleColorTheme.light.primary
+        : ExampleColorTheme.dark.primary;
 
     late final Widget theme;
     if (brightness == Brightness.light) {
-      theme = Theme(
-        data: ThemeData(extensions: lightExtensions),
-        child: child!,
+      theme = DefaultTextStyle(
+        style: TextStyle(color: textColor),
+        child: Theme(
+          data: ThemeData(extensions: lightExtensions),
+          child: child!,
+        ),
       );
     } else {
-      theme = Theme(
-        data: ThemeData(extensions: darkExtensions),
-        child: child!,
+      theme = DefaultTextStyle(
+        style: TextStyle(color: textColor),
+        child: Theme(
+          data: ThemeData(extensions: darkExtensions),
+          child: child!,
+        ),
       );
     }
 
-    return exampleToastBuilder(context, theme);
+    return theme;
+    // TODO: this does not trigger rebuilt of subtree on theme changes
+    // But the toast gets displayed even without this
+    // return exampleToastBuilder(context, theme);
   }
 }
 

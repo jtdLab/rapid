@@ -1,4 +1,4 @@
-import 'package:dartz/dartz.dart';
+// import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:{{project_name}}_domain{{#has_subinfrastructure_name}}_{{subinfrastructure_name}}{{/has_subinfrastructure_name}}{{^output_dir_is_cwd}}/{{{output_dir}}}{{/output_dir_is_cwd}}/i_{{service_name.snakeCase()}}_service.dart';
 
@@ -6,9 +6,5 @@ import 'package:{{project_name}}_domain{{#has_subinfrastructure_name}}_{{subinfr
 @dev
 @LazySingleton(as: I{{service_name.pascalCase()}}Service)
 class {{name.pascalCase()}}{{service_name.pascalCase()}}Service implements I{{service_name.pascalCase()}}Service {
- @override
-  Either<{{service_name.pascalCase()}}ServiceMyMethodFailure, dynamic> myMethod() {
-    // TODO: implement
-    throw UnimplementedError();
-  }
+  // TODO: implement
 }

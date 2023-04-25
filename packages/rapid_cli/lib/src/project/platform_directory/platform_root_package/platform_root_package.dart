@@ -3,6 +3,7 @@ import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
+import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_native_directory/platform_native_directory.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -38,6 +39,14 @@ abstract class PlatformRootPackage
   Future<void> registerFeaturePackage(PlatformFeaturePackage featurePackage);
 
   Future<void> unregisterFeaturePackage(PlatformFeaturePackage featurePackage);
+
+  Future<void> registerInfrastructurePackage(
+    InfrastructurePackage infrastructurePackage,
+  );
+
+  Future<void> unregisterInfrastructurePackage(
+    InfrastructurePackage infrastructurePackage,
+  );
 }
 
 typedef NoneIosRootPackageBuilder = NoneIosRootPackage Function(

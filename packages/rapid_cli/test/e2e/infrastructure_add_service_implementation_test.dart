@@ -68,7 +68,7 @@ void main() {
           expect(commandResultWithOutputDir, equals(ExitCode.success.code));
 
           // Assert
-          await verifyNoAnalyzerIssues();
+          await verifyHasAnalyzerIssues(2);
           await verifyNoFormattingIssues();
 
           verifyDoExist({
@@ -84,7 +84,7 @@ void main() {
             ),
           });
 
-          await verifyTestsPass(infrastructurePackage(), expectedCoverage: 0);
+          await verifyTestsPass(infrastructurePackage(), expectedCoverage: 100);
         },
       );
     },

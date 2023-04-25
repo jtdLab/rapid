@@ -17,8 +17,11 @@ class $AssetsImagesGen {
   /// File path: assets/images/logo.svg
   SvgGenImage get logo => const SvgGenImage('assets/images/logo.svg');
 
+  /// File path: assets/images/logoDark.svg
+  SvgGenImage get logoDark => const SvgGenImage('assets/images/logoDark.svg');
+
   /// List of all assets
-  List<SvgGenImage> get values => [logo];
+  List<SvgGenImage> get values => [logo, logoDark];
 }
 
 class Assets {

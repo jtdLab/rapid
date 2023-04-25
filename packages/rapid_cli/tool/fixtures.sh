@@ -28,4 +28,4 @@ for platform in "${platforms[@]}"; do
 done
 
 flutter analyze .
-dart format . --set-exit-if-changed
+dart format . --fix

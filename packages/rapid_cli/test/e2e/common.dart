@@ -89,7 +89,7 @@ Future<void> addServiceInterface({
   String? outputDir,
 }) async {
   await copyPath(
-    p.join(fixturesPath, 'service_interface'),
+    p.join(fixturesPath, 'service_interface', 'lib'),
     p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? ''),
   );
 }

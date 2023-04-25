@@ -37,6 +37,7 @@ class HomeView extends StatelessWidget {
             child: CupertinoActivityIndicator(),
           ),
           loadSuccess: (state) => Markdown(
+            styleSheet: _markdownStyleSheet(context),
             data: state.readMe,
             imageBuilder: (uri, _, __) => _buildImage(context, uri: uri),
             onTapLink: (_, href, __) => href != null ? _launchUrl(href) : null,
@@ -49,6 +50,30 @@ class HomeView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  MarkdownStyleSheet _markdownStyleSheet(BuildContext context) {
+    final style = DefaultTextStyle.of(context).style; // TODO
+    return MarkdownStyleSheet(
+      a: const TextStyle(color: Color(0xFF1C97D4)), // TODO
+      p: style,
+      code: style,
+      h1: style,
+      h2: style,
+      h3: style,
+      h4: style,
+      h5: style,
+      h6: style,
+      em: style,
+      strong: style,
+      del: style,
+      blockquote: style,
+      img: style,
+      checkbox: style,
+      listBullet: style,
+      tableHead: style,
+      tableBody: style,
     );
   }
 
@@ -70,7 +95,7 @@ class HomeView extends StatelessWidget {
 
   Future<void> _launchUrl(String url) async {
     if (!await launchUrl(Uri.parse(url))) {
-      throw Exception('Could not launch $url');
+      throw Exception('Could not launch $url'); // TODO
     }
   }
 }

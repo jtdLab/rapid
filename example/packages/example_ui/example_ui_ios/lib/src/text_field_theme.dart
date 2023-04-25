@@ -9,8 +9,8 @@ part 'text_field_theme.tailor.dart';
 @Tailor(themeGetter: ThemeGetter.onBuildContext)
 class _$ExampleTextFieldTheme {
   static List<Color> color = [
-    CupertinoColors.systemGrey,
-    CupertinoColors.systemGrey,
+    ExampleColorTheme.light.grey,
+    ExampleColorTheme.dark.grey,
   ];
 
   static List<Color> errorColor = [
@@ -18,8 +18,13 @@ class _$ExampleTextFieldTheme {
     ExampleColorTheme.dark.error,
   ];
 
+  static List<Color> textColor = [
+    ExampleColorTheme.light.primary,
+    ExampleColorTheme.dark.primary,
+  ];
+
   static List<Color> cursorColor = [
-    const Color(0xFF000000),
-    const Color(0xFF000000),
+    ExampleColorTheme.light.primary,
+    ExampleColorTheme.dark.primary,
   ];
 }

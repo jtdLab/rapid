@@ -55,6 +55,7 @@ class ExampleTextField extends HookWidget {
 
     final theme = this.theme ?? context.exampleTextFieldTheme;
     final color = theme.color;
+    final textColor = theme.textColor;
     final errorColor = theme.errorColor;
     final cursorColor = theme.cursorColor;
     final border = Border.all(
@@ -70,6 +71,10 @@ class ExampleTextField extends HookWidget {
           child: ValueListenableBuilder(
             valueListenable: obscureTextNotifier,
             builder: (_, obscureText, ___) => CupertinoTextField(
+              style: TextStyle(color: textColor),
+              placeholderStyle: TextStyle(
+                color: textColor.withOpacity(0.5),
+              ),
               cursorColor: cursorColor,
               controller: controller,
               textAlign: TextAlign.center,

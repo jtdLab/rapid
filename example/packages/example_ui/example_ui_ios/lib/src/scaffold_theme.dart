@@ -9,8 +9,8 @@ part 'scaffold_theme.tailor.dart';
 @Tailor(themeGetter: ThemeGetter.onBuildContext)
 class _$ExampleScaffoldTheme {
   static List<Color> backgroundColor = [
-    ExampleColorTheme.light.background,
-    ExampleColorTheme.dark.background
+    ExampleColorTheme.light.secondary,
+    ExampleColorTheme.dark.secondary
   ];
 
   static List<EdgeInsets> padding = [

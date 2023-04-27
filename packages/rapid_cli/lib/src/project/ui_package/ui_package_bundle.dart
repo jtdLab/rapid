@@ -35,9 +35,15 @@ final uiPackageBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
+      "path": "lib/src/theme_extensions.dart",
+      "data":
+          "aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvbWF0ZXJpYWwuZGFydCcgc2hvdyBUaGVtZUV4dGVuc2lvbjsKaW1wb3J0ICdwYWNrYWdlOnt7cHJvamVjdF9uYW1lfX1fdWkve3twcm9qZWN0X25hbWV9fV91aS5kYXJ0JzsKCmZpbmFsIGxpZ2h0RXh0ZW5zaW9ucyA9IDxUaGVtZUV4dGVuc2lvbj5bCiAge3twcm9qZWN0X25hbWUucGFzY2FsQ2FzZSgpfX1Db2xvclRoZW1lLmxpZ2h0LApdOwoKZmluYWwgZGFya0V4dGVuc2lvbnMgPSA8VGhlbWVFeHRlbnNpb24+WwogIHt7cHJvamVjdF9uYW1lLnBhc2NhbENhc2UoKX19Q29sb3JUaGVtZS5kYXJrLApdOwo=",
+      "type": "text"
+    },
+    {
       "path": "lib/{{project_name}}_ui.dart",
       "data":
-          "Ly8vIFdpZGdldHMgYW5kIHRoZW1lcyBpbXBsZW1lbnRpbmcgcGxhdGZvcm0gaW5kZXBlbmRlbnQge3twcm9qZWN0X25hbWUudGl0bGVDYXNlKCl9fSBkZXNpZ24gbGFuZ3VhZ2UuCi8vLwovLy8gVG8gdXNlLCBpbXBvcnQgYHBhY2thZ2U6e3twcm9qZWN0X25hbWV9fV91aS97e3Byb2plY3RfbmFtZX19X3VpLmRhcnRgLgpsaWJyYXJ5IHt7cHJvamVjdF9uYW1lfX1fdWk7CgpleHBvcnQgJ3NyYy9jb2xvcl90aGVtZS5kYXJ0JzsK",
+          "Ly8vIFdpZGdldHMgYW5kIHRoZW1lcyBpbXBsZW1lbnRpbmcgcGxhdGZvcm0gaW5kZXBlbmRlbnQge3twcm9qZWN0X25hbWUudGl0bGVDYXNlKCl9fSBkZXNpZ24gbGFuZ3VhZ2UuCi8vLwovLy8gVG8gdXNlLCBpbXBvcnQgYHBhY2thZ2U6e3twcm9qZWN0X25hbWV9fV91aS97e3Byb2plY3RfbmFtZX19X3VpLmRhcnRgLgpsaWJyYXJ5IHt7cHJvamVjdF9uYW1lfX1fdWk7CgpleHBvcnQgJ3NyYy9jb2xvcl90aGVtZS5kYXJ0JzsKZXhwb3J0ICdzcmMvdGhlbWVfZXh0ZW5zaW9ucy5kYXJ0JzsK",
       "type": "text"
     },
     {

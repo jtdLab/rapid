@@ -102,31 +102,47 @@ Future<void> addFeature(String name, {required Platform platform}) async {
   await pubspecFile.writeAsString('name: $name');
 }
 
-Future<void> addPlatformUiPackageThemeExtensionsFile(
+Future<void> addThemeExtensionsFile(
   String widgetName, {
-  required Platform platform,
+  Platform? platform,
 }) async {
-  final content = [
-    if (platform == Platform.ios || platform == Platform.macos)
+  late final String content;
+  if (platform == null) {
+    content = [
       "import 'package:flutter/material.dart' show ThemeExtension;",
-    "import 'package:project_${platform.name}_ui_${platform.name}/project_${platform.name}_ui_${platform.name}.dart';",
-    '',
-    'final lightExtensions = <ThemeExtension>[',
-    '  ${projectName.pascalCase}ColorTheme.light,',
-    '  ${projectName.pascalCase}ScaffoldTheme.light,',
-    '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.light,',
-    '];',
-    '',
-    'final darkExtensions = <ThemeExtension>[',
-    '  ${projectName.pascalCase}ColorTheme.dark,',
-    '  ${projectName.pascalCase}ScaffoldTheme.dark,',
-    '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.dark,',
-    '];',
-  ].join('\n');
+      "import 'package:project_none_ui/project_none_ui.dart';",
+      '',
+      'final lightExtensions = <ThemeExtension>[',
+      '  ${projectName.pascalCase}ColorTheme.light,',
+      '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.light,',
+      '];',
+      '',
+      'final darkExtensions = <ThemeExtension>[',
+      '  ${projectName.pascalCase}ColorTheme.dark,',
+      '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.dark,',
+      '];',
+    ].join('\n');
+  } else {
+    content = [
+      if (platform == Platform.ios || platform == Platform.macos)
+        "import 'package:flutter/material.dart' show ThemeExtension;",
+      "import 'package:project_${platform.name}_ui_${platform.name}/project_${platform.name}_ui_${platform.name}.dart';",
+      '',
+      'final lightExtensions = <ThemeExtension>[',
+      '  ${projectName.pascalCase}ScaffoldTheme.light,',
+      '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.light,',
+      '];',
+      '',
+      'final darkExtensions = <ThemeExtension>[',
+      '  ${projectName.pascalCase}ScaffoldTheme.dark,',
+      '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.dark,',
+      '];',
+    ].join('\n');
+  }
 
   await File(
     p.join(
-      platformUiPackage(platform).path,
+      platform != null ? platformUiPackage(platform).path : uiPackage.path,
       'lib',
       'src',
       'theme_extensions.dart',
@@ -134,15 +150,17 @@ Future<void> addPlatformUiPackageThemeExtensionsFile(
   ).writeAsString(content);
 }
 
-Future<void> addPlatformUiPackageBarrelFile(
+Future<void> addBarrelFile(
   String widgetName, {
-  required Platform platform,
+  Platform? platform,
 }) async {
   await File(
     p.join(
-      platformUiPackage(platform).path,
+      platform != null ? platformUiPackage(platform).path : uiPackage.path,
       'lib',
-      '${projectName}_ui_${platform.name}.dart',
+      platform != null
+          ? '${projectName}_ui_${platform.name}.dart'
+          : '${projectName}_ui.dart',
     ),
   ).writeAsString(
     '''
@@ -437,12 +455,12 @@ List<File> serviceImplementationFiles({
 
 List<File> widgetFiles({
   required String name,
-  required Platform platform,
+  Platform? platform,
 }) =>
     [
       File(
         p.join(
-          platformUiPackage(platform).path,
+          platform != null ? platformUiPackage(platform).path : uiPackage.path,
           'lib',
           'src',
           '${name.snakeCase}_theme.dart',
@@ -450,7 +468,7 @@ List<File> widgetFiles({
       ),
       File(
         p.join(
-          platformUiPackage(platform).path,
+          platform != null ? platformUiPackage(platform).path : uiPackage.path,
           'lib',
           'src',
           '${name.snakeCase}_theme.tailor.dart',
@@ -458,7 +476,7 @@ List<File> widgetFiles({
       ),
       File(
         p.join(
-          platformUiPackage(platform).path,
+          platform != null ? platformUiPackage(platform).path : uiPackage.path,
           'lib',
           'src',
           '${name.snakeCase}.dart',
@@ -466,7 +484,7 @@ List<File> widgetFiles({
       ),
       File(
         p.join(
-          platformUiPackage(platform).path,
+          platform != null ? platformUiPackage(platform).path : uiPackage.path,
           'test',
           'src',
           '${name.snakeCase}_theme_test.dart',
@@ -474,7 +492,7 @@ List<File> widgetFiles({
       ),
       File(
         p.join(
-          platformUiPackage(platform).path,
+          platform != null ? platformUiPackage(platform).path : uiPackage.path,
           'test',
           'src',
           '${name.snakeCase}_test.dart',
@@ -605,7 +623,7 @@ Future<void> verifyTestsPass(
 
 /// Verifys that no element in [dirs] has a test directory with test files in it.
 ///
-/// This passes if no test dir or only empty test/ or only empty test/src exists.
+/// This passes if no test dir, only empty test/ or test contains empty src/ and/or a mocks.dart exists.
 void verifyDoNotHaveTests(
   Iterable<Directory> dirs,
 ) {
@@ -619,7 +637,17 @@ void verifyDoNotHaveTests(
       if (testDirSubEntities.isEmpty) {
         hasNoTests = true;
       } else {
-        if (testDirSubEntities.length == 1) {
+        if (testDirSubEntities.length == 2) {
+          final testSrcDir = Directory(p.join(dir.path, 'test', 'src'));
+          final mocksFile = File(p.join(dir.path, 'test', 'mocks.dart'));
+          if (testSrcDir.existsSync() &&
+              testSrcDir.listSync().isEmpty &&
+              mocksFile.existsSync()) {
+            hasNoTests = true;
+          } else {
+            hasNoTests = false;
+          }
+        } else if (testDirSubEntities.length == 1) {
           final testSrcDir = Directory(p.join(dir.path, 'test', 'src'));
           if (testSrcDir.existsSync() && testSrcDir.listSync().isEmpty) {
             hasNoTests = true;

@@ -33,11 +33,11 @@ void main() {
           await setupProject(Platform.macos);
           final name = 'FooBar';
           widgetFiles(name: name, platform: Platform.macos).create();
-          await addPlatformUiPackageThemeExtensionsFile(
+          await addThemeExtensionsFile(
             name,
             platform: Platform.macos,
           );
-          await addPlatformUiPackageBarrelFile(
+          await addBarrelFile(
             name,
             platform: Platform.macos,
           );

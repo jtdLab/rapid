@@ -1,4 +1,17 @@
-{{#android}}import 'package:flutter/foundation.dart';
+{{^android}}{{^ios}}{{^linux}}{{^macos}}{{^web}}{{^windows}}import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show Theme, ThemeExtension;
+import 'package:flutter/widgets.dart';
+import 'package:theme_tailor_annotation/theme_tailor_annotation.dart';
+
+part '{{name.snakeCase()}}_theme.tailor.dart';
+
+@Tailor(themeGetter: ThemeGetter.onBuildContext)
+class _${{project_name.pascalCase()}}{{name.pascalCase()}}Theme {
+  static List<Color> backgroundColor = [
+    const Color(0xFFFFFFFF),
+    const Color(0xFF000000),
+  ];
+}{{/windows}}{{/web}}{{/macos}}{{/linux}}{{/ios}}{{/android}}{{#android}}import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' show Theme, ThemeExtension;
 import 'package:flutter/widgets.dart';
 import 'package:theme_tailor_annotation/theme_tailor_annotation.dart';

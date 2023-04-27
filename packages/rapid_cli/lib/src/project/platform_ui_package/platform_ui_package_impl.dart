@@ -52,7 +52,7 @@ class PlatformUiPackageImpl extends DartPackageImpl
 
   @override
   ThemeExtensionsFile get themeExtensionsFile =>
-      (themeExtensionsFileOverrides ?? ThemeExtensionsFileImpl.new)(
+      (themeExtensionsFileOverrides ?? ThemeExtensionsFile.new)(
         platformUiPackage: this,
       );
 

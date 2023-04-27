@@ -261,6 +261,8 @@ infrastructure_package_path="${temp_dir}/tmp/packages/${project_name}/${project_
 
 cd templates
 
+mason get
+
 # Platform UI Package
 mason make "platform_ui_package" --on-conflict overwrite -o $platform_ui_package_android_path --project_name $project_name --example false --android true --ios false --linux false --macos false --web false --windows false
 mason make "platform_ui_package" --on-conflict overwrite -o $platform_ui_package_ios_path --project_name $project_name --example false --android false --ios true --linux false --macos false --web false --windows false

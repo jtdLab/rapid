@@ -1,5 +1,6 @@
 {{#android}}import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
 import 'package:{{project_name}}_ui_android/src/theme_extensions.dart';
 
 abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
@@ -40,8 +41,8 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
   final RouterConfig<Object>? routerConfig;
-  ThemeData get lightTheme => ThemeData(extensions: lightExtensions);
-  ThemeData get darkTheme => ThemeData(extensions: darkExtensions);
+  ThemeData get lightTheme => ThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]);
+  ThemeData get darkTheme => ThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]);
   final ThemeMode? themeMode;
   final Widget? home;
 }
@@ -95,6 +96,7 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
 {{/android}}{{#ios}}import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Theme, ThemeData;
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
 import 'package:{{project_name}}_ui_ios/src/theme_extensions.dart';
 
 abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
@@ -144,12 +146,12 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
 
     if (brightness == Brightness.light) {
       return Theme(
-        data: ThemeData(extensions: lightExtensions),
+        data: ThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]),
         child: child!,
       );
     } else {
       return Theme(
-        data: ThemeData(extensions: darkExtensions),
+        data: ThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]),
         child: child!,
       );
     }
@@ -200,6 +202,7 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
 }
 {{/ios}}{{#linux}}import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
 import 'package:{{project_name}}_ui_linux/src/theme_extensions.dart';
 
 abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
@@ -240,8 +243,8 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
   final RouterConfig<Object>? routerConfig;
-  ThemeData get lightTheme => ThemeData(extensions: lightExtensions);
-  ThemeData get darkTheme => ThemeData(extensions: darkExtensions);
+  ThemeData get lightTheme => ThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]);
+  ThemeData get darkTheme => ThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]);
   final ThemeMode? themeMode;
   final Widget? home;
 }
@@ -296,6 +299,7 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Theme, ThemeData;
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
 import 'package:{{project_name}}_ui_macos/src/theme_extensions.dart';
 import 'package:macos_ui/macos_ui.dart';
 
@@ -346,12 +350,12 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
 
     if (brightness == Brightness.light) {
       return Theme(
-        data: ThemeData(extensions: lightExtensions),
+        data: ThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]),
         child: child!,
       );
     } else {
       return Theme(
-        data: ThemeData(extensions: darkExtensions),
+        data: ThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]),
         child: child!,
       );
     }
@@ -406,6 +410,7 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
 {{/macos}}{{#web}}
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
 import 'package:{{project_name}}_ui_web/src/theme_extensions.dart';
 
 abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
@@ -446,8 +451,8 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
   final RouterConfig<Object>? routerConfig;
-  ThemeData get lightTheme => ThemeData(extensions: lightExtensions);
-  ThemeData get darkTheme => ThemeData(extensions: darkExtensions);
+  ThemeData get lightTheme => ThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]);
+  ThemeData get darkTheme => ThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]);
   final ThemeMode? themeMode;
   final Widget? home;
 }
@@ -501,6 +506,7 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
 {{/web}}{{#windows}}
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
 import 'package:{{project_name}}_ui_windows/src/theme_extensions.dart';
 
 abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
@@ -541,8 +547,8 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
   final RouterConfig<Object>? routerConfig;
-  FluentThemeData get lightTheme => FluentThemeData(extensions: lightExtensions);
-  FluentThemeData get darkTheme => FluentThemeData(extensions: darkExtensions);
+  FluentThemeData get lightTheme => FluentThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]);
+  FluentThemeData get darkTheme => FluentThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]);
   final ThemeMode? themeMode;
   final Widget? home;
 }

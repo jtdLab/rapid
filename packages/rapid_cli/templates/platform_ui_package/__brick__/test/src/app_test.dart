@@ -1,4 +1,4 @@
-import 'package:flutter_localizations/flutter_localizations.dart';import 'package:flutter_test/flutter_test.dart';{{#android}}import 'package:{{project_name}}_ui_android/src/app.dart';import 'package:{{project_name}}_ui_android/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/android}}{{#ios}}import 'package:{{project_name}}_ui_ios/src/app.dart';import 'package:{{project_name}}_ui_ios/src/theme_extensions.dart';import 'package:flutter/cupertino.dart';import 'package:flutter/material.dart' show Theme;{{/ios}}{{#linux}}import 'package:{{project_name}}_ui_linux/src/app.dart';import 'package:{{project_name}}_ui_linux/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/linux}}{{#macos}}import 'package:{{project_name}}_ui_macos/src/app.dart';import 'package:{{project_name}}_ui_macos/src/theme_extensions.dart';import 'package:flutter/widgets.dart';import 'package:flutter/material.dart' show Brightness, Theme;import 'package:macos_ui/macos_ui.dart';{{/macos}}{{#web}}import 'package:{{project_name}}_ui_web/src/app.dart';import 'package:{{project_name}}_ui_web/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/web}}{{#windows}}import 'package:{{project_name}}_ui_windows/src/app.dart';import 'package:{{project_name}}_ui_windows/src/theme_extensions.dart';import 'package:fluent_ui/fluent_ui.dart';{{/windows}}
+import 'package:flutter_localizations/flutter_localizations.dart';import 'package:flutter_test/flutter_test.dart';import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;{{#android}}import 'package:{{project_name}}_ui_android/src/app.dart';import 'package:{{project_name}}_ui_android/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/android}}{{#ios}}import 'package:{{project_name}}_ui_ios/src/app.dart';import 'package:{{project_name}}_ui_ios/src/theme_extensions.dart';import 'package:flutter/cupertino.dart';import 'package:flutter/material.dart' show Theme;{{/ios}}{{#linux}}import 'package:{{project_name}}_ui_linux/src/app.dart';import 'package:{{project_name}}_ui_linux/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/linux}}{{#macos}}import 'package:{{project_name}}_ui_macos/src/app.dart';import 'package:{{project_name}}_ui_macos/src/theme_extensions.dart';import 'package:flutter/widgets.dart';import 'package:flutter/material.dart' show Brightness, Theme;import 'package:macos_ui/macos_ui.dart';{{/macos}}{{#web}}import 'package:{{project_name}}_ui_web/src/app.dart';import 'package:{{project_name}}_ui_web/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/web}}{{#windows}}import 'package:{{project_name}}_ui_windows/src/app.dart';import 'package:{{project_name}}_ui_windows/src/theme_extensions.dart';import 'package:fluent_ui/fluent_ui.dart';{{/windows}}
 
 import 'mocks.dart';
 
@@ -62,7 +62,7 @@ void main() {
         isA<ThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          lightExtensions,
+          {...lightExtensions, ...ui.lightExtensions},
         ),
       );
       expect(
@@ -70,7 +70,7 @@ void main() {
         isA<ThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          darkExtensions,
+          {...darkExtensions, ...ui.darkExtensions},
         ),
       );
       expect(materialApp.routerConfig, routerConfig);
@@ -106,7 +106,7 @@ void main() {
         isA<ThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          lightExtensions,
+          {...lightExtensions, ...ui.lightExtensions},
         ),
       );
       expect(
@@ -114,7 +114,7 @@ void main() {
         isA<ThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          darkExtensions,
+          {...darkExtensions, ...ui.darkExtensions},
         ),
       );
       expect(materialApp.themeMode, ThemeMode.dark);
@@ -183,7 +183,10 @@ void main() {
       expect(cupertinoApp.routerConfig, routerConfig);
       expect(cupertinoApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
-      expect(theme.data.extensions.values.toSet(), lightExtensions);
+      expect(
+        theme.data.extensions.values.toSet(),
+        {...lightExtensions, ...ui.lightExtensions},
+      );
     });
   
     testWidgets('renders CupertinoApp correctly when brightness is dark', (tester) async {
@@ -214,7 +217,10 @@ void main() {
       expect(cupertinoApp.routerConfig, routerConfig);
       expect(cupertinoApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
-      expect(theme.data.extensions.values.toSet(), darkExtensions);
+      expect(
+        theme.data.extensions.values.toSet(),
+        {...darkExtensions, ...ui.darkExtensions},
+      );
     });
   });
 
@@ -246,7 +252,10 @@ void main() {
       expect(cupertinoApp.supportedLocales, equals([const Locale('en')]));
       expect(cupertinoApp.home, home);
       final theme = tester.widget<Theme>(find.byType(Theme));
-      expect(theme.data.extensions.values.toSet(), lightExtensions);
+      expect(
+        theme.data.extensions.values.toSet(), 
+        {...lightExtensions, ...ui.lightExtensions},
+      );
     });
 
     testWidgets('renders CupertinoApp correctly when brightness is dark',
@@ -276,7 +285,10 @@ void main() {
       expect(cupertinoApp.supportedLocales, equals([const Locale('en')]));
       expect(cupertinoApp.home, home);
       final theme = tester.widget<Theme>(find.byType(Theme));
-      expect(theme.data.extensions.values.toSet(), darkExtensions);
+      expect(
+        theme.data.extensions.values.toSet(),
+        {...darkExtensions, ...ui.darkExtensions},
+      );
     });
   });
 }
@@ -340,7 +352,7 @@ void main() {
         isA<ThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          lightExtensions,
+          {...lightExtensions, ...ui.lightExtensions},
         ),
       );
       expect(
@@ -348,7 +360,7 @@ void main() {
         isA<ThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          darkExtensions,
+          {...darkExtensions, ...ui.darkExtensions},
         ),
       );
       expect(materialApp.routerConfig, routerConfig);
@@ -384,7 +396,7 @@ void main() {
         isA<ThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          lightExtensions,
+          {...lightExtensions, ...ui.lightExtensions},
         ),
       );
       expect(
@@ -392,7 +404,7 @@ void main() {
         isA<ThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          darkExtensions,
+          {...darkExtensions, ...ui.darkExtensions},
         ),
       );
       expect(materialApp.themeMode, ThemeMode.dark);
@@ -469,7 +481,10 @@ void main() {
       );
       expect(macosApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
-      expect(theme.data.extensions.values.toSet(), lightExtensions);
+      expect(
+        theme.data.extensions.values.toSet(),
+        {...lightExtensions, ...ui.lightExtensions},
+      );
     });
   
     testWidgets('renders MacosApp correctly when brightness is dark', (tester) async {
@@ -508,7 +523,10 @@ void main() {
       );
       expect(macosApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
-      expect(theme.data.extensions.values.toSet(), darkExtensions);
+      expect(
+        theme.data.extensions.values.toSet(),
+        {...darkExtensions, ...ui.darkExtensions},
+      );
     });
   });
 
@@ -540,7 +558,10 @@ void main() {
       expect(macosApp.supportedLocales, equals([const Locale('en')]));
       expect(macosApp.home, home);
       final theme = tester.widget<Theme>(find.byType(Theme));
-      expect(theme.data.extensions.values.toSet(), lightExtensions);
+      expect(
+        theme.data.extensions.values.toSet(),
+        {...lightExtensions, ...ui.lightExtensions},
+      );
     });
 
     testWidgets('renders MacosApp correctly when brightness is dark',
@@ -570,7 +591,10 @@ void main() {
       expect(macosApp.supportedLocales, equals([const Locale('en')]));
       expect(macosApp.home, home);
       final theme = tester.widget<Theme>(find.byType(Theme));
-      expect(theme.data.extensions.values.toSet(), darkExtensions);
+      expect(
+        theme.data.extensions.values.toSet(),
+        {...darkExtensions, ...ui.darkExtensions},
+      );
     });
   });
 }
@@ -634,7 +658,7 @@ void main() {
         isA<ThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          lightExtensions,
+          {...lightExtensions, ...ui.lightExtensions},
         ),
       );
       expect(
@@ -642,7 +666,7 @@ void main() {
         isA<ThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          darkExtensions,
+          {...darkExtensions, ...ui.darkExtensions},
         ),
       );
       expect(materialApp.routerConfig, routerConfig);
@@ -678,7 +702,7 @@ void main() {
         isA<ThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          lightExtensions,
+          {...lightExtensions, ...ui.lightExtensions},
         ),
       );
       expect(
@@ -686,7 +710,7 @@ void main() {
         isA<ThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          darkExtensions,
+          {...darkExtensions, ...ui.darkExtensions},
         ),
       );
       expect(materialApp.themeMode, ThemeMode.dark);
@@ -754,7 +778,7 @@ void main() {
         isA<FluentThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          lightExtensions,
+          {...lightExtensions, ...ui.lightExtensions},
         ),
       );
       expect(
@@ -762,7 +786,7 @@ void main() {
         isA<FluentThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          darkExtensions,
+          {...darkExtensions, ...ui.darkExtensions},
         ),
       );
       expect(fluentApp.routerConfig, routerConfig);
@@ -798,7 +822,7 @@ void main() {
         isA<FluentThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          lightExtensions,
+          {...lightExtensions, ...ui.lightExtensions},
         ),
       );
       expect(
@@ -806,7 +830,7 @@ void main() {
         isA<FluentThemeData>().having(
           (theme) => theme.extensions.values,
           'extensions',
-          darkExtensions,
+          {...darkExtensions, ...ui.darkExtensions},
         ),
       );
       expect(fluentApp.themeMode, ThemeMode.dark);

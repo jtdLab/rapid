@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
-import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
@@ -27,24 +26,18 @@ void main() {
       });
 
       test(
-        'ui ios remove widget',
+        'ui remove widget',
         () async {
           // Arrange
-          await setupProject(Platform.ios);
+          await setupProject();
           final name = 'FooBar';
-          widgetFiles(name: name, platform: Platform.ios).create();
-          await addThemeExtensionsFile(
-            name,
-            platform: Platform.ios,
-          );
-          await addBarrelFile(
-            name,
-            platform: Platform.ios,
-          );
+          widgetFiles(name: name).create();
+          await addThemeExtensionsFile(name);
+          await addBarrelFile(name);
 
           // Act
           final commandResult = await commandRunner.run(
-            ['ui', 'ios', 'remove', 'widget', name],
+            ['ui', 'remove', 'widget', name],
           );
 
           // Assert
@@ -57,11 +50,11 @@ void main() {
             ...platformIndependentPackages,
           });
           verifyDoNotExist({
-            ...widgetFiles(name: name, platform: Platform.ios),
+            ...widgetFiles(name: name),
           });
 
           await verifyTestsPassWith100PercentCoverage({
-            platformUiPackage(Platform.ios),
+            uiPackage,
           });
         },
       );

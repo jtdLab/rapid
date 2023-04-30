@@ -31,8 +31,8 @@ jobs:
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.7.10'
-          channel: 'stable'
+          flutter-version: "3.7.10"
+          channel: "stable"
           cache: true
 
       - name: Setup Melos
@@ -84,20 +84,22 @@ jobs:
           - test/e2e/deactivate_windows_test.dart
 
           # E2E tests for domain command
-          - test/e2e/domain_add_entity_test.dart
-          - test/e2e/domain_add_service_interface_test.dart
-          - test/e2e/domain_add_value_object_test.dart
-          - test/e2e/domain_remove_entity_test.dart
-          - test/e2e/domain_remove_service_interface_test.dart
-          - test/e2e/domain_remove_value_object_test.dart
+          - test/e2e/domain_sub_domain_add_entity_test.dart
+          - test/e2e/domain_sub_domain_add_service_interface_test.dart
+          - test/e2e/domain_sub_domain_add_value_object_test.dart
+          - test/e2e/domain_sub_domain_remove_entity_test.dart
+          - test/e2e/domain_sub_domain_remove_service_interface_test.dart
+          - test/e2e/domain_sub_domain_remove_value_object_test.dart
 
           # E2E tests for infrastructure command
-          - test/e2e/infrastructure_add_data_transfer_object_test.dart
-          - test/e2e/infrastructure_add_service_implementation_test.dart
-          - test/e2e/infrastructure_remove_data_transfer_object_test.dart
-          - test/e2e/infrastructure_remove_service_implementation_test.dart
+          - test/e2e/infrastructure_sub_infrastructure_add_data_transfer_object_test.dart
+          - test/e2e/infrastructure_sub_infrastructure_add_service_implementation_test.dart
+          - test/e2e/infrastructure_sub_infrastructure_remove_data_transfer_object_test.dart
+          - test/e2e/infrastructure_sub_infrastructure_remove_service_implementation_test.dart
 
           # E2E tests for ui command
+          - test/e2e/ui_add_widget_test.dart
+          - test/e2e/ui_remove_widget_test.dart
           - test/e2e/ui_android_add_widget_test.dart
           - test/e2e/ui_android_remove_widget_test.dart
           - test/e2e/ui_ios_add_widget_test.dart
@@ -176,8 +178,8 @@ jobs:
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.7.10'
-          channel: 'stable'
+          flutter-version: "3.7.10"
+          channel: "stable"
           cache: true
 
       - name: Setup Melos

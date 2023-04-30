@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
@@ -91,6 +92,17 @@ class InfrastructureSubInfrastructureAddServiceImplementationCommand
 
             if (!serviceImplementation.existsAny()) {
               await serviceImplementation.create();
+
+              final barrelFile = infrastructurePackage.barrelFile;
+              barrelFile.addExport(
+                p.normalize(
+                  p.join(
+                    'src',
+                    outputDir,
+                    '${name.snakeCase}_${serviceName.snakeCase}_service.dart',
+                  ),
+                ),
+              );
 
               await _dartFormatFix(
                 cwd: infrastructurePackage.path,

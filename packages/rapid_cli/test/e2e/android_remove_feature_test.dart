@@ -32,19 +32,25 @@ void main() {
           // Arrange
           const featureName = 'foo_bar';
           await setupProject(Platform.android);
-          await addFeature(featureName, platform: Platform.android);
+          await commandRunner.run([
+            'android',
+            'add',
+            'feature',
+            featureName,
+          ]);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['android', 'remove', 'feature', featureName],
-          );
+          final commandResult = await commandRunner.run([
+            'android',
+            'remove',
+            'feature',
+            featureName,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.android),
             featurePackage('home_page', Platform.android),
@@ -57,7 +63,6 @@ void main() {
           verifyDoNotExist([
             featurePackage(featureName, Platform.android),
           ]);
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.android),

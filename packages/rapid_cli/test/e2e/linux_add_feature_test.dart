@@ -34,16 +34,17 @@ void main() {
           await setupProject(Platform.linux);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['linux', 'add', 'feature', featureName],
-          );
+          final commandResult = await commandRunner.run([
+            'linux',
+            'add',
+            'feature',
+            featureName,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.linux),
             featurePackage('home_page', Platform.linux),
@@ -54,7 +55,6 @@ void main() {
             ...platformDependentPackages([Platform.linux]),
             ...featurePackages,
           ]);
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.linux),

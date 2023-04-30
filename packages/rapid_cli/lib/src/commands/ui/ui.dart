@@ -1,9 +1,11 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/ui/add/add.dart';
 import 'package:rapid_cli/src/commands/ui/android/android.dart';
 import 'package:rapid_cli/src/commands/ui/ios/ios.dart';
 import 'package:rapid_cli/src/commands/ui/linux/linux.dart';
 import 'package:rapid_cli/src/commands/ui/macos/macos.dart';
+import 'package:rapid_cli/src/commands/ui/remove/remove.dart';
 import 'package:rapid_cli/src/commands/ui/web/web.dart';
 import 'package:rapid_cli/src/commands/ui/windows/windows.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -17,10 +19,12 @@ class UiCommand extends Command<int> {
     Logger? logger,
     Project? project,
   }) {
+    addSubcommand(UiAddCommand(logger: logger, project: project));
     addSubcommand(UiAndroidCommand(logger: logger, project: project));
     addSubcommand(UiIosCommand(logger: logger, project: project));
     addSubcommand(UiLinuxCommand(logger: logger, project: project));
     addSubcommand(UiMacosCommand(logger: logger, project: project));
+    addSubcommand(UiRemoveCommand(logger: logger, project: project));
     addSubcommand(UiWebCommand(logger: logger, project: project));
     addSubcommand(UiWindowsCommand(logger: logger, project: project));
   }

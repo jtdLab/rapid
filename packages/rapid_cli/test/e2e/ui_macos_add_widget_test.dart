@@ -34,21 +34,22 @@ void main() {
           final name = 'FooBar';
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['ui', 'macos', 'add', 'widget', name],
-          );
+          final commandResult = await commandRunner.run([
+            'ui',
+            'macos',
+            'add',
+            'widget',
+            name,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           verifyDoExist({
             ...platformIndependentPackages,
             ...widgetFiles(name: name, platform: Platform.macos),
           });
-
           await verifyTestsPassWith100PercentCoverage({
             platformUiPackage(Platform.macos),
           });

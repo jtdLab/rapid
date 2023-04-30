@@ -1,7 +1,8 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/core/platform/remove/remove.dart';
 import 'package:rapid_cli/src/commands/windows/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/windows/remove/language/language.dart';
-import 'package:rapid_cli/src/commands/core/platform/remove/remove.dart';
+import 'package:rapid_cli/src/commands/windows/remove/navigator/navigator.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -19,5 +20,7 @@ class WindowsRemoveCommand extends PlatformRemoveCommand {
               WindowsRemoveFeatureCommand(logger: logger, project: project),
           languageCommand:
               WindowsRemoveLanguageCommand(logger: logger, project: project),
+          navigatorCommand:
+              WindowsRemoveNavigatorCommand(logger: logger, project: project),
         );
 }

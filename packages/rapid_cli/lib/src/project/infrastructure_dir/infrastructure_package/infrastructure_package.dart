@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
@@ -43,6 +44,9 @@ abstract class InfrastructurePackage
   @visibleForTesting
   ServiceImplementationBuilder? serviceImplementationOverrides;
 
+  @visibleForTesting
+  InfrastructurePackageBarrelFileBuilder? barrelFileOverrides;
+
   String? get name;
 
   Project get project;
@@ -57,6 +61,8 @@ abstract class InfrastructurePackage
     required String serviceName,
     required String dir,
   });
+
+  InfrastructurePackageBarrelFile get barrelFile;
 
   Future<void> create();
 
@@ -138,4 +144,24 @@ abstract class ServiceImplementation
       );
 
   Future<void> create();
+}
+
+typedef InfrastructurePackageBarrelFileBuilder = InfrastructurePackageBarrelFile
+    Function({
+  required InfrastructurePackage infrastructurePackage,
+});
+
+/// {@template infrastructure_package_barrel_file}
+/// Abstraction of the barrel file of a infrastructure package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_infrastructure/<project name>_infrastructure_<name>/lib/<project name>_infrastructure_<name>.dart`
+/// {@endtemplate}
+abstract class InfrastructurePackageBarrelFile implements DartFile {
+  /// {@macro infrastructure_package_barrel_file}
+  factory InfrastructurePackageBarrelFile({
+    required InfrastructurePackage infrastructurePackage,
+  }) =>
+      InfrastructurePackageBarrelFileImpl(
+        infrastructurePackage: infrastructurePackage,
+      );
 }

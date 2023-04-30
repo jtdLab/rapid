@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -7,7 +8,6 @@ import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/entity_option.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
 import 'package:rapid_cli/src/project/project.dart';
-
 // TODO in test template without output dir a path gets a unneccessary dot
 
 /// {@template infrastructure_sub_infrastructure_add_data_transfer_object_command}
@@ -86,6 +86,13 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
             );
             if (!dataTransferObject.existsAny()) {
               await dataTransferObject.create();
+
+              final barrelFile = infrastructurePackage.barrelFile;
+              barrelFile.addExport(
+                p.normalize(
+                  p.join('src', outputDir, '${entityName.snakeCase}_dto.dart'),
+                ),
+              );
 
               await _dartFormatFix(
                 cwd: infrastructurePackage.path,

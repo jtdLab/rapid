@@ -107,6 +107,11 @@ final platformFeaturePackageBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
+      "path": "test/mocks.dart",
+      "data": "Ly8gVE9ETzogYWRkIG1vY2tzIGFuZCBmYWtlcyBoZXJlCg==",
+      "type": "text"
+    },
+    {
       "path": "test/src/presentation/helpers/helpers.dart",
       "data":
           "ZXhwb3J0ICdwdW1wX2FwcC5kYXJ0JzsKe3sjcm91dGFibGV9fWV4cG9ydCAncm91dGluZy5kYXJ0Jzt7ey9yb3V0YWJsZX19Cg==",

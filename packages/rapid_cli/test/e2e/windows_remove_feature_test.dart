@@ -32,19 +32,25 @@ void main() {
           // Arrange
           const featureName = 'foo_bar';
           await setupProject(Platform.windows);
-          await addFeature(featureName, platform: Platform.windows);
+          await commandRunner.run([
+            'windows',
+            'add',
+            'feature',
+            featureName,
+          ]);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['windows', 'remove', 'feature', featureName],
-          );
+          final commandResult = await commandRunner.run([
+            'windows',
+            'remove',
+            'feature',
+            featureName,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.windows),
             featurePackage('home_page', Platform.windows),
@@ -57,7 +63,6 @@ void main() {
           verifyDoNotExist([
             featurePackage(featureName, Platform.windows),
           ]);
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.windows),

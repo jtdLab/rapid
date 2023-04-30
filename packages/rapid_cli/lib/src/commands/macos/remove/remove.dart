@@ -1,7 +1,8 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/core/platform/remove/remove.dart';
 import 'package:rapid_cli/src/commands/macos/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/macos/remove/language/language.dart';
-import 'package:rapid_cli/src/commands/core/platform/remove/remove.dart';
+import 'package:rapid_cli/src/commands/macos/remove/navigator/navigator.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -19,5 +20,7 @@ class MacosRemoveCommand extends PlatformRemoveCommand {
               MacosRemoveFeatureCommand(logger: logger, project: project),
           languageCommand:
               MacosRemoveLanguageCommand(logger: logger, project: project),
+          navigatorCommand:
+              MacosRemoveNavigatorCommand(logger: logger, project: project),
         );
 }

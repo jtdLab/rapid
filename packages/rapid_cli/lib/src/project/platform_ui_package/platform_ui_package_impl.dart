@@ -31,7 +31,7 @@ class PlatformUiPackageImpl extends DartPackageImpl
         );
 
   @override
-  BarrelFileBuilder? barrelFileOverrides;
+  PlatformUiPackageBarrelFileBuilder? barrelFileOverrides;
 
   @override
   ThemeExtensionsFileBuilder? themeExtensionsFileOverrides;
@@ -46,13 +46,14 @@ class PlatformUiPackageImpl extends DartPackageImpl
   final Project project;
 
   @override
-  BarrelFile get barrelFile => (barrelFileOverrides ?? BarrelFile.new)(
+  PlatformUiPackageBarrelFile get barrelFile =>
+      (barrelFileOverrides ?? PlatformUiPackageBarrelFile.new)(
         platformUiPackage: this,
       );
 
   @override
   ThemeExtensionsFile get themeExtensionsFile =>
-      (themeExtensionsFileOverrides ?? ThemeExtensionsFileImpl.new)(
+      (themeExtensionsFileOverrides ?? ThemeExtensionsFile.new)(
         platformUiPackage: this,
       );
 
@@ -273,8 +274,9 @@ class ThemeExtensionsFileImpl extends DartFileImpl
   }
 }
 
-class BarrelFileImpl extends DartFileImpl implements BarrelFile {
-  BarrelFileImpl({
+class PlatformUiPackageBarrelFileImpl extends DartFileImpl
+    implements PlatformUiPackageBarrelFile {
+  PlatformUiPackageBarrelFileImpl({
     required PlatformUiPackage platformUiPackage,
   }) : super(
           path: p.join(

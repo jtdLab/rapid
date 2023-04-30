@@ -34,24 +34,21 @@ void main() {
           final name = 'FooBar';
           final featureName = 'home_page';
 
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            [
-              'web',
-              'feature',
-              'add',
-              'bloc',
-              name,
-              '--feature',
-              featureName,
-            ],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
+          // Act
+          final commandResult = await commandRunner.run([
+            'web',
+            'feature',
+            'add',
+            'bloc',
+            name,
+            '--feature',
+            featureName,
+          ]);
 
           // Assert
+          expect(commandResult, equals(ExitCode.success.code));
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final appFeaturePackage = featurePackage('app', Platform.web);
           final feature = featurePackage(featureName, Platform.web);
           verifyDoExist({
@@ -65,7 +62,56 @@ void main() {
               platform: Platform.web,
             ),
           });
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.web),
+            appFeaturePackage,
+          ]);
+          // TODO
+          await verifyTestsPass(feature, expectedCoverage: 80.0);
+        },
+      );
 
+      test(
+        'web feature add bloc (with output dir)',
+        () async {
+          // Arrange
+          await setupProject(Platform.web);
+          final name = 'FooBar';
+          final featureName = 'home_page';
+          final outputDir = 'foo';
+
+          // Act
+          final commandResult = await commandRunner.run([
+            'web',
+            'feature',
+            'add',
+            'bloc',
+            name,
+            '--feature',
+            featureName,
+            '-o',
+            outputDir,
+          ]);
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+          final appFeaturePackage = featurePackage('app', Platform.web);
+          final feature = featurePackage(featureName, Platform.web);
+          verifyDoExist({
+            ...platformIndependentPackages,
+            ...platformDependentPackages([Platform.web]),
+            appFeaturePackage,
+            feature,
+            ...blocFiles(
+              name: name,
+              featureName: featureName,
+              platform: Platform.web,
+              outputDir: outputDir,
+            ),
+          });
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.web),

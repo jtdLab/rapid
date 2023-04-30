@@ -34,16 +34,17 @@ void main() {
           await setupProject(Platform.ios);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['ios', 'add', 'language', language],
-          );
+          final commandResult = await commandRunner.run([
+            'ios',
+            'add',
+            'language',
+            language,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.ios),
             featurePackage('home_page', Platform.ios),
@@ -54,7 +55,6 @@ void main() {
             ...featurePackages,
             ...languageFiles('home_page', Platform.ios, ['en', language]),
           ]);
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.ios),

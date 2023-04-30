@@ -1,6 +1,7 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/android/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/android/add/language/language.dart';
+import 'package:rapid_cli/src/commands/android/add/navigator/navigator.dart';
 import 'package:rapid_cli/src/commands/core/platform/add/add.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -19,5 +20,7 @@ class AndroidAddCommand extends PlatformAddCommand {
               AndroidAddFeatureCommand(logger: logger, project: project),
           languageCommand:
               AndroidAddLanguageCommand(logger: logger, project: project),
+          navigatorCommand:
+              AndroidAddNavigatorCommand(logger: logger, project: project),
         );
 }

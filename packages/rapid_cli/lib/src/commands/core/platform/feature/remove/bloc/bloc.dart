@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/remove/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
@@ -92,7 +93,7 @@ class PlatformFeatureRemoveBlocCommand extends Command<int>
       ], _logger, () async {
         final name = super.className;
         final featureName = super.feature;
-        final outputDir = super.dir;
+        final dir = super.dir;
 
         _logger.info('Removing Bloc ...');
 
@@ -102,9 +103,22 @@ class PlatformFeatureRemoveBlocCommand extends Command<int>
         final featurePackage =
             featuresDirectory.featurePackage(name: featureName);
         if (featurePackage.exists()) {
-          final bloc = featurePackage.bloc(name: name, dir: outputDir);
+          final bloc = featurePackage.bloc(name: name, dir: dir);
           if (bloc.existsAny()) {
             bloc.delete();
+            // TODO delete application dir if empty
+
+            final applicationBarrelFile = featurePackage.applicationBarrelFile;
+            applicationBarrelFile.removeExport(
+              p.normalize(
+                p.join(dir, '${name.snakeCase}_bloc.dart'),
+              ),
+            );
+            if (applicationBarrelFile.read().trim().isEmpty) {
+              applicationBarrelFile.delete();
+              final barrelFile = featurePackage.barrelFile;
+              barrelFile.removeExport('src/application/application.dart');
+            }
 
             await _flutterPubGet(cwd: featurePackage.path, logger: _logger);
             await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(

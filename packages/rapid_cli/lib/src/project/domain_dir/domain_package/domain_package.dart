@@ -1,4 +1,5 @@
 import 'package:meta/meta.dart';
+import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
@@ -35,6 +36,9 @@ abstract class DomainPackage implements DartPackage, OverridableGenerator {
   @visibleForTesting
   ValueObjectBuilder? valueObjectOverrides;
 
+  @visibleForTesting
+  DomainPackageBarrelFileBuilder? barrelFileOverrides;
+
   String? get name;
 
   Project get project;
@@ -53,6 +57,8 @@ abstract class DomainPackage implements DartPackage, OverridableGenerator {
     required String name,
     required String dir,
   });
+
+  DomainPackageBarrelFile get barrelFile;
 
   Future<void> create();
 
@@ -170,4 +176,23 @@ abstract class ValueObject
     required String type,
     required String generics,
   });
+}
+
+typedef DomainPackageBarrelFileBuilder = DomainPackageBarrelFile Function({
+  required DomainPackage domainPackage,
+});
+
+/// {@template barrel_file}
+/// Abstraction of the barrel file of a domain package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_domain/<project name>_domain_<name>/lib/<project name>_domain_<name>.dart`
+/// {@endtemplate}
+abstract class DomainPackageBarrelFile implements DartFile {
+  /// {@macro barrel_file}
+  factory DomainPackageBarrelFile({
+    required DomainPackage domainPackage,
+  }) =>
+      DomainPackageBarrelFileImpl(
+        domainPackage: domainPackage,
+      );
 }

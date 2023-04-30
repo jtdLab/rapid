@@ -1,7 +1,8 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/core/platform/add/add.dart';
 import 'package:rapid_cli/src/commands/windows/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/windows/add/language/language.dart';
-import 'package:rapid_cli/src/commands/core/platform/add/add.dart';
+import 'package:rapid_cli/src/commands/windows/add/navigator/navigator.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -19,5 +20,7 @@ class WindowsAddCommand extends PlatformAddCommand {
               WindowsAddFeatureCommand(logger: logger, project: project),
           languageCommand:
               WindowsAddLanguageCommand(logger: logger, project: project),
+          navigatorCommand:
+              WindowsAddNavigatorCommand(logger: logger, project: project),
         );
 }

@@ -1,7 +1,8 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/core/platform/remove/remove.dart';
 import 'package:rapid_cli/src/commands/ios/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/ios/remove/language/language.dart';
-import 'package:rapid_cli/src/commands/core/platform/remove/remove.dart';
+import 'package:rapid_cli/src/commands/ios/remove/navigator/navigator.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -19,5 +20,7 @@ class IosRemoveCommand extends PlatformRemoveCommand {
               IosRemoveFeatureCommand(logger: logger, project: project),
           languageCommand:
               IosRemoveLanguageCommand(logger: logger, project: project),
+          navigatorCommand:
+              IosRemoveNavigatorCommand(logger: logger, project: project),
         );
 }

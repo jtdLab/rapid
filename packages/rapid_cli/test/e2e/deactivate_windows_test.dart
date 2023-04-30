@@ -33,21 +33,19 @@ void main() {
           await setupProject(Platform.windows);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['deactivate', 'windows'],
-          );
+          final commandResult = await commandRunner.run([
+            'deactivate',
+            'windows',
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           verifyDoExist({
             ...platformIndependentPackages,
           });
           verifyDoNotExist(allPlatformDependentPackages);
-
           verifyDoNotHaveTests(platformIndependentPackagesWithoutTests);
           await verifyTestsPassWith100PercentCoverage({
             ...platformIndependentPackagesWithTests,
@@ -55,6 +53,6 @@ void main() {
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 3)),
+    timeout: const Timeout(Duration(minutes: 4)),
   );
 }

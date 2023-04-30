@@ -32,20 +32,25 @@ void main() {
           // Arrange
           const language = 'fr';
           await setupProject(Platform.windows);
-          languageFiles('app', Platform.windows, [language]).create();
-          languageFiles('home_page', Platform.windows, [language]).create();
+          await commandRunner.run([
+            'windows',
+            'add',
+            'language',
+            language,
+          ]);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['windows', 'remove', 'language', language],
-          );
+          final commandResult = await commandRunner.run([
+            'windows',
+            'remove',
+            'language',
+            language,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.windows),
             featurePackage('home_page', Platform.windows),
@@ -59,7 +64,6 @@ void main() {
           verifyDoNotExist({
             ...languageFiles('home_page', Platform.windows, ['fr']),
           });
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.windows),
@@ -68,6 +72,6 @@ void main() {
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 4)),
+    timeout: const Timeout(Duration(minutes: 6)),
   );
 }

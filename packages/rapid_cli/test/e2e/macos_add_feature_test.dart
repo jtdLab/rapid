@@ -34,16 +34,17 @@ void main() {
           await setupProject(Platform.macos);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['macos', 'add', 'feature', featureName],
-          );
+          final commandResult = await commandRunner.run([
+            'macos',
+            'add',
+            'feature',
+            featureName,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.macos),
             featurePackage('home_page', Platform.macos),
@@ -54,7 +55,6 @@ void main() {
             ...platformDependentPackages([Platform.macos]),
             ...featurePackages,
           ]);
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.macos),

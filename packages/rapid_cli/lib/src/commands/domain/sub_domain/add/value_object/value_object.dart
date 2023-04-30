@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
@@ -99,6 +100,13 @@ class DomainSubDomainAddValueObjectCommand extends Command<int>
 
           if (!valueObject.existsAny()) {
             await valueObject.create(type: type, generics: generics);
+
+            final barrelFile = domainPackage.barrelFile;
+            barrelFile.addExport(
+              p.normalize(
+                p.join('src', outputDir, '${name.snakeCase}.dart'),
+              ),
+            );
 
             await _flutterPubGet(cwd: domainPackage.path, logger: _logger);
             await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(

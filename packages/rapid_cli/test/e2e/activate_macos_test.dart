@@ -32,16 +32,15 @@ void main() {
           await setupProject();
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['activate', 'macos'],
-          );
+          final commandResult = await commandRunner.run([
+            'activate',
+            'macos',
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final platformPackages = platformDependentPackages([Platform.macos]);
           final featurePackages = [
             featurePackage('app', Platform.macos),
@@ -55,7 +54,6 @@ void main() {
           verifyDoNotExist(
             allPlatformDependentPackages.without(platformPackages),
           );
-
           verifyDoNotHaveTests([
             ...platformIndependentPackagesWithoutTests,
             ...platformDependentPackagesWithoutTests(Platform.macos)
@@ -79,15 +77,16 @@ void main() {
         test(
           '',
           () => performTest(),
+          timeout: const Timeout(Duration(minutes: 8)),
         );
 
         test(
           '(slow)',
           () => performTest(slow: true),
+          timeout: const Timeout(Duration(minutes: 24)),
           tags: ['macos'],
         );
       });
     },
-    timeout: const Timeout(Duration(minutes: 24)),
   );
 }

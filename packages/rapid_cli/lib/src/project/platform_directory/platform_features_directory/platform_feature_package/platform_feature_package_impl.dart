@@ -12,6 +12,7 @@ import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file_impl.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/navigator_implementation_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 import 'arb_file_bundle.dart';
@@ -67,6 +68,16 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   CubitBuilder? cubitOverrides;
 
   @override
+  PlatformFeaturePackageNavigatorBuilder? navigatorImplementationOverrides;
+
+  @override
+  PlatformFeaturePackageApplicationBarrelFileBuilder?
+      applicationBarrelFileOverrides;
+
+  @override
+  PlatformFeaturePackageBarrelFileBuilder? barrelFileOverrides;
+
+  @override
   final String name;
 
   @override
@@ -90,6 +101,24 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
         dir: dir,
         platformFeaturePackage: this,
       );
+
+  @override
+  PlatformFeaturePackageNavigatorImplementation get navigatorImplementation =>
+      (navigatorImplementationOverrides ??
+          PlatformFeaturePackageNavigatorImplementation.new)(
+        platformFeaturePackage: this,
+      );
+
+  @override
+  PlatformFeaturePackageApplicationBarrelFile get applicationBarrelFile =>
+      (applicationBarrelFileOverrides ??
+          PlatformFeaturePackageApplicationBarrelFile.new)(
+        platformFeaturePackage: this,
+      );
+
+  @override
+  PlatformFeaturePackageBarrelFile get barrelFile => (barrelFileOverrides ??
+      PlatformFeaturePackageBarrelFile.new)(platformFeaturePackage: this);
 
   @override
   Future<void> create({
@@ -249,6 +278,14 @@ class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
     Platform platform, {
     required super.project,
   }) : super('app', platform);
+
+  @override
+  PlatformFeaturePackageNavigatorBuilder? get navigatorFileOverrides =>
+      throw UnimplementedError();
+
+  @override
+  PlatformFeaturePackageNavigatorImplementation get navigatorFile =>
+      throw UnimplementedError();
 
   @override
   Future<void> create({
@@ -509,6 +546,16 @@ class BlocImpl extends FileSystemEntityCollection
             ),
             name: '${name.snakeCase}_state',
           ),
+          DartFile(
+            path: p.join(
+              platformFeaturePackage.path,
+              'test',
+              'src',
+              'application',
+              dir,
+            ),
+            name: '${name.snakeCase}_bloc_test',
+          ),
         ]);
 
   final String _name;
@@ -576,6 +623,16 @@ class CubitImpl extends FileSystemEntityCollection
             ),
             name: '${name.snakeCase}_state',
           ),
+          DartFile(
+            path: p.join(
+              platformFeaturePackage.path,
+              'test',
+              'src',
+              'application',
+              dir,
+            ),
+            name: '${name.snakeCase}_cubit_test',
+          ),
         ]);
 
   final String _name;
@@ -600,4 +657,90 @@ class CubitImpl extends FileSystemEntityCollection
       },
     );
   }
+}
+
+class PlatformFeaturePackageNavigatorImplementationImpl
+    extends FileSystemEntityCollection
+    with OverridableGenerator
+    implements PlatformFeaturePackageNavigatorImplementation {
+  PlatformFeaturePackageNavigatorImplementationImpl({
+    required PlatformFeaturePackage platformFeaturePackage,
+  })  : _platformFeaturePackage = platformFeaturePackage,
+        super(
+          [
+            DartFile(
+              path: p.join(
+                platformFeaturePackage.path,
+                'lib',
+                'src',
+                'presentation',
+              ),
+              name: 'navigator',
+            ),
+            DartFile(
+              path: p.join(
+                platformFeaturePackage.path,
+                'test',
+                'src',
+                'presentation',
+              ),
+              name: 'navigator_test',
+            ),
+          ],
+        );
+
+  final PlatformFeaturePackage _platformFeaturePackage;
+
+  @override
+  Future<void> create() async {
+    final projectName = _platformFeaturePackage.project.name();
+    final name = _platformFeaturePackage.name;
+    final platform = _platformFeaturePackage.platform;
+
+    final generator = await super.generator(navigatorImplementationBundle);
+    await generator.generate(
+      DirectoryGeneratorTarget(io.Directory(_platformFeaturePackage.path)),
+      vars: <String, dynamic>{
+        'project_name': projectName,
+        'name': name,
+        'android': platform == Platform.android,
+        'ios': platform == Platform.ios,
+        'linux': platform == Platform.linux,
+        'macos': platform == Platform.macos,
+        'web': platform == Platform.web,
+        'windows': platform == Platform.windows,
+      },
+    );
+  }
+}
+
+class PlatformFeaturePackageApplicationBarrelFileImpl extends DartFileImpl
+    implements PlatformFeaturePackageApplicationBarrelFile {
+  PlatformFeaturePackageApplicationBarrelFileImpl({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) : super(
+          path: p.join(
+            platformFeaturePackage.path,
+            'lib',
+            'src',
+            'application',
+          ),
+          name: 'application',
+        );
+
+  @override
+  Future<void> create() => io.File(path).create();
+}
+
+class PlatformFeaturePackageBarrelFileImpl extends DartFileImpl
+    implements PlatformFeaturePackageBarrelFile {
+  PlatformFeaturePackageBarrelFileImpl({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) : super(
+          path: p.join(
+            platformFeaturePackage.path,
+            'lib',
+          ),
+          name: platformFeaturePackage.packageName(),
+        );
 }

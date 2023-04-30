@@ -32,20 +32,25 @@ void main() {
           // Arrange
           const language = 'fr';
           await setupProject(Platform.android);
-          languageFiles('app', Platform.android, [language]).create();
-          languageFiles('home_page', Platform.android, [language]).create();
+          await commandRunner.run([
+            'android',
+            'add',
+            'language',
+            language,
+          ]);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['android', 'remove', 'language', language],
-          );
+          final commandResult = await commandRunner.run([
+            'android',
+            'remove',
+            'language',
+            language,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.android),
             featurePackage('home_page', Platform.android),
@@ -59,7 +64,6 @@ void main() {
           verifyDoNotExist({
             ...languageFiles('home_page', Platform.android, ['fr']),
           });
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.android),
@@ -68,6 +72,6 @@ void main() {
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 4)),
+    timeout: const Timeout(Duration(minutes: 6)),
   );
 }

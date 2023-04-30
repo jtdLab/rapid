@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -62,6 +63,13 @@ class DomainSubDomainRemoveEntityCommand extends Command<int>
           final entity = domainPackage.entity(name: name, dir: dir);
           if (entity.existsAny()) {
             entity.delete();
+
+            final barrelFile = domainPackage.barrelFile;
+            barrelFile.removeExport(
+              p.normalize(
+                p.join('src', dir, '${name.snakeCase}.dart'),
+              ),
+            );
 
             _logger
               ..info('')

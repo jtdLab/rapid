@@ -2,6 +2,7 @@ import 'package:args/command_runner.dart';
 import 'package:rapid_cli/src/commands/android/remove/remove.dart';
 import 'package:rapid_cli/src/commands/core/platform/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/platform/remove/language/language.dart';
+import 'package:rapid_cli/src/commands/core/platform/remove/navigator/navigator.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/ios/remove/remove.dart';
 import 'package:rapid_cli/src/commands/linux/remove/remove.dart';
@@ -31,9 +32,11 @@ abstract class PlatformRemoveCommand extends Command<int> {
     required Platform platform,
     required PlatformRemoveFeatureCommand featureCommand,
     required PlatformRemoveLanguageCommand languageCommand,
+    required PlatformRemoveNavigatorCommand navigatorCommand,
   }) : _platform = platform {
     addSubcommand(featureCommand);
     addSubcommand(languageCommand);
+    addSubcommand(navigatorCommand);
   }
 
   final Platform _platform;

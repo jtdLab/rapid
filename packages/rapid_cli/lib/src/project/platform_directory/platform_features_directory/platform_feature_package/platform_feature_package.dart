@@ -57,6 +57,9 @@ abstract class PlatformFeaturePackage
   CubitBuilder? cubitOverrides;
 
   @visibleForTesting
+  PlatformFeaturePackageNavigatorBuilder? get navigatorImplementationOverrides;
+
+  @visibleForTesting
   PlatformFeaturePackageApplicationBarrelFileBuilder?
       applicationBarrelFileOverrides;
 
@@ -76,6 +79,8 @@ abstract class PlatformFeaturePackage
   Bloc bloc({required String name, required String dir});
 
   Cubit cubit({required String name, required String dir});
+
+  PlatformFeaturePackageNavigatorImplementation get navigatorImplementation;
 
   PlatformFeaturePackageApplicationBarrelFile get applicationBarrelFile;
 
@@ -306,6 +311,27 @@ abstract class Cubit
       CubitImpl(
         name: name,
         dir: dir,
+        platformFeaturePackage: platformFeaturePackage,
+      );
+
+  Future<void> create();
+}
+
+typedef PlatformFeaturePackageNavigatorBuilder
+    = PlatformFeaturePackageNavigatorImplementation Function({
+  required PlatformFeaturePackage platformFeaturePackage,
+});
+
+/// {@template platform_feature_package_navigator_implementation}
+/// Abstraction of the navigator implementation of a platform feature package of a Rapid project.
+/// {@endtemplate}
+abstract class PlatformFeaturePackageNavigatorImplementation
+    implements FileSystemEntityCollection, OverridableGenerator {
+  /// {@macro platform_feature_package_navigator_implementation}
+  factory PlatformFeaturePackageNavigatorImplementation({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) =>
+      PlatformFeaturePackageNavigatorImplementationImpl(
         platformFeaturePackage: platformFeaturePackage,
       );
 

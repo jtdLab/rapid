@@ -1,7 +1,8 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/core/platform/add/add.dart';
 import 'package:rapid_cli/src/commands/macos/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/macos/add/language/language.dart';
-import 'package:rapid_cli/src/commands/core/platform/add/add.dart';
+import 'package:rapid_cli/src/commands/macos/add/navigator/navigator.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -19,5 +20,7 @@ class MacosAddCommand extends PlatformAddCommand {
               MacosAddFeatureCommand(logger: logger, project: project),
           languageCommand:
               MacosAddLanguageCommand(logger: logger, project: project),
+          navigatorCommand:
+              MacosAddNavigatorCommand(logger: logger, project: project),
         );
 }

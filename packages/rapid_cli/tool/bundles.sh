@@ -182,6 +182,8 @@ templates=(
     "entity templates/entity lib/src/project/domain_dir/domain_package"
     "infrastructure_package templates/infrastructure_package lib/src/project/infrastructure_dir/infrastructure_package"
     "logging_package templates/logging_package lib/src/project/logging_package"
+    "navigator templates/navigator lib/src/project/platform_directory/platform_navigation_package"
+    "navigator_implementation templates/navigator_implementation lib/src/project/platform_directory/platform_features_directory/platform_feature_package"
     "platform_app_feature_package templates/platform_app_feature_package lib/src/project/platform_directory/platform_features_directory/platform_feature_package"
     "platform_feature_package templates/platform_feature_package lib/src/project/platform_directory/platform_features_directory/platform_feature_package"
     "platform_navigation_package templates/platform_navigation_package lib/src/project/platform_directory/platform_navigation_package"

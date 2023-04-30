@@ -12,6 +12,7 @@ import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file_impl.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/navigator_implementation_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 import 'arb_file_bundle.dart';
@@ -67,6 +68,9 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   CubitBuilder? cubitOverrides;
 
   @override
+  PlatformFeaturePackageNavigatorBuilder? navigatorImplementationOverrides;
+
+  @override
   PlatformFeaturePackageApplicationBarrelFileBuilder?
       applicationBarrelFileOverrides;
 
@@ -95,6 +99,13 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
       (cubitOverrides ?? Cubit.new)(
         name: name,
         dir: dir,
+        platformFeaturePackage: this,
+      );
+
+  @override
+  PlatformFeaturePackageNavigatorImplementation get navigatorImplementation =>
+      (navigatorImplementationOverrides ??
+          PlatformFeaturePackageNavigatorImplementation.new)(
         platformFeaturePackage: this,
       );
 
@@ -267,6 +278,14 @@ class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
     Platform platform, {
     required super.project,
   }) : super('app', platform);
+
+  @override
+  PlatformFeaturePackageNavigatorBuilder? get navigatorFileOverrides =>
+      throw UnimplementedError();
+
+  @override
+  PlatformFeaturePackageNavigatorImplementation get navigatorFile =>
+      throw UnimplementedError();
 
   @override
   Future<void> create({
@@ -635,6 +654,61 @@ class CubitImpl extends FileSystemEntityCollection
         'output_dir': _dir,
         'platform': platform,
         'feature_name': featureName,
+      },
+    );
+  }
+}
+
+class PlatformFeaturePackageNavigatorImplementationImpl
+    extends FileSystemEntityCollection
+    with OverridableGenerator
+    implements PlatformFeaturePackageNavigatorImplementation {
+  PlatformFeaturePackageNavigatorImplementationImpl({
+    required PlatformFeaturePackage platformFeaturePackage,
+  })  : _platformFeaturePackage = platformFeaturePackage,
+        super(
+          [
+            DartFile(
+              path: p.join(
+                platformFeaturePackage.path,
+                'lib',
+                'src',
+                'presentation',
+              ),
+              name: 'navigator',
+            ),
+            DartFile(
+              path: p.join(
+                platformFeaturePackage.path,
+                'test',
+                'src',
+                'presentation',
+              ),
+              name: 'navigator_test',
+            ),
+          ],
+        );
+
+  final PlatformFeaturePackage _platformFeaturePackage;
+
+  @override
+  Future<void> create() async {
+    final projectName = _platformFeaturePackage.project.name();
+    final name = _platformFeaturePackage.name;
+    final platform = _platformFeaturePackage.platform;
+
+    final generator = await super.generator(navigatorImplementationBundle);
+    await generator.generate(
+      DirectoryGeneratorTarget(io.Directory(_platformFeaturePackage.path)),
+      vars: <String, dynamic>{
+        'project_name': projectName,
+        'name': name,
+        'android': platform == Platform.android,
+        'ios': platform == Platform.ios,
+        'linux': platform == Platform.linux,
+        'macos': platform == Platform.macos,
+        'web': platform == Platform.web,
+        'windows': platform == Platform.windows,
       },
     );
   }

@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -30,9 +31,37 @@ abstract class PlatformNavigationPackage
       );
 
   @visibleForTesting
+  NavigatorBuilder? navigatorOverrides;
+
+  @visibleForTesting
   PlatformNavigationPackageBarrelFileBuilder? barrelFileOverrides;
 
   PlatformNavigationPackageBarrelFile get barrelFile;
+
+  Navigator navigator({required String name});
+
+  Future<void> create();
+}
+
+typedef NavigatorBuilder = Navigator Function({
+  required String name,
+  required PlatformNavigationPackage navigationPackage,
+});
+
+/// {@template navigator}
+/// Abstraction of a navigator of a platform navigation packaage of a Rapid project.
+/// {@endtemplate}
+abstract class Navigator
+    implements FileSystemEntityCollection, OverridableGenerator {
+  /// {@macro navigator}
+  factory Navigator({
+    required String name,
+    required PlatformNavigationPackage platformNavigationPackage,
+  }) =>
+      NavigatorImpl(
+        name: name,
+        platformNavigationPackage: platformNavigationPackage,
+      );
 
   Future<void> create();
 }

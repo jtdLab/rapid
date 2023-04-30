@@ -272,6 +272,46 @@ List<File> cubitFiles({
       ),
     ];
 
+List<File> navigatorFiles({
+  required String featureName,
+  required Platform platform,
+}) =>
+    [
+      File(
+        p.join(
+          platformNavigationPackage(platform).path,
+          'lib',
+          'src',
+          'i_${featureName.snakeCase}_navigator.dart',
+        ),
+      ),
+    ];
+
+List<File> navigatorImplementationFiles({
+  required String featureName,
+  required Platform platform,
+}) =>
+    [
+      File(
+        p.join(
+          featurePackage(featureName, platform).path,
+          'lib',
+          'src',
+          'presentation',
+          'navigator.dart',
+        ),
+      ),
+      File(
+        p.join(
+          featurePackage(featureName, platform).path,
+          'test',
+          'src',
+          'presentation',
+          'navigator_test.dart',
+        ),
+      ),
+    ];
+
 List<File> entityFiles({
   required String name,
   String? subDomainName,

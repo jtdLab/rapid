@@ -1,6 +1,7 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/android/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/android/remove/language/language.dart';
+import 'package:rapid_cli/src/commands/android/remove/navigator/navigator.dart';
 import 'package:rapid_cli/src/commands/core/platform/remove/remove.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -19,5 +20,7 @@ class AndroidRemoveCommand extends PlatformRemoveCommand {
               AndroidRemoveFeatureCommand(logger: logger, project: project),
           languageCommand:
               AndroidRemoveLanguageCommand(logger: logger, project: project),
+          navigatorCommand:
+              AndroidRemoveNavigatorCommand(logger: logger, project: project),
         );
 }

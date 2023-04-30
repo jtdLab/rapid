@@ -1,7 +1,8 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/core/platform/remove/remove.dart';
 import 'package:rapid_cli/src/commands/linux/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/linux/remove/language/language.dart';
-import 'package:rapid_cli/src/commands/core/platform/remove/remove.dart';
+import 'package:rapid_cli/src/commands/linux/remove/navigator/navigator.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -19,5 +20,7 @@ class LinuxRemoveCommand extends PlatformRemoveCommand {
               LinuxRemoveFeatureCommand(logger: logger, project: project),
           languageCommand:
               LinuxRemoveLanguageCommand(logger: logger, project: project),
+          navigatorCommand:
+              LinuxRemoveNavigatorCommand(logger: logger, project: project),
         );
 }

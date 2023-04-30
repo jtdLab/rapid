@@ -2,6 +2,7 @@ import 'package:args/command_runner.dart';
 import 'package:rapid_cli/src/commands/android/add/add.dart';
 import 'package:rapid_cli/src/commands/core/platform/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/platform/add/language/language.dart';
+import 'package:rapid_cli/src/commands/core/platform/add/navigator/navigator.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/ios/add/add.dart';
 import 'package:rapid_cli/src/commands/linux/add/add.dart';
@@ -31,9 +32,11 @@ abstract class PlatformAddCommand extends Command<int> {
     required Platform platform,
     required PlatformAddFeatureCommand featureCommand,
     required PlatformAddLanguageCommand languageCommand,
+    required PlatformAddNavigatorCommand navigatorCommand,
   }) : _platform = platform {
     addSubcommand(featureCommand);
     addSubcommand(languageCommand);
+    addSubcommand(navigatorCommand);
   }
 
   final Platform _platform;

@@ -34,16 +34,17 @@ void main() {
           await setupProject(Platform.linux);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['linux', 'add', 'language', language],
-          );
+          final commandResult = await commandRunner.run([
+            'linux',
+            'add',
+            'language',
+            language,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.linux),
             featurePackage('home_page', Platform.linux),
@@ -54,7 +55,6 @@ void main() {
             ...featurePackages,
             ...languageFiles('home_page', Platform.linux, ['en', language]),
           ]);
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.linux),

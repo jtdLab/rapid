@@ -7,6 +7,8 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
+// TODO test sub-domain
+
 void main() {
   group(
     'E2E',
@@ -32,35 +34,51 @@ void main() {
           await setupProject();
           final name = 'FooBar';
 
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            ['domain', 'sub_domain', 'add', 'value_object', name],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Act + Assert
-          final outputDir = 'foo';
-          // TODO test sub-domain
-          final commandResultWithOutputDir = await commandRunner.run(
-            [
-              'domain',
-              'sub_domain',
-              'add',
-              'value_object',
-              name,
-              '--output-dir',
-              outputDir
-            ],
-          );
-          expect(commandResultWithOutputDir, equals(ExitCode.success.code));
+          // Act
+          final commandResult = await commandRunner.run([
+            'domain',
+            'sub_domain',
+            'add',
+            'value_object',
+            name,
+          ]);
 
           // Assert
-          await verifyHasAnalyzerIssues(6);
+          expect(commandResult, equals(ExitCode.success.code));
+          await verifyHasAnalyzerIssues(3);
           await verifyNoFormattingIssues();
-
           verifyDoExist({
             ...platformIndependentPackages,
             ...valueObjectFiles(name: name),
+          });
+        },
+      );
+
+      test(
+        'domain sub_domain add value_object (with output dir)',
+        () async {
+          // Arrange
+          await setupProject();
+          final name = 'FooBar';
+          final outputDir = 'foo';
+
+          // Act
+          final commandResult = await commandRunner.run([
+            'domain',
+            'sub_domain',
+            'add',
+            'value_object',
+            name,
+            '--output-dir',
+            outputDir
+          ]);
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+          await verifyHasAnalyzerIssues(3);
+          await verifyNoFormattingIssues();
+          verifyDoExist({
+            ...platformIndependentPackages,
             ...valueObjectFiles(name: name, outputDir: outputDir),
           });
         },

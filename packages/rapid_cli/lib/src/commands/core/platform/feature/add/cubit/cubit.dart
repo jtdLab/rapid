@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
@@ -109,6 +110,26 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
             final cubit = featurePackage.cubit(name: name, dir: outputDir);
             if (!cubit.existsAny()) {
               await cubit.create();
+
+              final applicationBarrelFile =
+                  featurePackage.applicationBarrelFile;
+              if (!applicationBarrelFile.exists()) {
+                await applicationBarrelFile.create();
+                applicationBarrelFile.addExport(
+                  p.normalize(
+                    p.join(outputDir, '${name.snakeCase}_cubit.dart'),
+                  ),
+                );
+
+                final barrelFile = featurePackage.barrelFile;
+                barrelFile.addExport('src/application/application.dart');
+              } else {
+                applicationBarrelFile.addExport(
+                  p.normalize(
+                    p.join(outputDir, '${name.snakeCase}_cubit.dart'),
+                  ),
+                );
+              }
 
               await _flutterPubGet(cwd: featurePackage.path, logger: _logger);
               await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(

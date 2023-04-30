@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -76,6 +77,13 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
           );
           if (dataTransferObject.existsAny()) {
             dataTransferObject.delete();
+
+            final barrelFile = infrastructurePackage.barrelFile;
+            barrelFile.removeExport(
+              p.normalize(
+                p.join('src', dir, '${entityName.snakeCase}_dto.dart'),
+              ),
+            );
 
             _logger
               ..info('')

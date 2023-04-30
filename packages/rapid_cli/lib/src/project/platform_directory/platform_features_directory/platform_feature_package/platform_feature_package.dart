@@ -56,6 +56,13 @@ abstract class PlatformFeaturePackage
   @visibleForTesting
   CubitBuilder? cubitOverrides;
 
+  @visibleForTesting
+  PlatformFeaturePackageApplicationBarrelFileBuilder?
+      applicationBarrelFileOverrides;
+
+  @visibleForTesting
+  PlatformFeaturePackageBarrelFileBuilder? barrelFileOverrides;
+
   String get name;
 
   Platform get platform;
@@ -69,6 +76,10 @@ abstract class PlatformFeaturePackage
   Bloc bloc({required String name, required String dir});
 
   Cubit cubit({required String name, required String dir});
+
+  PlatformFeaturePackageApplicationBarrelFile get applicationBarrelFile;
+
+  PlatformFeaturePackageBarrelFile get barrelFile;
 
   Future<void> create({
     String? description,
@@ -299,4 +310,46 @@ abstract class Cubit
       );
 
   Future<void> create();
+}
+
+typedef PlatformFeaturePackageApplicationBarrelFileBuilder
+    = PlatformFeaturePackageApplicationBarrelFile Function({
+  required PlatformFeaturePackage platformFeaturePackage,
+});
+
+/// {@template platform_feature_package_application_barrel_file}
+/// Abstraction of the barrel file of a platform feature package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_<feature name>/lib/src/application/application.dart`
+/// {@endtemplate}
+abstract class PlatformFeaturePackageApplicationBarrelFile implements DartFile {
+  /// {@macro platform_feature_package_application_barrel_file}
+  factory PlatformFeaturePackageApplicationBarrelFile({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) =>
+      PlatformFeaturePackageApplicationBarrelFileImpl(
+        platformFeaturePackage: platformFeaturePackage,
+      );
+
+  Future<void> create();
+}
+
+typedef PlatformFeaturePackageBarrelFileBuilder
+    = PlatformFeaturePackageBarrelFile Function({
+  required PlatformFeaturePackage platformFeaturePackage,
+});
+
+/// {@template platform_feature_package_barrel_file}
+/// Abstraction of the barrel file of a platform feature package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_<feature name>/lib/<project name>_<platform>_<feature name>.dart`
+/// {@endtemplate}
+abstract class PlatformFeaturePackageBarrelFile implements DartFile {
+  /// {@macro platform_feature_package_barrel_file}
+  factory PlatformFeaturePackageBarrelFile({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) =>
+      PlatformFeaturePackageBarrelFileImpl(
+        platformFeaturePackage: platformFeaturePackage,
+      );
 }

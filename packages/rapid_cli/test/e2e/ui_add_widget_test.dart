@@ -33,21 +33,21 @@ void main() {
           final name = 'FooBar';
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['ui', 'add', 'widget', name],
-          );
+          final commandResult = await commandRunner.run([
+            'ui',
+            'add',
+            'widget',
+            name,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           verifyDoExist({
             ...platformIndependentPackages,
             ...widgetFiles(name: name),
           });
-
           await verifyTestsPassWith100PercentCoverage({
             uiPackage,
           });

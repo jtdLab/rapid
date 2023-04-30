@@ -67,6 +67,13 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   CubitBuilder? cubitOverrides;
 
   @override
+  PlatformFeaturePackageApplicationBarrelFileBuilder?
+      applicationBarrelFileOverrides;
+
+  @override
+  PlatformFeaturePackageBarrelFileBuilder? barrelFileOverrides;
+
+  @override
   final String name;
 
   @override
@@ -90,6 +97,17 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
         dir: dir,
         platformFeaturePackage: this,
       );
+
+  @override
+  PlatformFeaturePackageApplicationBarrelFile get applicationBarrelFile =>
+      (applicationBarrelFileOverrides ??
+          PlatformFeaturePackageApplicationBarrelFile.new)(
+        platformFeaturePackage: this,
+      );
+
+  @override
+  PlatformFeaturePackageBarrelFile get barrelFile => (barrelFileOverrides ??
+      PlatformFeaturePackageBarrelFile.new)(platformFeaturePackage: this);
 
   @override
   Future<void> create({
@@ -509,6 +527,16 @@ class BlocImpl extends FileSystemEntityCollection
             ),
             name: '${name.snakeCase}_state',
           ),
+          DartFile(
+            path: p.join(
+              platformFeaturePackage.path,
+              'test',
+              'src',
+              'application',
+              dir,
+            ),
+            name: '${name.snakeCase}_bloc_test',
+          ),
         ]);
 
   final String _name;
@@ -576,6 +604,16 @@ class CubitImpl extends FileSystemEntityCollection
             ),
             name: '${name.snakeCase}_state',
           ),
+          DartFile(
+            path: p.join(
+              platformFeaturePackage.path,
+              'test',
+              'src',
+              'application',
+              dir,
+            ),
+            name: '${name.snakeCase}_cubit_test',
+          ),
         ]);
 
   final String _name;
@@ -600,4 +638,35 @@ class CubitImpl extends FileSystemEntityCollection
       },
     );
   }
+}
+
+class PlatformFeaturePackageApplicationBarrelFileImpl extends DartFileImpl
+    implements PlatformFeaturePackageApplicationBarrelFile {
+  PlatformFeaturePackageApplicationBarrelFileImpl({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) : super(
+          path: p.join(
+            platformFeaturePackage.path,
+            'lib',
+            'src',
+            'application',
+          ),
+          name: 'application',
+        );
+
+  @override
+  Future<void> create() => io.File(path).create();
+}
+
+class PlatformFeaturePackageBarrelFileImpl extends DartFileImpl
+    implements PlatformFeaturePackageBarrelFile {
+  PlatformFeaturePackageBarrelFileImpl({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) : super(
+          path: p.join(
+            platformFeaturePackage.path,
+            'lib',
+          ),
+          name: platformFeaturePackage.packageName(),
+        );
 }

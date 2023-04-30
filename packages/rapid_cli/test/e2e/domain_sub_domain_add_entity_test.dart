@@ -7,6 +7,8 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
+// TODO test sub-domain
+
 void main() {
   group(
     'E2E',
@@ -33,43 +35,54 @@ void main() {
           final name = 'FooBar';
 
           // Act + Assert
-          final commandResult = await commandRunner.run(
-            [
-              'domain',
-              'sub_domain',
-              'add',
-              'entity',
-              name,
-            ],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Act + Assert
-          // TODO test sub-domain
-          final outputDir = 'foo';
-          final commandResultWithOutputDir = await commandRunner.run(
-            [
-              'domain',
-              'sub_domain',
-              'add',
-              'entity',
-              name,
-              '--output-dir',
-              outputDir
-            ],
-          );
-          expect(commandResultWithOutputDir, equals(ExitCode.success.code));
+          final commandResult = await commandRunner.run([
+            'domain',
+            'sub_domain',
+            'add',
+            'entity',
+            name,
+          ]);
 
           // Assert
+          expect(commandResult, equals(ExitCode.success.code));
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           verifyDoExist({
             ...platformIndependentPackages,
             ...entityFiles(name: name),
+          });
+          await verifyTestsPassWith100PercentCoverage({
+            domainPackage(),
+          });
+        },
+      );
+
+      test(
+        'domain sub_domain add entity (with output dir)',
+        () async {
+          // Arrange
+          await setupProject();
+          final name = 'FooBar';
+          final outputDir = 'foo';
+
+          final commandResult = await commandRunner.run([
+            'domain',
+            'sub_domain',
+            'add',
+            'entity',
+            name,
+            '--output-dir',
+            outputDir
+          ]);
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+          verifyDoExist({
+            ...platformIndependentPackages,
             ...entityFiles(name: name, outputDir: outputDir),
           });
-
           await verifyTestsPassWith100PercentCoverage({
             domainPackage(),
           });

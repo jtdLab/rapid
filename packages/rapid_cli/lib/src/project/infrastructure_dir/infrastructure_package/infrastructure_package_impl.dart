@@ -3,15 +3,16 @@ import 'dart:io' as io;
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/dart_file.dart';
+import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/domain_dir/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/data_transfer_object_bundle.dart';
+import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/service_implementation_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
-import 'infrastructure_package.dart';
 import 'infrastructure_package_bundle.dart';
 
 class InfrastructurePackageImpl extends DartPackageImpl
@@ -46,6 +47,9 @@ class InfrastructurePackageImpl extends DartPackageImpl
   ServiceImplementationBuilder? serviceImplementationOverrides;
 
   @override
+  InfrastructurePackageBarrelFileBuilder? barrelFileOverrides;
+
+  @override
   final String? name;
 
   @override
@@ -74,6 +78,10 @@ class InfrastructurePackageImpl extends DartPackageImpl
         dir: dir,
         infrastructurePackage: this,
       );
+
+  @override
+  InfrastructurePackageBarrelFile get barrelFile => (barrelFileOverrides ??
+      InfrastructurePackageBarrelFile.new)(infrastructurePackage: this);
 
   @override
   Future<void> create() async {
@@ -296,4 +304,17 @@ class ServiceImplementationImpl extends FileSystemEntityCollection
       },
     );
   }
+}
+
+class InfrastructurePackageBarrelFileImpl extends DartFileImpl
+    implements InfrastructurePackageBarrelFile {
+  InfrastructurePackageBarrelFileImpl({
+    required InfrastructurePackage infrastructurePackage,
+  }) : super(
+          path: p.join(
+            infrastructurePackage.path,
+            'lib',
+          ),
+          name: infrastructurePackage.packageName(),
+        );
 }

@@ -32,19 +32,25 @@ void main() {
           // Arrange
           const featureName = 'foo_bar';
           await setupProject(Platform.ios);
-          await addFeature(featureName, platform: Platform.ios);
+          await commandRunner.run([
+            'ios',
+            'add',
+            'feature',
+            featureName,
+          ]);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['ios', 'remove', 'feature', featureName],
-          );
+          final commandResult = await commandRunner.run([
+            'ios',
+            'remove',
+            'feature',
+            featureName,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.ios),
             featurePackage('home_page', Platform.ios),
@@ -57,7 +63,6 @@ void main() {
           verifyDoNotExist([
             featurePackage(featureName, Platform.ios),
           ]);
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.ios),

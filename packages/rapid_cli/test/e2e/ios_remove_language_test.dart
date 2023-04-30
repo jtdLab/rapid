@@ -32,20 +32,25 @@ void main() {
           // Arrange
           const language = 'fr';
           await setupProject(Platform.ios);
-          languageFiles('app', Platform.ios, [language]).create();
-          languageFiles('home_page', Platform.ios, [language]).create();
+          await commandRunner.run([
+            'ios',
+            'add',
+            'language',
+            language,
+          ]);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['ios', 'remove', 'language', language],
-          );
+          final commandResult = await commandRunner.run([
+            'ios',
+            'remove',
+            'language',
+            language,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.ios),
             featurePackage('home_page', Platform.ios),
@@ -59,7 +64,6 @@ void main() {
           verifyDoNotExist({
             ...languageFiles('home_page', Platform.ios, ['fr']),
           });
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.ios),
@@ -68,6 +72,6 @@ void main() {
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 4)),
+    timeout: const Timeout(Duration(minutes: 6)),
   );
 }

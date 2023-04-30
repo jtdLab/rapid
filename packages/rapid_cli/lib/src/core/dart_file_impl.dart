@@ -136,6 +136,11 @@ class DartFileImpl extends FileImpl implements DartFile {
   void addExport(String export) {
     final contents = read();
 
+    if (contents.isEmpty) {
+      write('export \'$export\';');
+      return;
+    }
+
     final existingExports =
         contents.split('\n').where((line) => _exportRegExp.hasMatch(line));
     if (existingExports.contains('export \'$export\';')) {
@@ -145,9 +150,16 @@ class DartFileImpl extends FileImpl implements DartFile {
     final updatedExports = [...existingExports, 'export \'$export\';'];
     updatedExports.sort(_compareExports);
 
+    final startOldImportsIndex = contents.indexOf(_exportRegExp);
+    if (startOldImportsIndex == -1) {
+      // no existing exports -> just append new export to file
+      write('$contents\nexport \'$export\';');
+      return;
+    }
+
     final output = contents.replaceRange(
       // start of old exports
-      contents.indexOf(_exportRegExp),
+      startOldImportsIndex,
       // end of old exports
       contents.indexOf('\n', contents.lastIndexOf(_exportRegExp)),
       // add empty line after last dart and package export

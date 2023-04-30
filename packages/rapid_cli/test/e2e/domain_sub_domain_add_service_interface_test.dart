@@ -7,6 +7,8 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
+// TODO test sub-domain
+
 void main() {
   group(
     'E2E',
@@ -32,39 +34,56 @@ void main() {
           await setupProject();
           final name = 'FooBar';
 
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            ['domain', 'sub_domain', 'add', 'service_interface', name],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
-
-          // Act + Assert
-          final outputDir = 'foo';
-          // TODO test sub-domain
-          final commandResultWithOutputDir = await commandRunner.run(
-            [
-              'domain',
-              'sub_domain',
-              'add',
-              'service_interface',
-              name,
-              '--output-dir',
-              outputDir
-            ],
-          );
+          // Act
+          final commandResult = await commandRunner.run([
+            'domain',
+            'sub_domain',
+            'add',
+            'service_interface',
+            name,
+          ]);
 
           // Assert
-          expect(commandResultWithOutputDir, equals(ExitCode.success.code));
-
+          expect(commandResult, equals(ExitCode.success.code));
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           verifyDoExist({
             ...platformIndependentPackages,
             ...serviceInterfaceFiles(name: name),
+          });
+          verifyDoNotHaveTests({
+            domainPackage(),
+          });
+        },
+      );
+
+      test(
+        'domain sub_domain add service_interface (with output dir)',
+        () async {
+          // Arrange
+          await setupProject();
+          final name = 'FooBar';
+          final outputDir = 'foo';
+
+          // Act
+          final commandResult = await commandRunner.run([
+            'domain',
+            'sub_domain',
+            'add',
+            'service_interface',
+            name,
+            '--output-dir',
+            outputDir
+          ]);
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+          verifyDoExist({
+            ...platformIndependentPackages,
             ...serviceInterfaceFiles(name: name, outputDir: outputDir),
           });
-
           verifyDoNotHaveTests({
             domainPackage(),
           });

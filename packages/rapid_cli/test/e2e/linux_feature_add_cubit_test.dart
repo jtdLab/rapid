@@ -34,24 +34,21 @@ void main() {
           final name = 'FooBar';
           final featureName = 'home_page';
 
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            [
-              'linux',
-              'feature',
-              'add',
-              'cubit',
-              name,
-              '--feature',
-              featureName,
-            ],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
+          // Act
+          final commandResult = await commandRunner.run([
+            'linux',
+            'feature',
+            'add',
+            'cubit',
+            name,
+            '--feature',
+            featureName,
+          ]);
 
           // Assert
+          expect(commandResult, equals(ExitCode.success.code));
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final appFeaturePackage = featurePackage('app', Platform.linux);
           final feature = featurePackage(featureName, Platform.linux);
           verifyDoExist({
@@ -65,7 +62,56 @@ void main() {
               platform: Platform.linux,
             ),
           });
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.linux),
+            appFeaturePackage,
+          ]);
+          // TODO
+          await verifyTestsPass(feature, expectedCoverage: 84.62);
+        },
+      );
 
+      test(
+        'linux feature add cubit (with output dir)',
+        () async {
+          // Arrange
+          await setupProject(Platform.linux);
+          final name = 'FooBar';
+          final featureName = 'home_page';
+          final outputDir = 'foo';
+
+          // Act
+          final commandResult = await commandRunner.run([
+            'linux',
+            'feature',
+            'add',
+            'cubit',
+            name,
+            '--feature',
+            featureName,
+            '-o',
+            outputDir,
+          ]);
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+          final appFeaturePackage = featurePackage('app', Platform.linux);
+          final feature = featurePackage(featureName, Platform.linux);
+          verifyDoExist({
+            ...platformIndependentPackages,
+            ...platformDependentPackages([Platform.linux]),
+            appFeaturePackage,
+            feature,
+            ...cubitFiles(
+              name: name,
+              featureName: featureName,
+              platform: Platform.linux,
+              outputDir: outputDir,
+            ),
+          });
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.linux),

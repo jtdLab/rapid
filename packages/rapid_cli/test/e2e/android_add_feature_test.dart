@@ -34,16 +34,17 @@ void main() {
           await setupProject(Platform.android);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['android', 'add', 'feature', featureName],
-          );
+          final commandResult = await commandRunner.run([
+            'android',
+            'add',
+            'feature',
+            featureName,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.android),
             featurePackage('home_page', Platform.android),
@@ -54,7 +55,6 @@ void main() {
             ...platformDependentPackages([Platform.android]),
             ...featurePackages,
           ]);
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.android),

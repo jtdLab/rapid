@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
+import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
@@ -65,6 +66,13 @@ class DomainSubDomainRemoveServiceInterfaceCommand extends Command<int>
               domainPackage.serviceInterface(name: name, dir: dir);
           if (serviceInterface.existsAny()) {
             serviceInterface.delete();
+
+            final barrelFile = domainPackage.barrelFile;
+            barrelFile.removeExport(
+              p.normalize(
+                p.join('src', dir, 'i_${name.snakeCase}_service.dart'),
+              ),
+            );
 
             _logger
               ..info('')

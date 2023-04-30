@@ -34,16 +34,17 @@ void main() {
           await setupProject(Platform.web);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['web', 'add', 'language', language],
-          );
+          final commandResult = await commandRunner.run([
+            'web',
+            'add',
+            'language',
+            language,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.web),
             featurePackage('home_page', Platform.web),
@@ -54,7 +55,6 @@ void main() {
             ...featurePackages,
             ...languageFiles('home_page', Platform.web, ['en', language]),
           ]);
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.web),

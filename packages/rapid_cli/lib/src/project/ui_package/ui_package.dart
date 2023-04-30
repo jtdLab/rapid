@@ -23,7 +23,7 @@ abstract class UiPackage implements DartPackage, OverridableGenerator {
       );
 
   @visibleForTesting
-  BarrelFileBuilder? barrelFileOverrides;
+  UiPackageBarrelFileBuilder? barrelFileOverrides;
 
   @visibleForTesting
   ThemeExtensionsFileBuilder? themeExtensionsFileOverrides;
@@ -33,7 +33,7 @@ abstract class UiPackage implements DartPackage, OverridableGenerator {
 
   Project get project;
 
-  BarrelFile get barrelFile;
+  UiPackageBarrelFile get barrelFile;
 
   ThemeExtensionsFile get themeExtensionsFile;
 
@@ -107,21 +107,21 @@ abstract class ThemeExtensionsFile implements DartFile {
   void removeThemeExtension(String name);
 }
 
-typedef BarrelFileBuilder = BarrelFile Function({
+typedef UiPackageBarrelFileBuilder = UiPackageBarrelFile Function({
   required UiPackage uiPackage,
 });
 
-/// {@template barrel_file}
+/// {@template ui_package_barrel_file}
 /// Abstraction of the barrel file of the ui package of a Rapid project.
 ///
 /// Location: `packages/<project name>_ui/<project name>_ui/lib/<project name>_ui_<platform>.dart`
 /// {@endtemplate}
-abstract class BarrelFile implements DartFile {
-  /// {@macro barrel_file}
-  factory BarrelFile({
+abstract class UiPackageBarrelFile implements DartFile {
+  /// {@macro ui_package_barrel_file}
+  factory UiPackageBarrelFile({
     required UiPackage uiPackage,
   }) =>
-      BarrelFileImpl(
+      UiPackageBarrelFileImpl(
         uiPackage: uiPackage,
       );
 }

@@ -3,6 +3,7 @@ import 'dart:io' as io;
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/dart_file.dart';
+import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
@@ -38,6 +39,9 @@ class DomainPackageImpl extends DartPackageImpl
 
   @override
   ValueObjectBuilder? valueObjectOverrides;
+
+  @override
+  DomainPackageBarrelFileBuilder? barrelFileOverrides;
 
   @override
   final String? name;
@@ -77,6 +81,10 @@ class DomainPackageImpl extends DartPackageImpl
         dir: dir,
         domainPackage: this,
       );
+
+  @override
+  DomainPackageBarrelFile get barrelFile =>
+      (barrelFileOverrides ?? DomainPackageBarrelFile.new)(domainPackage: this);
 
   @override
   Future<void> create() async {
@@ -194,6 +202,7 @@ class EntityImpl extends FileSystemEntityCollection
             path: p.join(
               domainPackage.path,
               'lib',
+              'src',
               dir,
             ),
             name: name.snakeCase,
@@ -202,6 +211,7 @@ class EntityImpl extends FileSystemEntityCollection
             path: p.join(
               domainPackage.path,
               'lib',
+              'src',
               dir,
             ),
             name: '${name.snakeCase}.freezed',
@@ -210,6 +220,7 @@ class EntityImpl extends FileSystemEntityCollection
             path: p.join(
               domainPackage.path,
               'test',
+              'src',
               dir,
             ),
             name: '${name.snakeCase}_test',
@@ -255,6 +266,7 @@ class ServiceInterfaceImpl extends FileSystemEntityCollection
             path: p.join(
               domainPackage.path,
               'lib',
+              'src',
               dir,
             ),
             name: 'i_${name.snakeCase}_service',
@@ -263,6 +275,7 @@ class ServiceInterfaceImpl extends FileSystemEntityCollection
             path: p.join(
               domainPackage.path,
               'lib',
+              'src',
               dir,
             ),
             name: 'i_${name.snakeCase}_service.freezed',
@@ -304,6 +317,7 @@ class ValueObjectImpl extends FileSystemEntityCollection
             path: p.join(
               domainPackage.path,
               'lib',
+              'src',
               dir,
             ),
             name: name.snakeCase,
@@ -312,6 +326,7 @@ class ValueObjectImpl extends FileSystemEntityCollection
             path: p.join(
               domainPackage.path,
               'lib',
+              'src',
               dir,
             ),
             name: '${name.snakeCase}.freezed',
@@ -320,6 +335,7 @@ class ValueObjectImpl extends FileSystemEntityCollection
             path: p.join(
               domainPackage.path,
               'test',
+              'src',
               dir,
             ),
             name: '${name.snakeCase}_test',
@@ -353,4 +369,17 @@ class ValueObjectImpl extends FileSystemEntityCollection
       },
     );
   }
+}
+
+class DomainPackageBarrelFileImpl extends DartFileImpl
+    implements DomainPackageBarrelFile {
+  DomainPackageBarrelFileImpl({
+    required DomainPackage domainPackage,
+  }) : super(
+          path: p.join(
+            domainPackage.path,
+            'lib',
+          ),
+          name: domainPackage.packageName(),
+        );
 }

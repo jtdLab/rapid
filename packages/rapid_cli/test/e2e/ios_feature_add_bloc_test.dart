@@ -34,24 +34,21 @@ void main() {
           final name = 'FooBar';
           final featureName = 'home_page';
 
-          // Act + Assert
-          final commandResult = await commandRunner.run(
-            [
-              'ios',
-              'feature',
-              'add',
-              'bloc',
-              name,
-              '--feature',
-              featureName,
-            ],
-          );
-          expect(commandResult, equals(ExitCode.success.code));
+          // Act
+          final commandResult = await commandRunner.run([
+            'ios',
+            'feature',
+            'add',
+            'bloc',
+            name,
+            '--feature',
+            featureName,
+          ]);
 
           // Assert
+          expect(commandResult, equals(ExitCode.success.code));
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final appFeaturePackage = featurePackage('app', Platform.ios);
           final feature = featurePackage(featureName, Platform.ios);
           verifyDoExist({
@@ -65,7 +62,56 @@ void main() {
               platform: Platform.ios,
             ),
           });
+          await verifyTestsPassWith100PercentCoverage([
+            ...platformIndependentPackagesWithTests,
+            ...platformDependentPackagesWithTests(Platform.ios),
+            appFeaturePackage,
+          ]);
+          // TODO
+          await verifyTestsPass(feature, expectedCoverage: 80.0);
+        },
+      );
 
+      test(
+        'ios feature add bloc (with output dir)',
+        () async {
+          // Arrange
+          await setupProject(Platform.ios);
+          final name = 'FooBar';
+          final featureName = 'home_page';
+          final outputDir = 'foo';
+
+          // Act
+          final commandResult = await commandRunner.run([
+            'ios',
+            'feature',
+            'add',
+            'bloc',
+            name,
+            '--feature',
+            featureName,
+            '-o',
+            outputDir,
+          ]);
+
+          // Assert
+          expect(commandResult, equals(ExitCode.success.code));
+          await verifyNoAnalyzerIssues();
+          await verifyNoFormattingIssues();
+          final appFeaturePackage = featurePackage('app', Platform.ios);
+          final feature = featurePackage(featureName, Platform.ios);
+          verifyDoExist({
+            ...platformIndependentPackages,
+            ...platformDependentPackages([Platform.ios]),
+            appFeaturePackage,
+            feature,
+            ...blocFiles(
+              name: name,
+              featureName: featureName,
+              platform: Platform.ios,
+              outputDir: outputDir,
+            ),
+          });
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.ios),

@@ -32,34 +32,33 @@ void main() {
           // Arrange
           await setupProject(Platform.ios);
           final name = 'FooBar';
-          widgetFiles(name: name, platform: Platform.ios).create();
-          await addThemeExtensionsFile(
+          await commandRunner.run([
+            'ui',
+            'ios',
+            'add',
+            'widget',
             name,
-            platform: Platform.ios,
-          );
-          await addBarrelFile(
-            name,
-            platform: Platform.ios,
-          );
+          ]);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['ui', 'ios', 'remove', 'widget', name],
-          );
+          final commandResult = await commandRunner.run([
+            'ui',
+            'ios',
+            'remove',
+            'widget',
+            name,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           verifyDoExist({
             ...platformIndependentPackages,
           });
           verifyDoNotExist({
             ...widgetFiles(name: name, platform: Platform.ios),
           });
-
           await verifyTestsPassWith100PercentCoverage({
             platformUiPackage(Platform.ios),
           });

@@ -32,20 +32,25 @@ void main() {
           // Arrange
           const language = 'fr';
           await setupProject(Platform.linux);
-          languageFiles('app', Platform.linux, [language]).create();
-          languageFiles('home_page', Platform.linux, [language]).create();
+          await commandRunner.run([
+            'linux',
+            'add',
+            'language',
+            language,
+          ]);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['linux', 'remove', 'language', language],
-          );
+          final commandResult = await commandRunner.run([
+            'linux',
+            'remove',
+            'language',
+            language,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.linux),
             featurePackage('home_page', Platform.linux),
@@ -59,7 +64,6 @@ void main() {
           verifyDoNotExist({
             ...languageFiles('home_page', Platform.linux, ['fr']),
           });
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.linux),
@@ -68,6 +72,6 @@ void main() {
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 4)),
+    timeout: const Timeout(Duration(minutes: 6)),
   );
 }

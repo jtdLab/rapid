@@ -34,16 +34,17 @@ void main() {
           await setupProject(Platform.android);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['android', 'add', 'language', language],
-          );
+          final commandResult = await commandRunner.run([
+            'android',
+            'add',
+            'language',
+            language,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.android),
             featurePackage('home_page', Platform.android),
@@ -54,7 +55,6 @@ void main() {
             ...featurePackages,
             ...languageFiles('home_page', Platform.android, ['en', language]),
           ]);
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.android),

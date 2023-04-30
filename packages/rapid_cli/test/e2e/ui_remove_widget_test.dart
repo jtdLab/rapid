@@ -31,28 +31,31 @@ void main() {
           // Arrange
           await setupProject();
           final name = 'FooBar';
-          widgetFiles(name: name).create();
-          await addThemeExtensionsFile(name);
-          await addBarrelFile(name);
+          await commandRunner.run([
+            'ui',
+            'add',
+            'widget',
+            name,
+          ]);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['ui', 'remove', 'widget', name],
-          );
+          final commandResult = await commandRunner.run([
+            'ui',
+            'remove',
+            'widget',
+            name,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           verifyDoExist({
             ...platformIndependentPackages,
           });
           verifyDoNotExist({
             ...widgetFiles(name: name),
           });
-
           await verifyTestsPassWith100PercentCoverage({
             uiPackage,
           });

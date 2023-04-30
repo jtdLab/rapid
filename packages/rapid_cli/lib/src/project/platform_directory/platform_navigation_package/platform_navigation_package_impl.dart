@@ -1,4 +1,5 @@
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
@@ -29,6 +30,13 @@ class PlatformNavigationPackageImpl extends DartPackageImpl
   final Project _project;
 
   @override
+  PlatformNavigationPackageBarrelFileBuilder? barrelFileOverrides;
+
+  @override
+  PlatformNavigationPackageBarrelFile get barrelFile => (barrelFileOverrides ??
+      PlatformNavigationPackageBarrelFile.new)(platformNavigationPackage: this);
+
+  @override
   Future<void> create() async {
     final projectName = _project.name();
 
@@ -45,4 +53,17 @@ class PlatformNavigationPackageImpl extends DartPackageImpl
       },
     );
   }
+}
+
+class PlatformNavigationPackageBarrelFileImpl extends DartFileImpl
+    implements PlatformNavigationPackageBarrelFile {
+  PlatformNavigationPackageBarrelFileImpl({
+    required PlatformNavigationPackage platformNavigationPackage,
+  }) : super(
+          path: p.join(
+            platformNavigationPackage.path,
+            'lib',
+          ),
+          name: platformNavigationPackage.packageName(),
+        );
 }

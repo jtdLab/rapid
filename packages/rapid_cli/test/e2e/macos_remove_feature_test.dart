@@ -32,19 +32,25 @@ void main() {
           // Arrange
           const featureName = 'foo_bar';
           await setupProject(Platform.macos);
-          await addFeature(featureName, platform: Platform.macos);
+          await commandRunner.run([
+            'macos',
+            'add',
+            'feature',
+            featureName,
+          ]);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['macos', 'remove', 'feature', featureName],
-          );
+          final commandResult = await commandRunner.run([
+            'macos',
+            'remove',
+            'feature',
+            featureName,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.macos),
             featurePackage('home_page', Platform.macos),
@@ -57,7 +63,6 @@ void main() {
           verifyDoNotExist([
             featurePackage(featureName, Platform.macos),
           ]);
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.macos),
@@ -66,6 +71,6 @@ void main() {
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 6)),
+    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

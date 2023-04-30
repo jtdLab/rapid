@@ -73,104 +73,6 @@ Future<void> setupProject([Platform? activatedPlatform]) async {
   }
 }
 
-Future<void> addEntity({String? subDomainName, String? outputDir}) async {
-  await copyPath(
-    p.join(fixturesPath, 'entity', 'lib'),
-    p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? ''),
-  );
-  await copyPath(
-    p.join(fixturesPath, 'entity', 'test'),
-    p.join(domainPackage(subDomainName).path, 'test', outputDir ?? ''),
-  );
-}
-
-Future<void> addServiceInterface({
-  String? subDomainName,
-  String? outputDir,
-}) async {
-  await copyPath(
-    p.join(fixturesPath, 'service_interface', 'lib'),
-    p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? ''),
-  );
-}
-
-Future<void> addFeature(String name, {required Platform platform}) async {
-  final feature = featurePackage(name, platform);
-  final pubspecFile = File(p.join(feature.path, 'pubspec.yaml'));
-
-  await pubspecFile.create(recursive: true);
-  await pubspecFile.writeAsString('name: $name');
-}
-
-Future<void> addThemeExtensionsFile(
-  String widgetName, {
-  Platform? platform,
-}) async {
-  late final String content;
-  if (platform == null) {
-    content = [
-      "import 'package:flutter/material.dart' show ThemeExtension;",
-      "import 'package:project_none_ui/project_none_ui.dart';",
-      '',
-      'final lightExtensions = <ThemeExtension>[',
-      '  ${projectName.pascalCase}ColorTheme.light,',
-      '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.light,',
-      '];',
-      '',
-      'final darkExtensions = <ThemeExtension>[',
-      '  ${projectName.pascalCase}ColorTheme.dark,',
-      '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.dark,',
-      '];',
-    ].join('\n');
-  } else {
-    content = [
-      if (platform == Platform.ios || platform == Platform.macos)
-        "import 'package:flutter/material.dart' show ThemeExtension;",
-      "import 'package:project_${platform.name}_ui_${platform.name}/project_${platform.name}_ui_${platform.name}.dart';",
-      '',
-      'final lightExtensions = <ThemeExtension>[',
-      '  ${projectName.pascalCase}ScaffoldTheme.light,',
-      '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.light,',
-      '];',
-      '',
-      'final darkExtensions = <ThemeExtension>[',
-      '  ${projectName.pascalCase}ScaffoldTheme.dark,',
-      '  ${projectName.pascalCase}${widgetName.pascalCase}Theme.dark,',
-      '];',
-    ].join('\n');
-  }
-
-  await File(
-    p.join(
-      platform != null ? platformUiPackage(platform).path : uiPackage.path,
-      'lib',
-      'src',
-      'theme_extensions.dart',
-    ),
-  ).writeAsString(content);
-}
-
-Future<void> addBarrelFile(
-  String widgetName, {
-  Platform? platform,
-}) async {
-  await File(
-    p.join(
-      platform != null ? platformUiPackage(platform).path : uiPackage.path,
-      'lib',
-      platform != null
-          ? '${projectName}_ui_${platform.name}.dart'
-          : '${projectName}_ui.dart',
-    ),
-  ).writeAsString(
-    '''
-export 'src/foo_bar.dart';
-export 'src/foo_bar_theme.dart';
-''',
-    mode: FileMode.append,
-  );
-}
-
 late String projectName;
 
 final diPackage =
@@ -376,12 +278,12 @@ List<File> entityFiles({
   String? outputDir,
 }) =>
     [
-      File(p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? '',
-          '${name.snakeCase}.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? '',
-          '${name.snakeCase}.freezed.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'test', outputDir ?? '',
-          '${name.snakeCase}_test.dart')),
+      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+          outputDir ?? '', '${name.snakeCase}.dart')),
+      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+          outputDir ?? '', '${name.snakeCase}.freezed.dart')),
+      File(p.join(domainPackage(subDomainName).path, 'test', 'src',
+          outputDir ?? '', '${name.snakeCase}_test.dart')),
     ];
 
 List<File> valueObjectFiles({
@@ -390,12 +292,12 @@ List<File> valueObjectFiles({
   String? outputDir,
 }) =>
     [
-      File(p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? '',
-          '${name.snakeCase}.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? '',
-          '${name.snakeCase}.freezed.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'test', outputDir ?? '',
-          '${name.snakeCase}_test.dart')),
+      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+          outputDir ?? '', '${name.snakeCase}.dart')),
+      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+          outputDir ?? '', '${name.snakeCase}.freezed.dart')),
+      File(p.join(domainPackage(subDomainName).path, 'test', 'src',
+          outputDir ?? '', '${name.snakeCase}_test.dart')),
     ];
 
 List<File> serviceInterfaceFiles({
@@ -404,10 +306,10 @@ List<File> serviceInterfaceFiles({
   String? outputDir,
 }) =>
     [
-      File(p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? '',
-          'i_${name.snakeCase}_service.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'lib', outputDir ?? '',
-          'i_${name.snakeCase}_service.freezed.dart')),
+      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+          outputDir ?? '', 'i_${name.snakeCase}_service.dart')),
+      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+          outputDir ?? '', 'i_${name.snakeCase}_service.freezed.dart')),
     ];
 
 List<File> dataTransferObjectFiles({
@@ -649,7 +551,9 @@ void verifyDoNotHaveTests(
           }
         } else if (testDirSubEntities.length == 1) {
           final testSrcDir = Directory(p.join(dir.path, 'test', 'src'));
-          if (testSrcDir.existsSync() && testSrcDir.listSync().isEmpty) {
+          final mocksFile = File(p.join(dir.path, 'test', 'mocks.dart'));
+          if ((testSrcDir.existsSync() && testSrcDir.listSync().isEmpty) ||
+              mocksFile.existsSync()) {
             hasNoTests = true;
           } else {
             hasNoTests = false;

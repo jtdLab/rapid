@@ -34,16 +34,17 @@ void main() {
           await setupProject(Platform.windows);
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['windows', 'add', 'language', language],
-          );
+          final commandResult = await commandRunner.run([
+            'windows',
+            'add',
+            'language',
+            language,
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final featurePackages = [
             featurePackage('app', Platform.windows),
             featurePackage('home_page', Platform.windows),
@@ -54,7 +55,6 @@ void main() {
             ...featurePackages,
             ...languageFiles('home_page', Platform.windows, ['en', language]),
           ]);
-
           await verifyTestsPassWith100PercentCoverage([
             ...platformIndependentPackagesWithTests,
             ...platformDependentPackagesWithTests(Platform.windows),

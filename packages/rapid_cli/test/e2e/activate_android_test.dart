@@ -32,16 +32,15 @@ void main() {
           await setupProject();
 
           // Act
-          final commandResult = await commandRunner.run(
-            ['activate', 'android'],
-          );
+          final commandResult = await commandRunner.run([
+            'activate',
+            'android',
+          ]);
 
           // Assert
           expect(commandResult, equals(ExitCode.success.code));
-
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-
           final platformPackages =
               platformDependentPackages([Platform.android]);
           final featurePackages = [
@@ -56,7 +55,6 @@ void main() {
           verifyDoNotExist(
             allPlatformDependentPackages.without(platformPackages),
           );
-
           verifyDoNotHaveTests([
             ...platformIndependentPackagesWithoutTests,
             ...platformDependentPackagesWithoutTests(Platform.android)
@@ -80,15 +78,16 @@ void main() {
         test(
           '',
           () => performTest(),
+          timeout: const Timeout(Duration(minutes: 8)),
         );
 
         test(
           '(slow)',
           () => performTest(slow: true),
+          timeout: const Timeout(Duration(minutes: 24)),
           tags: ['android'],
         );
       });
     },
-    timeout: const Timeout(Duration(minutes: 24)),
   );
 }

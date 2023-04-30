@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
-import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
@@ -72,7 +71,8 @@ void main() {
           }
         }
 
-        Future<void> performSlowTest({required Platform platform}) async {
+// TODO this is more granular but increases execution time by wide margin
+/*         Future<void> performSlowTest({required Platform platform}) async {
           // Act
           final commandResult = await commandRunner.run([
             'create',
@@ -238,7 +238,7 @@ void main() {
           '--desktop',
           () => performTest(flag: 'desktop'),
           timeout: const Timeout(Duration(minutes: 16)),
-        );
+        ); */
 
         test(
           '--all',

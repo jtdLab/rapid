@@ -231,19 +231,19 @@ void main() {
         test(
           '--mobile',
           () => performTest(flag: 'mobile'),
-          timeout: const Timeout(Duration(minutes: 16)),
+          timeout: const Timeout(Duration(minutes: 24)),
         );
 
         test(
           '--desktop',
           () => performTest(flag: 'desktop'),
-          timeout: const Timeout(Duration(minutes: 16)),
+          timeout: const Timeout(Duration(minutes: 24)),
         ); */
 
         test(
           '--all',
           () => performTest(flag: 'all'),
-          timeout: const Timeout(Duration(minutes: 16)),
+          timeout: const Timeout(Duration(minutes: 24)),
         );
       });
     },

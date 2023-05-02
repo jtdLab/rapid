@@ -26,8 +26,14 @@ abstract class DomainDirectory extends Directory {
   @visibleForTesting
   DomainPackageBuilder? domainPackageOverrides;
 
+  @visibleForTesting
+  List<DomainPackage>? domainPackagesOverrides;
+
   /// Returns the [DomainPackage] with [name].
   DomainPackage domainPackage({String? name});
+
+  /// Returns all [DomainPackage]s.
+  List<DomainPackage> domainPackages();
 
   // TODO consider required !
 

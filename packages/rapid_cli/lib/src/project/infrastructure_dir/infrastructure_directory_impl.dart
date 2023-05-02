@@ -1,4 +1,5 @@
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/directory_impl.dart';
 import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_directory.dart';
 import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/infrastructure_package.dart';
@@ -24,11 +25,32 @@ class InfrastructureDirectoryImpl extends DirectoryImpl
   InfrastructurePackageBuilder? infrastructurePackageOverrides;
 
   @override
+  List<InfrastructurePackage>? infrastructurePackagesOverrides;
+
+  @override
   InfrastructurePackage infrastructurePackage({String? name}) =>
       (infrastructurePackageOverrides ?? InfrastructurePackage.new)(
         name: name,
         project: _project,
       );
+
+  @override
+  List<InfrastructurePackage> infrastructurePackages() =>
+      infrastructurePackagesOverrides ??
+          list().whereType<Directory>().map(
+            (e) {
+              final basename = p.basename(e.path);
+              if (!basename.startsWith('${_project.name()}_infrastructure_')) {
+                return infrastructurePackage(name: null);
+              }
+
+              final name = p
+                  .basename(e.path)
+                  .replaceAll('${_project.name()}_infrastructure_', '');
+              return infrastructurePackage(name: name);
+            },
+          ).toList()
+        ..sort();
 
   @override
   Future<InfrastructurePackage> addInfrastructurePackage({

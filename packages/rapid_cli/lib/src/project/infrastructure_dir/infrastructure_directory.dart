@@ -26,8 +26,14 @@ abstract class InfrastructureDirectory extends Directory {
   @visibleForTesting
   InfrastructurePackageBuilder? infrastructurePackageOverrides;
 
+  @visibleForTesting
+  List<InfrastructurePackage>? infrastructurePackagesOverrides;
+
   /// Returns the [InfrastructurePackage] with [name].
   InfrastructurePackage infrastructurePackage({String? name});
+
+  /// Returns all [InfrastructurePackage]s.
+  List<InfrastructurePackage> infrastructurePackages();
 
   // TODO consider required !
 

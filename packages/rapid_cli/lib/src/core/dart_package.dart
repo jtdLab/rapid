@@ -40,6 +40,9 @@ abstract class PubspecFile implements YamlFile {
   /// The `name` property of the pubspec file.
   String readName();
 
+  /// Wheter the dependency with `name` exists (dev dependencies included).
+  bool hasDependency(String name);
+
   /// Removes dependency with [name] from the pubspec file.
   void removeDependency(String name);
 
@@ -56,5 +59,5 @@ abstract class PubspecFile implements YamlFile {
   /// dependencies:
   ///   my_dependency:
   /// ```
-  void setDependency(String name, {String? version});
+  void setDependency(String name, {String? version, bool dev});
 }

@@ -34,14 +34,22 @@ class PubspecFileImpl extends YamlFileImpl implements PubspecFile {
   }
 
   @override
+  bool hasDependency(String name) {
+    final dependencies = readValue(['dependencies']) as YamlMap;
+
+    return dependencies.entries
+        .map((e) => (e.key as String).split(':').first.trim())
+        .contains(name);
+  }
+
+  @override
   void removeDependency(String name) => removeValue(['dependencies', name]);
 
   @override
   void removeDependencyByPattern(String pattern) {
-    final dependencies = readValue(['dependencies']);
+    final dependencies = readValue(['dependencies']) as YamlMap;
 
-    for (final dependency in (dependencies as YamlMap)
-        .entries
+    for (final dependency in dependencies.entries
         .map((e) => (e.key as String).split(':').first.trim())
         .where((e) => e.contains(pattern))) {
       removeDependency(dependency);
@@ -49,6 +57,10 @@ class PubspecFileImpl extends YamlFileImpl implements PubspecFile {
   }
 
   @override
-  void setDependency(String name, {String? version}) =>
-      setValue(['dependencies', name], version, blankIfValueNull: true);
+  void setDependency(String name, {String? version, bool dev = false}) =>
+      setValue(
+        [dev ? 'dev_dependencies' : 'dependencies', name],
+        version,
+        blankIfValueNull: true,
+      );
 }

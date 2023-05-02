@@ -3,8 +3,10 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart' hide packageVersion;
 import 'package:rapid_cli/src/commands/activate/activate.dart';
 import 'package:rapid_cli/src/commands/android/android.dart';
+import 'package:rapid_cli/src/commands/begin/begin.dart';
 import 'package:rapid_cli/src/commands/deactivate/deactivate.dart';
 import 'package:rapid_cli/src/commands/domain/domain.dart';
+import 'package:rapid_cli/src/commands/end/end.dart';
 import 'package:rapid_cli/src/commands/infrastructure/infrastructure.dart';
 import 'package:rapid_cli/src/commands/ios/ios.dart';
 import 'package:rapid_cli/src/commands/linux/linux.dart';
@@ -41,10 +43,12 @@ class RapidCommandRunner extends CommandRunner<int> {
       );
     addCommand(ActivateCommand(logger: _logger, project: project));
     addCommand(AndroidCommand(logger: _logger, project: project));
+    addCommand(BeginCommand(logger: _logger));
     addCommand(CreateCommand(logger: _logger));
     addCommand(DeactivateCommand(logger: _logger, project: project));
     // addCommand(DoctorCommand(logger: _logger, project: project)); // TODO use later
     addCommand(DomainCommand(logger: _logger, project: project));
+    addCommand(EndCommand(logger: _logger));
     addCommand(InfrastructureCommand(logger: _logger, project: project));
     addCommand(IosCommand(logger: _logger, project: project));
     addCommand(LinuxCommand(logger: _logger, project: project));

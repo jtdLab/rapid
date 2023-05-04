@@ -1,5 +1,4 @@
 import 'package:args/command_runner.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/ui/android/android.dart';
 import 'package:rapid_cli/src/commands/ui/core/platform/add/add.dart';
@@ -26,8 +25,7 @@ import 'package:rapid_cli/src/core/platform.dart';
 ///
 ///  * [UiWindowsCommand]
 /// {@endtemplate}
-abstract class UiPlatformCommand extends Command<int>
-    with OverridableArgResults {
+abstract class UiPlatformCommand extends Command<int> {
   /// {@macro ui_platform_command}
   UiPlatformCommand({
     required Platform platform,

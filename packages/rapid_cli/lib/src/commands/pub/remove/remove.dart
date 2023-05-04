@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/package_option.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -15,7 +14,8 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template pub_remove_command}
 /// `rapid pub remove` command remove packages in a Rapid environment.
 /// {@endtemplate}
-class PubRemoveCommand extends Command<int> with OverridableArgResults {
+class PubRemoveCommand extends RapidNonRootCommand
+    with PackageGetter, GroupableMixin, BootstrapMixin {
   /// {@macro pub_remove_command}
   PubRemoveCommand({
     Logger? logger,
@@ -25,12 +25,16 @@ class PubRemoveCommand extends Command<int> with OverridableArgResults {
   })  : _logger = logger ?? Logger(),
         _project = project ?? (({String path = '.'}) => Project(path: path)),
         _flutterPubRemove = flutterPubRemove ?? Flutter.pubRemove,
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap;
+        melosBootstrap = melosBootstrap ?? Melos.bootstrap {
+    argParser.addPackageOption(
+      help: 'The package where the command is run in.',
+    );
+  }
 
   final Logger _logger;
   final ProjectBuilder _project;
   final FlutterPubRemoveCommand _flutterPubRemove;
-  final MelosBootstrapCommand _melosBootstrap;
+  final MelosBootstrapCommand melosBootstrap;
 
   @override
   String get name => 'remove';
@@ -43,18 +47,20 @@ class PubRemoveCommand extends Command<int> with OverridableArgResults {
 
   @override
   Future<int> run() async {
+    var packageName = super.package;
+    if (packageName == null) {
+      final pubspec = PubspecFile();
+      try {
+        packageName = pubspec.readName();
+      } catch (e) {
+        throw UsageException(
+          'This command must either be called from within a package or with a explicit package via the "package" argument.',
+          usage,
+        );
+      }
+    }
     final packages = _packages;
-    final rootDir = _findRootDir(Directory.current);
-    final project = _project(path: rootDir.path);
 
-    await _flutterPubRemove(
-      cwd: '.',
-      logger: _logger,
-      packages: packages,
-    );
-
-    final packagePubspec = PubspecFile();
-    final packageName = packagePubspec.readName();
     final projectPackages = <DartPackage>[
       project.diPackage,
       ...project.domainDirectory.domainPackages(),
@@ -73,18 +79,29 @@ class PubRemoveCommand extends Command<int> with OverridableArgResults {
       ],
     ];
 
-    final dependingPackageNames = projectPackages
-        .where((e) => e.pubspecFile.hasDependency(packageName))
-        .map((e) => e.pubspecFile.readName())
-        .toList();
+    // TODO good ?
+    if (!projectPackages.map((e) => e.packageName()).contains(packageName)) {
+      throw RapidException('Package $packageName not found.');
+    }
 
-    await _melosBootstrap(
-      cwd: rootDir.path,
-      scope: [
-        packageName,
-        ...dependingPackageNames,
-      ],
+    final package =
+        projectPackages.firstWhere((e) => e.packageName() == packageName);
+
+    await _flutterPubRemove(
+      cwd: package.path,
       logger: _logger,
+      packages: packages,
+    );
+
+    final dependingPackages =
+        projectPackages.where((e) => e.pubspecFile.hasDependency(packageName!));
+
+    await bootstrap(
+      packages: [
+        package,
+        ...dependingPackages,
+      ],
+      logger: logger,
     );
 
     _logger
@@ -94,25 +111,6 @@ class PubRemoveCommand extends Command<int> with OverridableArgResults {
       );
 
     return ExitCode.success.code;
-  }
-
-  // TODO share with remove
-  Directory _findRootDir(Directory dir) {
-    final melosFile = File(p.join(dir.path, 'melos.yaml'));
-    if (melosFile.existsSync()) {
-      return dir;
-    }
-
-    final parent = dir.parent;
-    if (dir.path == parent.path) {
-      throw UsageException(
-        'Could not find Rapid project root.'
-        'Did you call this command from within a Rapid workspace?',
-        usage,
-      );
-    }
-
-    return _findRootDir(parent);
   }
 
   List<String> get _packages {

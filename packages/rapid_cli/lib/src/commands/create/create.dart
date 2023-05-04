@@ -1,10 +1,10 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/language_option.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -17,8 +17,8 @@ const _defaultDescription = 'A Rapid app.';
 /// {@template create_command}
 /// `rapid create` command creates a new Rapid project in the specified directory.
 /// {@endtemplate}
-class CreateCommand extends Command<int>
-    with OverridableArgResults, OutputDirGetter, OrgNameGetter, LanguageGetter {
+class CreateCommand extends RapidCommand
+    with OutputDirGetter, OrgNameGetter, LanguageGetter {
   /// {@macro create_command}
   CreateCommand({
     Logger? logger,

@@ -1,4 +1,3 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
@@ -9,7 +8,7 @@ import 'package:rapid_cli/src/commands/activate/linux/linux.dart';
 import 'package:rapid_cli/src/commands/activate/macos/macos.dart';
 import 'package:rapid_cli/src/commands/activate/web/web.dart';
 import 'package:rapid_cli/src/commands/activate/windows/windows.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -32,8 +31,8 @@ import 'package:rapid_cli/src/project/project.dart';
 ///
 ///  * [ActivateWindowsCommand]
 /// {@endtemplate}
-abstract class ActivatePlatformCommand extends Command<int>
-    with OverridableArgResults {
+abstract class ActivatePlatformCommand extends RapidRootCommand
+    with GroupableMixin, BootstrapMixin, CodeGenMixin {
   /// {@macro activate_platform_command}
   ActivatePlatformCommand({
     required this.platform,
@@ -48,9 +47,9 @@ abstract class ActivatePlatformCommand extends Command<int>
     required FlutterConfigEnablePlatformCommand flutterConfigEnablePlatform,
   })  : _logger = logger ?? Logger(),
         _project = project ?? Project(),
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+        melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
         _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
@@ -59,10 +58,13 @@ abstract class ActivatePlatformCommand extends Command<int>
 
   final Logger _logger;
   final Project _project;
-  final MelosBootstrapCommand _melosBootstrap;
-  final FlutterPubGetCommand _flutterPubGet;
+  @override
+  final MelosBootstrapCommand melosBootstrap;
+  @override
+  final FlutterPubGetCommand flutterPubGet;
+  @override
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+      flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final FlutterGenl10nCommand _flutterGenl10n;
   final DartFormatFixCommand _dartFormatFix;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnablePlatform;
@@ -107,23 +109,17 @@ abstract class ActivatePlatformCommand extends Command<int>
           final homePageFeaturePackage =
               featuresDirectory.featurePackage(name: 'home_page');
 
-          await _melosBootstrap(
-            cwd: _project.path,
-            scope: [
-              rootPackage.packageName(),
-              navigationPackage.packageName(),
-              appFeaturePackage.packageName(),
-              homePageFeaturePackage.packageName(),
-              platformUiPackage.packageName(),
+          await bootstrap(
+            packages: [
+              rootPackage,
+              navigationPackage,
+              appFeaturePackage,
+              homePageFeaturePackage,
+              platformUiPackage,
             ],
-            logger: _logger,
+            logger: logger,
           );
-
-          await _flutterPubGet(cwd: rootPackage.path, logger: _logger);
-          await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-            cwd: rootPackage.path,
-            logger: _logger,
-          );
+          await codeGen(packages: [rootPackage], logger: logger);
 
           await _flutterGenl10n(cwd: appFeaturePackage.path, logger: _logger);
           await _flutterGenl10n(

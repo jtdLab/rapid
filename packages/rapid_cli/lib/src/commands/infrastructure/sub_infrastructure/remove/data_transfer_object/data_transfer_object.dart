@@ -1,8 +1,7 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/entity_option.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
@@ -14,12 +13,8 @@ import 'package:rapid_cli/src/project/project.dart';
 /// `rapid infrastructure sub_infrastructure remove data_transfer_object` command removes data transfer object from the infrastructure part of an existing Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
-    extends Command<int>
-    with
-        OverridableArgResults,
-        SubInfrastructureGetter,
-        EntityGetter,
-        DirGetter {
+    extends RapidRootCommand
+    with SubInfrastructureGetter, EntityGetter, DirGetter {
   /// {@macro infrastructure_sub_infrastructure_remove_data_transfer_object_command}
   InfrastructureSubInfrastructureRemoveDataTransferObjectCommand({
     Logger? logger,

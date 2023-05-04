@@ -1,16 +1,14 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template ui_add_widget_command}
 /// `rapid ui add widget` command adds a widget to the platform independent UI part of an existing Rapid project.
 /// {@endtemplate}
-class UiAddWidgetCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter {
+class UiAddWidgetCommand extends RapidRootCommand with ClassNameGetter {
   /// {@macro ui_add_widget_command}
   UiAddWidgetCommand({
     Logger? logger,

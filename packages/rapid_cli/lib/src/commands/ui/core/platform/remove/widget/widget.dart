@@ -1,7 +1,6 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ui/android/remove/widget/widget.dart';
@@ -28,8 +27,8 @@ import 'package:rapid_cli/src/project/project.dart';
 ///
 ///  * [UiWindowsRemoveWidgetCommand]
 /// {@endtemplate}
-abstract class UiPlatformRemoveWidgetCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter {
+abstract class UiPlatformRemoveWidgetCommand extends RapidRootCommand
+    with GroupableMixin, ClassNameGetter {
   /// {@macro ui_platform_remove_widget_command}
   UiPlatformRemoveWidgetCommand({
     required Platform platform,

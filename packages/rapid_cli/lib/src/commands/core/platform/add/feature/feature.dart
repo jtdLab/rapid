@@ -1,9 +1,8 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/feature/feature.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dart_package_name_rest.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ios/add/feature/feature.dart';
@@ -32,8 +31,8 @@ const _defaultDescription = 'A Rapid feature.';
 ///
 ///  * [WindowsAddFeatureCommand]
 /// {@endtemplate}
-abstract class PlatformAddFeatureCommand extends Command<int>
-    with OverridableArgResults, DartPackageNameGetter {
+abstract class PlatformAddFeatureCommand extends RapidRootCommand
+    with DartPackageNameGetter, GroupableMixin, BootstrapMixin, CodeGenMixin {
   /// {@macro platform_add_feature_command}
   PlatformAddFeatureCommand({
     required Platform platform,
@@ -48,9 +47,9 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project ?? Project(),
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+        melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
         _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
@@ -75,10 +74,13 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   final Platform _platform;
   final Logger _logger;
   final Project _project;
-  final MelosBootstrapCommand _melosBootstrap;
-  final FlutterPubGetCommand _flutterPubGet;
+  @override
+  final MelosBootstrapCommand melosBootstrap;
+  @override
+  final FlutterPubGetCommand flutterPubGet;
+  @override
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+      flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final FlutterGenl10nCommand _flutterGenl10n;
   final DartFormatFixCommand _dartFormatFix;
 
@@ -131,19 +133,13 @@ abstract class PlatformAddFeatureCommand extends Command<int>
             // TODO if routing add router to root router list
             await rootPackage.registerFeaturePackage(featurePackage);
 
-            await _melosBootstrap(
-              cwd: _project.path,
-              logger: _logger,
-              scope: [
-                rootPackage.packageName(),
-                featurePackage.packageName(),
-              ],
+            await bootstrap(
+              packages: [rootPackage, featurePackage],
+              logger: logger,
             );
-
-            await _flutterPubGet(cwd: rootPackage.path, logger: _logger);
-            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: rootPackage.path,
-              logger: _logger,
+            await codeGen(
+              packages: [rootPackage],
+              logger: logger,
             );
 
             await _flutterGenl10n(cwd: featurePackage.path, logger: _logger);

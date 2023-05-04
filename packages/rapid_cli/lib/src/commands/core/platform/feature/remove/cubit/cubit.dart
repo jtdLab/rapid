@@ -1,11 +1,10 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/remove/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/core/feature_option.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -34,8 +33,13 @@ import 'package:rapid_cli/src/project/project.dart';
 ///
 ///  * [WindowsFeatureRemoveCubitCommand]
 /// {@endtemplate}
-class PlatformFeatureRemoveCubitCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter, FeatureGetter, DirGetter {
+class PlatformFeatureRemoveCubitCommand extends RapidRootCommand
+    with
+        ClassNameGetter,
+        FeatureGetter,
+        DirGetter,
+        GroupableMixin,
+        CodeGenMixin {
   /// {@macro platform_feature_remove_cubit_command}
   PlatformFeatureRemoveCubitCommand({
     required Platform platform,
@@ -47,8 +51,8 @@ class PlatformFeatureRemoveCubitCommand extends Command<int>
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project ?? Project(),
-        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+        flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs {
     argParser
@@ -67,9 +71,11 @@ class PlatformFeatureRemoveCubitCommand extends Command<int>
   final Platform _platform;
   final Logger _logger;
   final Project _project;
-  final FlutterPubGetCommand _flutterPubGet;
+  @override
+  final FlutterPubGetCommand flutterPubGet;
+  @override
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+      flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   @override
   String get name => 'cubit';
@@ -120,11 +126,7 @@ class PlatformFeatureRemoveCubitCommand extends Command<int>
               barrelFile.removeExport('src/application/application.dart');
             }
 
-            await _flutterPubGet(cwd: featurePackage.path, logger: _logger);
-            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: featurePackage.path,
-              logger: _logger,
-            );
+            await codeGen(packages: [featurePackage], logger: logger);
 
             _logger
               ..info('')

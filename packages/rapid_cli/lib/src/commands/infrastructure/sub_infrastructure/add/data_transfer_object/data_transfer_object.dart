@@ -1,9 +1,8 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/entity_option.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
@@ -14,12 +13,8 @@ import 'package:rapid_cli/src/project/project.dart';
 /// `rapid infrastructure sub_infrastructure add data_transfer_object` command adds data_transfer_object to the infrastructure part of an existing Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureAddDataTransferObjectCommand
-    extends Command<int>
-    with
-        OverridableArgResults,
-        SubInfrastructureGetter,
-        EntityGetter,
-        OutputDirGetter {
+    extends RapidRootCommand
+    with SubInfrastructureGetter, EntityGetter, OutputDirGetter {
   /// {@macro infrastructure_sub_infrastructure_add_data_transfer_object_command}
   InfrastructureSubInfrastructureAddDataTransferObjectCommand({
     Logger? logger,

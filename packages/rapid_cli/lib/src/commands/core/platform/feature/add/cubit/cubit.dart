@@ -1,11 +1,10 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/core/feature_option.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -32,12 +31,13 @@ import 'package:rapid_cli/src/project/project.dart';
 ///
 ///  * [WindowsFeatureAddCubitCommand]
 /// {@endtemplate}
-abstract class PlatformFeatureAddCubitCommand extends Command<int>
+abstract class PlatformFeatureAddCubitCommand extends RapidRootCommand
     with
-        OverridableArgResults,
         ClassNameGetter,
         FeatureGetter,
-        OutputDirGetter {
+        OutputDirGetter,
+        GroupableMixin,
+        CodeGenMixin {
   /// {@macro platform_feature_add_cubit_command}
   PlatformFeatureAddCubitCommand({
     required Platform platform,
@@ -49,8 +49,8 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
   })  : _platform = platform,
         _logger = logger ?? Logger(),
         _project = project ?? Project(),
-        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+        flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs {
     argParser
@@ -68,9 +68,11 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
   final Platform _platform;
   final Logger _logger;
   final Project _project;
-  final FlutterPubGetCommand _flutterPubGet;
+  @override
+  final FlutterPubGetCommand flutterPubGet;
+  @override
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+      flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   @override
   String get name => 'cubit';
@@ -131,11 +133,7 @@ abstract class PlatformFeatureAddCubitCommand extends Command<int>
                 );
               }
 
-              await _flutterPubGet(cwd: featurePackage.path, logger: _logger);
-              await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-                cwd: featurePackage.path,
-                logger: _logger,
-              );
+              await codeGen(packages: [featurePackage], logger: logger);
 
               _logger
                 ..info('')

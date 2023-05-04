@@ -28,7 +28,10 @@ class RapidCommandRunner extends CommandRunner<int> {
     Logger? logger,
     Project? project,
   })  : _logger = logger ?? Logger(),
-        super('rapid', 'Rapid Command Line Interface') {
+        super(
+          'rapid',
+          'A CLI tool for developing Flutter apps based on Rapid Architecture.',
+        ) {
     argParser
       ..addFlag(
         'version',
@@ -43,12 +46,12 @@ class RapidCommandRunner extends CommandRunner<int> {
       );
     addCommand(ActivateCommand(logger: _logger, project: project));
     addCommand(AndroidCommand(logger: _logger, project: project));
-    addCommand(BeginCommand(logger: _logger));
+    addCommand(BeginCommand(logger: _logger, project: project));
     addCommand(CreateCommand(logger: _logger));
     addCommand(DeactivateCommand(logger: _logger, project: project));
     // addCommand(DoctorCommand(logger: _logger, project: project)); // TODO use later
     addCommand(DomainCommand(logger: _logger, project: project));
-    addCommand(EndCommand(logger: _logger));
+    addCommand(EndCommand(logger: _logger, project: project));
     addCommand(InfrastructureCommand(logger: _logger, project: project));
     addCommand(IosCommand(logger: _logger, project: project));
     addCommand(LinuxCommand(logger: _logger, project: project));
@@ -74,11 +77,16 @@ class RapidCommandRunner extends CommandRunner<int> {
 
       return await runCommand(argResults) ?? ExitCode.success.code;
     } on FormatException catch (e, stackTrace) {
+      // TODO is catching FormatException needed ?
       _logger
         ..err(e.message)
         ..err('$stackTrace')
         ..info('')
         ..info(usage);
+      return ExitCode.usage.code;
+    } on RapidException catch (e) {
+      _logger.err(e.message);
+
       return ExitCode.usage.code;
     } on UsageException catch (e) {
       _logger
@@ -119,10 +127,41 @@ class RapidCommandRunner extends CommandRunner<int> {
     int? exitCode = ExitCode.unavailable.code;
     if (topLevelResults['version']) {
       _logger.info(packageVersion);
+      // TODO add when pub.dev release
+      // await _checkForUpdates();
+
       return ExitCode.success.code;
     }
     exitCode = await super.runCommand(topLevelResults);
 
     return exitCode;
   }
+
+  // TODO add when pub.dev release
+  /* Future<void> _checkForUpdates({
+    required Logger logger,
+  }) async {
+    final pubUpdater = PubUpdater();
+    const packageName = 'rapid_cli';
+    final isUpToDate = await pubUpdater.isUpToDate(
+      packageName: packageName,
+      currentVersion: packageVersion,
+    );
+    if (!isUpToDate) {
+      final latestVersion = await pubUpdater.getLatestVersion(packageName);
+
+      final shouldUpdate = logger.prompt(
+            'There is a new version of $packageName available '
+            '($latestVersion). Would you like to update?',
+            defaultValue: true,
+          ) ==
+          'true';
+      if (shouldUpdate) {
+        await pubUpdater.update(packageName: packageName);
+        logger.success(
+          '$packageName has been updated to version $latestVersion.',
+        );
+      }
+    }
+  } */
 }

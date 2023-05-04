@@ -1,8 +1,7 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dart_package_name_rest.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -10,8 +9,8 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template domain_remove_sub_domain_command}
 /// `rapid domain remove sub_domain` command remove subdomains from the domain part of an existing Rapid project.
 /// {@endtemplate}
-class DomainRemoveSubDomainCommand extends Command<int>
-    with OverridableArgResults, DartPackageNameGetter {
+class DomainRemoveSubDomainCommand extends RapidRootCommand
+    with DartPackageNameGetter, GroupableMixin, BootstrapMixin, CodeGenMixin {
   /// {@macro domain_remove_sub_domain_command}
   DomainRemoveSubDomainCommand({
     Logger? logger,
@@ -22,18 +21,21 @@ class DomainRemoveSubDomainCommand extends Command<int>
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _logger = logger ?? Logger(),
         _project = project ?? Project(),
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+        melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   final Logger _logger;
   final Project _project;
-  final MelosBootstrapCommand _melosBootstrap;
-  final FlutterPubGetCommand _flutterPubGet;
+  @override
+  final MelosBootstrapCommand melosBootstrap;
+  @override
+  final FlutterPubGetCommand flutterPubGet;
+  @override
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+      flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   @override
   String get name => 'sub_domain';
@@ -73,28 +75,24 @@ class DomainRemoveSubDomainCommand extends Command<int>
                     (platform) => _project
                         .platformDirectory(platform: platform)
                         .rootPackage,
-                  );
+                  )
+                  .toList();
 
               for (final rootPackage in activatedPlatformRootPackages) {
                 await rootPackage
                     .unregisterInfrastructurePackage(infrastructurePackage);
               }
 
-              await _melosBootstrap(
-                cwd: _project.path,
-                scope: [
-                  ...activatedPlatformRootPackages.map((e) => e.packageName()),
+              await bootstrap(
+                packages: [
+                  ...activatedPlatformRootPackages,
                 ],
-                logger: _logger,
+                logger: logger,
               );
-
-              for (final rootPackage in activatedPlatformRootPackages) {
-                await _flutterPubGet(cwd: rootPackage.path, logger: _logger);
-                await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-                  cwd: rootPackage.path,
-                  logger: _logger,
-                );
-              }
+              await codeGen(
+                packages: activatedPlatformRootPackages,
+                logger: logger,
+              );
 
               _logger
                 ..info('')

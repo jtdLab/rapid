@@ -1,10 +1,9 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -12,12 +11,8 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template domain_sub_domain_add_service_interface_command}
 /// `rapid domain sub_domain add service_interface` command adds service_interface to the domain part of an existing Rapid project.
 /// {@endtemplate}
-class DomainSubDomainAddServiceInterfaceCommand extends Command<int>
-    with
-        OverridableArgResults,
-        ClassNameGetter,
-        SubDomainGetter,
-        OutputDirGetter {
+class DomainSubDomainAddServiceInterfaceCommand extends RapidRootCommand
+    with ClassNameGetter, SubDomainGetter, OutputDirGetter {
   /// {@macro domain_sub_domain_add_service_interface_command}
   DomainSubDomainAddServiceInterfaceCommand({
     Logger? logger,

@@ -1,6 +1,5 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/deactivate/android/android.dart';
@@ -27,8 +26,7 @@ import 'package:rapid_cli/src/project/project.dart';
 ///
 ///  * [DeactivateWindowsCommand]
 /// {@endtemplate}
-abstract class DeactivatePlatformCommand extends Command<int>
-    with OverridableArgResults {
+abstract class DeactivatePlatformCommand extends RapidRootCommand {
   /// {@macro deactivate_platform_command}
   DeactivatePlatformCommand({
     required Platform platform,

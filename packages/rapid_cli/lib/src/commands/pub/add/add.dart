@@ -1,10 +1,8 @@
-import 'dart:io';
-
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/package_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -15,7 +13,8 @@ import 'package:rapid_cli/src/project/project.dart';
 /// {@template pub_add_command}
 /// `rapid pub add` command add packages in a Rapid environment.
 /// {@endtemplate}
-class PubAddCommand extends Command<int> with OverridableArgResults {
+class PubAddCommand extends RapidNonRootCommand
+    with PackageGetter, GroupableMixin, BootstrapMixin {
   /// {@macro pub_add_command}
   PubAddCommand({
     Logger? logger,
@@ -25,12 +24,17 @@ class PubAddCommand extends Command<int> with OverridableArgResults {
   })  : _logger = logger ?? Logger(),
         _project = project ?? (({String path = '.'}) => Project(path: path)),
         _flutterPubAdd = flutterPubAdd ?? Flutter.pubAdd,
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap;
+        melosBootstrap = melosBootstrap ?? Melos.bootstrap {
+    argParser.addPackageOption(
+      help: 'The package where the command is run.',
+    );
+  }
 
   final Logger _logger;
   final ProjectBuilder _project;
   final FlutterPubAddCommand _flutterPubAdd;
-  final MelosBootstrapCommand _melosBootstrap;
+  @override
+  final MelosBootstrapCommand melosBootstrap;
 
   @override
   String get name => 'add';
@@ -49,9 +53,20 @@ class PubAddCommand extends Command<int> with OverridableArgResults {
         ],
         _logger,
         () async {
-          final rootDir = _findRootDir(Directory.current);
-          final project = _project(path: rootDir.path);
+          var packageName = super.package;
+          if (packageName == null) {
+            final pubspec = PubspecFile();
+            try {
+              packageName = pubspec.readName();
+            } catch (e) {
+              throw UsageException(
+                'This command must either be called from within a package or with a explicit package via the "package" argument.',
+                usage,
+              );
+            }
+          }
           final unparsedPackages = _packages;
+
           final localPackagesToAdd = unparsedPackages
               .where(
                   (e) => !e.trim().startsWith('dev') && e.trim().endsWith(':'))
@@ -68,30 +83,6 @@ class PubAddCommand extends Command<int> with OverridableArgResults {
               .where(
                   (e) => e.trim().startsWith('dev') && !e.trim().endsWith(':'))
               .toList();
-          if (publicPackagesToAdd.isNotEmpty) {
-            await _flutterPubAdd(
-              cwd: '.',
-              packages: publicPackagesToAdd,
-              logger: _logger,
-            );
-          }
-          if (publicDevPackagesToAdd.isNotEmpty) {
-            await _flutterPubAdd(
-              cwd: '.',
-              packages: publicDevPackagesToAdd,
-              logger: _logger,
-            );
-          }
-          final packagePubspec = PubspecFile();
-          for (final localPackage in localPackagesToAdd) {
-            final name = localPackage.trim().split(':').first;
-            packagePubspec.setDependency(name);
-          }
-          for (final localDevPackage in localDevPackagesToAdd) {
-            final name = localDevPackage.trim().split(':')[1];
-            packagePubspec.setDependency(name, dev: true);
-          }
-          final packageName = packagePubspec.readName();
           final projectPackages = <DartPackage>[
             project.diPackage,
             ...project.domainDirectory.domainPackages(),
@@ -109,21 +100,47 @@ class PubAddCommand extends Command<int> with OverridableArgResults {
               project.platformUiPackage(platform: platform),
             ],
           ];
+          // TODO good
+          if (!projectPackages
+              .map((e) => e.packageName())
+              .contains(packageName)) {
+            throw RapidException('Package $packageName not found.');
+          }
+          final package =
+              projectPackages.firstWhere((e) => e.packageName() == packageName);
+          if (publicPackagesToAdd.isNotEmpty) {
+            await _flutterPubAdd(
+              cwd: package.path,
+              packages: publicPackagesToAdd,
+              logger: _logger,
+            );
+          }
+          if (publicDevPackagesToAdd.isNotEmpty) {
+            await _flutterPubAdd(
+              cwd: package.path,
+              packages: publicDevPackagesToAdd,
+              logger: _logger,
+            );
+          }
 
-          final dependingPackageNames = projectPackages
-              .where((e) => e.pubspecFile.hasDependency(packageName))
-              .map((e) => e.pubspecFile.readName())
-              .toList();
+          for (final localPackage in localPackagesToAdd) {
+            final name = localPackage.trim().split(':').first;
+            package.pubspecFile.setDependency(name);
+          }
+          for (final localDevPackage in localDevPackagesToAdd) {
+            final name = localDevPackage.trim().split(':')[1];
+            package.pubspecFile.setDependency(name, dev: true);
+          }
 
-          await _melosBootstrap(
-            cwd: rootDir.path,
-            scope: [
-              if (localPackagesToAdd.isNotEmpty ||
-                  localDevPackagesToAdd.isNotEmpty)
-                packageName,
-              ...dependingPackageNames,
+          final dependingPackages = projectPackages
+              .where((e) => e.pubspecFile.hasDependency(packageName!));
+
+          await bootstrap(
+            packages: [
+              package,
+              ...dependingPackages,
             ],
-            logger: _logger,
+            logger: logger,
           );
 
           _logger
@@ -135,25 +152,6 @@ class PubAddCommand extends Command<int> with OverridableArgResults {
           return ExitCode.success.code;
         },
       );
-
-  // TODO share with remove
-  Directory _findRootDir(Directory dir) {
-    final melosFile = File(p.join(dir.path, 'melos.yaml'));
-    if (melosFile.existsSync()) {
-      return dir;
-    }
-
-    final parent = dir.parent;
-    if (dir.path == parent.path) {
-      throw UsageException(
-        'Could not find Rapid project root.'
-        'Did you call this command from within a Rapid workspace?',
-        usage,
-      );
-    }
-
-    return _findRootDir(parent);
-  }
 
   List<String> get _packages {
     return argResults.rest;

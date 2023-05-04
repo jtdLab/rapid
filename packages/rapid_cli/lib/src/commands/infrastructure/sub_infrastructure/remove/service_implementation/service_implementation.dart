@@ -1,9 +1,8 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/service_option.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
@@ -13,13 +12,8 @@ import 'package:rapid_cli/src/project/project.dart';
 /// `rapid infrastructure sub_infrastructure remove service_implementation` command removes service implementation from the infrastructure part of an existing Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
-    extends Command<int>
-    with
-        OverridableArgResults,
-        ClassNameGetter,
-        SubInfrastructureGetter,
-        ServiceGetter,
-        DirGetter {
+    extends RapidRootCommand
+    with ClassNameGetter, SubInfrastructureGetter, ServiceGetter, DirGetter {
   /// {@macro infrastructure_sub_infrastructure_remove_service_implementation_command}
   InfrastructureSubInfrastructureRemoveServiceImplementationCommand({
     Logger? logger,

@@ -1,8 +1,7 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ui/android/add/widget/widget.dart';
@@ -31,8 +30,8 @@ import 'package:rapid_cli/src/project/project.dart';
 ///
 ///  * [UiWindowsAddWidgetCommand]
 /// {@endtemplate}
-abstract class UiPlatformAddWidgetCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter {
+abstract class UiPlatformAddWidgetCommand extends RapidRootCommand
+    with GroupableMixin, ClassNameGetter {
   /// {@macro ui_platform_add_widget_command}
   UiPlatformAddWidgetCommand({
     required Platform platform,

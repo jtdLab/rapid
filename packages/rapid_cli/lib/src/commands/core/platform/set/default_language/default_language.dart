@@ -1,9 +1,8 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/set/default_language/default_language.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/language_rest.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/platform/core/platform_feature_packages_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -30,8 +29,8 @@ import 'package:rapid_cli/src/project/project.dart';
 ///
 ///  * [WindowsSetDefaultLanguageCommand]
 /// {@endtemplate}
-abstract class PlatformSetDefaultLanguageCommand extends Command<int>
-    with OverridableArgResults, LanguageGetter {
+abstract class PlatformSetDefaultLanguageCommand extends RapidRootCommand
+    with LanguageGetter {
   /// {@macro platform_set_default_language_command}
   PlatformSetDefaultLanguageCommand({
     required Platform platform,

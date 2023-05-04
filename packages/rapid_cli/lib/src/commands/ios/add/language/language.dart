@@ -35,7 +35,7 @@ class IosAddLanguageCommand extends PlatformAddLanguageCommand {
         () async {
           final language = super.language;
 
-          logger.info('Adding Language ...');
+          logger.commandTitle('Adding Language ...');
 
           final platformDirectory =
               project.platformDirectory<IosDirectory>(platform: platform);

@@ -89,7 +89,7 @@ abstract class PlatformAddNavigatorCommand extends RapidRootCommand
         () async {
           final feature = super.feature;
 
-          logger.info(
+          logger.commandTitle(
             'Adding Navigator for Feature "$feature" (${_platform.prettyName})',
           );
 

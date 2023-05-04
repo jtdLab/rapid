@@ -90,7 +90,7 @@ abstract class PlatformRemoveNavigatorCommand extends RapidRootCommand
         () async {
           final feature = super.feature;
 
-          logger.info(
+          logger.commandTitle(
             'Removing Navigator for Feature "$feature" (${_platform.prettyName})',
           );
 

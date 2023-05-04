@@ -3,6 +3,7 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.dart';
@@ -56,7 +57,9 @@ class DomainSubDomainAddServiceInterfaceCommand extends RapidRootCommand
           final domainName = super.subDomain;
           final outputDir = super.outputDir;
 
-          logger.info('Adding Service Interface ...');
+          logger.commandTitle(
+            'Adding Service Interface "$name"${domainName != null ? ' to $domainName' : ''} ...',
+          );
 
           final domainDirectory = project.domainDirectory;
           final domainPackage = domainDirectory.domainPackage(name: domainName);
@@ -74,16 +77,14 @@ class DomainSubDomainAddServiceInterfaceCommand extends RapidRootCommand
 
             await _dartFormatFix(cwd: domainPackage.path, logger: logger);
 
-            logger
-              ..info('')
-              ..success('Added Service Interface I${name}Service.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
             // TODO only name is not enough
-            logger
-              ..info('')
-              ..err('Service Interface I${name}Service already exists.');
+            logger.commandError(
+              'Service Interface I${name}Service already exists.',
+            );
 
             return ExitCode.config.code;
           }

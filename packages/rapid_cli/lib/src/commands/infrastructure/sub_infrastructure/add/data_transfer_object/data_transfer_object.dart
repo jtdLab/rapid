@@ -2,6 +2,7 @@ import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/entity_option.dart';
@@ -60,7 +61,9 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
           final entityName = super.entity;
           final outputDir = super.outputDir;
 
-          logger.info('Adding Data Transfer Object ...');
+          logger.commandTitle(
+            'Adding Data Transfer Object for Entity "$entityName"${infrastructureName != null ? ' to $infrastructureName' : ''} ...',
+          );
 
           final domainDirectory = project.domainDirectory;
           final domainPackage =
@@ -89,22 +92,18 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
                 logger: logger,
               );
 
-              logger
-                ..info('')
-                ..success('Added Data Transfer Object ${entityName}Dto.');
+              logger.commandSuccess();
 
               return ExitCode.success.code;
             } else {
-              logger
-                ..info('')
-                ..err('Data Transfer Object ${entityName}Dto already exists.');
+              logger.commandError(
+                'Data Transfer Object ${entityName}Dto already exists.',
+              );
 
               return ExitCode.config.code;
             }
           } else {
-            logger
-              ..info('')
-              ..err('Entity $entityName does not exist.');
+            logger.commandError('Entity $entityName does not exist.');
 
             return ExitCode.config.code;
           }

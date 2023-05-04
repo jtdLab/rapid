@@ -3,6 +3,7 @@ import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/language_rest.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform/core/platform_feature_packages_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -72,7 +73,9 @@ abstract class PlatformRemoveLanguageCommand extends RapidRootCommand
         () async {
           final language = super.language;
 
-          logger.info('Removing language ...');
+          logger.commandTitle(
+            'Removing Language "$language" (${_platform.prettyName}) ...',
+          );
 
           final platformDirectory =
               project.platformDirectory(platform: _platform);
@@ -80,56 +83,46 @@ abstract class PlatformRemoveLanguageCommand extends RapidRootCommand
               platformDirectory.featuresDirectory.featurePackages();
 
           if (featurePackages.isEmpty) {
-            logger
-              ..info('')
-              ..err(
-                'No ${_platform.prettyName} features found!\n'
-                'Run "rapid ${_platform.name} add feature" to add your first ${_platform.prettyName} feature.',
-              );
+            logger.commandError(
+              'No ${_platform.prettyName} features found!\n'
+              'Run "rapid ${_platform.name} add feature" to add your first ${_platform.prettyName} feature.',
+            );
 
             return ExitCode.config.code;
           }
 
           if (!featurePackages.supportSameLanguages()) {
-            logger
-              ..info('')
-              ..err(
-                'The ${_platform.prettyName} part of your project is corrupted.\n'
-                'Because not all features support the same languages.\n\n'
-                'Run "rapid doctor" to see which features are affected.',
-              );
+            logger.commandError(
+              'The ${_platform.prettyName} part of your project is corrupted.\n'
+              'Because not all features support the same languages.\n\n'
+              'Run "rapid doctor" to see which features are affected.',
+            );
 
             return ExitCode.config.code;
           }
 
           if (!featurePackages.haveSameDefaultLanguage()) {
-            logger
-              ..info('')
-              ..err(
-                'The ${_platform.prettyName} part of your project is corrupted.\n'
-                'Because not all features have the same default language.\n\n'
-                'Run "rapid doctor" to see which features are affected.',
-              );
+            logger.commandError(
+              'The ${_platform.prettyName} part of your project is corrupted.\n'
+              'Because not all features have the same default language.\n\n'
+              'Run "rapid doctor" to see which features are affected.',
+            );
 
             return ExitCode.config.code;
           }
 
           if (!featurePackages.supportLanguage(language)) {
             // TODO better hint
-            logger
-              ..info('')
-              ..err('The language "$language" is not present.');
+            logger.commandError('The language "$language" is not present.');
 
             return ExitCode.config.code;
           }
 
           if (featurePackages.first.defaultLanguage() == language) {
             // TODO add hint how to change default language
-            logger
-              ..info('')
-              ..err(
-                'Can not remove language "$language" because it is the default language.',
-              );
+            logger.commandError(
+              'Can not remove language "$language" because it is the default language.',
+            );
 
             return ExitCode.config.code;
           }
@@ -140,11 +133,7 @@ abstract class PlatformRemoveLanguageCommand extends RapidRootCommand
           }
           await _dartFormatFix(cwd: project.path, logger: logger);
 
-          logger
-            ..info('')
-            ..success(
-              'Removed $language from the ${_platform.prettyName} part of your project.',
-            );
+          logger.commandSuccess();
 
           return ExitCode.success.code;
         },

@@ -2,6 +2,7 @@ import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/entity_option.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
@@ -56,7 +57,9 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
           final entityName = super.entity;
           final dir = super.dir;
 
-          logger.info('Removing Data Transfer Object ...');
+          logger.commandTitle(
+            'Removing Data Transfer Object for Entity "$entityName"${infrastructureName != null ? ' from $infrastructureName' : ''} ...',
+          );
 
           final infrastructureDirectory = project.infrastructureDirectory;
           final infrastructurePackage = infrastructureDirectory
@@ -75,15 +78,15 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
               ),
             );
 
-            logger
-              ..info('')
-              ..success('Removed Data Transfer Object ${entityName}Dto.');
+            logger.commandSuccess(
+              'Removed Data Transfer Object ${entityName}Dto.',
+            );
 
             return ExitCode.success.code;
           } else {
-            logger
-              ..info('')
-              ..err('Data Transfer Object ${entityName}Dto does not exist.');
+            logger.commandError(
+              'Data Transfer Object ${entityName}Dto does not exist.',
+            );
 
             return ExitCode.config.code;
           }

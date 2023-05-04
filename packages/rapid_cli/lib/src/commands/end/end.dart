@@ -5,6 +5,7 @@ import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 
 // TODO impl cleaner + e2e test
@@ -62,29 +63,25 @@ class EndCommand extends RapidRootCommand {
           if (!rapidGroupActive.existsSync() ||
               !rapidNeedBootstrap.existsSync() ||
               !rapidNeedCodeGen.existsSync()) {
-            logger
-              ..info('')
-              ..err(
-                'There is no active group. '
-                'Did you call "rapid begin" before?',
-              );
+            logger.commandError(
+              'There is no active group. '
+              'Did you call "rapid begin" before?',
+            );
 
             return ExitCode.config.code;
           }
 
           final groupActive = rapidGroupActive.readAsStringSync() == 'true';
           if (!groupActive) {
-            logger
-              ..info('')
-              ..err(
-                'There is no active group. '
-                'Did you call "rapid begin" before?',
-              );
+            logger.commandError(
+              'There is no active group. '
+              'Did you call "rapid begin" before?',
+            );
 
             return ExitCode.config.code;
           }
 
-          logger.info('Ending group ...');
+          logger.commandTitle('Ending Command Group ...');
 
           final packagesToBootstrap =
               rapidNeedBootstrap.readAsStringSync().split(',').toSet().toList();
@@ -108,9 +105,7 @@ class EndCommand extends RapidRootCommand {
           rapidNeedBootstrap.writeAsStringSync('');
           rapidNeedCodeGen.writeAsStringSync('');
 
-          logger
-            ..info('')
-            ..success('Ended group!');
+          logger.commandSuccess();
 
           return ExitCode.success.code;
         },

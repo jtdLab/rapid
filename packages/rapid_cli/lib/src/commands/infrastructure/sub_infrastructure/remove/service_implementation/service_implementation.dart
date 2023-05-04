@@ -3,6 +3,7 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/service_option.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
@@ -56,7 +57,9 @@ class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
           final serviceName = super.service;
           final dir = super.dir;
 
-          logger.info('Removing Service Implementation ...');
+          logger.commandTitle(
+            'Removing Service Implementation "$name" for Service Interface "$serviceName"${infrastructureName != null ? ' from $infrastructureName' : ''} ...',
+          );
 
           final infrastructureDirectory = project.infrastructureDirectory;
           final infrastructurePackage = infrastructureDirectory
@@ -81,19 +84,15 @@ class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
               ),
             );
 
-            logger
-              ..info('')
-              ..success(
-                'Removed Service Implementation $name${serviceName}Service.',
-              );
+            logger.commandSuccess(
+              'Removed Service Implementation $name${serviceName}Service.',
+            );
 
             return ExitCode.success.code;
           } else {
-            logger
-              ..info('')
-              ..err(
-                'Service Implementation $name${serviceName}Service does not exist.',
-              );
+            logger.commandError(
+              'Service Implementation $name${serviceName}Service does not exist.',
+            );
 
             return ExitCode.config.code;
           }

@@ -3,6 +3,7 @@ import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dart_package_name_rest.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ios/remove/feature/feature.dart';
@@ -81,7 +82,9 @@ abstract class PlatformRemoveFeatureCommand extends RapidRootCommand
         () async {
           final name = super.dartPackageName;
 
-          logger.info('Removing Feature ...');
+          logger.commandTitle(
+            'Removing Feature "$name" (${_platform.prettyName}) ...',
+          );
 
           final platformDirectory =
               project.platformDirectory(platform: _platform);
@@ -114,17 +117,13 @@ abstract class PlatformRemoveFeatureCommand extends RapidRootCommand
               logger: logger,
             );
 
-            logger
-              ..info('')
-              ..success('Removed ${_platform.prettyName} feature $name.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
-            logger
-              ..info('')
-              ..err(
-                'The feature "$name" does not exist on ${_platform.prettyName}.',
-              );
+            logger.commandError(
+              'The feature "$name" does not exist on ${_platform.prettyName}.',
+            );
 
             return ExitCode.config.code;
           }

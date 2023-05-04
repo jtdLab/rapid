@@ -3,6 +3,7 @@ import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/set/default_language/default_language.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/language_rest.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform/core/platform_feature_packages_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -73,7 +74,9 @@ abstract class PlatformSetDefaultLanguageCommand extends RapidRootCommand
         () async {
           final language = super.language;
 
-          logger.info('Setting default language ...');
+          logger.commandTitle(
+            'Setting "$language" as the Default Language (${_platform.prettyName}) ...',
+          );
 
           final platformDirectory =
               project.platformDirectory(platform: _platform);
@@ -81,53 +84,43 @@ abstract class PlatformSetDefaultLanguageCommand extends RapidRootCommand
               platformDirectory.featuresDirectory.featurePackages();
 
           if (featurePackages.isEmpty) {
-            logger
-              ..info('')
-              ..err(
-                'No ${_platform.prettyName} features found!\n'
-                'Run "rapid ${_platform.name} add feature" to add your first ${_platform.prettyName} feature.',
-              );
+            logger.commandError(
+              'No ${_platform.prettyName} features found!\n'
+              'Run "rapid ${_platform.name} add feature" to add your first ${_platform.prettyName} feature.',
+            );
 
             return ExitCode.config.code;
           }
 
           if (!featurePackages.supportSameLanguages()) {
-            logger
-              ..info('')
-              ..err(
-                  'The ${_platform.prettyName} part of your project is corrupted.\n'
-                  'Because not all features support the same languages.\n\n'
-                  'Run "rapid doctor" to see which features are affected.');
+            logger.commandError(
+                'The ${_platform.prettyName} part of your project is corrupted.\n'
+                'Because not all features support the same languages.\n\n'
+                'Run "rapid doctor" to see which features are affected.');
 
             return ExitCode.config.code;
           }
 
           if (!featurePackages.haveSameDefaultLanguage()) {
-            logger
-              ..info('')
-              ..err(
-                  'The ${_platform.prettyName} part of your project is corrupted.\n'
-                  'Because not all features have the same default language.\n\n'
-                  'Run "rapid doctor" to see which features are affected.');
+            logger.commandError(
+                'The ${_platform.prettyName} part of your project is corrupted.\n'
+                'Because not all features have the same default language.\n\n'
+                'Run "rapid doctor" to see which features are affected.');
 
             return ExitCode.config.code;
           }
 
           if (!featurePackages.supportLanguage(language)) {
             // TODO better hint
-            logger
-              ..info('')
-              ..err('The language "$language" is not present.');
+            logger.commandError('The language "$language" is not present.');
 
             return ExitCode.config.code;
           }
 
           if (featurePackages.first.defaultLanguage() == language) {
-            logger
-              ..info('')
-              ..err(
-                'The language "$language" already is the default language.',
-              );
+            logger.commandError(
+              'The language "$language" already is the default language.',
+            );
 
             return ExitCode.config.code;
           }
@@ -139,14 +132,9 @@ abstract class PlatformSetDefaultLanguageCommand extends RapidRootCommand
           await _dartFormatFix(cwd: project.path, logger: logger);
 
           // TODO add hint how to work with localization
-          logger
-            ..info('')
-            ..success(
-              'Set $language as the default language of the ${_platform.prettyName} part of your project.',
-            );
+          logger.commandSuccess();
 
           return ExitCode.success.code;
-          // TODO Share error messages
         },
       );
 }

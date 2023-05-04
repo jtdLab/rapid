@@ -2,6 +2,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 
 /// {@template ui_add_widget_command}
@@ -36,7 +37,7 @@ class UiAddWidgetCommand extends RapidRootCommand with ClassNameGetter {
         () async {
           final name = super.className;
 
-          logger.info('Adding Widget ...');
+          logger.commandTitle('Adding Widget "$name" ...');
 
           final uiPackage = project.uiPackage;
           // TODO remove dir completly ?
@@ -53,16 +54,12 @@ class UiAddWidgetCommand extends RapidRootCommand with ClassNameGetter {
 
             await _dartFormatFix(cwd: uiPackage.path, logger: logger);
 
-            logger
-              ..info('')
-              ..success('Added Widget $name.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
             // TODO maybe log which files
-            logger
-              ..info('')
-              ..err('Widget $name already exists.');
+            logger.commandError('Widget $name already exists.');
 
             return ExitCode.config.code;
           }

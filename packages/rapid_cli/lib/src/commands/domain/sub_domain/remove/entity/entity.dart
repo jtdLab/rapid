@@ -3,6 +3,7 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.dart';
 
@@ -50,11 +51,14 @@ class DomainSubDomainRemoveEntityCommand extends RapidRootCommand
           final domainName = super.subDomain;
           final dir = super.dir;
 
-          logger.info('Removing Entity ...');
+          logger.commandTitle(
+            'Removing Entity "$name"${domainName != null ? ' from $domainName' : ''} ...',
+          );
 
           final domainDirectory = project.domainDirectory;
           final domainPackage = domainDirectory.domainPackage(name: domainName);
           final entity = domainPackage.entity(name: name, dir: dir);
+          // TODO this does delete a value_object because they have same files
           if (entity.existsAny()) {
             entity.delete();
 
@@ -65,15 +69,11 @@ class DomainSubDomainRemoveEntityCommand extends RapidRootCommand
               ),
             );
 
-            logger
-              ..info('')
-              ..success('Removed Entity $name.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
-            logger
-              ..info('')
-              ..err('Entity $name does not exist.');
+            logger.commandError('Entity $name does not exist.');
 
             return ExitCode.config.code;
           }

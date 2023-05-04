@@ -2,6 +2,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dart_package_name_rest.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 
@@ -52,7 +53,7 @@ class DomainAddSubDomainCommand extends RapidRootCommand
         () async {
           final name = super.dartPackageName;
 
-          logger.info('Adding subdomain ...');
+          logger.commandTitle('Adding Subdomain "$name" ...');
 
           final domainDirectory = project.domainDirectory;
           final domainPackage = domainDirectory.domainPackage(name: name);
@@ -91,22 +92,18 @@ class DomainAddSubDomainCommand extends RapidRootCommand
                 logger: logger,
               );
 
-              logger
-                ..info('')
-                ..success('Added sub domain $name.');
+              logger.commandSuccess();
 
               return ExitCode.success.code;
             } else {
-              logger
-                ..info('')
-                ..err('The subinfrastructure "$name" already exists.');
+              logger.commandError(
+                'The subinfrastructure "$name" already exists.',
+              );
 
               return ExitCode.config.code;
             }
           } else {
-            logger
-              ..info('')
-              ..err('The subdomain "$name" already exists.');
+            logger.commandError('The subdomain "$name" already exists.');
 
             return ExitCode.config.code;
           }

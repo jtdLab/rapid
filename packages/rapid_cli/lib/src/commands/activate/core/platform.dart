@@ -9,6 +9,7 @@ import 'package:rapid_cli/src/commands/activate/macos/macos.dart';
 import 'package:rapid_cli/src/commands/activate/web/web.dart';
 import 'package:rapid_cli/src/commands/activate/windows/windows.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -87,7 +88,7 @@ abstract class ActivatePlatformCommand extends RapidRootCommand
         ],
         logger,
         () async {
-          logger.info('Activating ${platform.prettyName} ...');
+          logger.commandTitle('Activating ${platform.prettyName} ...');
 
           final platformDirectory =
               await createPlatformDirectory(project: project);
@@ -126,9 +127,7 @@ abstract class ActivatePlatformCommand extends RapidRootCommand
 
           await _flutterConfigEnablePlatform(logger: logger);
 
-          logger
-            ..info('')
-            ..success('${platform.prettyName} activated!');
+          logger.commandSuccess();
 
           return ExitCode.success.code;
         },

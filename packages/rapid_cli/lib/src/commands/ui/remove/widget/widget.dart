@@ -1,6 +1,7 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 
 /// {@template ui_remove_widget_command}
@@ -32,7 +33,7 @@ class UiRemoveWidgetCommand extends RapidRootCommand with ClassNameGetter {
         () async {
           final name = super.className;
 
-          logger.info('Removing Widget ...');
+          logger.commandTitle('Removing Widget "$name" ...');
 
           final uiPackage = project.uiPackage;
           // TODO remove dir completly ?
@@ -48,15 +49,11 @@ class UiRemoveWidgetCommand extends RapidRootCommand with ClassNameGetter {
             barrelFile.removeExport('src/${name.snakeCase}.dart');
             barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
 
-            logger
-              ..info('')
-              ..success('Removed Widget $name.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
-            logger
-              ..info('')
-              ..err('Widget $name not found.');
+            logger.commandError('Widget $name not found.');
 
             return ExitCode.config.code;
           }

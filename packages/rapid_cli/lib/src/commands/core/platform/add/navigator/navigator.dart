@@ -2,6 +2,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/navigator/navigator.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/core/feature_option.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -88,7 +89,9 @@ abstract class PlatformAddNavigatorCommand extends RapidRootCommand
         () async {
           final feature = super.feature;
 
-          logger.info('Adding Navigator ...');
+          logger.info(
+            'Adding Navigator for Feature "$feature" (${_platform.prettyName})',
+          );
 
           final platformDirectory =
               project.platformDirectory(platform: _platform);
@@ -115,29 +118,21 @@ abstract class PlatformAddNavigatorCommand extends RapidRootCommand
 
               await _dartFormatFix(cwd: project.path, logger: logger);
 
-              logger
-                ..info('')
-                ..success(
-                  'Added ${_platform.prettyName} navigator "I${feature.pascalCase}Navigator".',
-                );
+              logger.commandSuccess();
 
               return ExitCode.success.code;
             }
 
-            logger
-              ..info('')
-              ..err(
-                'The navigator "I${feature.pascalCase}Navigator" does already exist on ${_platform.prettyName}.',
-              );
+            logger.commandError(
+              'The Navigator "I${feature.pascalCase}Navigator" does already exist on ${_platform.prettyName}.',
+            );
 
             return ExitCode.config.code;
           } else {
             // TODO test
-            logger
-              ..info('')
-              ..err(
-                'The feature "$feature" does not exist on ${_platform.prettyName}.',
-              );
+            logger.commandError(
+              'The Feature "$feature" does not exist on ${_platform.prettyName}.',
+            );
 
             return ExitCode.config.code;
           }

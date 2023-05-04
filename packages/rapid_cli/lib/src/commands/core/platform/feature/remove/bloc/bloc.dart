@@ -5,6 +5,7 @@ import 'package:rapid_cli/src/commands/android/feature/remove/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/core/feature_option.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -96,7 +97,9 @@ class PlatformFeatureRemoveBlocCommand extends RapidRootCommand
         final featureName = super.feature;
         final dir = super.dir;
 
-        logger.info('Removing Bloc ...');
+        logger.commandTitle(
+          'Removing "${name}Bloc" from "$featureName" (${_platform.prettyName}) ...',
+        );
 
         final platformDirectory =
             project.platformDirectory(platform: _platform);
@@ -123,28 +126,20 @@ class PlatformFeatureRemoveBlocCommand extends RapidRootCommand
 
             await codeGen(packages: [featurePackage], logger: logger);
 
-            logger
-              ..info('')
-              ..success(
-                'Removed ${name}Bloc from ${_platform.prettyName} feature $featureName.',
-              );
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
-            logger
-              ..info('')
-              ..err(
-                'The ${name}Bloc does not exist in $featureName on ${_platform.prettyName}.',
-              );
+            logger.commandError(
+              'The ${name}Bloc does not exist in "$featureName" (${_platform.prettyName}).',
+            );
 
             return ExitCode.config.code;
           }
         } else {
-          logger
-            ..info('')
-            ..err(
-              'The feature $featureName does not exist on ${_platform.prettyName}.',
-            );
+          logger.commandError(
+            'The Feature "$featureName" does not exist on ${_platform.prettyName}.',
+          );
 
           return ExitCode.config.code;
         }

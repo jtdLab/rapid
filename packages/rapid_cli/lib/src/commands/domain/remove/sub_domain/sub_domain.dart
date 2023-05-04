@@ -2,6 +2,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dart_package_name_rest.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 
@@ -52,7 +53,7 @@ class DomainRemoveSubDomainCommand extends RapidRootCommand
         () async {
           final name = super.dartPackageName;
 
-          logger.info('Removing subdomain ...');
+          logger.commandTitle('Removing Subdomain "$name" ...');
 
           final domainDirectory = project.domainDirectory;
           final domainPackage = domainDirectory.domainPackage(name: name);
@@ -89,22 +90,18 @@ class DomainRemoveSubDomainCommand extends RapidRootCommand
                 logger: logger,
               );
 
-              logger
-                ..info('')
-                ..success('Removed subdomain $name.');
+              logger.commandSuccess();
 
               return ExitCode.success.code;
             } else {
-              logger
-                ..info('')
-                ..err('The subinfrastructure "$name" does not exist.');
+              logger.commandError(
+                'The subinfrastructure "$name" does not exist.',
+              );
 
               return ExitCode.config.code;
             }
           } else {
-            logger
-              ..info('')
-              ..err('The subdomain "$name" does not exist.');
+            logger.commandError('The subdomain "$name" does not exist.');
 
             return ExitCode.config.code;
           }

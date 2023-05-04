@@ -4,6 +4,7 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/package_option.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -57,7 +58,6 @@ class PubRemoveCommand extends RapidNonRootCommand
       }
     }
     final packages = _packages;
-
     final projectPackages = <DartPackage>[
       project.diPackage,
       ...project.domainDirectory.domainPackages(),
@@ -81,6 +81,8 @@ class PubRemoveCommand extends RapidNonRootCommand
       throw RapidException('Package $packageName not found.');
     }
 
+    logger.commandTitle('Removing Dependencies from "$packageName" ...');
+
     final package =
         projectPackages.firstWhere((e) => e.packageName() == packageName);
 
@@ -101,11 +103,7 @@ class PubRemoveCommand extends RapidNonRootCommand
       logger: logger,
     );
 
-    logger
-      ..info('')
-      ..success(
-        'Removed ${packages.join(', ')} from $packageName.',
-      );
+    logger.commandSuccess('Removed ${packages.join(', ')} from $packageName!');
 
     return ExitCode.success.code;
   }

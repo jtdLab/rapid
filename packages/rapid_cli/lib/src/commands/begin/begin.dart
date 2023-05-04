@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 
 // TODO impl cleaner + e2e test
@@ -59,21 +60,17 @@ class BeginCommand extends RapidRootCommand {
 
           final groupActive = rapidGroupActive.readAsStringSync() == 'true';
           if (groupActive) {
-            logger
-              ..info('')
-              ..err(
-                'There is already an active group. '
-                'Call "rapid end" to complete it.',
-              );
+            logger.commandError(
+              'There is already an active group. '
+              'Call "rapid end" to complete it.',
+            );
 
             return ExitCode.config.code;
           }
 
           rapidGroupActive.writeAsStringSync('true');
 
-          logger
-            ..info('')
-            ..success('Begin group!');
+          logger.commandTitle('Beginning Command Group ...');
 
           return ExitCode.success.code;
         },

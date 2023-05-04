@@ -2,6 +2,7 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/package_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
@@ -61,24 +62,6 @@ class PubAddCommand extends RapidNonRootCommand
               );
             }
           }
-          final unparsedPackages = _packages;
-
-          final localPackagesToAdd = unparsedPackages
-              .where(
-                  (e) => !e.trim().startsWith('dev') && e.trim().endsWith(':'))
-              .toList();
-          final localDevPackagesToAdd = unparsedPackages
-              .where(
-                  (e) => e.trim().startsWith('dev') && e.trim().endsWith(':'))
-              .toList();
-          final publicPackagesToAdd = unparsedPackages
-              .where(
-                  (e) => !e.trim().startsWith('dev') && !e.trim().endsWith(':'))
-              .toList();
-          final publicDevPackagesToAdd = unparsedPackages
-              .where(
-                  (e) => e.trim().startsWith('dev') && !e.trim().endsWith(':'))
-              .toList();
           final projectPackages = <DartPackage>[
             project.diPackage,
             ...project.domainDirectory.domainPackages(),
@@ -102,6 +85,28 @@ class PubAddCommand extends RapidNonRootCommand
               .contains(packageName)) {
             throw RapidException('Package $packageName not found.');
           }
+
+          final unparsedPackages = _packages;
+
+          logger.commandTitle('Adding Dependencies to "$packageName" ...');
+
+          final localPackagesToAdd = unparsedPackages
+              .where(
+                  (e) => !e.trim().startsWith('dev') && e.trim().endsWith(':'))
+              .toList();
+          final localDevPackagesToAdd = unparsedPackages
+              .where(
+                  (e) => e.trim().startsWith('dev') && e.trim().endsWith(':'))
+              .toList();
+          final publicPackagesToAdd = unparsedPackages
+              .where(
+                  (e) => !e.trim().startsWith('dev') && !e.trim().endsWith(':'))
+              .toList();
+          final publicDevPackagesToAdd = unparsedPackages
+              .where(
+                  (e) => e.trim().startsWith('dev') && !e.trim().endsWith(':'))
+              .toList();
+
           final package =
               projectPackages.firstWhere((e) => e.packageName() == packageName);
           if (publicPackagesToAdd.isNotEmpty) {
@@ -139,11 +144,9 @@ class PubAddCommand extends RapidNonRootCommand
             logger: logger,
           );
 
-          logger
-            ..info('')
-            ..success(
-              'Added ${unparsedPackages.length == 1 ? unparsedPackages.first : unparsedPackages.join(', ')} to $packageName.',
-            );
+          logger.commandSuccess(
+            'Added ${unparsedPackages.length == 1 ? unparsedPackages.first : unparsedPackages.join(', ')} to $packageName!',
+          );
 
           return ExitCode.success.code;
         },

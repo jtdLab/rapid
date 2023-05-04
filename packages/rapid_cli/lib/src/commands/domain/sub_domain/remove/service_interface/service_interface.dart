@@ -3,6 +3,7 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.dart';
 
@@ -52,7 +53,9 @@ class DomainSubDomainRemoveServiceInterfaceCommand extends RapidRootCommand
           final domainName = super.subDomain;
           final dir = super.dir;
 
-          logger.info('Removing Service Interface ...');
+          logger.commandTitle(
+            'Removing Service Interface "$name"${domainName != null ? ' from $domainName' : ''} ...',
+          );
 
           final domainDirectory = project.domainDirectory;
           final domainPackage = domainDirectory.domainPackage(name: domainName);
@@ -68,15 +71,13 @@ class DomainSubDomainRemoveServiceInterfaceCommand extends RapidRootCommand
               ),
             );
 
-            logger
-              ..info('')
-              ..success('Removed Service Interface I${name}Service.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
-            logger
-              ..info('')
-              ..err('Service Interface I${name}Service does not exist.');
+            logger.commandError(
+              'Service Interface I${name}Service does not exist.',
+            );
 
             return ExitCode.config.code;
           }

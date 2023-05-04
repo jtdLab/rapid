@@ -2,6 +2,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ui/android/add/widget/widget.dart';
@@ -68,7 +69,9 @@ abstract class UiPlatformAddWidgetCommand extends RapidRootCommand
         () async {
           final name = super.className;
 
-          logger.info('Adding ${_platform.prettyName} Widget ...');
+          logger.commandTitle(
+            'Adding Widget "$name" (${_platform.prettyName}) ...',
+          );
 
           final platformUiPackage =
               project.platformUiPackage(platform: _platform);
@@ -86,18 +89,14 @@ abstract class UiPlatformAddWidgetCommand extends RapidRootCommand
 
             await _dartFormatFix(cwd: platformUiPackage.path, logger: logger);
 
-            logger
-              ..info('')
-              ..success('Added ${_platform.prettyName} Widget $name.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
             // TODO maybe log which files
-            logger
-              ..info('')
-              ..err(
-                '${_platform.prettyName} Widget $name already exists.',
-              );
+            logger.commandError(
+              '${_platform.prettyName} Widget $name already exists.',
+            );
 
             return ExitCode.config.code;
           }

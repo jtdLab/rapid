@@ -3,6 +3,7 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.dart';
@@ -86,7 +87,9 @@ class DomainSubDomainAddValueObjectCommand extends RapidRootCommand
           final type = _type;
           final generics = _generics;
 
-          logger.info('Adding Value Object ...');
+          logger.commandTitle(
+            'Adding Value Object "$name"${domainName != null ? ' to $domainName' : ''} ...',
+          );
 
           final domainDirectory = project.domainDirectory;
           final domainPackage = domainDirectory.domainPackage(name: domainName);
@@ -108,15 +111,11 @@ class DomainSubDomainAddValueObjectCommand extends RapidRootCommand
             await codeGen(packages: [domainPackage], logger: logger);
             await _dartFormatFix(cwd: domainPackage.path, logger: logger);
 
-            logger
-              ..info('')
-              ..success('Added Value Object $name.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
-            logger
-              ..info('')
-              ..err('Entity or Value Object $name already exists.');
+            logger.commandError('Entity or Value Object $name already exists.');
 
             return ExitCode.config.code;
           }

@@ -3,6 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/language_option.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
@@ -154,9 +155,7 @@ class CreateCommand extends RapidCommand
           final outputDir = super.outputDir;
           final project = _project(path: outputDir);
           if (project.exists() && !project.isEmpty) {
-            logger
-              ..info('')
-              ..err('Output directory must be empty.');
+            logger.commandError('Output directory must be empty.');
 
             return ExitCode.config.code;
           }
@@ -172,7 +171,7 @@ class CreateCommand extends RapidCommand
           final web = _web || _all;
           final windows = _windows || _desktop || _all;
 
-          logger.info('Creating Rapid App ...');
+          logger.commandTitle('Creating Rapid App ...');
 
           final platforms = {
             if (android) Platform.android,
@@ -183,6 +182,7 @@ class CreateCommand extends RapidCommand
             if (windows) Platform.windows,
           };
 
+          final generateProgress = logger.progress('Generating files');
           await project.create(
             projectName: projectName,
             description: description,
@@ -190,6 +190,7 @@ class CreateCommand extends RapidCommand
             language: language,
             platforms: platforms,
           );
+          generateProgress.complete();
 
           await _melosExecFlutterPubGet(cwd: project.path, logger: logger);
           for (final platform in platforms) {
@@ -229,9 +230,7 @@ class CreateCommand extends RapidCommand
             await _flutterConfigEnableWindows(logger: logger);
           }
 
-          logger
-            ..info('')
-            ..success('Created a Rapid App!');
+          logger.commandSuccess('Created a Rapid App!');
 
           return ExitCode.success.code;
         },

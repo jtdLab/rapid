@@ -1,6 +1,7 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ui/android/remove/widget/widget.dart';
@@ -62,7 +63,9 @@ abstract class UiPlatformRemoveWidgetCommand extends RapidRootCommand
         () async {
           final name = super.className;
 
-          logger.info('Removing ${_platform.prettyName} Widget ...');
+          logger.commandTitle(
+            'Removing Widget "$name" (${_platform.prettyName}) ...',
+          );
 
           final platformUiPackage =
               project.platformUiPackage(platform: _platform);
@@ -79,15 +82,13 @@ abstract class UiPlatformRemoveWidgetCommand extends RapidRootCommand
             barrelFile.removeExport('src/${name.snakeCase}.dart');
             barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
 
-            logger
-              ..info('')
-              ..success('Removed ${_platform.prettyName} Widget $name.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
-            logger
-              ..info('')
-              ..err('${_platform.prettyName} Widget $name not found.');
+            logger.commandError(
+              '${_platform.prettyName} Widget $name not found.',
+            );
 
             return ExitCode.config.code;
           }

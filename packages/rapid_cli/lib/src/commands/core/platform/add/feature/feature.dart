@@ -3,6 +3,7 @@ import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dart_package_name_rest.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ios/add/feature/feature.dart';
@@ -109,13 +110,14 @@ abstract class PlatformAddFeatureCommand extends RapidRootCommand
           final description = _description;
           final routing = _routing;
 
-          logger.info('Adding Feature ...');
-
           final platformDirectory =
               project.platformDirectory(platform: _platform);
           final featuresDirectory = platformDirectory.featuresDirectory;
           final featurePackage = featuresDirectory.featurePackage(name: name);
           if (!featurePackage.exists()) {
+            logger.commandTitle(
+              'Adding Feature "$name" (${_platform.prettyName}) ...',
+            );
             final rootPackage = platformDirectory.rootPackage;
             await featurePackage.create(
               description: description,
@@ -142,18 +144,14 @@ abstract class PlatformAddFeatureCommand extends RapidRootCommand
             await _dartFormatFix(cwd: project.path, logger: logger);
 
             // TODO add link doc to navigation and routing approach
-            logger
-              ..info('')
-              ..success('Added ${_platform.prettyName} feature $name.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
             // TODO test
-            logger
-              ..info('')
-              ..err(
-                'The feature "$name" does already on ${_platform.prettyName}.',
-              );
+            logger.commandError(
+              'The Feature "$name" does already exist on ${_platform.prettyName}.',
+            );
 
             return ExitCode.config.code;
           }

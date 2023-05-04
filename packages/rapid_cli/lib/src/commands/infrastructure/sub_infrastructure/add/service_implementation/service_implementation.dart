@@ -3,6 +3,7 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/service_option.dart';
@@ -65,7 +66,9 @@ class InfrastructureSubInfrastructureAddServiceImplementationCommand
           final serviceName = super.service;
           final outputDir = super.outputDir;
 
-          logger.info('Adding Service Implementation ...');
+          logger.commandTitle(
+            'Adding Service Implementation "$name" for Service Interface "$serviceName"${infrastructureName != null ? ' to $infrastructureName' : ''} ...',
+          );
 
           final domainDirectory = project.domainDirectory;
           final domainPackage =
@@ -102,28 +105,21 @@ class InfrastructureSubInfrastructureAddServiceImplementationCommand
                 logger: logger,
               );
 
-              // Move component name to the component as a getter
               // TODO better hint containg related service etc
-              logger
-                ..info('')
-                ..success(
-                  'Added Service Implementation $name${serviceName}Service.',
-                );
+              logger.commandSuccess();
 
               return ExitCode.success.code;
             } else {
-              logger
-                ..info('')
-                ..err(
-                  'Service Implementation $name${serviceName}Service already exists.',
-                );
+              logger.commandError(
+                'Service Implementation $name${serviceName}Service already exists.',
+              );
 
               return ExitCode.config.code;
             }
           } else {
-            logger
-              ..info('')
-              ..err('Service Interface I${serviceName}Service does not exist.');
+            logger.commandError(
+              'Service Interface I${serviceName}Service does not exist.',
+            );
 
             return ExitCode.config.code;
           }

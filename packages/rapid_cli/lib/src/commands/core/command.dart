@@ -21,8 +21,14 @@ mixin GroupableMixin on RapidCommandWithProject {
   String get dotRapidNeedCodeGen => p.join(dotRapidTool, 'need-code-gen');
 
   /// Wheter the command is running as a part of a Rapid command group.
-  bool get groupActive =>
-      File(dotRapidGroupActive).readAsStringSync() == 'true';
+  bool get groupActive {
+    final file = File(dotRapidGroupActive);
+    if (file.existsSync()) {
+      return file.readAsStringSync() == 'true';
+    }
+
+    return false;
+  }
 }
 
 mixin BootstrapMixin on GroupableMixin {

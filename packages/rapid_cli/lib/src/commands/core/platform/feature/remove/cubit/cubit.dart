@@ -14,7 +14,6 @@ import 'package:rapid_cli/src/commands/macos/feature/remove/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/web/feature/remove/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/windows/feature/remove/cubit/cubit.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 // TODO share code with remove cubit command
 
@@ -43,14 +42,12 @@ class PlatformFeatureRemoveCubitCommand extends RapidRootCommand
   /// {@macro platform_feature_remove_cubit_command}
   PlatformFeatureRemoveCubitCommand({
     required Platform platform,
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
-        _logger = logger ?? Logger(),
-        _project = project ?? Project(),
         flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
@@ -69,8 +66,6 @@ class PlatformFeatureRemoveCubitCommand extends RapidRootCommand
   }
 
   final Platform _platform;
-  final Logger _logger;
-  final Project _project;
   @override
   final FlutterPubGetCommand flutterPubGet;
   @override
@@ -90,21 +85,21 @@ class PlatformFeatureRemoveCubitCommand extends RapidRootCommand
 
   @override
   Future<int> run() => runWhen([
-        projectExistsAll(_project),
+        projectExistsAll(project),
         platformIsActivated(
           _platform,
-          _project,
+          project,
           '${_platform.prettyName} is not activated.',
         ),
-      ], _logger, () async {
+      ], logger, () async {
         final name = super.className;
         final featureName = super.feature;
         final dir = super.dir;
 
-        _logger.info('Removing Cubit ...');
+        logger.info('Removing Cubit ...');
 
         final platformDirectory =
-            _project.platformDirectory(platform: _platform);
+            project.platformDirectory(platform: _platform);
         final featuresDirectory = platformDirectory.featuresDirectory;
         final featurePackage =
             featuresDirectory.featurePackage(name: featureName);
@@ -128,7 +123,7 @@ class PlatformFeatureRemoveCubitCommand extends RapidRootCommand
 
             await codeGen(packages: [featurePackage], logger: logger);
 
-            _logger
+            logger
               ..info('')
               ..success(
                 'Removed ${name}Cubit from ${_platform.prettyName} feature $featureName.',
@@ -136,7 +131,7 @@ class PlatformFeatureRemoveCubitCommand extends RapidRootCommand
 
             return ExitCode.success.code;
           } else {
-            _logger
+            logger
               ..info('')
               ..err(
                 'The ${name}Cubit does not exist in $featureName on ${_platform.prettyName}.',
@@ -145,7 +140,7 @@ class PlatformFeatureRemoveCubitCommand extends RapidRootCommand
             return ExitCode.config.code;
           }
         } else {
-          _logger
+          logger
             ..info('')
             ..err(
               'The feature $featureName does not exist on ${_platform.prettyName}.',

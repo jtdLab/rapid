@@ -12,7 +12,6 @@ import 'package:rapid_cli/src/commands/macos/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/web/remove/language/language.dart';
 import 'package:rapid_cli/src/commands/windows/remove/language/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template platform_remove_language_command}
 /// Base class for:
@@ -34,19 +33,15 @@ abstract class PlatformRemoveLanguageCommand extends RapidRootCommand
   /// {@macro platform_remove_language_command}
   PlatformRemoveLanguageCommand({
     required Platform platform,
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     FlutterGenl10nCommand? flutterGenl10n,
     DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
-        _logger = logger ?? Logger(),
-        _project = project ?? Project(),
         _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
         _dartFormatFix = dartFormatFix ?? Dart.formatFix;
 
   final Platform _platform;
-  final Logger _logger;
-  final Project _project;
   final FlutterGenl10nCommand _flutterGenl10n;
   final DartFormatFixCommand _dartFormatFix;
 
@@ -66,26 +61,26 @@ abstract class PlatformRemoveLanguageCommand extends RapidRootCommand
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
+          projectExistsAll(project),
           platformIsActivated(
             _platform,
-            _project,
+            project,
             '${_platform.prettyName} is not activated.',
           ),
         ],
-        _logger,
+        logger,
         () async {
           final language = super.language;
 
-          _logger.info('Removing language ...');
+          logger.info('Removing language ...');
 
           final platformDirectory =
-              _project.platformDirectory(platform: _platform);
+              project.platformDirectory(platform: _platform);
           final featurePackages =
               platformDirectory.featuresDirectory.featurePackages();
 
           if (featurePackages.isEmpty) {
-            _logger
+            logger
               ..info('')
               ..err(
                 'No ${_platform.prettyName} features found!\n'
@@ -96,7 +91,7 @@ abstract class PlatformRemoveLanguageCommand extends RapidRootCommand
           }
 
           if (!featurePackages.supportSameLanguages()) {
-            _logger
+            logger
               ..info('')
               ..err(
                 'The ${_platform.prettyName} part of your project is corrupted.\n'
@@ -108,7 +103,7 @@ abstract class PlatformRemoveLanguageCommand extends RapidRootCommand
           }
 
           if (!featurePackages.haveSameDefaultLanguage()) {
-            _logger
+            logger
               ..info('')
               ..err(
                 'The ${_platform.prettyName} part of your project is corrupted.\n'
@@ -121,7 +116,7 @@ abstract class PlatformRemoveLanguageCommand extends RapidRootCommand
 
           if (!featurePackages.supportLanguage(language)) {
             // TODO better hint
-            _logger
+            logger
               ..info('')
               ..err('The language "$language" is not present.');
 
@@ -130,7 +125,7 @@ abstract class PlatformRemoveLanguageCommand extends RapidRootCommand
 
           if (featurePackages.first.defaultLanguage() == language) {
             // TODO add hint how to change default language
-            _logger
+            logger
               ..info('')
               ..err(
                 'Can not remove language "$language" because it is the default language.',
@@ -141,11 +136,11 @@ abstract class PlatformRemoveLanguageCommand extends RapidRootCommand
 
           for (final featurePackage in featurePackages) {
             await featurePackage.removeLanguage(language);
-            await _flutterGenl10n(cwd: featurePackage.path, logger: _logger);
+            await _flutterGenl10n(cwd: featurePackage.path, logger: logger);
           }
-          await _dartFormatFix(cwd: _project.path, logger: _logger);
+          await _dartFormatFix(cwd: project.path, logger: logger);
 
-          _logger
+          logger
             ..info('')
             ..success(
               'Removed $language from the ${_platform.prettyName} part of your project.',

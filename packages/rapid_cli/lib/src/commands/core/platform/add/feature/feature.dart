@@ -11,7 +11,6 @@ import 'package:rapid_cli/src/commands/macos/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/web/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/windows/add/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// The default description.
 const _defaultDescription = 'A Rapid feature.';
@@ -36,8 +35,8 @@ abstract class PlatformAddFeatureCommand extends RapidRootCommand
   /// {@macro platform_add_feature_command}
   PlatformAddFeatureCommand({
     required Platform platform,
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     MelosBootstrapCommand? melosBootstrap,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
@@ -45,8 +44,6 @@ abstract class PlatformAddFeatureCommand extends RapidRootCommand
     FlutterGenl10nCommand? flutterGenl10n,
     DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
-        _logger = logger ?? Logger(),
-        _project = project ?? Project(),
         melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
@@ -72,8 +69,6 @@ abstract class PlatformAddFeatureCommand extends RapidRootCommand
   }
 
   final Platform _platform;
-  final Logger _logger;
-  final Project _project;
   @override
   final MelosBootstrapCommand melosBootstrap;
   @override
@@ -101,23 +96,23 @@ abstract class PlatformAddFeatureCommand extends RapidRootCommand
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
+          projectExistsAll(project),
           platformIsActivated(
             _platform,
-            _project,
+            project,
             '${_platform.prettyName} is not activated.',
           ),
         ],
-        _logger,
+        logger,
         () async {
           final name = super.dartPackageName;
           final description = _description;
           final routing = _routing;
 
-          _logger.info('Adding Feature ...');
+          logger.info('Adding Feature ...');
 
           final platformDirectory =
-              _project.platformDirectory(platform: _platform);
+              project.platformDirectory(platform: _platform);
           final featuresDirectory = platformDirectory.featuresDirectory;
           final featurePackage = featuresDirectory.featurePackage(name: name);
           if (!featurePackage.exists()) {
@@ -142,19 +137,19 @@ abstract class PlatformAddFeatureCommand extends RapidRootCommand
               logger: logger,
             );
 
-            await _flutterGenl10n(cwd: featurePackage.path, logger: _logger);
+            await _flutterGenl10n(cwd: featurePackage.path, logger: logger);
 
-            await _dartFormatFix(cwd: _project.path, logger: _logger);
+            await _dartFormatFix(cwd: project.path, logger: logger);
 
             // TODO add link doc to navigation and routing approach
-            _logger
+            logger
               ..info('')
               ..success('Added ${_platform.prettyName} feature $name.');
 
             return ExitCode.success.code;
           } else {
             // TODO test
-            _logger
+            logger
               ..info('')
               ..err(
                 'The feature "$name" does already on ${_platform.prettyName}.',

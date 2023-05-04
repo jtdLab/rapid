@@ -12,7 +12,6 @@ import 'package:rapid_cli/src/commands/macos/set/default_language/default_langua
 import 'package:rapid_cli/src/commands/web/set/default_language/default_language.dart';
 import 'package:rapid_cli/src/commands/windows/set/default_language/default_language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template platform_set_default_language_command}
 /// Base class for:
@@ -34,19 +33,15 @@ abstract class PlatformSetDefaultLanguageCommand extends RapidRootCommand
   /// {@macro platform_set_default_language_command}
   PlatformSetDefaultLanguageCommand({
     required Platform platform,
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     FlutterGenl10nCommand? flutterGenl10n,
     DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
-        _logger = logger ?? Logger(),
-        _project = project ?? Project(),
         _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
         _dartFormatFix = dartFormatFix ?? Dart.formatFix;
 
   final Platform _platform;
-  final Logger _logger;
-  final Project _project;
   final FlutterGenl10nCommand _flutterGenl10n;
   final DartFormatFixCommand _dartFormatFix;
 
@@ -67,26 +62,26 @@ abstract class PlatformSetDefaultLanguageCommand extends RapidRootCommand
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
+          projectExistsAll(project),
           platformIsActivated(
             _platform,
-            _project,
+            project,
             '${_platform.prettyName} is not activated.',
           ),
         ],
-        _logger,
+        logger,
         () async {
           final language = super.language;
 
-          _logger.info('Setting default language ...');
+          logger.info('Setting default language ...');
 
           final platformDirectory =
-              _project.platformDirectory(platform: _platform);
+              project.platformDirectory(platform: _platform);
           final featurePackages =
               platformDirectory.featuresDirectory.featurePackages();
 
           if (featurePackages.isEmpty) {
-            _logger
+            logger
               ..info('')
               ..err(
                 'No ${_platform.prettyName} features found!\n'
@@ -97,7 +92,7 @@ abstract class PlatformSetDefaultLanguageCommand extends RapidRootCommand
           }
 
           if (!featurePackages.supportSameLanguages()) {
-            _logger
+            logger
               ..info('')
               ..err(
                   'The ${_platform.prettyName} part of your project is corrupted.\n'
@@ -108,7 +103,7 @@ abstract class PlatformSetDefaultLanguageCommand extends RapidRootCommand
           }
 
           if (!featurePackages.haveSameDefaultLanguage()) {
-            _logger
+            logger
               ..info('')
               ..err(
                   'The ${_platform.prettyName} part of your project is corrupted.\n'
@@ -120,7 +115,7 @@ abstract class PlatformSetDefaultLanguageCommand extends RapidRootCommand
 
           if (!featurePackages.supportLanguage(language)) {
             // TODO better hint
-            _logger
+            logger
               ..info('')
               ..err('The language "$language" is not present.');
 
@@ -128,7 +123,7 @@ abstract class PlatformSetDefaultLanguageCommand extends RapidRootCommand
           }
 
           if (featurePackages.first.defaultLanguage() == language) {
-            _logger
+            logger
               ..info('')
               ..err(
                 'The language "$language" already is the default language.',
@@ -139,12 +134,12 @@ abstract class PlatformSetDefaultLanguageCommand extends RapidRootCommand
 
           for (final featurePackage in featurePackages) {
             await featurePackage.setDefaultLanguage(language);
-            await _flutterGenl10n(cwd: featurePackage.path, logger: _logger);
+            await _flutterGenl10n(cwd: featurePackage.path, logger: logger);
           }
-          await _dartFormatFix(cwd: _project.path, logger: _logger);
+          await _dartFormatFix(cwd: project.path, logger: logger);
 
           // TODO add hint how to work with localization
-          _logger
+          logger
             ..info('')
             ..success(
               'Set $language as the default language of the ${_platform.prettyName} part of your project.',

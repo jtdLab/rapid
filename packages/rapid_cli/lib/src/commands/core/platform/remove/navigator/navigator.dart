@@ -11,7 +11,6 @@ import 'package:rapid_cli/src/commands/macos/remove/navigator/navigator.dart';
 import 'package:rapid_cli/src/commands/web/remove/navigator/navigator.dart';
 import 'package:rapid_cli/src/commands/windows/remove/navigator/navigator.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template platform_remove_navigator_command}
 /// Base class for:
@@ -33,15 +32,13 @@ abstract class PlatformRemoveNavigatorCommand extends RapidRootCommand
   /// {@macro platform_remove_navigator_command}
   PlatformRemoveNavigatorCommand({
     required Platform platform,
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
-        _logger = logger ?? Logger(),
-        _project = project ?? Project(),
         flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
@@ -57,8 +54,6 @@ abstract class PlatformRemoveNavigatorCommand extends RapidRootCommand
   }
 
   final Platform _platform;
-  final Logger _logger;
-  final Project _project;
   @override
   final FlutterPubGetCommand flutterPubGet;
   @override
@@ -83,21 +78,21 @@ abstract class PlatformRemoveNavigatorCommand extends RapidRootCommand
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
+          projectExistsAll(project),
           platformIsActivated(
             _platform,
-            _project,
+            project,
             '${_platform.prettyName} is not activated.',
           ),
         ],
-        _logger,
+        logger,
         () async {
           final feature = super.feature;
 
-          _logger.info('Removing Navigator ...');
+          logger.info('Removing Navigator ...');
 
           final platformDirectory =
-              _project.platformDirectory(platform: _platform);
+              project.platformDirectory(platform: _platform);
           final featuresDirectory = platformDirectory.featuresDirectory;
           final featurePackage =
               featuresDirectory.featurePackage(name: feature);
@@ -119,9 +114,9 @@ abstract class PlatformRemoveNavigatorCommand extends RapidRootCommand
 
               await codeGen(packages: [featurePackage], logger: logger);
 
-              await _dartFormatFix(cwd: _project.path, logger: _logger);
+              await _dartFormatFix(cwd: project.path, logger: logger);
 
-              _logger
+              logger
                 ..info('')
                 ..success(
                   'Removed ${_platform.prettyName} navigator "I${feature.pascalCase}Navigator".',
@@ -130,7 +125,7 @@ abstract class PlatformRemoveNavigatorCommand extends RapidRootCommand
               return ExitCode.success.code;
             }
 
-            _logger
+            logger
               ..info('')
               ..err(
                 'The navigator "I${feature.pascalCase}Navigator" does not exist on ${_platform.prettyName}.',
@@ -139,7 +134,7 @@ abstract class PlatformRemoveNavigatorCommand extends RapidRootCommand
             return ExitCode.config.code;
           } else {
             // TODO test
-            _logger
+            logger
               ..info('')
               ..err(
                 'The feature "$feature" does not exist on ${_platform.prettyName}.',

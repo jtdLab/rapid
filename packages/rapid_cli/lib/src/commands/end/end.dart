@@ -6,7 +6,6 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 // TODO impl cleaner + e2e test
 
@@ -15,22 +14,18 @@ import 'package:rapid_cli/src/project/project.dart';
 class EndCommand extends RapidRootCommand {
   /// {@macro end_command}
   EndCommand({
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     MelosBootstrapCommand? melosBootstrap,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? Project(),
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+  })  : _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs;
 
-  final Logger _logger;
-  final Project _project;
   final MelosBootstrapCommand _melosBootstrap;
   final FlutterPubGetCommand _flutterPubGet;
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
@@ -47,8 +42,8 @@ class EndCommand extends RapidRootCommand {
 
   @override
   Future<int> run() => runWhen(
-        [projectExistsAll(_project)],
-        _logger,
+        [projectExistsAll(project)],
+        logger,
         () async {
           final dotRapidTool = '.rapid_tool';
 
@@ -67,7 +62,7 @@ class EndCommand extends RapidRootCommand {
           if (!rapidGroupActive.existsSync() ||
               !rapidNeedBootstrap.existsSync() ||
               !rapidNeedCodeGen.existsSync()) {
-            _logger
+            logger
               ..info('')
               ..err(
                 'There is no active group. '
@@ -79,7 +74,7 @@ class EndCommand extends RapidRootCommand {
 
           final groupActive = rapidGroupActive.readAsStringSync() == 'true';
           if (!groupActive) {
-            _logger
+            logger
               ..info('')
               ..err(
                 'There is no active group. '
@@ -89,21 +84,23 @@ class EndCommand extends RapidRootCommand {
             return ExitCode.config.code;
           }
 
+          logger.info('Ending group ...');
+
           final packagesToBootstrap =
               rapidNeedBootstrap.readAsStringSync().split(',').toSet().toList();
           await _melosBootstrap(
             cwd: '.',
-            logger: _logger,
+            logger: logger,
             scope: packagesToBootstrap,
           );
 
           final packagesToCodeGen =
               rapidNeedCodeGen.readAsStringSync().split(',').toSet().toList();
           for (final packageToCodeGen in packagesToCodeGen) {
-            await _flutterPubGet(cwd: packageToCodeGen, logger: _logger);
+            await _flutterPubGet(cwd: packageToCodeGen, logger: logger);
             await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
               cwd: packageToCodeGen,
-              logger: _logger,
+              logger: logger,
             );
           }
 
@@ -111,7 +108,7 @@ class EndCommand extends RapidRootCommand {
           rapidNeedBootstrap.writeAsStringSync('');
           rapidNeedCodeGen.writeAsStringSync('');
 
-          _logger
+          logger
             ..info('')
             ..success('Ended group!');
 

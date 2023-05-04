@@ -6,7 +6,6 @@ import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/service_option.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template infrastructure_sub_infrastructure_remove_service_implementation_command}
 /// `rapid infrastructure sub_infrastructure remove service_implementation` command removes service implementation from the infrastructure part of an existing Rapid project.
@@ -16,10 +15,9 @@ class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
     with ClassNameGetter, SubInfrastructureGetter, ServiceGetter, DirGetter {
   /// {@macro infrastructure_sub_infrastructure_remove_service_implementation_command}
   InfrastructureSubInfrastructureRemoveServiceImplementationCommand({
-    Logger? logger,
-    Project? project,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? Project() {
+    super.logger,
+    super.project,
+  }) {
     argParser
       ..addSeparator('')
       ..addSubInfrastructureOption(
@@ -33,9 +31,6 @@ class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
         help: 'The directory relative to <infrastructure_package>/lib/ .',
       );
   }
-
-  final Logger _logger;
-  final Project _project;
 
   @override
   String get name => 'service_implementation';
@@ -53,17 +48,17 @@ class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
 
   @override
   Future<int> run() => runWhen(
-        [projectExistsAll(_project)],
-        _logger,
+        [projectExistsAll(project)],
+        logger,
         () async {
           final name = super.className;
           final infrastructureName = super.subInfrastructure;
           final serviceName = super.service;
           final dir = super.dir;
 
-          _logger.info('Removing Service Implementation ...');
+          logger.info('Removing Service Implementation ...');
 
-          final infrastructureDirectory = _project.infrastructureDirectory;
+          final infrastructureDirectory = project.infrastructureDirectory;
           final infrastructurePackage = infrastructureDirectory
               .infrastructurePackage(name: infrastructureName);
           final serviceImplementation =
@@ -86,7 +81,7 @@ class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
               ),
             );
 
-            _logger
+            logger
               ..info('')
               ..success(
                 'Removed Service Implementation $name${serviceName}Service.',
@@ -94,7 +89,7 @@ class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
 
             return ExitCode.success.code;
           } else {
-            _logger
+            logger
               ..info('')
               ..err(
                 'Service Implementation $name${serviceName}Service does not exist.',

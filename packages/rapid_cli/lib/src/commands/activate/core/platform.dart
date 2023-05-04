@@ -36,8 +36,8 @@ abstract class ActivatePlatformCommand extends RapidRootCommand
   /// {@macro activate_platform_command}
   ActivatePlatformCommand({
     required this.platform,
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     MelosBootstrapCommand? melosBootstrap,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
@@ -45,9 +45,7 @@ abstract class ActivatePlatformCommand extends RapidRootCommand
     FlutterGenl10nCommand? flutterGenl10n,
     DartFormatFixCommand? dartFormatFix,
     required FlutterConfigEnablePlatformCommand flutterConfigEnablePlatform,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? Project(),
-        melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+  })  : melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
@@ -56,8 +54,7 @@ abstract class ActivatePlatformCommand extends RapidRootCommand
         _dartFormatFix = dartFormatFix ?? Dart.formatFix,
         _flutterConfigEnablePlatform = flutterConfigEnablePlatform;
 
-  final Logger _logger;
-  final Project _project;
+  final Platform platform;
   @override
   final MelosBootstrapCommand melosBootstrap;
   @override
@@ -68,8 +65,6 @@ abstract class ActivatePlatformCommand extends RapidRootCommand
   final FlutterGenl10nCommand _flutterGenl10n;
   final DartFormatFixCommand _dartFormatFix;
   final FlutterConfigEnablePlatformCommand _flutterConfigEnablePlatform;
-
-  final Platform platform;
 
   @override
   String get name => platform.name;
@@ -87,18 +82,18 @@ abstract class ActivatePlatformCommand extends RapidRootCommand
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
-          platformIsDeactivated(platform, _project),
+          projectExistsAll(project),
+          platformIsDeactivated(platform, project),
         ],
-        _logger,
+        logger,
         () async {
-          _logger.info('Activating ${platform.prettyName} ...');
+          logger.info('Activating ${platform.prettyName} ...');
 
           final platformDirectory =
-              await createPlatformDirectory(project: _project);
+              await createPlatformDirectory(project: project);
 
           final platformUiPackage =
-              _project.platformUiPackage(platform: platform);
+              project.platformUiPackage(platform: platform);
           await platformUiPackage.create();
 
           final rootPackage = platformDirectory.rootPackage;
@@ -121,17 +116,17 @@ abstract class ActivatePlatformCommand extends RapidRootCommand
           );
           await codeGen(packages: [rootPackage], logger: logger);
 
-          await _flutterGenl10n(cwd: appFeaturePackage.path, logger: _logger);
+          await _flutterGenl10n(cwd: appFeaturePackage.path, logger: logger);
           await _flutterGenl10n(
             cwd: homePageFeaturePackage.path,
-            logger: _logger,
+            logger: logger,
           );
 
-          await _dartFormatFix(cwd: _project.path, logger: _logger);
+          await _dartFormatFix(cwd: project.path, logger: logger);
 
-          await _flutterConfigEnablePlatform(logger: _logger);
+          await _flutterConfigEnablePlatform(logger: logger);
 
-          _logger
+          logger
             ..info('')
             ..success('${platform.prettyName} activated!');
 

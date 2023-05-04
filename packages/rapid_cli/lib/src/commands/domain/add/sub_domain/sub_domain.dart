@@ -4,7 +4,6 @@ import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dart_package_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template domain_add_sub_domain_command}
 /// `rapid domain add sub_domain` command add subdomains to the domain part of an existing Rapid project.
@@ -13,22 +12,18 @@ class DomainAddSubDomainCommand extends RapidRootCommand
     with DartPackageNameGetter, GroupableMixin, BootstrapMixin, CodeGenMixin {
   /// {@macro domain_add_sub_domain_command}
   DomainAddSubDomainCommand({
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     MelosBootstrapCommand? melosBootstrap,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? Project(),
-        melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+  })  : melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs;
 
-  final Logger _logger;
-  final Project _project;
   @override
   final MelosBootstrapCommand melosBootstrap;
   @override
@@ -52,17 +47,17 @@ class DomainAddSubDomainCommand extends RapidRootCommand
 
   @override
   Future<int> run() => runWhen(
-        [projectExistsAll(_project)],
-        _logger,
+        [projectExistsAll(project)],
+        logger,
         () async {
           final name = super.dartPackageName;
 
-          _logger.info('Adding subdomain ...');
+          logger.info('Adding subdomain ...');
 
-          final domainDirectory = _project.domainDirectory;
+          final domainDirectory = project.domainDirectory;
           final domainPackage = domainDirectory.domainPackage(name: name);
           if (!domainPackage.exists()) {
-            final infrastructureDirectory = _project.infrastructureDirectory;
+            final infrastructureDirectory = project.infrastructureDirectory;
             final infrastructurePackage =
                 infrastructureDirectory.infrastructurePackage(name: name);
             if (!infrastructurePackage.exists()) {
@@ -70,9 +65,9 @@ class DomainAddSubDomainCommand extends RapidRootCommand
               await infrastructurePackage.create();
 
               final activatedPlatformRootPackages = Platform.values
-                  .where((platform) => _project.platformIsActivated(platform))
+                  .where((platform) => project.platformIsActivated(platform))
                   .map(
-                    (platform) => _project
+                    (platform) => project
                         .platformDirectory(platform: platform)
                         .rootPackage,
                   )
@@ -96,20 +91,20 @@ class DomainAddSubDomainCommand extends RapidRootCommand
                 logger: logger,
               );
 
-              _logger
+              logger
                 ..info('')
                 ..success('Added sub domain $name.');
 
               return ExitCode.success.code;
             } else {
-              _logger
+              logger
                 ..info('')
                 ..err('The subinfrastructure "$name" already exists.');
 
               return ExitCode.config.code;
             }
           } else {
-            _logger
+            logger
               ..info('')
               ..err('The subdomain "$name" already exists.');
 

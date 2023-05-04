@@ -6,7 +6,6 @@ import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 // TODO fix the template needs super class from rapid
 
@@ -25,15 +24,13 @@ class DomainSubDomainAddValueObjectCommand extends RapidRootCommand
         CodeGenMixin {
   /// {@macro domain_sub_domain_add_value_object_command}
   DomainSubDomainAddValueObjectCommand({
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     DartFormatFixCommand? dartFormatFix,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? Project(),
-        flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+  })  : flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
@@ -57,8 +54,6 @@ class DomainSubDomainAddValueObjectCommand extends RapidRootCommand
       );
   }
 
-  final Logger _logger;
-  final Project _project;
   @override
   final FlutterPubGetCommand flutterPubGet;
   @override
@@ -82,8 +77,8 @@ class DomainSubDomainAddValueObjectCommand extends RapidRootCommand
 
   @override
   Future<int> run() => runWhen(
-        [projectExistsAll(_project)],
-        _logger,
+        [projectExistsAll(project)],
+        logger,
         () async {
           final name = super.className;
           final domainName = super.subDomain;
@@ -91,9 +86,9 @@ class DomainSubDomainAddValueObjectCommand extends RapidRootCommand
           final type = _type;
           final generics = _generics;
 
-          _logger.info('Adding Value Object ...');
+          logger.info('Adding Value Object ...');
 
-          final domainDirectory = _project.domainDirectory;
+          final domainDirectory = project.domainDirectory;
           final domainPackage = domainDirectory.domainPackage(name: domainName);
           final valueObject = domainPackage.valueObject(
             name: name,
@@ -111,15 +106,15 @@ class DomainSubDomainAddValueObjectCommand extends RapidRootCommand
             );
 
             await codeGen(packages: [domainPackage], logger: logger);
-            await _dartFormatFix(cwd: domainPackage.path, logger: _logger);
+            await _dartFormatFix(cwd: domainPackage.path, logger: logger);
 
-            _logger
+            logger
               ..info('')
               ..success('Added Value Object $name.');
 
             return ExitCode.success.code;
           } else {
-            _logger
+            logger
               ..info('')
               ..err('Entity or Value Object $name already exists.');
 

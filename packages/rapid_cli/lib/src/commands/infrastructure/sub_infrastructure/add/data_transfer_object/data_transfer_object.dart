@@ -6,7 +6,6 @@ import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/entity_option.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
-import 'package:rapid_cli/src/project/project.dart';
 // TODO in test template without output dir a path gets a unneccessary dot
 
 /// {@template infrastructure_sub_infrastructure_add_data_transfer_object_command}
@@ -17,12 +16,10 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
     with SubInfrastructureGetter, EntityGetter, OutputDirGetter {
   /// {@macro infrastructure_sub_infrastructure_add_data_transfer_object_command}
   InfrastructureSubInfrastructureAddDataTransferObjectCommand({
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     DartFormatFixCommand? dartFormatFix,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? Project(),
-        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
+  }) : _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
       ..addSeparator('')
       ..addSubInfrastructureOption(
@@ -38,8 +35,6 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
       );
   }
 
-  final Logger _logger;
-  final Project _project;
   final DartFormatFixCommand _dartFormatFix;
 
   @override
@@ -58,21 +53,21 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
 
   @override
   Future<int> run() => runWhen(
-        [projectExistsAll(_project)],
-        _logger,
+        [projectExistsAll(project)],
+        logger,
         () async {
           final infrastructureName = super.subInfrastructure;
           final entityName = super.entity;
           final outputDir = super.outputDir;
 
-          _logger.info('Adding Data Transfer Object ...');
+          logger.info('Adding Data Transfer Object ...');
 
-          final domainDirectory = _project.domainDirectory;
+          final domainDirectory = project.domainDirectory;
           final domainPackage =
               domainDirectory.domainPackage(name: infrastructureName);
           final entity = domainPackage.entity(name: entityName, dir: outputDir);
           if (entity.existsAll()) {
-            final infrastructureDirectory = _project.infrastructureDirectory;
+            final infrastructureDirectory = project.infrastructureDirectory;
             final infrastructurePackage = infrastructureDirectory
                 .infrastructurePackage(name: infrastructureName);
             final dataTransferObject = infrastructurePackage.dataTransferObject(
@@ -91,23 +86,23 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
 
               await _dartFormatFix(
                 cwd: infrastructurePackage.path,
-                logger: _logger,
+                logger: logger,
               );
 
-              _logger
+              logger
                 ..info('')
                 ..success('Added Data Transfer Object ${entityName}Dto.');
 
               return ExitCode.success.code;
             } else {
-              _logger
+              logger
                 ..info('')
                 ..err('Data Transfer Object ${entityName}Dto already exists.');
 
               return ExitCode.config.code;
             }
           } else {
-            _logger
+            logger
               ..info('')
               ..err('Entity $entityName does not exist.');
 

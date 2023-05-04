@@ -161,10 +161,16 @@ abstract class RapidCommandWithProject extends RapidCommand {
 abstract class RapidRootCommand extends RapidCommandWithProject {
   RapidRootCommand({
     super.logger,
-  });
+    Project? project,
+  }) : _project = project;
+
+  final Project? _project;
 
   @override
   Project get project {
+    if (_project != null) {
+      return _project!;
+    }
     _checkIfProjectRoot();
     return Project();
   }
@@ -182,12 +188,14 @@ abstract class RapidRootCommand extends RapidCommandWithProject {
 abstract class RapidNonRootCommand extends RapidCommandWithProject {
   RapidNonRootCommand({
     super.logger,
-  });
+    Project? project,
+  }) : _project = project;
+
+  final Project? _project;
 
   @override
-  Project get project => Project(
-        path: _findProjectRoot(Directory.current).path,
-      );
+  Project get project =>
+      _project ?? Project(path: _findProjectRoot(Directory.current).path);
 
   Directory _findProjectRoot(Directory dir) {
     final melosFile = File(p.join(dir.path, 'melos.yaml'));

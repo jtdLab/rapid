@@ -9,7 +9,6 @@ import 'package:rapid_cli/src/commands/deactivate/macos/macos.dart';
 import 'package:rapid_cli/src/commands/deactivate/web/web.dart';
 import 'package:rapid_cli/src/commands/deactivate/windows/windows.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template deactivate_platform_command}
 /// Base class for:
@@ -30,15 +29,11 @@ abstract class DeactivatePlatformCommand extends RapidRootCommand {
   /// {@macro deactivate_platform_command}
   DeactivatePlatformCommand({
     required Platform platform,
-    Logger? logger,
-    Project? project,
-  })  : _platform = platform,
-        _logger = logger ?? Logger(),
-        _project = project ?? Project();
+    super.logger,
+    super.project,
+  }) : _platform = platform;
 
   final Platform _platform;
-  final Logger _logger;
-  final Project _project;
 
   @override
   String get name => _platform.name;
@@ -56,26 +51,26 @@ abstract class DeactivatePlatformCommand extends RapidRootCommand {
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
+          projectExistsAll(project),
           platformIsActivated(
             _platform,
-            _project,
+            project,
             '${_platform.prettyName} is already deactivated.',
           ),
         ],
-        _logger,
+        logger,
         () async {
-          _logger.info('Deactivating ${_platform.prettyName} ...');
+          logger.info('Deactivating ${_platform.prettyName} ...');
 
           final platformDirectory =
-              _project.platformDirectory(platform: _platform);
+              project.platformDirectory(platform: _platform);
           platformDirectory.delete();
 
           final platformUiPackage =
-              _project.platformUiPackage(platform: _platform);
+              project.platformUiPackage(platform: _platform);
           platformUiPackage.delete();
 
-          _logger
+          logger
             ..info('')
             ..success('${_platform.prettyName} is now deactivated.');
 

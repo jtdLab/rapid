@@ -18,22 +18,19 @@ class PubRemoveCommand extends RapidNonRootCommand
     with PackageGetter, GroupableMixin, BootstrapMixin {
   /// {@macro pub_remove_command}
   PubRemoveCommand({
-    Logger? logger,
-    ProjectBuilder? project,
+    super.logger,
+    super.project,
     FlutterPubRemoveCommand? flutterPubRemove,
     MelosBootstrapCommand? melosBootstrap,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? (({String path = '.'}) => Project(path: path)),
-        _flutterPubRemove = flutterPubRemove ?? Flutter.pubRemove,
+  })  : _flutterPubRemove = flutterPubRemove ?? Flutter.pubRemove,
         melosBootstrap = melosBootstrap ?? Melos.bootstrap {
     argParser.addPackageOption(
       help: 'The package where the command is run in.',
     );
   }
 
-  final Logger _logger;
-  final ProjectBuilder _project;
   final FlutterPubRemoveCommand _flutterPubRemove;
+  @override
   final MelosBootstrapCommand melosBootstrap;
 
   @override
@@ -89,7 +86,7 @@ class PubRemoveCommand extends RapidNonRootCommand
 
     await _flutterPubRemove(
       cwd: package.path,
-      logger: _logger,
+      logger: logger,
       packages: packages,
     );
 
@@ -104,7 +101,7 @@ class PubRemoveCommand extends RapidNonRootCommand
       logger: logger,
     );
 
-    _logger
+    logger
       ..info('')
       ..success(
         'Removed ${packages.join(', ')} from $packageName.',

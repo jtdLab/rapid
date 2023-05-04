@@ -12,7 +12,6 @@ import 'package:rapid_cli/src/commands/macos/add/language/language.dart';
 import 'package:rapid_cli/src/commands/web/add/language/language.dart';
 import 'package:rapid_cli/src/commands/windows/add/language/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 // TODO share code with the remove lang command
 
@@ -36,18 +35,14 @@ abstract class PlatformAddLanguageCommand extends RapidRootCommand
   /// {@macro platform_add_language_command}
   PlatformAddLanguageCommand({
     required this.platform,
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     FlutterGenl10nCommand? flutterGenl10n,
     DartFormatFixCommand? dartFormatFix,
-  })  : logger = logger ?? Logger(),
-        project = project ?? Project(),
-        flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
+  })  : flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
         dartFormatFix = dartFormatFix ?? Dart.formatFix;
 
   final Platform platform;
-  final Logger logger;
-  final Project project;
   final FlutterGenl10nCommand flutterGenl10n;
   final DartFormatFixCommand dartFormatFix;
 

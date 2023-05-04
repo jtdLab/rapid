@@ -1,20 +1,14 @@
-import 'package:args/command_runner.dart';
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 
 /// {@template rapid_doctor}
 /// `rapid doctor` command shows information about an existing Rapid project.
 /// {@endtemplate}
-class DoctorCommand extends Command<int> {
+class DoctorCommand extends RapidRootCommand {
   /// {@macro rapid_doctor}
   DoctorCommand({
-    Logger? logger,
-    required Project project,
-  })  : _logger = logger ?? Logger(),
-        _project = project;
-
-  final Logger _logger;
-  final Project _project;
+    super.logger,
+    super.project,
+  });
 
   @override
   String get name => 'doctor';
@@ -28,12 +22,12 @@ class DoctorCommand extends Command<int> {
   // TODO refactor
   /*  @override
   Future<int> run() => runWhen(
-        [projectExistsAll(_project)],
-        _logger,
+        [projectExistsAll(project)],
+        logger,
         () async {
           final platformDirectories = Platform.values
-              .where((e) => _project.platformIsActivated(e))
-              .map((e) => _project.platformDirectory(platform: e))
+              .where((e) => project.platformIsActivated(e))
+              .map((e) => project.platformDirectory(platform: e))
               .toList();
 
           var totalIssues = 0;
@@ -48,7 +42,7 @@ class DoctorCommand extends Command<int> {
                   platformDirectory.allFeaturesHaveSameDefaultLanguage();
               final platformName = platformDirectory.platform.prettyName;
 
-              _logger.info(
+              logger.info(
                 '${allFeaturesHaveSameLanguages && allFeaturesHaveSameDefaultLanguage ? '${green.wrap('[✓]')}' : '${yellow.wrap('[!]')}'}'
                 ' $platformName (${features.length} feature(s))',
               );
@@ -76,19 +70,19 @@ class DoctorCommand extends Command<int> {
                 ]);
                 index++;
               }
-              _logger.info('\n${tabular(data)}'.replaceAll('\n', '\n    '));
-              _logger.info('');
+              logger.info('\n${tabular(data)}'.replaceAll('\n', '\n    '));
+              logger.info('');
 
               if (!allFeaturesHaveSameLanguages) {
                 totalIssues++;
-                _logger.info(
+                logger.info(
                   '    ${red.wrap('✗')} Some features do not support the same languages.',
                 );
               }
 
               if (!allFeaturesHaveSameDefaultLanguage) {
                 totalIssues++;
-                _logger.info(
+                logger.info(
                   '    ${red.wrap('✗')} Some features do not have the same default language.',
                 );
               }
@@ -96,15 +90,15 @@ class DoctorCommand extends Command<int> {
               if (!allFeaturesHaveSameLanguages ||
                   !allFeaturesHaveSameDefaultLanguage) {
                 totalPlatformsWithIssues++;
-                _logger.info('');
+                logger.info('');
               }
             }
           }
 
           if (totalIssues == 0) {
-            _logger.info('No issues found.');
+            logger.info('No issues found.');
           } else {
-            _logger.info(
+            logger.info(
               '${yellow.wrap('!')} Found $totalIssues issue(s) on $totalPlatformsWithIssues platform(s).',
             );
           }

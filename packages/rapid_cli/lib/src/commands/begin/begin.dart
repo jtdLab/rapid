@@ -5,7 +5,6 @@ import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 // TODO impl cleaner + e2e test
 
@@ -14,13 +13,9 @@ import 'package:rapid_cli/src/project/project.dart';
 class BeginCommand extends RapidRootCommand {
   /// {@macro begin_command}
   BeginCommand({
-    Logger? logger,
-    Project? project,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? Project();
-
-  final Logger _logger;
-  final Project _project;
+    super.logger,
+    super.project,
+  });
 
   @override
   String get name => 'begin';
@@ -33,8 +28,8 @@ class BeginCommand extends RapidRootCommand {
 
   @override
   Future<int> run() => runWhen(
-        [projectExistsAll(_project)],
-        _logger,
+        [projectExistsAll(project)],
+        logger,
         () async {
           final dotRapidTool = p.join('.rapid_tool');
 
@@ -64,7 +59,7 @@ class BeginCommand extends RapidRootCommand {
 
           final groupActive = rapidGroupActive.readAsStringSync() == 'true';
           if (groupActive) {
-            _logger
+            logger
               ..info('')
               ..err(
                 'There is already an active group. '
@@ -76,7 +71,7 @@ class BeginCommand extends RapidRootCommand {
 
           rapidGroupActive.writeAsStringSync('true');
 
-          _logger
+          logger
             ..info('')
             ..success('Begin group!');
 

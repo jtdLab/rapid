@@ -17,21 +17,17 @@ class PubAddCommand extends RapidNonRootCommand
     with PackageGetter, GroupableMixin, BootstrapMixin {
   /// {@macro pub_add_command}
   PubAddCommand({
-    Logger? logger,
-    ProjectBuilder? project,
+    super.logger,
+    super.project,
     FlutterPubAddCommand? flutterPubAdd,
     MelosBootstrapCommand? melosBootstrap,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? (({String path = '.'}) => Project(path: path)),
-        _flutterPubAdd = flutterPubAdd ?? Flutter.pubAdd,
+  })  : _flutterPubAdd = flutterPubAdd ?? Flutter.pubAdd,
         melosBootstrap = melosBootstrap ?? Melos.bootstrap {
     argParser.addPackageOption(
       help: 'The package where the command is run.',
     );
   }
 
-  final Logger _logger;
-  final ProjectBuilder _project;
   final FlutterPubAddCommand _flutterPubAdd;
   @override
   final MelosBootstrapCommand melosBootstrap;
@@ -51,7 +47,7 @@ class PubAddCommand extends RapidNonRootCommand
         [
           pubspecExists(),
         ],
-        _logger,
+        logger,
         () async {
           var packageName = super.package;
           if (packageName == null) {
@@ -112,14 +108,14 @@ class PubAddCommand extends RapidNonRootCommand
             await _flutterPubAdd(
               cwd: package.path,
               packages: publicPackagesToAdd,
-              logger: _logger,
+              logger: logger,
             );
           }
           if (publicDevPackagesToAdd.isNotEmpty) {
             await _flutterPubAdd(
               cwd: package.path,
               packages: publicDevPackagesToAdd,
-              logger: _logger,
+              logger: logger,
             );
           }
 
@@ -143,7 +139,7 @@ class PubAddCommand extends RapidNonRootCommand
             logger: logger,
           );
 
-          _logger
+          logger
             ..info('')
             ..success(
               'Added ${unparsedPackages.length == 1 ? unparsedPackages.first : unparsedPackages.join(', ')} to $packageName.',

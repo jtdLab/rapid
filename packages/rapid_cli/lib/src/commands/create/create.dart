@@ -21,7 +21,7 @@ class CreateCommand extends RapidCommand
     with OutputDirGetter, OrgNameGetter, LanguageGetter {
   /// {@macro create_command}
   CreateCommand({
-    Logger? logger,
+    super.logger,
     FlutterInstalledCommand? flutterInstalled,
     MelosInstalledCommand? melosInstalled,
     MelosExecFlutterPubGetCommand? melosExecFlutterPubGet,
@@ -34,8 +34,7 @@ class CreateCommand extends RapidCommand
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWeb,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWindows,
     ProjectBuilder? project,
-  })  : _logger = logger ?? Logger(),
-        _flutterInstalled = flutterInstalled ?? Flutter.installed,
+  })  : _flutterInstalled = flutterInstalled ?? Flutter.installed,
         _melosInstalled = melosInstalled ?? Melos.installed,
         _melosExecFlutterPubGet =
             melosExecFlutterPubGet ?? Melos.execFlutterPubGet,
@@ -119,7 +118,6 @@ class CreateCommand extends RapidCommand
       );
   }
 
-  final Logger _logger;
   final FlutterInstalledCommand _flutterInstalled;
   final MelosInstalledCommand _melosInstalled;
   final MelosExecFlutterPubGetCommand _melosExecFlutterPubGet;
@@ -148,15 +146,15 @@ class CreateCommand extends RapidCommand
   @override
   Future<int> run() => runWhen(
         [
-          flutterIsInstalled(_flutterInstalled, logger: _logger),
-          melosIsInstalled(_melosInstalled, logger: _logger),
+          flutterIsInstalled(_flutterInstalled, logger: logger),
+          melosIsInstalled(_melosInstalled, logger: logger),
         ],
-        _logger,
+        logger,
         () async {
           final outputDir = super.outputDir;
           final project = _project(path: outputDir);
           if (project.exists() && !project.isEmpty) {
-            _logger
+            logger
               ..info('')
               ..err('Output directory must be empty.');
 
@@ -174,7 +172,7 @@ class CreateCommand extends RapidCommand
           final web = _web || _all;
           final windows = _windows || _desktop || _all;
 
-          _logger.info('Creating Rapid App ...');
+          logger.info('Creating Rapid App ...');
 
           final platforms = {
             if (android) Platform.android,
@@ -193,7 +191,7 @@ class CreateCommand extends RapidCommand
             platforms: platforms,
           );
 
-          await _melosExecFlutterPubGet(cwd: project.path, logger: _logger);
+          await _melosExecFlutterPubGet(cwd: project.path, logger: logger);
           for (final platform in platforms) {
             final platformDirectory = project.platformDirectory(
               platform: platform,
@@ -204,34 +202,34 @@ class CreateCommand extends RapidCommand
             final homePageFeaturePackage =
                 featuresDirectory.featurePackage(name: 'home_page');
 
-            await _flutterGenl10n(cwd: appFeaturePackage.path, logger: _logger);
+            await _flutterGenl10n(cwd: appFeaturePackage.path, logger: logger);
             await _flutterGenl10n(
               cwd: homePageFeaturePackage.path,
-              logger: _logger,
+              logger: logger,
             );
           }
-          await _dartFormatFix(cwd: project.path, logger: _logger);
+          await _dartFormatFix(cwd: project.path, logger: logger);
 
           if (android) {
-            await _flutterConfigEnableAndroid(logger: _logger);
+            await _flutterConfigEnableAndroid(logger: logger);
           }
           if (ios) {
-            await _flutterConfigEnableIos(logger: _logger);
+            await _flutterConfigEnableIos(logger: logger);
           }
           if (linux) {
-            await _flutterConfigEnableLinux(logger: _logger);
+            await _flutterConfigEnableLinux(logger: logger);
           }
           if (macos) {
-            await _flutterConfigEnableMacos(logger: _logger);
+            await _flutterConfigEnableMacos(logger: logger);
           }
           if (web) {
-            await _flutterConfigEnableWeb(logger: _logger);
+            await _flutterConfigEnableWeb(logger: logger);
           }
           if (windows) {
-            await _flutterConfigEnableWindows(logger: _logger);
+            await _flutterConfigEnableWindows(logger: logger);
           }
 
-          _logger
+          logger
             ..info('')
             ..success('Created a Rapid App!');
 

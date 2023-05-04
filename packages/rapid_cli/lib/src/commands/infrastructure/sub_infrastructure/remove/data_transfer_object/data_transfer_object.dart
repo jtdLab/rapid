@@ -5,7 +5,6 @@ import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/entity_option.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 // TODO maybe introduce super class for dto and service implementation remove
 
@@ -17,10 +16,9 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
     with SubInfrastructureGetter, EntityGetter, DirGetter {
   /// {@macro infrastructure_sub_infrastructure_remove_data_transfer_object_command}
   InfrastructureSubInfrastructureRemoveDataTransferObjectCommand({
-    Logger? logger,
-    Project? project,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? Project() {
+    super.logger,
+    super.project,
+  }) {
     argParser
       ..addSeparator('')
       ..addSubInfrastructureOption(
@@ -34,9 +32,6 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
         help: 'The directory relative to <infrastructure_package>/lib/ .',
       );
   }
-
-  final Logger _logger;
-  final Project _project;
 
   @override
   String get name => 'data_transfer_object';
@@ -54,16 +49,16 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
 
   @override
   Future<int> run() => runWhen(
-        [projectExistsAll(_project)],
-        _logger,
+        [projectExistsAll(project)],
+        logger,
         () async {
           final infrastructureName = super.subInfrastructure;
           final entityName = super.entity;
           final dir = super.dir;
 
-          _logger.info('Removing Data Transfer Object ...');
+          logger.info('Removing Data Transfer Object ...');
 
-          final infrastructureDirectory = _project.infrastructureDirectory;
+          final infrastructureDirectory = project.infrastructureDirectory;
           final infrastructurePackage = infrastructureDirectory
               .infrastructurePackage(name: infrastructureName);
           final dataTransferObject = infrastructurePackage.dataTransferObject(
@@ -80,13 +75,13 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
               ),
             );
 
-            _logger
+            logger
               ..info('')
               ..success('Removed Data Transfer Object ${entityName}Dto.');
 
             return ExitCode.success.code;
           } else {
-            _logger
+            logger
               ..info('')
               ..err('Data Transfer Object ${entityName}Dto does not exist.');
 

@@ -11,7 +11,6 @@ import 'package:rapid_cli/src/commands/macos/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/web/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/windows/remove/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template platform_remove_feature_command}
 /// Base class for:
@@ -33,15 +32,13 @@ abstract class PlatformRemoveFeatureCommand extends RapidRootCommand
   /// {@macro platform_remove_feature_command}
   PlatformRemoveFeatureCommand({
     required Platform platform,
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     MelosBootstrapCommand? melosBootstrap,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
-        _logger = logger ?? Logger(),
-        _project = project ?? Project(),
         melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
@@ -49,8 +46,6 @@ abstract class PlatformRemoveFeatureCommand extends RapidRootCommand
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   final Platform _platform;
-  final Logger _logger;
-  final Project _project;
   @override
   final MelosBootstrapCommand melosBootstrap;
   @override
@@ -75,21 +70,21 @@ abstract class PlatformRemoveFeatureCommand extends RapidRootCommand
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
+          projectExistsAll(project),
           platformIsActivated(
             _platform,
-            _project,
+            project,
             '${_platform.prettyName} is not activated.',
           ),
         ],
-        _logger,
+        logger,
         () async {
           final name = super.dartPackageName;
 
-          _logger.info('Removing Feature ...');
+          logger.info('Removing Feature ...');
 
           final platformDirectory =
-              _project.platformDirectory(platform: _platform);
+              project.platformDirectory(platform: _platform);
           final featuresDirectory = platformDirectory.featuresDirectory;
           final featurePackage = featuresDirectory.featurePackage(name: name);
           if (featurePackage.exists()) {
@@ -119,13 +114,13 @@ abstract class PlatformRemoveFeatureCommand extends RapidRootCommand
               logger: logger,
             );
 
-            _logger
+            logger
               ..info('')
               ..success('Removed ${_platform.prettyName} feature $name.');
 
             return ExitCode.success.code;
           } else {
-            _logger
+            logger
               ..info('')
               ..err(
                 'The feature "$name" does not exist on ${_platform.prettyName}.',

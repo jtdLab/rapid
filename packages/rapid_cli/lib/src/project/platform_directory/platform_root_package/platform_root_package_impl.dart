@@ -1,4 +1,5 @@
 import 'package:mason/mason.dart';
+import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
@@ -31,10 +32,10 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
 
   final Platform _platform;
   LocalizationsDelegatesFile get _localizationsDelegatesFile =>
-      (localizationsDelegatesFileOverrides ??
-          LocalizationsDelegatesFileImpl.new)(rootPackage: this);
+      (localizationsDelegatesFileOverrides ?? LocalizationsDelegatesFile.new)(
+          rootPackage: this);
   InjectionFile get _injectionFile =>
-      (injectionFileOverrides ?? InjectionFileImpl.new)(rootPackage: this);
+      (injectionFileOverrides ?? InjectionFile.new)(rootPackage: this);
 
   @override
   LocalizationsDelegatesFileBuilder? localizationsDelegatesFileOverrides;
@@ -92,6 +93,18 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
     final packageName = infrastructurePackage.packageName();
     pubspecFile.removeDependency(packageName);
     _injectionFile.removeFeaturePackage(packageName);
+  }
+
+  @mustCallSuper
+  @override
+  Future<void> addLanguage(String language) async {
+    _localizationsDelegatesFile.addSupportedLocale(language);
+  }
+
+  @mustCallSuper
+  @override
+  Future<void> removeLanguage(String language) async {
+    _localizationsDelegatesFile.removeSupportedLocale(language);
   }
 }
 
@@ -181,11 +194,13 @@ class IosRootPackageImpl extends PlatformRootPackageImpl
 
   @override
   Future<void> addLanguage(String language) async {
+    await super.addLanguage(language);
     _nativeDirectory.addLanguage(language: language);
   }
 
   @override
   Future<void> removeLanguage(String language) async {
+    await super.removeLanguage(language);
     _nativeDirectory.removeLanguage(language: language);
   }
 }
@@ -227,12 +242,12 @@ class LocalizationsDelegatesFileImpl extends DartFileImpl
 
   @override
   void addSupportedLocale(String locale) {
-    final newLocale = 'Locale(\'$locale\')';
+    final newLocale = 'const Locale(\'$locale\')';
     final existingLocales = readTopLevelListVar(name: 'supportedLocales');
 
     if (!existingLocales.contains(locale)) {
       setTopLevelListVar(
-        name: 'localizationsDelegates',
+        name: 'supportedLocales',
         value: [
           newLocale,
           ...existingLocales,
@@ -259,12 +274,12 @@ class LocalizationsDelegatesFileImpl extends DartFileImpl
 
   @override
   void removeSupportedLocale(String locale) {
-    final localeToRemove = 'Locale(\'$locale\')';
+    final localeToRemove = 'const Locale(\'$locale\')';
     final existingLocales = readTopLevelListVar(name: 'supportedLocales');
 
     if (existingLocales.contains(localeToRemove)) {
       setTopLevelListVar(
-        name: 'localizationsDelegates',
+        name: 'supportedLocales',
         value: existingLocales..remove(localeToRemove),
       );
     }

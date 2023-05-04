@@ -47,6 +47,10 @@ abstract class PlatformRootPackage
   Future<void> unregisterInfrastructurePackage(
     InfrastructurePackage infrastructurePackage,
   );
+
+  Future<void> addLanguage(String language);
+
+  Future<void> removeLanguage(String language);
 }
 
 typedef NoneIosRootPackageBuilder = NoneIosRootPackage Function(
@@ -98,10 +102,6 @@ abstract class IosRootPackage extends PlatformRootPackage {
     required String orgName,
     required String language,
   });
-
-  Future<void> addLanguage(String language);
-
-  Future<void> removeLanguage(String language);
 }
 
 typedef LocalizationsDelegatesFileBuilder = LocalizationsDelegatesFile

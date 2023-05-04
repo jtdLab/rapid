@@ -127,6 +127,9 @@ abstract class PlatformRemoveLanguageCommand extends RapidRootCommand
             return ExitCode.config.code;
           }
 
+          final rootPackage = platformDirectory.rootPackage;
+          await rootPackage.removeLanguage(language);
+
           for (final featurePackage in featurePackages) {
             await featurePackage.removeLanguage(language);
             await _flutterGenl10n(cwd: featurePackage.path, logger: logger);

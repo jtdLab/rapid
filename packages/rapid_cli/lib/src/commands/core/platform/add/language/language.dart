@@ -118,6 +118,9 @@ abstract class PlatformAddLanguageCommand extends RapidRootCommand
             return ExitCode.config.code;
           }
 
+          final rootPackage = platformDirectory.rootPackage;
+          await rootPackage.addLanguage(language);
+
           for (final featurePackage in featurePackages) {
             await featurePackage.addLanguage(language);
             await flutterGenl10n(cwd: featurePackage.path, logger: logger);

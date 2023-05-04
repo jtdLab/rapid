@@ -16,6 +16,6 @@ const localizationsDelegates = <LocalizationsDelegate>[
 ];
 
 final supportedLocales = <Locale>[
-  const Locale('en'),
   const Locale('de'),
+  const Locale('en'),
 ];

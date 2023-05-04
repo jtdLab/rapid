@@ -1,0 +1,12 @@
+{
+  "@@locale": "de",
+  "username": "Benutzername",
+  "password": "Passwort",
+  "forgotPassword": "Passwort vergessen?",
+  "login": "Anmelden",
+  "signUpNow": "Jetzt registrieren",
+  "orSignInWith": "Oder anmelden mit",
+  "dontHaveAnAccount": "Sie haben noch kein Konto?",
+  "errorServer": "Serverfehler. Versuchen Sie es später erneut.",
+  "errorInvalidUsernameAndPasswordCombination": "Ungültiger Benutzername oder Passwort."
+}

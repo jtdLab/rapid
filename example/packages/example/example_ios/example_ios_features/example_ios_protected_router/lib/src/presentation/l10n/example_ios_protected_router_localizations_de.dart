@@ -2,9 +2,9 @@
 
 import 'example_ios_protected_router_localizations.dart';
 
-/// The translations for English (`en`).
-class ExampleIosProtectedRouterLocalizationsEn
+/// The translations for German (`de`).
+class ExampleIosProtectedRouterLocalizationsDe
     extends ExampleIosProtectedRouterLocalizations {
-  ExampleIosProtectedRouterLocalizationsEn([String locale = 'en'])
+  ExampleIosProtectedRouterLocalizationsDe([String locale = 'de'])
       : super(locale);
 }

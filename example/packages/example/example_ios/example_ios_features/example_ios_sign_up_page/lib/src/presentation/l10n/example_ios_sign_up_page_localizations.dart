@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'example_ios_sign_up_page_localizations_de.dart';
 import 'example_ios_sign_up_page_localizations_en.dart';
 
 /// Callers can lookup localized strings with an instance of ExampleIosSignUpPageLocalizations
@@ -92,7 +93,10 @@ abstract class ExampleIosSignUpPageLocalizations {
   ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('de'),
+    Locale('en')
+  ];
 
   /// No description provided for @email.
   ///
@@ -191,7 +195,7 @@ class _ExampleIosSignUpPageLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['de', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_ExampleIosSignUpPageLocalizationsDelegate old) => false;
@@ -201,6 +205,8 @@ ExampleIosSignUpPageLocalizations lookupExampleIosSignUpPageLocalizations(
     Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'de':
+      return ExampleIosSignUpPageLocalizationsDe();
     case 'en':
       return ExampleIosSignUpPageLocalizationsEn();
   }

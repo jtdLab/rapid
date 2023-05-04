@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'example_ios_login_page_localizations_de.dart';
 import 'example_ios_login_page_localizations_en.dart';
 
 /// Callers can lookup localized strings with an instance of ExampleIosLoginPageLocalizations
@@ -92,7 +93,10 @@ abstract class ExampleIosLoginPageLocalizations {
   ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('de'),
+    Locale('en')
+  ];
 
   /// No description provided for @username.
   ///
@@ -161,7 +165,7 @@ class _ExampleIosLoginPageLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['de', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_ExampleIosLoginPageLocalizationsDelegate old) => false;
@@ -171,6 +175,8 @@ ExampleIosLoginPageLocalizations lookupExampleIosLoginPageLocalizations(
     Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'de':
+      return ExampleIosLoginPageLocalizationsDe();
     case 'en':
       return ExampleIosLoginPageLocalizationsEn();
   }

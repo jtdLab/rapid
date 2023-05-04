@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'example_ios_protected_router_localizations_de.dart';
 import 'example_ios_protected_router_localizations_en.dart';
 
 /// Callers can lookup localized strings with an instance of ExampleIosProtectedRouterLocalizations
@@ -92,13 +93,10 @@ abstract class ExampleIosProtectedRouterLocalizations {
   ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
-
-  /// Title text shown in the Protected Router
-  ///
-  /// In en, this message translates to:
-  /// **'Protected Router title for en'**
-  String get title;
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('de'),
+    Locale('en')
+  ];
 }
 
 class _ExampleIosProtectedRouterLocalizationsDelegate
@@ -113,7 +111,7 @@ class _ExampleIosProtectedRouterLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['de', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_ExampleIosProtectedRouterLocalizationsDelegate old) =>
@@ -124,6 +122,8 @@ ExampleIosProtectedRouterLocalizations
     lookupExampleIosProtectedRouterLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'de':
+      return ExampleIosProtectedRouterLocalizationsDe();
     case 'en':
       return ExampleIosProtectedRouterLocalizationsEn();
   }

@@ -49,7 +49,7 @@ final diPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZToge3sgcHJvamVjdF9uYW1lIH19X2RpCmRlc2NyaXB0aW9uOiBEZXBlbmRlbmN5IGluamVjdGlvbiBvZiB7e3Byb2plY3RfbmFtZS50aXRsZUNhc2UoKX19Lgp2ZXJzaW9uOiAwLjAuMQpwdWJsaXNoX3RvOiBub25lCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTIuMTkuNiA8My4wLjAiCgpkZXBlbmRlbmNpZXM6CiAgZ2V0X2l0OiBeNy4yLjAKICBpbmplY3RhYmxlOiBeMi4xLjEKCmRldl9kZXBlbmRlbmNpZXM6CiAgbGludHM6IF4yLjAuMQogIHRlc3Q6IF4xLjI0LjEK",
+          "bmFtZToge3sgcHJvamVjdF9uYW1lIH19X2RpCmRlc2NyaXB0aW9uOiBEZXBlbmRlbmN5IGluamVjdGlvbiBvZiB7e3Byb2plY3RfbmFtZS50aXRsZUNhc2UoKX19Lgp2ZXJzaW9uOiAwLjAuMQpwdWJsaXNoX3RvOiBub25lCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTIuMTkuNiA8My4wLjAiCgpkZXBlbmRlbmNpZXM6CiAgZ2V0X2l0OiBeNy40LjEKICBpbmplY3RhYmxlOiBeMi4xLjEKCmRldl9kZXBlbmRlbmNpZXM6CiAgbGludHM6IF4yLjAuMQogIHRlc3Q6IF4xLjI0LjIK",
       "type": "text"
     },
     {

@@ -18,7 +18,7 @@ dependencies:
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
   injectable: ^2.1.1
-  auto_route: ^6.2.0
+  auto_route: ^7.0.0
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_android:
@@ -29,9 +29,9 @@ dev_dependencies:
   bloc_test: ^9.1.1
   mocktail: ^0.3.0
   build_runner: ^2.3.3
-  freezed: ^2.3.2
+  freezed: ^2.3.3
   injectable_generator: ^2.1.5
-  flutter_gen_runner: ^5.3.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
 # The following section is specific to the FlutterGen package.
@@ -98,7 +98,7 @@ dependencies:
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
   injectable: ^2.1.1
-  auto_route: ^6.2.0
+  auto_route: ^7.0.0
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_ios:
@@ -109,9 +109,9 @@ dev_dependencies:
   bloc_test: ^9.1.1
   mocktail: ^0.3.0
   build_runner: ^2.3.3
-  freezed: ^2.3.2
+  freezed: ^2.3.3
   injectable_generator: ^2.1.5
-  flutter_gen_runner: ^5.3.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
 # The following section is specific to the FlutterGen package.
@@ -175,7 +175,7 @@ dependencies:
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
   injectable: ^2.1.1
-  auto_route: ^6.2.0
+  auto_route: ^7.0.0
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_linux:
@@ -186,9 +186,9 @@ dev_dependencies:
   bloc_test: ^9.1.1
   mocktail: ^0.3.0
   build_runner: ^2.3.3
-  freezed: ^2.3.2
+  freezed: ^2.3.3
   injectable_generator: ^2.1.5
-  flutter_gen_runner: ^5.3.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
 # The following section is specific to the FlutterGen package.
@@ -255,7 +255,7 @@ dependencies:
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
   injectable: ^2.1.1
-  auto_route: ^6.2.0
+  auto_route: ^7.0.0
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_macos:
@@ -266,9 +266,9 @@ dev_dependencies:
   bloc_test: ^9.1.1
   mocktail: ^0.3.0
   build_runner: ^2.3.3
-  freezed: ^2.3.2
+  freezed: ^2.3.3
   injectable_generator: ^2.1.5
-  flutter_gen_runner: ^5.3.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
 # The following section is specific to the FlutterGen package.
@@ -332,7 +332,7 @@ dependencies:
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
   injectable: ^2.1.1
-  auto_route: ^6.2.0
+  auto_route: ^7.0.0
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_web:
@@ -343,9 +343,9 @@ dev_dependencies:
   bloc_test: ^9.1.1
   mocktail: ^0.3.0
   build_runner: ^2.3.3
-  freezed: ^2.3.2
+  freezed: ^2.3.3
   injectable_generator: ^2.1.5
-  flutter_gen_runner: ^5.3.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
 # The following section is specific to the FlutterGen package.
@@ -412,7 +412,7 @@ dependencies:
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
   injectable: ^2.1.1
-  auto_route: ^6.2.0
+  auto_route: ^7.0.0
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_windows:
@@ -423,9 +423,9 @@ dev_dependencies:
   bloc_test: ^9.1.1
   mocktail: ^0.3.0
   build_runner: ^2.3.3
-  freezed: ^2.3.2
+  freezed: ^2.3.3
   injectable_generator: ^2.1.5
-  flutter_gen_runner: ^5.3.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
 # The following section is specific to the FlutterGen package.

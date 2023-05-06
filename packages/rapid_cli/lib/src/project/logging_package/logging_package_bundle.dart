@@ -55,7 +55,7 @@ final loggingPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZToge3twcm9qZWN0X25hbWV9fV9sb2dnaW5nCmRlc2NyaXB0aW9uOiBMb2dnaW5nIG9mIHt7cHJvamVjdF9uYW1lLnRpdGxlQ2FzZSgpfX0uCnZlcnNpb246IDAuMC4xCnB1Ymxpc2hfdG86IG5vbmUKCmVudmlyb25tZW50OgogIHNkazogIj49Mi4xOS42IDwzLjAuMCIKCmRlcGVuZGVuY2llczoKICBtZXRhOiBeMS44LjAKICBpbmplY3RhYmxlOiBeMi4xLjEKCmRldl9kZXBlbmRlbmNpZXM6CiAgbGludHM6IF4yLjAuMQogIHRlc3Q6IF4xLjI0LjEKICBtb2NrdGFpbDogXjAuMy4wCiAgYnVpbGRfcnVubmVyOiBeMi4zLjMKICBpbmplY3RhYmxlX2dlbmVyYXRvcjogXjIuMS41Cg==",
+          "bmFtZToge3twcm9qZWN0X25hbWV9fV9sb2dnaW5nCmRlc2NyaXB0aW9uOiBMb2dnaW5nIG9mIHt7cHJvamVjdF9uYW1lLnRpdGxlQ2FzZSgpfX0uCnZlcnNpb246IDAuMC4xCnB1Ymxpc2hfdG86IG5vbmUKCmVudmlyb25tZW50OgogIHNkazogIj49Mi4xOS42IDwzLjAuMCIKCmRlcGVuZGVuY2llczoKICBtZXRhOiBeMS44LjAKICBpbmplY3RhYmxlOiBeMi4xLjEKCmRldl9kZXBlbmRlbmNpZXM6CiAgbGludHM6IF4yLjAuMQogIHRlc3Q6IF4xLjI0LjIKICBtb2NrdGFpbDogXjAuMy4wCiAgYnVpbGRfcnVubmVyOiBeMi4zLjMKICBpbmplY3RhYmxlX2dlbmVyYXRvcjogXjIuMS41Cg==",
       "type": "text"
     },
     {

@@ -16,8 +16,8 @@ sdks=(
 )
 
 packages=(
-    "auto_route=^6.2.0"
-    "auto_route_generator=^6.2.0"
+    "auto_route=^7.1.0"
+    "auto_route_generator=^7.0.0"
     "bloc_concurrency=^0.2.1"
     "bloc_test=^9.1.1"
     "bloc=^8.1.1"

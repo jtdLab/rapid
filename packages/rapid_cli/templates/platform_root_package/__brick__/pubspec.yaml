@@ -31,7 +31,7 @@ dependencies:
     sdk: flutter
   get_it: ^7.4.1
   injectable: ^2.1.1
-  auto_route: ^7.0.0
+  auto_route: ^6.2.0
   bloc: ^8.1.1
   bloc_concurrency: ^0.2.1
   {{project_name}}_di:
@@ -98,7 +98,7 @@ dependencies:
     sdk: flutter
   get_it: ^7.4.1
   injectable: ^2.1.1
-  auto_route: ^7.0.0
+  auto_route: ^6.2.0
   bloc: ^8.1.1
   bloc_concurrency: ^0.2.1
   cupertino_icons: ^1.0.5
@@ -162,7 +162,7 @@ dependencies:
     sdk: flutter
   get_it: ^7.4.1
   injectable: ^2.1.1
-  auto_route: ^7.0.0
+  auto_route: ^6.2.0
   bloc: ^8.1.1
   bloc_concurrency: ^0.2.1
   {{project_name}}_di:
@@ -229,7 +229,7 @@ dependencies:
     sdk: flutter
   get_it: ^7.4.1
   injectable: ^2.1.1
-  auto_route: ^7.0.0
+  auto_route: ^6.2.0
   bloc: ^8.1.1
   bloc_concurrency: ^0.2.1
   cupertino_icons: ^1.0.5
@@ -293,7 +293,7 @@ dependencies:
     sdk: flutter
   get_it: ^7.4.1
   injectable: ^2.1.1
-  auto_route: ^7.0.0
+  auto_route: ^6.2.0
   bloc: ^8.1.1
   bloc_concurrency: ^0.2.1
   url_strategy: ^0.2.0
@@ -361,7 +361,7 @@ dependencies:
     sdk: flutter
   get_it: ^7.4.1
   injectable: ^2.1.1
-  auto_route: ^7.0.0
+  auto_route: ^6.2.0
   bloc: ^8.1.1
   bloc_concurrency: ^0.2.1
   {{project_name}}_di:

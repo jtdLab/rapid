@@ -283,18 +283,18 @@ packages:
     dependency: transitive
     description:
       name: flutter_gen_core
-      sha256: "41ed478d2c1b77cb899b859c3705be02a76a3f03171c17b1d82af98068788763"
+      sha256: e8637dd6a59860f89e5e71be0a27101ec32dad1a0ed7fd879fd23b6e91d5004d
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   flutter_gen_runner:
     dependency: "direct dev"
     description:
       name: flutter_gen_runner
-      sha256: a32f596f5c4f0d03ef950db2ec03b5d05f944d215accfd3e0494cf47113139fa
+      sha256: "7de1bf4fc0439be0fef3178b6423d5c7f1f9f3a38a7c6fafe75d7f70ff4856d7"
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -317,10 +317,10 @@ packages:
     dependency: "direct dev"
     description:
       name: freezed
-      sha256: e819441678f1679b719008ff2ff0ef045d66eed9f9ec81166ca0d9b02a187454
+      sha256: "73b58fe836dc05594451d8f740d97d5167886962d628b9f60a1fe945aa0a891f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.2"
+    version: "2.3.3"
   freezed_annotation:
     dependency: "direct main"
     description:
@@ -341,10 +341,10 @@ packages:
     dependency: transitive
     description:
       name: get_it
-      sha256: "290fde3a86072e4b37dbb03c07bec6126f0ecc28dad403c12ffe2e5a2d751ab7"
+      sha256: ca77bd0c23e609e09a70989726295a92978589745e129c27d354e61e4070f804
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "7.4.1"
   glob:
     dependency: transitive
     description:
@@ -707,10 +707,10 @@ packages:
     dependency: transitive
     description:
       name: theme_tailor_annotation
-      sha256: "43e97c8d2bb1f171a23de7198cf6fe5730db1f20290b65d8d87ad9996ef947e2"
+      sha256: e75cf627202816cf4b45910658205959524860b99951bd0d370e760bf3546424
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   time:
     dependency: transitive
     description:
@@ -1130,18 +1130,18 @@ packages:
     dependency: transitive
     description:
       name: flutter_gen_core
-      sha256: "41ed478d2c1b77cb899b859c3705be02a76a3f03171c17b1d82af98068788763"
+      sha256: e8637dd6a59860f89e5e71be0a27101ec32dad1a0ed7fd879fd23b6e91d5004d
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   flutter_gen_runner:
     dependency: "direct dev"
     description:
       name: flutter_gen_runner
-      sha256: a32f596f5c4f0d03ef950db2ec03b5d05f944d215accfd3e0494cf47113139fa
+      sha256: "7de1bf4fc0439be0fef3178b6423d5c7f1f9f3a38a7c6fafe75d7f70ff4856d7"
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -1164,10 +1164,10 @@ packages:
     dependency: "direct dev"
     description:
       name: freezed
-      sha256: e819441678f1679b719008ff2ff0ef045d66eed9f9ec81166ca0d9b02a187454
+      sha256: "73b58fe836dc05594451d8f740d97d5167886962d628b9f60a1fe945aa0a891f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.2"
+    version: "2.3.3"
   freezed_annotation:
     dependency: "direct main"
     description:
@@ -1188,10 +1188,10 @@ packages:
     dependency: transitive
     description:
       name: get_it
-      sha256: "290fde3a86072e4b37dbb03c07bec6126f0ecc28dad403c12ffe2e5a2d751ab7"
+      sha256: ca77bd0c23e609e09a70989726295a92978589745e129c27d354e61e4070f804
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "7.4.1"
   glob:
     dependency: transitive
     description:
@@ -1554,10 +1554,10 @@ packages:
     dependency: transitive
     description:
       name: theme_tailor_annotation
-      sha256: "43e97c8d2bb1f171a23de7198cf6fe5730db1f20290b65d8d87ad9996ef947e2"
+      sha256: e75cf627202816cf4b45910658205959524860b99951bd0d370e760bf3546424
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   time:
     dependency: transitive
     description:
@@ -1977,18 +1977,18 @@ packages:
     dependency: transitive
     description:
       name: flutter_gen_core
-      sha256: "41ed478d2c1b77cb899b859c3705be02a76a3f03171c17b1d82af98068788763"
+      sha256: e8637dd6a59860f89e5e71be0a27101ec32dad1a0ed7fd879fd23b6e91d5004d
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   flutter_gen_runner:
     dependency: "direct dev"
     description:
       name: flutter_gen_runner
-      sha256: a32f596f5c4f0d03ef950db2ec03b5d05f944d215accfd3e0494cf47113139fa
+      sha256: "7de1bf4fc0439be0fef3178b6423d5c7f1f9f3a38a7c6fafe75d7f70ff4856d7"
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -2011,10 +2011,10 @@ packages:
     dependency: "direct dev"
     description:
       name: freezed
-      sha256: e819441678f1679b719008ff2ff0ef045d66eed9f9ec81166ca0d9b02a187454
+      sha256: "73b58fe836dc05594451d8f740d97d5167886962d628b9f60a1fe945aa0a891f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.2"
+    version: "2.3.3"
   freezed_annotation:
     dependency: "direct main"
     description:
@@ -2035,10 +2035,10 @@ packages:
     dependency: transitive
     description:
       name: get_it
-      sha256: "290fde3a86072e4b37dbb03c07bec6126f0ecc28dad403c12ffe2e5a2d751ab7"
+      sha256: ca77bd0c23e609e09a70989726295a92978589745e129c27d354e61e4070f804
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "7.4.1"
   glob:
     dependency: transitive
     description:
@@ -2417,10 +2417,10 @@ packages:
     dependency: transitive
     description:
       name: theme_tailor_annotation
-      sha256: "43e97c8d2bb1f171a23de7198cf6fe5730db1f20290b65d8d87ad9996ef947e2"
+      sha256: e75cf627202816cf4b45910658205959524860b99951bd0d370e760bf3546424
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   time:
     dependency: transitive
     description:
@@ -2856,18 +2856,18 @@ packages:
     dependency: transitive
     description:
       name: flutter_gen_core
-      sha256: "41ed478d2c1b77cb899b859c3705be02a76a3f03171c17b1d82af98068788763"
+      sha256: e8637dd6a59860f89e5e71be0a27101ec32dad1a0ed7fd879fd23b6e91d5004d
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   flutter_gen_runner:
     dependency: "direct dev"
     description:
       name: flutter_gen_runner
-      sha256: a32f596f5c4f0d03ef950db2ec03b5d05f944d215accfd3e0494cf47113139fa
+      sha256: "7de1bf4fc0439be0fef3178b6423d5c7f1f9f3a38a7c6fafe75d7f70ff4856d7"
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -2890,10 +2890,10 @@ packages:
     dependency: "direct dev"
     description:
       name: freezed
-      sha256: e819441678f1679b719008ff2ff0ef045d66eed9f9ec81166ca0d9b02a187454
+      sha256: "73b58fe836dc05594451d8f740d97d5167886962d628b9f60a1fe945aa0a891f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.2"
+    version: "2.3.3"
   freezed_annotation:
     dependency: "direct main"
     description:
@@ -2914,10 +2914,10 @@ packages:
     dependency: transitive
     description:
       name: get_it
-      sha256: "290fde3a86072e4b37dbb03c07bec6126f0ecc28dad403c12ffe2e5a2d751ab7"
+      sha256: ca77bd0c23e609e09a70989726295a92978589745e129c27d354e61e4070f804
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "7.4.1"
   glob:
     dependency: transitive
     description:
@@ -3288,10 +3288,10 @@ packages:
     dependency: transitive
     description:
       name: theme_tailor_annotation
-      sha256: "43e97c8d2bb1f171a23de7198cf6fe5730db1f20290b65d8d87ad9996ef947e2"
+      sha256: e75cf627202816cf4b45910658205959524860b99951bd0d370e760bf3546424
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   time:
     dependency: transitive
     description:
@@ -3703,18 +3703,18 @@ packages:
     dependency: transitive
     description:
       name: flutter_gen_core
-      sha256: "41ed478d2c1b77cb899b859c3705be02a76a3f03171c17b1d82af98068788763"
+      sha256: e8637dd6a59860f89e5e71be0a27101ec32dad1a0ed7fd879fd23b6e91d5004d
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   flutter_gen_runner:
     dependency: "direct dev"
     description:
       name: flutter_gen_runner
-      sha256: a32f596f5c4f0d03ef950db2ec03b5d05f944d215accfd3e0494cf47113139fa
+      sha256: "7de1bf4fc0439be0fef3178b6423d5c7f1f9f3a38a7c6fafe75d7f70ff4856d7"
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -3737,10 +3737,10 @@ packages:
     dependency: "direct dev"
     description:
       name: freezed
-      sha256: e819441678f1679b719008ff2ff0ef045d66eed9f9ec81166ca0d9b02a187454
+      sha256: "73b58fe836dc05594451d8f740d97d5167886962d628b9f60a1fe945aa0a891f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.2"
+    version: "2.3.3"
   freezed_annotation:
     dependency: "direct main"
     description:
@@ -3761,10 +3761,10 @@ packages:
     dependency: transitive
     description:
       name: get_it
-      sha256: "290fde3a86072e4b37dbb03c07bec6126f0ecc28dad403c12ffe2e5a2d751ab7"
+      sha256: ca77bd0c23e609e09a70989726295a92978589745e129c27d354e61e4070f804
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "7.4.1"
   glob:
     dependency: transitive
     description:
@@ -4127,10 +4127,10 @@ packages:
     dependency: transitive
     description:
       name: theme_tailor_annotation
-      sha256: "43e97c8d2bb1f171a23de7198cf6fe5730db1f20290b65d8d87ad9996ef947e2"
+      sha256: e75cf627202816cf4b45910658205959524860b99951bd0d370e760bf3546424
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   time:
     dependency: transitive
     description:
@@ -4529,10 +4529,10 @@ packages:
     dependency: transitive
     description:
       name: fluent_ui
-      sha256: dad68fd0d7df9240232ec02f658c66256cda4722c922718a966f9878a36bd7a3
+      sha256: "334144996f2699bb9dd678a9fe9a8e65a2e0b89bda9328ed4f0d49a8768f1416"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.0"
+    version: "4.5.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -4550,18 +4550,18 @@ packages:
     dependency: transitive
     description:
       name: flutter_gen_core
-      sha256: "41ed478d2c1b77cb899b859c3705be02a76a3f03171c17b1d82af98068788763"
+      sha256: e8637dd6a59860f89e5e71be0a27101ec32dad1a0ed7fd879fd23b6e91d5004d
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   flutter_gen_runner:
     dependency: "direct dev"
     description:
       name: flutter_gen_runner
-      sha256: a32f596f5c4f0d03ef950db2ec03b5d05f944d215accfd3e0494cf47113139fa
+      sha256: "7de1bf4fc0439be0fef3178b6423d5c7f1f9f3a38a7c6fafe75d7f70ff4856d7"
       url: "https://pub.dev"
     source: hosted
-    version: "5.3.0"
+    version: "5.3.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -4584,10 +4584,10 @@ packages:
     dependency: "direct dev"
     description:
       name: freezed
-      sha256: e819441678f1679b719008ff2ff0ef045d66eed9f9ec81166ca0d9b02a187454
+      sha256: "73b58fe836dc05594451d8f740d97d5167886962d628b9f60a1fe945aa0a891f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.2"
+    version: "2.3.3"
   freezed_annotation:
     dependency: "direct main"
     description:
@@ -4608,10 +4608,10 @@ packages:
     dependency: transitive
     description:
       name: get_it
-      sha256: "290fde3a86072e4b37dbb03c07bec6126f0ecc28dad403c12ffe2e5a2d751ab7"
+      sha256: ca77bd0c23e609e09a70989726295a92978589745e129c27d354e61e4070f804
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "7.4.1"
   glob:
     dependency: transitive
     description:
@@ -4990,10 +4990,10 @@ packages:
     dependency: transitive
     description:
       name: theme_tailor_annotation
-      sha256: "43e97c8d2bb1f171a23de7198cf6fe5730db1f20290b65d8d87ad9996ef947e2"
+      sha256: e75cf627202816cf4b45910658205959524860b99951bd0d370e760bf3546424
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   time:
     dependency: transitive
     description:

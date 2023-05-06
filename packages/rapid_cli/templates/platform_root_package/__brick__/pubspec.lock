@@ -319,10 +319,10 @@ packages:
     dependency: "direct main"
     description:
       name: get_it
-      sha256: "290fde3a86072e4b37dbb03c07bec6126f0ecc28dad403c12ffe2e5a2d751ab7"
+      sha256: ca77bd0c23e609e09a70989726295a92978589745e129c27d354e61e4070f804
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "7.4.1"
   glob:
     dependency: transitive
     description:
@@ -404,10 +404,10 @@ packages:
     dependency: transitive
     description:
       name: json_annotation
-      sha256: c33da08e136c3df0190bd5bbe51ae1df4a7d96e7954d1d7249fea2968a72d317
+      sha256: b10a7b2ff83d83c777edba3c6a0f97045ddadd56c944e1a23a3fdf43a1bf4467
       url: "https://pub.dev"
     source: hosted
-    version: "4.8.0"
+    version: "4.8.1"
   lints:
     dependency: transitive
     description:
@@ -714,10 +714,10 @@ packages:
     dependency: transitive
     description:
       name: theme_tailor_annotation
-      sha256: "43e97c8d2bb1f171a23de7198cf6fe5730db1f20290b65d8d87ad9996ef947e2"
+      sha256: e75cf627202816cf4b45910658205959524860b99951bd0d370e760bf3546424
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   timing:
     dependency: transitive
     description:
@@ -1194,10 +1194,10 @@ packages:
     dependency: "direct main"
     description:
       name: get_it
-      sha256: "290fde3a86072e4b37dbb03c07bec6126f0ecc28dad403c12ffe2e5a2d751ab7"
+      sha256: ca77bd0c23e609e09a70989726295a92978589745e129c27d354e61e4070f804
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "7.4.1"
   glob:
     dependency: transitive
     description:
@@ -1279,10 +1279,10 @@ packages:
     dependency: transitive
     description:
       name: json_annotation
-      sha256: c33da08e136c3df0190bd5bbe51ae1df4a7d96e7954d1d7249fea2968a72d317
+      sha256: b10a7b2ff83d83c777edba3c6a0f97045ddadd56c944e1a23a3fdf43a1bf4467
       url: "https://pub.dev"
     source: hosted
-    version: "4.8.0"
+    version: "4.8.1"
   lints:
     dependency: transitive
     description:
@@ -1589,10 +1589,10 @@ packages:
     dependency: transitive
     description:
       name: theme_tailor_annotation
-      sha256: "43e97c8d2bb1f171a23de7198cf6fe5730db1f20290b65d8d87ad9996ef947e2"
+      sha256: e75cf627202816cf4b45910658205959524860b99951bd0d370e760bf3546424
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   timing:
     dependency: transitive
     description:
@@ -2069,10 +2069,10 @@ packages:
     dependency: "direct main"
     description:
       name: get_it
-      sha256: "290fde3a86072e4b37dbb03c07bec6126f0ecc28dad403c12ffe2e5a2d751ab7"
+      sha256: ca77bd0c23e609e09a70989726295a92978589745e129c27d354e61e4070f804
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "7.4.1"
   glob:
     dependency: transitive
     description:
@@ -2162,10 +2162,10 @@ packages:
     dependency: transitive
     description:
       name: json_annotation
-      sha256: c33da08e136c3df0190bd5bbe51ae1df4a7d96e7954d1d7249fea2968a72d317
+      sha256: b10a7b2ff83d83c777edba3c6a0f97045ddadd56c944e1a23a3fdf43a1bf4467
       url: "https://pub.dev"
     source: hosted
-    version: "4.8.0"
+    version: "4.8.1"
   lints:
     dependency: transitive
     description:
@@ -2472,10 +2472,10 @@ packages:
     dependency: transitive
     description:
       name: theme_tailor_annotation
-      sha256: "43e97c8d2bb1f171a23de7198cf6fe5730db1f20290b65d8d87ad9996ef947e2"
+      sha256: e75cf627202816cf4b45910658205959524860b99951bd0d370e760bf3546424
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   timing:
     dependency: transitive
     description:
@@ -2968,10 +2968,10 @@ packages:
     dependency: "direct main"
     description:
       name: get_it
-      sha256: "290fde3a86072e4b37dbb03c07bec6126f0ecc28dad403c12ffe2e5a2d751ab7"
+      sha256: ca77bd0c23e609e09a70989726295a92978589745e129c27d354e61e4070f804
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "7.4.1"
   glob:
     dependency: transitive
     description:
@@ -3053,10 +3053,10 @@ packages:
     dependency: transitive
     description:
       name: json_annotation
-      sha256: c33da08e136c3df0190bd5bbe51ae1df4a7d96e7954d1d7249fea2968a72d317
+      sha256: b10a7b2ff83d83c777edba3c6a0f97045ddadd56c944e1a23a3fdf43a1bf4467
       url: "https://pub.dev"
     source: hosted
-    version: "4.8.0"
+    version: "4.8.1"
   lints:
     dependency: transitive
     description:
@@ -3371,10 +3371,10 @@ packages:
     dependency: transitive
     description:
       name: theme_tailor_annotation
-      sha256: "43e97c8d2bb1f171a23de7198cf6fe5730db1f20290b65d8d87ad9996ef947e2"
+      sha256: e75cf627202816cf4b45910658205959524860b99951bd0d370e760bf3546424
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   timing:
     dependency: transitive
     description:
@@ -3848,10 +3848,10 @@ packages:
     dependency: "direct main"
     description:
       name: get_it
-      sha256: "290fde3a86072e4b37dbb03c07bec6126f0ecc28dad403c12ffe2e5a2d751ab7"
+      sha256: ca77bd0c23e609e09a70989726295a92978589745e129c27d354e61e4070f804
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "7.4.1"
   glob:
     dependency: transitive
     description:
@@ -3933,10 +3933,10 @@ packages:
     dependency: transitive
     description:
       name: json_annotation
-      sha256: c33da08e136c3df0190bd5bbe51ae1df4a7d96e7954d1d7249fea2968a72d317
+      sha256: b10a7b2ff83d83c777edba3c6a0f97045ddadd56c944e1a23a3fdf43a1bf4467
       url: "https://pub.dev"
     source: hosted
-    version: "4.8.0"
+    version: "4.8.1"
   lints:
     dependency: transitive
     description:
@@ -4243,10 +4243,10 @@ packages:
     dependency: transitive
     description:
       name: theme_tailor_annotation
-      sha256: "43e97c8d2bb1f171a23de7198cf6fe5730db1f20290b65d8d87ad9996ef947e2"
+      sha256: e75cf627202816cf4b45910658205959524860b99951bd0d370e760bf3546424
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   timing:
     dependency: transitive
     description:
@@ -4666,10 +4666,10 @@ packages:
     dependency: transitive
     description:
       name: fluent_ui
-      sha256: dad68fd0d7df9240232ec02f658c66256cda4722c922718a966f9878a36bd7a3
+      sha256: "334144996f2699bb9dd678a9fe9a8e65a2e0b89bda9328ed4f0d49a8768f1416"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.0"
+    version: "4.5.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -4731,10 +4731,10 @@ packages:
     dependency: "direct main"
     description:
       name: get_it
-      sha256: "290fde3a86072e4b37dbb03c07bec6126f0ecc28dad403c12ffe2e5a2d751ab7"
+      sha256: ca77bd0c23e609e09a70989726295a92978589745e129c27d354e61e4070f804
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "7.4.1"
   glob:
     dependency: transitive
     description:
@@ -4816,10 +4816,10 @@ packages:
     dependency: transitive
     description:
       name: json_annotation
-      sha256: c33da08e136c3df0190bd5bbe51ae1df4a7d96e7954d1d7249fea2968a72d317
+      sha256: b10a7b2ff83d83c777edba3c6a0f97045ddadd56c944e1a23a3fdf43a1bf4467
       url: "https://pub.dev"
     source: hosted
-    version: "4.8.0"
+    version: "4.8.1"
   lints:
     dependency: transitive
     description:
@@ -5142,10 +5142,10 @@ packages:
     dependency: transitive
     description:
       name: theme_tailor_annotation
-      sha256: "43e97c8d2bb1f171a23de7198cf6fe5730db1f20290b65d8d87ad9996ef947e2"
+      sha256: e75cf627202816cf4b45910658205959524860b99951bd0d370e760bf3546424
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   timing:
     dependency: transitive
     description:

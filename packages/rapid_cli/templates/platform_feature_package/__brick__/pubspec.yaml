@@ -17,7 +17,7 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^7.0.0{{/routable}}
+  {{#routable}}auto_route: ^6.2.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -100,7 +100,7 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^7.0.0{{/routable}}
+  {{#routable}}auto_route: ^6.2.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -180,7 +180,7 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^7.0.0{{/routable}}
+  {{#routable}}auto_route: ^6.2.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -263,7 +263,7 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^7.0.0{{/routable}}
+  {{#routable}}auto_route: ^6.2.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -343,7 +343,7 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^7.0.0{{/routable}}
+  {{#routable}}auto_route: ^6.2.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -426,7 +426,7 @@ dependencies:
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^7.0.0{{/routable}}
+  {{#routable}}auto_route: ^6.2.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:

@@ -153,10 +153,10 @@ void main() {
               (routerConfig) => routerConfig.routerDelegate,
               'routerDelegate',
               isA<AutoRouterDelegate>()
-                  .having(
-                    (delegate) => delegate.initialRoutes,
-                    'initialRoutes',
-                    equals(const [FakePageRouteInfo()]),
+                 .having(
+                    (delegate) => delegate.deepLinkBuilder,
+                    'deepLinkBuilder',
+                    isNotNull,
                   )
                   .having(
                     (delegate) => delegate.navigatorObservers(),
@@ -360,9 +360,9 @@ void main() {
               'routerDelegate',
               isA<AutoRouterDelegate>()
                   .having(
-                    (delegate) => delegate.initialRoutes,
-                    'initialRoutes',
-                    equals(const [FakePageRouteInfo()]),
+                    (delegate) => delegate.deepLinkBuilder,
+                    'deepLinkBuilder',
+                    isNotNull,
                   )
                   .having(
                     (delegate) => delegate.navigatorObservers(),
@@ -566,9 +566,9 @@ void main() {
               'routerDelegate',
               isA<AutoRouterDelegate>()
                   .having(
-                    (delegate) => delegate.initialRoutes,
-                    'initialRoutes',
-                    equals(const [FakePageRouteInfo()]),
+                    (delegate) => delegate.deepLinkBuilder,
+                    'deepLinkBuilder',
+                    isNotNull,
                   )
                   .having(
                     (delegate) => delegate.navigatorObservers(),
@@ -772,9 +772,9 @@ void main() {
               'routerDelegate',
               isA<AutoRouterDelegate>()
                   .having(
-                    (delegate) => delegate.initialRoutes,
-                    'initialRoutes',
-                    equals(const [FakePageRouteInfo()]),
+                    (delegate) => delegate.deepLinkBuilder,
+                    'deepLinkBuilder',
+                    isNotNull,
                   )
                   .having(
                     (delegate) => delegate.navigatorObservers(),
@@ -978,9 +978,9 @@ void main() {
               'routerDelegate',
               isA<AutoRouterDelegate>()
                   .having(
-                    (delegate) => delegate.initialRoutes,
-                    'initialRoutes',
-                    equals(const [FakePageRouteInfo()]),
+                    (delegate) => delegate.deepLinkBuilder,
+                    'deepLinkBuilder',
+                    isNotNull,
                   )
                   .having(
                     (delegate) => delegate.navigatorObservers(),
@@ -1184,9 +1184,9 @@ void main() {
               'routerDelegate',
               isA<AutoRouterDelegate>()
                   .having(
-                    (delegate) => delegate.initialRoutes,
-                    'initialRoutes',
-                    equals(const [FakePageRouteInfo()]),
+                    (delegate) => delegate.deepLinkBuilder,
+                    'deepLinkBuilder',
+                    isNotNull,
                   )
                   .having(
                     (delegate) => delegate.navigatorObservers(),

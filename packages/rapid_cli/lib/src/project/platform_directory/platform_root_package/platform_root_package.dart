@@ -10,7 +10,7 @@ import 'package:rapid_cli/src/project/project.dart';
 
 import 'platform_root_package_impl.dart';
 
-typedef PlatformRootPackageBuilder = PlatformRootPackage Function(
+typedef _PlatformRootPackageBuilder<T extends PlatformRootPackage> = T Function(
   Platform platform, {
   required Project project,
 });
@@ -22,41 +22,58 @@ typedef PlatformRootPackageBuilder = PlatformRootPackage Function(
 /// {@endtemplate}
 abstract class PlatformRootPackage
     implements DartPackage, OverridableGenerator {
+  /// Use to override [localizationsDelegatesFile] for testing.
   @visibleForTesting
   LocalizationsDelegatesFileBuilder? localizationsDelegatesFileOverrides;
 
+  /// Use to override [injectionFile] for testing.
   @visibleForTesting
   InjectionFileBuilder? injectionFileOverrides;
 
+  /// Returns the platform of this package.
   Platform get platform;
 
+  /// Returns the project associated with this package.
   Project get project;
 
+  /// Returns the localizations delegates file of this directory.
+  LocalizationsDelegatesFile get localizationsDelegatesFile;
+
+  /// Returns the injection file of this directory.
+  InjectionFile get injectionFile;
+
+  /// Returns the default language of this package.
   String defaultLanguage();
 
+  /// Returns the languages supported by this package.
   Set<String> supportedLanguages();
 
+  /// Registers [featurePackage] to this package.
   Future<void> registerFeaturePackage(PlatformFeaturePackage featurePackage);
 
+  /// Unregisters [featurePackage] from this package.
   Future<void> unregisterFeaturePackage(PlatformFeaturePackage featurePackage);
 
+  /// Registers [infrastructurePackage] to this package.
   Future<void> registerInfrastructurePackage(
     InfrastructurePackage infrastructurePackage,
   );
 
+  /// Unregisters [infrastructurePackage] from this package.
   Future<void> unregisterInfrastructurePackage(
     InfrastructurePackage infrastructurePackage,
   );
 
+  /// Adds [language] to this package.
   Future<void> addLanguage(String language);
 
+  /// Removes [language] from this package.
   Future<void> removeLanguage(String language);
 }
 
-typedef NoneIosRootPackageBuilder = NoneIosRootPackage Function(
-  Platform platform, {
-  required Project project,
-});
+/// Signature of [NoneIosRootPackage.new].
+typedef NoneIosRootPackageBuilder
+    = _PlatformRootPackageBuilder<NoneIosRootPackageImpl>;
 
 abstract class NoneIosRootPackage extends PlatformRootPackage {
   factory NoneIosRootPackage(
@@ -68,18 +85,22 @@ abstract class NoneIosRootPackage extends PlatformRootPackage {
         project: project,
       );
 
+  /// Use to override [nativeDirectory] for testing.
   @visibleForTesting
   NoneIosNativeDirectoryBuilder? nativeDirectoryOverrides;
 
+  /// Returns the platform native directory of this directory.
+  NoneIosNativeDirectory get nativeDirectory;
+
+  /// Creates this package on disk.
   Future<void> create({
     String? description,
     String? orgName,
   });
 }
 
-typedef IosRootPackageBuilder = IosRootPackage Function({
-  required Project project,
-});
+/// Signature of [IosRootPackage.new].
+typedef IosRootPackageBuilder = _PlatformRootPackageBuilder<IosRootPackageImpl>;
 
 /// {@template ios_root_package}
 /// Abstraction of an iOS root package of a Rapid project.
@@ -95,15 +116,21 @@ abstract class IosRootPackage extends PlatformRootPackage {
         project: project,
       );
 
+  /// Use to override [nativeDirectory] for testing.
   @visibleForTesting
   IosNativeDirectoryBuilder? nativeDirectoryOverrides;
 
+  /// Returns the platform native directory of this directory.
+  IosNativeDirectory get nativeDirectory;
+
+  /// Creates this package on disk.
   Future<void> create({
     required String orgName,
     required String language,
   });
 }
 
+/// Signature of [LocalizationsDelegatesFile.new].
 typedef LocalizationsDelegatesFileBuilder = LocalizationsDelegatesFile
     Function({
   required PlatformRootPackage rootPackage,
@@ -123,19 +150,23 @@ abstract class LocalizationsDelegatesFile implements DartFile {
         rootPackage: rootPackage,
       );
 
+  /// Returns the supported locales of this file.
   Set<String> supportedLocales();
 
-  /// Adds localizations delegate of feature with [packageName].
+  /// Adds localizations delegate of feature with [packageName] to this file.
   void addLocalizationsDelegate(String packageName);
 
+  /// Adds [locale] to the supported locales of this file.
   void addSupportedLocale(String locale);
 
-  /// Removes localizations delegate of feature with [packageName].
+  /// Removes the localizations delegate of feature with [packageName] from this file.
   void removeLocalizationsDelegate(String packageName);
 
+  /// Adds [locale] from the supported locales of this file.
   void removeSupportedLocale(String locale);
 }
 
+/// Signature of [InjectionFile.new].
 typedef InjectionFileBuilder = InjectionFile Function({
   required PlatformRootPackage rootPackage,
 });
@@ -154,9 +185,9 @@ abstract class InjectionFile implements DartFile {
         rootPackage: rootPackage,
       );
 
-  /// Adds feature with [packageName] to the injection file.
+  /// Adds feature with [packageName] to this file.
   void addFeaturePackage(String packageName);
 
-  /// Removes feature with [packageName] from the injection file.
+  /// Removes feature with [packageName] from this file.
   void removeFeaturePackage(String packageName);
 }

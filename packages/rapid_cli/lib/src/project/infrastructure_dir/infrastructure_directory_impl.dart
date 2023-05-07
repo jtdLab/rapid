@@ -51,36 +51,4 @@ class InfrastructureDirectoryImpl extends DirectoryImpl
             },
           ).toList()
         ..sort();
-
-  @override
-  Future<InfrastructurePackage> addInfrastructurePackage({
-    required String name,
-  }) async {
-    final infrastructurePackage = this.infrastructurePackage(name: name);
-
-    if (infrastructurePackage.exists()) {
-      throw RapidException(
-        'The sub infrastructure package $name does already exists',
-      );
-    }
-
-    await infrastructurePackage.create();
-    return infrastructurePackage;
-  }
-
-  @override
-  Future<InfrastructurePackage> removeInfrastructurePackage({
-    required String name,
-  }) async {
-    final infrastructurePackage = this.infrastructurePackage(name: name);
-
-    if (!infrastructurePackage.exists()) {
-      throw RapidException(
-        'The sub infrastructure package $name does not exist',
-      );
-    }
-
-    infrastructurePackage.delete();
-    return infrastructurePackage;
-  }
 }

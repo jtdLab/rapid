@@ -6,6 +6,9 @@ import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/domain_dir/domain_package/domain_package_impl.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
+// TODO: DomainPackageBarrelFile is unused
+
+/// Signature of [DomainPackage.new].
 typedef DomainPackageBuilder = DomainPackage Function({
   String? name,
   required Project project,
@@ -14,7 +17,7 @@ typedef DomainPackageBuilder = DomainPackage Function({
 /// {@template domain_package}
 /// Abstraction of a domain package of a Rapid project.
 ///
-/// Location: `packages/<project name>/<project name>_domain/<project name>_domain_<name>`
+/// Location: `packages/<project name>/<project name>_domain/<project name>_domain_<name?>`
 /// {@endtemplate}
 abstract class DomainPackage implements DartPackage, OverridableGenerator {
   /// {@macro domain_package}
@@ -27,76 +30,69 @@ abstract class DomainPackage implements DartPackage, OverridableGenerator {
         project: project,
       );
 
+  /// Use to override [entity] for testing.
   @visibleForTesting
   EntityBuilder? entityOverrides;
 
+  /// Use to override [serviceInterface] for testing.
   @visibleForTesting
   ServiceInterfaceBuilder? serviceInterfaceOverrides;
 
+  /// Use to override [valueObject] for testing.
   @visibleForTesting
   ValueObjectBuilder? valueObjectOverrides;
 
+  /// Use to override [barrelFile] for testing.
   @visibleForTesting
   DomainPackageBarrelFileBuilder? barrelFileOverrides;
 
+  /// Returns the name of this package, or null if it has no name.
   String? get name;
 
+  /// Returns the project associated with this package.
   Project get project;
 
+  /// Returns the barrel file of this package.
+  DomainPackageBarrelFile get barrelFile;
+
+  /// Returns the Entity with the given [name] and [dir].
+  ///
+  /// The [name] parameter specifies the name of the Entity.
+  ///
+  /// The [dir] parameter specifies the directory where the Entity is stored,
+  /// relative to the `lib/src` directory of the package.
   Entity entity({
     required String name,
     required String dir,
   });
 
+  /// Returns the Service Interface with the given [name] and [dir].
+  ///
+  /// The [name] parameter specifies the name of the Service Interface.
+  ///
+  /// The [dir] parameter specifies the directory where the Service Interface is stored,
+  /// relative to the `lib/src` directory of the package.
   ServiceInterface serviceInterface({
     required String name,
     required String dir,
   });
 
+  /// Returns the Value Object with the given [name] and [dir].
+  ///
+  /// The [name] parameter specifies the name of the Value Object.
+  ///
+  /// The [dir] parameter specifies the directory where the Value Object is stored,
+  /// relative to the `lib/src` directory of the package.
   ValueObject valueObject({
     required String name,
     required String dir,
   });
 
-  DomainPackageBarrelFile get barrelFile;
-
+  /// Creates this package on disk.
   Future<void> create();
-
-  // TODO consider required !
-
-  Future<Entity> addEntity({
-    required String name,
-    required String outputDir,
-  });
-
-  Future<Entity> removeEntity({
-    required String name,
-    required String dir,
-  });
-
-  Future<ServiceInterface> addServiceInterface({
-    required String name,
-    required String outputDir,
-  });
-
-  Future<ServiceInterface> removeServiceInterface({
-    required String name,
-    required String dir,
-  });
-
-  Future<ValueObject> addValueObject({
-    required String name,
-    required String outputDir,
-    required String type,
-    required String generics,
-  });
-
-  Future<ValueObject> removeValueObject({
-    required String name,
-    required String dir,
-  });
 }
 
+/// Signature of [Entity.new].
 typedef EntityBuilder = Entity Function({
   required String name,
   required String dir,
@@ -120,9 +116,11 @@ abstract class Entity
         domainPackage: domainPackage,
       );
 
+  /// Creates this entity on disk.
   Future<void> create();
 }
 
+/// Signature of [ServiceInterface.new].
 typedef ServiceInterfaceBuilder = ServiceInterface Function({
   required String name,
   required String dir,
@@ -146,9 +144,11 @@ abstract class ServiceInterface
         domainPackage: domainPackage,
       );
 
+  /// Creates this service interface on disk.
   Future<void> create();
 }
 
+/// Signature of [ValueObject.new].
 typedef ValueObjectBuilder = ValueObject Function({
   required String name,
   required String dir,
@@ -172,12 +172,14 @@ abstract class ValueObject
         domainPackage: domainPackage,
       );
 
+  /// Creates this value object on disk.
   Future<void> create({
     required String type,
     required String generics,
   });
 }
 
+/// Signature of [DomainPackageBarrelFile.new].
 typedef DomainPackageBarrelFileBuilder = DomainPackageBarrelFile Function({
   required DomainPackage domainPackage,
 });

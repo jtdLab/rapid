@@ -3,10 +3,10 @@ import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/domain_dir/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/infrastructure_package_impl.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
+/// Signature of [InfrastructurePackage.new].
 typedef InfrastructurePackageBuilder = InfrastructurePackage Function({
   String? name,
   required Project project,
@@ -29,68 +29,57 @@ abstract class InfrastructurePackage
         project: project,
       );
 
-  @visibleForTesting
-  DomainPackageBuilder? domainPackageOverrides;
-
-  @visibleForTesting
-  EntityBuilder? entityOverrides;
-
-  @visibleForTesting
-  ServiceInterfaceBuilder? serviceInterfaceOverrides;
-
+  /// Use to override [dataTransferObject] for testing.
   @visibleForTesting
   DataTransferObjectBuilder? dataTransferObjectOverrides;
 
+  /// Use to override [serviceImplementation] for testing.
   @visibleForTesting
   ServiceImplementationBuilder? serviceImplementationOverrides;
 
+  /// Use to override [barrelFile] for testing.
   @visibleForTesting
   InfrastructurePackageBarrelFileBuilder? barrelFileOverrides;
 
+  /// Returns the name of this package, or null if it has no name.
   String? get name;
 
+  /// Returns the project associated with this package.
   Project get project;
 
+  /// Returns the barrel file of this package.
+  InfrastructurePackageBarrelFile get barrelFile;
+
+  /// Returns the Data Transfer Object with the given [name] and [dir].
+  ///
+  /// The [name] parameter specifies the name of the Data Transfer Object.
+  ///
+  /// The [dir] parameter specifies the directory where the Data Transfer Object is stored,
+  /// relative to the `lib/src` directory of the package.
   DataTransferObject dataTransferObject({
     required String name,
     required String dir,
   });
 
+  /// Returns the Service Implementation with the given [name], [serviceName], [dir].
+  ///
+  /// The [name] parameter specifies the name of the Service Implementation.
+  ///
+  /// The [serviceName] parameter specifies the name of the Service Interface the Service Implementation is associated with.
+  ///
+  /// The [dir] parameter specifies the directory where the Service Implementation is stored,
+  /// relative to the `lib/src` directory of the package.
   ServiceImplementation serviceImplementation({
     required String name,
     required String serviceName,
     required String dir,
   });
 
-  InfrastructurePackageBarrelFile get barrelFile;
-
+  /// Creates this package on disk.
   Future<void> create();
-
-  // TODO consider required !
-
-  Future<DataTransferObject> addDataTransferObject({
-    required String name,
-    required String dir,
-  });
-
-  Future<DataTransferObject> removeDataTransferObject({
-    required String name,
-    required String dir,
-  });
-
-  Future<ServiceImplementation> addServiceImplementation({
-    required String name,
-    required String serviceName,
-    required String dir,
-  });
-
-  Future<ServiceImplementation> removeServiceImplementation({
-    required String name,
-    required String serviceName,
-    required String dir,
-  });
 }
 
+/// Signature of [DataTransferObject.new].
 typedef DataTransferObjectBuilder = DataTransferObject Function({
   required String name,
   required String dir,
@@ -114,9 +103,11 @@ abstract class DataTransferObject
         infrastructurePackage: infrastructurePackage,
       );
 
+  /// Creates this data transfer object on disk.
   Future<void> create();
 }
 
+/// Signature of [ServiceImplementation.new].
 typedef ServiceImplementationBuilder = ServiceImplementation Function({
   required String name,
   required String serviceName,
@@ -143,9 +134,11 @@ abstract class ServiceImplementation
         infrastructurePackage: infrastructurePackage,
       );
 
+  /// Creates this service implementation on disk.
   Future<void> create();
 }
 
+/// Signature of [InfrastructurePackageBarrelFile.new].
 typedef InfrastructurePackageBarrelFileBuilder = InfrastructurePackageBarrelFile
     Function({
   required InfrastructurePackage infrastructurePackage,

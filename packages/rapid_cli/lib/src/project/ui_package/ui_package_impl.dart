@@ -28,10 +28,10 @@ class UiPackageImpl extends DartPackageImpl
         );
 
   @override
-  UiPackageBarrelFileBuilder? barrelFileOverrides;
+  ThemeExtensionsFileBuilder? themeExtensionsFileOverrides;
 
   @override
-  ThemeExtensionsFileBuilder? themeExtensionsFileOverrides;
+  UiPackageBarrelFileBuilder? barrelFileOverrides;
 
   @override
   WidgetBuilder? widgetOverrides;
@@ -40,14 +40,14 @@ class UiPackageImpl extends DartPackageImpl
   final Project project;
 
   @override
-  UiPackageBarrelFile get barrelFile =>
-      (barrelFileOverrides ?? UiPackageBarrelFile.new)(
+  ThemeExtensionsFile get themeExtensionsFile =>
+      (themeExtensionsFileOverrides ?? ThemeExtensionsFile.new)(
         uiPackage: this,
       );
 
   @override
-  ThemeExtensionsFile get themeExtensionsFile =>
-      (themeExtensionsFileOverrides ?? ThemeExtensionsFile.new)(
+  UiPackageBarrelFile get barrelFile =>
+      (barrelFileOverrides ?? UiPackageBarrelFile.new)(
         uiPackage: this,
       );
 
@@ -72,48 +72,6 @@ class UiPackageImpl extends DartPackageImpl
         'project_name': projectName,
       },
     );
-  }
-
-  @override
-  Future<Widget> addWidget({
-    required String name,
-    required String dir,
-  }) async {
-    final widget = this.widget(name: name, dir: dir);
-    if (widget.existsAny()) {
-      throw RapidException(
-        'The Widget $name at $dir already exists',
-      );
-    }
-
-    await widget.create();
-    themeExtensionsFile.addThemeExtension(name);
-    barrelFile.addExport(
-        'src/${name.snakeCase}.dart'); // TODO doesnt work with dir != '.'
-    barrelFile.addExport(
-        'src/${name.snakeCase}_theme.dart'); // TODO doesnt work with dir != '.'
-    return widget;
-  }
-
-  @override
-  Future<Widget> removeWidget({
-    required String name,
-    required String dir,
-  }) async {
-    final widget = this.widget(name: name, dir: dir);
-    if (!widget.existsAny()) {
-      throw RapidException(
-        'The Widget $name at $dir does not exist',
-      );
-    }
-
-    widget.delete();
-    themeExtensionsFile.removeThemeExtension(name);
-    barrelFile.removeExport(
-        'src/${name.snakeCase}.dart'); // TODO doesnt work with dir != '.'
-    barrelFile.removeExport(
-        'src/${name.snakeCase}_theme.dart'); // TODO doesnt work with dir != '.'
-    return widget;
   }
 }
 

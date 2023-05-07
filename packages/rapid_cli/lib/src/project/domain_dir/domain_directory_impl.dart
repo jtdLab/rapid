@@ -48,28 +48,4 @@ class DomainDirectoryImpl extends DirectoryImpl implements DomainDirectory {
         },
       ).toList()
     ..sort();
-
-  @override
-  Future<DomainPackage> addDomainPackage({required String name}) async {
-    final domainPackage = this.domainPackage(name: name);
-
-    if (domainPackage.exists()) {
-      throw RapidException('The sub domain package $name does already exists');
-    }
-
-    await domainPackage.create();
-    return domainPackage;
-  }
-
-  @override
-  Future<DomainPackage> removeDomainPackage({required String name}) async {
-    final domainPackage = this.domainPackage(name: name);
-
-    if (!domainPackage.exists()) {
-      throw RapidException('The sub domain package $name does not exist');
-    }
-
-    domainPackage.delete();
-    return domainPackage;
-  }
 }

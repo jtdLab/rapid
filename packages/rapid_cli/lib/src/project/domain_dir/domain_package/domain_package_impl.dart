@@ -50,6 +50,12 @@ class DomainPackageImpl extends DartPackageImpl
   final Project project;
 
   @override
+  DomainPackageBarrelFile get barrelFile =>
+      (barrelFileOverrides ?? DomainPackageBarrelFile.new)(
+        domainPackage: this,
+      );
+
+  @override
   Entity entity({
     required String name,
     required String dir,
@@ -83,10 +89,6 @@ class DomainPackageImpl extends DartPackageImpl
       );
 
   @override
-  DomainPackageBarrelFile get barrelFile =>
-      (barrelFileOverrides ?? DomainPackageBarrelFile.new)(domainPackage: this);
-
-  @override
   Future<void> create() async {
     final projectName = project.name();
 
@@ -98,92 +100,6 @@ class DomainPackageImpl extends DartPackageImpl
         'name': name,
       },
     );
-  }
-
-  @override
-  Future<Entity> addEntity({
-    required String name,
-    required String outputDir,
-  }) async {
-    final entity = this.entity(name: name, dir: outputDir);
-    if (entity.existsAny()) {
-      throw RapidException('The $name at $outputDir already exists');
-    }
-
-    await entity.create();
-    return entity;
-  }
-
-  @override
-  Future<Entity> removeEntity({
-    required String name,
-    required String dir,
-  }) async {
-    final entity = this.entity(name: name, dir: dir);
-    if (!entity.existsAny()) {
-      throw RapidException('The $name at $dir does not exist');
-    }
-
-    entity.delete();
-    return entity;
-  }
-
-  @override
-  Future<ServiceInterface> addServiceInterface({
-    required String name,
-    required String outputDir,
-  }) async {
-    final serviceInterface = this.serviceInterface(name: name, dir: outputDir);
-    if (serviceInterface.existsAny()) {
-      throw RapidException('The I${name}Service at $outputDir already exists');
-    }
-
-    await serviceInterface.create();
-    return serviceInterface;
-  }
-
-  @override
-  Future<ServiceInterface> removeServiceInterface({
-    required String name,
-    required String dir,
-  }) async {
-    final serviceInterface = this.serviceInterface(name: name, dir: dir);
-    if (!serviceInterface.existsAny()) {
-      throw RapidException('The I${name}Service at $dir does not exists');
-    }
-
-    serviceInterface.delete();
-    return serviceInterface;
-  }
-
-  @override
-  Future<ValueObject> addValueObject({
-    required String name,
-    required String outputDir,
-    required String type,
-    required String generics,
-  }) async {
-    final valueObject = this.valueObject(name: name, dir: outputDir);
-    if (valueObject.existsAny()) {
-      throw RapidException('The $name at $outputDir already exists');
-    }
-
-    await valueObject.create(type: type, generics: generics);
-    return valueObject;
-  }
-
-  @override
-  Future<ValueObject> removeValueObject({
-    required String name,
-    required String dir,
-  }) async {
-    final valueObject = this.valueObject(name: name, dir: dir);
-    if (!valueObject.existsAny()) {
-      throw RapidException('The $name at $dir does not exist');
-    }
-
-    valueObject.delete();
-    return valueObject;
   }
 }
 

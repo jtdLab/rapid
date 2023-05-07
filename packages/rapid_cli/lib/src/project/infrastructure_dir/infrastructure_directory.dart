@@ -4,7 +4,7 @@ import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_director
 import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
-/// Signature for method that returns the [InfrastructureDirectory] for [name] and [project].
+/// Signature of [InfrastructureDirectory.new].
 typedef InfrastructureDirectoryBuilder = InfrastructureDirectory Function({
   required Project project,
 });
@@ -23,9 +23,11 @@ abstract class InfrastructureDirectory extends Directory {
         project: project,
       );
 
+  /// Use to override [infrastructurePackage] for testing.
   @visibleForTesting
   InfrastructurePackageBuilder? infrastructurePackageOverrides;
 
+  /// Use to override [infrastructurePackages] for testing.
   @visibleForTesting
   List<InfrastructurePackage>? infrastructurePackagesOverrides;
 
@@ -34,20 +36,4 @@ abstract class InfrastructureDirectory extends Directory {
 
   /// Returns all [InfrastructurePackage]s.
   List<InfrastructurePackage> infrastructurePackages();
-
-  // TODO consider required !
-
-  /// Adds the [InfrastructurePackage] with [name] and returns it.
-  ///
-  /// Throws [SubInfrastructureAlreadyExists] when the [DomainPackage] already exists.
-  Future<InfrastructurePackage> addInfrastructurePackage({
-    required String name,
-  });
-
-  /// Removes the [InfrastructurePackage] with [name] and returns it.
-  ///
-  /// Throws [SubInfrastructureDoesNotExist] when the [InfrastructurePackage] does not exist.
-  Future<InfrastructurePackage> removeInfrastructurePackage({
-    required String name,
-  });
 }

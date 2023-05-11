@@ -3,13 +3,13 @@ description: Domain utils for Rapid apps.
 version: 0.1.0
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   dartz: ^0.10.1
-  meta: ^1.8.0
+  meta: ^1.9.1
 
 dev_dependencies:
-  lints: ^2.0.1
+  lints: ^2.1.0
   mocktail: ^0.3.0
   test: ^1.24.2

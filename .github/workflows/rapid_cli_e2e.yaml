@@ -1,6 +1,13 @@
 name: rapid_cli_e2e
 
 on:
+  push:
+    branches:
+      - main
+      - dev
+    paths:
+      - packages/rapid/rapid_domain
+      - packages/rapid_cli
   pull_request:
     branches:
       - main

@@ -5,22 +5,22 @@ on:
     branches:
       - main
     paths:
-      - example/packages/example/example_di
-      - example/packages/example/example_domain
-      - example/packages/example/example_infrastructure
-      - example/packages/example/example_logging
-      - example/packages/example/example_ios
-      - example/packages/example_ui/example_ui
-      - example/packages/example_ui/example_ui_ios
+      - example/packages/example/example_di/**
+      - example/packages/example/example_domain/**
+      - example/packages/example/example_infrastructure/**
+      - example/packages/example/example_logging/**
+      - example/packages/example/example_ios/**
+      - example/packages/example_ui/example_ui/**
+      - example/packages/example_ui/example_ui_ios/**
   pull_request:
     paths:
-      - example/packages/example/example_di
-      - example/packages/example/example_domain
-      - example/packages/example/example_infrastructure
-      - example/packages/example/example_logging
-      - example/packages/example/example_ios
-      - example/packages/example_ui/example_ui
-      - example/packages/example_ui/example_ui_ios
+      - example/packages/example/example_di/**
+      - example/packages/example/example_domain/**
+      - example/packages/example/example_infrastructure/**
+      - example/packages/example/example_logging/**
+      - example/packages/example/example_ios/**
+      - example/packages/example_ui/example_ui/**
+      - example/packages/example_ui/example_ui_ios/**
   workflow_dispatch:
 
 jobs:

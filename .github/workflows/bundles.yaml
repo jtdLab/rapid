@@ -33,7 +33,7 @@ jobs:
       - name: Rebundle templates
         run: bash tool/bundles.sh
 
-      - name: Push branch to remote repository
+      - name: Push dev branch to remote repository
         run: git push origin bundle-templates
 
       - name: Create Pull Request

@@ -5,9 +5,7 @@ on:
     branches:
       - main
       - dev
-    paths:
-      - packages/rapid/rapid_domain
-      - packages/rapid_cli
+      - bundles
   workflow_dispatch:
 
 jobs:

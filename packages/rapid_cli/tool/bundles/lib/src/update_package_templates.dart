@@ -187,7 +187,17 @@ Future<void> _applyPlaceholders({
   for (final file in pubspecLockAndPubspecOverridesYamlFiles) {
     var content = file.readAsStringSync();
     content = content.replaceAll(projectName, '{{project_name}}');
-    content = content.replaceAll(featName, '{{name}}');
+    // exclude platfrom root package
+    if (!platforms
+        .map(
+          (platform) => p.dirname(file.path).endsWith(
+                platformRootPackage.outputPath(projectName, platform: platform),
+              ),
+        )
+        .any((e) => e)) {
+      content = content.replaceAll(featName, '{{name}}');
+    }
+
     file.writeAsStringSync(content);
   }
 }

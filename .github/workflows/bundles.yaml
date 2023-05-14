@@ -33,10 +33,10 @@ jobs:
       - name: Rebundle templates
         run: bash tool/bundles.sh
 
-      - name: Push dev branch to remote repository
-        run: |
-          git checkout -b bundle-templates
-          git push dev bundle-templates
+      # - name: Push dev branch to remote repository
+      #   run: |
+      #     git checkout -b bundle-templates
+      #     git push dev bundle-templates
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5

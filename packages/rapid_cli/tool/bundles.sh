@@ -10,9 +10,17 @@
 # Upates templates, bundles and them to rapid_cli
 ############################################################################################
 
+if [[ "$1" == "--dry-run" ]]; then
+    dart run tool/bundles/bin/bundles.dart --dry-run
+else
+    dart run tool/bundles/bin/bundles.dart
+fi
+
+exit 0
+
 sdks=(
-    "sdk=>=2.19.6 <3.0.0"
-    "flutter=>=3.7.10"
+    "sdk=>=3.0.0 <4.0.0"
+    "flutter=>=3.10.0"
 )
 
 packages=(
@@ -21,26 +29,25 @@ packages=(
     "bloc_concurrency=^0.2.1"
     "bloc_test=^9.1.1"
     "bloc=^8.1.1"
-    "build_runner=^2.3.3"
+    "build_runner=^2.4.2"
     "cupertino_icons=^1.0.5"
     "dartz=^0.10.1"
     "faker=^2.1.0"
-    "fluent_ui=^4.5.1"
+    "fluent_ui=^4.6.0"
     "flutter_bloc=^8.1.2"
     "flutter_gen_runner=^5.3.1"
     "flutter_lints=^2.0.1"
     "freezed_annotation=^2.2.0"
     "freezed=^2.3.3"
-    "get_it=^7.4.1"
+    "get_it=^7.6.0"
     "injectable_generator=^2.1.5"
     "injectable=^2.1.1"
-    "intl=any"
     "json_annotation=^4.8.1"
     "json_serializable=^6.6.2"
-    "lints=^2.0.1"
+    "lints=^2.1.0"
     "macos_ui=^1.12.2"
     "melos=^3.0.1"
-    "meta=^1.8.0"
+    "meta=^1.9.1"
     "mocktail=^0.3.0"
     "test=^1.24.2"
     "theme_tailor_annotation=^2.0.0"
@@ -166,10 +173,6 @@ for path in "${packageTemplatePaths[@]}"; do
         sed -i '' -E "s/^([[:blank:]]*{[[:blank:]]*{[[:blank:]]*#[[:blank:]]*[a-z_]+[[:blank:]]*}[[:blank:]]*}|[[:blank:]]*)$name:[[:blank:]]*\^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+(.*)$/\1$name: $version\2/" "$pubspec_path"
     done
 done
-
-############################################################################################
-# Update pubspec.yamls of package templates to new sdk and package versions
-############################################################################################
 
 # (name, location, destination)
 templates=(

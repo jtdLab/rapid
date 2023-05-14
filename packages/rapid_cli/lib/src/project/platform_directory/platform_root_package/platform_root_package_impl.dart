@@ -122,6 +122,7 @@ class NoneIosRootPackageImpl extends PlatformRootPackageImpl
   @override
   NoneIosNativeDirectoryBuilder? nativeDirectoryOverrides;
 
+  @override
   NoneIosNativeDirectory get nativeDirectory =>
       (nativeDirectoryOverrides ?? NoneIosNativeDirectory.new)(
         rootPackage: this,

@@ -1,0 +1,16 @@
+name: bundles
+description: Bundles Job
+version: 1.0.0
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  path: ^1.8.3
+  http: ^0.13.6
+  html: ^0.15.3
+  io: ^1.0.4
+  recase: ^4.1.0
+
+dev_dependencies:
+  lints: ^2.1.0

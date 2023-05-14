@@ -45,7 +45,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "Update bundled templates"
-          title: "Update bundled templates"
+          commit-message: "chore(rapid_cli): Update bundled templates"
+          title: "chore(rapid_cli): Update bundled templates"
           body: "This pull request updates the bundled templates."
-          branch: bundle-templates
+          branch: bundles

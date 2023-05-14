@@ -17,8 +17,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -29,7 +29,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^7.4.1
+  get_it: ^7.6.0
   injectable: ^2.1.1
   auto_route: ^7.1.0
   bloc: ^8.1.1
@@ -46,7 +46,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
+  build_runner: ^2.4.4
   injectable_generator: ^2.1.5
   auto_route_generator: ^7.0.0
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -84,8 +84,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -96,7 +96,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^7.4.1
+  get_it: ^7.6.0
   injectable: ^2.1.1
   auto_route: ^7.1.0
   bloc: ^8.1.1
@@ -114,7 +114,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
+  build_runner: ^2.4.4
   injectable_generator: ^2.1.5
   auto_route_generator: ^7.0.0
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -148,8 +148,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -160,7 +160,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^7.4.1
+  get_it: ^7.6.0
   injectable: ^2.1.1
   auto_route: ^7.1.0
   bloc: ^8.1.1
@@ -177,7 +177,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
+  build_runner: ^2.4.4
   injectable_generator: ^2.1.5
   auto_route_generator: ^7.0.0
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -215,8 +215,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -227,7 +227,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^7.4.1
+  get_it: ^7.6.0
   injectable: ^2.1.1
   auto_route: ^7.1.0
   bloc: ^8.1.1
@@ -245,7 +245,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
+  build_runner: ^2.4.4
   injectable_generator: ^2.1.5
   auto_route_generator: ^7.0.0
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -279,8 +279,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -291,7 +291,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^7.4.1
+  get_it: ^7.6.0
   injectable: ^2.1.1
   auto_route: ^7.1.0
   bloc: ^8.1.1
@@ -309,7 +309,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
+  build_runner: ^2.4.4
   injectable_generator: ^2.1.5
   auto_route_generator: ^7.0.0
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -347,8 +347,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -359,7 +359,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^7.4.1
+  get_it: ^7.6.0
   injectable: ^2.1.1
   auto_route: ^7.1.0
   bloc: ^8.1.1
@@ -376,7 +376,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
+  build_runner: ^2.4.4
   injectable_generator: ^2.1.5
   auto_route_generator: ^7.0.0
   # The "flutter_lints" package below contains a set of recommended lints to

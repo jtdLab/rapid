@@ -9,9 +9,7 @@ command:
     # https://github.com/dart-lang/pub/issues/3404)
     runPubGetInParallel: false
     hooks:
-      post: |
-        melos run setup-pre-commit-hook && \
-        melos run add-ignored-template-files
+      post: melos run setup-pre-commit-hook
   clean:
     hooks:
       post: |
@@ -34,26 +32,6 @@ scripts:
     description: |
       Set up pre commit hook to ensure Conventional Commits (https://www.conventionalcommits.org/en/v1.0.0/) via commitlint (https://www.npmjs.com/package/commitlint).
        - Requires `node` (can be installed via Brew on macOS).
-
-  add-ignored-template-files:
-    run: |
-      git add --force packages/rapid_cli/templates/di_package/__brick__/pubspec.lock
-      git add --force packages/rapid_cli/templates/domain_package/__brick__/pubspec.lock
-      git add --force packages/rapid_cli/templates/infrastructure_package/__brick__/pubspec_overrides.yaml
-      git add --force packages/rapid_cli/templates/infrastructure_package/__brick__/pubspec.lock
-      git add --force packages/rapid_cli/templates/logging_package/__brick__/pubspec.lock
-      git add --force packages/rapid_cli/templates/platform_app_feature_package/__brick__/pubspec_overrides.yaml
-      git add --force packages/rapid_cli/templates/platform_app_feature_package/__brick__/pubspec.lock
-      git add --force packages/rapid_cli/templates/platform_feature_package/__brick__/pubspec_overrides.yaml
-      git add --force packages/rapid_cli/templates/platform_feature_package/__brick__/pubspec.lock
-      git add --force packages/rapid_cli/templates/platform_navigation_package/__brick__/pubspec.lock
-      git add --force packages/rapid_cli/templates/platform_root_package/__brick__/pubspec_overrides.yaml
-      git add --force packages/rapid_cli/templates/platform_root_package/__brick__/pubspec.lock
-      git add --force packages/rapid_cli/templates/platform_ui_package/__brick__/pubspec_overrides.yaml
-      git add --force packages/rapid_cli/templates/platform_ui_package/__brick__/pubspec.lock
-      git add --force packages/rapid_cli/templates/ui_package/__brick__/pubspec.lock
-    description: |
-      Manually adds template files that are unintentionally ignored by the .gitignore of the template
 
   format:
     run: |
@@ -87,14 +65,14 @@ scripts:
 
   dev:create:none:
     run: |
-      melos dev:activate
+      melos dev:activate && \
       rm -r -f packages/rapid_cli/tmp && \
       rapid create foo_bar -o packages/rapid_cli/tmp
     description: Run rapid create for tinkering with no platform.
 
   dev:create:all:
     run: |
-      melos dev:activate
+      melos dev:activate && \
       rm -r -f packages/rapid_cli/tmp && \
       rapid create foo_bar -o packages/rapid_cli/tmp --all
     description: Run rapid create for tinkering with all platforms.
@@ -104,3 +82,15 @@ scripts:
     description: Regenerate fresh bundles from templates.
     packageFilters:
       scope: "rapid_cli"
+
+  git:bundles:into:dev:
+    run: |
+      git merge --ff-only origin/bundles && \
+      git push origin dev
+    description: Merge bundles branch into dev branch (This must be run from dev branch)
+
+  git:dev:into:main:
+    run: |
+      git merge --ff-only origin/dev && \
+      git push origin main
+    description: Merge dev branch into main branch (This must be run from main branch)

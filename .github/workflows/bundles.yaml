@@ -35,7 +35,7 @@ jobs:
           cd tool/bundles
           flutter pub get
 
-      - name: Rebundle templates
+      - name: Rebundle Templates
         run: dart run tool/bundles/bin/bundles.dart
 
       # This does not trigger other on pull request workflows.

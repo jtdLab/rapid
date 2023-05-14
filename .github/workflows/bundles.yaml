@@ -4,12 +4,9 @@ on:
   workflow_dispatch:
     branches:
       - dev
-  push:
-    branches:
-      - dev
 
 jobs:
-  generate:
+  bundle:
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -20,8 +17,8 @@ jobs:
 
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.10.0"
-          channel: "stable"
+          flutter-version: 3.10.0
+          channel: stable
           cache: true
 
       - name: Setup Melos

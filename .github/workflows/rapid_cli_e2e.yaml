@@ -6,6 +6,8 @@ on:
   #   branches:
   #     - main
   pull_request:
+    branches:
+      - dev
   workflow_dispatch:
 
 jobs:

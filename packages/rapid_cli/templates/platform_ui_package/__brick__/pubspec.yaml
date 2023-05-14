@@ -4,23 +4,23 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  theme_tailor_annotation: ^1.2.0
+  theme_tailor_annotation: ^2.0.0
   {{project_name}}_ui:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.3.3
-  theme_tailor: ^1.2.0
-  flutter_gen_runner: ^5.3.0
+  build_runner: ^2.4.4
+  theme_tailor: ^2.0.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
 # The following section is specific to the FlutterGen package.
@@ -73,24 +73,24 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  theme_tailor_annotation: ^1.2.0
+  theme_tailor_annotation: ^2.0.0
   cupertino_icons: ^1.0.5
   {{project_name}}_ui:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.3.3
-  theme_tailor: ^1.2.0
-  flutter_gen_runner: ^5.3.0
+  build_runner: ^2.4.4
+  theme_tailor: ^2.0.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
 # The following section is specific to the FlutterGen package.
@@ -140,15 +140,15 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  theme_tailor_annotation: ^1.2.0
+  theme_tailor_annotation: ^2.0.0
   yaru: ^0.7.0
   yaru_icons: ^1.0.4
   {{project_name}}_ui:
@@ -156,9 +156,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.3.3
-  theme_tailor: ^1.2.0
-  flutter_gen_runner: ^5.3.0
+  build_runner: ^2.4.4
+  theme_tailor: ^2.0.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
 # The following section is specific to the FlutterGen package.
@@ -211,15 +211,15 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  theme_tailor_annotation: ^1.2.0
+  theme_tailor_annotation: ^2.0.0
   cupertino_icons: ^1.0.5
   macos_ui: ^1.12.2
   {{project_name}}_ui:
@@ -227,9 +227,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.3.3
-  theme_tailor: ^1.2.0
-  flutter_gen_runner: ^5.3.0
+  build_runner: ^2.4.4
+  theme_tailor: ^2.0.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
 # The following section is specific to the FlutterGen package.
@@ -279,23 +279,23 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  theme_tailor_annotation: ^1.2.0
+  theme_tailor_annotation: ^2.0.0
   {{project_name}}_ui:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.3.3
-  theme_tailor: ^1.2.0
-  flutter_gen_runner: ^5.3.0
+  build_runner: ^2.4.4
+  theme_tailor: ^2.0.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
 # The following section is specific to the FlutterGen package.
@@ -348,24 +348,24 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  theme_tailor_annotation: ^1.2.0
-  fluent_ui: ^4.5.0
+  theme_tailor_annotation: ^2.0.0
+  fluent_ui: ^4.6.0
   {{project_name}}_ui:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.3.3
-  theme_tailor: ^1.2.0
-  flutter_gen_runner: ^5.3.0
+  build_runner: ^2.4.4
+  theme_tailor: ^2.0.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
 # The following section is specific to the FlutterGen package.

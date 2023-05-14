@@ -11,6 +11,20 @@ typedef FlutterPubGetCommand = Future<void> Function({
   required Logger logger,
 });
 
+/// Signature for the [Flutter.pubAdd] method.
+typedef FlutterPubAddCommand = Future<void> Function({
+  required String cwd,
+  required List<String> packages,
+  required Logger logger,
+});
+
+/// Signature for the [Flutter.pubRemove] method.
+typedef FlutterPubRemoveCommand = Future<void> Function({
+  required String cwd,
+  required List<String> packages,
+  required Logger logger,
+});
+
 /// Signature for flutter config enable platform methods.
 ///
 ///  * [Flutter.configEnableAndroid]
@@ -68,6 +82,60 @@ abstract class Flutter {
       await _Cmd.run(
         'flutter',
         ['pub', 'get'],
+        workingDirectory: cwd,
+        logger: logger,
+      );
+    } catch (_) {
+      progress.fail();
+      rethrow;
+    }
+
+    progress.complete();
+  }
+
+  /// Get dependencies (`flutter pub get`).
+  static Future<void> pubAdd({
+    String cwd = '.',
+    required List<String> packages,
+    required Logger logger,
+  }) async {
+    final progress = logger.progress(
+      'Running "flutter pub add ${packages.join(' ')}" in $cwd ',
+    );
+
+    try {
+      await _Cmd.run(
+        'flutter',
+        [
+          'pub',
+          'add',
+          ...packages,
+        ],
+        workingDirectory: cwd,
+        logger: logger,
+      );
+    } catch (_) {
+      progress.fail();
+      rethrow;
+    }
+
+    progress.complete();
+  }
+
+  /// Get dependencies (`flutter pub get`).
+  static Future<void> pubRemove({
+    String cwd = '.',
+    required List<String> packages,
+    required Logger logger,
+  }) async {
+    final progress = logger.progress(
+      'Running "flutter pub remove ${packages.join(' ')}" in $cwd ',
+    );
+
+    try {
+      await _Cmd.run(
+        'flutter',
+        ['pub', 'remove', ...packages],
         workingDirectory: cwd,
         logger: logger,
       );

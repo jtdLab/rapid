@@ -61,8 +61,7 @@ void Function() withRunner(
     RapidCommandRunner commandRunner,
     Logger logger,
     List<String> printLogs,
-  )
-      fn,
+  ) fn,
 ) {
   return _overridePrint((printLogs) async {
     final logger = MockLogger();
@@ -93,8 +92,7 @@ void Function() withRunnerOnProject(
     MelosFile melosFile,
     Project project,
     List<String> printLogs,
-  )
-      fn,
+  ) fn,
 ) {
   return _overridePrint((printLogs) async {
     registerFallbackValue(Platform.android); // TODO

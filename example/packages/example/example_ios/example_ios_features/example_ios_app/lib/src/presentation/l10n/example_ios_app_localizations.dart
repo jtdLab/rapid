@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart' as intl;
 
+import 'example_ios_app_localizations_de.dart';
 import 'example_ios_app_localizations_en.dart';
 
 /// Callers can lookup localized strings with an instance of ExampleIosAppLocalizations
@@ -92,7 +93,10 @@ abstract class ExampleIosAppLocalizations {
   ];
 
   /// A list of this localizations delegate's supported locales.
-  static const List<Locale> supportedLocales = <Locale>[Locale('en')];
+  static const List<Locale> supportedLocales = <Locale>[
+    Locale('de'),
+    Locale('en')
+  ];
 }
 
 class _ExampleIosAppLocalizationsDelegate
@@ -107,7 +111,7 @@ class _ExampleIosAppLocalizationsDelegate
 
   @override
   bool isSupported(Locale locale) =>
-      <String>['en'].contains(locale.languageCode);
+      <String>['de', 'en'].contains(locale.languageCode);
 
   @override
   bool shouldReload(_ExampleIosAppLocalizationsDelegate old) => false;
@@ -116,6 +120,8 @@ class _ExampleIosAppLocalizationsDelegate
 ExampleIosAppLocalizations lookupExampleIosAppLocalizations(Locale locale) {
   // Lookup logic when only language code is specified.
   switch (locale.languageCode) {
+    case 'de':
+      return ExampleIosAppLocalizationsDe();
     case 'en':
       return ExampleIosAppLocalizationsEn();
   }

@@ -91,7 +91,8 @@ class _AppTest extends App {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       routerConfig: router!.config(
-        initialRoutes: initialRoutes,
+        deepLinkBuilder:
+            initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
@@ -217,7 +218,8 @@ class _AppTest extends App {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       routerConfig: router!.config(
-        initialRoutes: initialRoutes,
+        deepLinkBuilder:
+            initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
@@ -343,7 +345,8 @@ class _AppTest extends App {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       routerConfig: router!.config(
-        initialRoutes: initialRoutes,
+        deepLinkBuilder:
+            initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
@@ -469,7 +472,8 @@ class _AppTest extends App {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       routerConfig: router!.config(
-        initialRoutes: initialRoutes,
+        deepLinkBuilder:
+            initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
@@ -595,7 +599,8 @@ class _AppTest extends App {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       routerConfig: router!.config(
-        initialRoutes: initialRoutes,
+        deepLinkBuilder:
+            initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
@@ -721,7 +726,8 @@ class _AppTest extends App {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       routerConfig: router!.config(
-        initialRoutes: initialRoutes,
+        deepLinkBuilder:
+            initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
         navigatorObservers: routerObserver != null
             ? () => [routerObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,

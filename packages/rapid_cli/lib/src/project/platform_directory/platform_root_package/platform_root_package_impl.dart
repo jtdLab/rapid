@@ -1,4 +1,5 @@
 import 'package:mason/mason.dart';
+import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
@@ -18,8 +19,7 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
   PlatformRootPackageImpl(
     this.platform, {
     required this.project,
-  })  : _platform = platform,
-        super(
+  }) : super(
           path: p.join(
             project.path,
             'packages',
@@ -29,18 +29,23 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
           ),
         );
 
-  final Platform _platform;
-  LocalizationsDelegatesFile get _localizationsDelegatesFile =>
-      (localizationsDelegatesFileOverrides ??
-          LocalizationsDelegatesFileImpl.new)(rootPackage: this);
-  InjectionFile get _injectionFile =>
-      (injectionFileOverrides ?? InjectionFileImpl.new)(rootPackage: this);
-
   @override
   LocalizationsDelegatesFileBuilder? localizationsDelegatesFileOverrides;
 
   @override
   InjectionFileBuilder? injectionFileOverrides;
+
+  @override
+  LocalizationsDelegatesFile get localizationsDelegatesFile =>
+      (localizationsDelegatesFileOverrides ?? LocalizationsDelegatesFile.new)(
+        rootPackage: this,
+      );
+
+  @override
+  InjectionFile get injectionFile =>
+      (injectionFileOverrides ?? InjectionFile.new)(
+        rootPackage: this,
+      );
 
   @override
   final Platform platform;
@@ -54,16 +59,16 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
 
   @override
   Set<String> supportedLanguages() =>
-      _localizationsDelegatesFile.supportedLocales();
+      localizationsDelegatesFile.supportedLocales();
 
   @override
   Future<void> registerFeaturePackage(
     PlatformFeaturePackage featurePackage,
   ) async {
     final packageName = featurePackage.packageName();
-    _localizationsDelegatesFile.addLocalizationsDelegate(packageName);
+    localizationsDelegatesFile.addLocalizationsDelegate(packageName);
     pubspecFile.setDependency(packageName);
-    _injectionFile.addFeaturePackage(packageName);
+    injectionFile.addFeaturePackage(packageName);
   }
 
   @override
@@ -71,9 +76,9 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
     PlatformFeaturePackage featurePackage,
   ) async {
     final packageName = featurePackage.packageName();
-    _localizationsDelegatesFile.removeLocalizationsDelegate(packageName);
+    localizationsDelegatesFile.removeLocalizationsDelegate(packageName);
     pubspecFile.removeDependency(packageName);
-    _injectionFile.removeFeaturePackage(packageName);
+    injectionFile.removeFeaturePackage(packageName);
   }
 
   @override
@@ -82,7 +87,7 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
   ) async {
     final packageName = infrastructurePackage.packageName();
     pubspecFile.setDependency(packageName);
-    _injectionFile.addFeaturePackage(packageName);
+    injectionFile.addFeaturePackage(packageName);
   }
 
   @override
@@ -91,7 +96,19 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
   ) async {
     final packageName = infrastructurePackage.packageName();
     pubspecFile.removeDependency(packageName);
-    _injectionFile.removeFeaturePackage(packageName);
+    injectionFile.removeFeaturePackage(packageName);
+  }
+
+  @mustCallSuper
+  @override
+  Future<void> addLanguage(String language) async {
+    localizationsDelegatesFile.addSupportedLocale(language);
+  }
+
+  @mustCallSuper
+  @override
+  Future<void> removeLanguage(String language) async {
+    localizationsDelegatesFile.removeSupportedLocale(language);
   }
 }
 
@@ -105,7 +122,8 @@ class NoneIosRootPackageImpl extends PlatformRootPackageImpl
   @override
   NoneIosNativeDirectoryBuilder? nativeDirectoryOverrides;
 
-  NoneIosNativeDirectory get _nativeDirectory =>
+  @override
+  NoneIosNativeDirectory get nativeDirectory =>
       (nativeDirectoryOverrides ?? NoneIosNativeDirectory.new)(
         rootPackage: this,
       );
@@ -123,15 +141,15 @@ class NoneIosRootPackageImpl extends PlatformRootPackageImpl
         'project_name': projectName,
         if (description != null) 'description': description,
         if (orgName != null) 'org_name': orgName,
-        'android': _platform == Platform.android,
-        'linux': _platform == Platform.linux,
-        'macos': _platform == Platform.macos,
-        'web': _platform == Platform.web,
-        'windows': _platform == Platform.windows,
+        'android': platform == Platform.android,
+        'linux': platform == Platform.linux,
+        'macos': platform == Platform.macos,
+        'web': platform == Platform.web,
+        'windows': platform == Platform.windows,
       },
     );
 
-    await _nativeDirectory.create(
+    await nativeDirectory.create(
       description: description,
       orgName: orgName,
     );
@@ -147,7 +165,8 @@ class IosRootPackageImpl extends PlatformRootPackageImpl
   @override
   IosNativeDirectoryBuilder? nativeDirectoryOverrides;
 
-  IosNativeDirectory get _nativeDirectory =>
+  @override
+  IosNativeDirectory get nativeDirectory =>
       (nativeDirectoryOverrides ?? IosNativeDirectory.new)(
         rootPackage: this,
       );
@@ -173,7 +192,7 @@ class IosRootPackageImpl extends PlatformRootPackageImpl
       },
     );
 
-    await _nativeDirectory.create(
+    await nativeDirectory.create(
       orgName: orgName,
       language: language,
     );
@@ -181,12 +200,14 @@ class IosRootPackageImpl extends PlatformRootPackageImpl
 
   @override
   Future<void> addLanguage(String language) async {
-    _nativeDirectory.addLanguage(language: language);
+    await super.addLanguage(language);
+    nativeDirectory.addLanguage(language: language);
   }
 
   @override
   Future<void> removeLanguage(String language) async {
-    _nativeDirectory.removeLanguage(language: language);
+    await super.removeLanguage(language);
+    nativeDirectory.removeLanguage(language: language);
   }
 }
 
@@ -227,12 +248,12 @@ class LocalizationsDelegatesFileImpl extends DartFileImpl
 
   @override
   void addSupportedLocale(String locale) {
-    final newLocale = 'Locale(\'$locale\')';
+    final newLocale = 'const Locale(\'$locale\')';
     final existingLocales = readTopLevelListVar(name: 'supportedLocales');
 
     if (!existingLocales.contains(locale)) {
       setTopLevelListVar(
-        name: 'localizationsDelegates',
+        name: 'supportedLocales',
         value: [
           newLocale,
           ...existingLocales,
@@ -259,12 +280,12 @@ class LocalizationsDelegatesFileImpl extends DartFileImpl
 
   @override
   void removeSupportedLocale(String locale) {
-    final localeToRemove = 'Locale(\'$locale\')';
+    final localeToRemove = 'const Locale(\'$locale\')';
     final existingLocales = readTopLevelListVar(name: 'supportedLocales');
 
     if (existingLocales.contains(localeToRemove)) {
       setTopLevelListVar(
-        name: 'localizationsDelegates',
+        name: 'supportedLocales',
         value: existingLocales..remove(localeToRemove),
       );
     }

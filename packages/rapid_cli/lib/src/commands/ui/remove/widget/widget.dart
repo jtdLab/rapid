@@ -1,24 +1,18 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template ui_remove_widget_command}
 /// `rapid ui remove widget` command removes a widget to the platform independent UI part of an existing Rapid project.
 /// {@endtemplate}
-class UiRemoveWidgetCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter {
+class UiRemoveWidgetCommand extends RapidRootCommand with ClassNameGetter {
   /// {@macro ui_remove_widget_command}
   UiRemoveWidgetCommand({
-    Logger? logger,
-    Project? project,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? Project();
-
-  final Logger _logger;
-  final Project _project;
+    super.logger,
+    super.project,
+  });
 
   @override
   String get name => 'widget';
@@ -33,15 +27,15 @@ class UiRemoveWidgetCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
+          projectExistsAll(project),
         ],
-        _logger,
+        logger,
         () async {
           final name = super.className;
 
-          _logger.info('Removing Widget ...');
+          logger.commandTitle('Removing Widget "$name" ...');
 
-          final uiPackage = _project.uiPackage;
+          final uiPackage = project.uiPackage;
           // TODO remove dir completly ?
           final widget = uiPackage.widget(name: name, dir: '.');
 
@@ -55,15 +49,11 @@ class UiRemoveWidgetCommand extends Command<int>
             barrelFile.removeExport('src/${name.snakeCase}.dart');
             barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
 
-            _logger
-              ..info('')
-              ..success('Removed Widget $name.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
-            _logger
-              ..info('')
-              ..err('Widget $name not found.');
+            logger.commandError('Widget $name not found.');
 
             return ExitCode.config.code;
           }

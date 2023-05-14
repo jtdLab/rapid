@@ -7,7 +7,7 @@ import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/platform_ui_package/platform_ui_package_impl.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
-/// Signature for method that returns the [PlatformUiPackage] for [platform].
+/// Signature of [PlatformUiPackage.new].
 typedef PlatformUiPackageBuilder = PlatformUiPackage Function({
   required Platform platform,
   required Project project,
@@ -29,43 +29,46 @@ abstract class PlatformUiPackage implements DartPackage, OverridableGenerator {
         project: project,
       );
 
-  @visibleForTesting
-  PlatformUiPackageBarrelFileBuilder? barrelFileOverrides;
-
+  /// Use to override [themeExtensionsFile] for testing.
   @visibleForTesting
   ThemeExtensionsFileBuilder? themeExtensionsFileOverrides;
 
+  /// Use to override [barrelFile] for testing.
+  @visibleForTesting
+  PlatformUiPackageBarrelFileBuilder? barrelFileOverrides;
+
+  /// Use to override [widget] for testing.
   @visibleForTesting
   WidgetBuilder? widgetOverrides;
 
+  /// Returns the platform of this package.
   Platform get platform;
 
+  /// Returns the project associated with this package.
   Project get project;
 
-  PlatformUiPackageBarrelFile get barrelFile;
-
+  /// Returns the theme extensions file of this package.
   ThemeExtensionsFile get themeExtensionsFile;
 
+  /// Returns the barrel file file of this package.
+  PlatformUiPackageBarrelFile get barrelFile;
+
+  /// Returns the Widget with the given [name] and [dir].
+  ///
+  /// The [name] parameter specifies the name of the Widget.
+  ///
+  /// The [dir] parameter specifies the directory where the Widget is stored,
+  /// relative to the `lib/src` directory of the package.
   Widget widget({
     required String name,
     required String dir,
   });
 
+  /// Creates this package on disk.
   Future<void> create();
-
-  // TODO consider required !
-
-  Future<Widget> addWidget({
-    required String name,
-    required String dir,
-  });
-
-  Future<Widget> removeWidget({
-    required String name,
-    required String dir,
-  });
 }
 
+/// Signature of [Widget.new].
 typedef WidgetBuilder = Widget Function({
   required String name,
   required String dir,
@@ -89,9 +92,11 @@ abstract class Widget
         platformUiPackage: platformUiPackage,
       );
 
+  /// Creates this widget on disk.
   Future<void> create();
 }
 
+/// Signature of [ThemeExtensionsFile.new].
 typedef ThemeExtensionsFileBuilder = ThemeExtensionsFile Function({
   required PlatformUiPackage platformUiPackage,
 });
@@ -110,11 +115,14 @@ abstract class ThemeExtensionsFile implements DartFile {
         platformUiPackage: platformUiPackage,
       );
 
+  /// Adds the theme extension with [name] to this file.
   void addThemeExtension(String name);
 
+  /// Removes the theme extension with [name] to this file.
   void removeThemeExtension(String name);
 }
 
+/// Signature of [PlatformUiPackageBarrelFile.new].
 typedef PlatformUiPackageBarrelFileBuilder = PlatformUiPackageBarrelFile
     Function({
   required PlatformUiPackage platformUiPackage,

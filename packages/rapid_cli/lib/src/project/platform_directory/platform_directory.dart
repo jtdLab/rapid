@@ -7,8 +7,7 @@ import 'package:rapid_cli/src/project/platform_directory/platform_navigation_pac
 import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_root_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
-/// Signature for method that returns the [PlatformDirectory] for [platform].
-typedef PlatformDirectoryBuilder = PlatformDirectory Function({
+typedef PlatformDirectoryBuilder<T extends PlatformDirectory> = T Function({
   required Platform platform,
   required Project project,
 });
@@ -19,20 +18,27 @@ typedef PlatformDirectoryBuilder = PlatformDirectory Function({
 /// Location: `packages/<project name>/<project name>_<platform>`
 /// {@endtemplate}
 abstract class PlatformDirectory implements Directory {
+  /// Use to override [navigationPackage] for testing.
   @visibleForTesting
   PlatformNavigationPackageBuilder? navigationPackageOverrides;
 
+  /// Use to override [featuresDirectory] for testing.
   @visibleForTesting
   PlatformFeaturesDirectoryBuilder? featuresDirectoryOverrides;
 
+  /// Returns the platform of this directory.
   Platform get platform;
 
+  /// Returns the project associated with this directory.
   Project get project;
 
+  /// Returns the root package of this directory.
   PlatformRootPackage get rootPackage;
 
+  /// Returns platforn navigation package of this directory.
   PlatformNavigationPackage get navigationPackage;
 
+  /// Returns the features directory of this directory.
   PlatformFeaturesDirectory get featuresDirectory;
 }
 
@@ -51,12 +57,14 @@ abstract class NoneIosDirectory extends PlatformDirectory {
   }) =>
       NoneIosDirectoryImpl(platform, project: project);
 
+  /// Use to override [rootPackage] for testing.
   @visibleForTesting
   NoneIosRootPackageBuilder? rootPackageOverrides;
 
   @override
   NoneIosRootPackage get rootPackage;
 
+  /// Creates this directory on disk.
   Future<void> create({
     String? description,
     String? orgName,
@@ -76,12 +84,14 @@ abstract class IosDirectory extends PlatformDirectory {
   }) =>
       IosDirectoryImpl(project: project);
 
+  /// Use to override [rootPackage] for testing.
   @visibleForTesting
   IosRootPackageBuilder? rootPackageOverrides;
 
   @override
   IosRootPackage get rootPackage;
 
+  /// Creates this directory on disk.
   Future<void> create({
     required String orgName,
     required String language,

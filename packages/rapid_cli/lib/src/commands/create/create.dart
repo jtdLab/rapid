@@ -1,10 +1,11 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/language_option.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/org_name_option.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/core/validate_dart_package_name.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -17,11 +18,11 @@ const _defaultDescription = 'A Rapid app.';
 /// {@template create_command}
 /// `rapid create` command creates a new Rapid project in the specified directory.
 /// {@endtemplate}
-class CreateCommand extends Command<int>
-    with OverridableArgResults, OutputDirGetter, OrgNameGetter, LanguageGetter {
+class CreateCommand extends RapidCommand
+    with OutputDirGetter, OrgNameGetter, LanguageGetter {
   /// {@macro create_command}
   CreateCommand({
-    Logger? logger,
+    super.logger,
     FlutterInstalledCommand? flutterInstalled,
     MelosInstalledCommand? melosInstalled,
     MelosExecFlutterPubGetCommand? melosExecFlutterPubGet,
@@ -34,8 +35,7 @@ class CreateCommand extends Command<int>
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWeb,
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWindows,
     ProjectBuilder? project,
-  })  : _logger = logger ?? Logger(),
-        _flutterInstalled = flutterInstalled ?? Flutter.installed,
+  })  : _flutterInstalled = flutterInstalled ?? Flutter.installed,
         _melosInstalled = melosInstalled ?? Melos.installed,
         _melosExecFlutterPubGet =
             melosExecFlutterPubGet ?? Melos.execFlutterPubGet,
@@ -119,7 +119,6 @@ class CreateCommand extends Command<int>
       );
   }
 
-  final Logger _logger;
   final FlutterInstalledCommand _flutterInstalled;
   final MelosInstalledCommand _melosInstalled;
   final MelosExecFlutterPubGetCommand _melosExecFlutterPubGet;
@@ -148,17 +147,15 @@ class CreateCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          flutterIsInstalled(_flutterInstalled, logger: _logger),
-          melosIsInstalled(_melosInstalled, logger: _logger),
+          flutterIsInstalled(_flutterInstalled, logger: logger),
+          melosIsInstalled(_melosInstalled, logger: logger),
         ],
-        _logger,
+        logger,
         () async {
           final outputDir = super.outputDir;
           final project = _project(path: outputDir);
           if (project.exists() && !project.isEmpty) {
-            _logger
-              ..info('')
-              ..err('Output directory must be empty.');
+            logger.commandError('Output directory must be empty.');
 
             return ExitCode.config.code;
           }
@@ -174,7 +171,7 @@ class CreateCommand extends Command<int>
           final web = _web || _all;
           final windows = _windows || _desktop || _all;
 
-          _logger.info('Creating Rapid App ...');
+          logger.commandTitle('Creating Rapid App ...');
 
           final platforms = {
             if (android) Platform.android,
@@ -185,6 +182,7 @@ class CreateCommand extends Command<int>
             if (windows) Platform.windows,
           };
 
+          final generateProgress = logger.progress('Generating files');
           await project.create(
             projectName: projectName,
             description: description,
@@ -192,8 +190,9 @@ class CreateCommand extends Command<int>
             language: language,
             platforms: platforms,
           );
+          generateProgress.complete();
 
-          await _melosExecFlutterPubGet(cwd: project.path, logger: _logger);
+          await _melosExecFlutterPubGet(cwd: project.path, logger: logger);
           for (final platform in platforms) {
             final platformDirectory = project.platformDirectory(
               platform: platform,
@@ -204,36 +203,34 @@ class CreateCommand extends Command<int>
             final homePageFeaturePackage =
                 featuresDirectory.featurePackage(name: 'home_page');
 
-            await _flutterGenl10n(cwd: appFeaturePackage.path, logger: _logger);
+            await _flutterGenl10n(cwd: appFeaturePackage.path, logger: logger);
             await _flutterGenl10n(
               cwd: homePageFeaturePackage.path,
-              logger: _logger,
+              logger: logger,
             );
           }
-          await _dartFormatFix(cwd: project.path, logger: _logger);
+          await _dartFormatFix(cwd: project.path, logger: logger);
 
           if (android) {
-            await _flutterConfigEnableAndroid(logger: _logger);
+            await _flutterConfigEnableAndroid(logger: logger);
           }
           if (ios) {
-            await _flutterConfigEnableIos(logger: _logger);
+            await _flutterConfigEnableIos(logger: logger);
           }
           if (linux) {
-            await _flutterConfigEnableLinux(logger: _logger);
+            await _flutterConfigEnableLinux(logger: logger);
           }
           if (macos) {
-            await _flutterConfigEnableMacos(logger: _logger);
+            await _flutterConfigEnableMacos(logger: logger);
           }
           if (web) {
-            await _flutterConfigEnableWeb(logger: _logger);
+            await _flutterConfigEnableWeb(logger: logger);
           }
           if (windows) {
-            await _flutterConfigEnableWindows(logger: _logger);
+            await _flutterConfigEnableWindows(logger: logger);
           }
 
-          _logger
-            ..info('')
-            ..success('Created a Rapid App!');
+          logger.commandSuccess('Created a Rapid App!');
 
           return ExitCode.success.code;
         },

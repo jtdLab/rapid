@@ -6,6 +6,13 @@ import 'package:rapid_cli/src/project/platform_directory/platform_root_package/p
 
 import 'platform_native_directory_impl.dart';
 
+// TODO: consider IosNativeDirectory add/remove lang
+// TODO: consider InfoPlistFile add/remove lang
+
+typedef _PlatformNativeDirectoryBuilder<R extends PlatformNativeDirectory,
+        T extends PlatformRootPackage>
+    = R Function({required T rootPackage});
+
 /// {@template platform_native_directory}
 /// Base class for an abstraction of a platform native directory of a platform root package of a Rapid project.
 ///
@@ -14,9 +21,9 @@ import 'platform_native_directory_impl.dart';
 abstract class PlatformNativeDirectory
     implements Directory, OverridableGenerator {}
 
-typedef NoneIosNativeDirectoryBuilder = NoneIosNativeDirectory Function({
-  required NoneIosRootPackage rootPackage,
-});
+/// Signature of [NoneIosNativeDirectory.new].
+typedef NoneIosNativeDirectoryBuilder = _PlatformNativeDirectoryBuilder<
+    NoneIosNativeDirectory, NoneIosRootPackage>;
 
 /// {@template none_ios_native_directory}
 /// Abstraction of a platform native directory of a platform root package of a Rapid project.
@@ -34,15 +41,16 @@ abstract class NoneIosNativeDirectory extends PlatformNativeDirectory {
         rootPackage: rootPackage,
       );
 
+  /// Creates this directory on disk.
   Future<void> create({
     String? description,
     String? orgName,
   });
 }
 
-typedef IosNativeDirectoryBuilder = IosNativeDirectory Function({
-  required IosRootPackage rootPackage,
-});
+/// Signature of [IosNativeDirectory.new].
+typedef IosNativeDirectoryBuilder
+    = _PlatformNativeDirectoryBuilder<IosNativeDirectory, IosRootPackage>;
 
 /// {@template ios_native_directory}
 /// Abstraction of the ios native directory of a platform root package of a Rapid project.
@@ -61,6 +69,7 @@ abstract class IosNativeDirectory extends PlatformNativeDirectory {
   @visibleForTesting
   InfoPlistFile? infoPlistFileOverrides;
 
+  /// Creates this directory on disk.
   Future<void> create({
     required String orgName,
     required String language,

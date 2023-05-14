@@ -1,0 +1,51 @@
+name: bundles
+
+on:
+  workflow_dispatch:
+    branches:
+      - dev
+  push:
+    branches:
+      - dev
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/rapid_cli
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.10.0"
+          channel: "stable"
+          cache: true
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Setup Mason CLI
+        run: dart pub global activate mason_cli
+
+      - name: Install Bundles Package
+        run: |
+          cd tool/bundles
+          flutter pub get
+
+      - name: Rebundle Templates
+        run: dart run tool/bundles/bin/bundles.dart
+
+      # This does not trigger other on pull request workflows.
+      # See: https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Update bundled templates"
+          title: "Update bundled templates"
+          body: "This pull request updates the bundled templates."
+          branch: bundle-templates

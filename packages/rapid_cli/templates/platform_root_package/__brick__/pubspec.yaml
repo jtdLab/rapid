@@ -17,8 +17,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -29,9 +29,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^7.2.0
+  get_it: ^7.6.0
   injectable: ^2.1.1
-  auto_route: ^6.2.0
+  auto_route: ^7.1.0
   bloc: ^8.1.1
   bloc_concurrency: ^0.2.1
   {{project_name}}_di:
@@ -46,9 +46,9 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
+  build_runner: ^2.4.4
   injectable_generator: ^2.1.5
-  auto_route_generator: ^6.2.0
+  auto_route_generator: ^7.0.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -84,8 +84,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -96,9 +96,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^7.2.0
+  get_it: ^7.6.0
   injectable: ^2.1.1
-  auto_route: ^6.2.0
+  auto_route: ^7.1.0
   bloc: ^8.1.1
   bloc_concurrency: ^0.2.1
   cupertino_icons: ^1.0.5
@@ -114,9 +114,9 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
+  build_runner: ^2.4.4
   injectable_generator: ^2.1.5
-  auto_route_generator: ^6.2.0
+  auto_route_generator: ^7.0.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -148,8 +148,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -160,9 +160,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^7.2.0
+  get_it: ^7.6.0
   injectable: ^2.1.1
-  auto_route: ^6.2.0
+  auto_route: ^7.1.0
   bloc: ^8.1.1
   bloc_concurrency: ^0.2.1
   {{project_name}}_di:
@@ -177,9 +177,9 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
+  build_runner: ^2.4.4
   injectable_generator: ^2.1.5
-  auto_route_generator: ^6.2.0
+  auto_route_generator: ^7.0.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -215,8 +215,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -227,9 +227,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^7.2.0
+  get_it: ^7.6.0
   injectable: ^2.1.1
-  auto_route: ^6.2.0
+  auto_route: ^7.1.0
   bloc: ^8.1.1
   bloc_concurrency: ^0.2.1
   cupertino_icons: ^1.0.5
@@ -245,9 +245,9 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
+  build_runner: ^2.4.4
   injectable_generator: ^2.1.5
-  auto_route_generator: ^6.2.0
+  auto_route_generator: ^7.0.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -279,8 +279,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -291,9 +291,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^7.2.0
+  get_it: ^7.6.0
   injectable: ^2.1.1
-  auto_route: ^6.2.0
+  auto_route: ^7.1.0
   bloc: ^8.1.1
   bloc_concurrency: ^0.2.1
   url_strategy: ^0.2.0
@@ -309,9 +309,9 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
+  build_runner: ^2.4.4
   injectable_generator: ^2.1.5
-  auto_route_generator: ^6.2.0
+  auto_route_generator: ^7.0.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -347,8 +347,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -359,9 +359,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get_it: ^7.2.0
+  get_it: ^7.6.0
   injectable: ^2.1.1
-  auto_route: ^6.2.0
+  auto_route: ^7.1.0
   bloc: ^8.1.1
   bloc_concurrency: ^0.2.1
   {{project_name}}_di:
@@ -376,9 +376,9 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
+  build_runner: ^2.4.4
   injectable_generator: ^2.1.5
-  auto_route_generator: ^6.2.0
+  auto_route_generator: ^7.0.0
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

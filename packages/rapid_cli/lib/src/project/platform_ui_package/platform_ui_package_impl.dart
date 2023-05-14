@@ -2,7 +2,6 @@ import 'dart:io' as io;
 
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
@@ -31,10 +30,10 @@ class PlatformUiPackageImpl extends DartPackageImpl
         );
 
   @override
-  PlatformUiPackageBarrelFileBuilder? barrelFileOverrides;
+  ThemeExtensionsFileBuilder? themeExtensionsFileOverrides;
 
   @override
-  ThemeExtensionsFileBuilder? themeExtensionsFileOverrides;
+  PlatformUiPackageBarrelFileBuilder? barrelFileOverrides;
 
   @override
   WidgetBuilder? widgetOverrides;
@@ -46,14 +45,14 @@ class PlatformUiPackageImpl extends DartPackageImpl
   final Project project;
 
   @override
-  PlatformUiPackageBarrelFile get barrelFile =>
-      (barrelFileOverrides ?? PlatformUiPackageBarrelFile.new)(
+  ThemeExtensionsFile get themeExtensionsFile =>
+      (themeExtensionsFileOverrides ?? ThemeExtensionsFile.new)(
         platformUiPackage: this,
       );
 
   @override
-  ThemeExtensionsFile get themeExtensionsFile =>
-      (themeExtensionsFileOverrides ?? ThemeExtensionsFile.new)(
+  PlatformUiPackageBarrelFile get barrelFile =>
+      (barrelFileOverrides ?? PlatformUiPackageBarrelFile.new)(
         platformUiPackage: this,
       );
 
@@ -84,48 +83,6 @@ class PlatformUiPackageImpl extends DartPackageImpl
         'windows': platform == Platform.windows,
       },
     );
-  }
-
-  @override
-  Future<Widget> addWidget({
-    required String name,
-    required String dir,
-  }) async {
-    final widget = this.widget(name: name, dir: dir);
-    if (widget.existsAny()) {
-      throw RapidException(
-        'The ${platform.prettyName} Widget $name at $dir already exists',
-      );
-    }
-
-    await widget.create();
-    themeExtensionsFile.addThemeExtension(name);
-    barrelFile.addExport(
-        'src/${name.snakeCase}.dart'); // TODO doesnt work with dir != '.'
-    barrelFile.addExport(
-        'src/${name.snakeCase}_theme.dart'); // TODO doesnt work with dir != '.'
-    return widget;
-  }
-
-  @override
-  Future<Widget> removeWidget({
-    required String name,
-    required String dir,
-  }) async {
-    final widget = this.widget(name: name, dir: dir);
-    if (!widget.existsAny()) {
-      throw RapidException(
-        'The ${platform.prettyName} Widget $name at $dir does not exist',
-      );
-    }
-
-    widget.delete();
-    themeExtensionsFile.removeThemeExtension(name);
-    barrelFile.removeExport(
-        'src/${name.snakeCase}.dart'); // TODO doesnt work with dir != '.'
-    barrelFile.removeExport(
-        'src/${name.snakeCase}_theme.dart'); // TODO doesnt work with dir != '.'
-    return widget;
   }
 }
 

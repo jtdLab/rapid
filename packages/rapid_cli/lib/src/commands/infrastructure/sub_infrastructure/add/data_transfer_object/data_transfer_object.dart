@@ -1,33 +1,26 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/cli/cli.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/entity_option.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
-import 'package:rapid_cli/src/project/project.dart';
 // TODO in test template without output dir a path gets a unneccessary dot
 
 /// {@template infrastructure_sub_infrastructure_add_data_transfer_object_command}
 /// `rapid infrastructure sub_infrastructure add data_transfer_object` command adds data_transfer_object to the infrastructure part of an existing Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureAddDataTransferObjectCommand
-    extends Command<int>
-    with
-        OverridableArgResults,
-        SubInfrastructureGetter,
-        EntityGetter,
-        OutputDirGetter {
+    extends RapidRootCommand
+    with SubInfrastructureGetter, EntityGetter, OutputDirGetter {
   /// {@macro infrastructure_sub_infrastructure_add_data_transfer_object_command}
   InfrastructureSubInfrastructureAddDataTransferObjectCommand({
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     DartFormatFixCommand? dartFormatFix,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? Project(),
-        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
+  }) : _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
       ..addSeparator('')
       ..addSubInfrastructureOption(
@@ -43,8 +36,6 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
       );
   }
 
-  final Logger _logger;
-  final Project _project;
   final DartFormatFixCommand _dartFormatFix;
 
   @override
@@ -63,21 +54,23 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
 
   @override
   Future<int> run() => runWhen(
-        [projectExistsAll(_project)],
-        _logger,
+        [projectExistsAll(project)],
+        logger,
         () async {
           final infrastructureName = super.subInfrastructure;
           final entityName = super.entity;
           final outputDir = super.outputDir;
 
-          _logger.info('Adding Data Transfer Object ...');
+          logger.commandTitle(
+            'Adding Data Transfer Object for Entity "$entityName"${infrastructureName != null ? ' to $infrastructureName' : ''} ...',
+          );
 
-          final domainDirectory = _project.domainDirectory;
+          final domainDirectory = project.domainDirectory;
           final domainPackage =
               domainDirectory.domainPackage(name: infrastructureName);
           final entity = domainPackage.entity(name: entityName, dir: outputDir);
           if (entity.existsAll()) {
-            final infrastructureDirectory = _project.infrastructureDirectory;
+            final infrastructureDirectory = project.infrastructureDirectory;
             final infrastructurePackage = infrastructureDirectory
                 .infrastructurePackage(name: infrastructureName);
             final dataTransferObject = infrastructurePackage.dataTransferObject(
@@ -96,25 +89,21 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
 
               await _dartFormatFix(
                 cwd: infrastructurePackage.path,
-                logger: _logger,
+                logger: logger,
               );
 
-              _logger
-                ..info('')
-                ..success('Added Data Transfer Object ${entityName}Dto.');
+              logger.commandSuccess();
 
               return ExitCode.success.code;
             } else {
-              _logger
-                ..info('')
-                ..err('Data Transfer Object ${entityName}Dto already exists.');
+              logger.commandError(
+                'Data Transfer Object ${entityName}Dto already exists.',
+              );
 
               return ExitCode.config.code;
             }
           } else {
-            _logger
-              ..info('')
-              ..err('Entity $entityName does not exist.');
+            logger.commandError('Entity $entityName does not exist.');
 
             return ExitCode.config.code;
           }

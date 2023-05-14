@@ -1,4 +1,5 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform/add/language/language.dart';
 import 'package:rapid_cli/src/commands/core/platform/core/platform_feature_packages_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
@@ -34,7 +35,7 @@ class IosAddLanguageCommand extends PlatformAddLanguageCommand {
         () async {
           final language = super.language;
 
-          logger.info('Adding Language ...');
+          logger.commandTitle('Adding Language ...');
 
           final platformDirectory =
               project.platformDirectory<IosDirectory>(platform: platform);
@@ -42,44 +43,36 @@ class IosAddLanguageCommand extends PlatformAddLanguageCommand {
           final featurePackages = featuresDirectory.featurePackages();
 
           if (featurePackages.isEmpty) {
-            logger
-              ..info('')
-              ..err(
-                'No ${platform.prettyName} features found!\n'
-                'Run "rapid ${platform.name} add feature" to add your first ${platform.prettyName} feature.',
-              );
+            logger.commandError(
+              'No ${platform.prettyName} features found!\n'
+              'Run "rapid ${platform.name} add feature" to add your first ${platform.prettyName} feature.',
+            );
 
             return ExitCode.config.code;
           }
 
           if (!featurePackages.supportSameLanguages()) {
-            logger
-              ..info('')
-              ..err(
-                'The ${platform.prettyName} part of your project is corrupted.\n'
-                'Because not all features support the same languages.\n\n'
-                'Run "rapid doctor" to see which features are affected.',
-              );
+            logger.commandError(
+              'The ${platform.prettyName} part of your project is corrupted.\n'
+              'Because not all features support the same languages.\n\n'
+              'Run "rapid doctor" to see which features are affected.',
+            );
 
             return ExitCode.config.code;
           }
 
           if (!featurePackages.haveSameDefaultLanguage()) {
-            logger
-              ..info('')
-              ..err(
-                'The ${platform.prettyName} part of your project is corrupted.\n'
-                'Because not all features have the same default language.\n\n'
-                'Run "rapid doctor" to see which features are affected.',
-              );
+            logger.commandError(
+              'The ${platform.prettyName} part of your project is corrupted.\n'
+              'Because not all features have the same default language.\n\n'
+              'Run "rapid doctor" to see which features are affected.',
+            );
 
             return ExitCode.config.code;
           }
 
           if (featurePackages.supportLanguage(language)) {
-            logger
-              ..info('')
-              ..err('The language "$language" is already present.');
+            logger.commandError('The language "$language" is already present.');
 
             return ExitCode.config.code;
           }
@@ -94,11 +87,7 @@ class IosAddLanguageCommand extends PlatformAddLanguageCommand {
           await dartFormatFix(cwd: project.path, logger: logger);
 
           // TODO add hint how to work with localization
-          logger
-            ..info('')
-            ..success(
-              'Added $language to the ${platform.prettyName} part of your project.',
-            );
+          logger.commandSuccess();
 
           return ExitCode.success.code;
         },

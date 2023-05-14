@@ -1,9 +1,9 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/add/feature/feature.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dart_package_name_rest.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ios/add/feature/feature.dart';
@@ -12,7 +12,6 @@ import 'package:rapid_cli/src/commands/macos/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/web/add/feature/feature.dart';
 import 'package:rapid_cli/src/commands/windows/add/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// The default description.
 const _defaultDescription = 'A Rapid feature.';
@@ -32,13 +31,13 @@ const _defaultDescription = 'A Rapid feature.';
 ///
 ///  * [WindowsAddFeatureCommand]
 /// {@endtemplate}
-abstract class PlatformAddFeatureCommand extends Command<int>
-    with OverridableArgResults, DartPackageNameGetter {
+abstract class PlatformAddFeatureCommand extends RapidRootCommand
+    with DartPackageNameGetter, GroupableMixin, BootstrapMixin, CodeGenMixin {
   /// {@macro platform_add_feature_command}
   PlatformAddFeatureCommand({
     required Platform platform,
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     MelosBootstrapCommand? melosBootstrap,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
@@ -46,11 +45,9 @@ abstract class PlatformAddFeatureCommand extends Command<int>
     FlutterGenl10nCommand? flutterGenl10n,
     DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
-        _logger = logger ?? Logger(),
-        _project = project ?? Project(),
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+        melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
         _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
@@ -73,12 +70,13 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   }
 
   final Platform _platform;
-  final Logger _logger;
-  final Project _project;
-  final MelosBootstrapCommand _melosBootstrap;
-  final FlutterPubGetCommand _flutterPubGet;
+  @override
+  final MelosBootstrapCommand melosBootstrap;
+  @override
+  final FlutterPubGetCommand flutterPubGet;
+  @override
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+      flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final FlutterGenl10nCommand _flutterGenl10n;
   final DartFormatFixCommand _dartFormatFix;
 
@@ -99,26 +97,27 @@ abstract class PlatformAddFeatureCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
+          projectExistsAll(project),
           platformIsActivated(
             _platform,
-            _project,
+            project,
             '${_platform.prettyName} is not activated.',
           ),
         ],
-        _logger,
+        logger,
         () async {
           final name = super.dartPackageName;
           final description = _description;
           final routing = _routing;
 
-          _logger.info('Adding Feature ...');
-
           final platformDirectory =
-              _project.platformDirectory(platform: _platform);
+              project.platformDirectory(platform: _platform);
           final featuresDirectory = platformDirectory.featuresDirectory;
           final featurePackage = featuresDirectory.featurePackage(name: name);
           if (!featurePackage.exists()) {
+            logger.commandTitle(
+              'Adding Feature "$name" (${_platform.prettyName}) ...',
+            );
             final rootPackage = platformDirectory.rootPackage;
             await featurePackage.create(
               description: description,
@@ -131,38 +130,28 @@ abstract class PlatformAddFeatureCommand extends Command<int>
             // TODO if routing add router to root router list
             await rootPackage.registerFeaturePackage(featurePackage);
 
-            await _melosBootstrap(
-              cwd: _project.path,
-              logger: _logger,
-              scope: [
-                rootPackage.packageName(),
-                featurePackage.packageName(),
-              ],
+            await bootstrap(
+              packages: [rootPackage, featurePackage],
+              logger: logger,
+            );
+            await codeGen(
+              packages: [rootPackage],
+              logger: logger,
             );
 
-            await _flutterPubGet(cwd: rootPackage.path, logger: _logger);
-            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: rootPackage.path,
-              logger: _logger,
-            );
+            await _flutterGenl10n(cwd: featurePackage.path, logger: logger);
 
-            await _flutterGenl10n(cwd: featurePackage.path, logger: _logger);
-
-            await _dartFormatFix(cwd: _project.path, logger: _logger);
+            await _dartFormatFix(cwd: project.path, logger: logger);
 
             // TODO add link doc to navigation and routing approach
-            _logger
-              ..info('')
-              ..success('Added ${_platform.prettyName} feature $name.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
             // TODO test
-            _logger
-              ..info('')
-              ..err(
-                'The feature "$name" does already on ${_platform.prettyName}.',
-              );
+            logger.commandError(
+              'The Feature "$name" does already exist on ${_platform.prettyName}.',
+            );
 
             return ExitCode.config.code;
           }

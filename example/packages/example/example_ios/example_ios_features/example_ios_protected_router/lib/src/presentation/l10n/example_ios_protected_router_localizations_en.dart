@@ -7,7 +7,4 @@ class ExampleIosProtectedRouterLocalizationsEn
     extends ExampleIosProtectedRouterLocalizations {
   ExampleIosProtectedRouterLocalizationsEn([String locale = 'en'])
       : super(locale);
-
-  @override
-  String get title => 'Protected Router title for en';
 }

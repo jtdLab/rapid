@@ -1,24 +1,22 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template domain_sub_domain_remove_service_interface_command}
 /// `rapid domain sub_domain remove service_interface` command removes service interface from the domain part of an existing Rapid project.
 /// {@endtemplate}
-class DomainSubDomainRemoveServiceInterfaceCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter, SubDomainGetter, DirGetter {
+class DomainSubDomainRemoveServiceInterfaceCommand extends RapidRootCommand
+    with ClassNameGetter, SubDomainGetter, DirGetter {
   /// {@macro domain_sub_domain_remove_service_interface_command}
   DomainSubDomainRemoveServiceInterfaceCommand({
-    Logger? logger,
-    Project? project,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? Project() {
+    super.logger,
+    super.project,
+  }) {
     argParser
       ..addSeparator('')
       ..addSubDomainOption(
@@ -31,9 +29,6 @@ class DomainSubDomainRemoveServiceInterfaceCommand extends Command<int>
         help: 'The directory relative to <domain_package>/lib/ .',
       );
   }
-
-  final Logger _logger;
-  final Project _project;
 
   @override
   String get name => 'service_interface';
@@ -51,16 +46,18 @@ class DomainSubDomainRemoveServiceInterfaceCommand extends Command<int>
 
   @override
   Future<int> run() => runWhen(
-        [projectExistsAll(_project)],
-        _logger,
+        [projectExistsAll(project)],
+        logger,
         () async {
           final name = super.className;
           final domainName = super.subDomain;
           final dir = super.dir;
 
-          _logger.info('Removing Service Interface ...');
+          logger.commandTitle(
+            'Removing Service Interface "$name"${domainName != null ? ' from $domainName' : ''} ...',
+          );
 
-          final domainDirectory = _project.domainDirectory;
+          final domainDirectory = project.domainDirectory;
           final domainPackage = domainDirectory.domainPackage(name: domainName);
           final serviceInterface =
               domainPackage.serviceInterface(name: name, dir: dir);
@@ -74,15 +71,13 @@ class DomainSubDomainRemoveServiceInterfaceCommand extends Command<int>
               ),
             );
 
-            _logger
-              ..info('')
-              ..success('Removed Service Interface I${name}Service.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
-            _logger
-              ..info('')
-              ..err('Service Interface I${name}Service does not exist.');
+            logger.commandError(
+              'Service Interface I${name}Service does not exist.',
+            );
 
             return ExitCode.config.code;
           }

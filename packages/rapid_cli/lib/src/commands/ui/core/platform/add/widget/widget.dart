@@ -1,8 +1,8 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ui/android/add/widget/widget.dart';
@@ -12,7 +12,6 @@ import 'package:rapid_cli/src/commands/ui/macos/add/widget/widget.dart';
 import 'package:rapid_cli/src/commands/ui/web/add/widget/widget.dart';
 import 'package:rapid_cli/src/commands/ui/windows/add/widget/widget.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 // TODO add platform specific stuff to the tempalte
 
@@ -31,22 +30,18 @@ import 'package:rapid_cli/src/project/project.dart';
 ///
 ///  * [UiWindowsAddWidgetCommand]
 /// {@endtemplate}
-abstract class UiPlatformAddWidgetCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter {
+abstract class UiPlatformAddWidgetCommand extends RapidRootCommand
+    with GroupableMixin, ClassNameGetter {
   /// {@macro ui_platform_add_widget_command}
   UiPlatformAddWidgetCommand({
     required Platform platform,
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     DartFormatFixCommand? dartFormatFix,
   })  : _platform = platform,
-        _logger = logger ?? Logger(),
-        _project = project ?? Project(),
         _dartFormatFix = dartFormatFix ?? Dart.formatFix;
 
   final Platform _platform;
-  final Logger _logger;
-  final Project _project;
   final DartFormatFixCommand _dartFormatFix;
 
   @override
@@ -63,21 +58,23 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
+          projectExistsAll(project),
           platformIsActivated(
             _platform,
-            _project,
+            project,
             '${_platform.prettyName} is not activated.', // TODO good ?
           ),
         ],
-        _logger,
+        logger,
         () async {
           final name = super.className;
 
-          _logger.info('Adding ${_platform.prettyName} Widget ...');
+          logger.commandTitle(
+            'Adding Widget "$name" (${_platform.prettyName}) ...',
+          );
 
           final platformUiPackage =
-              _project.platformUiPackage(platform: _platform);
+              project.platformUiPackage(platform: _platform);
           // TODO remove dir completly ?
           final widget = platformUiPackage.widget(name: name, dir: '.');
           if (!widget.existsAny()) {
@@ -90,20 +87,16 @@ abstract class UiPlatformAddWidgetCommand extends Command<int>
             barrelFile.addExport('src/${name.snakeCase}.dart');
             barrelFile.addExport('src/${name.snakeCase}_theme.dart');
 
-            await _dartFormatFix(cwd: platformUiPackage.path, logger: _logger);
+            await _dartFormatFix(cwd: platformUiPackage.path, logger: logger);
 
-            _logger
-              ..info('')
-              ..success('Added ${_platform.prettyName} Widget $name.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
             // TODO maybe log which files
-            _logger
-              ..info('')
-              ..err(
-                '${_platform.prettyName} Widget $name already exists.',
-              );
+            logger.commandError(
+              '${_platform.prettyName} Widget $name already exists.',
+            );
 
             return ExitCode.config.code;
           }

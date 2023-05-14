@@ -1,6 +1,6 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/deactivate/android/android.dart';
@@ -10,7 +10,6 @@ import 'package:rapid_cli/src/commands/deactivate/macos/macos.dart';
 import 'package:rapid_cli/src/commands/deactivate/web/web.dart';
 import 'package:rapid_cli/src/commands/deactivate/windows/windows.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template deactivate_platform_command}
 /// Base class for:
@@ -27,20 +26,15 @@ import 'package:rapid_cli/src/project/project.dart';
 ///
 ///  * [DeactivateWindowsCommand]
 /// {@endtemplate}
-abstract class DeactivatePlatformCommand extends Command<int>
-    with OverridableArgResults {
+abstract class DeactivatePlatformCommand extends RapidRootCommand {
   /// {@macro deactivate_platform_command}
   DeactivatePlatformCommand({
     required Platform platform,
-    Logger? logger,
-    Project? project,
-  })  : _platform = platform,
-        _logger = logger ?? Logger(),
-        _project = project ?? Project();
+    super.logger,
+    super.project,
+  }) : _platform = platform;
 
   final Platform _platform;
-  final Logger _logger;
-  final Project _project;
 
   @override
   String get name => _platform.name;
@@ -58,28 +52,26 @@ abstract class DeactivatePlatformCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
+          projectExistsAll(project),
           platformIsActivated(
             _platform,
-            _project,
+            project,
             '${_platform.prettyName} is already deactivated.',
           ),
         ],
-        _logger,
+        logger,
         () async {
-          _logger.info('Deactivating ${_platform.prettyName} ...');
+          logger.commandTitle('Deactivating ${_platform.prettyName} ...');
 
           final platformDirectory =
-              _project.platformDirectory(platform: _platform);
+              project.platformDirectory(platform: _platform);
           platformDirectory.delete();
 
           final platformUiPackage =
-              _project.platformUiPackage(platform: _platform);
+              project.platformUiPackage(platform: _platform);
           platformUiPackage.delete();
 
-          _logger
-            ..info('')
-            ..success('${_platform.prettyName} is now deactivated.');
+          logger.commandSuccess();
 
           return ExitCode.success.code;
         },

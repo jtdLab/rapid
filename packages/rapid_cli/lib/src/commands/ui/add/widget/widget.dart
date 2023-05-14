@@ -1,27 +1,21 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template ui_add_widget_command}
 /// `rapid ui add widget` command adds a widget to the platform independent UI part of an existing Rapid project.
 /// {@endtemplate}
-class UiAddWidgetCommand extends Command<int>
-    with OverridableArgResults, ClassNameGetter {
+class UiAddWidgetCommand extends RapidRootCommand with ClassNameGetter {
   /// {@macro ui_add_widget_command}
   UiAddWidgetCommand({
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     DartFormatFixCommand? dartFormatFix,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? Project(),
-        _dartFormatFix = dartFormatFix ?? Dart.formatFix;
+  }) : _dartFormatFix = dartFormatFix ?? Dart.formatFix;
 
-  final Logger _logger;
-  final Project _project;
   final DartFormatFixCommand _dartFormatFix;
 
   @override
@@ -37,15 +31,15 @@ class UiAddWidgetCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
+          projectExistsAll(project),
         ],
-        _logger,
+        logger,
         () async {
           final name = super.className;
 
-          _logger.info('Adding Widget ...');
+          logger.commandTitle('Adding Widget "$name" ...');
 
-          final uiPackage = _project.uiPackage;
+          final uiPackage = project.uiPackage;
           // TODO remove dir completly ?
           final widget = uiPackage.widget(name: name, dir: '.');
           if (!widget.existsAny()) {
@@ -58,18 +52,14 @@ class UiAddWidgetCommand extends Command<int>
             barrelFile.addExport('src/${name.snakeCase}.dart');
             barrelFile.addExport('src/${name.snakeCase}_theme.dart');
 
-            await _dartFormatFix(cwd: uiPackage.path, logger: _logger);
+            await _dartFormatFix(cwd: uiPackage.path, logger: logger);
 
-            _logger
-              ..info('')
-              ..success('Added Widget $name.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
             // TODO maybe log which files
-            _logger
-              ..info('')
-              ..err('Widget $name already exists.');
+            logger.commandError('Widget $name already exists.');
 
             return ExitCode.config.code;
           }

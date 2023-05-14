@@ -1,12 +1,11 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/entity_option.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 // TODO maybe introduce super class for dto and service implementation remove
 
@@ -14,18 +13,13 @@ import 'package:rapid_cli/src/project/project.dart';
 /// `rapid infrastructure sub_infrastructure remove data_transfer_object` command removes data transfer object from the infrastructure part of an existing Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
-    extends Command<int>
-    with
-        OverridableArgResults,
-        SubInfrastructureGetter,
-        EntityGetter,
-        DirGetter {
+    extends RapidRootCommand
+    with SubInfrastructureGetter, EntityGetter, DirGetter {
   /// {@macro infrastructure_sub_infrastructure_remove_data_transfer_object_command}
   InfrastructureSubInfrastructureRemoveDataTransferObjectCommand({
-    Logger? logger,
-    Project? project,
-  })  : _logger = logger ?? Logger(),
-        _project = project ?? Project() {
+    super.logger,
+    super.project,
+  }) {
     argParser
       ..addSeparator('')
       ..addSubInfrastructureOption(
@@ -39,9 +33,6 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
         help: 'The directory relative to <infrastructure_package>/lib/ .',
       );
   }
-
-  final Logger _logger;
-  final Project _project;
 
   @override
   String get name => 'data_transfer_object';
@@ -59,16 +50,18 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
 
   @override
   Future<int> run() => runWhen(
-        [projectExistsAll(_project)],
-        _logger,
+        [projectExistsAll(project)],
+        logger,
         () async {
           final infrastructureName = super.subInfrastructure;
           final entityName = super.entity;
           final dir = super.dir;
 
-          _logger.info('Removing Data Transfer Object ...');
+          logger.commandTitle(
+            'Removing Data Transfer Object for Entity "$entityName"${infrastructureName != null ? ' from $infrastructureName' : ''} ...',
+          );
 
-          final infrastructureDirectory = _project.infrastructureDirectory;
+          final infrastructureDirectory = project.infrastructureDirectory;
           final infrastructurePackage = infrastructureDirectory
               .infrastructurePackage(name: infrastructureName);
           final dataTransferObject = infrastructurePackage.dataTransferObject(
@@ -85,15 +78,15 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
               ),
             );
 
-            _logger
-              ..info('')
-              ..success('Removed Data Transfer Object ${entityName}Dto.');
+            logger.commandSuccess(
+              'Removed Data Transfer Object ${entityName}Dto.',
+            );
 
             return ExitCode.success.code;
           } else {
-            _logger
-              ..info('')
-              ..err('Data Transfer Object ${entityName}Dto does not exist.');
+            logger.commandError(
+              'Data Transfer Object ${entityName}Dto does not exist.',
+            );
 
             return ExitCode.config.code;
           }

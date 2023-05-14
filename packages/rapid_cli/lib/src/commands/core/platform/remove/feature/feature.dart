@@ -1,9 +1,9 @@
-import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/commands/android/remove/feature/feature.dart';
+import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dart_package_name_rest.dart';
-import 'package:rapid_cli/src/commands/core/overridable_arg_results.dart';
+import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ios/remove/feature/feature.dart';
@@ -12,7 +12,6 @@ import 'package:rapid_cli/src/commands/macos/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/web/remove/feature/feature.dart';
 import 'package:rapid_cli/src/commands/windows/remove/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template platform_remove_feature_command}
 /// Base class for:
@@ -29,33 +28,32 @@ import 'package:rapid_cli/src/project/project.dart';
 ///
 ///  * [WindowsRemoveFeatureCommand]
 /// {@endtemplate}
-abstract class PlatformRemoveFeatureCommand extends Command<int>
-    with OverridableArgResults, DartPackageNameGetter {
+abstract class PlatformRemoveFeatureCommand extends RapidRootCommand
+    with DartPackageNameGetter, GroupableMixin, BootstrapMixin, CodeGenMixin {
   /// {@macro platform_remove_feature_command}
   PlatformRemoveFeatureCommand({
     required Platform platform,
-    Logger? logger,
-    Project? project,
+    super.logger,
+    super.project,
     MelosBootstrapCommand? melosBootstrap,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
-        _logger = logger ?? Logger(),
-        _project = project ?? Project(),
-        _melosBootstrap = melosBootstrap ?? Melos.bootstrap,
-        _flutterPubGet = flutterPubGet ?? Flutter.pubGet,
-        _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
+        melosBootstrap = melosBootstrap ?? Melos.bootstrap,
+        flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+        flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   final Platform _platform;
-  final Logger _logger;
-  final Project _project;
-  final MelosBootstrapCommand _melosBootstrap;
-  final FlutterPubGetCommand _flutterPubGet;
+  @override
+  final MelosBootstrapCommand melosBootstrap;
+  @override
+  final FlutterPubGetCommand flutterPubGet;
+  @override
   final FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-      _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
+      flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
 
   @override
   String get name => 'feature';
@@ -73,21 +71,23 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
   @override
   Future<int> run() => runWhen(
         [
-          projectExistsAll(_project),
+          projectExistsAll(project),
           platformIsActivated(
             _platform,
-            _project,
+            project,
             '${_platform.prettyName} is not activated.',
           ),
         ],
-        _logger,
+        logger,
         () async {
           final name = super.dartPackageName;
 
-          _logger.info('Removing Feature ...');
+          logger.commandTitle(
+            'Removing Feature "$name" (${_platform.prettyName}) ...',
+          );
 
           final platformDirectory =
-              _project.platformDirectory(platform: _platform);
+              project.platformDirectory(platform: _platform);
           final featuresDirectory = platformDirectory.featuresDirectory;
           final featurePackage = featuresDirectory.featurePackage(name: name);
           if (featurePackage.exists()) {
@@ -105,32 +105,25 @@ abstract class PlatformRemoveFeatureCommand extends Command<int>
 
             featurePackage.delete();
 
-            await _melosBootstrap(
-              cwd: _project.path,
-              logger: _logger,
-              scope: [
-                ...remainingFeaturePackages.map((e) => e.packageName()),
-                rootPackage.packageName(),
+            await bootstrap(
+              packages: [
+                ...remainingFeaturePackages,
+                rootPackage,
               ],
+              logger: logger,
+            );
+            await codeGen(
+              packages: [rootPackage],
+              logger: logger,
             );
 
-            await _flutterPubGet(cwd: rootPackage.path, logger: _logger);
-            await _flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-              cwd: rootPackage.path,
-              logger: _logger,
-            );
-
-            _logger
-              ..info('')
-              ..success('Removed ${_platform.prettyName} feature $name.');
+            logger.commandSuccess();
 
             return ExitCode.success.code;
           } else {
-            _logger
-              ..info('')
-              ..err(
-                'The feature "$name" does not exist on ${_platform.prettyName}.',
-              );
+            logger.commandError(
+              'The feature "$name" does not exist on ${_platform.prettyName}.',
+            );
 
             return ExitCode.config.code;
           }

@@ -4,7 +4,7 @@ import 'package:rapid_cli/src/project/domain_dir/domain_directory_impl.dart';
 import 'package:rapid_cli/src/project/domain_dir/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
-/// Signature for method that returns the [DomainDirectory] for [name] and [project].
+/// Signature of [DomainDirectory.new].
 typedef DomainDirectoryBuilder = DomainDirectory Function({
   required Project project,
 });
@@ -23,21 +23,17 @@ abstract class DomainDirectory extends Directory {
         project: project,
       );
 
+  /// Use to override [domainPackage] for testing.
   @visibleForTesting
   DomainPackageBuilder? domainPackageOverrides;
+
+  /// Use to override [domainPackages] for testing.
+  @visibleForTesting
+  List<DomainPackage>? domainPackagesOverrides;
 
   /// Returns the [DomainPackage] with [name].
   DomainPackage domainPackage({String? name});
 
-  // TODO consider required !
-
-  /// Adds the [DomainPackage] with [name] and returns it.
-  ///
-  /// Throws [SubDomainAlreadyExists] when the [DomainPackage] already exists.
-  Future<DomainPackage> addDomainPackage({required String name});
-
-  /// Removes the [DomainPackage] with [name] and returns it.
-  ///
-  /// Throws [SubDomainDoesNotExist] when the [DomainPackage] does not exist.
-  Future<DomainPackage> removeDomainPackage({required String name});
+  /// Returns all [DomainPackage]s.
+  List<DomainPackage> domainPackages();
 }

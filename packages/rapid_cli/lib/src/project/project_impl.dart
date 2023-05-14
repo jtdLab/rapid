@@ -43,12 +43,14 @@ class ProjectImpl extends DirectoryImpl
   PlatformUiPackageBuilder? platformUiPackageOverrides;
 
   @override
-  MelosFile get melosFile =>
-      (melosFileOverrides ?? MelosFile.new)(project: this);
+  MelosFile get melosFile => (melosFileOverrides ?? MelosFile.new)(
+        project: this,
+      );
 
   @override
-  DiPackage get diPackage =>
-      (diPackageOverrides ?? DiPackage.new)(project: this);
+  DiPackage get diPackage => (diPackageOverrides ?? DiPackage.new)(
+        project: this,
+      );
 
   @override
   DomainDirectory get domainDirectory =>
@@ -64,7 +66,9 @@ class ProjectImpl extends DirectoryImpl
 
   @override
   LoggingPackage get loggingPackage =>
-      (loggingPackageOverrides ?? LoggingPackage.new)(project: this);
+      (loggingPackageOverrides ?? LoggingPackage.new)(
+        project: this,
+      );
 
   // TODO this sucks
   @override
@@ -78,8 +82,9 @@ class ProjectImpl extends DirectoryImpl
           : NoneIosDirectory(platform, project: this)) as T;
 
   @override
-  UiPackage get uiPackage =>
-      (uiPackageOverrides ?? UiPackage.new)(project: this);
+  UiPackage get uiPackage => (uiPackageOverrides ?? UiPackage.new)(
+        project: this,
+      );
 
   @override
   PlatformUiPackage platformUiPackage({required Platform platform}) =>

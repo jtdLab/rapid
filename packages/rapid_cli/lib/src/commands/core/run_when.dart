@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/cli/cli.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -86,6 +88,18 @@ Future<void> platformIsActivated(
     throw EnvironmentException(
       ExitCode.config.code,
       errorMessage,
+    );
+  }
+}
+
+/// Completes when pubspec.yaml exists in cwd.
+Future<void> pubspecExists() async {
+  final pubspecExists = File('pubspec.yaml').existsSync();
+
+  if (!pubspecExists) {
+    throw EnvironmentException(
+      ExitCode.noInput.code,
+      'This command should be run from the root of a dart package.',
     );
   }
 }

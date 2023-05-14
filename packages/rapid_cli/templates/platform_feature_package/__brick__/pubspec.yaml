@@ -4,8 +4,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
@@ -13,11 +13,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-  meta: ^1.8.0
+  meta: ^1.9.1
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^6.2.0{{/routable}}
+  {{#routable}}auto_route: ^7.1.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -29,11 +29,11 @@ dev_dependencies:
     sdk: flutter
   bloc_test: ^9.1.1
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
-  freezed: ^2.3.2
-  {{#routable}}auto_route_generator: ^6.2.0{{/routable}}
+  build_runner: ^2.4.4
+  freezed: ^2.3.4
+  {{#routable}}auto_route_generator: ^7.0.0{{/routable}}
   injectable_generator: ^2.1.5
-  flutter_gen_runner: ^5.3.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
   {{project_name}}_android_app:
 
@@ -87,8 +87,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
@@ -96,11 +96,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-  meta: ^1.8.0
+  meta: ^1.9.1
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^6.2.0{{/routable}}
+  {{#routable}}auto_route: ^7.1.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -112,11 +112,11 @@ dev_dependencies:
     sdk: flutter
   bloc_test: ^9.1.1
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
-  freezed: ^2.3.2
-  {{#routable}}auto_route_generator: ^6.2.0{{/routable}}
+  build_runner: ^2.4.4
+  freezed: ^2.3.4
+  {{#routable}}auto_route_generator: ^7.0.0{{/routable}}
   injectable_generator: ^2.1.5
-  flutter_gen_runner: ^5.3.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
   {{project_name}}_ios_app:
 
@@ -167,8 +167,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
@@ -176,11 +176,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-  meta: ^1.8.0
+  meta: ^1.9.1
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^6.2.0{{/routable}}
+  {{#routable}}auto_route: ^7.1.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -192,11 +192,11 @@ dev_dependencies:
     sdk: flutter
   bloc_test: ^9.1.1
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
-  freezed: ^2.3.2
-  {{#routable}}auto_route_generator: ^6.2.0{{/routable}}
+  build_runner: ^2.4.4
+  freezed: ^2.3.4
+  {{#routable}}auto_route_generator: ^7.0.0{{/routable}}
   injectable_generator: ^2.1.5
-  flutter_gen_runner: ^5.3.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
   {{project_name}}_linux_app:
 
@@ -250,8 +250,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
@@ -259,11 +259,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-  meta: ^1.8.0
+  meta: ^1.9.1
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^6.2.0{{/routable}}
+  {{#routable}}auto_route: ^7.1.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -275,11 +275,11 @@ dev_dependencies:
     sdk: flutter
   bloc_test: ^9.1.1
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
-  freezed: ^2.3.2
-  {{#routable}}auto_route_generator: ^6.2.0{{/routable}}
+  build_runner: ^2.4.4
+  freezed: ^2.3.4
+  {{#routable}}auto_route_generator: ^7.0.0{{/routable}}
   injectable_generator: ^2.1.5
-  flutter_gen_runner: ^5.3.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
   {{project_name}}_macos_app:
 
@@ -330,8 +330,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
@@ -339,11 +339,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-  meta: ^1.8.0
+  meta: ^1.9.1
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^6.2.0{{/routable}}
+  {{#routable}}auto_route: ^7.1.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -355,11 +355,11 @@ dev_dependencies:
     sdk: flutter
   bloc_test: ^9.1.1
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
-  freezed: ^2.3.2
-  {{#routable}}auto_route_generator: ^6.2.0{{/routable}}
+  build_runner: ^2.4.4
+  freezed: ^2.3.4
+  {{#routable}}auto_route_generator: ^7.0.0{{/routable}}
   injectable_generator: ^2.1.5
-  flutter_gen_runner: ^5.3.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
   {{project_name}}_web_app:
 
@@ -413,8 +413,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
-  flutter: ">=3.7.10"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
 
 dependencies:
   flutter:
@@ -422,11 +422,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
-  meta: ^1.8.0
+  meta: ^1.9.1
   bloc: ^8.1.1
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.2
-  {{#routable}}auto_route: ^6.2.0{{/routable}}
+  {{#routable}}auto_route: ^7.1.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -438,11 +438,11 @@ dev_dependencies:
     sdk: flutter
   bloc_test: ^9.1.1
   mocktail: ^0.3.0
-  build_runner: ^2.3.3
-  freezed: ^2.3.2
-  {{#routable}}auto_route_generator: ^6.2.0{{/routable}}
+  build_runner: ^2.4.4
+  freezed: ^2.3.4
+  {{#routable}}auto_route_generator: ^7.0.0{{/routable}}
   injectable_generator: ^2.1.5
-  flutter_gen_runner: ^5.3.0
+  flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
   {{project_name}}_windows_app:
 

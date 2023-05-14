@@ -3,7 +3,7 @@ import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/infrastructure_package_impl.dart';
+import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package_impl.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// Signature of [InfrastructurePackage.new].

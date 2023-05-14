@@ -3,8 +3,8 @@ import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/domain_dir/domain_directory.dart';
-import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_directory.dart';
+import 'package:rapid_cli/src/project/domain_directory/domain_directory.dart';
+import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_directory.dart';
 
 import 'di_package/di_package.dart';
 import 'logging_package/logging_package.dart';

@@ -7,9 +7,9 @@ import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/data_transfer_object_bundle.dart';
-import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/infrastructure_package.dart';
-import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/service_implementation_bundle.dart';
+import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/data_transfer_object_bundle.dart';
+import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package.dart';
+import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/service_implementation_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 import 'infrastructure_package_bundle.dart';

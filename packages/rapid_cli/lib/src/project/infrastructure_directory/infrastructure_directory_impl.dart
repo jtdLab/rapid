@@ -1,8 +1,8 @@
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/directory_impl.dart';
-import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_directory.dart';
-import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/infrastructure_package.dart';
+import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_directory.dart';
+import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 class InfrastructureDirectoryImpl extends DirectoryImpl

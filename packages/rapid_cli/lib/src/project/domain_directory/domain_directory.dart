@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
-import 'package:rapid_cli/src/project/domain_dir/domain_directory_impl.dart';
-import 'package:rapid_cli/src/project/domain_dir/domain_package/domain_package.dart';
+import 'package:rapid_cli/src/project/domain_directory/domain_directory_impl.dart';
+import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// Signature of [DomainDirectory.new].

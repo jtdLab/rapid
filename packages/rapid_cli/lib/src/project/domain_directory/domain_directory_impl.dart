@@ -1,8 +1,8 @@
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/directory_impl.dart';
-import 'package:rapid_cli/src/project/domain_dir/domain_directory.dart';
-import 'package:rapid_cli/src/project/domain_dir/domain_package/domain_package.dart';
+import 'package:rapid_cli/src/project/domain_directory/domain_directory.dart';
+import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 class DomainDirectoryImpl extends DirectoryImpl implements DomainDirectory {

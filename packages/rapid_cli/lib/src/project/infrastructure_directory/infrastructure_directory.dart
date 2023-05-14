@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
-import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_directory_impl.dart';
-import 'package:rapid_cli/src/project/infrastructure_dir/infrastructure_package/infrastructure_package.dart';
+import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_directory_impl.dart';
+import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// Signature of [InfrastructureDirectory.new].

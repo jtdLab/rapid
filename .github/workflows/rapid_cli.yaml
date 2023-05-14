@@ -1,13 +1,12 @@
 name: rapid_cli
 
 on:
-  push:
+  pull_request:
     branches:
       - main
+      - dev
     paths:
-      - packages/rapid_cli
-  pull_request:
-    paths:
+      - packages/rapid/rapid_domain
       - packages/rapid_cli
   workflow_dispatch:
 

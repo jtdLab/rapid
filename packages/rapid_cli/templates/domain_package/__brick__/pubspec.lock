@@ -366,7 +366,7 @@ packages:
     description:
       path: "packages/rapid/rapid_domain"
       ref: HEAD
-      resolved-ref: "1ae72176015f3cc2bc6ab80e4ce1dbe8f0e0e03c"
+      resolved-ref: d82913c55ad6b6230a97504fbf18344609fc4587
       url: "https://github.com/jtdLab/rapid.git"
     source: git
     version: "0.1.0"

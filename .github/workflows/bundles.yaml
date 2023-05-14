@@ -30,8 +30,13 @@ jobs:
       - name: Setup Mason CLI
         run: dart pub global activate mason_cli
 
+      - name: Install Bundles Package
+        run: |
+          cd tool/bundles
+          flutter pub get
+
       - name: Rebundle templates
-        run: bash tool/bundles.sh
+        run: dart run tool/bundles/bin/bundles.dart
 
       # - name: Push dev branch to remote repository
       #   run: |

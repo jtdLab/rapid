@@ -68,12 +68,12 @@ const domainPackage = PackageTemplate(
 const entity = Template(
   'entity',
   'templates/entity',
-  'lib/src/project/domain_dir/domain_package',
+  'lib/src/project/domain_directory/domain_package',
 );
 const infrastructurePackage = PackageTemplate(
   'infrastructure_package',
   'templates/infrastructure_package',
-  'lib/src/project/infrastructure_dir/infrastructure_package',
+  'lib/src/project/infrastructure_directory/infrastructure_package',
 );
 const loggingPackage = PackageTemplate(
   'logging_package',

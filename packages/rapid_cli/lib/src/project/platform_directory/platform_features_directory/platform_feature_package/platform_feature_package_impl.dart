@@ -280,14 +280,6 @@ class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
   }) : super('app', platform);
 
   @override
-  PlatformFeaturePackageNavigatorBuilder? get navigatorFileOverrides =>
-      throw UnimplementedError();
-
-  @override
-  PlatformFeaturePackageNavigatorImplementation get navigatorFile =>
-      throw UnimplementedError();
-
-  @override
   Future<void> create({
     String? description,
     bool routing = false,

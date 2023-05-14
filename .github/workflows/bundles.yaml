@@ -33,6 +33,9 @@ jobs:
       - name: Rebundle templates
         run: bash tool/bundles.sh
 
+      - name: Push branch to remote repository
+        run: git push origin bundle-templates
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:

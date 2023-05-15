@@ -557,7 +557,7 @@ packages:
     description:
       path: "packages/rapid/rapid_domain"
       ref: HEAD
-      resolved-ref: "1ae72176015f3cc2bc6ab80e4ce1dbe8f0e0e03c"
+      resolved-ref: "84c2f8e8ee91ab279888e7ddd70d9a1eda664e2a"
       url: "https://github.com/jtdLab/rapid.git"
     source: git
     version: "0.1.0"
@@ -1402,7 +1402,7 @@ packages:
     description:
       path: "packages/rapid/rapid_domain"
       ref: HEAD
-      resolved-ref: "1ae72176015f3cc2bc6ab80e4ce1dbe8f0e0e03c"
+      resolved-ref: "84c2f8e8ee91ab279888e7ddd70d9a1eda664e2a"
       url: "https://github.com/jtdLab/rapid.git"
     source: git
     version: "0.1.0"
@@ -2054,10 +2054,10 @@ packages:
     dependency: transitive
     description:
       name: gtk
-      sha256: "517560d6ec625c114cbdcde9223e5ee6418d30860377347ee1b0513399e7a3f5"
+      sha256: e8ce9ca4b1df106e4d72dad201d345ea1a036cc12c360f1a7d5a758f78ffa42c
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0"
+    version: "2.1.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -2263,7 +2263,7 @@ packages:
     description:
       path: "packages/rapid/rapid_domain"
       ref: HEAD
-      resolved-ref: "1ae72176015f3cc2bc6ab80e4ce1dbe8f0e0e03c"
+      resolved-ref: "84c2f8e8ee91ab279888e7ddd70d9a1eda664e2a"
       url: "https://github.com/jtdLab/rapid.git"
     source: git
     version: "0.1.0"
@@ -3132,7 +3132,7 @@ packages:
     description:
       path: "packages/rapid/rapid_domain"
       ref: HEAD
-      resolved-ref: "1ae72176015f3cc2bc6ab80e4ce1dbe8f0e0e03c"
+      resolved-ref: "84c2f8e8ee91ab279888e7ddd70d9a1eda664e2a"
       url: "https://github.com/jtdLab/rapid.git"
     source: git
     version: "0.1.0"
@@ -3969,7 +3969,7 @@ packages:
     description:
       path: "packages/rapid/rapid_domain"
       ref: HEAD
-      resolved-ref: "1ae72176015f3cc2bc6ab80e4ce1dbe8f0e0e03c"
+      resolved-ref: "84c2f8e8ee91ab279888e7ddd70d9a1eda664e2a"
       url: "https://github.com/jtdLab/rapid.git"
     source: git
     version: "0.1.0"
@@ -4518,10 +4518,10 @@ packages:
     dependency: transitive
     description:
       name: fluent_ui
-      sha256: "88d6720cfded16f53ff83f0b6de3063d40664ee21696994fffc5efc5667b4fc5"
+      sha256: "860606280da3b5d49920c36a0aee7b456c1a1c01e67c907184c409ccb4153b34"
       url: "https://pub.dev"
     source: hosted
-    version: "4.6.0"
+    version: "4.6.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -4822,7 +4822,7 @@ packages:
     description:
       path: "packages/rapid/rapid_domain"
       ref: HEAD
-      resolved-ref: "1ae72176015f3cc2bc6ab80e4ce1dbe8f0e0e03c"
+      resolved-ref: "84c2f8e8ee91ab279888e7ddd70d9a1eda664e2a"
       url: "https://github.com/jtdLab/rapid.git"
     source: git
     version: "0.1.0"
@@ -5106,6 +5106,6 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: "3.0.0"
+  dart: ">=3.0.0 <4.0.0"
   flutter: ">=3.10.0"
 {{/windows}}

@@ -11,7 +11,7 @@ final packages = [
   PackageDependency('cupertino_icons', '1.0.5'),
   PackageDependency('dartz', '0.10.1'),
   PackageDependency('faker', '2.1.0'),
-  PackageDependency('fluent_ui', '4.6.0'),
+  PackageDependency('fluent_ui', '4.6.1'),
   PackageDependency('flutter_bloc', '8.1.2'),
   PackageDependency('flutter_gen_runner', '5.3.1'),
   PackageDependency('flutter_lints', '2.0.1'),

@@ -1,0 +1,18 @@
+{
+  "name": "Rapid",
+  "logo": "/assets/logo_white.png",
+  "logoDark": "/assets/logo_black.png",
+  "theme": "#FFA03F",
+  "favicon": "/assets/logo_white.png",
+  "sidebar": [
+    ["Overview", "/"],
+    ["Getting Started", "/getting-started"],
+    [
+      "Commands",
+      [
+        ["bootstrap", "/commands/activate"],
+        ["clean", "/commands/android"]
+      ]
+    ]
+  ]
+}

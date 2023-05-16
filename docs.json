@@ -10,8 +10,21 @@
     [
       "Commands",
       [
-        ["bootstrap", "/commands/activate"],
-        ["clean", "/commands/android"]
+        ["activate", "/commands/activate"],
+        ["android", "/commands/android"],
+        ["begin", "/commands/begin"],
+        ["create", "/commands/create"],
+        ["deactivate", "/commands/deactivate"],
+        ["domain", "/commands/domain"],
+        ["end", "/commands/end"],
+        ["infrastructure", "/commands/infrastructure"],
+        ["ios", "/commands/ios"],
+        ["linux", "/commands/linux"],
+        ["macos", "/commands/macos"],
+        ["pub", "/commands/pub"],
+        ["ui", "/commands/ui"],
+        ["web", "/commands/web"],
+        ["windows", "/commands/windows"]
       ]
     ]
   ]

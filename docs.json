@@ -1,7 +1,7 @@
 {
   "name": "Rapid",
   "logo": "/assets/logo.svg",
-  "logoDark": "https://raw.githubusercontent.com/jtdLab/rapid/main/assets/logo_black.png",
+  "logoDark": "/assets/logo-dark.svg",
   "theme": "#2848FC",
   "favicon": "/assets/logo.svg",
   "sidebar": [

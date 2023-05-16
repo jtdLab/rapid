@@ -2,7 +2,7 @@
   "name": "Rapid",
   "logo": "/assets/logo.svg",
   "logoDark": "/assets/logo-dark.svg",
-  "theme": "#2848FC",
+  "theme": "#2862EC",
   "favicon": "/assets/logo.svg",
   "sidebar": [
     ["Overview", "/"],

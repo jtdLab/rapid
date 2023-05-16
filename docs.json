@@ -1,9 +1,9 @@
 {
   "name": "Rapid",
-  "logo": "https://raw.githubusercontent.com/jtdLab/rapid/main/assets/logo_white.png",
+  "logo": "/assets/logo.svg",
   "logoDark": "https://raw.githubusercontent.com/jtdLab/rapid/main/assets/logo_black.png",
   "theme": "#2848FC",
-  "favicon": "https://raw.githubusercontent.com/jtdLab/rapid/main/assets/logo_white.png",
+  "favicon": "/assets/logo.svg",
   "sidebar": [
     ["Overview", "/"],
     ["Getting Started", "/getting-started"],

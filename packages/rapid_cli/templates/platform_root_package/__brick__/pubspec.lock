@@ -548,7 +548,7 @@ packages:
     description:
       path: "packages/rapid/rapid_domain"
       ref: HEAD
-      resolved-ref: "98bb16320b4fc3b00ca0e23df4b482f5e8eccae3"
+      resolved-ref: "7981a7cdd942770911df3700d599cfd1f769a48c"
       url: "https://github.com/jtdLab/rapid.git"
     source: git
     version: "0.1.0"
@@ -1413,7 +1413,7 @@ packages:
     description:
       path: "packages/rapid/rapid_domain"
       ref: HEAD
-      resolved-ref: "98bb16320b4fc3b00ca0e23df4b482f5e8eccae3"
+      resolved-ref: "7981a7cdd942770911df3700d599cfd1f769a48c"
       url: "https://github.com/jtdLab/rapid.git"
     source: git
     version: "0.1.0"
@@ -2286,7 +2286,7 @@ packages:
     description:
       path: "packages/rapid/rapid_domain"
       ref: HEAD
-      resolved-ref: "98bb16320b4fc3b00ca0e23df4b482f5e8eccae3"
+      resolved-ref: "7981a7cdd942770911df3700d599cfd1f769a48c"
       url: "https://github.com/jtdLab/rapid.git"
     source: git
     version: "0.1.0"
@@ -3175,7 +3175,7 @@ packages:
     description:
       path: "packages/rapid/rapid_domain"
       ref: HEAD
-      resolved-ref: "98bb16320b4fc3b00ca0e23df4b482f5e8eccae3"
+      resolved-ref: "7981a7cdd942770911df3700d599cfd1f769a48c"
       url: "https://github.com/jtdLab/rapid.git"
     source: git
     version: "0.1.0"
@@ -4037,7 +4037,7 @@ packages:
     description:
       path: "packages/rapid/rapid_domain"
       ref: HEAD
-      resolved-ref: "98bb16320b4fc3b00ca0e23df4b482f5e8eccae3"
+      resolved-ref: "7981a7cdd942770911df3700d599cfd1f769a48c"
       url: "https://github.com/jtdLab/rapid.git"
     source: git
     version: "0.1.0"
@@ -4918,7 +4918,7 @@ packages:
     description:
       path: "packages/rapid/rapid_domain"
       ref: HEAD
-      resolved-ref: "98bb16320b4fc3b00ca0e23df4b482f5e8eccae3"
+      resolved-ref: "7981a7cdd942770911df3700d599cfd1f769a48c"
       url: "https://github.com/jtdLab/rapid.git"
     source: git
     version: "0.1.0"

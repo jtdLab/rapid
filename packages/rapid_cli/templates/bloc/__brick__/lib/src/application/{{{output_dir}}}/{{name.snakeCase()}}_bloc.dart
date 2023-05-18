@@ -13,17 +13,17 @@ class {{name.pascalCase()}}Bloc extends Bloc<{{name.pascalCase()}}Event, {{name.
   {{name.pascalCase()}}Bloc()
       : super(
           // Set initial state
-          const {{name.pascalCase()}}State.initial(),
+          const {{name.pascalCase()}}Initial(),
         ) {
     // Register handlers
-    on<_Started>(
+    on<{{name.pascalCase()}}Started>(
       (event, emit) async => _handleStarted(event, emit),
     );
   }
 
-  /// Handle incoming [_Started] event.
+  /// Handle incoming [{{name.pascalCase()}}Started] event.
   void _handleStarted(
-    _Started event,
+    {{name.pascalCase()}}Started event,
     Emitter<{{name.pascalCase()}}State> emit,
   ) {
     // TODO: implement

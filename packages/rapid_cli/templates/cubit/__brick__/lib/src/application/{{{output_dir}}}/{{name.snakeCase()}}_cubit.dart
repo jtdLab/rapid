@@ -12,7 +12,7 @@ class {{name.pascalCase()}}Cubit extends Cubit<{{name.pascalCase()}}State> {
   {{name.pascalCase()}}Cubit()
       : super(
           // Set initial state
-          const {{name.pascalCase()}}State.initial(),
+          const {{name.pascalCase()}}Initial(),
         );
 
   void started() {

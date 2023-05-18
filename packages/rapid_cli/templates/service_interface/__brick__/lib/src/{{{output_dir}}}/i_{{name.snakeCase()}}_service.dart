@@ -10,8 +10,12 @@ abstract class I{{name.pascalCase()}}Service {
 
 // TODO: add failure unions for each service method like:
 /* /// Failure union that belongs to [I{{name.pascalCase()}}Service.myMethod].
-@freezed
-class {{name.pascalCase()}}ServiceMyMethodFailure with _${{name.pascalCase()}}ServiceMyMethodFailure {
-  const factory {{name.pascalCase()}}ServiceMyMethodFailure.myFailure() = _MyMethodMyFailure;
-  // TODO: add more failure cases
-} */
+sealed class {{name.pascalCase()}}ServiceMyMethodFailure {}
+
+final class {{name.pascalCase()}}ServiceMyMethodMyFailure extends {{name.pascalCase()}}ServiceMyMethodFailure {}
+*/
+
+// TODO: add failures that are shared across multiple method specific failures.
+/*
+final class {{name.pascalCase()}}ServiceMySharedFailure implements {{name.pascalCase()}}ServiceMyMethodFailure {}
+*/

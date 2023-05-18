@@ -7,12 +7,12 @@ import 'package:{{project_name.snakeCase()}}_{{platform}}_{{feature_name}}/src/{
 
 void main() {
   group('{{name.pascalCase()}}Cubit', () {
-    test('has initial state Initial', () {
+    test('has initial state {{name.pascalCase()}}Initial', () {
       // Arrange
       final {{name.camelCase()}}Cubit = _get{{name.pascalCase()}}Cubit();
 
       //  Act + Assert
-      expect({{name.camelCase()}}Cubit.state, const {{name.pascalCase()}}State.initial());
+      expect({{name.camelCase()}}Cubit.state, const {{name.pascalCase()}}Initial());
     });
 
     group('started', () {

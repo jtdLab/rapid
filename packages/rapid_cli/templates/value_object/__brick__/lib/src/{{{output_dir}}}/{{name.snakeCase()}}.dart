@@ -65,10 +65,10 @@ class {{name.pascalCase()}}{{{generics}}} extends ValueObject<{{{type}}}> {
 
 /// [ValueFailure] union that belongs to [{{name.pascalCase()}}].
 @freezed
-class {{name.pascalCase()}}Failure{{{generics}}} extends ValueFailure<{{{type}}}>
+sealed class {{name.pascalCase()}}Failure{{{generics}}} extends ValueFailure<{{{type}}}>
     with _${{name.pascalCase()}}Failure{{{generics}}} {
   const factory {{name.pascalCase()}}Failure.failureA({
     required {{{type}}} failedValue,
-  }) = _FailureA;
+  }) = {{name.pascalCase()}}FailureA;
   // TODO: add more failure cases
 }

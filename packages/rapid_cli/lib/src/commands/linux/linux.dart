@@ -17,6 +17,7 @@ class LinuxCommand extends PlatformCommand {
     Project? project,
   }) : super(
           platform: Platform.linux,
+          project: project,
           addCommand: LinuxAddCommand(logger: logger, project: project),
           featureCommands: (featurePackages) => featurePackages.map(
             (e) => LinuxFeatureCommand(

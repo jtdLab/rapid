@@ -16,9 +16,10 @@ void main() {
 
       late RapidCommandRunner commandRunner;
 
-      setUp(() {
+      setUp(() async {
         Directory.current = getTempDir();
 
+        await setupProject(Platform.android);
         commandRunner = RapidCommandRunner();
       });
 
@@ -30,7 +31,6 @@ void main() {
         'android <feature> add bloc',
         () async {
           // Arrange
-          await setupProject(Platform.android);
           final name = 'FooBar';
           final featureName = 'home_page';
 
@@ -74,7 +74,6 @@ void main() {
         'android <feature> add bloc (with output dir)',
         () async {
           // Arrange
-          await setupProject(Platform.android);
           final name = 'FooBar';
           final featureName = 'home_page';
           final outputDir = 'foo';

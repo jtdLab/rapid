@@ -16,9 +16,10 @@ void main() {
 
       late RapidCommandRunner commandRunner;
 
-      setUp(() {
+      setUp(() async {
         Directory.current = getTempDir();
 
+        await setupProject(Platform.linux);
         commandRunner = RapidCommandRunner();
       });
 
@@ -30,7 +31,6 @@ void main() {
         'linux <feature> add cubit',
         () async {
           // Arrange
-          await setupProject(Platform.linux);
           final name = 'FooBar';
           final featureName = 'home_page';
 
@@ -74,7 +74,6 @@ void main() {
         'linux <feature> add cubit (with output dir)',
         () async {
           // Arrange
-          await setupProject(Platform.linux);
           final name = 'FooBar';
           final featureName = 'home_page';
           final outputDir = 'foo';

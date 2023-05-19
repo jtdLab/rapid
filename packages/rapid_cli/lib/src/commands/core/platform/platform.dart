@@ -1,5 +1,5 @@
+import 'package:args/command_runner.dart';
 import 'package:rapid_cli/src/commands/android/android.dart';
-import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/platform/add/add.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/feature.dart';
 import 'package:rapid_cli/src/commands/core/platform/remove/remove.dart';
@@ -12,6 +12,7 @@ import 'package:rapid_cli/src/commands/web/web.dart';
 import 'package:rapid_cli/src/commands/windows/windows.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
+import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template platform_command}
 /// Base class for:
@@ -28,21 +29,23 @@ import 'package:rapid_cli/src/project/platform_directory/platform_features_direc
 ///
 ///  * [WindowsCommand]
 /// {@endtemplate}
-abstract class PlatformCommand extends RapidRootCommand {
+abstract class PlatformCommand extends Command<int> {
   /// {@macro platform_command}
   PlatformCommand({
     required Platform platform,
-    super.project,
+    Project? project,
     required PlatformAddCommand addCommand,
     required Iterable<PlatformFeatureCommand> Function(
       List<PlatformFeaturePackage>,
     ) featureCommands,
     required PlatformRemoveCommand removeCommand,
     required PlatformSetCommand setCommand,
-  }) : _platform = platform {
+  })  : _platform = platform,
+        _project = project ?? Project() {
     addSubcommand(addCommand);
     try {
-      final featurePackages = (project)
+      // TODO: cleaner
+      final featurePackages = (_project)
           .platformDirectory(platform: platform)
           .featuresDirectory
           .featurePackages();
@@ -50,12 +53,13 @@ abstract class PlatformCommand extends RapidRootCommand {
         addSubcommand(featureCommand);
       }
     } catch (_) {}
-
     addSubcommand(removeCommand);
     addSubcommand(setCommand);
   }
 
   final Platform _platform;
+
+  final Project _project;
 
   @override
   String get name => _platform.name;

@@ -17,6 +17,7 @@ class IosCommand extends PlatformCommand {
     Project? project,
   }) : super(
           platform: Platform.ios,
+          project: project,
           addCommand: IosAddCommand(logger: logger, project: project),
           featureCommands: (featurePackages) => featurePackages.map(
             (e) => IosFeatureCommand(

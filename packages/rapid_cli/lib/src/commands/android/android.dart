@@ -17,6 +17,7 @@ class AndroidCommand extends PlatformCommand {
     Project? project,
   }) : super(
           platform: Platform.android,
+          project: project,
           addCommand: AndroidAddCommand(logger: logger, project: project),
           featureCommands: (featurePackages) => featurePackages.map(
             (e) => AndroidFeatureCommand(

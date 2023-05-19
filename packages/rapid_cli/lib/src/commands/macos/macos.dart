@@ -17,6 +17,7 @@ class MacosCommand extends PlatformCommand {
     Project? project,
   }) : super(
           platform: Platform.macos,
+          project: project,
           addCommand: MacosAddCommand(logger: logger, project: project),
           featureCommands: (featurePackages) => featurePackages.map(
             (e) => MacosFeatureCommand(

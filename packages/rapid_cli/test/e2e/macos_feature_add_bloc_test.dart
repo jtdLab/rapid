@@ -16,9 +16,10 @@ void main() {
 
       late RapidCommandRunner commandRunner;
 
-      setUp(() {
+      setUp(() async {
         Directory.current = getTempDir();
 
+        await setupProject(Platform.macos);
         commandRunner = RapidCommandRunner();
       });
 
@@ -30,7 +31,6 @@ void main() {
         'macos <feature> add bloc',
         () async {
           // Arrange
-          await setupProject(Platform.macos);
           final name = 'FooBar';
           final featureName = 'home_page';
 
@@ -74,7 +74,6 @@ void main() {
         'macos <feature> add bloc (with output dir)',
         () async {
           // Arrange
-          await setupProject(Platform.macos);
           final name = 'FooBar';
           final featureName = 'home_page';
           final outputDir = 'foo';

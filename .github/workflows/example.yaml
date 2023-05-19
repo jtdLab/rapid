@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main
-      - dev
+      - dev # TODO rm
     paths:
       - example/**
   pull_request:

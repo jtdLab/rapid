@@ -27,7 +27,7 @@ void main() {
       });
 
       test(
-        'ios feature add cubit',
+        'ios <feature> add cubit',
         () async {
           // Arrange
           await setupProject(Platform.ios);
@@ -37,12 +37,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'ios',
-            'feature',
+            featureName,
             'add',
             'cubit',
             name,
-            '--feature',
-            featureName,
           ]);
 
           // Assert
@@ -73,7 +71,7 @@ void main() {
       );
 
       test(
-        'ios feature add cubit (with output dir)',
+        'ios <feature> add cubit (with output dir)',
         () async {
           // Arrange
           await setupProject(Platform.ios);
@@ -84,12 +82,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'ios',
-            'feature',
+            featureName,
             'add',
             'cubit',
             name,
-            '--feature',
-            featureName,
             '-o',
             outputDir,
           ]);

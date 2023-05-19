@@ -27,7 +27,7 @@ void main() {
       });
 
       test(
-        'linux feature add cubit',
+        'linux <feature> add cubit',
         () async {
           // Arrange
           await setupProject(Platform.linux);
@@ -37,12 +37,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'linux',
-            'feature',
+            featureName,
             'add',
             'cubit',
             name,
-            '--feature',
-            featureName,
           ]);
 
           // Assert
@@ -73,7 +71,7 @@ void main() {
       );
 
       test(
-        'linux feature add cubit (with output dir)',
+        'linux <feature> add cubit (with output dir)',
         () async {
           // Arrange
           await setupProject(Platform.linux);
@@ -84,12 +82,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'linux',
-            'feature',
+            featureName,
             'add',
             'cubit',
             name,
-            '--feature',
-            featureName,
             '-o',
             outputDir,
           ]);

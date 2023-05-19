@@ -27,7 +27,7 @@ void main() {
       });
 
       test(
-        'macos feature add bloc',
+        'macos <feature> add bloc',
         () async {
           // Arrange
           await setupProject(Platform.macos);
@@ -37,12 +37,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'macos',
-            'feature',
+            featureName,
             'add',
             'bloc',
             name,
-            '--feature',
-            featureName,
           ]);
 
           // Assert
@@ -73,7 +71,7 @@ void main() {
       );
 
       test(
-        'macos feature add bloc (with output dir)',
+        'macos <feature> add bloc (with output dir)',
         () async {
           // Arrange
           await setupProject(Platform.macos);
@@ -84,12 +82,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'macos',
-            'feature',
+            featureName,
             'add',
             'bloc',
             name,
-            '--feature',
-            featureName,
             '-o',
             outputDir,
           ]);

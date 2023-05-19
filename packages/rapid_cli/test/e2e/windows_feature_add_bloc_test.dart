@@ -27,7 +27,7 @@ void main() {
       });
 
       test(
-        'windows feature add bloc',
+        'windows <feature> add bloc',
         () async {
           // Arrange
           await setupProject(Platform.windows);
@@ -37,12 +37,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'windows',
-            'feature',
+            featureName,
             'add',
             'bloc',
             name,
-            '--feature',
-            featureName,
           ]);
 
           // Assert
@@ -73,7 +71,7 @@ void main() {
       );
 
       test(
-        'windows feature add bloc (with output dir)',
+        'windows <feature> add bloc (with output dir)',
         () async {
           // Arrange
           await setupProject(Platform.windows);
@@ -84,12 +82,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'windows',
-            'feature',
+            featureName,
             'add',
             'bloc',
             name,
-            '--feature',
-            featureName,
             '-o',
             outputDir,
           ]);

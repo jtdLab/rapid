@@ -27,7 +27,7 @@ void main() {
       });
 
       test(
-        'linux feature add bloc',
+        'linux <feature> add bloc',
         () async {
           // Arrange
           await setupProject(Platform.linux);
@@ -37,12 +37,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'linux',
-            'feature',
+            featureName,
             'add',
             'bloc',
             name,
-            '--feature',
-            featureName,
           ]);
 
           // Assert
@@ -73,7 +71,7 @@ void main() {
       );
 
       test(
-        'linux feature add bloc (with output dir)',
+        'linux <feature> add bloc (with output dir)',
         () async {
           // Arrange
           await setupProject(Platform.linux);
@@ -84,12 +82,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'linux',
-            'feature',
+            featureName,
             'add',
             'bloc',
             name,
-            '--feature',
-            featureName,
             '-o',
             outputDir,
           ]);

@@ -27,7 +27,7 @@ void main() {
       });
 
       test(
-        'web feature add cubit',
+        'web <feature> add cubit',
         () async {
           // Arrange
           await setupProject(Platform.web);
@@ -37,12 +37,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'web',
-            'feature',
+            featureName,
             'add',
             'cubit',
             name,
-            '--feature',
-            featureName,
           ]);
 
           // Assert
@@ -73,7 +71,7 @@ void main() {
       );
 
       test(
-        'web feature add cubit (with output dir)',
+        'web <feature> add cubit (with output dir)',
         () async {
           // Arrange
           await setupProject(Platform.web);
@@ -84,12 +82,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'web',
-            'feature',
+            featureName,
             'add',
             'cubit',
             name,
-            '--feature',
-            featureName,
             '-o',
             outputDir,
           ]);

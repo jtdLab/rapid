@@ -27,7 +27,7 @@ void main() {
       });
 
       test(
-        'macos feature add cubit',
+        'macos <feature> add cubit',
         () async {
           // Arrange
           await setupProject(Platform.macos);
@@ -37,12 +37,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'macos',
-            'feature',
+            featureName,
             'add',
             'cubit',
             name,
-            '--feature',
-            featureName,
           ]);
 
           // Assert
@@ -73,7 +71,7 @@ void main() {
       );
 
       test(
-        'macos feature add cubit (with output dir)',
+        'macos <feature> add cubit (with output dir)',
         () async {
           // Arrange
           await setupProject(Platform.macos);
@@ -84,12 +82,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'macos',
-            'feature',
+            featureName,
             'add',
             'cubit',
             name,
-            '--feature',
-            featureName,
             '-o',
             outputDir,
           ]);

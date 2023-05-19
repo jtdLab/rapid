@@ -27,7 +27,7 @@ void main() {
       });
 
       test(
-        'android feature add bloc',
+        'android <feature> add bloc',
         () async {
           // Arrange
           await setupProject(Platform.android);
@@ -37,12 +37,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'android',
-            'feature',
+            featureName,
             'add',
             'bloc',
             name,
-            '--feature',
-            featureName,
           ]);
 
           // Assert
@@ -73,7 +71,7 @@ void main() {
       );
 
       test(
-        'android feature add bloc (with output dir)',
+        'android <feature> add bloc (with output dir)',
         () async {
           // Arrange
           await setupProject(Platform.android);
@@ -84,12 +82,10 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'android',
-            'feature',
+            featureName,
             'add',
             'bloc',
             name,
-            '--feature',
-            featureName,
             '-o',
             outputDir,
           ]);

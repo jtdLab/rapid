@@ -9,40 +9,248 @@ on:
   pull_request:
     paths:
       - example/**
-  workflow_dispatch:
+
+env:
+  DI_PATH: example/packages/example/example_di
+  DOMAIN_PATH: example/packages/example/example_domain
+  INFRASTRUCTURE_PATH: example/packages/example/example_infrastructure
+  LOGGING_PATH: example/packages/example/example_logging
+  UI_PATH: example/packages/example_ui/example_ui
 
 jobs:
   build-android:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: example/packages/example/example_android/example_android
+
+    env:
+      ANDROID_PATH: example/packages/example/example_android
+      ANDROID_UI_PATH: example/packages/example_ui/example_ui_android
 
     steps:
       - uses: actions/checkout@v3
       - uses: dorny/paths-filter@v2.2.1
+        id: changes
         with:
           filters: |
             android:
-              - 'example/packages/example/example_di/**'
-              - 'example/packages/example/example_domain/**'
-              - 'example/packages/example/example_infrastructure/**'
-              - 'example/packages/example/example_logging/**'
-              - 'example/packages/example/example_android/**'
-              - 'example/packages/example_ui/example_ui/**'
-              - 'example/packages/example_ui/example_ui_android/**'
+              - '${{ env.DI_PATH }}/**'
+              - '${{ env.DOMAIN_PATH }}/**'
+              - '${{ env.INFRASTRUCTURE_PATH }}/**'
+              - '${{ env.LOGGING_PATH }}/**'
+              - '${{ env.UI_PATH }}/**'
+              - '${{ env.ANDROID_PATH }}/**'
+              - '${{ env.ANDROID_UI_PATH }}/**'
+      - name: Check File Existence
+        id: check_files
+        run: |
+          if [ -e ${{ env.ANDROID_PATH }} ] && [ -e ${{ env.ANDROID_UI_PATH }} ]; then
+            echo "{files_exist}={true}" >> $GITHUB_OUTPUT
+          else
+            echo "{files_exist}={false}" >> $GITHUB_OUTPUT
+          fi
       - uses: actions/setup-java@v2
-        if: ${{ steps.filter.outputs.android == 'true' }}
+        if: ${{ steps.changes.outputs.android == 'true' && steps.check_files.outputs.files_exist == 'true' }}
         with:
           distribution: zulu
           java-version: 11
       - uses: subosito/flutter-action@v2
-        if: ${{ steps.filter.outputs.android == 'true' }}
+        if: ${{ steps.changes.outputs.android == 'true' && steps.check_files.outputs.files_exist == 'true' }}
         with:
           cache: true
       - run: flutter pub get
-        if: ${{ steps.filter.outputs.android == 'true' }}
-      - run: flutter build apk -t lib/main_development.dart --release --verbose
-        if: ${{ steps.filter.outputs.android == 'true' }}
-      - run: flutter build appbundle -t lib/main_development.dart --release --verbose
-        if: ${{ steps.filter.outputs.android == 'true' }}
+        if: ${{ steps.changes.outputs.android == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+      - run: flutter build apk -t $ANDROID_PATH/example_android/lib/main_development.dart --release --verbose
+        if: ${{ steps.changes.outputs.android == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+      - run: flutter build appbundle -t $ANDROID_PATH/example_android/lib/main_development.dart --release --verbose
+        if: ${{ steps.changes.outputs.android == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+
+  # build-ios:
+  #   runs-on: macos-latest
+  #   defaults:
+  #     run:
+  #       working-directory: example/packages/example/example_ios/example_ios
+
+  #   env:
+  #     PATH: example/packages/example/example_ios
+  #     UI_PATH: example/packages/example_ui/example_ui_ios
+
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: dorny/paths-filter@v2.2.1
+  #       id: changes
+  #       with:
+  #         filters: |
+  #           ios:
+  #             $SHARED_FILTERS
+  #             - $PATH/**
+  #             - $UI_PATH/**
+  #     - name: Check File Existence
+  #       id: check_files
+  #       run: |
+  #         if [ -e $PATH ] || [ -e $UI_PATH ]; then
+  #           echo "{files_exist}={true}" >> $GITHUB_OUTPUT
+  #         else
+  #           echo "{files_exist}={false}" >> $GITHUB_OUTPUT
+  #         fi
+  #     - uses: subosito/flutter-action@v2
+  #       if: ${{ steps.changes.outputs.ios == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+  #       with:
+  #         cache: true
+  #         architecture: x64
+  #     - run: flutter pub get
+  #       if: ${{ steps.changes.outputs.ios == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+  #     - run: flutter build ios -t lib/main_development.dart --release --no-codesign --verbose
+  #       if: ${{ steps.changes.outputs.ios == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+
+  # build-linux:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: example/packages/example/example_linux/example_linux
+
+  #   env:
+  #     PATH: example/packages/example/example_linux
+  #     UI_PATH: example/packages/example_ui/example_ui_linux
+
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: dorny/paths-filter@v2.2.1
+  #       id: changes
+  #       with:
+  #         filters: |
+  #           linux:
+  #             $SHARED_FILTERS
+  #             - $PATH/**
+  #             - $UI_PATH/**
+  #     - name: Check File Existence
+  #       id: check_files
+  #       run: |
+  #         if [ -e $PATH ] || [ -e $UI_PATH ]; then
+  #           echo "{files_exist}={true}" >> $GITHUB_OUTPUT
+  #         else
+  #           echo "{files_exist}={false}" >> $GITHUB_OUTPUT
+  #         fi
+  #     - uses: subosito/flutter-action@v2
+  #       if: ${{ steps.changes.outputs.linux == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+  #       with:
+  #         cache: true
+  #     - run: |
+  #         sudo apt-get update -y
+  #         sudo apt-get install -y ninja-build libgtk-3-dev
+  #       if: ${{ steps.changes.outputs.linux == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+  #     - run: flutter config --enable-linux-desktop
+  #       if: ${{ steps.changes.outputs.linux == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+  #     - run: flutter build linux -t lib/main_development.dart --release --verbose
+  #       if: ${{ steps.changes.outputs.linux == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+
+  # build-macos:
+  #   runs-on: macos-latest
+  #   defaults:
+  #     run:
+  #       working-directory: example/packages/example/example_macos/example_macos
+
+  #   env:
+  #     PATH: example/packages/example/example_macos
+  #     UI_PATH: example/packages/example_ui/example_ui_macos
+
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: dorny/paths-filter@v2.2.1
+  #       id: changes
+  #       with:
+  #         filters: |
+  #           macos:
+  #             $SHARED_FILTERS
+  #             - $PATH/**
+  #             - $UI_PATH/**
+  #     - name: Check File Existence
+  #       id: check_files
+  #       run: |
+  #         if [ -e $PATH ] || [ -e $UI_PATH ]; then
+  #           echo "{files_exist}={true}" >> $GITHUB_OUTPUT
+  #         else
+  #           echo "{files_exist}={false}" >> $GITHUB_OUTPUT
+  #         fi
+  #     - uses: subosito/flutter-action@v2
+  #       if: ${{ steps.changes.outputs.macos == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+  #       with:
+  #         cache: true
+  #         architecture: x64
+  #     - run: flutter config --enable-macos-desktop
+  #       if: ${{ steps.changes.outputs.macos == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+  #     - run: flutter build macos -t lib/main_development.dart --release --verbose
+  #       if: ${{ steps.changes.outputs.macos == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+
+  # build-web:
+  #   runs-on: ubuntu-latest
+  #   defaults:
+  #     run:
+  #       working-directory: example/packages/example/example_web/example_web
+
+  #   env:
+  #     PATH: example/packages/example/example_web
+  #     UI_PATH: example/packages/example_ui/example_ui_web
+
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #     - uses: dorny/paths-filter@v2.2.1
+  #       id: changes
+  #       with:
+  #         filters: |
+  #           web:
+  #             $SHARED_FILTERS
+  #             - $PATH/**
+  #             - $UI_PATH/**
+  #     - name: Check File Existence
+  #       id: check_files
+  #       run: |
+  #         if [ -e $PATH ] || [ -e $UI_PATH ]; then
+  #           echo "{files_exist}={true}" >> $GITHUB_OUTPUT
+  #         else
+  #           echo "{files_exist}={false}" >> $GITHUB_OUTPUT
+  #         fi
+  #     - uses: subosito/flutter-action@v2
+  #       if: ${{ steps.changes.outputs.web == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+  #       with:
+  #         cache: true
+  #     - run: flutter pub get
+  #       if: ${{ steps.changes.outputs.web == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+  #     - run: flutter build web -t lib/main_development.dart --verbose
+  #       if: ${{ steps.changes.outputs.web == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+
+  # build-windows:
+  #   runs-on: windows-latest
+  #   defaults:
+  #     run:
+  #       working-directory: example\packages\example\example_windows\example_windows
+
+  #   env:
+  #     PATH: example/packages/example/example_windows
+  #     UI_PATH: example/packages/example_ui/example_ui_windows
+
+  #   steps:
+  #     - run: git config --global core.longpaths true
+  #     - uses: actions/checkout@v3
+  #     - uses: dorny/paths-filter@v2.2.1
+  #       id: changes
+  #       with:
+  #         filters: |
+  #           windows:
+  #             $SHARED_FILTERS
+  #             - $PATH/**
+  #             - $UI_PATH/**
+  #     - name: Check File Existence
+  #       id: check_files
+  #       run: |
+  #         if [ -e $PATH ] || [ -e $UI_PATH ]; then
+  #           echo "{files_exist}={true}" >> $GITHUB_OUTPUT
+  #         else
+  #           echo "{files_exist}={false}" >> $GITHUB_OUTPUT
+  #         fi
+  #     - uses: subosito/flutter-action@v2
+  #       if: ${{ steps.changes.outputs.windows == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+  #       with:
+  #         cache: true
+  #     - run: flutter config --enable-windows-desktop
+  #       if: ${{ steps.changes.outputs.windows == 'true' && steps.check_files.outputs.files_exist == 'true' }}
+  #     - run: flutter build windows -t lib/main_development.dart --release --verbose
+  #       if: ${{ steps.changes.outputs.windows == 'true' && steps.check_files.outputs.files_exist == 'true' }}

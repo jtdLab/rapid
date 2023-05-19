@@ -6,7 +6,6 @@ import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
-import 'package:rapid_cli/src/commands/core/platform/feature/core/feature_option.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ios/feature/add/cubit/cubit.dart';
@@ -15,6 +14,7 @@ import 'package:rapid_cli/src/commands/macos/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/web/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/commands/windows/feature/add/cubit/cubit.dart';
 import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
 
 /// {@template platform_feature_add_cubit_command}
 /// Base class for:
@@ -32,31 +32,23 @@ import 'package:rapid_cli/src/core/platform.dart';
 ///  * [WindowsFeatureAddCubitCommand]
 /// {@endtemplate}
 abstract class PlatformFeatureAddCubitCommand extends RapidRootCommand
-    with
-        ClassNameGetter,
-        FeatureGetter,
-        OutputDirGetter,
-        GroupableMixin,
-        CodeGenMixin {
+    with ClassNameGetter, OutputDirGetter, GroupableMixin, CodeGenMixin {
   /// {@macro platform_feature_add_cubit_command}
   PlatformFeatureAddCubitCommand({
     required Platform platform,
     super.logger,
+    required PlatformFeaturePackage featurePackage,
     super.project,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
+        _featurePackage = featurePackage,
         flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs {
     argParser
-      ..addSeparator('')
-      ..addFeatureOption(
-        help: 'The name of the feature this new cubit will be added to.\n'
-            'This must be the name of an existing ${_platform.prettyName} feature.',
-      )
       ..addSeparator('')
       ..addOutputDirOption(
         help: 'The output directory relative to <feature_package>/lib/src .',
@@ -64,6 +56,7 @@ abstract class PlatformFeatureAddCubitCommand extends RapidRootCommand
   }
 
   final Platform _platform;
+  final PlatformFeaturePackage _featurePackage;
   @override
   final FlutterPubGetCommand flutterPubGet;
   @override
@@ -75,11 +68,11 @@ abstract class PlatformFeatureAddCubitCommand extends RapidRootCommand
 
   @override
   String get invocation =>
-      'rapid ${_platform.name} feature add cubit <name> [arguments]';
+      'rapid ${_platform.name} ${_featurePackage.name} add cubit <name> [arguments]';
 
   @override
   String get description =>
-      'Adds a cubit to a feature of the ${_platform.prettyName} part of an existing Rapid project.';
+      'Adds a cubit to ${_featurePackage.name} of the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhen(
@@ -94,7 +87,7 @@ abstract class PlatformFeatureAddCubitCommand extends RapidRootCommand
         logger,
         () async {
           final name = super.className;
-          final featureName = super.feature;
+          final featureName = _featurePackage.name;
           final outputDir = super.outputDir;
 
           logger.commandTitle(

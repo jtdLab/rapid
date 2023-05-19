@@ -9,6 +9,7 @@ import 'package:rapid_cli/src/commands/macos/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/web/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/windows/feature/add/add.dart';
 import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
 
 /// {@template platform_feature_add_command}
 /// Base class for:
@@ -29,22 +30,27 @@ abstract class PlatformFeatureAddCommand extends Command<int> {
   /// {@macro platform_feature_add_command}
   PlatformFeatureAddCommand({
     required Platform platform,
+    required PlatformFeaturePackage featurePackage,
     required PlatformFeatureAddBlocCommand blocCommand,
     required PlatformFeatureAddCubitCommand cubitCommand,
-  }) : _platform = platform {
+  })  : _platform = platform,
+        _featurePackage = featurePackage {
     addSubcommand(blocCommand);
     addSubcommand(cubitCommand);
   }
 
   final Platform _platform;
 
+  final PlatformFeaturePackage _featurePackage;
+
   @override
   String get name => 'add';
 
   @override
-  String get invocation => 'rapid ${_platform.name} feature add <component>';
+  String get invocation =>
+      'rapid ${_platform.name} ${_featurePackage.name} add <component>';
 
   @override
   String get description =>
-      'Add components to features of the ${_platform.prettyName} part of an existing Rapid project.';
+      'Add components to ${_featurePackage.name} of the ${_platform.prettyName} part of an existing Rapid project.';
 }

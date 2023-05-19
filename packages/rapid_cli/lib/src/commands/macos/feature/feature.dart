@@ -13,10 +13,18 @@ class MacosFeatureCommand extends PlatformFeatureCommand {
   MacosFeatureCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.macos,
-          addCommand: MacosFeatureAddCommand(logger: logger, project: project),
-          removeCommand:
-              MacosFeatureRemoveCommand(logger: logger, project: project),
+          addCommand: MacosFeatureAddCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          removeCommand: MacosFeatureRemoveCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

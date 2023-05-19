@@ -13,11 +13,18 @@ class WindowsFeatureRemoveCommand extends PlatformFeatureRemoveCommand {
   WindowsFeatureRemoveCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.windows,
-          blocCommand:
-              WindowsFeatureRemoveBlocCommand(logger: logger, project: project),
+          blocCommand: WindowsFeatureRemoveBlocCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
           cubitCommand: WindowsFeatureRemoveCubitCommand(
-              logger: logger, project: project),
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

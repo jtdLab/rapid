@@ -13,11 +13,18 @@ class WebFeatureRemoveCommand extends PlatformFeatureRemoveCommand {
   WebFeatureRemoveCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.web,
-          blocCommand:
-              WebFeatureRemoveBlocCommand(logger: logger, project: project),
-          cubitCommand:
-              WebFeatureRemoveCubitCommand(logger: logger, project: project),
+          blocCommand: WebFeatureRemoveBlocCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          cubitCommand: WebFeatureRemoveCubitCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

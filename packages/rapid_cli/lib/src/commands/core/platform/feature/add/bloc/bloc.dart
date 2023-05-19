@@ -6,7 +6,6 @@ import 'package:rapid_cli/src/commands/core/class_name_rest.dart';
 import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
-import 'package:rapid_cli/src/commands/core/platform/feature/core/feature_option.dart';
 import 'package:rapid_cli/src/commands/core/platform_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/ios/feature/add/bloc/bloc.dart';
@@ -15,6 +14,7 @@ import 'package:rapid_cli/src/commands/macos/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/web/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/windows/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
 
 // TODO share code with add cubit command
 
@@ -34,32 +34,23 @@ import 'package:rapid_cli/src/core/platform.dart';
 ///  * [WindowsFeatureAddBlocCommand]
 /// {@endtemplate}
 abstract class PlatformFeatureAddBlocCommand extends RapidRootCommand
-    with
-        ClassNameGetter,
-        FeatureGetter,
-        OutputDirGetter,
-        GroupableMixin,
-        CodeGenMixin {
+    with ClassNameGetter, OutputDirGetter, GroupableMixin, CodeGenMixin {
   /// {@macro platform_feature_add_bloc_command}
   PlatformFeatureAddBlocCommand({
     required Platform platform,
     super.logger,
+    required PlatformFeaturePackage featurePackage,
     super.project,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   })  : _platform = platform,
+        _featurePackage = featurePackage,
         flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs {
     argParser
-      ..addSeparator('')
-      // TODO add hint that its a dart package nameish string but not the full name of the related package
-      ..addFeatureOption(
-        help: 'The name of the feature this new bloc will be added to.\n'
-            'This must be the name of an existing ${_platform.prettyName} feature.',
-      )
       ..addSeparator('')
       ..addOutputDirOption(
         help: 'The output directory relative to <feature_package>/lib/src .',
@@ -67,6 +58,7 @@ abstract class PlatformFeatureAddBlocCommand extends RapidRootCommand
   }
 
   final Platform _platform;
+  final PlatformFeaturePackage _featurePackage;
   @override
   final FlutterPubGetCommand flutterPubGet;
   @override
@@ -78,11 +70,11 @@ abstract class PlatformFeatureAddBlocCommand extends RapidRootCommand
 
   @override
   String get invocation =>
-      'rapid ${_platform.name} feature add bloc <name> [arguments]';
+      'rapid ${_platform.name} ${_featurePackage.name} add bloc <name> [arguments]';
 
   @override
   String get description =>
-      'Adds a bloc to a feature of the ${_platform.prettyName} part of an existing Rapid project.';
+      'Adds a bloc to ${_featurePackage.name} of the ${_platform.prettyName} part of an existing Rapid project.';
 
   @override
   Future<int> run() => runWhen(
@@ -97,7 +89,7 @@ abstract class PlatformFeatureAddBlocCommand extends RapidRootCommand
         logger,
         () async {
           final name = super.className;
-          final featureName = super.feature;
+          final featureName = _featurePackage.name;
           final outputDir = super.outputDir;
 
           logger.commandTitle(

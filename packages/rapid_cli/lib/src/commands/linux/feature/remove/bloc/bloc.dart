@@ -9,6 +9,7 @@ class LinuxFeatureRemoveBlocCommand extends PlatformFeatureRemoveBlocCommand {
   LinuxFeatureRemoveBlocCommand({
     super.logger,
     super.project,
+    required super.featurePackage,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(

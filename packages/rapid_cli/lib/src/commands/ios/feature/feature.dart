@@ -13,10 +13,18 @@ class IosFeatureCommand extends PlatformFeatureCommand {
   IosFeatureCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.ios,
-          addCommand: IosFeatureAddCommand(logger: logger, project: project),
-          removeCommand:
-              IosFeatureRemoveCommand(logger: logger, project: project),
+          addCommand: IosFeatureAddCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          removeCommand: IosFeatureRemoveCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

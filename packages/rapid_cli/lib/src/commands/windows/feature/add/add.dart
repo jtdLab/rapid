@@ -1,7 +1,7 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/core/platform/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/windows/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/windows/feature/add/cubit/cubit.dart';
-import 'package:rapid_cli/src/commands/core/platform/feature/add/add.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -13,11 +13,18 @@ class WindowsFeatureAddCommand extends PlatformFeatureAddCommand {
   WindowsFeatureAddCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.windows,
-          blocCommand:
-              WindowsFeatureAddBlocCommand(logger: logger, project: project),
-          cubitCommand:
-              WindowsFeatureAddCubitCommand(logger: logger, project: project),
+          blocCommand: WindowsFeatureAddBlocCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          cubitCommand: WindowsFeatureAddCubitCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

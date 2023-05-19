@@ -1,7 +1,7 @@
 import 'package:mason/mason.dart';
+import 'package:rapid_cli/src/commands/core/platform/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/web/feature/add/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/web/feature/add/cubit/cubit.dart';
-import 'package:rapid_cli/src/commands/core/platform/feature/add/add.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -13,11 +13,18 @@ class WebFeatureAddCommand extends PlatformFeatureAddCommand {
   WebFeatureAddCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.web,
-          blocCommand:
-              WebFeatureAddBlocCommand(logger: logger, project: project),
-          cubitCommand:
-              WebFeatureAddCubitCommand(logger: logger, project: project),
+          blocCommand: WebFeatureAddBlocCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          cubitCommand: WebFeatureAddCubitCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

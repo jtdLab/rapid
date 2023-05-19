@@ -13,10 +13,18 @@ class WebFeatureCommand extends PlatformFeatureCommand {
   WebFeatureCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.web,
-          addCommand: WebFeatureAddCommand(logger: logger, project: project),
-          removeCommand:
-              WebFeatureRemoveCommand(logger: logger, project: project),
+          addCommand: WebFeatureAddCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          removeCommand: WebFeatureRemoveCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

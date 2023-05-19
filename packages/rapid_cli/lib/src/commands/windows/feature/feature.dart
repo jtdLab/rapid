@@ -13,11 +13,18 @@ class WindowsFeatureCommand extends PlatformFeatureCommand {
   WindowsFeatureCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.windows,
-          addCommand:
-              WindowsFeatureAddCommand(logger: logger, project: project),
-          removeCommand:
-              WindowsFeatureRemoveCommand(logger: logger, project: project),
+          addCommand: WindowsFeatureAddCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          removeCommand: WindowsFeatureRemoveCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

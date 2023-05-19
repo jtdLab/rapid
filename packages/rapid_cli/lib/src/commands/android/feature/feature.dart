@@ -3,6 +3,7 @@ import 'package:rapid_cli/src/commands/android/feature/add/add.dart';
 import 'package:rapid_cli/src/commands/android/feature/remove/remove.dart';
 import 'package:rapid_cli/src/commands/core/platform/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template android_feature_command}
@@ -13,11 +14,19 @@ class AndroidFeatureCommand extends PlatformFeatureCommand {
   AndroidFeatureCommand({
     Logger? logger,
     Project? project,
+    required PlatformFeaturePackage featurePackage,
   }) : super(
           platform: Platform.android,
-          addCommand:
-              AndroidFeatureAddCommand(logger: logger, project: project),
-          removeCommand:
-              AndroidFeatureRemoveCommand(logger: logger, project: project),
+          featurePackage: featurePackage,
+          addCommand: AndroidFeatureAddCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          removeCommand: AndroidFeatureRemoveCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

@@ -13,11 +13,18 @@ class IosFeatureAddCommand extends PlatformFeatureAddCommand {
   IosFeatureAddCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.ios,
-          blocCommand:
-              IosFeatureAddBlocCommand(logger: logger, project: project),
-          cubitCommand:
-              IosFeatureAddCubitCommand(logger: logger, project: project),
+          blocCommand: IosFeatureAddBlocCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          cubitCommand: IosFeatureAddCubitCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

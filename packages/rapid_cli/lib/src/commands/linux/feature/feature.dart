@@ -13,10 +13,18 @@ class LinuxFeatureCommand extends PlatformFeatureCommand {
   LinuxFeatureCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.linux,
-          addCommand: LinuxFeatureAddCommand(logger: logger, project: project),
-          removeCommand:
-              LinuxFeatureRemoveCommand(logger: logger, project: project),
+          addCommand: LinuxFeatureAddCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          removeCommand: LinuxFeatureRemoveCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

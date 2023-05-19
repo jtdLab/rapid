@@ -13,11 +13,18 @@ class IosFeatureRemoveCommand extends PlatformFeatureRemoveCommand {
   IosFeatureRemoveCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.ios,
-          blocCommand:
-              IosFeatureRemoveBlocCommand(logger: logger, project: project),
-          cubitCommand:
-              IosFeatureRemoveCubitCommand(logger: logger, project: project),
+          blocCommand: IosFeatureRemoveBlocCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          cubitCommand: IosFeatureRemoveCubitCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

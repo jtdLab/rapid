@@ -9,6 +9,7 @@ import 'package:rapid_cli/src/commands/macos/feature/feature.dart';
 import 'package:rapid_cli/src/commands/web/feature/feature.dart';
 import 'package:rapid_cli/src/commands/windows/feature/feature.dart';
 import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
 
 /// {@template platform_feature_command}
 /// Base class for:
@@ -29,25 +30,27 @@ abstract class PlatformFeatureCommand extends Command<int> {
   /// {@macro platform_feature_command}
   PlatformFeatureCommand({
     required Platform platform,
+    required PlatformFeaturePackage featurePackage,
     required PlatformFeatureAddCommand addCommand,
     required PlatformFeatureRemoveCommand removeCommand,
-  }) : _platform = platform {
+  })  : _platform = platform,
+        _featurePackage = featurePackage {
     addSubcommand(addCommand);
     addSubcommand(removeCommand);
   }
 
   final Platform _platform;
 
-  @override
-  String get name => 'feature';
+  final PlatformFeaturePackage _featurePackage;
 
   @override
-  List<String> get aliases => ['feat'];
+  String get name => _featurePackage.name;
 
   @override
-  String get invocation => 'rapid ${_platform.name} features <subcommand>';
+  String get invocation =>
+      'rapid ${_platform.name} ${_featurePackage.name} <subcommand>';
 
   @override
   String get description =>
-      'Work with features of the ${_platform.prettyName} part of an existing Rapid project.';
+      'Work with ${_featurePackage.name} of the ${_platform.prettyName} part of an existing Rapid project.';
 }

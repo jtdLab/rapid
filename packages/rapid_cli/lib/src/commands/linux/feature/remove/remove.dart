@@ -13,11 +13,18 @@ class LinuxFeatureRemoveCommand extends PlatformFeatureRemoveCommand {
   LinuxFeatureRemoveCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.linux,
-          blocCommand:
-              LinuxFeatureRemoveBlocCommand(logger: logger, project: project),
-          cubitCommand:
-              LinuxFeatureRemoveCubitCommand(logger: logger, project: project),
+          blocCommand: LinuxFeatureRemoveBlocCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          cubitCommand: LinuxFeatureRemoveCubitCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

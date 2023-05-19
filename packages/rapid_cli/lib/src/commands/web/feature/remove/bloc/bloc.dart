@@ -9,6 +9,7 @@ class WebFeatureRemoveBlocCommand extends PlatformFeatureRemoveBlocCommand {
   WebFeatureRemoveBlocCommand({
     super.logger,
     super.project,
+    required super.featurePackage,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(

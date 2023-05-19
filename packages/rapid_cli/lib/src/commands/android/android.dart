@@ -18,8 +18,13 @@ class AndroidCommand extends PlatformCommand {
   }) : super(
           platform: Platform.android,
           addCommand: AndroidAddCommand(logger: logger, project: project),
-          featureCommand:
-              AndroidFeatureCommand(logger: logger, project: project),
+          featureCommands: (featurePackages) => featurePackages.map(
+            (e) => AndroidFeatureCommand(
+              logger: logger,
+              project: project,
+              featurePackage: e,
+            ),
+          ),
           removeCommand: AndroidRemoveCommand(logger: logger, project: project),
           setCommand: AndroidSetCommand(logger: logger, project: project),
         );

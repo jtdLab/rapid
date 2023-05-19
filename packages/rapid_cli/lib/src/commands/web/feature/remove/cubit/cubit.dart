@@ -9,6 +9,7 @@ class WebFeatureRemoveCubitCommand extends PlatformFeatureRemoveCubitCommand {
   WebFeatureRemoveCubitCommand({
     super.logger,
     super.project,
+    required super.featurePackage,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(

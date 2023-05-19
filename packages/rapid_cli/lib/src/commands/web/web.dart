@@ -18,7 +18,13 @@ class WebCommand extends PlatformCommand {
   }) : super(
           platform: Platform.web,
           addCommand: WebAddCommand(logger: logger, project: project),
-          featureCommand: WebFeatureCommand(logger: logger, project: project),
+          featureCommands: (featurePackages) => featurePackages.map(
+            (e) => WebFeatureCommand(
+              logger: logger,
+              project: project,
+              featurePackage: e,
+            ),
+          ),
           removeCommand: WebRemoveCommand(logger: logger, project: project),
           setCommand: WebSetCommand(logger: logger, project: project),
         );

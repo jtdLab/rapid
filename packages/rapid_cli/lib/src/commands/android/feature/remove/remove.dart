@@ -1,7 +1,7 @@
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/commands/core/platform/feature/remove/remove.dart';
 import 'package:rapid_cli/src/commands/android/feature/remove/bloc/bloc.dart';
 import 'package:rapid_cli/src/commands/android/feature/remove/cubit/cubit.dart';
+import 'package:rapid_cli/src/commands/core/platform/feature/remove/remove.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -13,11 +13,18 @@ class AndroidFeatureRemoveCommand extends PlatformFeatureRemoveCommand {
   AndroidFeatureRemoveCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.android,
-          blocCommand:
-              AndroidFeatureRemoveBlocCommand(logger: logger, project: project),
+          blocCommand: AndroidFeatureRemoveBlocCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
           cubitCommand: AndroidFeatureRemoveCubitCommand(
-              logger: logger, project: project),
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

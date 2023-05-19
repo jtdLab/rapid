@@ -13,11 +13,18 @@ class MacosFeatureRemoveCommand extends PlatformFeatureRemoveCommand {
   MacosFeatureRemoveCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.macos,
-          blocCommand:
-              MacosFeatureRemoveBlocCommand(logger: logger, project: project),
-          cubitCommand:
-              MacosFeatureRemoveCubitCommand(logger: logger, project: project),
+          blocCommand: MacosFeatureRemoveBlocCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          cubitCommand: MacosFeatureRemoveCubitCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

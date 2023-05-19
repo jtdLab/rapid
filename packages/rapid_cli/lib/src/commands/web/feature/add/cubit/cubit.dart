@@ -9,6 +9,7 @@ class WebFeatureAddCubitCommand extends PlatformFeatureAddCubitCommand {
   WebFeatureAddCubitCommand({
     super.logger,
     super.project,
+    required super.featurePackage,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(

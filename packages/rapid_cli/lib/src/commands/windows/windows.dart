@@ -18,8 +18,13 @@ class WindowsCommand extends PlatformCommand {
   }) : super(
           platform: Platform.windows,
           addCommand: WindowsAddCommand(logger: logger, project: project),
-          featureCommand:
-              WindowsFeatureCommand(logger: logger, project: project),
+          featureCommands: (featurePackages) => featurePackages.map(
+            (e) => WindowsFeatureCommand(
+              logger: logger,
+              project: project,
+              featurePackage: e,
+            ),
+          ),
           removeCommand: WindowsRemoveCommand(logger: logger, project: project),
           setCommand: WindowsSetCommand(logger: logger, project: project),
         );

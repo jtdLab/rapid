@@ -13,11 +13,18 @@ class MacosFeatureAddCommand extends PlatformFeatureAddCommand {
   MacosFeatureAddCommand({
     Logger? logger,
     Project? project,
+    required super.featurePackage,
   }) : super(
           platform: Platform.macos,
-          blocCommand:
-              MacosFeatureAddBlocCommand(logger: logger, project: project),
-          cubitCommand:
-              MacosFeatureAddCubitCommand(logger: logger, project: project),
+          blocCommand: MacosFeatureAddBlocCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
+          cubitCommand: MacosFeatureAddCubitCommand(
+            logger: logger,
+            project: project,
+            featurePackage: featurePackage,
+          ),
         );
 }

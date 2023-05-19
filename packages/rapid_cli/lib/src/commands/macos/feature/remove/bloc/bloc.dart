@@ -9,6 +9,7 @@ class MacosFeatureRemoveBlocCommand extends PlatformFeatureRemoveBlocCommand {
   MacosFeatureRemoveBlocCommand({
     super.logger,
     super.project,
+    required super.featurePackage,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(

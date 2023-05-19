@@ -9,6 +9,7 @@ class AndroidFeatureAddBlocCommand extends PlatformFeatureAddBlocCommand {
   AndroidFeatureAddBlocCommand({
     super.logger,
     super.project,
+    required super.featurePackage,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(

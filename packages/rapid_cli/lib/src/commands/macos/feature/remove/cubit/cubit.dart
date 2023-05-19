@@ -9,6 +9,7 @@ class MacosFeatureRemoveCubitCommand extends PlatformFeatureRemoveCubitCommand {
   MacosFeatureRemoveCubitCommand({
     super.logger,
     super.project,
+    required super.featurePackage,
     super.flutterPubGet,
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
   }) : super(

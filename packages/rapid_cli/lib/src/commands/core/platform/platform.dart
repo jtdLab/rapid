@@ -45,7 +45,7 @@ abstract class PlatformCommand extends Command<int> {
     addSubcommand(addCommand);
     try {
       // TODO: cleaner
-      final featurePackages = (_project)
+      final featurePackages = _project
           .platformDirectory(platform: platform)
           .featuresDirectory
           .featurePackages();

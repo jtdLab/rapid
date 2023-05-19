@@ -58,9 +58,9 @@ jobs:
           cache: true
       - run: flutter pub get
         if: ${{ steps.changes.outputs.android == 'true' && steps.check_files.outputs.files_exist == 'true' }}
-      - run: flutter build apk -t $ANDROID_PATH/example_android/lib/main_development.dart --release --verbose
+      - run: flutter build apk -t ${{ env.ANDROID_PATH }}/example_android/lib/main_development.dart --release --verbose
         if: ${{ steps.changes.outputs.android == 'true' && steps.check_files.outputs.files_exist == 'true' }}
-      - run: flutter build appbundle -t $ANDROID_PATH/example_android/lib/main_development.dart --release --verbose
+      - run: flutter build appbundle -t ${{ env.ANDROID_PATH }}/example_android/lib/main_development.dart --release --verbose
         if: ${{ steps.changes.outputs.android == 'true' && steps.check_files.outputs.files_exist == 'true' }}
 
   build-ios:
@@ -102,7 +102,7 @@ jobs:
           architecture: x64
       - run: flutter pub get
         if: ${{ steps.changes.outputs.ios == 'true' && steps.check_files.outputs.files_exist == 'true' }}
-      - run: flutter build ios -t lib/main_development.dart --release --no-codesign --verbose
+      - run: flutter build ios -t ${{ env.IOS_PATH }}/lib/main_development.dart --release --no-codesign --verbose
         if: ${{ steps.changes.outputs.ios == 'true' && steps.check_files.outputs.files_exist == 'true' }}
 
   build-linux:
@@ -147,7 +147,7 @@ jobs:
         if: ${{ steps.changes.outputs.linux == 'true' && steps.check_files.outputs.files_exist == 'true' }}
       - run: flutter config --enable-linux-desktop
         if: ${{ steps.changes.outputs.linux == 'true' && steps.check_files.outputs.files_exist == 'true' }}
-      - run: flutter build linux -t lib/main_development.dart --release --verbose
+      - run: flutter build linux -t ${{ env.LINUX_PATH }}/lib/main_development.dart --release --verbose
         if: ${{ steps.changes.outputs.linux == 'true' && steps.check_files.outputs.files_exist == 'true' }}
 
   build-macos:
@@ -189,7 +189,7 @@ jobs:
           architecture: x64
       - run: flutter config --enable-macos-desktop
         if: ${{ steps.changes.outputs.macos == 'true' && steps.check_files.outputs.files_exist == 'true' }}
-      - run: flutter build macos -t lib/main_development.dart --release --verbose
+      - run: flutter build macos -t ${{ env.MACOS_PATH }}/lib/main_development.dart --release --verbose
         if: ${{ steps.changes.outputs.macos == 'true' && steps.check_files.outputs.files_exist == 'true' }}
 
   build-web:
@@ -230,7 +230,7 @@ jobs:
           cache: true
       - run: flutter pub get
         if: ${{ steps.changes.outputs.web == 'true' && steps.check_files.outputs.files_exist == 'true' }}
-      - run: flutter build web -t lib/main_development.dart --verbose
+      - run: flutter build web -t ${{ env.WEB_PATH }}/lib/main_development.dart --verbose
         if: ${{ steps.changes.outputs.web == 'true' && steps.check_files.outputs.files_exist == 'true' }}
 
   build-windows:
@@ -272,5 +272,5 @@ jobs:
           cache: true
       - run: flutter config --enable-windows-desktop
         if: ${{ steps.changes.outputs.windows == 'true' && steps.check_files.outputs.files_exist == 'true' }}
-      - run: flutter build windows -t lib/main_development.dart --release --verbose
+      - run: flutter build windows -t ${{ env.WINDOWS_PATH }}/lib/main_development.dart --release --verbose
         if: ${{ steps.changes.outputs.windows == 'true' && steps.check_files.outputs.files_exist == 'true' }}

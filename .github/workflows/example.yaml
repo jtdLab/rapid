@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - dev
     paths:
       - example/**
   pull_request:
@@ -27,7 +28,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2.2.1
+      - uses: dorny/paths-filter@v2
         id: changes
         with:
           filters: |
@@ -43,9 +44,9 @@ jobs:
         id: check_files
         run: |
           if [ -e ${{ env.ANDROID_PATH }} ] && [ -e ${{ env.ANDROID_UI_PATH }} ]; then
-            echo "{files_exist}={true}" >> $GITHUB_OUTPUT
+            echo "files_exist=true" >> "$GITHUB_OUTPUT"
           else
-            echo "{files_exist}={false}" >> $GITHUB_OUTPUT
+            echo "files_exist=false" >> "$GITHUB_OUTPUT"
           fi
       - uses: actions/setup-java@v2
         if: ${{ steps.changes.outputs.android == 'true' && steps.check_files.outputs.files_exist == 'true' }}
@@ -65,9 +66,6 @@ jobs:
 
   build-ios:
     runs-on: macos-latest
-    defaults:
-      run:
-        working-directory: example/packages/example/example_ios/example_ios
 
     env:
       IOS_PATH: example/packages/example/example_ios
@@ -75,7 +73,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2.2.1
+      - uses: dorny/paths-filter@v2
         id: changes
         with:
           filters: |
@@ -91,9 +89,9 @@ jobs:
         id: check_files
         run: |
           if [ -e ${{ env.IOS_PATH }} ] && [ -e ${{ env.IOS_UI_PATH }} ]; then
-            echo "{files_exist}={true}" >> $GITHUB_OUTPUT
+            echo "files_exist=true" >> "$GITHUB_OUTPUT"
           else
-            echo "{files_exist}={false}" >> $GITHUB_OUTPUT
+            echo "files_exist=false" >> "$GITHUB_OUTPUT"
           fi
       - uses: subosito/flutter-action@v2
         if: ${{ steps.changes.outputs.ios == 'true' && steps.check_files.outputs.files_exist == 'true' }}
@@ -102,22 +100,19 @@ jobs:
           architecture: x64
       - run: flutter pub get
         if: ${{ steps.changes.outputs.ios == 'true' && steps.check_files.outputs.files_exist == 'true' }}
-      - run: flutter build ios -t ${{ env.IOS_PATH }}/lib/main_development.dart --release --no-codesign --verbose
+      - run: flutter build ios -t ${{ env.IOS_PATH }}/example_ios/lib/main_development.dart --release --no-codesign --verbose
         if: ${{ steps.changes.outputs.ios == 'true' && steps.check_files.outputs.files_exist == 'true' }}
 
   build-linux:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: example/packages/example/example_linux/example_linux
 
     env:
-      PATH: example/packages/example/example_linux
-      UI_PATH: example/packages/example_ui/example_ui_linux
+      LINUX_PATH: example/packages/example/example_linux
+      LINUX_UI_PATH: example/packages/example_ui/example_ui_linux
 
     steps:
       - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2.2.1
+      - uses: dorny/paths-filter@v2
         id: changes
         with:
           filters: |
@@ -133,9 +128,9 @@ jobs:
         id: check_files
         run: |
           if [ -e ${{ env.LINUX_PATH }} ] && [ -e ${{ env.LINUX_UI_PATH }} ]; then
-            echo "{files_exist}={true}" >> $GITHUB_OUTPUT
+            echo "files_exist=true" >> "$GITHUB_OUTPUT"
           else
-            echo "{files_exist}={false}" >> $GITHUB_OUTPUT
+            echo "files_exist=false" >> "$GITHUB_OUTPUT"
           fi
       - uses: subosito/flutter-action@v2
         if: ${{ steps.changes.outputs.linux == 'true' && steps.check_files.outputs.files_exist == 'true' }}
@@ -147,14 +142,11 @@ jobs:
         if: ${{ steps.changes.outputs.linux == 'true' && steps.check_files.outputs.files_exist == 'true' }}
       - run: flutter config --enable-linux-desktop
         if: ${{ steps.changes.outputs.linux == 'true' && steps.check_files.outputs.files_exist == 'true' }}
-      - run: flutter build linux -t ${{ env.LINUX_PATH }}/lib/main_development.dart --release --verbose
+      - run: flutter build linux -t ${{ env.LINUX_PATH }}/example_linux/lib/main_development.dart --release --verbose
         if: ${{ steps.changes.outputs.linux == 'true' && steps.check_files.outputs.files_exist == 'true' }}
 
   build-macos:
     runs-on: macos-latest
-    defaults:
-      run:
-        working-directory: example/packages/example/example_macos/example_macos
 
     env:
       MACOS_PATH: example/packages/example/example_macos
@@ -162,7 +154,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2.2.1
+      - uses: dorny/paths-filter@v2
         id: changes
         with:
           filters: |
@@ -178,9 +170,9 @@ jobs:
         id: check_files
         run: |
           if [ -e ${{ env.MACOS_PATH }} ] && [ -e ${{ env.MACOS_UI_PATH }} ]; then
-            echo "{files_exist}={true}" >> $GITHUB_OUTPUT
+            echo "files_exist=true" >> "$GITHUB_OUTPUT"
           else
-            echo "{files_exist}={false}" >> $GITHUB_OUTPUT
+            echo "files_exist=false" >> "$GITHUB_OUTPUT"
           fi
       - uses: subosito/flutter-action@v2
         if: ${{ steps.changes.outputs.macos == 'true' && steps.check_files.outputs.files_exist == 'true' }}
@@ -189,14 +181,11 @@ jobs:
           architecture: x64
       - run: flutter config --enable-macos-desktop
         if: ${{ steps.changes.outputs.macos == 'true' && steps.check_files.outputs.files_exist == 'true' }}
-      - run: flutter build macos -t ${{ env.MACOS_PATH }}/lib/main_development.dart --release --verbose
+      - run: flutter build macos -t ${{ env.MACOS_PATH }}/example_macos/lib/main_development.dart --release --verbose
         if: ${{ steps.changes.outputs.macos == 'true' && steps.check_files.outputs.files_exist == 'true' }}
 
   build-web:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: example/packages/example/example_web/example_web
 
     env:
       WEB_PATH: example/packages/example/example_web
@@ -204,7 +193,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2.2.1
+      - uses: dorny/paths-filter@v2
         id: changes
         with:
           filters: |
@@ -220,9 +209,9 @@ jobs:
         id: check_files
         run: |
           if [ -e ${{ env.WEB_PATH }} ] && [ -e ${{ env.WEB_UI_PATH }} ]; then
-            echo "{files_exist}={true}" >> $GITHUB_OUTPUT
+            echo "files_exist=true" >> "$GITHUB_OUTPUT"
           else
-            echo "{files_exist}={false}" >> $GITHUB_OUTPUT
+            echo "files_exist=false" >> "$GITHUB_OUTPUT"
           fi
       - uses: subosito/flutter-action@v2
         if: ${{ steps.changes.outputs.web == 'true' && steps.check_files.outputs.files_exist == 'true' }}
@@ -230,14 +219,11 @@ jobs:
           cache: true
       - run: flutter pub get
         if: ${{ steps.changes.outputs.web == 'true' && steps.check_files.outputs.files_exist == 'true' }}
-      - run: flutter build web -t ${{ env.WEB_PATH }}/lib/main_development.dart --verbose
+      - run: flutter build web -t ${{ env.WEB_PATH }}/example_web/lib/main_development.dart --verbose
         if: ${{ steps.changes.outputs.web == 'true' && steps.check_files.outputs.files_exist == 'true' }}
 
   build-windows:
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: example\packages\example\example_windows\example_windows
 
     env:
       WINDOWS_PATH: example/packages/example/example_windows
@@ -246,7 +232,7 @@ jobs:
     steps:
       - run: git config --global core.longpaths true
       - uses: actions/checkout@v3
-      - uses: dorny/paths-filter@v2.2.1
+      - uses: dorny/paths-filter@v2
         id: changes
         with:
           filters: |
@@ -261,16 +247,18 @@ jobs:
       - name: Check File Existence
         id: check_files
         run: |
-          if [ -e ${{ env.WINDOWS_PATH }} ] && [ -e ${{ env.WINDOWS_UI_PATH }} ]; then
-            echo "{files_exist}={true}" >> $GITHUB_OUTPUT
-          else
-            echo "{files_exist}={false}" >> $GITHUB_OUTPUT
-          fi
+          if (Test-Path -Path "${{ env.WINDOWS_PATH }}") {
+           if (Test-Path -Path "${{ env.WINDOWS_UI_PATH }}") {
+            echo "files_exist=true" >> "$GITHUB_OUTPUT"
+           }
+          } else {
+            echo "files_exist=false" >> "$GITHUB_OUTPUT"
+          }
       - uses: subosito/flutter-action@v2
         if: ${{ steps.changes.outputs.windows == 'true' && steps.check_files.outputs.files_exist == 'true' }}
         with:
           cache: true
       - run: flutter config --enable-windows-desktop
         if: ${{ steps.changes.outputs.windows == 'true' && steps.check_files.outputs.files_exist == 'true' }}
-      - run: flutter build windows -t ${{ env.WINDOWS_PATH }}/lib/main_development.dart --release --verbose
+      - run: flutter build windows -t ${{ env.WINDOWS_PATH }}/example_windows/lib/main_development.dart --release --verbose
         if: ${{ steps.changes.outputs.windows == 'true' && steps.check_files.outputs.files_exist == 'true' }}

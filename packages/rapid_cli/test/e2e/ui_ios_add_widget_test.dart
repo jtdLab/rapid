@@ -33,6 +33,7 @@ void main() {
           commandRunner: commandRunner,
         ),
         timeout: const Timeout(Duration(minutes: 4)),
+        tags: ['fast'],
       );
 
       test(

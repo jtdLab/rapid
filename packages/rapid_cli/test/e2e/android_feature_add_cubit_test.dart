@@ -32,6 +32,7 @@ void main() {
           '(fast)',
           () => performTest(
             platform: Platform.android,
+            expectedCoverage: 84.62,
             type: TestType.fast,
             commandRunner: commandRunner,
           ),
@@ -43,6 +44,7 @@ void main() {
           '',
           () => performTest(
             platform: Platform.android,
+            expectedCoverage: 84.62,
             commandRunner: commandRunner,
           ),
           timeout: const Timeout(Duration(minutes: 8)),

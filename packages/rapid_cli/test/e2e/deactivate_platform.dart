@@ -11,7 +11,7 @@ Future<void> performTest({
   required RapidCommandRunner commandRunner,
 }) async {
   // Arrange
-  await setupProject(Platform.android);
+  await setupProject(platform);
 
   // Act
   final commandResult = await commandRunner.run([

@@ -8,6 +8,7 @@ import 'common.dart';
 Future<void> performTest({
   required Platform platform,
   String? outputDir,
+  required double expectedCoverage,
   TestType type = TestType.normal,
   required RapidCommandRunner commandRunner,
 }) async {
@@ -50,5 +51,5 @@ Future<void> performTest({
     appFeaturePackage,
   ]);
   // TODO
-  await verifyTestsPass(feature, expectedCoverage: 87.5);
+  await verifyTestsPass(feature, expectedCoverage: expectedCoverage);
 }

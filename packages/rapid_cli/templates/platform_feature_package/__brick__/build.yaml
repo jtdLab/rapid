@@ -3,7 +3,7 @@ targets:
     builders:
       auto_route_generator:auto_router_module_generator:
         generate_for:
-          - lib/src/presentation/router.dart
+          - lib/src/presentation/routes.dart
       injectable_generator:injectable_config_builder:
         generate_for:
           - lib/src/injection.dart

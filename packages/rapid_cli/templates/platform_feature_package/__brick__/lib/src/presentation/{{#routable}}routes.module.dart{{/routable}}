@@ -12,8 +12,7 @@ import 'package:auto_route/auto_route.dart' as _i2;
 import 'package:{{project_name}}_{{#android}}android{{/android}}{{#ios}}ios{{/ios}}{{#linux}}linux{{/linux}}{{#macos}}macos{{/macos}}{{#web}}web{{/web}}{{#windows}}windows{{/windows}}_{{name.snakeCase()}}/src/presentation/{{name.snakeCase()}}.dart'
     as _i1;
 
-abstract class ${{name.pascalCase()}}Router extends _i2.RootStackRouter {
-  ${{name.pascalCase()}}Router({super.navigatorKey});
+abstract class ${{name.pascalCase()}}Module extends _i2.AutoRouterModule {
 
   @override
   final Map<String, _i2.PageFactory> pagesMap = {

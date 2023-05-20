@@ -5,6 +5,18 @@
 {{#web}}import 'package:{{project_name}}_web_app/{{project_name}}_web_app.dart';import 'package:{{project_name}}_web_{{name.snakeCase()}}/{{project_name}}_web_{{name.snakeCase()}}.dart';import 'package:{{project_name}}_ui_web/{{project_name}}_ui_web.dart';{{/web}}
 {{#windows}}import 'package:{{project_name}}_windows_app/{{project_name}}_windows_app.dart';import 'package:{{project_name}}_windows_{{name.snakeCase()}}/{{project_name}}_windows_{{name.snakeCase()}}.dart';import 'package:{{project_name}}_ui_windows/{{project_name}}_ui_windows.dart';{{/windows}}
 
+class _TestRouter extends RootStackRouter {
+  @override
+  Map<String, PageFactory> get pagesMap => {
+        ...{{name.pascalCase()}}Module().pagesMap,
+      };
+
+  @override
+  List<AutoRoute> get routes => [
+        AutoRoute(page: {{route_name}}Route.page, path: '/'),
+      ];
+}
+
 extension WidgetTesterX on WidgetTester {
 {{#routable}}  Future<void> pumpApp({
     required List<PageRouteInfo<dynamic>> initialRoutes,
@@ -19,7 +31,7 @@ extension WidgetTesterX on WidgetTester {
         localizationsDelegates: const [
          {{project_name.pascalCase()}}{{#android}}Android{{/android}}{{#ios}}Ios{{/ios}}{{#linux}}Linux{{/linux}}{{#macos}}Macos{{/macos}}{{#web}}Web{{/web}}{{#windows}}Windows{{/windows}}{{name.pascalCase()}}Localizations.delegate,
         ],
-        router: router ?? {{name.pascalCase()}}Router(),
+        router: router ?? _TestRouter(),
         initialRoutes: initialRoutes,
         routerObserver: observer,
         {{#android}}themeMode: themeMode{{/android}}{{#ios}}brightness: brightness{{/ios}}{{#linux}}themeMode: themeMode{{/linux}}{{#macos}}brightness: brightness{{/macos}}{{#web}}themeMode: themeMode{{/web}}{{#windows}}themeMode: themeMode{{/windows}},

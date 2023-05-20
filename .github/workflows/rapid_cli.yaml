@@ -1,13 +1,6 @@
 name: rapid_cli
 
 on:
-  pull_request:
-    branches:
-      - main
-      - dev
-    paths:
-      - packages/rapid/rapid_domain/**
-      - packages/rapid_cli/**
   workflow_dispatch:
 
 jobs:

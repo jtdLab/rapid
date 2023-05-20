@@ -14,9 +14,9 @@ dependencies:
     sdk: flutter
   intl: any
   meta: ^1.9.1
-  bloc: ^8.1.1
+  bloc: ^8.1.2
   freezed_annotation: ^2.2.0
-  flutter_bloc: ^8.1.2
+  flutter_bloc: ^8.1.3
   {{#routable}}auto_route: ^7.1.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
@@ -27,7 +27,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.1
+  bloc_test: ^9.1.2
   mocktail: ^0.3.0
   build_runner: ^2.4.4
   freezed: ^2.3.4
@@ -97,9 +97,9 @@ dependencies:
     sdk: flutter
   intl: any
   meta: ^1.9.1
-  bloc: ^8.1.1
+  bloc: ^8.1.2
   freezed_annotation: ^2.2.0
-  flutter_bloc: ^8.1.2
+  flutter_bloc: ^8.1.3
   {{#routable}}auto_route: ^7.1.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
@@ -110,7 +110,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.1
+  bloc_test: ^9.1.2
   mocktail: ^0.3.0
   build_runner: ^2.4.4
   freezed: ^2.3.4
@@ -177,9 +177,9 @@ dependencies:
     sdk: flutter
   intl: any
   meta: ^1.9.1
-  bloc: ^8.1.1
+  bloc: ^8.1.2
   freezed_annotation: ^2.2.0
-  flutter_bloc: ^8.1.2
+  flutter_bloc: ^8.1.3
   {{#routable}}auto_route: ^7.1.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
@@ -190,7 +190,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.1
+  bloc_test: ^9.1.2
   mocktail: ^0.3.0
   build_runner: ^2.4.4
   freezed: ^2.3.4
@@ -260,9 +260,9 @@ dependencies:
     sdk: flutter
   intl: any
   meta: ^1.9.1
-  bloc: ^8.1.1
+  bloc: ^8.1.2
   freezed_annotation: ^2.2.0
-  flutter_bloc: ^8.1.2
+  flutter_bloc: ^8.1.3
   {{#routable}}auto_route: ^7.1.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
@@ -273,7 +273,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.1
+  bloc_test: ^9.1.2
   mocktail: ^0.3.0
   build_runner: ^2.4.4
   freezed: ^2.3.4
@@ -340,9 +340,9 @@ dependencies:
     sdk: flutter
   intl: any
   meta: ^1.9.1
-  bloc: ^8.1.1
+  bloc: ^8.1.2
   freezed_annotation: ^2.2.0
-  flutter_bloc: ^8.1.2
+  flutter_bloc: ^8.1.3
   {{#routable}}auto_route: ^7.1.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
@@ -353,7 +353,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.1
+  bloc_test: ^9.1.2
   mocktail: ^0.3.0
   build_runner: ^2.4.4
   freezed: ^2.3.4
@@ -423,9 +423,9 @@ dependencies:
     sdk: flutter
   intl: any
   meta: ^1.9.1
-  bloc: ^8.1.1
+  bloc: ^8.1.2
   freezed_annotation: ^2.2.0
-  flutter_bloc: ^8.1.2
+  flutter_bloc: ^8.1.3
   {{#routable}}auto_route: ^7.1.0{{/routable}}
   injectable: ^2.1.1
   {{project_name}}_di:
@@ -436,7 +436,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.1
+  bloc_test: ^9.1.2
   mocktail: ^0.3.0
   build_runner: ^2.4.4
   freezed: ^2.3.4

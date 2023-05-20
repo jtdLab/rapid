@@ -18,6 +18,12 @@ final platformRootPackageBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
+      "path": "build.yaml",
+      "data":
+          "dGFyZ2V0czoKICAkZGVmYXVsdDoKICAgIGJ1aWxkZXJzOgogICAgICBhdXRvX3JvdXRlX2dlbmVyYXRvcjphdXRvX3JvdXRlcl9tb2R1bGVfZ2VuZXJhdG9yOgogICAgICAgIGdlbmVyYXRlX2ZvcjoKICAgICAgICAgIGV4Y2x1ZGU6CiAgICAgICAgICAgIC0gIioqIgogICAgICBpbmplY3RhYmxlX2dlbmVyYXRvcjppbmplY3RhYmxlX2NvbmZpZ19idWlsZGVyOgogICAgICAgIGdlbmVyYXRlX2ZvcjoKICAgICAgICAgIC0gbGliL2luamVjdGlvbi5kYXJ0Cg==",
+      "type": "text"
+    },
+    {
       "path": "integration_test/development_test.dart",
       "data":
           "aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXJfdGVzdC9mbHV0dGVyX3Rlc3QuZGFydCc7CmltcG9ydCAncGFja2FnZTppbnRlZ3JhdGlvbl90ZXN0L2ludGVncmF0aW9uX3Rlc3QuZGFydCc7CmltcG9ydCAncGFja2FnZTp7e3Byb2plY3RfbmFtZX19X3t7I2FuZHJvaWR9fWFuZHJvaWR7ey9hbmRyb2lkfX17eyNpb3N9fWlvc3t7L2lvc319e3sjbGludXh9fWxpbnV4e3svbGludXh9fXt7I21hY29zfX1tYWNvc3t7L21hY29zfX17eyN3ZWJ9fXdlYnt7L3dlYn19e3sjd2luZG93c319d2luZG93c3t7L3dpbmRvd3N9fS9tYWluX2RldmVsb3BtZW50LmRhcnQnCiAgICBhcyBkZXY7CmltcG9ydCAncGFja2FnZTp7e3Byb2plY3RfbmFtZX19X2RpL3t7cHJvamVjdF9uYW1lfX1fZGkuZGFydCc7CgppbXBvcnQgJ3N0YXJ0X2FwcC5kYXJ0JyBhcyBzdGFydF9hcHA7Cgp2b2lkIG1haW4oKSB7CiAgSW50ZWdyYXRpb25UZXN0V2lkZ2V0c0ZsdXR0ZXJCaW5kaW5nLmVuc3VyZUluaXRpYWxpemVkKCk7CgogIHNldFVwKCgpIGFzeW5jIHsKICAgIGF3YWl0IGdldEl0LnJlc2V0KCk7CiAgfSk7CgogIGdyb3VwKCdFMkUgKGRldmVsb3BtZW50KScsICgpIHsKICAgIHRlc3RXaWRnZXRzKCdzdGFydCBhcHAnLCAodGVzdGVyKSBhc3luYyB7CiAgICAgIGRldi5tYWluKCk7CgogICAgICBhd2FpdCBzdGFydF9hcHAucGVyZm9ybVRlc3QodGVzdGVyKTsKICAgIH0pOwogIH0pOwp9Cg==",

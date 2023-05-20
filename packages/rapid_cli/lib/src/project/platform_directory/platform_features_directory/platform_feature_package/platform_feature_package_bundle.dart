@@ -18,6 +18,12 @@ final platformFeaturePackageBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
+      "path": "build.yaml",
+      "data":
+          "dGFyZ2V0czoKICAkZGVmYXVsdDoKICAgIGJ1aWxkZXJzOgogICAgICBhdXRvX3JvdXRlX2dlbmVyYXRvcjphdXRvX3JvdXRlcl9tb2R1bGVfZ2VuZXJhdG9yOgogICAgICAgIGdlbmVyYXRlX2ZvcjoKICAgICAgICAgIC0gbGliL3NyYy9wcmVzZW50YXRpb24vcm91dGVyLmRhcnQKICAgICAgaW5qZWN0YWJsZV9nZW5lcmF0b3I6aW5qZWN0YWJsZV9jb25maWdfYnVpbGRlcjoKICAgICAgICBnZW5lcmF0ZV9mb3I6CiAgICAgICAgICAtIGxpYi9zcmMvaW5qZWN0aW9uLmRhcnQK",
+      "type": "text"
+    },
+    {
       "path": "CHANGELOG.md",
       "data": "IyMgMC4wLjEKCiogVE9ETzogRGVzY3JpYmUgaW5pdGlhbCByZWxlYXNlLgo=",
       "type": "text"

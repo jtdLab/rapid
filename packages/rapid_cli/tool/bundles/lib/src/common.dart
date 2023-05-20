@@ -2,17 +2,17 @@ const platforms = ['android', 'ios', 'linux', 'macos', 'web', 'windows'];
 const dart = DartDependency('3.0.0', '4.0.0');
 const flutter = FlutterDependency('3.10.0');
 final packages = [
-  PackageDependency('auto_route', '7.1.0'),
-  PackageDependency('auto_route_generator', '7.0.0'),
-  PackageDependency('bloc_concurrency', '0.2.1'),
-  PackageDependency('bloc_test', '9.1.1'),
-  PackageDependency('bloc', '8.1.1'),
+  PackageDependency('auto_route', '7.2.0'),
+  PackageDependency('auto_route_generator', '7.1.0'),
+  PackageDependency('bloc_concurrency', '0.2.2'),
+  PackageDependency('bloc_test', '9.1.2'),
+  PackageDependency('bloc', '8.1.2'),
   PackageDependency('build_runner', '2.4.4'),
   PackageDependency('cupertino_icons', '1.0.5'),
   PackageDependency('dartz', '0.10.1'),
   PackageDependency('faker', '2.1.0'),
   PackageDependency('fluent_ui', '4.6.1'),
-  PackageDependency('flutter_bloc', '8.1.2'),
+  PackageDependency('flutter_bloc', '8.1.3'),
   PackageDependency('flutter_gen_runner', '5.3.1'),
   PackageDependency('flutter_lints', '2.0.1'),
   PackageDependency('freezed_annotation', '2.2.0'),

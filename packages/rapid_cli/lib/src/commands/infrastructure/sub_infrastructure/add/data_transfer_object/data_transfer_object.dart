@@ -6,28 +6,24 @@ import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/entity_option.dart';
-import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
+import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package.dart';
+
 // TODO in test template without output dir a path gets a unneccessary dot
 
 /// {@template infrastructure_sub_infrastructure_add_data_transfer_object_command}
 /// `rapid infrastructure sub_infrastructure add data_transfer_object` command adds data_transfer_object to the infrastructure part of an existing Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureAddDataTransferObjectCommand
-    extends RapidRootCommand
-    with SubInfrastructureGetter, EntityGetter, OutputDirGetter {
+    extends RapidRootCommand with EntityGetter, OutputDirGetter {
   /// {@macro infrastructure_sub_infrastructure_add_data_transfer_object_command}
   InfrastructureSubInfrastructureAddDataTransferObjectCommand({
     super.logger,
+    required InfrastructurePackage infrastructurePackage,
     super.project,
     DartFormatFixCommand? dartFormatFix,
-  }) : _dartFormatFix = dartFormatFix ?? Dart.formatFix {
+  })  : _infrastructurePackage = infrastructurePackage,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
-      ..addSeparator('')
-      ..addSubInfrastructureOption(
-        help:
-            'The name of the subinfrastructure this new data transfer object will be added to.\n'
-            'This must be the name of an existing subinfrastructure.',
-      )
       ..addSeparator('')
       ..addEntityOption()
       ..addOutputDirOption(
@@ -35,6 +31,8 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
             'The output directory relative to <infrastructure_package>/lib/src .',
       );
   }
+
+  final InfrastructurePackage _infrastructurePackage;
 
   final DartFormatFixCommand _dartFormatFix;
 
@@ -46,41 +44,39 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
 
   @override
   String get invocation =>
-      'rapid infrastructure sub_infrastructure add data_transfer_object [arguments]';
+      'rapid infrastructure ${_infrastructurePackage.name ?? 'default'} add data_transfer_object [arguments]';
 
   @override
   String get description =>
-      'Add a data transfer object to the infrastructure part of an existing Rapid project.';
+      'Add a data transfer object to the subinfrastructure ${_infrastructurePackage.name ?? 'default'}.';
 
   @override
   Future<int> run() => runWhen(
         [projectExistsAll(project)],
         logger,
         () async {
-          final infrastructureName = super.subInfrastructure;
+          final infrastructureName = _infrastructurePackage.name ?? 'default';
           final entityName = super.entity;
           final outputDir = super.outputDir;
 
           logger.commandTitle(
-            'Adding Data Transfer Object for Entity "$entityName"${infrastructureName != null ? ' to $infrastructureName' : ''} ...',
+            'Adding Data Transfer Object for Entity "$entityName" to $infrastructureName ...',
           );
 
           final domainDirectory = project.domainDirectory;
           final domainPackage =
-              domainDirectory.domainPackage(name: infrastructureName);
+              domainDirectory.domainPackage(name: _infrastructurePackage.name);
           final entity = domainPackage.entity(name: entityName, dir: outputDir);
           if (entity.existsAll()) {
-            final infrastructureDirectory = project.infrastructureDirectory;
-            final infrastructurePackage = infrastructureDirectory
-                .infrastructurePackage(name: infrastructureName);
-            final dataTransferObject = infrastructurePackage.dataTransferObject(
+            final dataTransferObject =
+                _infrastructurePackage.dataTransferObject(
               name: entityName,
               dir: outputDir,
             );
             if (!dataTransferObject.existsAny()) {
               await dataTransferObject.create();
 
-              final barrelFile = infrastructurePackage.barrelFile;
+              final barrelFile = _infrastructurePackage.barrelFile;
               barrelFile.addExport(
                 p.normalize(
                   p.join('src', outputDir, '${entityName.snakeCase}_dto.dart'),
@@ -88,7 +84,7 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
               );
 
               await _dartFormatFix(
-                cwd: infrastructurePackage.path,
+                cwd: _infrastructurePackage.path,
                 logger: logger,
               );
 

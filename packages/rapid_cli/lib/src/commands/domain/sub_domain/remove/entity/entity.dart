@@ -5,7 +5,7 @@ import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/dir_option.dart';
 import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.dart';
+import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package.dart';
 
 // TODO maybe introduce super class for entity, service interface and value object remove
 
@@ -13,34 +13,32 @@ import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.
 /// `rapid domain sub_domain remove entity` command removes entity from the domain part of an existing Rapid project.
 /// {@endtemplate}
 class DomainSubDomainRemoveEntityCommand extends RapidRootCommand
-    with ClassNameGetter, SubDomainGetter, DirGetter {
+    with ClassNameGetter, DirGetter {
   /// {@macro domain_sub_domain_remove_entity_command}
   DomainSubDomainRemoveEntityCommand({
     super.logger,
+    required DomainPackage domainPackage,
     super.project,
-  }) {
+  }) : _domainPackage = domainPackage {
     argParser
-      ..addSeparator('')
-      ..addSubDomainOption(
-        help: 'The name of the subdomain this entity will be removed from.\n'
-            'This must be the name of an existing subdomain.',
-      )
       ..addSeparator('')
       ..addDirOption(
         help: 'The directory relative to <domain_package>/lib/ .',
       );
   }
 
+  final DomainPackage _domainPackage;
+
   @override
   String get name => 'entity';
 
   @override
   String get invocation =>
-      'rapid domain sub_domain remove entity <name> [arguments]';
+      'rapid domain ${_domainPackage.name ?? 'default'} remove entity <name> [arguments]';
 
   @override
   String get description =>
-      'Remove an entity from the domain part of an existing Rapid project.';
+      'Remove an entity from the subdomain ${_domainPackage.name ?? 'default'}.';
 
   @override
   Future<int> run() => runWhen(
@@ -48,21 +46,19 @@ class DomainSubDomainRemoveEntityCommand extends RapidRootCommand
         logger,
         () async {
           final name = super.className;
-          final domainName = super.subDomain;
+          final domainName = _domainPackage.name ?? 'default';
           final dir = super.dir;
 
           logger.commandTitle(
-            'Removing Entity "$name"${domainName != null ? ' from $domainName' : ''} ...',
+            'Removing Entity "$name" from $domainName ...',
           );
 
-          final domainDirectory = project.domainDirectory;
-          final domainPackage = domainDirectory.domainPackage(name: domainName);
-          final entity = domainPackage.entity(name: name, dir: dir);
+          final entity = _domainPackage.entity(name: name, dir: dir);
           // TODO this does delete a value_object because they have same files
           if (entity.existsAny()) {
             entity.delete();
 
-            final barrelFile = domainPackage.barrelFile;
+            final barrelFile = _domainPackage.barrelFile;
             barrelFile.removeExport(
               p.normalize(
                 p.join('src', dir, '${name.snakeCase}.dart'),

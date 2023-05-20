@@ -6,30 +6,29 @@ import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.dart';
+import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package.dart';
 
 /// {@template domain_sub_domain_add_entity_command}
 /// `rapid domain sub_domain add entity` command adds entity to the domain part of an existing Rapid project.
 /// {@endtemplate}
 class DomainSubDomainAddEntityCommand extends RapidRootCommand
-    with ClassNameGetter, SubDomainGetter, OutputDirGetter {
+    with ClassNameGetter, OutputDirGetter {
   /// {@macro domain_sub_domain_add_entity_command}
   DomainSubDomainAddEntityCommand({
     super.logger,
+    required DomainPackage domainPackage,
     super.project,
     DartFormatFixCommand? dartFormatFix,
-  }) : _dartFormatFix = dartFormatFix ?? Dart.formatFix {
+  })  : _domainPackage = domainPackage,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
-      ..addSeparator('')
-      ..addSubDomainOption(
-        help: 'The name of the subdomain this new entity will be added to.\n'
-            'This must be the name of an existing subdomain.',
-      )
       ..addSeparator('')
       ..addOutputDirOption(
         help: 'The output directory relative to <domain_package>/lib/ .',
       );
   }
+
+  final DomainPackage _domainPackage;
 
   final DartFormatFixCommand _dartFormatFix;
 
@@ -38,11 +37,11 @@ class DomainSubDomainAddEntityCommand extends RapidRootCommand
 
   @override
   String get invocation =>
-      'rapid domain sub_domain add entity <name> [arguments]';
+      'rapid domain ${_domainPackage.name ?? 'default'} add entity <name> [arguments]';
 
   @override
   String get description =>
-      'Add an entity to the domain part of an existing Rapid project.';
+      'Add an entity to the subdomain ${_domainPackage.name ?? 'default'}.';
 
   @override
   Future<int> run() => runWhen(
@@ -50,27 +49,25 @@ class DomainSubDomainAddEntityCommand extends RapidRootCommand
         logger,
         () async {
           final name = super.className;
-          final domainName = super.subDomain;
+          final domainName = _domainPackage.name ?? 'default';
           final outputDir = super.outputDir;
 
           logger.commandTitle(
-            'Adding Entity "$name"${domainName != null ? ' to $domainName' : ''} ...',
+            'Adding Entity "$name" to $domainName ...',
           );
 
-          final domainDirectory = project.domainDirectory;
-          final domainPackage = domainDirectory.domainPackage(name: domainName);
-          final entity = domainPackage.entity(name: name, dir: outputDir);
+          final entity = _domainPackage.entity(name: name, dir: outputDir);
           if (!entity.existsAny()) {
             await entity.create();
 
-            final barrelFile = domainPackage.barrelFile;
+            final barrelFile = _domainPackage.barrelFile;
             barrelFile.addExport(
               p.normalize(
                 p.join('src', outputDir, '${name.snakeCase}.dart'),
               ),
             );
 
-            await _dartFormatFix(cwd: domainPackage.path, logger: logger);
+            await _dartFormatFix(cwd: _domainPackage.path, logger: logger);
 
             logger.commandSuccess();
 

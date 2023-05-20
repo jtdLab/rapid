@@ -11,9 +11,23 @@ class InfrastructureCommand extends Command<int> {
   InfrastructureCommand({
     Logger? logger,
     Project? project,
-  }) {
-    addSubcommand(InfrastructureSubinfrastructureCommand(project: project));
+  }) : _project = project ?? Project() {
+    try {
+      // TODO: cleaner
+      final infrastructurePackages =
+          _project.infrastructureDirectory.infrastructurePackages();
+      for (final infrastructurePackage in infrastructurePackages) {
+        addSubcommand(
+          InfrastructureSubinfrastructureCommand(
+            project: project,
+            infrastructurePackage: infrastructurePackage,
+          ),
+        );
+      }
+    } catch (_) {}
   }
+
+  final Project _project;
 
   @override
   String get name => 'infrastructure';

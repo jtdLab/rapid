@@ -13,11 +13,24 @@ class DomainCommand extends Command<int> {
   DomainCommand({
     Logger? logger,
     Project? project,
-  }) {
+  }) : _project = project ?? Project() {
     addSubcommand(DomainAddCommand(project: project));
     addSubcommand(DomainRemoveCommand(project: project));
-    addSubcommand(DomainSubdomainCommand(project: project));
+    try {
+      // TODO: cleaner
+      final domainPackages = _project.domainDirectory.domainPackages();
+      for (final domainPackage in domainPackages) {
+        addSubcommand(
+          DomainSubdomainCommand(
+            project: project,
+            domainPackage: domainPackage,
+          ),
+        );
+      }
+    } catch (_) {}
   }
+
+  final Project _project;
 
   @override
   String get name => 'domain';

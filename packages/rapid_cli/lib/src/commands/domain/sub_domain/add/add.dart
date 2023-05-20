@@ -3,6 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/domain/sub_domain/add/entity/entity.dart';
 import 'package:rapid_cli/src/commands/domain/sub_domain/add/service_interface/service_interface.dart';
 import 'package:rapid_cli/src/commands/domain/sub_domain/add/value_object/value_object.dart';
+import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template domain_sub_domain_add_command}
@@ -13,19 +14,38 @@ class DomainSubDomainAddCommand extends Command<int> {
   DomainSubDomainAddCommand({
     Logger? logger,
     Project? project,
-  }) {
-    addSubcommand(DomainSubDomainAddEntityCommand(project: project));
-    addSubcommand(DomainSubDomainAddServiceInterfaceCommand(project: project));
-    addSubcommand(DomainSubDomainAddValueObjectCommand(project: project));
+    required DomainPackage domainPackage,
+  }) : _domainPackage = domainPackage {
+    addSubcommand(
+      DomainSubDomainAddEntityCommand(
+        project: project,
+        domainPackage: domainPackage,
+      ),
+    );
+    addSubcommand(
+      DomainSubDomainAddServiceInterfaceCommand(
+        project: project,
+        domainPackage: domainPackage,
+      ),
+    );
+    addSubcommand(
+      DomainSubDomainAddValueObjectCommand(
+        project: project,
+        domainPackage: domainPackage,
+      ),
+    );
   }
+
+  final DomainPackage _domainPackage;
 
   @override
   String get name => 'add';
 
   @override
-  String get invocation => 'rapid domain sub_domain add <component>';
+  String get invocation =>
+      'rapid domain ${_domainPackage.name ?? 'default'} add <component>'; // TODO clean
 
   @override
   String get description =>
-      'Add a component to the domain part of an existing Rapid project.';
+      'Add a component to the subdomain ${_domainPackage.name ?? 'default'}.';
 }

@@ -3,6 +3,7 @@ import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/domain/sub_domain/remove/entity/entity.dart';
 import 'package:rapid_cli/src/commands/domain/sub_domain/remove/service_interface/service_interface.dart';
 import 'package:rapid_cli/src/commands/domain/sub_domain/remove/value_object/value_object.dart';
+import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 /// {@template domain_sub_domain_remove_command}
@@ -13,21 +14,38 @@ class DomainSubDomainRemoveCommand extends Command<int> {
   DomainSubDomainRemoveCommand({
     Logger? logger,
     Project? project,
-  }) {
-    addSubcommand(DomainSubDomainRemoveEntityCommand(project: project));
+    required DomainPackage domainPackage,
+  }) : _domainPackage = domainPackage {
     addSubcommand(
-      DomainSubDomainRemoveServiceInterfaceCommand(project: project),
+      DomainSubDomainRemoveEntityCommand(
+        project: project,
+        domainPackage: domainPackage,
+      ),
     );
-    addSubcommand(DomainSubDomainRemoveValueObjectCommand(project: project));
+    addSubcommand(
+      DomainSubDomainRemoveServiceInterfaceCommand(
+        project: project,
+        domainPackage: domainPackage,
+      ),
+    );
+    addSubcommand(
+      DomainSubDomainRemoveValueObjectCommand(
+        project: project,
+        domainPackage: domainPackage,
+      ),
+    );
   }
+
+  final DomainPackage _domainPackage;
 
   @override
   String get name => 'remove';
 
   @override
-  String get invocation => 'rapid domain sub_domain remove <component>';
+  String get invocation =>
+      'rapid domain ${_domainPackage.name ?? 'default'} remove <component>';
 
   @override
   String get description =>
-      'Remove a component from the domain part of an existing Rapid project.';
+      'Remove a component from the subdomain ${_domainPackage.name ?? 'default'}.';
 }

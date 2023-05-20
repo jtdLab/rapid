@@ -7,31 +7,23 @@ import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
 import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/service_option.dart';
-import 'package:rapid_cli/src/commands/infrastructure/sub_infrastructure/core/sub_infrastructure_option.dart';
+import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package.dart';
 
 /// {@template infrastructure_sub_infrastructure_add_service_implementation_command}
 /// `rapid infrastructure sub_infrastructure add service_implementation` command adds service_implementation to the infrastructure part of an existing Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureAddServiceImplementationCommand
     extends RapidRootCommand
-    with
-        ClassNameGetter,
-        SubInfrastructureGetter,
-        ServiceGetter,
-        OutputDirGetter {
+    with ClassNameGetter, ServiceGetter, OutputDirGetter {
   /// {@macro infrastructure_sub_infrastructure_add_service_implementation_command}
   InfrastructureSubInfrastructureAddServiceImplementationCommand({
     super.logger,
+    required InfrastructurePackage infrastructurePackage,
     super.project,
     DartFormatFixCommand? dartFormatFix,
-  }) : _dartFormatFix = dartFormatFix ?? Dart.formatFix {
+  })  : _infrastructurePackage = infrastructurePackage,
+        _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
-      ..addSeparator('')
-      ..addSubInfrastructureOption(
-        help:
-            'The name of the subinfrastructure this new service implementation will be added to.\n'
-            'This must be the name of an existing subinfrastructure.',
-      )
       ..addSeparator('')
       ..addServiceOption()
       ..addOutputDirOption(
@@ -39,6 +31,8 @@ class InfrastructureSubInfrastructureAddServiceImplementationCommand
             'The output directory relative to <infrastructure_package>/lib/src .',
       );
   }
+
+  final InfrastructurePackage _infrastructurePackage;
 
   final DartFormatFixCommand _dartFormatFix;
 
@@ -50,11 +44,11 @@ class InfrastructureSubInfrastructureAddServiceImplementationCommand
 
   @override
   String get invocation =>
-      'rapid infrastructure sub_infrastructure add service_implementation <name> [arguments]';
+      'rapid infrastructure ${_infrastructurePackage.name ?? 'default'} add service_implementation <name> [arguments]';
 
   @override
   String get description =>
-      'Add a service implementation to the infrastructure part of an existing Rapid project.';
+      'Add a service implementation to the subinfrastructure ${_infrastructurePackage.name ?? 'default'}.';
 
   @override
   Future<int> run() => runWhen(
@@ -62,25 +56,22 @@ class InfrastructureSubInfrastructureAddServiceImplementationCommand
         logger,
         () async {
           final name = super.className;
-          final infrastructureName = super.subInfrastructure;
+          final infrastructureName = _infrastructurePackage.name ?? 'default';
           final serviceName = super.service;
           final outputDir = super.outputDir;
 
           logger.commandTitle(
-            'Adding Service Implementation "$name" for Service Interface "$serviceName"${infrastructureName != null ? ' to $infrastructureName' : ''} ...',
+            'Adding Service Implementation "$name" for Service Interface "$serviceName" to $infrastructureName ...',
           );
 
           final domainDirectory = project.domainDirectory;
           final domainPackage =
-              domainDirectory.domainPackage(name: infrastructureName);
+              domainDirectory.domainPackage(name: _infrastructurePackage.name);
           final serviceInterface =
               domainPackage.serviceInterface(name: serviceName, dir: outputDir);
           if (serviceInterface.existsAll()) {
-            final infrastructureDirectory = project.infrastructureDirectory;
-            final infrastructurePackage = infrastructureDirectory
-                .infrastructurePackage(name: infrastructureName);
             final serviceImplementation =
-                infrastructurePackage.serviceImplementation(
+                _infrastructurePackage.serviceImplementation(
               name: name,
               serviceName: serviceName,
               dir: outputDir,
@@ -89,7 +80,7 @@ class InfrastructureSubInfrastructureAddServiceImplementationCommand
             if (!serviceImplementation.existsAny()) {
               await serviceImplementation.create();
 
-              final barrelFile = infrastructurePackage.barrelFile;
+              final barrelFile = _infrastructurePackage.barrelFile;
               barrelFile.addExport(
                 p.normalize(
                   p.join(
@@ -101,7 +92,7 @@ class InfrastructureSubInfrastructureAddServiceImplementationCommand
               );
 
               await _dartFormatFix(
-                cwd: infrastructurePackage.path,
+                cwd: _infrastructurePackage.path,
                 logger: logger,
               );
 

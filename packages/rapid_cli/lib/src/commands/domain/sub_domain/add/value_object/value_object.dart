@@ -6,7 +6,7 @@ import 'package:rapid_cli/src/commands/core/command.dart';
 import 'package:rapid_cli/src/commands/core/logger_x.dart';
 import 'package:rapid_cli/src/commands/core/output_dir_option.dart';
 import 'package:rapid_cli/src/commands/core/run_when.dart';
-import 'package:rapid_cli/src/commands/domain/sub_domain/core/sub_domain_option.dart';
+import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package.dart';
 
 // TODO fix the template needs super class from rapid
 
@@ -17,32 +17,23 @@ const _defaultType = 'String';
 /// `rapid domain sub_domain add value_object` command adds value object to the domain part of an existing Rapid project.
 /// {@endtemplate}
 class DomainSubDomainAddValueObjectCommand extends RapidRootCommand
-    with
-        ClassNameGetter,
-        SubDomainGetter,
-        OutputDirGetter,
-        GroupableMixin,
-        CodeGenMixin {
+    with ClassNameGetter, OutputDirGetter, GroupableMixin, CodeGenMixin {
   /// {@macro domain_sub_domain_add_value_object_command}
   DomainSubDomainAddValueObjectCommand({
     super.logger,
+    required DomainPackage domainPackage,
     super.project,
     FlutterPubGetCommand? flutterPubGet,
     FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand?
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     DartFormatFixCommand? dartFormatFix,
-  })  : flutterPubGet = flutterPubGet ?? Flutter.pubGet,
+  })  : _domainPackage = domainPackage,
+        flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
             flutterPubRunBuildRunnerBuildDeleteConflictingOutputs ??
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
         _dartFormatFix = dartFormatFix ?? Dart.formatFix {
     argParser
-      ..addSeparator('')
-      ..addSubDomainOption(
-        help:
-            'The name of the subdomain this new value object will be added to.\n'
-            'This must be the name of an existing subdomain.',
-      )
       ..addSeparator('')
       ..addOutputDirOption(
         help: 'The output directory relative to <domain_package>/lib/ .',
@@ -54,6 +45,8 @@ class DomainSubDomainAddValueObjectCommand extends RapidRootCommand
         defaultsTo: _defaultType,
       );
   }
+
+  final DomainPackage _domainPackage;
 
   @override
   final FlutterPubGetCommand flutterPubGet;
@@ -70,11 +63,11 @@ class DomainSubDomainAddValueObjectCommand extends RapidRootCommand
 
   @override
   String get invocation =>
-      'rapid domain sub_domain add value_object <name> [arguments]';
+      'rapid domain ${_domainPackage.name ?? 'default'} add value_object <name> [arguments]';
 
   @override
   String get description =>
-      'Add a value object to the domain part of an existing Rapid project.';
+      'Add a value object to the subdomain  ${_domainPackage.name ?? 'default'}.';
 
   @override
   Future<int> run() => runWhen(
@@ -82,18 +75,16 @@ class DomainSubDomainAddValueObjectCommand extends RapidRootCommand
         logger,
         () async {
           final name = super.className;
-          final domainName = super.subDomain;
+          final domainName = _domainPackage.name ?? 'default';
           final outputDir = super.outputDir;
           final type = _type;
           final generics = _generics;
 
           logger.commandTitle(
-            'Adding Value Object "$name"${domainName != null ? ' to $domainName' : ''} ...',
+            'Adding Value Object " to $domainName ...',
           );
 
-          final domainDirectory = project.domainDirectory;
-          final domainPackage = domainDirectory.domainPackage(name: domainName);
-          final valueObject = domainPackage.valueObject(
+          final valueObject = _domainPackage.valueObject(
             name: name,
             dir: outputDir,
           );
@@ -101,15 +92,15 @@ class DomainSubDomainAddValueObjectCommand extends RapidRootCommand
           if (!valueObject.existsAny()) {
             await valueObject.create(type: type, generics: generics);
 
-            final barrelFile = domainPackage.barrelFile;
+            final barrelFile = _domainPackage.barrelFile;
             barrelFile.addExport(
               p.normalize(
                 p.join('src', outputDir, '${name.snakeCase}.dart'),
               ),
             );
 
-            await codeGen(packages: [domainPackage], logger: logger);
-            await _dartFormatFix(cwd: domainPackage.path, logger: logger);
+            await codeGen(packages: [_domainPackage], logger: logger);
+            await _dartFormatFix(cwd: _domainPackage.path, logger: logger);
 
             logger.commandSuccess();
 

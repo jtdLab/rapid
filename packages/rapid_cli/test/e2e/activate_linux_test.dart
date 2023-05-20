@@ -1,11 +1,11 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
+import 'activate_platform.dart';
 import 'common.dart';
 
 void main() {
@@ -27,62 +27,33 @@ void main() {
       });
 
       group('activate linux', () {
-        Future<void> performTest({bool slow = false}) async {
-          // Arrange
-          await setupProject();
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'activate',
-            'linux',
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final platformPackages = platformDependentPackages([Platform.linux]);
-          final featurePackages = [
-            featurePackage('app', Platform.linux),
-            featurePackage('home_page', Platform.linux),
-          ];
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformPackages,
-            ...featurePackages,
-          ]);
-          verifyDoNotExist(
-            allPlatformDependentPackages.without(platformPackages),
-          );
-          verifyDoNotHaveTests([
-            ...platformIndependentPackagesWithoutTests,
-            ...platformDependentPackagesWithoutTests(Platform.linux)
-          ]);
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.linux),
-            ...featurePackages,
-          ]);
-
-          if (slow) {
-            final failedIntegrationTests = await runFlutterIntegrationTest(
-              platformRootPackage(Platform.linux),
-              pathToTests: 'integration_test/development_test.dart',
-              platform: Platform.linux,
-            );
-            expect(failedIntegrationTests, 0);
-          }
-        }
+        test(
+          '(fast)',
+          () => performTest(
+            platform: Platform.linux,
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
 
         test(
           '',
-          () => performTest(),
+          () => performTest(
+            platform: Platform.linux,
+            commandRunner: commandRunner,
+          ),
           timeout: const Timeout(Duration(minutes: 8)),
         );
 
         test(
           '(slow)',
-          () => performTest(slow: true),
+          () => performTest(
+            platform: Platform.linux,
+            type: TestType.slow,
+            commandRunner: commandRunner,
+          ),
           timeout: const Timeout(Duration(minutes: 24)),
           tags: ['linux'],
         );

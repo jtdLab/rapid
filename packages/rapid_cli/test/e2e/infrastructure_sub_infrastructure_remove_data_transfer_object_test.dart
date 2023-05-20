@@ -28,9 +28,13 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'infrastructure <sub_infrastructure> remove data_transfer_object',
-        () async {
+      group('infrastructure <sub_infrastructure> remove data_transfer_object',
+          () {
+        Future<void> performTest({
+          String? dir,
+          TestType type = TestType.normal,
+          required RapidCommandRunner commandRunner,
+        }) async {
           // Arrange
           await setupProject();
           final entity = 'FooBar';
@@ -40,6 +44,8 @@ void main() {
             'add',
             'entity',
             entity,
+            if (dir != null) '--output-dir',
+            if (dir != null) dir,
           ]);
           await commandRunner.run([
             'infrastructure',
@@ -48,59 +54,8 @@ void main() {
             'data_transfer_object',
             '--entity',
             entity,
-          ]);
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'infrastructure',
-            'default',
-            'remove',
-            'data_transfer_object',
-            '--entity',
-            entity
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist({
-            ...dataTransferObjectFiles(entity: entity),
-          });
-          verifyDoNotHaveTests({
-            infrastructurePackage(),
-          });
-        },
-      );
-
-      test(
-        'infrastructure <sub_infrastructure> remove data_transfer_object (with output dir)',
-        () async {
-          // Arrange
-          await setupProject();
-          final entity = 'FooBar';
-          final dir = 'foo';
-          await commandRunner.run([
-            'domain',
-            'default',
-            'add',
-            'entity',
-            entity,
-            '--output-dir',
-            dir,
-          ]);
-          await commandRunner.run([
-            'infrastructure',
-            'default',
-            'add',
-            'data_transfer_object',
-            '--entity',
-            entity,
-            '--output-dir',
-            dir,
+            if (dir != null) '--output-dir',
+            if (dir != null) dir,
           ]);
 
           // Act
@@ -111,8 +66,8 @@ void main() {
             'data_transfer_object',
             '--entity',
             entity,
-            '--dir',
-            dir
+            if (dir != null) '--dir',
+            if (dir != null) dir
           ]);
 
           // Assert
@@ -125,12 +80,51 @@ void main() {
           verifyDoNotExist({
             ...dataTransferObjectFiles(entity: entity, outputDir: dir),
           });
-          verifyDoNotHaveTests({
-            infrastructurePackage(),
-          });
-        },
-      );
+          if (type != TestType.fast) {
+            verifyDoNotHaveTests({
+              infrastructurePackage(),
+            });
+          }
+        }
+
+        test(
+          '(fast) ',
+          () => performTest(
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          'with dir (fast) ',
+          () => performTest(
+            dir: 'foo',
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          '',
+          () => performTest(
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+
+        test(
+          'with dir',
+          () => performTest(
+            dir: 'foo',
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+      });
     },
-    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

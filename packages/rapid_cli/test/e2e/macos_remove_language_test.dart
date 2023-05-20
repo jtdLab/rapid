@@ -1,12 +1,12 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
+import 'platform_remove_language.dart';
 
 void main() {
   group(
@@ -26,52 +26,30 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
+      group(
         'macos remove language',
-        () async {
-          // Arrange
-          const language = 'fr';
-          await setupProject(Platform.macos);
-          await commandRunner.run([
-            'macos',
-            'add',
-            'language',
-            language,
-          ]);
+        () {
+          test(
+            '(fast)',
+            () => performTest(
+              platform: Platform.macos,
+              type: TestType.fast,
+              commandRunner: commandRunner,
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+            tags: ['fast'],
+          );
 
-          // Act
-          final commandResult = await commandRunner.run([
-            'macos',
-            'remove',
-            'language',
-            language,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final featurePackages = [
-            featurePackage('app', Platform.macos),
-            featurePackage('home_page', Platform.macos),
-          ];
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformDependentPackages([Platform.macos]),
-            ...featurePackages,
-            ...languageFiles('home_page', Platform.macos, ['en']),
-          ]);
-          verifyDoNotExist({
-            ...languageFiles('home_page', Platform.macos, ['fr']),
-          });
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.macos),
-            ...featurePackages,
-          ]);
+          test(
+            '',
+            () => performTest(
+              platform: Platform.macos,
+              commandRunner: commandRunner,
+            ),
+            timeout: const Timeout(Duration(minutes: 6)),
+          );
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 6)),
   );
 }

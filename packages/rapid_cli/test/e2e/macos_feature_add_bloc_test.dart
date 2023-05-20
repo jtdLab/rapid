@@ -1,12 +1,12 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
+import 'platform_feature_add_bloc.dart';
 
 void main() {
   group(
@@ -27,96 +27,49 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'macos <feature> add bloc',
-        () async {
-          // Arrange
-          final name = 'FooBar';
-          final featureName = 'home_page';
+      group('macos <feature> add bloc', () {
+        test(
+          '(fast)',
+          () => performTest(
+            platform: Platform.macos,
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
 
-          // Act
-          final commandResult = await commandRunner.run([
-            'macos',
-            featureName,
-            'add',
-            'bloc',
-            name,
-          ]);
+        test(
+          'with output dir (fast)',
+          () => performTest(
+            platform: Platform.macos,
+            outputDir: 'foo',
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
 
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final appFeaturePackage = featurePackage('app', Platform.macos);
-          final feature = featurePackage(featureName, Platform.macos);
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDependentPackages([Platform.macos]),
-            appFeaturePackage,
-            feature,
-            ...blocFiles(
-              name: name,
-              featureName: featureName,
-              platform: Platform.macos,
-            ),
-          });
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.macos),
-            appFeaturePackage,
-          ]);
-          // TODO
-          await verifyTestsPass(feature, expectedCoverage: 83.33);
-        },
-      );
+        test(
+          '',
+          () => performTest(
+            platform: Platform.macos,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 8)),
+        );
 
-      test(
-        'macos <feature> add bloc (with output dir)',
-        () async {
-          // Arrange
-          final name = 'FooBar';
-          final featureName = 'home_page';
-          final outputDir = 'foo';
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'macos',
-            featureName,
-            'add',
-            'bloc',
-            name,
-            '-o',
-            outputDir,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final appFeaturePackage = featurePackage('app', Platform.macos);
-          final feature = featurePackage(featureName, Platform.macos);
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDependentPackages([Platform.macos]),
-            appFeaturePackage,
-            feature,
-            ...blocFiles(
-              name: name,
-              featureName: featureName,
-              platform: Platform.macos,
-              outputDir: outputDir,
-            ),
-          });
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.macos),
-            appFeaturePackage,
-          ]);
-          // TODO
-          await verifyTestsPass(feature, expectedCoverage: 83.33);
-        },
-      );
+        test(
+          'with output dir',
+          () => performTest(
+            platform: Platform.macos,
+            outputDir: 'foo',
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 8)),
+        );
+      });
     },
-    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

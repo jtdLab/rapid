@@ -1,61 +1,48 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
+import 'ui_platform_add_widget.dart';
 
 void main() {
-  group(
-    'E2E',
-    () {
-      cwd = Directory.current;
+  group('E2E', () {
+    cwd = Directory.current;
 
-      late RapidCommandRunner commandRunner;
+    late RapidCommandRunner commandRunner;
 
-      setUp(() {
-        Directory.current = getTempDir();
+    setUp(() {
+      Directory.current = getTempDir();
 
-        commandRunner = RapidCommandRunner();
-      });
+      commandRunner = RapidCommandRunner();
+    });
 
-      tearDown(() {
-        Directory.current = cwd;
-      });
+    tearDown(() {
+      Directory.current = cwd;
+    });
+
+    group('ui linux add widget', () {
+      test(
+        '(fast)',
+        () => performTest(
+          platform: Platform.linux,
+          type: TestType.fast,
+          commandRunner: commandRunner,
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
       test(
-        'ui linux add widget',
-        () async {
-          // Arrange
-          await setupProject(Platform.linux);
-          final name = 'FooBar';
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'ui',
-            'linux',
-            'add',
-            'widget',
-            name,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...widgetFiles(name: name, platform: Platform.linux),
-          });
-          await verifyTestsPassWith100PercentCoverage({
-            platformUiPackage(Platform.linux),
-          });
-        },
+        '',
+        () => performTest(
+          platform: Platform.linux,
+          commandRunner: commandRunner,
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
       );
-    },
-    timeout: const Timeout(Duration(minutes: 4)),
-  );
+    });
+  });
 }

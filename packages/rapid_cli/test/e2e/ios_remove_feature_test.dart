@@ -1,12 +1,12 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
+import 'platform_remove_feature.dart';
 
 void main() {
   group(
@@ -26,51 +26,30 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
+      group(
         'ios remove feature',
-        () async {
-          // Arrange
-          const featureName = 'foo_bar';
-          await setupProject(Platform.ios);
-          await commandRunner.run([
-            'ios',
-            'add',
-            'feature',
-            featureName,
-          ]);
+        () {
+          test(
+            '(fast)',
+            () => performTest(
+              platform: Platform.ios,
+              type: TestType.fast,
+              commandRunner: commandRunner,
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+            tags: ['fast'],
+          );
 
-          // Act
-          final commandResult = await commandRunner.run([
-            'ios',
-            'remove',
-            'feature',
-            featureName,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final featurePackages = [
-            featurePackage('app', Platform.ios),
-            featurePackage('home_page', Platform.ios),
-          ];
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformDependentPackages([Platform.ios]),
-            ...featurePackages,
-          ]);
-          verifyDoNotExist([
-            featurePackage(featureName, Platform.ios),
-          ]);
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.ios),
-            ...featurePackages,
-          ]);
+          test(
+            '',
+            () => performTest(
+              platform: Platform.ios,
+              commandRunner: commandRunner,
+            ),
+            timeout: const Timeout(Duration(minutes: 8)),
+          );
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

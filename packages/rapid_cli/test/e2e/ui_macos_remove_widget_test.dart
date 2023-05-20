@@ -1,12 +1,12 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
+import 'ui_platform_remove_widget.dart';
 
 void main() {
   group(
@@ -26,45 +26,26 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'ui macos remove widget',
-        () async {
-          // Arrange
-          await setupProject(Platform.macos);
-          final name = 'FooBar';
-          await commandRunner.run([
-            'ui',
-            'macos',
-            'add',
-            'widget',
-            name,
-          ]);
+      group('ui macos remove widget', () {
+        test(
+          '(fast)',
+          () => performTest(
+            platform: Platform.macos,
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
 
-          // Act
-          final commandResult = await commandRunner.run([
-            'ui',
-            'macos',
-            'remove',
-            'widget',
-            name,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist({
-            ...widgetFiles(name: name, platform: Platform.macos),
-          });
-          await verifyTestsPassWith100PercentCoverage({
-            platformUiPackage(Platform.macos),
-          });
-        },
-      );
+        test(
+          '',
+          () => performTest(
+            platform: Platform.macos,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+      });
     },
-    timeout: const Timeout(Duration(minutes: 4)),
   );
 }

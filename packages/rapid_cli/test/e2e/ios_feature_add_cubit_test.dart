@@ -1,12 +1,12 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
+import 'platform_feature_add_cubit.dart';
 
 void main() {
   group(
@@ -27,95 +27,27 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'ios <feature> add cubit',
-        () async {
-          // Arrange
-          final name = 'FooBar';
-          final featureName = 'home_page';
+      group('ios <feature> add cubit', () {
+        test(
+          '(fast)',
+          () => performTest(
+            platform: Platform.ios,
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
 
-          // Act
-          final commandResult = await commandRunner.run([
-            'ios',
-            featureName,
-            'add',
-            'cubit',
-            name,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final appFeaturePackage = featurePackage('app', Platform.ios);
-          final feature = featurePackage(featureName, Platform.ios);
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDependentPackages([Platform.ios]),
-            appFeaturePackage,
-            feature,
-            ...cubitFiles(
-              name: name,
-              featureName: featureName,
-              platform: Platform.ios,
-            ),
-          });
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.ios),
-            appFeaturePackage,
-          ]);
-          // TODO
-          await verifyTestsPass(feature, expectedCoverage: 84.62);
-        },
-      );
-
-      test(
-        'ios <feature> add cubit (with output dir)',
-        () async {
-          // Arrange
-          final name = 'FooBar';
-          final featureName = 'home_page';
-          final outputDir = 'foo';
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'ios',
-            featureName,
-            'add',
-            'cubit',
-            name,
-            '-o',
-            outputDir,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final appFeaturePackage = featurePackage('app', Platform.ios);
-          final feature = featurePackage(featureName, Platform.ios);
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDependentPackages([Platform.ios]),
-            appFeaturePackage,
-            feature,
-            ...cubitFiles(
-              name: name,
-              featureName: featureName,
-              platform: Platform.ios,
-              outputDir: outputDir,
-            ),
-          });
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.ios),
-            appFeaturePackage,
-          ]);
-          // TODO
-          await verifyTestsPass(feature, expectedCoverage: 84.62);
-        },
-      );
+        test(
+          '',
+          () => performTest(
+            platform: Platform.ios,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 8)),
+        );
+      });
     },
     timeout: const Timeout(Duration(minutes: 8)),
   );

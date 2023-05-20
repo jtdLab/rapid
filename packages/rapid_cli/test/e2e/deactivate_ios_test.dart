@@ -1,12 +1,12 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
+import 'deactivate_platform.dart';
 
 void main() {
   group(
@@ -26,33 +26,27 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'deactivate ios',
-        () async {
-          // Arrange
-          await setupProject(Platform.ios);
+      group('deactivate ios', () {
+        test(
+          '(fast)',
+          () => performTest(
+            platform: Platform.ios,
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
 
-          // Act
-          final commandResult = await commandRunner.run([
-            'deactivate',
-            'ios',
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist(allPlatformDependentPackages);
-          verifyDoNotHaveTests(platformIndependentPackagesWithoutTests);
-          await verifyTestsPassWith100PercentCoverage({
-            ...platformIndependentPackagesWithTests,
-          });
-        },
-      );
+        test(
+          '',
+          () => performTest(
+            platform: Platform.ios,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+      });
     },
-    timeout: const Timeout(Duration(minutes: 4)),
   );
 }

@@ -28,60 +28,13 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'infrastructure <sub_infrastructure> remove service_implementation',
-        () async {
-          // Arrange
-          await setupProject();
-          final name = 'Fake';
-          final service = 'FooBar';
-          await commandRunner.run([
-            'domain',
-            'default',
-            'add',
-            'service_interface',
-            service,
-          ]);
-          await commandRunner.run([
-            'infrastructure',
-            'default',
-            'add',
-            'service_implementation',
-            name,
-            '--service',
-            service,
-          ]);
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'infrastructure',
-            'default',
-            'remove',
-            'service_implementation',
-            name,
-            '--service',
-            service,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist({
-            ...serviceImplementationFiles(name: name, serviceName: service),
-          });
-          verifyDoNotHaveTests({
-            infrastructurePackage(),
-          });
-        },
-      );
-
-      test(
-        'infrastructure <sub_infrastructure> remove service_implementation (with output dir)',
-        () async {
+      group('infrastructure <sub_infrastructure> remove service_implementation',
+          () {
+        Future<void> performTest({
+          String? dir,
+          TestType type = TestType.normal,
+          required RapidCommandRunner commandRunner,
+        }) async {
           // Arrange
           await setupProject();
           final name = 'Fake';
@@ -93,8 +46,8 @@ void main() {
             'add',
             'service_interface',
             service,
-            '-o',
-            outputDir,
+            if (dir != null) '--output-dir',
+            if (dir != null) outputDir,
           ]);
           await commandRunner.run([
             'infrastructure',
@@ -104,8 +57,8 @@ void main() {
             name,
             '--service',
             service,
-            '-o',
-            outputDir,
+            if (dir != null) '--output-dir',
+            if (dir != null) outputDir,
           ]);
 
           // Act
@@ -117,8 +70,8 @@ void main() {
             name,
             '--service',
             service,
-            '--dir',
-            outputDir
+            if (dir != null) '--dir',
+            if (dir != null) outputDir
           ]);
 
           // Assert
@@ -135,11 +88,51 @@ void main() {
               outputDir: outputDir,
             ),
           });
-          verifyDoNotHaveTests({
-            infrastructurePackage(),
-          });
-        },
-      );
+          if (type != TestType.fast) {
+            verifyDoNotHaveTests({
+              infrastructurePackage(),
+            });
+          }
+        }
+
+        test(
+          '(fast) ',
+          () => performTest(
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          'with dir (fast) ',
+          () => performTest(
+            dir: 'foo',
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          '',
+          () => performTest(
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+
+        test(
+          'with dir',
+          () => performTest(
+            dir: 'foo',
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+      });
     },
     timeout: const Timeout(Duration(minutes: 8)),
   );

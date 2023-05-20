@@ -1,12 +1,12 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
+import 'platform_feature_add_bloc.dart';
 
 void main() {
   group(
@@ -27,96 +27,49 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'ios <feature> add bloc',
-        () async {
-          // Arrange
-          final name = 'FooBar';
-          final featureName = 'home_page';
+      group('ios <feature> add bloc', () {
+        test(
+          '(fast)',
+          () => performTest(
+            platform: Platform.ios,
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
 
-          // Act
-          final commandResult = await commandRunner.run([
-            'ios',
-            featureName,
-            'add',
-            'bloc',
-            name,
-          ]);
+        test(
+          'with output dir (fast)',
+          () => performTest(
+            platform: Platform.ios,
+            outputDir: 'foo',
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
 
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final appFeaturePackage = featurePackage('app', Platform.ios);
-          final feature = featurePackage(featureName, Platform.ios);
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDependentPackages([Platform.ios]),
-            appFeaturePackage,
-            feature,
-            ...blocFiles(
-              name: name,
-              featureName: featureName,
-              platform: Platform.ios,
-            ),
-          });
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.ios),
-            appFeaturePackage,
-          ]);
-          // TODO
-          await verifyTestsPass(feature, expectedCoverage: 80.0);
-        },
-      );
+        test(
+          '',
+          () => performTest(
+            platform: Platform.ios,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 8)),
+        );
 
-      test(
-        'ios <feature> add bloc (with output dir)',
-        () async {
-          // Arrange
-          final name = 'FooBar';
-          final featureName = 'home_page';
-          final outputDir = 'foo';
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'ios',
-            featureName,
-            'add',
-            'bloc',
-            name,
-            '-o',
-            outputDir,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final appFeaturePackage = featurePackage('app', Platform.ios);
-          final feature = featurePackage(featureName, Platform.ios);
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDependentPackages([Platform.ios]),
-            appFeaturePackage,
-            feature,
-            ...blocFiles(
-              name: name,
-              featureName: featureName,
-              platform: Platform.ios,
-              outputDir: outputDir,
-            ),
-          });
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.ios),
-            appFeaturePackage,
-          ]);
-          // TODO
-          await verifyTestsPass(feature, expectedCoverage: 80.0);
-        },
-      );
+        test(
+          'with output dir',
+          () => performTest(
+            platform: Platform.ios,
+            outputDir: 'foo',
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 8)),
+        );
+      });
     },
-    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

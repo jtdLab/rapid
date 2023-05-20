@@ -30,7 +30,10 @@ void main() {
       });
 
       group('create', () {
-        Future<void> performTest({required String flag}) async {
+        Future<void> performTest({
+          TestType type = TestType.normal,
+          required String flag,
+        }) async {
           // Act
           final commandResult = await commandRunner.run([
             'create',
@@ -59,15 +62,17 @@ void main() {
               ...platformPackages,
               ...featurePackages,
             ]);
-            verifyDoNotHaveTests([
-              ...platformIndependentPackagesWithoutTests,
-              ...platformDependentPackagesWithoutTests(platform)
-            ]);
-            await verifyTestsPassWith100PercentCoverage([
-              ...platformIndependentPackagesWithTests,
-              ...platformDependentPackagesWithTests(platform),
-              ...featurePackages,
-            ]);
+            if (type != TestType.fast) {
+              verifyDoNotHaveTests([
+                ...platformIndependentPackagesWithoutTests,
+                ...platformDependentPackagesWithoutTests(platform)
+              ]);
+              await verifyTestsPassWith100PercentCoverage([
+                ...platformIndependentPackagesWithTests,
+                ...platformDependentPackagesWithTests(platform),
+                ...featurePackages,
+              ]);
+            }
           }
         }
 
@@ -239,6 +244,13 @@ void main() {
           () => performTest(flag: 'desktop'),
           timeout: const Timeout(Duration(minutes: 24)),
         ); */
+
+        test(
+          '--all (fast)',
+          () => performTest(type: TestType.fast, flag: 'all'),
+          timeout: const Timeout(Duration(minutes: 8)),
+          tags: ['fast'],
+        );
 
         test(
           '--all',

@@ -28,11 +28,14 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'infrastructure <sub_infrastructure> add service_implementation',
-        () async {
+      group('infrastructure <sub_infrastructure> add service_implementation',
+          () {
+        Future<void> performTest({
+          String? outputDir,
+          TestType type = TestType.normal,
+          required RapidCommandRunner commandRunner,
+        }) async {
           // Arrange
-          await setupProject();
           final name = 'Fake';
           final service = 'FooBar';
           await commandRunner.run([
@@ -41,6 +44,8 @@ void main() {
             'add',
             'service_interface',
             service,
+            if (outputDir != null) '--output-dir',
+            if (outputDir != null) outputDir,
           ]);
 
           // Act
@@ -52,52 +57,8 @@ void main() {
             name,
             '--service',
             service,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...serviceImplementationFiles(
-              name: name,
-              serviceName: service,
-            ),
-          });
-          await verifyTestsPass(infrastructurePackage(), expectedCoverage: 0);
-        },
-      );
-
-      test(
-        'infrastructure <sub_infrastructure> add service_implementation (with output dir)',
-        () async {
-          // Arrange
-          await setupProject();
-          final name = 'Fake';
-          final service = 'FooBar';
-          final outputDir = 'foo';
-          await commandRunner.run([
-            'domain',
-            'default',
-            'add',
-            'service_interface',
-            service,
-            '--output-dir',
-            outputDir,
-          ]);
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'infrastructure',
-            'default',
-            'add',
-            'service_implementation',
-            name,
-            '--service',
-            service,
-            '--output-dir',
-            outputDir
+            if (outputDir != null) '--output-dir',
+            if (outputDir != null) outputDir
           ]);
 
           // Assert
@@ -112,10 +73,49 @@ void main() {
               outputDir: outputDir,
             ),
           });
-          await verifyTestsPass(infrastructurePackage(), expectedCoverage: 0);
-        },
-      );
+          if (type != TestType.fast) {
+            await verifyTestsPass(infrastructurePackage(), expectedCoverage: 0);
+          }
+        }
+
+        test(
+          '(fast) ',
+          () => performTest(
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          'with output dir (fast) ',
+          () => performTest(
+            outputDir: 'foo',
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          '',
+          () => performTest(
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 8)),
+        );
+
+        test(
+          'with output dir',
+          () => performTest(
+            outputDir: 'foo',
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 8)),
+        );
+      });
     },
-    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

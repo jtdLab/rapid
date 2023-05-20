@@ -28,18 +28,23 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'domain <sub_domain> remove service_interface',
-        () async {
+      group('domain <sub_domain> remove entity', () {
+        Future<void> performTest({
+          String? dir,
+          TestType type = TestType.normal,
+          required RapidCommandRunner commandRunner,
+        }) async {
           // Arrange
-          await setupProject();
           final name = 'FooBar';
+
           await commandRunner.run([
             'domain',
             'default',
             'add',
             'service_interface',
             name,
+            if (dir != null) '--output-dir',
+            if (dir != null) dir,
           ]);
 
           // Act
@@ -49,50 +54,8 @@ void main() {
             'remove',
             'service_interface',
             name,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist({
-            ...serviceInterfaceFiles(name: name),
-          });
-          verifyDoNotHaveTests({
-            domainPackage(),
-          });
-        },
-      );
-
-      test(
-        'domain <sub_domain> remove service_interface (with output dir)',
-        () async {
-          // Arrange
-          await setupProject();
-          final name = 'FooBar';
-          final dir = 'foo';
-          await commandRunner.run([
-            'domain',
-            'default',
-            'add',
-            'service_interface',
-            name,
-            '--output-dir',
-            dir,
-          ]);
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'domain',
-            'default',
-            'remove',
-            'service_interface',
-            name,
-            '--dir',
-            dir,
+            if (dir != null) '--dir',
+            if (dir != null) dir,
           ]);
 
           // Assert
@@ -105,12 +68,51 @@ void main() {
           verifyDoNotExist({
             ...serviceInterfaceFiles(name: name, outputDir: dir),
           });
-          verifyDoNotHaveTests({
-            domainPackage(),
-          });
-        },
-      );
+          if (type != TestType.fast) {
+            verifyDoNotHaveTests({
+              domainPackage(),
+            });
+          }
+        }
+
+        test(
+          '(fast) ',
+          () => performTest(
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          'with dir (fast) ',
+          () => performTest(
+            dir: 'foo',
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          '',
+          () => performTest(
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+
+        test(
+          'with dir',
+          () => performTest(
+            dir: 'foo',
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+      });
     },
-    timeout: const Timeout(Duration(minutes: 4)),
   );
 }

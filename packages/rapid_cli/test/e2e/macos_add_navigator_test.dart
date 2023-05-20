@@ -1,12 +1,12 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
+import 'platform_add_navigator.dart';
 
 void main() {
   group(
@@ -26,51 +26,30 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
+      group(
         'macos add navigator',
-        () async {
-          // Arrange
-          await setupProject(Platform.macos);
-          final featureName = 'home_page';
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'macos',
-            'add',
-            'navigator',
-            '-f',
-            featureName,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final appFeaturePackage = featurePackage('app', Platform.macos);
-          final feature = featurePackage(featureName, Platform.macos);
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...platformDependentPackages([Platform.macos]),
-            appFeaturePackage,
-            feature,
-            ...navigatorFiles(
-              featureName: featureName,
+        () {
+          test(
+            '(fast)',
+            () => performTest(
               platform: Platform.macos,
+              type: TestType.fast,
+              commandRunner: commandRunner,
             ),
-            ...navigatorImplementationFiles(
-              featureName: featureName,
+            timeout: const Timeout(Duration(minutes: 4)),
+            tags: ['fast'],
+          );
+
+          test(
+            '',
+            () => performTest(
               platform: Platform.macos,
+              commandRunner: commandRunner,
             ),
-          });
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.macos),
-            appFeaturePackage,
-          ]);
-          await verifyTestsPass(feature, expectedCoverage: 100.0);
+            timeout: const Timeout(Duration(minutes: 8)),
+          );
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

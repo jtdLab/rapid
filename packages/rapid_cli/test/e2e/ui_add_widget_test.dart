@@ -8,26 +8,28 @@ import 'package:test/test.dart';
 import 'common.dart';
 
 void main() {
-  group(
-    'E2E',
-    () {
-      cwd = Directory.current;
+  group('E2E', () {
+    cwd = Directory.current;
 
-      late RapidCommandRunner commandRunner;
+    late RapidCommandRunner commandRunner;
 
-      setUp(() {
-        Directory.current = getTempDir();
+    setUp(() {
+      Directory.current = getTempDir();
 
-        commandRunner = RapidCommandRunner();
-      });
+      commandRunner = RapidCommandRunner();
+    });
 
-      tearDown(() {
-        Directory.current = cwd;
-      });
+    tearDown(() {
+      Directory.current = cwd;
+    });
 
-      test(
-        'ui add widget',
-        () async {
+    group(
+      'ui add widget',
+      () {
+        Future<void> performTest({
+          TestType type = TestType.normal,
+          required RapidCommandRunner commandRunner,
+        }) async {
           // Arrange
           await setupProject();
           final name = 'FooBar';
@@ -48,12 +50,30 @@ void main() {
             ...platformIndependentPackages,
             ...widgetFiles(name: name),
           });
-          await verifyTestsPassWith100PercentCoverage({
-            uiPackage,
-          });
-        },
-      );
-    },
-    timeout: const Timeout(Duration(minutes: 4)),
-  );
+          if (type != TestType.fast) {
+            await verifyTestsPassWith100PercentCoverage({
+              uiPackage,
+            });
+          }
+        }
+
+        test(
+          '(fast)',
+          () => performTest(
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+
+        test(
+          '',
+          () => performTest(
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+      },
+    );
+  });
 }

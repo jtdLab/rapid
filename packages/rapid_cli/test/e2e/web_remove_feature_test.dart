@@ -1,12 +1,12 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
+import 'platform_remove_feature.dart';
 
 void main() {
   group(
@@ -26,51 +26,30 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
+      group(
         'web remove feature',
-        () async {
-          // Arrange
-          const featureName = 'foo_bar';
-          await setupProject(Platform.web);
-          await commandRunner.run([
-            'web',
-            'add',
-            'feature',
-            featureName,
-          ]);
+        () {
+          test(
+            '(fast)',
+            () => performTest(
+              platform: Platform.web,
+              type: TestType.fast,
+              commandRunner: commandRunner,
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+            tags: ['fast'],
+          );
 
-          // Act
-          final commandResult = await commandRunner.run([
-            'web',
-            'remove',
-            'feature',
-            featureName,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final featurePackages = [
-            featurePackage('app', Platform.web),
-            featurePackage('home_page', Platform.web),
-          ];
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformDependentPackages([Platform.web]),
-            ...featurePackages,
-          ]);
-          verifyDoNotExist([
-            featurePackage(featureName, Platform.web),
-          ]);
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.web),
-            ...featurePackages,
-          ]);
+          test(
+            '',
+            () => performTest(
+              platform: Platform.web,
+              commandRunner: commandRunner,
+            ),
+            timeout: const Timeout(Duration(minutes: 8)),
+          );
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

@@ -1,12 +1,12 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
+import 'platform_remove_feature.dart';
 
 void main() {
   group(
@@ -26,51 +26,30 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
+      group(
         'linux remove feature',
-        () async {
-          // Arrange
-          const featureName = 'foo_bar';
-          await setupProject(Platform.linux);
-          await commandRunner.run([
-            'linux',
-            'add',
-            'feature',
-            featureName,
-          ]);
+        () {
+          test(
+            '(fast)',
+            () => performTest(
+              platform: Platform.linux,
+              type: TestType.fast,
+              commandRunner: commandRunner,
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+            tags: ['fast'],
+          );
 
-          // Act
-          final commandResult = await commandRunner.run([
-            'linux',
-            'remove',
-            'feature',
-            featureName,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final featurePackages = [
-            featurePackage('app', Platform.linux),
-            featurePackage('home_page', Platform.linux),
-          ];
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformDependentPackages([Platform.linux]),
-            ...featurePackages,
-          ]);
-          verifyDoNotExist([
-            featurePackage(featureName, Platform.linux),
-          ]);
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.linux),
-            ...featurePackages,
-          ]);
+          test(
+            '',
+            () => performTest(
+              platform: Platform.linux,
+              commandRunner: commandRunner,
+            ),
+            timeout: const Timeout(Duration(minutes: 8)),
+          );
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

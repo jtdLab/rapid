@@ -1,12 +1,12 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
+import 'ui_platform_remove_widget.dart';
 
 void main() {
   group(
@@ -26,45 +26,26 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'ui android remove widget',
-        () async {
-          // Arrange
-          await setupProject(Platform.android);
-          final name = 'FooBar';
-          await commandRunner.run([
-            'ui',
-            'android',
-            'add',
-            'widget',
-            name,
-          ]);
+      group('ui android remove widget', () {
+        test(
+          '(fast)',
+          () => performTest(
+            platform: Platform.android,
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
 
-          // Act
-          final commandResult = await commandRunner.run([
-            'ui',
-            'android',
-            'remove',
-            'widget',
-            name,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist({
-            ...widgetFiles(name: name, platform: Platform.android),
-          });
-          await verifyTestsPassWith100PercentCoverage({
-            platformUiPackage(Platform.android),
-          });
-        },
-      );
+        test(
+          '',
+          () => performTest(
+            platform: Platform.android,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+      });
     },
-    timeout: const Timeout(Duration(minutes: 4)),
   );
 }

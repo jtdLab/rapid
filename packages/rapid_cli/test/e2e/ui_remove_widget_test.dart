@@ -25,43 +25,66 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'ui remove widget',
-        () async {
-          // Arrange
-          await setupProject();
-          final name = 'FooBar';
-          await commandRunner.run([
-            'ui',
-            'add',
-            'widget',
-            name,
-          ]);
+      group(
+        'ui add widget',
+        () {
+          Future<void> performTest({
+            TestType type = TestType.normal,
+            required RapidCommandRunner commandRunner,
+          }) async {
+            // Arrange
+            await setupProject();
+            final name = 'FooBar';
+            await commandRunner.run([
+              'ui',
+              'add',
+              'widget',
+              name,
+            ]);
 
-          // Act
-          final commandResult = await commandRunner.run([
-            'ui',
-            'remove',
-            'widget',
-            name,
-          ]);
+            // Act
+            final commandResult = await commandRunner.run([
+              'ui',
+              'remove',
+              'widget',
+              name,
+            ]);
 
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist({
-            ...widgetFiles(name: name),
-          });
-          await verifyTestsPassWith100PercentCoverage({
-            uiPackage,
-          });
+            // Assert
+            expect(commandResult, equals(ExitCode.success.code));
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+            verifyDoExist({
+              ...platformIndependentPackages,
+            });
+            verifyDoNotExist({
+              ...widgetFiles(name: name),
+            });
+            if (type != TestType.fast) {
+              await verifyTestsPassWith100PercentCoverage({
+                uiPackage,
+              });
+            }
+          }
+
+          test(
+            '(fast)',
+            () => performTest(
+              type: TestType.fast,
+              commandRunner: commandRunner,
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+          );
+
+          test(
+            '',
+            () => performTest(
+              commandRunner: commandRunner,
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+          );
         },
       );
     },
-    timeout: const Timeout(Duration(minutes: 4)),
   );
 }

@@ -1,11 +1,11 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
+import 'activate_platform.dart';
 import 'common.dart';
 
 void main() {
@@ -27,62 +27,33 @@ void main() {
       });
 
       group('activate ios', () {
-        Future<void> performTest({bool slow = false}) async {
-          // Arrange
-          await setupProject();
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'activate',
-            'ios',
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final platformPackages = platformDependentPackages([Platform.ios]);
-          final featurePackages = [
-            featurePackage('app', Platform.ios),
-            featurePackage('home_page', Platform.ios),
-          ];
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformPackages,
-            ...featurePackages,
-          ]);
-          verifyDoNotExist(
-            allPlatformDependentPackages.without(platformPackages),
-          );
-          verifyDoNotHaveTests([
-            ...platformIndependentPackagesWithoutTests,
-            ...platformDependentPackagesWithoutTests(Platform.ios)
-          ]);
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.ios),
-            ...featurePackages,
-          ]);
-
-          if (slow) {
-            final failedIntegrationTests = await runFlutterIntegrationTest(
-              platformRootPackage(Platform.ios),
-              pathToTests: 'integration_test/development_test.dart',
-              platform: Platform.ios,
-            );
-            expect(failedIntegrationTests, 0);
-          }
-        }
+        test(
+          '(fast)',
+          () => performTest(
+            platform: Platform.ios,
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
 
         test(
           '',
-          () => performTest(),
+          () => performTest(
+            platform: Platform.ios,
+            commandRunner: commandRunner,
+          ),
           timeout: const Timeout(Duration(minutes: 8)),
         );
 
         test(
           '(slow)',
-          () => performTest(slow: true),
+          () => performTest(
+            platform: Platform.ios,
+            type: TestType.slow,
+            commandRunner: commandRunner,
+          ),
           timeout: const Timeout(Duration(minutes: 24)),
           tags: ['ios'],
         );

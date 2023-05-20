@@ -28,11 +28,13 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'domain <sub_domain> add service_interface',
-        () async {
+      group('domain <sub_domain> add service_interface', () {
+        Future<void> performTest({
+          String? outputDir,
+          TestType type = TestType.normal,
+          required RapidCommandRunner commandRunner,
+        }) async {
           // Arrange
-          await setupProject();
           final name = 'FooBar';
 
           // Act
@@ -42,39 +44,8 @@ void main() {
             'add',
             'service_interface',
             name,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...serviceInterfaceFiles(name: name),
-          });
-          verifyDoNotHaveTests({
-            domainPackage(),
-          });
-        },
-      );
-
-      test(
-        'domain <sub_domain> add service_interface (with output dir)',
-        () async {
-          // Arrange
-          await setupProject();
-          final name = 'FooBar';
-          final outputDir = 'foo';
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'domain',
-            'default',
-            'add',
-            'service_interface',
-            name,
-            '--output-dir',
-            outputDir
+            if (outputDir != null) '--output-dir',
+            if (outputDir != null) outputDir,
           ]);
 
           // Assert
@@ -85,12 +56,51 @@ void main() {
             ...platformIndependentPackages,
             ...serviceInterfaceFiles(name: name, outputDir: outputDir),
           });
-          verifyDoNotHaveTests({
-            domainPackage(),
-          });
-        },
-      );
+          if (type != TestType.fast) {
+            await verifyTestsPassWith100PercentCoverage({
+              domainPackage(),
+            });
+          }
+        }
+
+        test(
+          '(fast) ',
+          () => performTest(
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          'with output dir (fast) ',
+          () => performTest(
+            outputDir: 'foo',
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          '',
+          () => performTest(
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+
+        test(
+          'with output dir',
+          () => performTest(
+            outputDir: 'foo',
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+      });
     },
-    timeout: const Timeout(Duration(minutes: 4)),
   );
 }

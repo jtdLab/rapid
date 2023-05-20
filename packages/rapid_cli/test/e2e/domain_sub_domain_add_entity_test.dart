@@ -28,50 +28,24 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'domain <sub_domain> add entity',
-        () async {
+      group('domain <sub_domain> add entity', () {
+        Future<void> performTest({
+          String? outputDir,
+          TestType type = TestType.normal,
+          required RapidCommandRunner commandRunner,
+        }) async {
           // Arrange
           final name = 'FooBar';
 
-          // Act + Assert
+          // Act
           final commandResult = await commandRunner.run([
             'domain',
             'default',
             'add',
             'entity',
             name,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-            ...entityFiles(name: name),
-          });
-          await verifyTestsPassWith100PercentCoverage({
-            domainPackage(),
-          });
-        },
-      );
-
-      test(
-        'domain <sub_domain> add entity (with output dir)',
-        () async {
-          // Arrange
-          final name = 'FooBar';
-          final outputDir = 'foo';
-
-          final commandResult = await commandRunner.run([
-            'domain',
-            'default',
-            'add',
-            'entity',
-            name,
-            '--output-dir',
-            outputDir
+            if (outputDir != null) '--output-dir',
+            if (outputDir != null) outputDir,
           ]);
 
           // Assert
@@ -82,12 +56,51 @@ void main() {
             ...platformIndependentPackages,
             ...entityFiles(name: name, outputDir: outputDir),
           });
-          await verifyTestsPassWith100PercentCoverage({
-            domainPackage(),
-          });
-        },
-      );
+          if (type != TestType.fast) {
+            await verifyTestsPassWith100PercentCoverage({
+              domainPackage(),
+            });
+          }
+        }
+
+        test(
+          '(fast) ',
+          () => performTest(
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          'with output dir (fast) ',
+          () => performTest(
+            outputDir: 'foo',
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          '',
+          () => performTest(
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+
+        test(
+          'with output dir',
+          () => performTest(
+            outputDir: 'foo',
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+      });
     },
-    timeout: const Timeout(Duration(minutes: 4)),
   );
 }

@@ -1,11 +1,11 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
+import 'activate_platform.dart';
 import 'common.dart';
 
 void main() {
@@ -27,63 +27,33 @@ void main() {
       });
 
       group('activate android', () {
-        Future<void> performTest({bool slow = false}) async {
-          // Arrange
-          await setupProject();
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'activate',
-            'android',
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          final platformPackages =
-              platformDependentPackages([Platform.android]);
-          final featurePackages = [
-            featurePackage('app', Platform.android),
-            featurePackage('home_page', Platform.android),
-          ];
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformPackages,
-            ...featurePackages,
-          ]);
-          verifyDoNotExist(
-            allPlatformDependentPackages.without(platformPackages),
-          );
-          verifyDoNotHaveTests([
-            ...platformIndependentPackagesWithoutTests,
-            ...platformDependentPackagesWithoutTests(Platform.android)
-          ]);
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(Platform.android),
-            ...featurePackages,
-          ]);
-
-          if (slow) {
-            final failedIntegrationTests = await runFlutterIntegrationTest(
-              platformRootPackage(Platform.android),
-              pathToTests: 'integration_test/development_test.dart',
-              platform: Platform.android,
-            );
-            expect(failedIntegrationTests, 0);
-          }
-        }
+        test(
+          '(fast)',
+          () => performTest(
+            platform: Platform.android,
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
 
         test(
           '',
-          () => performTest(),
+          () => performTest(
+            platform: Platform.android,
+            commandRunner: commandRunner,
+          ),
           timeout: const Timeout(Duration(minutes: 8)),
         );
 
         test(
           '(slow)',
-          () => performTest(slow: true),
+          () => performTest(
+            platform: Platform.android,
+            type: TestType.slow,
+            commandRunner: commandRunner,
+          ),
           timeout: const Timeout(Duration(minutes: 24)),
           tags: ['android'],
         );

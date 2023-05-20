@@ -28,11 +28,13 @@ void main() {
         Directory.current = cwd;
       });
 
-      test(
-        'domain <sub_domain> remove value_object',
-        () async {
+      group('domain <sub_domain> remove value_object', () {
+        Future<void> performTest({
+          String? dir,
+          TestType type = TestType.normal,
+          required RapidCommandRunner commandRunner,
+        }) async {
           // Arrange
-          await setupProject();
           final name = 'FooBar';
           await commandRunner.run([
             'domain',
@@ -40,6 +42,8 @@ void main() {
             'add',
             'value_object',
             name,
+            if (dir != null) '--output-dir',
+            if (dir != null) dir,
           ]);
 
           // Act
@@ -49,50 +53,8 @@ void main() {
             'remove',
             'value_object',
             name,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist({
-            ...valueObjectFiles(name: name),
-          });
-          verifyDoNotHaveTests({
-            domainPackage(),
-          });
-        },
-      );
-
-      test(
-        'domain <sub_domain> remove value_object (with output dir)',
-        () async {
-          // Arrange
-          await setupProject();
-          final name = 'FooBar';
-          final dir = 'foo';
-          await commandRunner.run([
-            'domain',
-            'default',
-            'add',
-            'value_object',
-            name,
-            '--output-dir',
-            dir,
-          ]);
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'domain',
-            'default',
-            'remove',
-            'value_object',
-            name,
-            '--dir',
-            dir
+            if (dir != null) '--dir',
+            if (dir != null) dir
           ]);
 
           // Assert
@@ -105,12 +67,51 @@ void main() {
           verifyDoNotExist({
             ...valueObjectFiles(name: name, outputDir: dir),
           });
-          verifyDoNotHaveTests({
-            domainPackage(),
-          });
-        },
-      );
+          if (type != TestType.fast) {
+            verifyDoNotHaveTests({
+              domainPackage(),
+            });
+          }
+        }
+
+        test(
+          '(fast) ',
+          () => performTest(
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          'with dir (fast) ',
+          () => performTest(
+            dir: 'foo',
+            type: TestType.fast,
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+          tags: ['fast'],
+        );
+
+        test(
+          '',
+          () => performTest(
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+
+        test(
+          'with dir',
+          () => performTest(
+            dir: 'foo',
+            commandRunner: commandRunner,
+          ),
+          timeout: const Timeout(Duration(minutes: 4)),
+        );
+      });
     },
-    timeout: const Timeout(Duration(minutes: 4)),
   );
 }

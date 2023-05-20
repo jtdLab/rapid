@@ -6,6 +6,8 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
+enum TestType { slow, normal, fast }
+
 /// The directory `flutter/dart test` was called from.
 ///
 /// **IMPORTANT**: This should be the rapid_cli package.

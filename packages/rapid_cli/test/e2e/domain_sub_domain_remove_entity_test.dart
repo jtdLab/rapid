@@ -17,9 +17,10 @@ void main() {
 
       late RapidCommandRunner commandRunner;
 
-      setUp(() {
+      setUp(() async {
         Directory.current = getTempDir();
 
+        await setupProject();
         commandRunner = RapidCommandRunner();
       });
 
@@ -28,14 +29,14 @@ void main() {
       });
 
       test(
-        'domain sub_domain remove entity',
+        'domain <sub_domain> remove entity',
         () async {
           // Arrange
           await setupProject();
           final name = 'FooBar';
           await commandRunner.run([
             'domain',
-            'sub_domain',
+            'default',
             'add',
             'entity',
             name,
@@ -44,7 +45,7 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'domain',
-            'sub_domain',
+            'default',
             'remove',
             'entity',
             name,
@@ -67,7 +68,7 @@ void main() {
       );
 
       test(
-        'domain sub_domain remove entity (with output dir)',
+        'domain <sub_domain> remove entity (with output dir)',
         () async {
           // Arrange
           await setupProject();
@@ -75,7 +76,7 @@ void main() {
           final dir = 'foo';
           await commandRunner.run([
             'domain',
-            'sub_domain',
+            'default',
             'add',
             'entity',
             name,
@@ -86,7 +87,7 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'domain',
-            'sub_domain',
+            'default',
             'remove',
             'entity',
             name,

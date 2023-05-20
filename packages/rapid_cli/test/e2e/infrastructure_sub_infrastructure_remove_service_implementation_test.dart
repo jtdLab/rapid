@@ -17,9 +17,10 @@ void main() {
 
       late RapidCommandRunner commandRunner;
 
-      setUp(() {
+      setUp(() async {
         Directory.current = getTempDir();
 
+        await setupProject();
         commandRunner = RapidCommandRunner();
       });
 
@@ -28,7 +29,7 @@ void main() {
       });
 
       test(
-        'infrastructure sub_infrastructure remove service_implementation',
+        'infrastructure <sub_infrastructure> remove service_implementation',
         () async {
           // Arrange
           await setupProject();
@@ -36,14 +37,14 @@ void main() {
           final service = 'FooBar';
           await commandRunner.run([
             'domain',
-            'sub_domain',
+            'default',
             'add',
             'service_interface',
             service,
           ]);
           await commandRunner.run([
             'infrastructure',
-            'sub_infrastructure',
+            'default',
             'add',
             'service_implementation',
             name,
@@ -54,7 +55,7 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'infrastructure',
-            'sub_infrastructure',
+            'default',
             'remove',
             'service_implementation',
             name,
@@ -79,7 +80,7 @@ void main() {
       );
 
       test(
-        'infrastructure sub_infrastructure remove service_implementation (with output dir)',
+        'infrastructure <sub_infrastructure> remove service_implementation (with output dir)',
         () async {
           // Arrange
           await setupProject();
@@ -88,7 +89,7 @@ void main() {
           final outputDir = 'foo';
           await commandRunner.run([
             'domain',
-            'sub_domain',
+            'default',
             'add',
             'service_interface',
             service,
@@ -97,7 +98,7 @@ void main() {
           ]);
           await commandRunner.run([
             'infrastructure',
-            'sub_infrastructure',
+            'default',
             'add',
             'service_implementation',
             name,
@@ -110,7 +111,7 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'infrastructure',
-            'sub_infrastructure',
+            'default',
             'remove',
             'service_implementation',
             name,

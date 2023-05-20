@@ -17,9 +17,10 @@ void main() {
 
       late RapidCommandRunner commandRunner;
 
-      setUp(() {
+      setUp(() async {
         Directory.current = getTempDir();
 
+        await setupProject();
         commandRunner = RapidCommandRunner();
       });
 
@@ -28,21 +29,21 @@ void main() {
       });
 
       test(
-        'infrastructure sub_infrastructure remove data_transfer_object',
+        'infrastructure <sub_infrastructure> remove data_transfer_object',
         () async {
           // Arrange
           await setupProject();
           final entity = 'FooBar';
           await commandRunner.run([
             'domain',
-            'sub_domain',
+            'default',
             'add',
             'entity',
             entity,
           ]);
           await commandRunner.run([
             'infrastructure',
-            'sub_infrastructure',
+            'default',
             'add',
             'data_transfer_object',
             '--entity',
@@ -52,7 +53,7 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'infrastructure',
-            'sub_infrastructure',
+            'default',
             'remove',
             'data_transfer_object',
             '--entity',
@@ -76,7 +77,7 @@ void main() {
       );
 
       test(
-        'infrastructure sub_infrastructure remove data_transfer_object (with output dir)',
+        'infrastructure <sub_infrastructure> remove data_transfer_object (with output dir)',
         () async {
           // Arrange
           await setupProject();
@@ -84,7 +85,7 @@ void main() {
           final dir = 'foo';
           await commandRunner.run([
             'domain',
-            'sub_domain',
+            'default',
             'add',
             'entity',
             entity,
@@ -93,7 +94,7 @@ void main() {
           ]);
           await commandRunner.run([
             'infrastructure',
-            'sub_infrastructure',
+            'default',
             'add',
             'data_transfer_object',
             '--entity',
@@ -105,7 +106,7 @@ void main() {
           // Act
           final commandResult = await commandRunner.run([
             'infrastructure',
-            'sub_infrastructure',
+            'default',
             'remove',
             'data_transfer_object',
             '--entity',

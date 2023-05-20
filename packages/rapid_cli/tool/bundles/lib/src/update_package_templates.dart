@@ -12,7 +12,7 @@ RegExp _packageRegex(String name) =>
 Future<void> updatePackageTemplates() async {
   print('Updating package templates...');
   await _updatePubspecYamlFiles();
-  await _updatePubspecOverridesAndPubspecLockFiles();
+  await _updatePubspecOverridesFiles();
 }
 
 Future<void> _updatePubspecYamlFiles() async {
@@ -48,7 +48,7 @@ Future<void> _updatePubspecYamlFiles() async {
   }
 }
 
-Future<void> _updatePubspecOverridesAndPubspecLockFiles() async {
+Future<void> _updatePubspecOverridesFiles() async {
   const projectName = 'xlx';
   const featName = 'home_page';
   final tempDir = getTempDir();
@@ -136,7 +136,7 @@ dev_dependencies:
   final files = dir.listSync(recursive: true);
   for (final file in files) {
     final fileName = p.basename(file.path);
-    if (fileName == 'pubspec.lock' || fileName == 'pubspec_overrides.yaml') {
+    if (fileName == 'pubspec_overrides.yaml') {
       file.deleteSync(recursive: true);
     }
   }
@@ -156,7 +156,7 @@ Future<void> _applyPlaceholders({
   required String featName,
   required Directory dir,
 }) async {
-  final pubspecLockAndPubspecOverridesYamlFiles = [
+  final pubspecOverridesYamlFiles = [
     for (final platform in platforms) ...[
       platformUiPackage.outputPath(projectName, platform: platform),
       platformRootPackage.outputPath(projectName, platform: platform),
@@ -174,17 +174,11 @@ Future<void> _applyPlaceholders({
     domainPackage.outputPath(projectName),
     infrastructurePackage.outputPath(projectName),
   ]
-      .map(
-        (e) => [
-          File(p.join(dir.path, e, 'pubspec.lock')),
-          File(p.join(dir.path, e, 'pubspec_overrides.yaml'))
-        ],
-      )
-      .fold<List<File>>([], (prev, e) => prev + e)
+      .map((e) => File(p.join(dir.path, e, 'pubspec_overrides.yaml')))
       .toList()
       .where((e) => e.existsSync());
 
-  for (final file in pubspecLockAndPubspecOverridesYamlFiles) {
+  for (final file in pubspecOverridesYamlFiles) {
     var content = file.readAsStringSync();
     content = content.replaceAll(projectName, '{{project_name}}');
     // exclude platfrom root package
@@ -214,13 +208,6 @@ Future<void> _updatePackageTemplates({
   for (final template in plaformNamedPackageTemplates) {
     for (var i = 0; i < platforms.length; i++) {
       final platform = platforms[i];
-      final srcPubspecLockFile = File(
-        p.join(
-          dir.path,
-          template.outputPath(projectName, platform: platform, name: featName),
-          'pubspec.lock',
-        ),
-      );
       final srcPubspecOverridesYamlFile = File(
         p.join(
           dir.path,
@@ -228,24 +215,16 @@ Future<void> _updatePackageTemplates({
           'pubspec_overrides.yaml',
         ),
       );
-      final pubspecLockFile = File(
-        p.join(template.path, '__brick__', 'pubspec.lock'),
-      );
       final pubspecOverridesYamlFile = File(
         p.join(template.path, '__brick__', 'pubspec_overrides.yaml'),
       );
 
       if (i == 0) {
-        pubspecLockFile.writeAsStringSync('');
         if (srcPubspecOverridesYamlFile.existsSync()) {
           pubspecOverridesYamlFile.writeAsStringSync('');
         }
       }
 
-      pubspecLockFile.writeAsStringSync(
-        '{{#$platform}}${srcPubspecLockFile.readAsStringSync()}{{/$platform}}',
-        mode: FileMode.append,
-      );
       if (srcPubspecOverridesYamlFile.existsSync()) {
         pubspecOverridesYamlFile.writeAsStringSync(
           '{{#$platform}}${srcPubspecOverridesYamlFile.readAsStringSync()}{{/$platform}}',
@@ -261,13 +240,6 @@ Future<void> _updatePackageTemplates({
   for (final template in plaformPackageTemplates) {
     for (var i = 0; i < platforms.length; i++) {
       final platform = platforms[i];
-      final srcPubspecLockFile = File(
-        p.join(
-          dir.path,
-          template.outputPath(projectName, platform: platform),
-          'pubspec.lock',
-        ),
-      );
       final srcPubspecOverridesYamlFile = File(
         p.join(
           dir.path,
@@ -275,24 +247,16 @@ Future<void> _updatePackageTemplates({
           'pubspec_overrides.yaml',
         ),
       );
-      final pubspecLockFile = File(
-        p.join(template.path, '__brick__', 'pubspec.lock'),
-      );
       final pubspecOverridesYamlFile = File(
         p.join(template.path, '__brick__', 'pubspec_overrides.yaml'),
       );
 
       if (i == 0) {
-        pubspecLockFile.writeAsStringSync('');
         if (srcPubspecOverridesYamlFile.existsSync()) {
           pubspecOverridesYamlFile.writeAsStringSync('');
         }
       }
 
-      pubspecLockFile.writeAsStringSync(
-        '{{#$platform}}${srcPubspecLockFile.readAsStringSync()}{{/$platform}}',
-        mode: FileMode.append,
-      );
       if (srcPubspecOverridesYamlFile.existsSync()) {
         pubspecOverridesYamlFile.writeAsStringSync(
           '{{#$platform}}${srcPubspecOverridesYamlFile.readAsStringSync()}{{/$platform}}',
@@ -307,13 +271,6 @@ Future<void> _updatePackageTemplates({
       !plaformNamedPackageTemplates.contains(e));
 
   for (final template in packageTemplates) {
-    final srcPubspecLockFile = File(
-      p.join(
-        dir.path,
-        template.outputPath(projectName),
-        'pubspec.lock',
-      ),
-    );
     final srcPubspecOverridesYamlFile = File(
       p.join(
         dir.path,
@@ -321,16 +278,10 @@ Future<void> _updatePackageTemplates({
         'pubspec_overrides.yaml',
       ),
     );
-    final pubspecLockFile = File(
-      p.join(template.path, '__brick__', 'pubspec.lock'),
-    );
     final pubspecOverridesYamlFile = File(
       p.join(template.path, '__brick__', 'pubspec_overrides.yaml'),
     );
 
-    pubspecLockFile.writeAsStringSync(
-      srcPubspecLockFile.readAsStringSync(),
-    );
     if (srcPubspecOverridesYamlFile.existsSync()) {
       pubspecOverridesYamlFile.writeAsStringSync(
         srcPubspecOverridesYamlFile.readAsStringSync(),

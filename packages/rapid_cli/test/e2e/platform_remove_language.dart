@@ -45,9 +45,11 @@ Future<void> performTest({
   verifyDoNotExist({
     ...languageFiles('home_page', platform, ['fr']),
   });
-  await verifyTestsPassWith100PercentCoverage([
-    ...platformIndependentPackagesWithTests,
-    ...platformDependentPackagesWithTests(platform),
-    ...featurePackages,
-  ]);
+  if (type != TestType.fast) {
+    await verifyTestsPassWith100PercentCoverage([
+      ...platformIndependentPackagesWithTests,
+      ...platformDependentPackagesWithTests(platform),
+      ...featurePackages,
+    ]);
+  }
 }

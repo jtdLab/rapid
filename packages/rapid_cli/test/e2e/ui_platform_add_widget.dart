@@ -31,7 +31,9 @@ Future<void> performTest({
     ...platformIndependentPackages,
     ...widgetFiles(name: name, platform: platform),
   });
-  await verifyTestsPassWith100PercentCoverage({
-    platformUiPackage(platform),
-  });
+  if (type != TestType.fast) {
+    await verifyTestsPassWith100PercentCoverage({
+      platformUiPackage(platform),
+    });
+  }
 }

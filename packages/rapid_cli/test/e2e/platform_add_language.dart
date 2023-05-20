@@ -36,9 +36,11 @@ Future<void> performTest({
     ...featurePackages,
     ...languageFiles('home_page', platform, ['en', language]),
   ]);
-  await verifyTestsPassWith100PercentCoverage([
-    ...platformIndependentPackagesWithTests,
-    ...platformDependentPackagesWithTests(platform),
-    ...featurePackages,
-  ]);
+  if (type != TestType.fast) {
+    await verifyTestsPassWith100PercentCoverage([
+      ...platformIndependentPackagesWithTests,
+      ...platformDependentPackagesWithTests(platform),
+      ...featurePackages,
+    ]);
+  }
 }

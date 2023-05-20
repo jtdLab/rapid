@@ -45,11 +45,13 @@ Future<void> performTest({
       outputDir: outputDir,
     ),
   });
-  await verifyTestsPassWith100PercentCoverage([
-    ...platformIndependentPackagesWithTests,
-    ...platformDependentPackagesWithTests(platform),
-    appFeaturePackage,
-  ]);
-  // TODO
-  await verifyTestsPass(feature, expectedCoverage: expectedCoverage);
+  if (type != TestType.fast) {
+    await verifyTestsPassWith100PercentCoverage([
+      ...platformIndependentPackagesWithTests,
+      ...platformDependentPackagesWithTests(platform),
+      appFeaturePackage,
+    ]);
+    // TODO
+    await verifyTestsPass(feature, expectedCoverage: expectedCoverage);
+  }
 }

@@ -1,4 +1,4 @@
-name: rapid_cli_e2e
+name: rapid_cli_e2e_fast
 
 on:
   push:

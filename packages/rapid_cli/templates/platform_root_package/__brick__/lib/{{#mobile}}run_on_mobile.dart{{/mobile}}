@@ -1,0 +1,16 @@
+import 'package:flutter/foundation.dart';
+
+class TargetPlatformError implements Exception {
+  final String msg;
+
+  TargetPlatformError() : msg = 'TargetPlatform must be Mobile (Android or iOS)';
+}
+
+/// Runs [callback] when on Mobile (Android or iOS).
+Future<void> runOnMobile(Future<void> Function() callback) async {
+  if (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) {
+    return callback();
+  }
+
+  throw TargetPlatformError();
+}

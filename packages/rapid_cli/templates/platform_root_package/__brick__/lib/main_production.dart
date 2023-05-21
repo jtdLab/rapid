@@ -90,4 +90,19 @@ void main() => runOnWindows(() async {
 
       await bootstrap();
     });
-{{/windows}}
+{{/windows}}{{#mobile}}import 'package:{{project_name}}_di/{{project_name}}_di.dart';
+import 'package:{{project_name}}_mobile/run_on_mobile.dart';
+import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
+
+import 'bootstrap.dart';
+import 'injection.dart';
+
+void main() => runOnMobile(() async {
+      configureDependencies(Environment.prod, Platform.mobile);
+      // TODO: add Mobile production setup here (pre WidgetsFlutterBinding.ensureInitialized())
+      WidgetsFlutterBinding.ensureInitialized();
+      // TODO: add Mobile production setup here (post WidgetsFlutterBinding.ensureInitialized())
+
+      await bootstrap();
+    });
+{{/mobile}}

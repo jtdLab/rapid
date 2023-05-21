@@ -29,7 +29,7 @@ void main() {
 
       // Assert
       verify(() => callback()).called(1);
-    });Ï
+    });
 
     test('throws when platform is not Mobile', () async {
       // Arrange

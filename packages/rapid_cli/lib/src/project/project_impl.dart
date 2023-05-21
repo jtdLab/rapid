@@ -161,6 +161,15 @@ class ProjectImpl extends DirectoryImpl
         final platformDirectory =
             this.platformDirectory<IosDirectory>(platform: platform);
         await platformDirectory.create(orgName: orgName, language: language);
+      }
+      if (platform == Platform.mobile) {
+        final platformDirectory =
+            this.platformDirectory<MobileDirectory>(platform: platform);
+        await platformDirectory.create(
+          orgName: orgName,
+          language: language,
+          description: description,
+        );
       } else {
         final platformDirectory =
             this.platformDirectory<NoneIosDirectory>(platform: platform);

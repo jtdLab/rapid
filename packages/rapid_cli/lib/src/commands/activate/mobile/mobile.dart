@@ -6,13 +6,13 @@ import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
-/// {@template activate_windows_command}
-/// `rapid activate windows` command adds support for Windows to an existing Rapid project.
+/// {@template activate_mobile_command}
+/// `rapid activate mobile` command adds support for Mobile to an existing Rapid project.
 /// {@endtemplate}
-class ActivateWindowsCommand extends ActivatePlatformCommand
+class ActivateMobileCommand extends ActivatePlatformCommand
     with OrgNameGetter, LanguageGetter {
-  /// {@macro activate_windows_command}
-  ActivateWindowsCommand({
+  /// {@macro activate_mobile_command}
+  ActivateMobileCommand({
     super.logger,
     super.project,
     super.melosBootstrap,
@@ -20,19 +20,21 @@ class ActivateWindowsCommand extends ActivatePlatformCommand
     super.flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     super.flutterGenl10n,
     super.dartFormatFix,
-    FlutterConfigEnablePlatformCommand? flutterConfigEnableWindows,
+    FlutterConfigEnablePlatformCommand? flutterConfigEnableAndroid,
+    FlutterConfigEnablePlatformCommand? flutterConfigEnableIos,
   }) : super(
-          platform: Platform.windows,
+          platform: Platform.mobile,
           flutterConfigEnablePlatforms: [
-            flutterConfigEnableWindows ?? Flutter.configEnableWindows,
+            flutterConfigEnableAndroid ?? Flutter.configEnableAndroid,
+            flutterConfigEnableIos ?? Flutter.configEnableIos,
           ],
         ) {
     argParser
       ..addOrgNameOption(
-        help: 'The organization for the native Windows project.',
+        help: 'The organization for the native Mobile project.',
       )
       ..addLanguageOption(
-        help: 'The default language for Windows',
+        help: 'The default language for Mobile',
       );
   }
 
@@ -44,10 +46,11 @@ class ActivateWindowsCommand extends ActivatePlatformCommand
     final language = super.language;
 
     final platformDirectory =
-        project.platformDirectory<NoneIosDirectory>(platform: platform);
+        project.platformDirectory<MobileDirectory>(platform: platform);
     await platformDirectory.create(
       orgName: orgName,
       language: language,
+      // TODO maybe pass a description ?
     );
 
     return platformDirectory;

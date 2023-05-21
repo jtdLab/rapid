@@ -23,8 +23,9 @@ class ActivateLinuxCommand extends ActivatePlatformCommand
     FlutterConfigEnablePlatformCommand? flutterConfigEnableLinux,
   }) : super(
           platform: Platform.linux,
-          flutterConfigEnablePlatform:
-              flutterConfigEnableLinux ?? Flutter.configEnableLinux,
+          flutterConfigEnablePlatforms: [
+            flutterConfigEnableLinux ?? Flutter.configEnableLinux,
+          ],
         ) {
     argParser
       ..addOrgNameOption(

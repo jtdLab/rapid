@@ -97,3 +97,30 @@ abstract class IosDirectory extends PlatformDirectory {
     required String language,
   });
 }
+
+/// {@template mobile_directory}
+/// Abstraction of a Mobile directory of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_mobile`
+/// {@endtemplate}
+abstract class MobileDirectory extends PlatformDirectory {
+  /// {@macro ios_directory}
+  factory MobileDirectory({
+    required Project project,
+  }) =>
+      MobileDirectoryImpl(project: project);
+
+  /// Use to override [rootPackage] for testing.
+  @visibleForTesting
+  MobileRootPackageBuilder? rootPackageOverrides;
+
+  @override
+  MobileRootPackage get rootPackage;
+
+  /// Creates this directory on disk.
+  Future<void> create({
+    required String orgName,
+    required String language,
+    String? description,
+  });
+}

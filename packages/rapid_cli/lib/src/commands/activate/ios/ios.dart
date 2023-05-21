@@ -23,8 +23,9 @@ class ActivateIosCommand extends ActivatePlatformCommand
     FlutterConfigEnablePlatformCommand? flutterConfigEnableIos,
   }) : super(
           platform: Platform.ios,
-          flutterConfigEnablePlatform:
-              flutterConfigEnableIos ?? Flutter.configEnableIos,
+          flutterConfigEnablePlatforms: [
+            flutterConfigEnableIos ?? Flutter.configEnableIos,
+          ],
         ) {
     argParser
       ..addOrgNameOption(

@@ -23,7 +23,7 @@ abstract class PlatformNativeDirectory
 
 /// Signature of [NoneIosNativeDirectory.new].
 typedef NoneIosNativeDirectoryBuilder = _PlatformNativeDirectoryBuilder<
-    NoneIosNativeDirectory, NoneIosRootPackage>;
+    NoneIosNativeDirectory, PlatformRootPackage>;
 
 /// {@template none_ios_native_directory}
 /// Abstraction of a platform native directory of a platform root package of a Rapid project.
@@ -35,7 +35,7 @@ typedef NoneIosNativeDirectoryBuilder = _PlatformNativeDirectoryBuilder<
 abstract class NoneIosNativeDirectory extends PlatformNativeDirectory {
   /// {@macro none_ios_native_directory}
   factory NoneIosNativeDirectory({
-    required NoneIosRootPackage rootPackage,
+    required PlatformRootPackage rootPackage,
   }) =>
       NoneIosNativeDirectoryImpl(
         rootPackage: rootPackage,
@@ -50,7 +50,7 @@ abstract class NoneIosNativeDirectory extends PlatformNativeDirectory {
 
 /// Signature of [IosNativeDirectory.new].
 typedef IosNativeDirectoryBuilder
-    = _PlatformNativeDirectoryBuilder<IosNativeDirectory, IosRootPackage>;
+    = _PlatformNativeDirectoryBuilder<IosNativeDirectory, PlatformRootPackage>;
 
 /// {@template ios_native_directory}
 /// Abstraction of the ios native directory of a platform root package of a Rapid project.
@@ -60,7 +60,7 @@ typedef IosNativeDirectoryBuilder
 abstract class IosNativeDirectory extends PlatformNativeDirectory {
   /// {@macro ios_native_directory}
   factory IosNativeDirectory({
-    required IosRootPackage rootPackage,
+    required PlatformRootPackage rootPackage,
   }) =>
       IosNativeDirectoryImpl(
         rootPackage: rootPackage,

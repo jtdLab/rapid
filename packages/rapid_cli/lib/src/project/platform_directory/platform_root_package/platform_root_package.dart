@@ -73,7 +73,7 @@ abstract class PlatformRootPackage
 
 /// Signature of [NoneIosRootPackage.new].
 typedef NoneIosRootPackageBuilder
-    = _PlatformRootPackageBuilder<NoneIosRootPackageImpl>;
+    = _PlatformRootPackageBuilder<NoneIosRootPackage>;
 
 abstract class NoneIosRootPackage extends PlatformRootPackage {
   factory NoneIosRootPackage(
@@ -100,7 +100,7 @@ abstract class NoneIosRootPackage extends PlatformRootPackage {
 }
 
 /// Signature of [IosRootPackage.new].
-typedef IosRootPackageBuilder = _PlatformRootPackageBuilder<IosRootPackageImpl>;
+typedef IosRootPackageBuilder = _PlatformRootPackageBuilder<IosRootPackage>;
 
 /// {@template ios_root_package}
 /// Abstraction of an iOS root package of a Rapid project.
@@ -127,6 +127,46 @@ abstract class IosRootPackage extends PlatformRootPackage {
   Future<void> create({
     required String orgName,
     required String language,
+  });
+}
+
+/// Signature of [MobileRootPackage.new].
+typedef MobileRootPackageBuilder
+    = _PlatformRootPackageBuilder<MobileRootPackage>;
+
+/// {@template mobile_root_package}
+/// Abstraction of a Mobile root package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_ios/<project name>_mobile`
+/// {@endtemplate}
+abstract class MobileRootPackage extends PlatformRootPackage {
+  /// {@macro mobile_root_package}
+  factory MobileRootPackage({
+    required Project project,
+  }) =>
+      MobileRootPackageImpl(
+        project: project,
+      );
+
+  /// Use to override [nativeDirectory] for testing.
+  @visibleForTesting
+  IosNativeDirectoryBuilder? iosNativeDirectoryOverrides;
+
+  /// Use to override [nativeDirectory] for testing.
+  @visibleForTesting
+  NoneIosNativeDirectoryBuilder? androidNativeDirectoryOverrides;
+
+  /// Returns the platform native directory of this directory.
+  IosNativeDirectory get iosNativeDirectory;
+
+  /// Returns the platform native directory of this directory.
+  NoneIosNativeDirectory get androidNativeDirectory;
+
+  /// Creates this package on disk.
+  Future<void> create({
+    required String orgName,
+    required String language,
+    String? description,
   });
 }
 

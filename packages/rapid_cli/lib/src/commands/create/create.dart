@@ -105,17 +105,6 @@ class CreateCommand extends RapidCommand
         'mobile',
         help: 'Wheter the new project supports the Android and iOS platforms.',
         negatable: false,
-      )
-      ..addFlag(
-        'desktop',
-        help:
-            'Wheter the new project supports the Linux, macOS and Windows platforms.',
-        negatable: false,
-      )
-      ..addFlag(
-        'all',
-        help: 'Wheter the new project supports all platforms.',
-        negatable: false,
       );
   }
 
@@ -164,12 +153,21 @@ class CreateCommand extends RapidCommand
           final description = _description;
           final orgName = super.orgName;
           final language = super.language;
-          final android = _android || _mobile || _all;
-          final ios = _ios || _mobile || _all;
-          final linux = _linux || _desktop || _all;
-          final macos = _macos || _desktop || _all;
-          final web = _web || _all;
-          final windows = _windows || _desktop || _all;
+          final android = _android;
+          final ios = _ios;
+          final linux = _linux;
+          final macos = _macos;
+          final web = _web;
+          final windows = _windows;
+          final mobile = _mobile;
+
+          if (mobile && (android || ios)) {
+            logger.commandError(
+              'Can not select "mobile" if "android" or "ios" is selected.',
+            );
+
+            return ExitCode.config.code;
+          }
 
           logger.commandTitle('Creating Rapid App ...');
 
@@ -180,6 +178,7 @@ class CreateCommand extends RapidCommand
             if (macos) Platform.macos,
             if (web) Platform.web,
             if (windows) Platform.windows,
+            if (mobile) Platform.mobile,
           };
 
           final generateProgress = logger.progress('Generating files');
@@ -229,6 +228,10 @@ class CreateCommand extends RapidCommand
           if (windows) {
             await _flutterConfigEnableWindows(logger: logger);
           }
+          if (mobile) {
+            await _flutterConfigEnableAndroid(logger: logger);
+            await _flutterConfigEnableIos(logger: logger);
+          }
 
           logger.commandSuccess('Created a Rapid App!');
 
@@ -260,14 +263,8 @@ class CreateCommand extends RapidCommand
   /// Whether the user specified that the project supports Windows.
   bool get _windows => (argResults['windows'] ?? false);
 
-  /// Whether the user specified that the project supports mobile platforms.
+  /// Whether the user specified that the project supports (Android + iOS shared as Mobile).
   bool get _mobile => (argResults['mobile'] ?? false);
-
-  /// Whether the user specified that the project supports desktop platforms.
-  bool get _desktop => (argResults['desktop'] ?? false);
-
-  /// Whether the user specified that the project supports all platforms.
-  bool get _all => (argResults['all'] ?? false);
 
   /// Validates whether [args] contains ONLY a valid project name.
   ///

@@ -1,10 +1,6 @@
 name: rapid_cli_e2e_fast
 
 on:
-  push:
-    paths:
-      - packages/rapid/rapid_domain/**
-      - packages/rapid_cli/**
   pull_request:
     paths:
       - packages/rapid/rapid_domain/**

@@ -493,36 +493,6 @@ extension IterableX<E extends FileSystemEntity> on Iterable<E> {
   }
 }
 
-extension StringX on String {
-  List<Platform> toPlatforms() {
-    switch (this) {
-      case 'android':
-        return [Platform.android];
-      case 'ios':
-        return [Platform.ios];
-      case 'linux':
-        return [Platform.linux];
-      case 'macos':
-        return [Platform.macos];
-      case 'web':
-        return [Platform.web];
-      case 'windows':
-        return [Platform.windows];
-      case 'mobile':
-        return [Platform.android, Platform.ios];
-      case 'desktop':
-        return [Platform.linux, Platform.macos, Platform.windows];
-      case 'all':
-        return Platform.values;
-      default:
-        throw ArgumentError(
-          'Invalid String which does not represent a platform group.',
-          this,
-        );
-    }
-  }
-}
-
 /// Verifys wheter ALL [entities] exist on disk.
 void verifyDoExist(Iterable<FileSystemEntity> entities) {
   for (final entity in entities) {

@@ -46,7 +46,7 @@ class NoneIosNativeDirectoryImpl extends PlatformNativeDirectoryImpl
     final platform = _rootPackage.platform;
 
     late final MasonBundle bundle;
-    if (platform == Platform.android) {
+    if (platform == Platform.android || platform == Platform.mobile) {
       bundle = androidNativeDirectoryBundle;
     } else if (platform == Platform.linux) {
       bundle = linuxNativeDirectoryBundle;

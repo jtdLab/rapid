@@ -3,7 +3,7 @@ const dart = DartDependency('3.0.0', '4.0.0');
 const flutter = FlutterDependency('3.10.0');
 final packages = [
   PackageDependency('auto_route', '7.2.0'),
-  PackageDependency('auto_route_generator', '7.1.0'),
+  PackageDependency('auto_route_generator', '7.1.1'),
   PackageDependency('bloc_concurrency', '0.2.2'),
   PackageDependency('bloc_test', '9.1.2'),
   PackageDependency('bloc', '8.1.2'),

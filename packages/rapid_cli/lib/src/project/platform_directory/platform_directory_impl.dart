@@ -137,7 +137,7 @@ class MobileDirectoryImpl extends PlatformDirectoryImpl
     implements MobileDirectory {
   MobileDirectoryImpl({
     required super.project,
-  }) : super(Platform.ios);
+  }) : super(Platform.mobile);
 
   @override
   MobileRootPackageBuilder? rootPackageOverrides;

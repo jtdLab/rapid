@@ -63,6 +63,7 @@ class PlatformNavigationPackageImpl extends DartPackageImpl
         'macos': _platform == Platform.macos,
         'web': _platform == Platform.web,
         'windows': _platform == Platform.windows,
+        'mobile': _platform == Platform.mobile,
       },
     );
   }

@@ -141,6 +141,7 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
         'macos': platform == Platform.macos,
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
+        'mobile': platform == Platform.mobile,
         'default_language': defaultLanguage,
         'routable': routing,
         'route_name':
@@ -298,6 +299,7 @@ class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
         'macos': platform == Platform.macos,
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
+        'mobile': platform == Platform.mobile,
         'default_language': defaultLanguage,
         'routable': routing,
         'route_name':
@@ -701,6 +703,7 @@ class PlatformFeaturePackageNavigatorImplementationImpl
         'macos': platform == Platform.macos,
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
+        'mobile': platform == Platform.mobile,
       },
     );
   }

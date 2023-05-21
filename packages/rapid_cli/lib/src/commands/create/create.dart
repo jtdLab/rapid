@@ -103,7 +103,8 @@ class CreateCommand extends RapidCommand
       )
       ..addFlag(
         'mobile',
-        help: 'Wheter the new project supports the Android and iOS platforms.',
+        help:
+            'Wheter the new project supports the Mobile platform (Android + iOS shared).',
         negatable: false,
       );
   }

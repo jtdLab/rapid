@@ -189,6 +189,7 @@ class IosRootPackageImpl extends PlatformRootPackageImpl
         'macos': false,
         'web': false,
         'windows': false,
+        'mobile': false,
       },
     );
 
@@ -215,7 +216,7 @@ class MobileRootPackageImpl extends PlatformRootPackageImpl
     implements MobileRootPackage {
   MobileRootPackageImpl({
     required super.project,
-  }) : super(Platform.ios);
+  }) : super(Platform.mobile);
 
   @override
   IosNativeDirectoryBuilder? iosNativeDirectoryOverrides;
@@ -249,11 +250,12 @@ class MobileRootPackageImpl extends PlatformRootPackageImpl
         'project_name': projectName,
         'org_name': orgName,
         'android': false,
-        'ios': true,
+        'ios': false,
         'linux': false,
         'macos': false,
         'web': false,
         'windows': false,
+        'mobile': true,
       },
     );
 

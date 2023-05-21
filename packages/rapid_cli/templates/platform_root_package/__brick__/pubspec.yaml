@@ -48,7 +48,7 @@ dev_dependencies:
   mocktail: ^0.3.0
   build_runner: ^2.4.4
   injectable_generator: ^2.1.5
-  auto_route_generator: ^7.1.0
+  auto_route_generator: ^7.1.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -116,7 +116,7 @@ dev_dependencies:
   mocktail: ^0.3.0
   build_runner: ^2.4.4
   injectable_generator: ^2.1.5
-  auto_route_generator: ^7.1.0
+  auto_route_generator: ^7.1.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -179,7 +179,7 @@ dev_dependencies:
   mocktail: ^0.3.0
   build_runner: ^2.4.4
   injectable_generator: ^2.1.5
-  auto_route_generator: ^7.1.0
+  auto_route_generator: ^7.1.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -247,7 +247,7 @@ dev_dependencies:
   mocktail: ^0.3.0
   build_runner: ^2.4.4
   injectable_generator: ^2.1.5
-  auto_route_generator: ^7.1.0
+  auto_route_generator: ^7.1.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -311,7 +311,7 @@ dev_dependencies:
   mocktail: ^0.3.0
   build_runner: ^2.4.4
   injectable_generator: ^2.1.5
-  auto_route_generator: ^7.1.0
+  auto_route_generator: ^7.1.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your
@@ -378,7 +378,7 @@ dev_dependencies:
   mocktail: ^0.3.0
   build_runner: ^2.4.4
   injectable_generator: ^2.1.5
-  auto_route_generator: ^7.1.0
+  auto_route_generator: ^7.1.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
   # activated in the `analysis_options.yaml` file located at the root of your

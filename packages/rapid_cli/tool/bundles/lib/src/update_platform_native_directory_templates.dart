@@ -17,7 +17,7 @@ Future<void> updatePlatformNativeDirectoryTemplates() async {
   final tempDir = getTempDir('foo');
   await _generateFlutterProject(dir: tempDir);
   _applyPlaceholders(dir: tempDir);
-  for (final platform in platforms) {
+  for (final platform in platforms..removeLast()) {
     _updatePlatformNativeDirectoryTemplate(dir: tempDir, platform: platform);
   }
 }

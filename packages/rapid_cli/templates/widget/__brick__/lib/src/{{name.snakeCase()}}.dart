@@ -146,4 +146,25 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget
       color: backgroundColor,
     );
   }
-}{{/windows}}
+}{{/windows}}{{#mobile}}import 'package:flutter/material.dart';
+import 'package:{{project_name.snakeCase()}}_ui_mobile/src/{{name.snakeCase()}}_theme.dart';
+
+class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget {
+  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
+
+  const {{project_name.pascalCase()}}{{name.pascalCase()}}({
+    super.key,
+    this.theme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = this.theme ?? context.{{project_name.camelCase()}}{{name.pascalCase()}}Theme;
+    final backgroundColor = theme.backgroundColor;
+
+    // TODO: implement
+    return Container(
+      color: backgroundColor,
+    );
+  }
+}{{/mobile}}

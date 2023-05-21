@@ -27,6 +27,10 @@ void main() {
     test('.windows', () {
       expect(Platform.windows, 'windows');
     });
+
+    test('.mobile', () {
+      expect(Platform.mobile, 'mobile');
+    });
   });
 
   test('android', () {
@@ -56,6 +60,13 @@ void main() {
     expect(
       windows,
       isA<Environment>().having((e) => e.name, 'name', 'windows'),
+    );
+  });
+
+  test('mobile', () {
+    expect(
+      mobile,
+      isA<Environment>().having((e) => e.name, 'name', 'mobile'),
     );
   });
 }

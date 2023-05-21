@@ -13,6 +13,8 @@ abstract class Platform {
   static const macos = 'macos';
 
   static const windows = 'windows';
+
+  static const mobile = 'mobile';
 }
 
 /// Use this to annotate Android dependencies.
@@ -32,3 +34,6 @@ const macos = Environment(Platform.macos);
 
 /// Use this to annotate Windows dependencies.
 const windows = Environment(Platform.windows);
+
+/// Use this to annotate Mobile dependencies.
+const mobile = Environment(Platform.mobile);

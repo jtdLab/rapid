@@ -123,4 +123,28 @@ extension WidgetTesterX on WidgetTester {
         ),
       );
 }
-{{/windows}}
+{{/windows}}{{#mobile}}import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:{{project_name}}_ui_mobile/src/app.dart';
+
+extension WidgetTesterX on WidgetTester {
+  /// Pump [widget] wrapped with a [{{project_name.pascalCase()}}App].
+  ///
+  /// Specify [locale] to test localization.
+  ///
+  /// Specify [themeMode] to test different appearances.
+  Future<void> pumpApp(
+    Widget widget, {
+    Locale? locale,
+    ThemeMode? themeMode,
+  }) =>
+      pumpWidget(
+        {{project_name.pascalCase()}}App.test(
+          locale: locale,
+          themeMode: themeMode,
+          home: widget,
+        ),
+      );
+}
+
+{{/mobile}}

@@ -54,4 +54,13 @@ final lightExtensions = <ThemeExtension>[
 final darkExtensions = <ThemeExtension>[
   {{project_name.pascalCase()}}ScaffoldTheme.dark,
 ];
-{{/windows}}
+{{/windows}}{{#mobile}}import 'package:{{project_name}}_ui_mobile/{{project_name}}_ui_mobile.dart';
+
+final lightExtensions = <ThemeExtension>[
+  {{project_name.pascalCase()}}ScaffoldTheme.light,
+];
+
+final darkExtensions = <ThemeExtension>[
+  {{project_name.pascalCase()}}ScaffoldTheme.dark,
+];
+{{/mobile}}

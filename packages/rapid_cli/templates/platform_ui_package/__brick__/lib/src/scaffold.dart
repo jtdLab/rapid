@@ -156,4 +156,28 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
     );
   }
 }
-{{/windows}}
+{{/windows}}{{#mobile}}import 'package:flutter/material.dart';
+import 'package:{{project_name}}_ui_mobile/src/scaffold_theme.dart';
+
+class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
+  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
+  final Widget body;
+
+  const {{project_name.pascalCase()}}Scaffold({
+    super.key,
+    this.theme,
+    required this.body,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = this.theme ?? context.{{project_name.camelCase()}}ScaffoldTheme;
+    final backgroundColor = theme.backgroundColor;
+
+    return Scaffold(
+      backgroundColor: backgroundColor,
+      body: body,
+    );
+  }
+}
+{{/mobile}}

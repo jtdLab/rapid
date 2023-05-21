@@ -75,4 +75,15 @@ export 'package:{{project_name}}_ui/{{project_name}}_ui.dart';
 export 'src/app.dart';
 export 'src/scaffold.dart';
 export 'src/scaffold_theme.dart';
-{{/windows}}
+{{/windows}}{{#mobile}}/// Widgets and themes implementing {{project_name.titleCase()}} design language for Mobile.
+///
+/// To use, import `package:{{project_name}}_ui_mobile/{{project_name}}_ui_mobile.dart`.
+library {{project_name}}_ui_mobile;
+
+export 'package:flutter/material.dart' hide Router;
+export 'package:{{project_name}}_ui/{{project_name}}_ui.dart';
+
+export 'src/app.dart';
+export 'src/scaffold.dart';
+export 'src/scaffold_theme.dart';
+{{/mobile}}

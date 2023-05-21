@@ -5,7 +5,7 @@
 {{#web}}import 'package:{{project_name}}_web_app/{{project_name}}_web_app.dart';import 'package:{{project_name}}_web_{{name.snakeCase()}}/{{project_name}}_web_{{name.snakeCase()}}.dart';import 'package:{{project_name}}_ui_web/{{project_name}}_ui_web.dart';{{/web}}
 {{#windows}}import 'package:{{project_name}}_windows_app/{{project_name}}_windows_app.dart';import 'package:{{project_name}}_windows_{{name.snakeCase()}}/{{project_name}}_windows_{{name.snakeCase()}}.dart';import 'package:{{project_name}}_ui_windows/{{project_name}}_ui_windows.dart';{{/windows}}
 
-class _TestRouter extends RootStackRouter {
+{{#routable}}class _TestRouter extends RootStackRouter {
   @override
   Map<String, PageFactory> get pagesMap => {
         ...{{name.pascalCase()}}Module().pagesMap,
@@ -15,7 +15,7 @@ class _TestRouter extends RootStackRouter {
   List<AutoRoute> get routes => [
         AutoRoute(page: {{route_name}}Route.page, path: '/'),
       ];
-}
+}{{/routable}}
 
 extension WidgetTesterX on WidgetTester {
 {{#routable}}  Future<void> pumpApp({

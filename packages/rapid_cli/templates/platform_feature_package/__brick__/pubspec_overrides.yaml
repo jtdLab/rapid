@@ -82,16 +82,16 @@ dependency_overrides:
     path: ../{{project_name}}_windows_app
   {{project_name}}_windows_navigation:
     path: ../../{{project_name}}_windows_navigation
-{{/windows}}{{#mobile}}# melos_managed_dependency_overrides: {{project_name}}_mobile_app,{{project_name}}_mobile_navigation,{{project_name}}_di,{{project_name}}_domain,{{project_name}}_ui,{{project_name}}_ui_mobile
+{{/windows}}{{#mobile}}# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_mobile_app,{{project_name}}_mobile_navigation,{{project_name}}_ui,{{project_name}}_ui_mobile
 dependency_overrides:
-  {{project_name}}_mobile_app:
-    path: ../{{project_name}}_mobile_app
-  {{project_name}}_mobile_navigation:
-    path: ../../{{project_name}}_mobile_navigation
   {{project_name}}_di:
     path: ../../../{{project_name}}_di
   {{project_name}}_domain:
     path: ../../../{{project_name}}_domain/{{project_name}}_domain
+  {{project_name}}_mobile_app:
+    path: ../{{project_name}}_mobile_app
+  {{project_name}}_mobile_navigation:
+    path: ../../{{project_name}}_mobile_navigation
   {{project_name}}_ui:
     path: ../../../../{{project_name}}_ui/{{project_name}}_ui
   {{project_name}}_ui_mobile:

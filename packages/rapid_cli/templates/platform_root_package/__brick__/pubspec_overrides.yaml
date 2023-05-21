@@ -118,7 +118,7 @@ dependency_overrides:
     path: ../{{project_name}}_windows_features/{{project_name}}_windows_home_page
   {{project_name}}_windows_navigation:
     path: ../{{project_name}}_windows_navigation
-{{/windows}}{{#mobile}}# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_logging,{{project_name}}_ui,{{project_name}}_ui_mobile,{{project_name}}_mobile_app,{{project_name}}_mobile_home_page,{{project_name}}_mobile_navigation
+{{/windows}}{{#mobile}}# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_infrastructure,{{project_name}}_logging,{{project_name}}_mobile_app,{{project_name}}_mobile_home_page,{{project_name}}_mobile_navigation,{{project_name}}_ui,{{project_name}}_ui_mobile
 dependency_overrides:
   {{project_name}}_di:
     path: ../../{{project_name}}_di
@@ -128,14 +128,14 @@ dependency_overrides:
     path: ../../{{project_name}}_infrastructure/{{project_name}}_infrastructure
   {{project_name}}_logging:
     path: ../../{{project_name}}_logging
-  {{project_name}}_ui:
-    path: ../../../{{project_name}}_ui/{{project_name}}_ui
-  {{project_name}}_ui_mobile:
-    path: ../../../{{project_name}}_ui/{{project_name}}_ui_mobile
   {{project_name}}_mobile_app:
     path: ../{{project_name}}_mobile_features/{{project_name}}_mobile_app
   {{project_name}}_mobile_home_page:
     path: ../{{project_name}}_mobile_features/{{project_name}}_mobile_home_page
   {{project_name}}_mobile_navigation:
     path: ../{{project_name}}_mobile_navigation
+  {{project_name}}_ui:
+    path: ../../../{{project_name}}_ui/{{project_name}}_ui
+  {{project_name}}_ui_mobile:
+    path: ../../../{{project_name}}_ui/{{project_name}}_ui_mobile
 {{/mobile}}

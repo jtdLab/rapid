@@ -11,6 +11,7 @@ import 'package:rapid_cli/src/commands/infrastructure/infrastructure.dart';
 import 'package:rapid_cli/src/commands/ios/ios.dart';
 import 'package:rapid_cli/src/commands/linux/linux.dart';
 import 'package:rapid_cli/src/commands/macos/macos.dart';
+import 'package:rapid_cli/src/commands/mobile/mobile.dart';
 import 'package:rapid_cli/src/commands/pub/pub.dart';
 import 'package:rapid_cli/src/commands/ui/ui.dart';
 import 'package:rapid_cli/src/commands/web/web.dart';
@@ -56,6 +57,7 @@ class RapidCommandRunner extends CommandRunner<int> {
     addCommand(IosCommand(logger: _logger, project: project));
     addCommand(LinuxCommand(logger: _logger, project: project));
     addCommand(MacosCommand(logger: _logger, project: project));
+    addCommand(MobileCommand(logger: _logger, project: project));
     addCommand(PubCommand(logger: _logger));
     addCommand(UiCommand(logger: _logger, project: project));
     addCommand(WebCommand(logger: _logger, project: project));

@@ -5,6 +5,7 @@ import 'package:rapid_cli/src/commands/ui/android/android.dart';
 import 'package:rapid_cli/src/commands/ui/ios/ios.dart';
 import 'package:rapid_cli/src/commands/ui/linux/linux.dart';
 import 'package:rapid_cli/src/commands/ui/macos/macos.dart';
+import 'package:rapid_cli/src/commands/ui/mobile/mobile.dart';
 import 'package:rapid_cli/src/commands/ui/remove/remove.dart';
 import 'package:rapid_cli/src/commands/ui/web/web.dart';
 import 'package:rapid_cli/src/commands/ui/windows/windows.dart';
@@ -24,6 +25,7 @@ class UiCommand extends Command<int> {
     addSubcommand(UiIosCommand(logger: logger, project: project));
     addSubcommand(UiLinuxCommand(logger: logger, project: project));
     addSubcommand(UiMacosCommand(logger: logger, project: project));
+    addSubcommand(UiMobileCommand(logger: logger, project: project));
     addSubcommand(UiRemoveCommand(logger: logger, project: project));
     addSubcommand(UiWebCommand(logger: logger, project: project));
     addSubcommand(UiWindowsCommand(logger: logger, project: project));

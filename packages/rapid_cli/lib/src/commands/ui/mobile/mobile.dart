@@ -16,6 +16,7 @@ class UiMobileCommand extends UiPlatformCommand {
   }) : super(
           platform: Platform.mobile,
           addCommand: UiMobileAddCommand(logger: logger, project: project),
-          removeCommand: UiMobileRemoveCommand(logger: logger, project: project),
+          removeCommand:
+              UiMobileRemoveCommand(logger: logger, project: project),
         );
 }

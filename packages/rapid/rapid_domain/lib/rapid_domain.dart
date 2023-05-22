@@ -1,6 +1,4 @@
-/// Package used in the domain package of a Rapid project.
-///
-/// This contains code required for creating value objects.
+/// Utils used in the domain layer of a Rapid project.
 library rapid_domain;
 
 export 'src/value_object.dart';

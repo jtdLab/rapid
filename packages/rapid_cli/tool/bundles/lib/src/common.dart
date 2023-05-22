@@ -53,7 +53,7 @@ const cubit = Template(
 const dataTransferObject = Template(
   'data_transfer_object',
   'templates/data_transfer_object',
-  'lib/src/project/infrastructure_dir/infrastructure_package',
+  'lib/src/project/infrastructure_directory/infrastructure_package',
 );
 const diPackage = PackageTemplate(
   'di_package',
@@ -63,7 +63,7 @@ const diPackage = PackageTemplate(
 const domainPackage = PackageTemplate(
   'domain_package',
   'templates/domain_package',
-  'lib/src/project/domain_dir/domain_package',
+  'lib/src/project/domain_directory/domain_package',
 );
 const entity = Template(
   'entity',
@@ -113,7 +113,7 @@ const platformRootPackage = PlatformPackageTemplate(
 const serviceImplementation = Template(
   'service_implementation',
   'templates/service_implementation',
-  'lib/src/project/infrastructure_dir/infrastructure_package',
+  'lib/src/project/infrastructure_directory/infrastructure_package',
 );
 const platformUiPackage = PlatformPackageTemplate(
   'platform_ui_package',
@@ -158,7 +158,7 @@ const windowsNativeDirectory = Template(
 const serviceInterface = Template(
   'service_interface',
   'templates/service_interface',
-  'lib/src/project/domain_dir/domain_package',
+  'lib/src/project/domain_directory/domain_package',
 );
 const uiPackage = PackageTemplate(
   'ui_package',
@@ -168,7 +168,7 @@ const uiPackage = PackageTemplate(
 const valueObject = Template(
   'value_object',
   'templates/value_object',
-  'lib/src/project/domain_dir/domain_package',
+  'lib/src/project/domain_directory/domain_package',
 );
 const widget = Template(
   'widget',

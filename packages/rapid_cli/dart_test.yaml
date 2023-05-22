@@ -13,5 +13,7 @@ tags:
     skip: "Should only run in an Web environment with a device ready to use"
   windows:
     skip: "Should only run in an Windows environment with a device ready to use"
+  mobile:
+    skip: "Should only run in an Mobile environment with a device ready to use"
   fast:
     skip: "Should run for fast feedback"

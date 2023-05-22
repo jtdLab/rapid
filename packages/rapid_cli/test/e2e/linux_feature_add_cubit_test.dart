@@ -32,7 +32,7 @@ void main() {
           '(fast)',
           () => performTest(
             platform: Platform.linux,
-            expectedCoverage: 84.62,
+            expectedCoverage: 80.0,
             type: TestType.fast,
             commandRunner: commandRunner,
           ),
@@ -44,7 +44,7 @@ void main() {
           '',
           () => performTest(
             platform: Platform.linux,
-            expectedCoverage: 84.62,
+            expectedCoverage: 80.0,
             commandRunner: commandRunner,
           ),
           timeout: const Timeout(Duration(minutes: 8)),

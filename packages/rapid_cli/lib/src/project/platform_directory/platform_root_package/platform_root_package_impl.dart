@@ -189,6 +189,7 @@ class IosRootPackageImpl extends PlatformRootPackageImpl
         'macos': false,
         'web': false,
         'windows': false,
+        'mobile': false,
       },
     );
 
@@ -208,6 +209,76 @@ class IosRootPackageImpl extends PlatformRootPackageImpl
   Future<void> removeLanguage(String language) async {
     await super.removeLanguage(language);
     nativeDirectory.removeLanguage(language: language);
+  }
+}
+
+class MobileRootPackageImpl extends PlatformRootPackageImpl
+    implements MobileRootPackage {
+  MobileRootPackageImpl({
+    required super.project,
+  }) : super(Platform.mobile);
+
+  @override
+  IosNativeDirectoryBuilder? iosNativeDirectoryOverrides;
+
+  @override
+  NoneIosNativeDirectoryBuilder? androidNativeDirectoryOverrides;
+
+  @override
+  IosNativeDirectory get iosNativeDirectory =>
+      (iosNativeDirectoryOverrides ?? IosNativeDirectory.new)(
+        rootPackage: this,
+      );
+
+  @override
+  NoneIosNativeDirectory get androidNativeDirectory =>
+      (androidNativeDirectoryOverrides ?? NoneIosNativeDirectory.new)(
+        rootPackage: this,
+      );
+
+  @override
+  Future<void> create({
+    required String orgName,
+    required String language,
+    String? description,
+  }) async {
+    final projectName = project.name();
+
+    await generate(
+      bundle: platformRootPackageBundle,
+      vars: <String, dynamic>{
+        'project_name': projectName,
+        'org_name': orgName,
+        'android': false,
+        'ios': false,
+        'linux': false,
+        'macos': false,
+        'web': false,
+        'windows': false,
+        'mobile': true,
+      },
+    );
+
+    await iosNativeDirectory.create(
+      orgName: orgName,
+      language: language,
+    );
+    await androidNativeDirectory.create(
+      description: description,
+      orgName: orgName,
+    );
+  }
+
+  @override
+  Future<void> addLanguage(String language) async {
+    await super.addLanguage(language);
+    iosNativeDirectory.addLanguage(language: language);
+  }
+
+  @override
+  Future<void> removeLanguage(String language) async {
+    await super.removeLanguage(language);
+    iosNativeDirectory.removeLanguage(language: language);
   }
 }
 

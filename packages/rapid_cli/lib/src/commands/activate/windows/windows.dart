@@ -23,8 +23,9 @@ class ActivateWindowsCommand extends ActivatePlatformCommand
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWindows,
   }) : super(
           platform: Platform.windows,
-          flutterConfigEnablePlatform:
-              flutterConfigEnableWindows ?? Flutter.configEnableWindows,
+          flutterConfigEnablePlatforms: [
+            flutterConfigEnableWindows ?? Flutter.configEnableWindows,
+          ],
         ) {
     argParser
       ..addOrgNameOption(

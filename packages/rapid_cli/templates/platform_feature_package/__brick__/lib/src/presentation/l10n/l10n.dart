@@ -70,4 +70,16 @@ extension {{project_name.pascalCase()}}Windows{{name.pascalCase()}}Localizations
   {{project_name.pascalCase()}}Windows{{name.pascalCase()}}Localizations get l10n =>
       {{project_name.pascalCase()}}Windows{{name.pascalCase()}}Localizations.of(this);
 }
-{{/windows}}
+{{/windows}}{{#mobile}}// coverage:ignore-file
+import 'package:flutter/widgets.dart';
+
+import '{{project_name}}_mobile_{{name}}_localizations.dart';
+
+export '{{project_name}}_mobile_{{name}}_localizations.dart';
+
+extension {{project_name.pascalCase()}}Mobile{{name.pascalCase()}}LocalizationsX on BuildContext {
+  /// The l10n object which holds all localized strings.
+  {{project_name.pascalCase()}}Mobile{{name.pascalCase()}}Localizations get l10n =>
+      {{project_name.pascalCase()}}Mobile{{name.pascalCase()}}Localizations.of(this);
+}
+{{/mobile}}

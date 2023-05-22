@@ -27,4 +27,9 @@ export '{{name}}.dart';
 export 'l10n/{{project_name}}_windows_{{name}}_localizations.dart';
 {{#routable}}export 'routes.dart';{{/routable}}
 {{#routable}}export 'routes.gm.dart';{{/routable}}
-{{/windows}}
+{{/windows}}{{#mobile}}
+export '{{name}}.dart';
+export 'l10n/{{project_name}}_mobile_{{name}}_localizations.dart';
+{{#routable}}export 'routes.dart';{{/routable}}
+{{#routable}}export 'routes.gm.dart';{{/routable}}
+{{/mobile}}

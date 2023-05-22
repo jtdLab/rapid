@@ -45,7 +45,8 @@ abstract class ActivatePlatformCommand extends RapidRootCommand
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs,
     FlutterGenl10nCommand? flutterGenl10n,
     DartFormatFixCommand? dartFormatFix,
-    required FlutterConfigEnablePlatformCommand flutterConfigEnablePlatform,
+    required List<FlutterConfigEnablePlatformCommand>
+        flutterConfigEnablePlatforms,
   })  : melosBootstrap = melosBootstrap ?? Melos.bootstrap,
         flutterPubGet = flutterPubGet ?? Flutter.pubGet,
         flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
@@ -53,7 +54,7 @@ abstract class ActivatePlatformCommand extends RapidRootCommand
                 Flutter.pubRunBuildRunnerBuildDeleteConflictingOutputs,
         _flutterGenl10n = flutterGenl10n ?? Flutter.genl10n,
         _dartFormatFix = dartFormatFix ?? Dart.formatFix,
-        _flutterConfigEnablePlatform = flutterConfigEnablePlatform;
+        _flutterConfigEnablePlatforms = flutterConfigEnablePlatforms;
 
   final Platform platform;
   @override
@@ -65,7 +66,7 @@ abstract class ActivatePlatformCommand extends RapidRootCommand
       flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
   final FlutterGenl10nCommand _flutterGenl10n;
   final DartFormatFixCommand _dartFormatFix;
-  final FlutterConfigEnablePlatformCommand _flutterConfigEnablePlatform;
+  final List<FlutterConfigEnablePlatformCommand> _flutterConfigEnablePlatforms;
 
   @override
   String get name => platform.name;
@@ -125,7 +126,10 @@ abstract class ActivatePlatformCommand extends RapidRootCommand
 
           await _dartFormatFix(cwd: project.path, logger: logger);
 
-          await _flutterConfigEnablePlatform(logger: logger);
+          for (final flutterConfigEnablePlatform
+              in _flutterConfigEnablePlatforms) {
+            await flutterConfigEnablePlatform(logger: logger);
+          }
 
           logger.commandSuccess();
 

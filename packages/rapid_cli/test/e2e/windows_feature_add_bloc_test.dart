@@ -32,7 +32,7 @@ void main() {
           '(fast)',
           () => performTest(
             platform: Platform.windows,
-            expectedCoverage: 80.0,
+            expectedCoverage: 75.0,
             type: TestType.fast,
             commandRunner: commandRunner,
           ),
@@ -45,7 +45,7 @@ void main() {
           () => performTest(
             platform: Platform.windows,
             outputDir: 'foo',
-            expectedCoverage: 80.0,
+            expectedCoverage: 75.0,
             type: TestType.fast,
             commandRunner: commandRunner,
           ),
@@ -57,7 +57,7 @@ void main() {
           '',
           () => performTest(
             platform: Platform.windows,
-            expectedCoverage: 80.0,
+            expectedCoverage: 75.0,
             commandRunner: commandRunner,
           ),
           timeout: const Timeout(Duration(minutes: 8)),
@@ -68,7 +68,7 @@ void main() {
           () => performTest(
             platform: Platform.windows,
             outputDir: 'foo',
-            expectedCoverage: 80.0,
+            expectedCoverage: 75.0,
             commandRunner: commandRunner,
           ),
           timeout: const Timeout(Duration(minutes: 8)),

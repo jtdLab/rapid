@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner.dart';
+import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
@@ -32,17 +33,21 @@ void main() {
       group('create', () {
         Future<void> performTest({
           TestType type = TestType.normal,
-          required String flag,
+          required List<String> flags,
         }) async {
           // Act
           final commandResult = await commandRunner.run([
             'create',
             projectName,
-            '--$flag',
+            for (final flag in flags) ...[
+              '--$flag',
+            ],
           ]);
 
           // Assert
-          final platforms = flag.toPlatforms();
+          final platforms = flags
+              .map((e) => Platform.values.firstWhere((p) => e == p.name))
+              .toList();
           expect(commandResult, equals(ExitCode.success.code));
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
@@ -246,15 +251,38 @@ void main() {
         ); */
 
         test(
-          '--all (fast)',
-          () => performTest(type: TestType.fast, flag: 'all'),
+          '--mobile (fast)',
+          () => performTest(
+            type: TestType.fast,
+            flags: ['mobile'],
+          ),
           timeout: const Timeout(Duration(minutes: 8)),
           tags: ['fast'],
         );
 
         test(
-          '--all',
-          () => performTest(flag: 'all'),
+          '--mobile',
+          () => performTest(
+            flags: ['mobile'],
+          ),
+          timeout: const Timeout(Duration(minutes: 16)),
+        );
+
+        test(
+          '--android --ios --linux --macos --web --windows (fast)',
+          () => performTest(
+            type: TestType.fast,
+            flags: ['android', 'ios', 'linux', 'macos', 'web', 'windows'],
+          ),
+          timeout: const Timeout(Duration(minutes: 8)),
+          tags: ['fast'],
+        );
+
+        test(
+          '--android --ios --linux --macos --web --windows',
+          () => performTest(
+            flags: ['android', 'ios', 'linux', 'macos', 'web', 'windows'],
+          ),
           timeout: const Timeout(Duration(minutes: 24)),
         );
       });

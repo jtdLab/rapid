@@ -70,4 +70,16 @@ const localizationsDelegates = <LocalizationsDelegate>[
 final supportedLocales = <Locale>[
   const Locale('en'),
 ];
-{{/windows}}
+{{/windows}}{{#mobile}}import 'package:flutter/widgets.dart';
+import 'package:{{project_name}}_mobile_app/{{project_name}}_mobile_app.dart';
+import 'package:{{project_name}}_mobile_home_page/{{project_name}}_mobile_home_page.dart';
+
+const localizationsDelegates = <LocalizationsDelegate>[
+  {{project_name.pascalCase()}}MobileAppLocalizations.delegate,
+  {{project_name.pascalCase()}}MobileHomePageLocalizations.delegate,
+];
+
+final supportedLocales = <Locale>[
+  const Locale('en'),
+];
+{{/mobile}}

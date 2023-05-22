@@ -1,7 +1,6 @@
 {{#android}}import 'package:auto_route/auto_route.dart';
 import 'package:{{project_name}}_ui_android/{{project_name}}_ui_android.dart';
 
-
 abstract class App extends StatelessWidget {
   const App._({
     super.key,
@@ -761,4 +760,131 @@ class _AppTestWidget extends App {
     );
   }
 }
-{{/windows}}
+{{/windows}}{{#mobile}}import 'package:auto_route/auto_route.dart';
+import 'package:{{project_name}}_ui_mobile/{{project_name}}_ui_mobile.dart';
+
+abstract class App extends StatelessWidget {
+  const App._({
+    super.key,
+    required this.localizationsDelegates,
+    this.router,
+  });
+
+  const factory App({
+    Key? key,
+    required List<Locale> supportedLocales,
+    required List<LocalizationsDelegate> localizationsDelegates,
+    required RootStackRouter router,
+    List<AutoRouterObserver> Function()? routerObserverBuilder,
+  }) = _App;
+
+  @visibleForTesting
+  const factory App.test({
+    Key? key,
+    Locale locale,
+    required List<LocalizationsDelegate> localizationsDelegates,
+    required RootStackRouter router,
+    List<PageRouteInfo<dynamic>>? initialRoutes,
+    AutoRouterObserver? routerObserver,
+    ThemeMode? themeMode,
+  }) = _AppTest;
+
+  @visibleForTesting
+  const factory App.testWidget({
+    Key? key,
+    required Widget widget,
+    Locale locale,
+    required List<LocalizationsDelegate> localizationsDelegates,
+    ThemeMode? themeMode,
+  }) = _AppTestWidget;
+
+  final List<LocalizationsDelegate> localizationsDelegates;
+  final RootStackRouter? router;
+}
+
+class _App extends App {
+  const _App({
+    super.key,
+    required this.supportedLocales,
+    required super.localizationsDelegates,
+    required RootStackRouter super.router,
+    this.routerObserverBuilder,
+  }) : super._();
+
+  final List<AutoRouterObserver> Function()? routerObserverBuilder;
+  final List<Locale> supportedLocales;
+
+  @override
+  Widget build(BuildContext context) {
+    return {{project_name.pascalCase()}}App(
+      supportedLocales: supportedLocales,
+      localizationsDelegates: localizationsDelegates,
+      routerConfig: router!.config(
+        navigatorObservers: routerObserverBuilder ??
+            AutoRouterDelegate.defaultNavigatorObserversBuilder,
+      ),
+    );
+  }
+}
+
+class _AppTest extends App {
+  const _AppTest({
+    super.key,
+    this.locale = const Locale('en'),
+    required super.localizationsDelegates,
+    required RootStackRouter super.router,
+    this.initialRoutes,
+    this.routerObserver,
+    this.themeMode,
+  }) : super._();
+
+  final Locale locale;
+  final List<PageRouteInfo<dynamic>>? initialRoutes;
+  final AutoRouterObserver? routerObserver;
+  final ThemeMode? themeMode;
+
+  List<Locale> get supportedLocales => [locale];
+
+  @override
+  Widget build(BuildContext context) {
+    return {{project_name.pascalCase()}}App(
+      locale: locale,
+      supportedLocales: supportedLocales,
+      localizationsDelegates: localizationsDelegates,
+      routerConfig: router!.config(
+        deepLinkBuilder:
+            initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
+        navigatorObservers: routerObserver != null
+            ? () => [routerObserver!]
+            : AutoRouterDelegate.defaultNavigatorObserversBuilder,
+      ),
+      themeMode: themeMode,
+    );
+  }
+}
+
+class _AppTestWidget extends App {
+  const _AppTestWidget({
+    super.key,
+    required this.widget,
+    this.locale = const Locale('en'),
+    required super.localizationsDelegates,
+    this.themeMode,
+  }) : super._();
+
+  final Locale locale;
+  final Widget widget;
+  final ThemeMode? themeMode;
+
+  @override
+  Widget build(BuildContext context) {
+    // ignore: invalid_use_of_visible_for_testing_member
+    return {{project_name.pascalCase()}}App.test(
+      locale: locale,
+      localizationsDelegates: localizationsDelegates,
+      home: widget,
+      themeMode: themeMode,
+    );
+  }
+}
+{{/mobile}}

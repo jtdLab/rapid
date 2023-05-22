@@ -17,21 +17,25 @@ import 'windows_native_directory_bundle.dart';
 abstract class PlatformNativeDirectoryImpl extends DirectoryImpl
     with OverridableGenerator, Generatable
     implements PlatformNativeDirectory {
-  PlatformNativeDirectoryImpl({
-    required PlatformRootPackage rootPackage,
-  })  : _rootPackage = rootPackage,
-        super(
-          path: p.join(rootPackage.path, rootPackage.platform.name),
-        );
-
-  final PlatformRootPackage _rootPackage;
+  PlatformNativeDirectoryImpl({super.path});
 }
 
 class NoneIosNativeDirectoryImpl extends PlatformNativeDirectoryImpl
     implements NoneIosNativeDirectory {
   NoneIosNativeDirectoryImpl({
-    required super.rootPackage,
-  }) : assert(rootPackage.platform != Platform.ios);
+    required PlatformRootPackage rootPackage,
+  })  : assert(rootPackage.platform != Platform.ios),
+        _rootPackage = rootPackage,
+        super(
+          path: p.join(
+            rootPackage.path,
+            rootPackage.platform == Platform.mobile
+                ? 'android'
+                : rootPackage.platform.name,
+          ),
+        );
+
+  final PlatformRootPackage _rootPackage; // TODO could be more specific type
 
   @override
   Future<void> create({
@@ -42,7 +46,7 @@ class NoneIosNativeDirectoryImpl extends PlatformNativeDirectoryImpl
     final platform = _rootPackage.platform;
 
     late final MasonBundle bundle;
-    if (platform == Platform.android) {
+    if (platform == Platform.android || platform == Platform.mobile) {
       bundle = androidNativeDirectoryBundle;
     } else if (platform == Platform.linux) {
       bundle = linuxNativeDirectoryBundle;
@@ -68,8 +72,16 @@ class NoneIosNativeDirectoryImpl extends PlatformNativeDirectoryImpl
 class IosNativeDirectoryImpl extends PlatformNativeDirectoryImpl
     implements IosNativeDirectory {
   IosNativeDirectoryImpl({
-    required super.rootPackage,
-  });
+    required PlatformRootPackage rootPackage,
+  })  : _rootPackage = rootPackage,
+        super(
+          path: p.join(
+            rootPackage.path,
+            'ios',
+          ),
+        );
+
+  final PlatformRootPackage _rootPackage; // TODO could be more specific type
 
   InfoPlistFile get _infoPlistFile =>
       infoPlistFileOverrides ?? InfoPlistFile(iosNativeDirectory: this);

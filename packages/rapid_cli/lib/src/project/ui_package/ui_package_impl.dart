@@ -7,7 +7,7 @@ import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/platform_ui_package/widget_bundle.dart';
+import 'package:rapid_cli/src/project/platform_ui_package/widget_bundle.dart'; // TODO shared good ?
 import 'package:rapid_cli/src/project/project.dart';
 
 import 'ui_package.dart';
@@ -154,6 +154,7 @@ class WidgetImpl extends FileSystemEntityCollection
         'macos': false,
         'web': false,
         'windows': false,
+        'mobile': false,
       },
     );
   }

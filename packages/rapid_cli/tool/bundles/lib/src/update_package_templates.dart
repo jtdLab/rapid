@@ -405,7 +405,9 @@ extension on PlatformPackageTemplate {
       '--web',
       '${platform == 'web'}',
       '--windows',
-      '${platform == 'windows'}'
+      '${platform == 'windows'}',
+      '--mobile',
+      '${platform == 'mobile'}'
     ];
 
     switch (name) {
@@ -498,7 +500,9 @@ extension on PlatformNamedPackageTemplate {
       '--web',
       '${platform == 'web'}',
       '--windows',
-      '${platform == 'windows'}'
+      '${platform == 'windows'}',
+      '--mobile',
+      '${platform == 'mobile'}'
     ];
 
     switch (this.name) {

@@ -102,6 +102,8 @@ jobs:
           - test/e2e/ui_linux_remove_widget_test.dart
           - test/e2e/ui_macos_add_widget_test.dart
           - test/e2e/ui_macos_remove_widget_test.dart
+          - test/e2e/ui_mobile_add_widget_test.dart
+          - test/e2e/ui_mobile_remove_widget_test.dart
           - test/e2e/ui_remove_widget_test.dart
           - test/e2e/ui_web_add_widget_test.dart
           - test/e2e/ui_web_remove_widget_test.dart
@@ -144,6 +146,15 @@ jobs:
           - test/e2e/macos_remove_feature_test.dart
           - test/e2e/macos_remove_language_test.dart
           - test/e2e/macos_remove_navigator_test.dart
+
+          - test/e2e/mobile_add_feature_test.dart
+          - test/e2e/mobile_add_language_test.dart
+          - test/e2e/mobile_add_navigator_test.dart
+          - test/e2e/mobile_feature_add_bloc_test.dart
+          - test/e2e/mobile_feature_add_cubit_test.dart
+          - test/e2e/mobile_remove_feature_test.dart
+          - test/e2e/mobile_remove_language_test.dart
+          - test/e2e/mobile_remove_navigator_test.dart
 
           - test/e2e/web_add_feature_test.dart
           - test/e2e/web_add_language_test.dart

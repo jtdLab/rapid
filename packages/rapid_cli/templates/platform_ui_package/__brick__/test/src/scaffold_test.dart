@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-{{#android}}import 'package:flutter/material.dart';{{/android}}{{#ios}}import 'package:flutter/cupertino.dart';{{/ios}}{{#linux}}import 'package:flutter/material.dart';{{/linux}}{{#macos}}import 'package:flutter/widgets.dart';import 'package:macos_ui/macos_ui.dart';{{/macos}}{{#web}}import 'package:flutter/material.dart';{{/web}}{{#windows}}import 'package:fluent_ui/fluent_ui.dart';{{/windows}}
-{{#android}}import 'package:{{project_name}}_ui_android/src/scaffold.dart';import 'package:{{project_name}}_ui_android/src/scaffold_theme.dart';{{/android}}{{#ios}}import 'package:{{project_name}}_ui_ios/src/scaffold.dart';import 'package:{{project_name}}_ui_ios/src/scaffold_theme.dart';{{/ios}}{{#linux}}import 'package:{{project_name}}_ui_linux/src/scaffold.dart';import 'package:{{project_name}}_ui_linux/src/scaffold_theme.dart';{{/linux}}{{#macos}}import 'package:{{project_name}}_ui_macos/src/scaffold.dart';import 'package:{{project_name}}_ui_macos/src/scaffold_theme.dart';{{/macos}}{{#web}}import 'package:{{project_name}}_ui_web/src/scaffold.dart';import 'package:{{project_name}}_ui_web/src/scaffold_theme.dart';{{/web}}{{#windows}}import 'package:{{project_name}}_ui_windows/src/scaffold.dart';import 'package:{{project_name}}_ui_windows/src/scaffold_theme.dart';{{/windows}}
+{{#android}}import 'package:flutter/material.dart';{{/android}}{{#ios}}import 'package:flutter/cupertino.dart';{{/ios}}{{#linux}}import 'package:flutter/material.dart';{{/linux}}{{#macos}}import 'package:flutter/widgets.dart';import 'package:macos_ui/macos_ui.dart';{{/macos}}{{#web}}import 'package:flutter/material.dart';{{/web}}{{#windows}}import 'package:fluent_ui/fluent_ui.dart';{{/windows}}{{#mobile}}import 'package:flutter/material.dart';{{/mobile}}
+{{#android}}import 'package:{{project_name}}_ui_android/src/scaffold.dart';import 'package:{{project_name}}_ui_android/src/scaffold_theme.dart';{{/android}}{{#ios}}import 'package:{{project_name}}_ui_ios/src/scaffold.dart';import 'package:{{project_name}}_ui_ios/src/scaffold_theme.dart';{{/ios}}{{#linux}}import 'package:{{project_name}}_ui_linux/src/scaffold.dart';import 'package:{{project_name}}_ui_linux/src/scaffold_theme.dart';{{/linux}}{{#macos}}import 'package:{{project_name}}_ui_macos/src/scaffold.dart';import 'package:{{project_name}}_ui_macos/src/scaffold_theme.dart';{{/macos}}{{#web}}import 'package:{{project_name}}_ui_web/src/scaffold.dart';import 'package:{{project_name}}_ui_web/src/scaffold_theme.dart';{{/web}}{{#windows}}import 'package:{{project_name}}_ui_windows/src/scaffold.dart';import 'package:{{project_name}}_ui_windows/src/scaffold_theme.dart';{{/windows}}{{#mobile}}import 'package:{{project_name}}_ui_mobile/src/scaffold.dart';import 'package:{{project_name}}_ui_mobile/src/scaffold_theme.dart';{{/mobile}}
 
 import 'helpers/pump_app.dart';
 
@@ -290,4 +290,45 @@ import 'helpers/pump_app.dart';
     });
   });
 }
-{{/windows}}
+{{/windows}}{{#mobile}}void main() {
+  group('{{project_name.pascalCase()}}Scaffold', () {
+    testWidgets('renders Scaffold correctly', (tester) async {
+      // Arrange
+      const theme = {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12));
+      final body = Container();
+      final {{project_name.camelCase()}}Scaffold = _get{{project_name.pascalCase()}}Scaffold(
+        theme: theme,
+        body: body,
+      );
+
+      // Act
+      await tester.pumpApp({{project_name.camelCase()}}Scaffold);
+
+      // Assert
+      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+      expect(scaffold.backgroundColor, const Color(0xFF12FF12));
+      expect(scaffold.body, body);
+    });
+
+    testWidgets('renders Scaffold correctly when no theme is provided',
+        (tester) async {
+      // Arrange
+      final body = Container();
+      final {{project_name.camelCase()}}Scaffold = _get{{project_name.pascalCase()}}Scaffold(
+        body: body,
+      );
+
+      // Act
+      await tester.pumpApp({{project_name.camelCase()}}Scaffold);
+
+      // Assert
+      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
+      expect(
+        scaffold.backgroundColor,
+        {{project_name.pascalCase()}}ScaffoldTheme.light.backgroundColor,
+      );
+      expect(scaffold.body, body);
+    });
+  });
+}
+{{/mobile}}

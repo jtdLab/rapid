@@ -118,4 +118,23 @@ class {{name.pascalCase()}} extends StatelessWidget {
     );
   }
 }
-{{/windows}}
+{{/windows}}{{#mobile}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
+import 'package:{{project_name}}_ui_mobile/{{project_name}}_ui_mobile.dart';
+import 'package:{{project_name}}_mobile_{{name}}/src/presentation/l10n/l10n.dart';
+
+{{#routable}}@RoutePage(){{/routable}}
+class {{name.pascalCase()}} extends StatelessWidget {
+  const {{name.pascalCase()}}({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final title = context.l10n.title;
+
+    return {{project_name.pascalCase()}}Scaffold(
+      body: Center(
+        child: Text(title),
+      ),
+    );
+  }
+}
+{{/mobile}}

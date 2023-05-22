@@ -26,8 +26,9 @@ class ActivateWebCommand extends ActivatePlatformCommand
     FlutterConfigEnablePlatformCommand? flutterConfigEnableWeb,
   }) : super(
           platform: Platform.web,
-          flutterConfigEnablePlatform:
-              flutterConfigEnableWeb ?? Flutter.configEnableWeb,
+          flutterConfigEnablePlatforms: [
+            flutterConfigEnableWeb ?? Flutter.configEnableWeb,
+          ],
         ) {
     argParser
       ..addOption(

@@ -81,6 +81,7 @@ class PlatformUiPackageImpl extends DartPackageImpl
         'macos': platform == Platform.macos,
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
+        'mobile': platform == Platform.mobile,
       },
     );
   }
@@ -166,6 +167,7 @@ class WidgetImpl extends FileSystemEntityCollection
         'macos': platform == Platform.macos,
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
+        'mobile': platform == Platform.mobile,
       },
     );
   }

@@ -1,0 +1,43 @@
+import 'package:flutter/foundation.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:{{project_name}}_mobile/run_on_mobile.dart';
+
+import 'mocks.dart';
+
+void main() {
+  group('runOnPlatform()', () {
+    test('runs callback when platform is Android', () async {
+      // Arrange
+      debugDefaultTargetPlatformOverride = TargetPlatform.android;
+
+      // Act
+      final callback = MockFunction();
+      await runOnMobile(callback);
+
+      // Assert
+      verify(() => callback()).called(1);
+    });
+
+      test('runs callback when platform is iOS', () async {
+      // Arrange
+      debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
+
+      // Act
+      final callback = MockFunction();
+      await runOnMobile(callback);
+
+      // Assert
+      verify(() => callback()).called(1);
+    });
+
+    test('throws when platform is not Mobile', () async {
+      // Arrange
+      debugDefaultTargetPlatformOverride = TargetPlatform.fuchsia;
+
+      // Act + Assert
+      final callback = MockFunction();
+      expect(() => runOnMobile(callback), throwsA(isA<TargetPlatformError>()));
+    });
+  });
+}

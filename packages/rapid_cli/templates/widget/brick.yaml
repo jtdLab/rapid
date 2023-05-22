@@ -36,3 +36,6 @@ vars:
   windows:
     type: boolean
     description: Wheter is Windows widget
+  mobile:
+    type: boolean
+    description: Wheter is Mobile widget

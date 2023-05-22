@@ -23,8 +23,9 @@ class ActivateAndroidCommand extends ActivatePlatformCommand
     FlutterConfigEnablePlatformCommand? flutterConfigEnableAndroid,
   }) : super(
           platform: Platform.android,
-          flutterConfigEnablePlatform:
-              flutterConfigEnableAndroid ?? Flutter.configEnableAndroid,
+          flutterConfigEnablePlatforms: [
+            flutterConfigEnableAndroid ?? Flutter.configEnableAndroid
+          ],
         ) {
     argParser
       ..addOrgNameOption(

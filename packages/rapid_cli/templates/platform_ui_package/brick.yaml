@@ -40,3 +40,6 @@ vars:
   windows:
     type: boolean
     description: The project supports the Windows platform
+  mobile:
+    type: boolean
+    description: The project supports the Mobile (Android + iOS shared) platform

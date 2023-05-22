@@ -40,6 +40,9 @@ vars:
   windows:
     type: boolean
     description: The project supports the Windows platform
+  mobile:
+    type: boolean
+    description: The project supports the Mobile (Android + iOS shared) platform
   default_language:
     type: string
     description: The default language of the feature

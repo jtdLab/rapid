@@ -12,9 +12,11 @@ extension PlatformX on Platform {
       case Platform.linux:
         return ['l', 'lin'];
       case Platform.macos:
-        return ['m', 'mac'];
+        return ['mac'];
       case Platform.windows:
         return ['win'];
+      case Platform.mobile:
+        return [];
     }
   }
 
@@ -32,6 +34,8 @@ extension PlatformX on Platform {
         return 'macOS';
       case Platform.windows:
         return 'Windows';
+      case Platform.mobile:
+        return 'Mobile';
     }
   }
 }

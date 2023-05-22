@@ -23,8 +23,9 @@ class ActivateMacosCommand extends ActivatePlatformCommand
     FlutterConfigEnablePlatformCommand? flutterConfigEnableMacos,
   }) : super(
           platform: Platform.macos,
-          flutterConfigEnablePlatform:
-              flutterConfigEnableMacos ?? Flutter.configEnableMacos,
+          flutterConfigEnablePlatforms: [
+            flutterConfigEnableMacos ?? Flutter.configEnableMacos,
+          ],
         ) {
     argParser
       ..addOrgNameOption(

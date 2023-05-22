@@ -1,4 +1,4 @@
-const platforms = ['android', 'ios', 'linux', 'macos', 'web', 'windows'];
+const platforms = ['android', 'ios', 'linux', 'macos', 'web', 'windows', 'mobile'];
 const dart = DartDependency('3.0.0', '4.0.0');
 const flutter = FlutterDependency('3.10.0');
 final packages = [

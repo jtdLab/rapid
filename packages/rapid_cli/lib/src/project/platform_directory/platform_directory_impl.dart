@@ -132,3 +132,49 @@ class IosDirectoryImpl extends PlatformDirectoryImpl implements IosDirectory {
     );
   }
 }
+
+class MobileDirectoryImpl extends PlatformDirectoryImpl
+    implements MobileDirectory {
+  MobileDirectoryImpl({
+    required super.project,
+  }) : super(Platform.mobile);
+
+  @override
+  MobileRootPackageBuilder? rootPackageOverrides;
+
+  @override
+  MobileRootPackage get rootPackage =>
+      (rootPackageOverrides ?? MobileRootPackage.new)(
+        project: project,
+      );
+
+  @override
+  Future<void> create({
+    required String orgName,
+    required String language,
+    String? description,
+  }) async {
+    await rootPackage.create(
+      orgName: orgName,
+      language: language,
+      description: description,
+    );
+
+    await navigationPackage.create();
+
+    final appFeaturePackage = featuresDirectory.featurePackage(name: 'app');
+    await appFeaturePackage.create(
+      description: 'The App feature.', // TODO platform info
+      defaultLanguage: language,
+      languages: {language},
+    );
+
+    final homePageFeaturePackage =
+        featuresDirectory.featurePackage(name: 'home_page');
+    await homePageFeaturePackage.create(
+      description: 'The Home Page feature.', // TODO platform info
+      defaultLanguage: language,
+      languages: {language},
+    );
+  }
+}

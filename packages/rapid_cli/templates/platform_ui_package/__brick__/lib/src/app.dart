@@ -599,4 +599,99 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
     );
   }
 }
-{{/windows}}
+{{/windows}}{{#mobile}}import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
+import 'package:{{project_name}}_ui_mobile/src/theme_extensions.dart';
+
+abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
+  const {{project_name.pascalCase()}}App._({
+    super.key,
+    this.locale,
+    Iterable<Locale>? supportedLocales,
+    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
+    this.routerConfig,
+    this.themeMode,
+    this.home,
+  }) : _localizationsDelegates = localizationsDelegates,
+        _supportedLocales = supportedLocales;
+
+  const factory {{project_name.pascalCase()}}App({
+    Key? key,
+    Locale? locale,
+    required Iterable<Locale> supportedLocales,
+    required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
+    required RouterConfig<Object> routerConfig,
+    ThemeMode? themeMode,
+  }) = _{{project_name.pascalCase()}}App;
+
+  @visibleForTesting
+  const factory {{project_name.pascalCase()}}App.test({
+    Key? key,
+    Locale? locale,
+    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
+    ThemeMode? themeMode,
+    required Widget home,
+  }) = _{{project_name.pascalCase()}}AppTest;
+
+  final Locale? locale;
+  final Iterable<Locale>? _supportedLocales;
+  Iterable<Locale> get supportedLocales =>
+      _supportedLocales ?? [locale ?? const Locale('en')];
+  final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
+  Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
+      [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
+  final RouterConfig<Object>? routerConfig;
+  ThemeData get lightTheme => ThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]);
+  ThemeData get darkTheme => ThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]);
+  final ThemeMode? themeMode;
+  final Widget? home;
+}
+
+class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App {
+  const _{{project_name.pascalCase()}}App({
+    super.key,
+    super.locale,
+    required Iterable<Locale> super.supportedLocales,
+    required Iterable<LocalizationsDelegate<dynamic>> super.localizationsDelegates,
+    required RouterConfig<Object> super.routerConfig,
+    super.themeMode,
+  }) : super._();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp.router(
+      locale: locale,
+      supportedLocales: supportedLocales,
+      localizationsDelegates: localizationsDelegates,
+      routerConfig: routerConfig,
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: themeMode,
+    );
+  }
+}
+
+class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}}App {
+  const _{{project_name.pascalCase()}}AppTest({
+    super.key,
+    super.locale,
+    super.localizationsDelegates,
+    super.themeMode,
+    required super.home,
+  }) : super._();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      locale: locale,
+      supportedLocales: supportedLocales,
+      localizationsDelegates: localizationsDelegates,
+      themeMode: themeMode,
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      home: home,
+    );
+  }
+}
+{{/mobile}}

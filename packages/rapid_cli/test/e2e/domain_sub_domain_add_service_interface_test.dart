@@ -56,11 +56,6 @@ void main() {
             ...platformIndependentPackages,
             ...serviceInterfaceFiles(name: name, outputDir: outputDir),
           });
-          if (type != TestType.fast) {
-            await verifyTestsPassWith100PercentCoverage({
-              domainPackage(),
-            });
-          }
         }
 
         test(

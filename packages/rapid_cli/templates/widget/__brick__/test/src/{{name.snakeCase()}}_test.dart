@@ -1,4 +1,4 @@
-{{^android}}{{^ios}}{{^linux}}{{^macos}}{{^web}}{{^windows}}import 'package:flutter/material.dart' show Theme, ThemeData;
+{{^android}}{{^ios}}{{^linux}}{{^macos}}{{^web}}{{^windows}}{{^mobile}}import 'package:flutter/material.dart' show Theme, ThemeData;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name.snakeCase()}}_ui/src/{{name.snakeCase()}}.dart';
@@ -34,7 +34,7 @@ void main() {
       expect(container.color, const Color(0xFF12FF12));
     });
   });
-}{{/windows}}{{/web}}{{/macos}}{{/linux}}{{/ios}}{{/android}}{{#android}}import 'package:flutter/material.dart';
+}{{/mobile}}{{/windows}}{{/web}}{{/macos}}{{/linux}}{{/ios}}{{/android}}{{#android}}import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name.snakeCase()}}_ui_android/src/{{name.snakeCase()}}.dart';
 import 'package:{{project_name.snakeCase()}}_ui_android/src/{{name.snakeCase()}}_theme.dart';

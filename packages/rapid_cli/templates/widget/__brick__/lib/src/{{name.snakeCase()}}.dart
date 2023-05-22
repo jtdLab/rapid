@@ -1,4 +1,4 @@
-{{^android}}{{^ios}}{{^linux}}{{^macos}}{{^web}}{{^windows}}import 'package:flutter/widgets.dart';
+{{^android}}{{^ios}}{{^linux}}{{^macos}}{{^web}}{{^windows}}{{^mobile}}import 'package:flutter/widgets.dart';
 import 'package:{{project_name.snakeCase()}}_ui/src/{{name.snakeCase()}}_theme.dart';
 
 class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget {
@@ -19,7 +19,7 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget
       color: backgroundColor,
     );
   }
-}{{/windows}}{{/web}}{{/macos}}{{/linux}}{{/ios}}{{/android}}
+}{{/mobile}}{{/windows}}{{/web}}{{/macos}}{{/linux}}{{/ios}}{{/android}}
 {{#android}}import 'package:flutter/material.dart';
 import 'package:{{project_name.snakeCase()}}_ui_android/src/{{name.snakeCase()}}_theme.dart';
 

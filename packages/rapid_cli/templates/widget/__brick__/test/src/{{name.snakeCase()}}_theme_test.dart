@@ -1,4 +1,4 @@
-{{^android}}{{^ios}}{{^linux}}{{^macos}}{{^web}}{{^windows}}import 'dart:ui';
+{{^android}}{{^ios}}{{^linux}}{{^macos}}{{^web}}{{^windows}}{{^mobile}}import 'dart:ui';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name.snakeCase()}}_ui/src/{{name.snakeCase()}}_theme.dart';
 
@@ -22,7 +22,7 @@ void main() {
       });
     });
   });
-}{{/windows}}{{/web}}{{/macos}}{{/linux}}{{/ios}}{{/android}}{{#android}}import 'package:flutter/material.dart';
+}{{/mobile}}{{/windows}}{{/web}}{{/macos}}{{/linux}}{{/ios}}{{/android}}{{#android}}import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name.snakeCase()}}_ui_android/src/{{name.snakeCase()}}_theme.dart';
 

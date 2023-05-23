@@ -54,9 +54,9 @@ Future<void> melosIsInstalled(
   MelosInstalledCommand melosInstalled, {
   required Logger logger,
 }) async {
-  final isFlutterInstalled = await melosInstalled(logger: logger);
+  final isMelosInstalled = await melosInstalled(logger: logger);
 
-  if (!isFlutterInstalled) {
+  if (!isMelosInstalled) {
     throw EnvironmentException(
       ExitCode.unavailable.code,
       'Melos not installed.',

@@ -1,8 +1,6 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
@@ -11,12 +9,8 @@ void main() {
   group('E2E', () {
     cwd = Directory.current;
 
-    late RapidCommandRunner commandRunner;
-
     setUp(() {
       Directory.current = getTempDir();
-
-      commandRunner = RapidCommandRunner();
     });
 
     tearDown(() {
@@ -28,14 +22,13 @@ void main() {
       () {
         Future<void> performTest({
           TestType type = TestType.normal,
-          required RapidCommandRunner commandRunner,
         }) async {
           // Arrange
           await setupProject();
           final name = 'FooBar';
 
           // Act
-          final commandResult = await commandRunner.run([
+          await runRapidCommand([
             'ui',
             'add',
             'widget',
@@ -43,7 +36,6 @@ void main() {
           ]);
 
           // Assert
-          expect(commandResult, equals(ExitCode.success.code));
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
           verifyDoExist({
@@ -61,7 +53,6 @@ void main() {
           '(fast)',
           () => performTest(
             type: TestType.fast,
-            commandRunner: commandRunner,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
           tags: ['fast'],
@@ -69,9 +60,7 @@ void main() {
 
         test(
           '',
-          () => performTest(
-            commandRunner: commandRunner,
-          ),
+          () => performTest(),
           timeout: const Timeout(Duration(minutes: 4)),
         );
       },

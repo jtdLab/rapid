@@ -2,9 +2,10 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_features_directory.dart';
-import 'package:rapid_cli/src/project/project.dart';
+
+import '../../project.dart';
+import 'platform_feature_package/platform_feature_package.dart';
+import 'platform_features_directory.dart';
 
 class PlatformFeaturesDirectoryImpl extends DartPackageImpl
     implements PlatformFeaturesDirectory {
@@ -16,9 +17,9 @@ class PlatformFeaturesDirectoryImpl extends DartPackageImpl
           path: p.join(
             project.path,
             'packages',
-            project.name(),
-            '${project.name()}_${platform.name}',
-            '${project.name()}_${platform.name}_features',
+            project.name,
+            '${project.name}_${platform.name}',
+            '${project.name}_${platform.name}_features',
           ),
         );
 
@@ -31,7 +32,7 @@ class PlatformFeaturesDirectoryImpl extends DartPackageImpl
   List<PlatformFeaturePackage>? featurePackagesOverrides;
 
   @override
-  final Project project;
+  final RapidProject project;
 
   @override
   T featurePackage<T extends PlatformFeaturePackage>({required String name}) =>
@@ -41,15 +42,19 @@ class PlatformFeaturesDirectoryImpl extends DartPackageImpl
           : PlatformFeaturePackage(name, _platform, project: project)) as T;
 
   @override
-  List<PlatformFeaturePackage> featurePackages() => featurePackagesOverrides ??
-      list().whereType<Directory>().map(
-        (e) {
-          final name = p
-              .basename(e.path)
-              .replaceAll('${project.name()}_${_platform.name}_', '');
+  List<PlatformFeaturePackage> featurePackages() {
+    return featurePackagesOverrides ??
+        (exists()
+            ? list().whereType<Directory>().map(
+                (e) {
+                  final name = p
+                      .basename(e.path)
+                      .replaceAll('${project.name}_${_platform.name}_', '');
 
-          return featurePackage(name: name);
-        },
-      ).toList()
-    ..sort();
+                  return featurePackage(name: name);
+                },
+              ).toList()
+            : [])
+      ..sort();
+  }
 }

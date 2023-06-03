@@ -43,5 +43,8 @@ class DirectoryImpl implements Directory {
   DirectoryImpl get parent => DirectoryImpl(path: _directory.parent.path);
 
   @override
+  DirectoryImpl get absolute => DirectoryImpl(path: _directory.absolute.path);
+
+  @override
   void delete() => _directory.deleteSync(recursive: true);
 }

@@ -4,8 +4,8 @@ import 'package:rapid_cli/src/core/directory_impl.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/plist_file_impl.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_root_package.dart';
 
+import '../platform_root_package.dart';
 import 'android_native_directory_bundle.dart';
 import 'ios_native_directory_bundle.dart';
 import 'linux_native_directory_bundle.dart';
@@ -42,7 +42,7 @@ class NoneIosNativeDirectoryImpl extends PlatformNativeDirectoryImpl
     String? description,
     String? orgName,
   }) async {
-    final projectName = _rootPackage.project.name();
+    final projectName = _rootPackage.project.name;
     final platform = _rootPackage.platform;
 
     late final MasonBundle bundle;
@@ -94,7 +94,7 @@ class IosNativeDirectoryImpl extends PlatformNativeDirectoryImpl
     required String orgName,
     required String language,
   }) async {
-    final projectName = _rootPackage.project.name();
+    final projectName = _rootPackage.project.name;
 
     await generate(
       bundle: iosNativeDirectoryBundle,

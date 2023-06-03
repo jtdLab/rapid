@@ -7,8 +7,8 @@ import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
+import '../../../project.dart';
 import 'platform_feature_package_impl.dart';
 
 /// Signature for method that returns the [PlatformFeaturePackage] for [name].
@@ -16,7 +16,7 @@ typedef PlatformFeaturePackageBuilder<T extends PlatformFeaturePackage> = T
     Function(
   String name,
   Platform platform, {
-  required Project project,
+  required RapidProject project,
 });
 
 /// {@template platform_feature_package}
@@ -33,7 +33,7 @@ abstract class PlatformFeaturePackage
   factory PlatformFeaturePackage(
     String name,
     Platform platform, {
-    required Project project,
+    required RapidProject project,
   }) =>
       PlatformFeaturePackageImpl(
         name,
@@ -70,7 +70,7 @@ abstract class PlatformFeaturePackage
 
   Platform get platform;
 
-  Project get project;
+  RapidProject get project;
 
   Set<String> supportedLanguages();
 
@@ -98,28 +98,6 @@ abstract class PlatformFeaturePackage
   Future<void> addLanguage(String language);
 
   Future<void> removeLanguage(String language);
-
-  // TODO consider required !
-
-  Future<Bloc> addBloc({
-    required String name,
-    required String dir,
-  });
-
-  Future<Bloc> removeBloc({
-    required String name,
-    required String dir,
-  });
-
-  Future<Cubit> addCubit({
-    required String name,
-    required String dir,
-  });
-
-  Future<Cubit> removeCubit({
-    required String name,
-    required String dir,
-  });
 }
 
 /// {@template platform_app_feature_package}
@@ -131,7 +109,7 @@ abstract class PlatformAppFeaturePackage implements PlatformFeaturePackage {
   /// {@macro platform_app_feature_package}
   factory PlatformAppFeaturePackage(
     Platform platform, {
-    required Project project,
+    required RapidProject project,
   }) =>
       PlatformAppFeaturePackageImpl(
         platform,
@@ -219,16 +197,6 @@ abstract class ArbDirectory implements Directory {
   Future<void> create({
     required Set<String> languages,
     List<Map<String, dynamic>> Function(String language)? translations,
-  });
-
-  // TODO consider required ?
-
-  Future<void> addLanguageArbFile({
-    required String language,
-  });
-
-  Future<void> removeLanguageArbFile({
-    required String language,
   });
 }
 

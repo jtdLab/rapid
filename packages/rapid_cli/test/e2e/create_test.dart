@@ -1,8 +1,6 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
@@ -14,16 +12,12 @@ void main() {
     () {
       cwd = Directory.current;
 
-      late RapidCommandRunner commandRunner;
-
       setUpAll(() {
         projectName = 'test_app';
       });
 
       setUp(() {
         Directory.current = getTempDir();
-
-        commandRunner = RapidCommandRunner();
       });
 
       tearDown(() {
@@ -36,19 +30,20 @@ void main() {
           required List<String> flags,
         }) async {
           // Act
-          final commandResult = await commandRunner.run([
-            'create',
-            projectName,
-            for (final flag in flags) ...[
-              '--$flag',
+          await runRapidCommand(
+            [
+              'create',
+              projectName,
+              for (final flag in flags) ...[
+                '--$flag',
+              ],
             ],
-          ]);
+          );
 
           // Assert
           final platforms = flags
               .map((e) => Platform.values.firstWhere((p) => e == p.name))
               .toList();
-          expect(commandResult, equals(ExitCode.success.code));
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
           verifyDoNotExist(
@@ -84,7 +79,7 @@ void main() {
 // TODO this is more granular but increases execution time by wide margin
 /*         Future<void> performSlowTest({required Platform platform}) async {
           // Act
-          final commandResult = await commandRunner.run([
+          final commandResult = await runRapidCommand([
             'create',
             projectName,
             '--${platform.name}',
@@ -129,7 +124,7 @@ void main() {
           '',
           () async {
             // Act
-            final commandResult = await commandRunner.run([
+            final commandResult = await runRapidCommand([
               'create',
               projectName,
             ]);

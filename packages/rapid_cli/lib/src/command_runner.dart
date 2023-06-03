@@ -1,169 +1,195 @@
-import 'package:args/args.dart';
-import 'package:args/command_runner.dart';
-import 'package:mason/mason.dart' hide packageVersion;
-import 'package:rapid_cli/src/commands/activate/activate.dart';
-import 'package:rapid_cli/src/commands/android/android.dart';
-import 'package:rapid_cli/src/commands/begin/begin.dart';
-import 'package:rapid_cli/src/commands/deactivate/deactivate.dart';
-import 'package:rapid_cli/src/commands/domain/domain.dart';
-import 'package:rapid_cli/src/commands/end/end.dart';
-import 'package:rapid_cli/src/commands/infrastructure/infrastructure.dart';
-import 'package:rapid_cli/src/commands/ios/ios.dart';
-import 'package:rapid_cli/src/commands/linux/linux.dart';
-import 'package:rapid_cli/src/commands/macos/macos.dart';
-import 'package:rapid_cli/src/commands/mobile/mobile.dart';
-import 'package:rapid_cli/src/commands/pub/pub.dart';
-import 'package:rapid_cli/src/commands/ui/ui.dart';
-import 'package:rapid_cli/src/commands/web/web.dart';
-import 'package:rapid_cli/src/commands/windows/windows.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'dart:async';
+import 'dart:io' hide Platform;
 
-import 'commands/create/create.dart';
+import 'package:args/command_runner.dart';
+import 'package:cli_launcher/cli_launcher.dart';
+import 'package:mason/mason.dart' hide packageVersion;
+import 'package:pub_updater/pub_updater.dart';
+import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src/utils.dart';
+
+import 'command_runner/activate.dart';
+import 'command_runner/begin.dart';
+import 'command_runner/create.dart';
+import 'command_runner/deactivate.dart';
+import 'command_runner/doctor.dart';
+import 'command_runner/domain.dart';
+import 'command_runner/end.dart';
+import 'command_runner/infrastructure.dart';
+import 'command_runner/platform.dart';
+import 'command_runner/pub.dart';
+import 'command_runner/ui.dart';
+import 'exception.dart';
+import 'project_config.dart';
 import 'version.dart';
+
+const packageName = 'rapid_cli';
 
 /// {@template rapid_command_runner}
 /// A [CommandRunner] for the Rapid Command Line Interface.
 /// {@endtemplate}
-class RapidCommandRunner extends CommandRunner<int> {
+class RapidCommandRunner extends CommandRunner<void> {
   RapidCommandRunner({
+    RapidProject? project,
+    // TODO use this logger or rm it
     Logger? logger,
-    Project? project,
-  })  : _logger = logger ?? Logger(),
-        super(
+  }) : super(
           'rapid',
           'A CLI tool for developing Flutter apps based on Rapid Architecture.',
+          usageLineLength: terminalWidth,
         ) {
     argParser
       ..addFlag(
-        'version',
+        globalOptionVersion,
         abbr: 'v',
         help: 'Print the current version.',
         negatable: false,
       )
       ..addFlag(
-        'verbose',
+        globalOptionVerbose,
         help: 'Enable verbose logging.',
         negatable: false,
       );
-    addCommand(ActivateCommand(logger: _logger, project: project));
-    addCommand(AndroidCommand(logger: _logger, project: project));
-    addCommand(BeginCommand(logger: _logger, project: project));
-    addCommand(CreateCommand(logger: _logger));
-    addCommand(DeactivateCommand(logger: _logger, project: project));
-    // addCommand(DoctorCommand(logger: _logger, project: project)); // TODO use later
-    addCommand(DomainCommand(logger: _logger, project: project));
-    addCommand(EndCommand(logger: _logger, project: project));
-    addCommand(InfrastructureCommand(logger: _logger, project: project));
-    addCommand(IosCommand(logger: _logger, project: project));
-    addCommand(LinuxCommand(logger: _logger, project: project));
-    addCommand(MacosCommand(logger: _logger, project: project));
-    addCommand(MobileCommand(logger: _logger, project: project));
-    addCommand(PubCommand(logger: _logger));
-    addCommand(UiCommand(logger: _logger, project: project));
-    addCommand(WebCommand(logger: _logger, project: project));
-    addCommand(WindowsCommand(logger: _logger, project: project));
+
+    addCommand(ActivateCommand(project));
+    addCommand(PlatformCommand(Platform.android, project));
+    addCommand(BeginCommand(project));
+    addCommand(CreateCommand());
+    addCommand(DeactivateCommand(project));
+    addCommand(DoctorCommand(project));
+    addCommand(DomainCommand(project));
+    addCommand(EndCommand(project));
+    addCommand(InfrastructureCommand(project));
+    addCommand(PlatformCommand(Platform.ios, project));
+    addCommand(PlatformCommand(Platform.linux, project));
+    addCommand(PlatformCommand(Platform.macos, project));
+    addCommand(PlatformCommand(Platform.mobile, project));
+    addCommand(PubCommand(project));
+    addCommand(UiCommand(project));
+    addCommand(PlatformCommand(Platform.web, project));
+    addCommand(PlatformCommand(Platform.windows, project));
   }
 
   @override
   String get invocation => 'rapid <command>';
+}
 
-  final Logger _logger;
+FutureOr<void> rapidEntryPoint(
+  List<String> arguments,
+  LaunchContext context,
+) async {
+  final logger = Logger();
 
-  @override
-  Future<int> run(Iterable<String> args) async {
-    try {
-      final argResults = parse(args);
-      if (argResults['verbose'] == true) {
-        _logger.level = Level.verbose;
-      }
+  if (arguments.contains('--version') || arguments.contains('-v')) {
+    logger.info(packageVersion);
 
-      return await runCommand(argResults) ?? ExitCode.success.code;
-    } on FormatException catch (e, stackTrace) {
-      // TODO is catching FormatException needed ?
-      _logger
-        ..err(e.message)
-        ..err('$stackTrace')
-        ..info('')
-        ..info(usage);
-      return ExitCode.usage.code;
-    } on RapidException catch (e) {
-      _logger.err(e.message);
+    await _checkForUpdates(context, logger: logger);
 
-      return ExitCode.usage.code;
-    } on UsageException catch (e) {
-      _logger
-        ..err(e.message)
-        ..info('')
-        ..info(e.usage);
-      return ExitCode.usage.code;
-    }
+    return;
   }
-
-  @override
-  Future<int?> runCommand(ArgResults topLevelResults) async {
-    _logger
-      ..detail('Argument information:')
-      ..detail('  Top level options:');
-    for (final option in topLevelResults.options) {
-      if (topLevelResults.wasParsed(option)) {
-        _logger.detail('  - $option: ${topLevelResults[option]}');
+  try {
+    if (!arguments.willShowHelp) {
+      final dart = await runCommand(['dart', '--version']);
+      if (dart.exitCode != 0) {
+        logger.err('Dart not installed.');
+        exitCode = 1;
+        return;
       }
-    }
-    if (topLevelResults.command != null) {
-      final commandResult = topLevelResults.command!;
-      _logger
-        ..detail('  Command: ${commandResult.name}')
-        ..detail('    Command options:');
-      for (final option in commandResult.options) {
-        if (commandResult.wasParsed(option)) {
-          _logger.detail('    - $option: ${commandResult[option]}');
+
+      final flutter = await runCommand(['flutter', '--version']);
+      if (flutter.exitCode != 0) {
+        logger.err('Flutter not installed.');
+        exitCode = 1;
+        return;
+      }
+
+      if (!arguments.willRunCreate) {
+        final melos = await runCommand(['melos', '--version']);
+        if (melos.exitCode != 0) {
+          // TODO did u corrupt your rapid project root yaml?
+          logger.err('Melos not installed.');
+          exitCode = 1;
+          return;
         }
       }
-
-      if (commandResult.command != null) {
-        final subCommandResult = commandResult.command!;
-        _logger.detail('    Command sub command: ${subCommandResult.name}');
-      }
     }
-
-    int? exitCode = ExitCode.unavailable.code;
-    if (topLevelResults['version']) {
-      _logger.info(packageVersion);
-      // TODO add when pub.dev release
-      // await _checkForUpdates();
-
-      return ExitCode.success.code;
-    }
-    exitCode = await super.runCommand(topLevelResults);
-
-    return exitCode;
-  }
-
-  // TODO add when pub.dev release
-  /* Future<void> _checkForUpdates({
-    required Logger logger,
-  }) async {
-    final pubUpdater = PubUpdater();
-    const packageName = 'rapid_cli';
-    final isUpToDate = await pubUpdater.isUpToDate(
-      packageName: packageName,
-      currentVersion: packageVersion,
+    final project = await resolveProject(
+      arguments,
+      context.localInstallation?.packageRoot,
     );
-    if (!isUpToDate) {
-      final latestVersion = await pubUpdater.getLatestVersion(packageName);
 
+    await RapidCommandRunner(project: project, logger: logger).run(arguments);
+  } on RapidException catch (err) {
+    stderr.writeln(err.toString());
+    exitCode = 1;
+  } on UsageException catch (err) {
+    stderr.writeln(err.toString());
+    exitCode = 1;
+  } catch (err) {
+    exitCode = 1;
+    rethrow;
+  }
+}
+
+Future<void> _checkForUpdates(
+  LaunchContext context, {
+  required Logger logger,
+}) async {
+  final pubUpdater = PubUpdater();
+  final isUpToDate = await pubUpdater.isUpToDate(
+    packageName: packageName,
+    currentVersion: packageVersion,
+  );
+  if (!isUpToDate) {
+    final latestVersion = await pubUpdater.getLatestVersion(packageName);
+    final isGlobal = context.localInstallation == null;
+
+    if (isGlobal) {
       final shouldUpdate = logger.prompt(
             'There is a new version of $packageName available '
             '($latestVersion). Would you like to update?',
-            defaultValue: true,
+            defaultValue: false,
           ) ==
           'true';
       if (shouldUpdate) {
         await pubUpdater.update(packageName: packageName);
-        logger.success(
+        logger.info(
           '$packageName has been updated to version $latestVersion.',
         );
       }
+    } else {
+      logger.info(
+        'There is a new version of $packageName available '
+        '($latestVersion).',
+      );
     }
-  } */
+  }
+}
+
+// Make this public for use in e2e tests
+Future<RapidProject?> resolveProject(
+  List<String> arguments,
+  Directory? projectRoot,
+) async {
+  final RapidProjectConfig config;
+  if (projectRoot == null) {
+    if (arguments.willShowHelp || arguments.willRunCreate) {
+      return null;
+    } else {
+      config = await RapidProjectConfig.handleProjectNotFound(
+        Directory.current,
+      );
+    }
+  } else {
+    config = await RapidProjectConfig.fromProjectRoot(projectRoot);
+  }
+
+  return RapidProject(config: config);
+}
+
+extension on List<String> {
+  bool get willShowHelp => isEmpty || contains('--help') || contains('-h');
+
+  bool get willRunCreate => isNotEmpty && first == 'create';
 }

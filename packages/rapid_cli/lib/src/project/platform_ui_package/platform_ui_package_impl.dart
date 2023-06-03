@@ -8,8 +8,8 @@ import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
+import '../project.dart';
 import 'platform_ui_package.dart';
 import 'platform_ui_package_bundle.dart';
 import 'widget_bundle.dart';
@@ -24,8 +24,8 @@ class PlatformUiPackageImpl extends DartPackageImpl
           path: p.join(
             project.path,
             'packages',
-            '${project.name()}_ui',
-            '${project.name()}_ui_${platform.name}',
+            '${project.name}_ui',
+            '${project.name}_ui_${platform.name}',
           ),
         );
 
@@ -42,7 +42,7 @@ class PlatformUiPackageImpl extends DartPackageImpl
   final Platform platform;
 
   @override
-  final Project project;
+  final RapidProject project;
 
   @override
   ThemeExtensionsFile get themeExtensionsFile =>
@@ -69,7 +69,7 @@ class PlatformUiPackageImpl extends DartPackageImpl
 
   @override
   Future<void> create() async {
-    final projectName = project.name();
+    final projectName = project.name;
 
     await generate(
       bundle: platformUiPackageBundle,
@@ -151,7 +151,7 @@ class WidgetImpl extends FileSystemEntityCollection
 
   @override
   Future<void> create() async {
-    final projectName = _platformUiPackage.project.name();
+    final projectName = _platformUiPackage.project.name;
     final platform = _platformUiPackage.platform;
 
     final generator = await super.generator(widgetBundle);
@@ -191,7 +191,7 @@ class ThemeExtensionsFileImpl extends DartFileImpl
 
   @override
   void addThemeExtension(String name) {
-    final projectName = _platformUiPackage.project.name();
+    final projectName = _platformUiPackage.project.name;
 
     final themes = ['light', 'dark']; // TODO read from file
 
@@ -214,7 +214,7 @@ class ThemeExtensionsFileImpl extends DartFileImpl
 
   @override
   void removeThemeExtension(String name) {
-    final projectName = _platformUiPackage.project.name();
+    final projectName = _platformUiPackage.project.name;
 
     final themes = ['light', 'dark']; // TODO read from file
 

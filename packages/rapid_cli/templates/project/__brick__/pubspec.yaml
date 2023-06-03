@@ -1,7 +1,15 @@
-name: {{project_name}}_workspace
+name: {{project_name}}
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
-  
+
 dev_dependencies:
-  melos: ^3.0.1
+  melos: ^3.1.0
+  rapid_cli:
+    git:
+      url: https://github.com/jtdLab/rapid.git
+      path: packages/rapid_cli
+      ref: rewrite
+
+rapid:
+  name: {{project_name}}

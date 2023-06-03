@@ -1,7 +1,6 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
@@ -12,12 +11,8 @@ void main() {
   group('E2E', () {
     cwd = Directory.current;
 
-    late RapidCommandRunner commandRunner;
-
     setUp(() {
       Directory.current = getTempDir();
-
-      commandRunner = RapidCommandRunner();
     });
 
     tearDown(() {
@@ -30,7 +25,6 @@ void main() {
         () => performTest(
           platform: Platform.ios,
           type: TestType.fast,
-          commandRunner: commandRunner,
         ),
         timeout: const Timeout(Duration(minutes: 4)),
         tags: ['fast'],
@@ -40,7 +34,6 @@ void main() {
         '',
         () => performTest(
           platform: Platform.ios,
-          commandRunner: commandRunner,
         ),
         timeout: const Timeout(Duration(minutes: 4)),
       );

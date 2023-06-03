@@ -4,13 +4,13 @@ import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
+import '../../project.dart';
 import 'platform_navigation_package_impl.dart';
 
 typedef PlatformNavigationPackageBuilder = PlatformNavigationPackage Function(
   Platform platform, {
-  required Project project,
+  required RapidProject project,
 });
 
 /// {@template platform_navigation_package}
@@ -23,7 +23,7 @@ abstract class PlatformNavigationPackage
   /// {@macro platform_navigation_package}
   factory PlatformNavigationPackage(
     Platform platform, {
-    required Project project,
+    required RapidProject project,
   }) =>
       PlatformNavigationPackageImpl(
         platform,

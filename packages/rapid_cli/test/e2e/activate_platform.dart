@@ -1,5 +1,3 @@
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
@@ -8,19 +6,13 @@ import 'common.dart';
 Future<void> performTest({
   required Platform platform,
   TestType type = TestType.normal,
-  required RapidCommandRunner commandRunner,
 }) async {
   // Arrange
   await setupProject();
-
   // Act
-  final commandResult = await commandRunner.run([
-    'activate',
-    platform.name,
-  ]);
+  await runRapidCommand(['activate', platform.name]);
 
   // Assert
-  expect(commandResult, equals(ExitCode.success.code));
   await verifyNoAnalyzerIssues();
   await verifyNoFormattingIssues();
   final platformPackages = platformDependentPackages([platform]);

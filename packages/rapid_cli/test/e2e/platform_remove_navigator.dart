@@ -1,19 +1,15 @@
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:test/test.dart';
 
 import 'common.dart';
 
 Future<void> performTest({
   required Platform platform,
   TestType type = TestType.normal,
-  required RapidCommandRunner commandRunner,
 }) async {
   // Arrange
   await setupProject(platform);
   final featureName = 'home_page';
-  await commandRunner.run([
+  await runRapidCommand([
     platform.name,
     'add',
     'navigator',
@@ -22,7 +18,7 @@ Future<void> performTest({
   ]);
 
   // Act
-  final commandResult = await commandRunner.run([
+  await runRapidCommand([
     platform.name,
     'remove',
     'navigator',
@@ -31,7 +27,6 @@ Future<void> performTest({
   ]);
 
   // Assert
-  expect(commandResult, equals(ExitCode.success.code));
   await verifyNoAnalyzerIssues();
   await verifyNoFormattingIssues();
   final appFeaturePackage = featurePackage('app', platform);

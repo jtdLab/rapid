@@ -10,23 +10,23 @@ class DiPackageImpl extends DartPackageImpl
     with OverridableGenerator, Generatable
     implements DiPackage {
   DiPackageImpl({
-    required Project project,
+    required RapidProject project,
     super.pubspecFile,
   })  : _project = project,
         super(
           path: p.join(
             project.path,
             'packages',
-            project.name(),
-            '${project.name()}_di',
+            project.name,
+            '${project.name}_di',
           ),
         );
 
-  final Project _project;
+  final RapidProject _project;
 
   @override
   Future<void> create() async {
-    final projectName = _project.name();
+    final projectName = _project.name;
 
     await generate(
       bundle: diPackageBundle,

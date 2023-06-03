@@ -4,12 +4,13 @@ import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:rapid_cli/src/project/ui_package/ui_package_impl.dart';
+
+import 'ui_package_impl.dart';
 
 // TODO: ThemeExtensionsFile methods should be considered
 
 /// Signature of [UiPackage.new].
-typedef UiPackageBuilder = UiPackage Function({required Project project});
+typedef UiPackageBuilder = UiPackage Function({required RapidProject project});
 
 /// {@template ui_package}
 /// Abstraction of the ui package of a Rapid project.
@@ -19,7 +20,7 @@ typedef UiPackageBuilder = UiPackage Function({required Project project});
 abstract class UiPackage implements DartPackage, OverridableGenerator {
   /// {@macro ui_package}
   factory UiPackage({
-    required Project project,
+    required RapidProject project,
   }) =>
       UiPackageImpl(
         project: project,
@@ -38,7 +39,7 @@ abstract class UiPackage implements DartPackage, OverridableGenerator {
   WidgetBuilder? widgetOverrides;
 
   /// Returns the project associated with this package.
-  Project get project;
+  RapidProject get project;
 
   /// Returns the theme extensions file of this package.
   ThemeExtensionsFile get themeExtensionsFile;

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:io/io.dart' show copyPath;
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
@@ -26,6 +27,18 @@ enum TestType { slow, normal, fast }
 /// );
 /// ```
 late Directory cwd;
+
+// Runs a rapid command
+Future<void> runRapidCommand(List<String> command) async {
+  final commandRunner = RapidCommandRunner(
+    project: await resolveProject(
+      ['rapid', ...command],
+      Directory.current,
+    ),
+  );
+
+  await commandRunner.run(command);
+}
 
 String tempPath = p.join(cwd.path, '.dart_tool', 'test', 'tmp');
 String fixturesPath = p.join(cwd.path, 'test', 'e2e', 'fixtures');

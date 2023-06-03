@@ -8,8 +8,8 @@ import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
+import '../../project.dart';
 import 'navigator_bundle.dart';
 import 'platform_navigation_package.dart';
 import 'platform_navigation_package_bundle.dart';
@@ -19,21 +19,21 @@ class PlatformNavigationPackageImpl extends DartPackageImpl
     implements PlatformNavigationPackage {
   PlatformNavigationPackageImpl(
     Platform platform, {
-    required Project project,
+    required RapidProject project,
   })  : _platform = platform,
         _project = project,
         super(
           path: p.join(
             project.path,
             'packages',
-            project.name(),
-            '${project.name()}_${platform.name}',
-            '${project.name()}_${platform.name}_navigation',
+            project.name,
+            '${project.name}_${platform.name}',
+            '${project.name}_${platform.name}_navigation',
           ),
         );
 
   final Platform _platform;
-  final Project _project;
+  final RapidProject _project;
 
   @override
   NavigatorBuilder? navigatorOverrides;
@@ -51,7 +51,7 @@ class PlatformNavigationPackageImpl extends DartPackageImpl
 
   @override
   Future<void> create() async {
-    final projectName = _project.name();
+    final projectName = _project.name;
 
     await generate(
       bundle: platformNavigationPackageBundle,

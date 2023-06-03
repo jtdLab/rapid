@@ -3,15 +3,16 @@ import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package_impl.dart';
 import 'package:rapid_cli/src/project/project.dart';
+
+import 'domain_package_impl.dart';
 
 // TODO: DomainPackageBarrelFile is unused
 
 /// Signature of [DomainPackage.new].
 typedef DomainPackageBuilder = DomainPackage Function({
   String? name,
-  required Project project,
+  required RapidProject project,
 });
 
 /// {@template domain_package}
@@ -23,7 +24,7 @@ abstract class DomainPackage implements DartPackage, OverridableGenerator {
   /// {@macro domain_package}
   factory DomainPackage({
     String? name,
-    required Project project,
+    required RapidProject project,
   }) =>
       DomainPackageImpl(
         name: name,
@@ -50,7 +51,7 @@ abstract class DomainPackage implements DartPackage, OverridableGenerator {
   String? get name;
 
   /// Returns the project associated with this package.
-  Project get project;
+  RapidProject get project;
 
   /// Returns the barrel file of this package.
   DomainPackageBarrelFile get barrelFile;

@@ -1,12 +1,12 @@
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/directory_impl.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_features_directory.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_navigation_package/platform_navigation_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_root_package.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
+import '../project.dart';
 import 'platform_directory.dart';
+import 'platform_features_directory/platform_features_directory.dart';
+import 'platform_navigation_package/platform_navigation_package.dart';
+import 'platform_root_package/platform_root_package.dart';
 
 abstract class PlatformDirectoryImpl extends DirectoryImpl
     implements PlatformDirectory {
@@ -17,8 +17,8 @@ abstract class PlatformDirectoryImpl extends DirectoryImpl
           path: p.join(
             project.path,
             'packages',
-            project.name(),
-            '${project.name()}_${platform.name}',
+            project.name,
+            '${project.name}_${platform.name}',
           ),
         );
 
@@ -32,7 +32,7 @@ abstract class PlatformDirectoryImpl extends DirectoryImpl
   final Platform platform;
 
   @override
-  final Project project;
+  final RapidProject project;
 
   @override
   PlatformNavigationPackage get navigationPackage =>

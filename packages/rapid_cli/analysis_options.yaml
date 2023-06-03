@@ -23,9 +23,9 @@ analyzer:
   exclude:
     - test/e2e/fixtures/**
     - templates/**
+
   errors:
     invalid_use_of_protected_member: error
-
 # For more information about the core and recommended set of lints, see
 # https://dart.dev/go/core-lints
 

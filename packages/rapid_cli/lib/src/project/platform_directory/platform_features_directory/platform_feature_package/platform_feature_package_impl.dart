@@ -13,8 +13,8 @@ import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file_impl.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/navigator_implementation_bundle.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
+import '../../../project.dart';
 import 'arb_file_bundle.dart';
 import 'bloc_bundle.dart';
 import 'cubit_bundle.dart';
@@ -33,10 +33,10 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
           path: p.join(
             project.path,
             'packages',
-            project.name(),
-            '${project.name()}_${platform.name}',
-            '${project.name()}_${platform.name}_features',
-            '${project.name()}_${platform.name}_$name',
+            project.name,
+            '${project.name}_${platform.name}',
+            '${project.name}_${platform.name}_features',
+            '${project.name}_${platform.name}_$name',
           ),
         );
 
@@ -84,7 +84,7 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   final Platform platform;
 
   @override
-  final Project project;
+  final RapidProject project;
 
   @override
   Bloc bloc({required String name, required String dir}) =>
@@ -127,7 +127,7 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
     required String defaultLanguage,
     required Set<String> languages,
   }) async {
-    final projectName = project.name();
+    final projectName = project.name;
 
     await generate(
       bundle: platformFeaturePackageBundle,
@@ -186,77 +186,23 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
 
   @override
   Future<void> addLanguage(String language) async {
-    await _arbDirectory.addLanguageArbFile(language: language);
+    final languageArbFile = _arbDirectory.languageArbFile(language: language);
+    if (!languageArbFile.exists()) {
+      await languageArbFile.create();
+    }
   }
 
   @override
   Future<void> removeLanguage(String language) async {
-    await _arbDirectory.removeLanguageArbFile(language: language);
+    final languageArbFile = _arbDirectory.languageArbFile(language: language);
+    if (languageArbFile.exists()) {
+      languageArbFile.delete();
+    }
 
     final languageLocalizationsFile = _languageLocalizationsFile(language);
     if (languageLocalizationsFile.exists()) {
       languageLocalizationsFile.delete();
     }
-  }
-
-  @override
-  Future<Bloc> addBloc({
-    required String name,
-    required String dir,
-  }) async {
-    final bloc = this.bloc(name: name, dir: dir);
-    if (bloc.existsAny()) {
-      throw RapidException('The ${name}Bloc at $dir already exists');
-    }
-
-    await bloc.create();
-
-    return bloc;
-  }
-
-  @override
-  Future<Bloc> removeBloc({
-    required String name,
-    required String dir,
-  }) async {
-    final bloc = this.bloc(name: name, dir: dir);
-    if (!bloc.existsAny()) {
-      throw RapidException('The ${name}Bloc at $dir does not exist');
-    }
-
-    bloc.delete();
-
-    return bloc;
-  }
-
-  @override
-  Future<Cubit> addCubit({
-    required String name,
-    required String dir,
-  }) async {
-    final cubit = this.cubit(name: name, dir: dir);
-    if (cubit.existsAny()) {
-      throw RapidException('The ${name}Cubit at $dir already exists');
-    }
-
-    await cubit.create();
-
-    return cubit;
-  }
-
-  @override
-  Future<Cubit> removeCubit({
-    required String name,
-    required String dir,
-  }) async {
-    final cubit = this.cubit(name: name, dir: dir);
-    if (!cubit.existsAny()) {
-      throw RapidException('The ${name}Cubit at $dir does not exist');
-    }
-
-    cubit.delete();
-
-    return cubit;
   }
 
   @override
@@ -287,7 +233,7 @@ class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
     required String defaultLanguage,
     required Set<String> languages,
   }) async {
-    final projectName = project.name();
+    final projectName = project.name;
 
     await generate(
       bundle: platformAppFeaturePackageBundle,
@@ -414,34 +360,6 @@ class ArbDirectoryImpl extends DirectoryImpl implements ArbDirectory {
       }
     }
   }
-
-  @override
-  Future<LanguageArbFile> addLanguageArbFile({
-    required String language,
-  }) async {
-    final languageArbFile = this.languageArbFile(language: language);
-    if (languageArbFile.exists()) {
-      throw RapidException('The file $language.arb already exists');
-    }
-
-    await languageArbFile.create();
-
-    return languageArbFile;
-  }
-
-  @override
-  Future<LanguageArbFile> removeLanguageArbFile({
-    required String language,
-  }) async {
-    final languageArbFile = this.languageArbFile(language: language);
-    if (!languageArbFile.exists()) {
-      throw RapidException('The file $language.arb does not exist');
-    }
-
-    languageArbFile.delete();
-
-    return languageArbFile;
-  }
 }
 
 class LanguageArbFileImpl extends ArbFileImpl
@@ -558,7 +476,7 @@ class BlocImpl extends FileSystemEntityCollection
 
   @override
   Future<void> create() async {
-    final projectName = _platformFeaturePackage.project.name();
+    final projectName = _platformFeaturePackage.project.name;
     final platform = _platformFeaturePackage.platform.name;
     final featureName = _platformFeaturePackage.name;
 
@@ -635,7 +553,7 @@ class CubitImpl extends FileSystemEntityCollection
 
   @override
   Future<void> create() async {
-    final projectName = _platformFeaturePackage.project.name();
+    final projectName = _platformFeaturePackage.project.name;
     final platform = _platformFeaturePackage.platform.name;
     final featureName = _platformFeaturePackage.name;
 
@@ -687,7 +605,7 @@ class PlatformFeaturePackageNavigatorImplementationImpl
 
   @override
   Future<void> create() async {
-    final projectName = _platformFeaturePackage.project.name();
+    final projectName = _platformFeaturePackage.project.name;
     final name = _platformFeaturePackage.name;
     final platform = _platformFeaturePackage.platform;
 

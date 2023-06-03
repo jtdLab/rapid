@@ -5,11 +5,12 @@ import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_native_directory/platform_native_directory.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
+import '../../infrastructure_directory/infrastructure_package/infrastructure_package.dart';
+import '../../project.dart';
+import '../platform_features_directory/platform_feature_package/platform_feature_package.dart';
+
+import 'platform_native_directory/platform_native_directory.dart';
 import 'platform_root_package.dart';
 import 'platform_root_package_bundle.dart';
 
@@ -23,9 +24,9 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
           path: p.join(
             project.path,
             'packages',
-            project.name(),
-            '${project.name()}_${platform.name}',
-            '${project.name()}_${platform.name}',
+            project.name,
+            '${project.name}_${platform.name}',
+            '${project.name}_${platform.name}',
           ),
         );
 
@@ -51,7 +52,7 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
   final Platform platform;
 
   @override
-  final Project project;
+  final RapidProject project;
 
   // TODO is this correct ??????
   @override
@@ -133,7 +134,7 @@ class NoneIosRootPackageImpl extends PlatformRootPackageImpl
     String? description,
     String? orgName,
   }) async {
-    final projectName = project.name();
+    final projectName = project.name;
 
     await generate(
       bundle: platformRootPackageBundle,
@@ -176,7 +177,7 @@ class IosRootPackageImpl extends PlatformRootPackageImpl
     required String orgName,
     required String language,
   }) async {
-    final projectName = project.name();
+    final projectName = project.name;
 
     await generate(
       bundle: platformRootPackageBundle,
@@ -242,7 +243,7 @@ class MobileRootPackageImpl extends PlatformRootPackageImpl
     required String language,
     String? description,
   }) async {
-    final projectName = project.name();
+    final projectName = project.name;
 
     await generate(
       bundle: platformRootPackageBundle,

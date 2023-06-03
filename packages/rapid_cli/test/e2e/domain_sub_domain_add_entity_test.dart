@@ -1,8 +1,6 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
@@ -15,13 +13,10 @@ void main() {
     () {
       cwd = Directory.current;
 
-      late RapidCommandRunner commandRunner;
-
       setUp(() async {
         Directory.current = getTempDir();
 
         await setupProject();
-        commandRunner = RapidCommandRunner();
       });
 
       tearDown(() {
@@ -32,13 +27,12 @@ void main() {
         Future<void> performTest({
           String? outputDir,
           TestType type = TestType.normal,
-          required RapidCommandRunner commandRunner,
         }) async {
           // Arrange
           final name = 'FooBar';
 
           // Act
-          final commandResult = await commandRunner.run([
+          await runRapidCommand([
             'domain',
             'default',
             'add',
@@ -49,7 +43,6 @@ void main() {
           ]);
 
           // Assert
-          expect(commandResult, equals(ExitCode.success.code));
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
           verifyDoExist({
@@ -67,7 +60,6 @@ void main() {
           '(fast) ',
           () => performTest(
             type: TestType.fast,
-            commandRunner: commandRunner,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
           tags: ['fast'],
@@ -78,7 +70,6 @@ void main() {
           () => performTest(
             outputDir: 'foo',
             type: TestType.fast,
-            commandRunner: commandRunner,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
           tags: ['fast'],
@@ -86,9 +77,7 @@ void main() {
 
         test(
           '',
-          () => performTest(
-            commandRunner: commandRunner,
-          ),
+          () => performTest(),
           timeout: const Timeout(Duration(minutes: 4)),
         );
 
@@ -96,7 +85,6 @@ void main() {
           'with output dir',
           () => performTest(
             outputDir: 'foo',
-            commandRunner: commandRunner,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
         );

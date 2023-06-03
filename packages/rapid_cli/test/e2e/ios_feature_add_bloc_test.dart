@@ -1,7 +1,6 @@
 @Tags(['e2e'])
 import 'dart:io';
 
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
@@ -14,13 +13,10 @@ void main() {
     () {
       cwd = Directory.current;
 
-      late RapidCommandRunner commandRunner;
-
       setUp(() async {
         Directory.current = getTempDir();
 
         await setupProject(Platform.ios);
-        commandRunner = RapidCommandRunner();
       });
 
       tearDown(() {
@@ -34,7 +30,6 @@ void main() {
             platform: Platform.ios,
             expectedCoverage: 75.0,
             type: TestType.fast,
-            commandRunner: commandRunner,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
           tags: ['fast'],
@@ -47,7 +42,6 @@ void main() {
             outputDir: 'foo',
             expectedCoverage: 75.0,
             type: TestType.fast,
-            commandRunner: commandRunner,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
           tags: ['fast'],
@@ -58,7 +52,6 @@ void main() {
           () => performTest(
             platform: Platform.ios,
             expectedCoverage: 75.0,
-            commandRunner: commandRunner,
           ),
           timeout: const Timeout(Duration(minutes: 8)),
         );
@@ -69,7 +62,6 @@ void main() {
             platform: Platform.ios,
             outputDir: 'foo',
             expectedCoverage: 75.0,
-            commandRunner: commandRunner,
           ),
           timeout: const Timeout(Duration(minutes: 8)),
         );

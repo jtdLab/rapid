@@ -19,4 +19,7 @@ abstract class Directory implements FileSystemEntity {
   ///
   /// Recurses into sub-directories when [recursive] is `true`.
   List<FileSystemEntity> list({bool recursive = false});
+
+  /// The parent directory of the file system entity.
+  Directory get absolute;
 }

@@ -4,13 +4,14 @@ import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/platform_ui_package/platform_ui_package_impl.dart';
 import 'package:rapid_cli/src/project/project.dart';
+
+import 'platform_ui_package_impl.dart';
 
 /// Signature of [PlatformUiPackage.new].
 typedef PlatformUiPackageBuilder = PlatformUiPackage Function({
   required Platform platform,
-  required Project project,
+  required RapidProject project,
 });
 
 /// {@template platform_ui_package}
@@ -22,7 +23,7 @@ abstract class PlatformUiPackage implements DartPackage, OverridableGenerator {
   /// {@macro platform_ui_package}
   factory PlatformUiPackage(
     Platform platform, {
-    required Project project,
+    required RapidProject project,
   }) =>
       PlatformUiPackageImpl(
         platform,
@@ -45,7 +46,7 @@ abstract class PlatformUiPackage implements DartPackage, OverridableGenerator {
   Platform get platform;
 
   /// Returns the project associated with this package.
-  Project get project;
+  RapidProject get project;
 
   /// Returns the theme extensions file of this package.
   ThemeExtensionsFile get themeExtensionsFile;

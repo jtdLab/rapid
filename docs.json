@@ -8,23 +8,32 @@
     ["Overview", "/"],
     ["Getting Started", "/getting-started"],
     [
-      "Commands",
+      "Rapid Architecture",
       [
-        ["activate", "/commands/activate"],
-        ["android", "/commands/android"],
-        ["begin", "/commands/begin"],
-        ["create", "/commands/create"],
-        ["deactivate", "/commands/deactivate"],
-        ["domain", "/commands/domain"],
-        ["end", "/commands/end"],
-        ["infrastructure", "/commands/infrastructure"],
-        ["ios", "/commands/ios"],
-        ["linux", "/commands/linux"],
-        ["macos", "/commands/macos"],
-        ["pub", "/commands/pub"],
-        ["ui", "/commands/ui"],
-        ["web", "/commands/web"],
-        ["windows", "/commands/windows"]
+        ["layers", "/architecture/layers"]
+      ]
+    ],
+    [
+      "Rapid CLI",
+      [
+        "Commands",
+        [
+          ["activate", "/cli/commands/activate"],
+          ["android", "/cli/commands/android"],
+          ["begin", "/cli/commands/begin"],
+          ["create", "/cli/commands/create"],
+          ["deactivate", "/cli/commands/deactivate"],
+          ["domain", "/cli/commands/domain"],
+          ["end", "/cli/commands/end"],
+          ["infrastructure", "/cli/commands/infrastructure"],
+          ["ios", "/cli/commands/ios"],
+          ["linux", "/cli/commands/linux"],
+          ["macos", "/cli/commands/macos"],
+          ["pub", "/cli/commands/pub"],
+          ["ui", "/cli/commands/ui"],
+          ["web", "/cli/commands/web"],
+          ["windows", "/cli/commands/windows"]
+        ]
       ]
     ]
   ]

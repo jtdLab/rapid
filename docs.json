@@ -10,7 +10,11 @@
     [
       "Architecture",
       [
-        ["layers", "/architecture/layers"]
+        ["layers", "/architecture/layers-and-dataflow"],
+        ["layers", "/architecture/ui-module"],
+        ["layers", "/architecture/app-module"],
+        ["layers", "/architecture/testing"],
+        ["layers", "/architecture/scripts"]
       ]
     ],
     [

@@ -1,9 +1,10 @@
 name: rapid_cli
 description: Rapid is an architecture and corresponding CLI to develop Flutter apps fast.
 version: 0.0.1
-publish_to: none
 repository: https://github.com/jtdLab/rapid/tree/main/packages/rapid_cli
 issue_tracker: https://github.com/jtdLab/rapid/issues
+homepage: https://docs.page/jtdlab/rapid
+documentation: https://docs.page/jtdlab/rapid
 
 executables:
   rapid:

@@ -6,14 +6,36 @@ This command adds support for a platform to the current project.
 rapid activate <platform>
 ```
 
-Available platforms are:
-
-- android
-- ios
-- linux
-- macos
-- mobile
-- web
-- windows
-
 This can be useful to support more platforms as your app grows.
+
+## Subcommands
+
+<Accordion title="rapid activate android">
+```
+rapid activate android
+```
+
+## Parameters
+
+### `desc`
+
+- Description: The description for the native Android project.
+- Type: String
+- Required: No
+- Default: `"A Rapid app."`
+
+### `org-name`
+
+- Description: The organization for the native Android project.
+- Type: String
+- Required: No
+- Default: `"com.example"`
+
+### `--language`
+
+- The default language for Android.
+- Type: String
+- Required: No
+- Default: `"en"`
+
+</Accordion>

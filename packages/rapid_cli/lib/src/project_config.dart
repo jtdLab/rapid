@@ -6,7 +6,6 @@ import 'package:rapid_cli/src/utils.dart';
 import 'package:yaml/yaml.dart';
 
 import 'exception.dart';
-import 'io.dart';
 import 'validation.dart';
 
 @immutable
@@ -125,7 +124,7 @@ class RapidProjectConfig {
 
   /// Validates the physical project on the file system.
   void validatePhysicalProject() {
-    if (!dirExists(path)) {
+    if (!Directory(path).existsSync()) {
       throw RapidConfigException(
         'The path $path does not point to a directory',
       );

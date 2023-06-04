@@ -1,1 +1,27 @@
-# Create
+# Create Command
+
+This command creates a new Rapid project.
+
+```
+# create a new project named "cool_app" supporting no platforms
+rapid create cool_app
+
+# create a new project named "cool_app" supporting ios and web platforms
+rapid create cool_app --ios --web
+```
+
+Parameters:
+
+| Name       |                               Value                               |
+| ---------- | :---------------------------------------------------------------: |
+| output-dir | The directory where to generate the new project (defaults to ".") |
+| desc       | The description of the new project. (defaults to "A Rapid app.")  |
+| org-name   | The organization of the new project. (defaults to "com.example")  |
+| --language |        The language of the new project (defaults to "en")         |
+| --android  |       Wheter the new project supports the Android platform.       |
+| --ios      |         Wheter the new project supports the iOS platform.         |
+| --linux    |        Wheter the new project supports the Linux platform.        |
+| --macos    |        Wheter the new project supports the macOS platform.        |
+| --web      |         Wheter the new project supports the Web platform.         |
+| --windows  |       Wheter the new project supports the Windows platform.       |
+| --mobile   |       Wheter the new project supports the Mobile platform.        |

@@ -10,6 +10,7 @@
     [
       "Architecture",
       [
+        ["Introduction", "/architecture/introduction"],
         ["Layers and Dataflow", "/architecture/layers-and-dataflow"],
         ["UI Module", "/architecture/ui-module"],
         ["App Module", "/architecture/app-module"],
@@ -21,6 +22,7 @@
       "CLI",
         [
           ["activate", "/cli/activate"],
+          ["platform", "/cli/platform"],
           ["android", "/cli/android"],
           ["begin", "/cli/begin"],
           ["create", "/cli/create"],

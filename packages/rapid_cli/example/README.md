@@ -1,3 +1,7 @@
-# Rapid Example
+# Activate Rapid CLI
 
-See example [here](https://github.com/jtdLab/rapid/tree/main/example).
+dart pub global activate rapid_cli
+
+# See list of available commands
+
+rapid --help

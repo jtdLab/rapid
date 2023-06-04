@@ -1,1 +1,50 @@
+---
+title: Getting Started
+description: Learn how to start using Rapid
+---
+
 # Getting Started
+
+Rapid requires a few steps to be completed before you can start using it.
+
+## Prerequisites
+
+Rapid is based on multiple popular Flutter community packages. Make sure u are familiar with their usage as they form the founddation of every Rapid App.
+
+| Task                    |                                                                         Package                                                                          |
+| ----------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------: |
+| Project Management      |                                                         [melos](https://pub.dev/packages/melos)                                                          |
+| Code Generation         |                                                  [build_runner](https://pub.dev/packages/build_runner)                                                   |
+| Dependency Injection    |                               [getIt](https://pub.dev/packages/get_it), [injectable](https://pub.dev/packages/injectable)                                |
+| Routing                 |                                                    [auto_route](https://pub.dev/packages/auto_route)                                                     |
+| Theming                 |                                                  [theme_tailor](https://pub.dev/packages/theme_tailor)                                                   |
+| Localization            | [flutter_localizations](https://docs.flutter.dev/development/accessibility-and-localization/internationalization), [intl](https://pub.dev/packages/intl) |
+| State Management        |                                                          [bloc](https://pub.dev/packages/bloc)                                                           |
+| Immutability            |                                                       [freezed](https://pub.dev/packages/freezed)                                                        |
+| (De-)Serialization      |                                             [json_serializable](https://pub.dev/packages/json_serializable)                                              |
+| Explicit Error Handling |                                                         [dartz](https://pub.dev/packages/dartz)                                                          |
+| Stringless APIs         |                                                   [flutter_gen](https://pub.dev/packages/flutter_gen)                                                    |
+| Testing                 |                              [mocktail](https://pub.dev/packages/mocktail), [bloc_test](https://pub.dev/packages/bloc_test)                              |
+
+Special thanks to all developers/contributors of these packages ❤️
+
+## Installation
+
+Install Rapid CLI as a
+[global package](https://dart.dev/tools/pub/cmd/pub-global#running-a-script-from-your-path)
+via [pub.dev](https://pub.dev/) so it can be used from anywhere on your system:
+
+```bash
+# rapid_cli requires melos >=3.0.0
+flutter pub global activate melos
+```
+
+```bash
+# required to generated clean coverage reports
+flutter pub global activate test_cov_console
+flutter pub global activate remove_from_coverage
+```
+
+```bash
+flutter pub global activate -sgit https://github.com/jtdLab/rapid.git --git-path packages/rapid_cli/
+```

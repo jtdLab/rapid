@@ -38,6 +38,7 @@
         [
           ["Command Group", "/advanced/command-group"]
         ]
-    ]
+    ],
+    ["IDE Support", "/ide-support"]
   ]
 }

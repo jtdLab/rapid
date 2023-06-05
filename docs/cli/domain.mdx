@@ -1,1 +1,25 @@
 # Domain Command
+
+Work with the domain part of an existing Rapid project.
+
+```
+rapid domain <subcommand>
+```
+
+TODO
+
+## Subcommands
+
+- `rapid domain add`: Add subdomains to the domain part of an existing Rapid project.
+  - `rapid domain add sub_domain`: Add subdomains of the domain part of an existing Rapid project.
+- `rapid domain <subdomain>`: Work with the subdomain <subdomain>.
+  - `rapid domain <subdomain> add`: Add a component to the subdomain <subdomain>.
+    - `rapid domain <subdomain> add entity`: Add a entity to the subdomain <subdomain>.
+    - `rapid domain <subdomain> add service_interface`: Add a service interface to the subdomain <subdomain>.
+    - `rapid domain <subdomain> add value_object`: Add a value object to the subdomain <subdomain>.
+  - `rapid domain <subdomain> remove`: Remove a component from the subdomain <subdomain>.
+    - `rapid domain <subdomain> remove entity`: Remove a entity from the subdomain <subdomain>.
+    - `rapid domain <subdomain> remove service_interface`: Remove a service interface from the subdomain <subdomain>.
+    - `rapid domain <subdomain> remove value_object`: Remove a value object from the subdomain <subdomain>.
+- `rapid domain remove sub_domain`: Remove subdomains from the domain part of an existing Rapid project.
+  - `rapid domain remove sub_domain`: Remove subdomains from the domain part of an existing Rapid project.

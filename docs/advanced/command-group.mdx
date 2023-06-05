@@ -1,7 +1,7 @@
 # Command Group
 
 Using Rapid CLI, a Command Group is used to group multiple commands together so that they can be executed sequentially, with shared tasks optimized for performance. By grouping commands together, Rapid CLI can identify potentially shared tasks and run them only once, rather than executing them for each individual command.
-To start a Command Group, use the [`rapid begin`](/cli/begin) command. This command informs the Rapid CLI to begin tracking shared tasks. Then, execute your individual commands as usual. Finally, to end the Command Group, use the [`rapid end`](/cli/end) command. This command signals Rapid CLI to complete the execution of the Command Group and perform any pending shared tasks. By running the shared tasks once, instead of repeating them for each individual command, the overall execution time can be significantly reduced.
+To start a Command Group, use the `rapid begin` command. This command informs the Rapid CLI to begin tracking shared tasks. Then, execute your individual commands as usual. Finally, to end the Command Group, use the `rapid end` command. This command signals Rapid CLI to complete the execution of the Command Group and perform any pending shared tasks. By running the shared tasks once, instead of repeating them for each individual command, the overall execution time can be significantly reduced.
 
 ## Example
 

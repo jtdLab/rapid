@@ -22,22 +22,15 @@
       "CLI",
         [
           ["activate", "/cli/activate"],
-          ["platform", "/cli/platform"],
-          ["android", "/cli/android"],
+          ["platform", "/cli/platform"],  
           ["begin", "/cli/begin"],
           ["create", "/cli/create"],
           ["deactivate", "/cli/deactivate"],
           ["domain", "/cli/domain"],
           ["end", "/cli/end"],
           ["infrastructure", "/cli/infrastructure"],
-          ["ios", "/cli/ios"],
-          ["linux", "/cli/linux"],
-          ["macos", "/cli/macos"],
-          ["mobile", "/cli/mobile"],
           ["pub", "/cli/pub"],
-          ["ui", "/cli/ui"],
-          ["web", "/cli/web"],
-          ["windows", "/cli/windows"]
+          ["ui", "/cli/ui"]
         ]
     ]
   ]

@@ -1,1 +1,91 @@
 # Infrastructure Command
+
+Work with the infrastructure part of an existing Rapid project.
+
+```
+rapid infrastructure <subcommand>
+```
+
+TODO
+
+## Subcommands
+
+- `rapid infrastructure <subinfrastructure>`: Work with the subinfrastructure <subinfrastructure>.
+  - `rapid infrastructure <subinfrastructure> add`: Add a component to the subinfrastructure <subinfrastructure>.
+    - `rapid infrastructure <subinfrastructure> add data_transfer_object`: Add a data transfer object to the subinfrastructure <subinfrastructure>.
+    - `rapid infrastructure <subinfrastructure> add service_implementation`: Add a service implementation to the subinfrastructure <subinfrastructure>.
+  - `rapid infrastructure <subinfrastructure> remove`: Remove a component from the subinfrastructure <subinfrastructure>.
+    - `rapid infrastructure <subinfrastructure> remove data_transfer_object`: Remove a data transfer object from the subinfrastructure <subinfrastructure>.
+    - `rapid infrastructure <subinfrastructure> remove service_implementation`: Remove a service implementation from the subinfrastructure <subinfrastructure>.
+
+## `rapid infrastructure <subinfrastructure> add data_transfer_object`
+
+```
+rapid infrastructure <subinfrastructure> add data_transfer_object [arguments]
+```
+
+### Parameters
+
+### `--entity (-e)`
+
+- Description: The name of the entity the data transfer object is related to.
+- Type: String
+- Required: Yes
+
+### `--output-dir (-o)`
+
+- Description: The output directory relative to <infrastructure_package>/lib/ .
+- Type: String
+- Required: No
+- Default: `"."`
+
+## `rapid infrastructure <subinfrastructure> add service_implementation`
+
+```
+rapid infrastructure <subinfrastructure> add service_implementation <name> [arguments]
+```
+
+### Parameters
+
+### `--service (-s)`
+
+- Description: The name of the service interface the service implementation is related to.
+- Type: String
+- Required: Yes
+
+### `--output-dir (-o)`
+
+- Description: The output directory relative to <infrastructure_package>/lib/ .
+- Type: String
+- Required: No
+- Default: `"."`
+
+## `rapid infrastructure <subinfrastructure> remove data_transfer_object`
+
+```
+rapid infrastructure <subinfrastructure> remove data_transfer_object <name> [arguments]
+```
+
+### Parameters
+
+### `--dir (-d)`
+
+- Description: The directory relative to <infrastructure_package>/lib/ .
+- Type: String
+- Required: No
+- Default: `"."`
+
+## `rapid infrastructure <subinfrastructure> remove service_implementation`
+
+```
+rapid infrastructure <subinfrastructure> remove service_implementation <name> [arguments]
+```
+
+### Parameters
+
+### `--dir (-d)`
+
+- Description: The directory relative to <infrastructure_package>/lib/ .
+- Type: String
+- Required: No
+- Default: `"."`

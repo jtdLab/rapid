@@ -1,0 +1,28 @@
+# Command Groups
+
+In Rapid, a Command Group is used to group multiple Rapid commands together so that they can be executed sequentially, with shared tasks optimized for performance. By grouping commands together, Rapid can identify potentially shared tasks and run them only once, rather than executing them for each individual command.
+To start a Command Group, use the `rapid begin` command. This command informs the Rapid CLI to begin tracking shared tasks. Then, execute your individual Rapid commands as usual. Finally, to end the Command Group, use the `rapid end` command. This command signals Rapid to complete the execution of the Command Group and perform any pending shared tasks. By running the shared tasks once, instead of repeating them for each individual command, the overall execution time can be significantly reduced.
+
+## Example
+
+### Without Command Group
+
+```bash
+# this runs code-generation inside my_feature 3 times
+rapid ios my_feature add bloc cool # runs code-generation inside my_feature
+rapid ios my_feature add cubit sweet # runs code-generation inside my_feature
+rapid ios my_feature add bloc funny # runs code-generation inside my_feature
+```
+
+## With Command Group
+
+<Warning>Don't forget to call `rapid end` to terminate the group.</Warning>
+
+```bash
+# this runs code-generation inside my_feature once
+rapid begin
+rapid ios my_feature add bloc cool
+rapid ios my_feature add cubit sweet
+rapid ios my_feature add bloc funny
+rapid end # runs code-generation inside my_feature
+```

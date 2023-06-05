@@ -10,6 +10,20 @@ TODO
 
 ## Subcommands
 
+- `rapid domain add`: Add subdomains to the domain part of an existing Rapid project.
+  - `rapid domain add sub_domain`: Add subdomains of the domain part of an existing Rapid project.
+- `rapid domain <subdomain>`: Work with a subdomain.
+  - `rapid domain <subdomain> add`: Add a component to a subdomain.
+    - `rapid domain <subdomain> add entity`: Add a entity to a subdomain.
+    - `rapid domain <subdomain> add service_interface`: Add a service interface to a subdomain.
+    - `rapid domain <subdomain> add value_object`: Add a value object to a subdomain.
+  - `rapid domain <subdomain> remove`: Remove a component from a subdomain.
+    - `rapid domain <subdomain> remove entity`: Remove a entity from a subdomain.
+    - `rapid domain <subdomain> remove service_interface`: Remove a service interface from a subdomain.
+    - `rapid domain <subdomain> remove value_object`: Remove a value object from a subdomain.
+- `rapid domain remove sub_domain`: Remove subdomains from the domain part of an existing Rapid project.
+  - `rapid domain remove sub_domain`: Remove subdomains from the domain part of an existing Rapid project.
+
 ## `rapid domain add sub_domain`
 
 ```
@@ -22,9 +36,9 @@ rapid domain add sub_domain <name>
 rapid domain <subdomain> add entity <name> [arguments]
 ```
 
-## Parameters
+### Parameters
 
-## `--output-dir (-o)`
+#### `--output-dir (-o)`
 
 - Description: The output directory relative to <domain_package>/lib/ .
 - Type: String
@@ -37,9 +51,9 @@ rapid domain <subdomain> add entity <name> [arguments]
 rapid domain <subdomain> add service_interface <name> [arguments]
 ```
 
-## Parameters
+### Parameters
 
-## `--output-dir (-o)`
+#### `--output-dir (-o)`
 
 - Description: The output directory relative to <domain_package>/lib/ .
 - Type: String
@@ -52,16 +66,16 @@ rapid domain <subdomain> add service_interface <name> [arguments]
 rapid domain <subdomain> add value_object <name> [arguments]
 ```
 
-## Parameters
+### Parameters
 
-## `--output-dir (-o)`
+#### `--output-dir (-o)`
 
 - Description: The output directory relative to <domain_package>/lib/ .
 - Type: String
 - Required: No
 - Default: `"."`
 
-## `--type`
+#### `--type`
 
 - Description: The type that gets wrapped by this value object. Generics get escaped via `"#"` e.g `Tuple<#A, #B, String>`.
 - Type: String
@@ -74,9 +88,9 @@ rapid domain <subdomain> add value_object <name> [arguments]
 rapid domain <subdomain> remove entity <name> [arguments]
 ```
 
-## Parameters
+### Parameters
 
-## `--dir (-d)`
+#### `--dir (-d)`
 
 - Description: The directory relative to <domain_package>/lib/ .
 - Type: String
@@ -89,9 +103,9 @@ rapid domain <subdomain> remove entity <name> [arguments]
 rapid domain <subdomain> remove service_interface <name> [arguments]
 ```
 
-## Parameters
+### Parameters
 
-## `--dir (-d)`
+#### `--dir (-d)`
 
 - Description: The directory relative to <domain_package>/lib/ .
 - Type: String
@@ -104,9 +118,9 @@ rapid domain <subdomain> remove service_interface <name> [arguments]
 rapid domain <subdomain> remove value_object <name> [arguments]
 ```
 
-## Parameters
+### Parameters
 
-## `--dir (-d)`
+#### `--dir (-d)`
 
 - Description: The directory relative to <domain_package>/lib/ .
 - Type: String

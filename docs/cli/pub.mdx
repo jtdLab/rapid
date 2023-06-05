@@ -1,4 +1,4 @@
-# Pub
+# Pub Command
 
 Work with packages in a Rapid environment.
 
@@ -7,18 +7,43 @@ rapid pub <subcommand>
 ```
 
 This should be used instead of `dart pub` or `flutter pub`.
-It will behave similarly to their native counterparts but also do some work required in the context of a Rapid project, mainly rebootstraping dependent packages.
+It will behave similarly to their native counterparts but also do some additional work required in the context of a Rapid project, mainly rebootstraping dependent packages.
 
 ## Subcommands
 
+<Tabs
+  values={[
+    { label: "add", value: "add" },
+    { label: "remove", value: "remove" },
+  ]}
+>
+<TabItem value="add">
 Add packages in a Rapid environment.
 
 ```bash
 rapid pub add [dev:]<package>[:descriptor] [[dev:]<package>[:descriptor] ...]
 ```
 
+## Parameters
+
+### `--package (-p)`
+
+- Description: The package where the command is run.
+- Type: String
+- Required: Yes
+</TabItem>
+<TabItem value="remove">
 Remove packages in a Rapid environment.
 
 ```bash
 rapid pub remove [packages]
 ```
+
+## Parameters
+
+### `--package (-p)`
+
+- Description: The package where the command is run.
+- Type: String
+- Required: Yes
+</TabItem>

@@ -6,14 +6,26 @@ This command removes support for a platform from the current project.
 rapid deactivate <platform>
 ```
 
-Available platforms are:
-
-- android
-- ios
-- linux
-- macos
-- mobile
-- web
-- windows
-
 This can be useful when a platform should not be longer supported.
+
+## Subcommands
+
+<Tabs
+  values={[
+    { label: "android", value: "android" },
+    { label: "ios", value: "ios" },
+    { label: "linux", value: "linux" },
+    { label: "macos", value: "macos" },
+    { label: "mobile", value: "mobile" },
+    { label: "web", value: "web" },
+    { label: "windows", value: "windows" },
+  ]}
+>
+  <TabItem value="android">```rapid deactivate android```</TabItem>
+  <TabItem value="ios">```rapid activate ios```</TabItem>
+  <TabItem value="linux">```rapid activate linux```</TabItem>
+  <TabItem value="macos">```rapid activate macos```</TabItem>
+  <TabItem value="web">```rapid activate web ```</TabItem>
+  <TabItem value="windows">```rapid activate windows```</TabItem>
+  <TabItem value="mobile">```rapid activate mobile```</TabItem>
+</Tabs>

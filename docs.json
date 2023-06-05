@@ -32,6 +32,12 @@
           ["pub", "/cli/pub"],
           ["ui", "/cli/ui"]
         ]
+    ],
+    [
+      "Advanced",
+        [
+          ["groups", "/advanced/groups"]
+        ]
     ]
   ]
 }

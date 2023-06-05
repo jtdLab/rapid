@@ -54,7 +54,7 @@ TODO
 
 </TabItem>
 <TabItem value="subdomain">
-Remove subdomains from the domain part of an existing Rapid project.
+Work with the subdomain `<subdomain>`.
 
 ```
 rapid domain <subdomain> <subcommand>
@@ -62,13 +62,27 @@ rapid domain <subdomain> <subcommand>
 
 ## Subcommands
 
-Remove subdomains of the domain part of an existing Rapid project.
+<Tabs
+  values={[
+    { label: "add", value: "add" },
+    { label: "remove", value: "remove" },
+  ]}
+>
+<TabItem value="add">
+Add a component to the subdomain `<subdomain>`.
 
-```
+```bash
 rapid domain <subdomain> add
 ```
+</TabItem>
+<TabItem value="remove">
+Remove a component to the subdomain `<subdomain>`.
 
-TODO
+```bash
+rapid domain <subdomain> remove
+```
+</TabItem>
+</Tabs>
 
 </TabItem>
 </Tabs>

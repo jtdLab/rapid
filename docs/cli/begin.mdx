@@ -1,1 +1,31 @@
 # Begin
+
+This command starts a group of Rapid command executions.
+
+```
+rapid begin
+```
+
+This can be useful to reduce execution time when running multiple commands that share time consuming task like code-generation or package bootstrapping.
+
+### Without command groups:
+
+```bash
+# this runs code-generation inside my_feature 3 times
+rapid ios my_feature add bloc cool # runs code-generation inside my_feature
+rapid ios my_feature add cubit sweet # runs code-generation inside my_feature
+rapid ios my_feature add bloc funny # runs code-generation inside my_feature
+```
+
+### With command groups:
+
+```bash
+# this runs code-generation inside my_feature once
+rapid begin
+rapid ios my_feature add bloc cool
+rapid ios my_feature add cubit sweet
+rapid ios my_feature add bloc funny
+rapid end # runs code-generation inside my_feature
+```
+
+<Warning>Don't forget to call `rapid end` to terminate the group.</Warning>

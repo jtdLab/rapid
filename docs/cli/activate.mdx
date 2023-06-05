@@ -10,7 +10,18 @@ This can be useful to support more platforms as your app grows.
 
 ## Subcommands
 
-<Accordion title="rapid activate android">
+<Tabs
+  values={[
+    { label: "android Tab", value: "android" },
+    { label: "ios Tab", value: "ios" },
+    { label: "linux Tab", value: "linux" },
+    { label: "macos Tab", value: "macos" },
+    { label: "web Tab", value: "web" },
+    { label: "windows Tab", value: "windows" },
+    { label: "mobile Tab", value: "mobile" },
+  ]}
+>
+<TabItem value="android">
 ```
 rapid activate android
 ```
@@ -37,5 +48,23 @@ rapid activate android
 - Type: String
 - Required: No
 - Default: `"en"`
-
-</Accordion>
+</TabItem>
+<TabItem value="ios">
+iOS
+</TabItem>
+<TabItem value="linux">
+Linux
+</TabItem>
+<TabItem value="macos">
+macOS
+</TabItem>
+<TabItem value="web">
+Web
+</TabItem>
+<TabItem value="windows">
+Windows
+</TabItem>
+<TabItem value="mobile">
+Mobile
+</TabItem>
+</Tabs>

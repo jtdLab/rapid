@@ -12,13 +12,13 @@ This can be useful to support more platforms as your app grows.
 
 <Tabs
   values={[
-    { label: "android Tab", value: "android" },
-    { label: "ios Tab", value: "ios" },
-    { label: "linux Tab", value: "linux" },
-    { label: "macos Tab", value: "macos" },
-    { label: "web Tab", value: "web" },
-    { label: "windows Tab", value: "windows" },
-    { label: "mobile Tab", value: "mobile" },
+    { label: "android", value: "android" },
+    { label: "ios", value: "ios" },
+    { label: "linux", value: "linux" },
+    { label: "macos", value: "macos" },
+    { label: "mobile", value: "mobile" },
+    { label: "web", value: "web" },
+    { label: "windows", value: "windows" },
   ]}
 >
 <TabItem value="android">
@@ -50,21 +50,136 @@ rapid activate android
 - Default: `"en"`
 </TabItem>
 <TabItem value="ios">
-iOS
+```
+rapid activate ios
+```
+
+## Parameters
+
+### `org-name`
+
+- Description: The organization for the native iOS project.
+- Type: String
+- Required: No
+- Default: `"com.example"`
+
+### `--language`
+
+- The default language for iOS.
+- Type: String
+- Required: No
+- Default: `"en"`
 </TabItem>
 <TabItem value="linux">
-Linux
+```
+rapid activate linux
+```
+
+## Parameters
+
+### `org-name`
+
+- Description: The organization for the native Linux project.
+- Type: String
+- Required: No
+- Default: `"com.example"`
+
+### `--language`
+
+- The default language for Linux.
+- Type: String
+- Required: No
+- Default: `"en"`
 </TabItem>
 <TabItem value="macos">
-macOS
+```
+rapid activate macos
+```
+
+## Parameters
+
+### `org-name`
+
+- Description: The organization for the native macOS project.
+- Type: String
+- Required: No
+- Default: `"com.example"`
+
+### `--language`
+
+- The default language for macOS.
+- Type: String
+- Required: No
+- Default: `"en"`
 </TabItem>
 <TabItem value="web">
-Web
+```
+rapid activate web
+```
+
+## Parameters
+
+### `desc`
+
+- Description: The description for the native Web project.
+- Type: String
+- Required: No
+- Default: `"A Rapid app."`
+
+### `--language`
+
+- The default language for Web.
+- Type: String
+- Required: No
+- Default: `"en"`
 </TabItem>
 <TabItem value="windows">
-Windows
+```
+rapid activate windows
+```
+
+## Parameters
+
+### `org-name`
+
+- Description: The organization for the native Windows project.
+- Type: String
+- Required: No
+- Default: `"com.example"`
+
+### `--language`
+
+- The default language for Windows.
+- Type: String
+- Required: No
+- Default: `"en"`
 </TabItem>
 <TabItem value="mobile">
-Mobile
+```
+rapid activate mobile
+```
+
+## Parameters
+
+### `desc`
+
+- Description: The description for the native Android project.
+- Type: String
+- Required: No
+- Default: `"A Rapid app."`
+
+### `org-name`
+
+- Description: The organization for the native Mobile projects.
+- Type: String
+- Required: No
+- Default: `"com.example"`
+
+### `--language`
+
+- The default language for Mobile.
+- Type: String
+- Required: No
+- Default: `"en"`
 </TabItem>
 </Tabs>

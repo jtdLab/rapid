@@ -83,7 +83,7 @@ void main() {
     ...
 
     testWidgets('sign in with username and password', (tester) async {
-      dev.main();
+      test.main();
 
       await sign_in_username_password.performTest(tester);
     });
@@ -108,7 +108,7 @@ void main() {
     ...
 
     testWidgets('sign in with username and password', (tester) async {
-      dev.main();
+      production.main();
 
       await sign_in_username_password.performTest(tester);
     });

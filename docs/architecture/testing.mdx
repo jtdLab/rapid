@@ -32,7 +32,17 @@ Future<void> performTest(WidgetTester tester) async {
 }
 ```
 
-2. Add the test to the environment runners
+2. Add the test to the environment runners.
+
+<Tabs
+  groupId="platforms"
+  values={[
+    { label: "development", value: "development" },
+    { label: "test", value: "test" },
+    { label: "production", value: "production" },
+  ]}
+>
+<TabItem value="development">
 
 ```dart
 // development_test.dart
@@ -42,11 +52,7 @@ import 'sign_in_username_password.dart' as sign_in_username_password;
 
 
 void main() {
-  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
-
-  setUp(() async {
-    await getIt.reset();
-  });
+  ...
 
   group('E2E (development)', () {
     ...
@@ -59,6 +65,58 @@ void main() {
   });
 }
 ```
+
+</TabItem>
+<TabItem value="test">
+
+```dart
+// test_test.dart
+
+...
+import 'sign_in_username_password.dart' as sign_in_username_password;
+
+
+void main() {
+  ...
+
+  group('E2E (test)', () {
+    ...
+
+    testWidgets('sign in with username and password', (tester) async {
+      dev.main();
+
+      await sign_in_username_password.performTest(tester);
+    });
+  });
+}
+```
+
+</TabItem>
+<TabItem value="production">
+
+```dart
+// production_test.dart
+
+...
+import 'sign_in_username_password.dart' as sign_in_username_password;
+
+
+void main() {
+  ...
+
+  group('E2E (production)', () {
+    ...
+
+    testWidgets('sign in with username and password', (tester) async {
+      dev.main();
+
+      await sign_in_username_password.performTest(tester);
+    });
+  });
+}
+```
+
+</TabItem>
 
 ### Running Integration Tests
 

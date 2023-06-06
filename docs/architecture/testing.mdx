@@ -121,4 +121,62 @@ void main() {
 
 ### Running Integration Tests
 
+<Tabs
+  groupId="environments"
+  values={[
+    { label: "rapid", value: "rapid" },
+    { label: "native", value: "native" },
+  ]}
+>
+<TabItem value="rapid">
+
+TODO
+
+```bash
+melos test:e2e
+```
+
+Web:
+
+```bash
+melos test:e2e:web
+```
+
+</TabItem>
+<TabItem value="native">
+
+TODO
+
+```bash
+flutter test integration_test/development_test.dart
+
+flutter test integration_test/test_test.dart
+
+flutter test integration_test/production_test.dart
+```
+
+Web:
+
+```bash
+chromedriver --port=4444
+
+flutter drive \
+  --driver=test_driver/integration_test.dart \
+  --target=integration_test/development_test.dart \
+  -d chrome
+
+  flutter drive \
+  --driver=test_driver/integration_test.dart \
+  --target=integration_test/test_test.dart \
+  -d chrome
+
+  flutter drive \
+  --driver=test_driver/integration_test.dart \
+  --target=integration_test/production_test.dart \
+  -d chrome
+```
+
+</TabItem>
+</Tabs>
+
 ## Unit & Widget Testing

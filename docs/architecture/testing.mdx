@@ -3,7 +3,7 @@
 ## Integration Testing (E2E)
 
 With [integration testing](https://docs.flutter.dev/cookbook/testing/integration/introduction), developers can confidently deliver a robust user experience by verifying that all parts of the application work harmoniously together, minimizing the risk of issues arising from the integration of different functionalities and reducing the chance of unexpected problems for end-users.
-Every Rapid project comes with a ready-to-use integration testing setup located inside the root package of each supported platform.
+Every Rapid project comes with a ready-to-use integration testing setup located inside the root package of each supported platform, and supports running integration tests in multiple environments.
 
 <Image
   src="assets/integration_test_setup.png"
@@ -13,5 +13,53 @@ Every Rapid project comes with a ready-to-use integration testing setup located 
   height="525"
   caption="Integration Test Setup."
 />
+
+### Adding Integration Tests
+
+Adding a new integration test includes two steps:
+
+1. Create a new file inside the `integration_test` directory.
+
+```dart
+// sign_in_username_password.dart
+
+import 'package:flutter_test/flutter_test.dart';
+
+Future<void> performTest(WidgetTester tester) async {
+  await tester.pumpAndSettle();
+
+  // testing logic goes here
+}
+```
+
+2. Add the test to the environment runners
+
+```dart
+// development_test.dart
+
+...
+import 'sign_in_username_password.dart' as sign_in_username_password;
+
+
+void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+
+  setUp(() async {
+    await getIt.reset();
+  });
+
+  group('E2E (development)', () {
+    ...
+
+    testWidgets('sign in with username and password', (tester) async {
+      dev.main();
+
+      await sign_in_username_password.performTest(tester);
+    });
+  });
+}
+```
+
+### Running Integration Tests
 
 ## Unit & Widget Testing

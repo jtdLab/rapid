@@ -1,1 +1,36 @@
 # Productivity
+
+## Code Generation
+
+<Info>
+  In the future, the introduction of static
+  [meta-programming](https://github.com/dart-lang/language/issues/1482) has the
+  potential to further accelerate this topic.
+</Info>
+
+Rapid projects rely extensively on code generation to facilitate fast development. Since Rapid projects are composed of small modular packages, the generation times will be lower compared to projects with a monolithic package structure. To execute code generation within a package, utilize the following command:
+
+```bash
+# Single run
+flutter pub run build_runner build --delete-conflicting outputs
+
+# Watch mode
+flutter pub run build_runner watch --delete-conflicting outputs
+```
+
+or make use of the pre-defined Melos scripts that are included with a Rapid project:
+
+```bash
+# Single run
+melos code-gen
+
+TODO
+```
+
+## Snippets
+
+<Info>Snippets for IntelliJ are planned for 2023</Info>
+
+<Info>Snippets for VS Code are planned for 2023</Info>
+
+Once a project has been created and the necessary Rapid Components have been added, developers can begin implementing these components. To maximize productivity, Rapid will include context-specific snippets that enable developers to implement components and packages more efficiently. By utilizing these snippets, developers can significantly speed up their workflow and achieve faster results.

@@ -1,5 +1,24 @@
 # Productivity
 
+## Scripts
+
+Every Rapid project comes with a set of scripts defined in the `melos.yaml` in the project root.
+How to run melos scripts can be seen [here](https://melos.invertase.dev/configuration/scripts).
+
+Available scripts:
+
+| Script Name   | Description                                  |
+| ------------- | -------------------------------------------- |
+| analyze       | Analyze all packages.                        |
+| format        | Format all packages.                         |
+| gen-code      | Run code generation in a package.            |
+| gen-l10n      | (Re)-generate localizations of a package.    |
+| test          | Run tests in a package.                      |
+| test:coverage | Run tests with coverage in a package.        |
+| test:e2e      | Run e2e tests.                               |
+| coverage      | Calculate coverage of package(s).            |
+| coverage:html | Generate html coverage report of package(s). |
+
 ## Code Generation
 
 <Info>
@@ -18,7 +37,7 @@ flutter pub run build_runner build --delete-conflicting outputs
 flutter pub run build_runner watch --delete-conflicting outputs
 ```
 
-or make use of the pre-defined Melos scripts that are included with a Rapid project:
+or make use of the pre-defined scripts:
 
 ```bash
 # Single run

@@ -22,7 +22,7 @@
       "CLI",
         [
           ["activate", "/cli/activate"],
-          ["platform", "/cli/platform"],  
+          ["<platform>", "/cli/platform"],  
           ["begin", "/cli/begin"],
           ["create", "/cli/create"],
           ["deactivate", "/cli/deactivate"],

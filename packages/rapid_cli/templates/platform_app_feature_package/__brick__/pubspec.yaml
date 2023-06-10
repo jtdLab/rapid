@@ -42,6 +42,10 @@ flutter_gen:
   # integrations:
   #   flutter_svg: true
 
+  assets:
+    outputs:
+      package_parameter_enabled: true
+
 # The following section is specific to Flutter packages.
 flutter:
   # The following line ensures that the Material Icons font is
@@ -122,6 +126,10 @@ flutter_gen:
   # integrations:
   #   flutter_svg: true
 
+  assets:
+    outputs:
+      package_parameter_enabled: true
+
 # The following section is specific to Flutter packages.
 flutter:
 
@@ -198,6 +206,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -279,6 +291,10 @@ flutter_gen:
   # integrations:
   #   flutter_svg: true
 
+  assets:
+    outputs:
+      package_parameter_enabled: true
+
 # The following section is specific to Flutter packages.
 flutter:
 
@@ -355,6 +371,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -436,6 +456,10 @@ flutter_gen:
   # integrations:
   #   flutter_svg: true
 
+  assets:
+    outputs:
+      package_parameter_enabled: true
+
 # The following section is specific to Flutter packages.
 flutter:
   # The following line ensures that the Material Icons font is
@@ -515,6 +539,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:

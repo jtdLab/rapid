@@ -1,4 +1,4 @@
-name: {{project_name}}
+name: { { project_name } }
 
 packages:
   - packages/**
@@ -46,6 +46,27 @@ scripts:
         - flutter_localizations
         - intl
 
+  run:dev:
+    exec: flutter run -t lib/main_development.dart
+    description: Run app in debug mode. (development)
+    packageFilters:
+      fileExists:
+        - lib/main_development.dart
+
+  run:test:
+    exec: flutter run -t lib/main_test.dart
+    description: Run app in debug mode. (test)
+    packageFilters:
+      fileExists:
+        - lib/main_test.dart
+
+  run:prod:
+    exec: flutter run -t lib/main_production.dart
+    description: Run app in debug mode. (production)
+    packageFilters:
+      fileExists:
+        - lib/main_production.dart
+
   test:
     exec: flutter test
     description: Run `flutter test` in a package.
@@ -60,19 +81,103 @@ scripts:
       dirExists:
         - test
 
-  test:e2e:
-    exec: flutter test
-    description: Run `flutter test` in a package.
+  test:e2e:dev:
+    exec: flutter test integration_test/development_test.dart
+    description: |
+      Run e2e tests in non web root package. (development)
+       - Requires
     packageFilters:
-      dirExists:
+      ignore: "*web*"
+      fileExists:
+        - integration_test/development_test.dart
+      dependsOn:
         - integration_test
+
+  test:e2e:dev:web:
+    exec: |
+      flutter drive \
+        --driver=test_driver/integration_test.dart \
+        --target=integration_test/development_test.dart \
+        -d chrome
+    description: |
+      Run e2e tests in web root package. (development)
+       - Requires `chromedriver` 
+        (can be installed via https://chromedriver.chromium.org/downloads).
+        (can be installed via `brew install --cask chromedriver` on macOS).
+       - Requires running `chromedriver --port=4444`
+    packageFilters:
+      scope: "*web*"
+      fileExists:
+        - integration_test/development_test.dart
+      dependsOn:
+        - integration_test
+
+  test:e2e:test:
+    exec: flutter test integration_test/test_test.dart
+    description: |
+      Run e2e tests in non web root package. (test)
+       - Requires
+    packageFilters:
+      ignore: "*web*"
+      fileExists:
+        - integration_test/test_test.dart
+      dependsOn:
+        - integration_test
+
+  test:e2e:test:web:
+    exec: |
+      flutter drive \
+        --driver=test_driver/integration_test.dart \
+        --target=integration_test/test_test.dart \
+        -d chrome
+    description: |
+      Run e2e tests in web root package. (test)
+       - Requires `chromedriver` 
+        (can be installed via https://chromedriver.chromium.org/downloads).
+        (can be installed via `brew install --cask chromedriver` on macOS).
+       - Requires running `chromedriver --port=4444`
+    packageFilters:
+      scope: "*web*"
+      fileExists:
+        - integration_test/test_test.dart
+      dependsOn:
+        - integration_test
+
+  test:e2e:prod:
+    exec: flutter test integration_test/production_test.dart
+    description: |
+      Run e2e tests in non web root package. (production)
+       - Requires
+    packageFilters:
+      ignore: "*web*"
+      fileExists:
+        - integration_test/production_test.dart
+      dependsOn:
+        - integration_test
+
+  test:e2e:prod:web:
+    exec: |
+      flutter drive \
+        --driver=test_driver/integration_test.dart \
+        --target=integration_test/production_test.dart \
+        -d chrome
+    description: |
+      Run e2e tests in web root package. (production)
+       - Requires `chromedriver` 
+        (can be installed via https://chromedriver.chromium.org/downloads).
+        (can be installed via `brew install --cask chromedriver` on macOS).
+       - Requires running `chromedriver --port=4444`
+    packageFilters:
+      scope: "*web*"
+      fileExists:
+        - integration_test/production_test.dart
       dependsOn:
         - integration_test
 
   coverage:
     exec: test_cov_console -t
     description: |
-      Run `test_cov_console -t` in a package.
+      Calculate coverage for a package.
        - Requires `test_cov_console` (can be installed via `dart pub global activate test_cov_console`).
     packageFilters:
       fileExists:
@@ -81,7 +186,7 @@ scripts:
   coverage:html:
     exec: genhtml coverage/lcov.info -o coverage/html
     description: |
-      Run `genhtml coverage/lcov.info -o coverage/html` in a package.
+      Generate a html-coverage report for a package.
        - Requires `lcov` (can be installed via `brew install lcov` on macOS).
     packageFilters:
       fileExists:

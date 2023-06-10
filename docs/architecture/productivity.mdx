@@ -7,18 +7,26 @@ More information on running melos scripts can be found [here](https://melos.inve
 
 Available scripts:
 
-| Script Name    | Description                                    |
-| -------------- | ---------------------------------------------- |
-| analyze        | Analyze all packages.                          |
-| format         | Format all packages.                           |
-| gen-code       | Run code generation in a package.              |
-| gen-code:watch | Run code generation in a package. (Watch mode) |
-| gen-l10n       | (Re)-generate localizations of a package.      |
-| test           | Run tests in a package.                        |
-| test:coverage  | Run tests with coverage in a package.          |
-| test:e2e       | Run e2e tests.                                 |
-| coverage       | Calculate coverage of package(s).              |
-| coverage:html  | Generate html coverage report of package(s).   |
+| Script Name       | Description                                          |
+| ----------------- | ---------------------------------------------------- |
+| analyze           | Analyze all packages.                                |
+| format            | Format all packages.                                 |
+| gen-code          | Run code generation in a package.                    |
+| gen-code:watch    | Run code generation in a package. (Watch mode)       |
+| gen-l10n          | (Re)-generate localizations of a package.            |
+| run:dev           | Run app in debug mode. (development)                 |
+| run:test          | Run app in debug mode. (test)                        |
+| run:prod          | Run app in debug mode. (production)                  |
+| test              | Run tests in a package.                              |
+| test:coverage     | Run tests with coverage in a package.                |
+| test:e2e:dev      | Run e2e tests in non web root package. (development) |
+| test:e2e:dev:web  | Run e2e tests in web root package. (development)     |
+| test:e2e:test     | Run e2e tests in non web root package. (test)        |
+| test:e2e:test:web | Run e2e tests in web root package. (test)            |
+| test:e2e:prod     | Run e2e tests in non web root package. (production)  |
+| test:e2e:prod:web | Run e2e tests in web root package. (production)      |
+| coverage          | Calculate coverage for a package.                    |
+| coverage:html     | Generate a html-coverage report for a package.       |
 
 <Warning>
   Some of these scripts have requirements to run successfully. Please refer to

@@ -11,73 +11,38 @@ mixin _PubMixin on _Rapid {
       ..command('rapid pub add')
       ..newLine();
 
-    throw UnimplementedError();
-    /*   // TODO check pubspec exists
-
-    if (packageName == null) {
-      final pubspec = PubspecFile();
-      try {
-        packageName = pubspec.readName();
-      } catch (e) {
-        throw UsageException(
-          'This command must either be called from within a package or with a explicit package via the "package" argument.',
-          usage,
-        );
-      }
-    }
-    final projectPackages = <DartPackage>[
-      project.diPackage,
-      ...project.domainDirectory.domainPackages(),
-      ...project.infrastructureDirectory.infrastructurePackages(),
-      project.loggingPackage,
-      project.uiPackage,
-      for (final platform in Platform.values
-          .where((platform) => project.platformIsActivated(platform))) ...[
-        project.platformDirectory(platform: platform).rootPackage,
-        project.platformDirectory(platform: platform).navigationPackage,
-        ...project
-            .platformDirectory(platform: platform)
-            .featuresDirectory
-            .featurePackages(),
-        project.platformUiPackage(platform: platform),
-      ],
-    ];
-    // TODO good
-    if (!projectPackages.map((e) => e.packageName()).contains(packageName)) {
+    late DartPackage package;
+    try {
+      package =
+          project.packages.firstWhere((e) => e.packageName() == packageName);
+    } catch (_) {
       // TODO
-      throw RapidException();
-      //throw RapidException('Package $packageName not found.');
+      throw Error();
     }
 
-    final unparsedPackages = _packages;
-
-    logger.commandTitle('Adding Dependencies to "$packageName" ...');
-
-    final localPackagesToAdd = unparsedPackages
+    final localPackagesToAdd = packages
         .where((e) => !e.trim().startsWith('dev') && e.trim().endsWith(':'))
         .toList();
-    final localDevPackagesToAdd = unparsedPackages
+    final localDevPackagesToAdd = packages
         .where((e) => e.trim().startsWith('dev') && e.trim().endsWith(':'))
         .toList();
-    final publicPackagesToAdd = unparsedPackages
+    final publicPackagesToAdd = packages
         .where((e) => !e.trim().startsWith('dev') && !e.trim().endsWith(':'))
         .toList();
-    final publicDevPackagesToAdd = unparsedPackages
+    final publicDevPackagesToAdd = packages
         .where((e) => e.trim().startsWith('dev') && !e.trim().endsWith(':'))
         .toList();
 
-    final package =
-        projectPackages.firstWhere((e) => e.packageName() == packageName);
     if (publicPackagesToAdd.isNotEmpty) {
       await flutterPubAdd(
-        cwd: package.path,
-        packages: publicPackagesToAdd,
+        package,
+        dependenciesToAdd: publicPackagesToAdd,
       );
     }
     if (publicDevPackagesToAdd.isNotEmpty) {
       await flutterPubAdd(
-        cwd: package.path,
-        packages: publicDevPackagesToAdd,
+        package,
+        dependenciesToAdd: publicDevPackagesToAdd,
       );
     }
 
@@ -91,7 +56,7 @@ mixin _PubMixin on _Rapid {
     }
 
     final dependingPackages =
-        projectPackages.where((e) => e.pubspecFile.hasDependency(packageName!));
+        project.packages.where((e) => e.pubspecFile.hasDependency(packageName));
 
     await bootstrap(
       packages: [
@@ -100,11 +65,9 @@ mixin _PubMixin on _Rapid {
       ],
     );
 
-    logger.commandSuccess(
-      'Added ${unparsedPackages.length == 1 ? unparsedPackages.first : unparsedPackages.join(', ')} to $packageName!',
-    );
-
-    return ExitCode.success.code; */
+    logger
+      ..newLine()
+      ..success('Success $checkLabel');
   }
 
   Future<void> pubGet({
@@ -169,58 +132,19 @@ mixin _PubMixin on _Rapid {
       ..command('rapid pub remove')
       ..newLine();
 
-    throw UnimplementedError();
-    /*  // TODO check pubspec exists
-
-    if (packageName == null) {
-      final pubspec = PubspecFile();
-      try {
-        packageName = pubspec.readName();
-      } catch (e) {
-        throw UsageException(
-          'This command must either be called from within a package or with a explicit package via the "package" argument.',
-          usage,
-        );
-      }
-    }
-    final packages = _packages;
-    final projectPackages = <DartPackage>[
-      project.diPackage,
-      ...project.domainDirectory.domainPackages(),
-      ...project.infrastructureDirectory.infrastructurePackages(),
-      project.loggingPackage,
-      project.uiPackage,
-      for (final platform in Platform.values
-          .where((platform) => project.platformIsActivated(platform))) ...[
-        project.platformDirectory(platform: platform).rootPackage,
-        project.platformDirectory(platform: platform).navigationPackage,
-        ...project
-            .platformDirectory(platform: platform)
-            .featuresDirectory
-            .featurePackages(),
-        project.platformUiPackage(platform: platform),
-      ],
-    ];
-
-    // TODO good ?
-    if (!projectPackages.map((e) => e.packageName()).contains(packageName)) {
+    late DartPackage package;
+    try {
+      package =
+          project.packages.firstWhere((e) => e.packageName() == packageName);
+    } catch (_) {
       // TODO
-      throw RapidException();
-      // throw RapidException('Package $packageName not found.');
+      throw Error();
     }
 
-    logger.commandTitle('Removing Dependencies from "$packageName" ...');
-
-    final package =
-        projectPackages.firstWhere((e) => e.packageName() == packageName);
-
-    await flutterPubRemove(
-      cwd: package.path,
-      packages: packages,
-    );
+    await flutterPubRemove(package, packagesToRemove: packages);
 
     final dependingPackages =
-        projectPackages.where((e) => e.pubspecFile.hasDependency(packageName!));
+        project.packages.where((e) => e.pubspecFile.hasDependency(packageName));
 
     await bootstrap(
       packages: [
@@ -229,8 +153,8 @@ mixin _PubMixin on _Rapid {
       ],
     );
 
-    logger.commandSuccess('Removed ${packages.join(', ')} from $packageName!');
-
-    return ExitCode.success.code; */
+    logger
+      ..newLine()
+      ..success('Success $checkLabel');
   }
 }

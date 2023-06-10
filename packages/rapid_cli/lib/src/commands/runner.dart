@@ -163,6 +163,31 @@ abstract class _Rapid {
     );
   }
 
+  Future<void> flutterPubAdd(
+    DartPackage package, {
+    required List<String> dependenciesToAdd,
+  }) async {
+    await _runCommandInPackage(
+      ['flutter', 'pub', 'add', ...dependenciesToAdd],
+      package: package,
+    );
+  }
+
+  Future<void> flutterPubRemove(
+    DartPackage package, {
+    required List<String> packagesToRemove,
+  }) async {
+    await _runCommandInPackage(
+      [
+        'flutter',
+        'pub',
+        'remove',
+        ...packagesToRemove,
+      ],
+      package: package,
+    );
+  }
+
   Future<FlutterPubGetDryRunResult> flutterPubGetDryRun(
     DartPackage package,
   ) async {

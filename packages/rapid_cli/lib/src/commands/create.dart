@@ -51,7 +51,10 @@ mixin _CreateMixin on _Rapid {
       ),
     );
 
-    await flutterPubGet(project.packages);
+    await flutterPubGet([
+      project,
+      ...project.packages,
+    ]);
 
     await flutterGenl10n(project.featurePackages);
 

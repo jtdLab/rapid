@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
@@ -40,6 +41,8 @@ Future<ProcessResult> runCommand(
     cmd,
     workingDirectory: workingDirectory,
     runInShell: true,
+    stderrEncoding: utf8,
+    stdoutEncoding: utf8,
   );
 }
 

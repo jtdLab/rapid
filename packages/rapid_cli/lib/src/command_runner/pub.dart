@@ -1,5 +1,6 @@
 import 'base.dart';
 import 'pub/add.dart';
+import 'pub/get.dart';
 import 'pub/remove.dart';
 
 /// {@template pub_command}
@@ -9,6 +10,7 @@ class PubCommand extends RapidBranchCommand {
   /// {@macro ui_command}
   PubCommand(super.project) {
     addSubcommand(PubAddCommand(project));
+    addSubcommand(PubGetCommand(project));
     addSubcommand(PubRemoveCommand(project));
   }
 

@@ -107,6 +107,60 @@ mixin _PubMixin on _Rapid {
     return ExitCode.success.code; */
   }
 
+  Future<void> pubGet({
+    required String packageName,
+  }) async {
+    logger
+      ..command('rapid pub get')
+      ..newLine();
+
+    late DartPackage package;
+    try {
+      package =
+          project.packages.firstWhere((e) => e.packageName() == packageName);
+    } catch (_) {
+      // TODO
+      throw Error();
+    }
+
+    List<DartPackage> packagesToBootstrap(List<DartPackage> initial) {
+      final remaining = project.packages
+        ..removeWhere((e) =>
+            initial.map((e) => e.packageName()).contains(e.packageName()));
+
+      final newPkgs = remaining
+          .where(
+            (rem) => initial.any(
+              (i) => rem.pubspecFile.hasDependency(i.packageName()),
+            ),
+          )
+          .toList();
+
+      if (newPkgs.isEmpty) {
+        return initial;
+      } else {
+        return packagesToBootstrap(
+          initial + newPkgs,
+        );
+      }
+    }
+
+    final result = await flutterPubGetDryRun(package);
+    if (result.wouldChangeDependencies) {
+      await bootstrap(
+        packages: packagesToBootstrap(
+          project.packages
+              .where((e) => e.pubspecFile.hasDependency(package.packageName()))
+              .toList(),
+        ),
+      );
+    }
+
+    logger
+      ..newLine()
+      ..success('Success $checkLabel');
+  }
+
   Future<void> pubRemove({
     required String packageName,
     required List<String> packages,

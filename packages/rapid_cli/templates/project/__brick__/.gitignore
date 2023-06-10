@@ -21,6 +21,9 @@ migrate_working_dir/
 # is commented out by default.
 #.vscode/
 
+# Flutter/Dart/Pub related
+.dart_tool/
+
 # Node
 node_modules/
 package-lock.json

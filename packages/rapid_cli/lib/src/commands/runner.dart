@@ -128,7 +128,7 @@ abstract class _Rapid {
       ];
       await task(
         'Running "${command.join(' ')}"',
-        () async => _runCommandInPackage(
+        () async => _startCommandInPackage(
           command,
           package: project,
         ),
@@ -160,6 +160,19 @@ abstract class _Rapid {
     return _commandTask(
       ['flutter', 'pub', 'get'],
       packages: packages,
+    );
+  }
+
+  Future<FlutterPubGetDryRunResult> flutterPubGetDryRun(
+    DartPackage package,
+  ) async {
+    final result = await _runCommandInPackage(
+      ['flutter', 'pub', 'get', '--dry-run'],
+      package: package,
+    );
+
+    return FlutterPubGetDryRunResult(
+      !(result.stdout as String).contains('No dependencies would change.'),
     );
   }
 
@@ -255,7 +268,7 @@ abstract class _Rapid {
         await Stream.fromIterable(packages).parallel(
           (package) async {
             try {
-              await _runCommandInPackage(cmd, package: package);
+              await _startCommandInPackage(cmd, package: package);
 
               logger
                   .child(package.packageName(), prefix: '$checkLabel ')
@@ -279,7 +292,7 @@ abstract class _Rapid {
     );
   }
 
-  Future<void> _runCommandInPackage(
+  Future<void> _startCommandInPackage(
     List<String> cmd, {
     required DartPackage package,
   }) async {
@@ -312,6 +325,12 @@ abstract class _Rapid {
     }
   }
 
+  Future<ProcessResult> _runCommandInPackage(
+    List<String> cmd, {
+    required DartPackage package,
+  }) =>
+      runCommand(cmd, workingDirectory: package.path);
+
   void _logAndThrow<E extends RapidException>(E exception) {
     try {
       throw exception;
@@ -340,4 +359,10 @@ class RapidRunCommandException {
   String toString() {
     return 'RapidRunCommandException: Failed to run "${command.join(' ')}" in ${package.packageName()}.';
   }
+}
+
+final class FlutterPubGetDryRunResult {
+  final bool wouldChangeDependencies;
+
+  FlutterPubGetDryRunResult(this.wouldChangeDependencies);
 }

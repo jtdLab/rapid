@@ -10,13 +10,13 @@ App _getApp({
   required List<Locale> supportedLocales,
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
-  List<AutoRouterObserver> Function()? routerObserverBuilder,
+  List<AutoRouterObserver> Function()? navigatorObserverBuilder,
 }) {
   return App(
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
     router: router,
-    routerObserverBuilder: routerObserverBuilder,
+    navigatorObserverBuilder: navigatorObserverBuilder,
   );
 }
 
@@ -25,7 +25,7 @@ App _getAppTest({
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
   List<PageRouteInfo<dynamic>>? initialRoutes,
-  AutoRouterObserver? routerObserver,
+  AutoRouterObserver? navigatorObserver,
   ThemeMode? themeMode,
 }) {
   return App.test(
@@ -33,7 +33,7 @@ App _getAppTest({
     localizationsDelegates: localizationsDelegates,
     router: router,
     initialRoutes: initialRoutes,
-    routerObserver: routerObserver,
+    navigatorObserver: navigatorObserver,
     themeMode: themeMode,
   );
 }
@@ -57,12 +57,12 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      routerObserverBuilder() => <AutoRouterObserver>[];
+      navigatorObserverBuilder() => <AutoRouterObserver>[];
       final app = _getApp(
         supportedLocales: const [Locale('en')],
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
-        routerObserverBuilder: routerObserverBuilder,
+        navigatorObserverBuilder: navigatorObserverBuilder,
       );
 
       // Act
@@ -97,7 +97,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers,
                     'navigatorObservers',
-                    routerObserverBuilder,
+                    navigatorObserverBuilder,
                   )
                   .having(
                     (delegate) => delegate.controller,
@@ -113,13 +113,13 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      final routerObserver = MockAutoRouterObserver();
+      final navigatorObserver= MockAutoRouterObserver();
       final app = _getAppTest(
         locale: const Locale('fr'),
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
         initialRoutes: const [FakePageRouteInfo()],
-        routerObserver: routerObserver,
+        navigatorObserver: navigatorObserver,
         themeMode: ThemeMode.dark,
       );
 
@@ -161,7 +161,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers(),
                     'navigatorObservers',
-                    equals([routerObserver]),
+                    equals([navigatorObserver]),
                   )
                   .having(
                     (delegate) => delegate.controller,
@@ -216,13 +216,13 @@ App _getApp({
   required List<Locale> supportedLocales,
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
-  List<AutoRouterObserver> Function()? routerObserverBuilder,
+  List<AutoRouterObserver> Function()? navigatorObserverBuilder,
 }) {
   return App(
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
     router: router,
-    routerObserverBuilder: routerObserverBuilder,
+    navigatorObserverBuilder: navigatorObserverBuilder,
   );
 }
 
@@ -231,7 +231,7 @@ App _getAppTest({
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
   List<PageRouteInfo<dynamic>>? initialRoutes,
-  AutoRouterObserver? routerObserver,
+  AutoRouterObserver? navigatorObserver,
   Brightness? brightness,
 }) {
   return App.test(
@@ -239,7 +239,7 @@ App _getAppTest({
     localizationsDelegates: localizationsDelegates,
     router: router,
     initialRoutes: initialRoutes,
-    routerObserver: routerObserver,
+    navigatorObserver: navigatorObserver,
     brightness: brightness,
   );
 }
@@ -263,12 +263,12 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      routerObserverBuilder() => <AutoRouterObserver>[];
+      navigatorObserverBuilder() => <AutoRouterObserver>[];
       final app = _getApp(
         supportedLocales: const [Locale('en')],
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
-        routerObserverBuilder: routerObserverBuilder,
+        navigatorObserverBuilder: navigatorObserverBuilder,
       );
 
       // Act
@@ -303,7 +303,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers,
                     'navigatorObservers',
-                    routerObserverBuilder,
+                    navigatorObserverBuilder,
                   )
                   .having(
                     (delegate) => delegate.controller,
@@ -319,13 +319,13 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      final routerObserver = MockAutoRouterObserver();
+      final navigatorObserver= MockAutoRouterObserver();
       final app = _getAppTest(
         locale: const Locale('fr'),
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
         initialRoutes: const [FakePageRouteInfo()],
-        routerObserver: routerObserver,
+        navigatorObserver: navigatorObserver,
         brightness: Brightness.dark,
       );
 
@@ -367,7 +367,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers(),
                     'navigatorObservers',
-                    equals([routerObserver]),
+                    equals([navigatorObserver]),
                   )
                   .having(
                     (delegate) => delegate.controller,
@@ -422,13 +422,13 @@ App _getApp({
   required List<Locale> supportedLocales,
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
-  List<AutoRouterObserver> Function()? routerObserverBuilder,
+  List<AutoRouterObserver> Function()? navigatorObserverBuilder,
 }) {
   return App(
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
     router: router,
-    routerObserverBuilder: routerObserverBuilder,
+    navigatorObserverBuilder: navigatorObserverBuilder,
   );
 }
 
@@ -437,7 +437,7 @@ App _getAppTest({
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
   List<PageRouteInfo<dynamic>>? initialRoutes,
-  AutoRouterObserver? routerObserver,
+  AutoRouterObserver? navigatorObserver,
   ThemeMode? themeMode,
 }) {
   return App.test(
@@ -445,7 +445,7 @@ App _getAppTest({
     localizationsDelegates: localizationsDelegates,
     router: router,
     initialRoutes: initialRoutes,
-    routerObserver: routerObserver,
+    navigatorObserver: navigatorObserver,
     themeMode: themeMode,
   );
 }
@@ -469,12 +469,12 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      routerObserverBuilder() => <AutoRouterObserver>[];
+      navigatorObserverBuilder() => <AutoRouterObserver>[];
       final app = _getApp(
         supportedLocales: const [Locale('en')],
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
-        routerObserverBuilder: routerObserverBuilder,
+        navigatorObserverBuilder: navigatorObserverBuilder,
       );
 
       // Act
@@ -509,7 +509,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers,
                     'navigatorObservers',
-                    routerObserverBuilder,
+                    navigatorObserverBuilder,
                   )
                   .having(
                     (delegate) => delegate.controller,
@@ -525,13 +525,13 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      final routerObserver = MockAutoRouterObserver();
+      final navigatorObserver= MockAutoRouterObserver();
       final app = _getAppTest(
         locale: const Locale('fr'),
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
         initialRoutes: const [FakePageRouteInfo()],
-        routerObserver: routerObserver,
+        navigatorObserver: navigatorObserver,
         themeMode: ThemeMode.dark,
       );
 
@@ -573,7 +573,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers(),
                     'navigatorObservers',
-                    equals([routerObserver]),
+                    equals([navigatorObserver]),
                   )
                   .having(
                     (delegate) => delegate.controller,
@@ -628,13 +628,13 @@ App _getApp({
   required List<Locale> supportedLocales,
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
-  List<AutoRouterObserver> Function()? routerObserverBuilder,
+  List<AutoRouterObserver> Function()? navigatorObserverBuilder,
 }) {
   return App(
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
     router: router,
-    routerObserverBuilder: routerObserverBuilder,
+    navigatorObserverBuilder: navigatorObserverBuilder,
   );
 }
 
@@ -643,7 +643,7 @@ App _getAppTest({
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
   List<PageRouteInfo<dynamic>>? initialRoutes,
-  AutoRouterObserver? routerObserver,
+  AutoRouterObserver? navigatorObserver,
   Brightness? brightness,
 }) {
   return App.test(
@@ -651,7 +651,7 @@ App _getAppTest({
     localizationsDelegates: localizationsDelegates,
     router: router,
     initialRoutes: initialRoutes,
-    routerObserver: routerObserver,
+    navigatorObserver: navigatorObserver,
     brightness: brightness,
   );
 }
@@ -675,12 +675,12 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      routerObserverBuilder() => <AutoRouterObserver>[];
+      navigatorObserverBuilder() => <AutoRouterObserver>[];
       final app = _getApp(
         supportedLocales: const [Locale('en')],
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
-        routerObserverBuilder: routerObserverBuilder,
+        navigatorObserverBuilder: navigatorObserverBuilder,
       );
 
       // Act
@@ -715,7 +715,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers,
                     'navigatorObservers',
-                    routerObserverBuilder,
+                    navigatorObserverBuilder,
                   )
                   .having(
                     (delegate) => delegate.controller,
@@ -731,13 +731,13 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      final routerObserver = MockAutoRouterObserver();
+      final navigatorObserver= MockAutoRouterObserver();
       final app = _getAppTest(
         locale: const Locale('fr'),
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
         initialRoutes: const [FakePageRouteInfo()],
-        routerObserver: routerObserver,
+        navigatorObserver: navigatorObserver,
         brightness: Brightness.dark,
       );
 
@@ -779,7 +779,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers(),
                     'navigatorObservers',
-                    equals([routerObserver]),
+                    equals([navigatorObserver]),
                   )
                   .having(
                     (delegate) => delegate.controller,
@@ -834,13 +834,13 @@ App _getApp({
   required List<Locale> supportedLocales,
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
-  List<AutoRouterObserver> Function()? routerObserverBuilder,
+  List<AutoRouterObserver> Function()? navigatorObserverBuilder,
 }) {
   return App(
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
     router: router,
-    routerObserverBuilder: routerObserverBuilder,
+    navigatorObserverBuilder: navigatorObserverBuilder,
   );
 }
 
@@ -849,7 +849,7 @@ App _getAppTest({
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
   List<PageRouteInfo<dynamic>>? initialRoutes,
-  AutoRouterObserver? routerObserver,
+  AutoRouterObserver? navigatorObserver,
   ThemeMode? themeMode,
 }) {
   return App.test(
@@ -857,7 +857,7 @@ App _getAppTest({
     localizationsDelegates: localizationsDelegates,
     router: router,
     initialRoutes: initialRoutes,
-    routerObserver: routerObserver,
+    navigatorObserver: navigatorObserver,
     themeMode: themeMode,
   );
 }
@@ -881,12 +881,12 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      routerObserverBuilder() => <AutoRouterObserver>[];
+      navigatorObserverBuilder() => <AutoRouterObserver>[];
       final app = _getApp(
         supportedLocales: const [Locale('en')],
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
-        routerObserverBuilder: routerObserverBuilder,
+        navigatorObserverBuilder: navigatorObserverBuilder,
       );
 
       // Act
@@ -921,7 +921,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers,
                     'navigatorObservers',
-                    routerObserverBuilder,
+                    navigatorObserverBuilder,
                   )
                   .having(
                     (delegate) => delegate.controller,
@@ -937,13 +937,13 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      final routerObserver = MockAutoRouterObserver();
+      final navigatorObserver= MockAutoRouterObserver();
       final app = _getAppTest(
         locale: const Locale('fr'),
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
         initialRoutes: const [FakePageRouteInfo()],
-        routerObserver: routerObserver,
+        navigatorObserver: navigatorObserver,
         themeMode: ThemeMode.dark,
       );
 
@@ -985,7 +985,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers(),
                     'navigatorObservers',
-                    equals([routerObserver]),
+                    equals([navigatorObserver]),
                   )
                   .having(
                     (delegate) => delegate.controller,
@@ -1040,13 +1040,13 @@ App _getApp({
   required List<Locale> supportedLocales,
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
-  List<AutoRouterObserver> Function()? routerObserverBuilder,
+  List<AutoRouterObserver> Function()? navigatorObserverBuilder,
 }) {
   return App(
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
     router: router,
-    routerObserverBuilder: routerObserverBuilder,
+    navigatorObserverBuilder: navigatorObserverBuilder,
   );
 }
 
@@ -1055,7 +1055,7 @@ App _getAppTest({
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
   List<PageRouteInfo<dynamic>>? initialRoutes,
-  AutoRouterObserver? routerObserver,
+  AutoRouterObserver? navigatorObserver,
   ThemeMode? themeMode,
 }) {
   return App.test(
@@ -1063,7 +1063,7 @@ App _getAppTest({
     localizationsDelegates: localizationsDelegates,
     router: router,
     initialRoutes: initialRoutes,
-    routerObserver: routerObserver,
+    navigatorObserver: navigatorObserver,
     themeMode: themeMode,
   );
 }
@@ -1087,12 +1087,12 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      routerObserverBuilder() => <AutoRouterObserver>[];
+      navigatorObserverBuilder() => <AutoRouterObserver>[];
       final app = _getApp(
         supportedLocales: const [Locale('en')],
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
-        routerObserverBuilder: routerObserverBuilder,
+        navigatorObserverBuilder: navigatorObserverBuilder,
       );
 
       // Act
@@ -1127,7 +1127,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers,
                     'navigatorObservers',
-                    routerObserverBuilder,
+                    navigatorObserverBuilder,
                   )
                   .having(
                     (delegate) => delegate.controller,
@@ -1143,13 +1143,13 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      final routerObserver = MockAutoRouterObserver();
+      final navigatorObserver= MockAutoRouterObserver();
       final app = _getAppTest(
         locale: const Locale('fr'),
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
         initialRoutes: const [FakePageRouteInfo()],
-        routerObserver: routerObserver,
+        navigatorObserver: navigatorObserver,
         themeMode: ThemeMode.dark,
       );
 
@@ -1191,7 +1191,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers(),
                     'navigatorObservers',
-                    equals([routerObserver]),
+                    equals([navigatorObserver]),
                   )
                   .having(
                     (delegate) => delegate.controller,
@@ -1246,13 +1246,13 @@ App _getApp({
   required List<Locale> supportedLocales,
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
-  List<AutoRouterObserver> Function()? routerObserverBuilder,
+  List<AutoRouterObserver> Function()? navigatorObserverBuilder,
 }) {
   return App(
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
     router: router,
-    routerObserverBuilder: routerObserverBuilder,
+    navigatorObserverBuilder: navigatorObserverBuilder,
   );
 }
 
@@ -1261,7 +1261,7 @@ App _getAppTest({
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RootStackRouter router,
   List<PageRouteInfo<dynamic>>? initialRoutes,
-  AutoRouterObserver? routerObserver,
+  AutoRouterObserver? navigatorObserver,
   ThemeMode? themeMode,
 }) {
   return App.test(
@@ -1269,7 +1269,7 @@ App _getAppTest({
     localizationsDelegates: localizationsDelegates,
     router: router,
     initialRoutes: initialRoutes,
-    routerObserver: routerObserver,
+    navigatorObserver: navigatorObserver,
     themeMode: themeMode,
   );
 }
@@ -1293,12 +1293,12 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      routerObserverBuilder() => <AutoRouterObserver>[];
+      navigatorObserverBuilder() => <AutoRouterObserver>[];
       final app = _getApp(
         supportedLocales: const [Locale('en')],
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
-        routerObserverBuilder: routerObserverBuilder,
+        navigatorObserverBuilder: navigatorObserverBuilder,
       );
 
       // Act
@@ -1333,7 +1333,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers,
                     'navigatorObservers',
-                    routerObserverBuilder,
+                    navigatorObserverBuilder,
                   )
                   .having(
                     (delegate) => delegate.controller,
@@ -1349,13 +1349,13 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      final routerObserver = MockAutoRouterObserver();
+      final navigatorObserver= MockAutoRouterObserver();
       final app = _getAppTest(
         locale: const Locale('fr'),
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
         router: router,
         initialRoutes: const [FakePageRouteInfo()],
-        routerObserver: routerObserver,
+        navigatorObserver: navigatorObserver,
         themeMode: ThemeMode.dark,
       );
 
@@ -1397,7 +1397,7 @@ void main() {
                   .having(
                     (delegate) => delegate.navigatorObservers(),
                     'navigatorObservers',
-                    equals([routerObserver]),
+                    equals([navigatorObserver]),
                   )
                   .having(
                     (delegate) => delegate.controller,

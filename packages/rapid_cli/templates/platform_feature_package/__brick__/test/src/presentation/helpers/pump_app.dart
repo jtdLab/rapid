@@ -22,7 +22,7 @@ extension WidgetTesterX on WidgetTester {
 {{#routable}}  Future<void> pumpApp({
     required List<PageRouteInfo<dynamic>> initialRoutes,
     RootStackRouter? router,
-    AutoRouterObserver? observer,
+    NavigatorObserver? observer,
     Locale? locale,
     {{#android}}ThemeMode? themeMode{{/android}}{{#ios}}Brightness? brightness{{/ios}}{{#linux}}ThemeMode? themeMode{{/linux}}{{#macos}}Brightness? brightness{{/macos}}{{#web}}ThemeMode? themeMode{{/web}}{{#windows}}ThemeMode? themeMode{{/windows}}{{#mobile}}ThemeMode? themeMode{{/mobile}},
   }) async {
@@ -34,7 +34,7 @@ extension WidgetTesterX on WidgetTester {
         ],
         router: router ?? _TestRouter(),
         initialRoutes: initialRoutes,
-        routerObserver: observer,
+        navigatorObserver: observer,
         {{#android}}themeMode: themeMode{{/android}}{{#ios}}brightness: brightness{{/ios}}{{#linux}}themeMode: themeMode{{/linux}}{{#macos}}brightness: brightness{{/macos}}{{#web}}themeMode: themeMode{{/web}}{{#windows}}themeMode: themeMode{{/windows}}{{#mobile}}themeMode: themeMode{{/mobile}},
       ),
     );

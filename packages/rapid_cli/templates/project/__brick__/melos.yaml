@@ -31,6 +31,13 @@ scripts:
       dependsOn:
         - build_runner
 
+  gen-code:watch:
+    exec: flutter pub run build_runner watch --delete-conflicting-outputs
+    description: Run code generation in a package. (Watch mode)
+    packageFilters:
+      dependsOn:
+        - build_runner
+
   gen-l10n:
     exec: flutter gen-l10n --format
     description: (Re)-generate localizations in a package.

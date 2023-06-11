@@ -30,7 +30,7 @@ dependencies:
   flutter:
     sdk: flutter
   get_it: ^7.6.0
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
@@ -46,8 +46,8 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  injectable_generator: ^2.1.6
   auto_route_generator: ^7.1.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -97,7 +97,7 @@ dependencies:
   flutter:
     sdk: flutter
   get_it: ^7.6.0
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
@@ -114,8 +114,8 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  injectable_generator: ^2.1.6
   auto_route_generator: ^7.1.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -161,7 +161,7 @@ dependencies:
   flutter:
     sdk: flutter
   get_it: ^7.6.0
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
@@ -177,8 +177,8 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  injectable_generator: ^2.1.6
   auto_route_generator: ^7.1.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -228,7 +228,7 @@ dependencies:
   flutter:
     sdk: flutter
   get_it: ^7.6.0
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
@@ -245,8 +245,8 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  injectable_generator: ^2.1.6
   auto_route_generator: ^7.1.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -292,7 +292,7 @@ dependencies:
   flutter:
     sdk: flutter
   get_it: ^7.6.0
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
@@ -309,8 +309,8 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  injectable_generator: ^2.1.6
   auto_route_generator: ^7.1.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -360,7 +360,7 @@ dependencies:
   flutter:
     sdk: flutter
   get_it: ^7.6.0
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
@@ -376,8 +376,8 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  injectable_generator: ^2.1.6
   auto_route_generator: ^7.1.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -427,7 +427,7 @@ dependencies:
   flutter:
     sdk: flutter
   get_it: ^7.6.0
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
@@ -443,8 +443,8 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  injectable_generator: ^2.1.6
   auto_route_generator: ^7.1.1
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

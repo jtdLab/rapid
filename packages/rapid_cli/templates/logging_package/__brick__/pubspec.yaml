@@ -8,11 +8,11 @@ environment:
 
 dependencies:
   meta: ^1.9.1
-  injectable: ^2.1.1
+  injectable: ^2.1.2
 
 dev_dependencies:
   lints: ^2.1.0
   test: ^1.24.3
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  injectable_generator: ^2.1.6

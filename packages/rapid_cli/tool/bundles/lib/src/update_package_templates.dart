@@ -268,7 +268,7 @@ Future<void> _updatePackageTemplates({
   }
 
   final packageTemplates = templates.whereType<PackageTemplate>().where((e) =>
-      !plaformPackageTemplates.contains(e) &&
+      ![...plaformPackageTemplates, platformNavigationPackage].contains(e) &&
       !plaformNamedPackageTemplates.contains(e));
 
   for (final template in packageTemplates) {

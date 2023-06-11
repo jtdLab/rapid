@@ -1,3 +1,4 @@
+import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
 import 'package:rapid_cli/src/core/platform.dart';
@@ -18,6 +19,11 @@ class PlatformAddFeatureCommand extends RapidLeafCommand
       ..addFlag(
         'routing',
         help: 'Wheter the new feature has routes.',
+        negatable: false,
+      )
+      ..addFlag(
+        'navigator',
+        help: 'Wheter to generate a navigator for the new feature.',
         negatable: false,
       );
   }
@@ -43,12 +49,21 @@ class PlatformAddFeatureCommand extends RapidLeafCommand
     final name = super.dartPackageName;
     final description = argResults['desc'] ?? 'The ${name.pascalCase} feature.';
     final routing = argResults['routing'] ?? false;
+    final navigator = argResults['navigator'] ?? false;
+
+    if (!routing && navigator) {
+      throw UsageException(
+        'The option "navigator" can not be "true" when "routing" is "false".',
+        usage,
+      );
+    }
 
     return rapid.platformAddFeature(
       platform,
       name: name,
       description: description,
       routing: routing,
+      navigator: navigator,
     );
   }
 }

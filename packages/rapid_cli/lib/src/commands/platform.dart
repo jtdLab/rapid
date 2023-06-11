@@ -6,6 +6,7 @@ mixin _PlatformMixin on _Rapid {
     required String name,
     required String description,
     required bool routing,
+    required bool navigator,
   }) async {
     if (!project.platformIsActivated(platform)) {
       _logAndThrow(
@@ -36,9 +37,34 @@ mixin _PlatformMixin on _Rapid {
         routing: routing,
       );
 
+      if (navigator) {
+        // TODO share ?
+        final featureName = featurePackage.name;
+        final navigationPackage = platformDirectory.navigationPackage;
+        final navigator =
+            navigationPackage.navigator(name: featureName.pascalCase);
+        if (!navigator.existsAny()) {
+          final barrelFile = navigationPackage.barrelFile;
+
+          await navigator.create();
+
+          barrelFile.addExport(
+            'src/i_${featureName.snakeCase}_navigator.dart',
+          );
+
+          // TODO check if the impl is already available
+          final navigatorImplementation =
+              featurePackage.navigatorImplementation;
+          await navigatorImplementation.create();
+        }
+      }
+
       await bootstrap(packages: [rootPackage, featurePackage]);
 
-      await codeGen(packages: [rootPackage]);
+      await codeGen(packages: [
+        rootPackage,
+        if (navigator) featurePackage,
+      ]);
 
       await flutterGenl10n([featurePackage]);
 
@@ -464,6 +490,18 @@ mixin _PlatformMixin on _Rapid {
       }
 
       featurePackage.delete();
+
+      // TODO share ?
+      final featureName = featurePackage.name;
+      final navigationPackage = platformDirectory.navigationPackage;
+      final navigator =
+          navigationPackage.navigator(name: featureName.pascalCase);
+      if (navigator.existsAny()) {
+        navigator.delete();
+        navigationPackage.barrelFile.removeExport(
+          'src/i_${featureName.snakeCase}_navigator.dart',
+        );
+      }
 
       await bootstrap(
         packages: [

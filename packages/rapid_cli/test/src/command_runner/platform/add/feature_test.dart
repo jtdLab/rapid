@@ -11,11 +11,12 @@ List<String> expectedUsage(Platform platform) {
     'Add a feature to the ${platform.prettyName} part of an existing Rapid project.\n'
         '\n'
         'Usage: rapid ${platform.name} add feature <name> [arguments]\n'
-        '-h, --help       Print this usage information.\n'
+        '-h, --help         Print this usage information.\n'
         '\n'
         '\n'
-        '    --desc       The description of the new feature.\n'
-        '    --routing    Wheter the new feature has routes.\n'
+        '    --desc         The description of the new feature.\n'
+        '    --routing      Wheter the new feature has routes.\n'
+        '    --navigator    Wheter to generate a navigator for the new feature.\n'
         '\n'
         'Run "rapid help" to see global options.'
   ];
@@ -49,10 +50,12 @@ void main() {
             name: any(named: 'name'),
             description: any(named: 'description'),
             routing: any(named: 'routing'),
+            navigator: any(named: 'navigator'),
           ),
         ).thenAnswer((_) async {});
         final argResults = MockArgResults();
         when(() => argResults['routing']).thenReturn(true);
+        when(() => argResults['navigator']).thenReturn(true);
         when(() => argResults['desc']).thenReturn('Some description.');
         when(() => argResults.rest).thenReturn(['package_a']);
         final command = PlatformAddFeatureCommand(platform, null)
@@ -67,6 +70,7 @@ void main() {
             name: 'package_a',
             description: 'Some description.',
             routing: true,
+            navigator: true,
           ),
         ).called(1);
       });

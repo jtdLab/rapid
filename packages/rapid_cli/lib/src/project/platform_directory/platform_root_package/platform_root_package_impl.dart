@@ -9,7 +9,6 @@ import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import '../../infrastructure_directory/infrastructure_package/infrastructure_package.dart';
 import '../../project.dart';
 import '../platform_features_directory/platform_feature_package/platform_feature_package.dart';
-
 import 'platform_native_directory/platform_native_directory.dart';
 import 'platform_root_package.dart';
 import 'platform_root_package_bundle.dart';
@@ -37,6 +36,9 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
   InjectionFileBuilder? injectionFileOverrides;
 
   @override
+  RouterFileBuilder? routerFileOverrides;
+
+  @override
   LocalizationsDelegatesFile get localizationsDelegatesFile =>
       (localizationsDelegatesFileOverrides ?? LocalizationsDelegatesFile.new)(
         rootPackage: this,
@@ -45,6 +47,11 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
   @override
   InjectionFile get injectionFile =>
       (injectionFileOverrides ?? InjectionFile.new)(
+        rootPackage: this,
+      );
+
+  @override
+  RouterFile get routerFile => (routerFileOverrides ?? RouterFile.new)(
         rootPackage: this,
       );
 
@@ -64,12 +71,16 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
 
   @override
   Future<void> registerFeaturePackage(
-    PlatformFeaturePackage featurePackage,
-  ) async {
+    PlatformFeaturePackage featurePackage, {
+    required bool routing,
+  }) async {
     final packageName = featurePackage.packageName();
     localizationsDelegatesFile.addLocalizationsDelegate(packageName);
     pubspecFile.setDependency(packageName);
     injectionFile.addFeaturePackage(packageName);
+    if (routing) {
+      routerFile.addRouterModule(packageName);
+    }
   }
 
   @override
@@ -80,6 +91,7 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
     localizationsDelegatesFile.removeLocalizationsDelegate(packageName);
     pubspecFile.removeDependency(packageName);
     injectionFile.removeFeaturePackage(packageName);
+    routerFile.removeRouterModule(packageName);
   }
 
   @override
@@ -403,7 +415,7 @@ class InjectionFileImpl extends DartFileImpl implements InjectionFile {
       annotation: 'InjectableInit',
       functionName: 'configureDependencies',
       value: existingExternalPackageModules
-          .where((e) => !e.contains(packageName.pascalCase))
+          .where((e) => !e.contains('${packageName.pascalCase}PackageModule'))
           .toList(),
     );
   }
@@ -413,5 +425,73 @@ class InjectionFileImpl extends DartFileImpl implements InjectionFile {
         property: 'externalPackageModules',
         annotation: 'InjectableInit',
         functionName: 'configureDependencies',
+      );
+}
+
+class RouterFileImpl extends DartFileImpl implements RouterFile {
+  RouterFileImpl({
+    required this.rootPackage,
+  }) : super(
+          path: p.join(rootPackage.path, 'lib'),
+          name: 'router',
+        );
+
+  final PlatformRootPackage rootPackage;
+
+  @override
+  void addRouterModule(String packageName) {
+    final projectName = rootPackage.project.name;
+    final platformName = rootPackage.platform.name;
+    addImport('package:$packageName/$packageName.dart');
+
+    final existingModules = _readModules();
+
+    setTypeListOfAnnotationParamOfClass(
+      property: 'modules',
+      annotation: 'AutoRouterConfig',
+      className: 'Router',
+      value: {
+        ...existingModules,
+        '${packageName.replaceAll('${projectName}_${platformName}_', '').pascalCase}Module',
+      }.toList(),
+    );
+  }
+
+  @override
+  void removeRouterModule(String packageName) {
+    final projectName = rootPackage.project.name;
+    final platformName = rootPackage.platform.name;
+
+    final imports = readImports().where((e) => e.contains(packageName));
+    for (final import in imports) {
+      removeImport(import);
+    }
+
+    final existingModules = _readModules();
+
+    print(packageName
+        .replaceAll('${projectName}_${platformName}_', '')
+        .pascalCase);
+
+    setTypeListOfAnnotationParamOfClass(
+      property: 'modules',
+      annotation: 'AutoRouterConfig',
+      className: 'Router',
+      value: existingModules
+          .where(
+            (e) => !e.contains(
+              packageName
+                  .replaceAll('${projectName}_${platformName}_', '')
+                  .pascalCase,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  List<String> _readModules() => readTypeListFromAnnotationParamOfClass(
+        property: 'modules',
+        annotation: 'AutoRouterConfig',
+        className: 'Router',
       );
 }

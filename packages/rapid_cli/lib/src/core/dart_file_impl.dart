@@ -321,6 +321,34 @@ class DartFileImpl extends FileImpl implements DartFile {
   }
 
   @override
+  List<String> readTypeListFromAnnotationParamOfClass({
+    required String property,
+    required String annotation,
+    required String className,
+  }) {
+    final contents = read();
+
+    final declarations = _getTopLevelDeclarations(contents);
+
+    final function = declarations.firstWhere(
+      (e) => e is ClassDeclaration && e.name.lexeme == className,
+    );
+    final anot = function.metadata.firstWhere((e) => e.name.name == annotation);
+    final value = anot.arguments!.childEntities.firstWhere(
+        (e) => e is NamedExpression && e.name.label.name == property);
+
+    return value
+        .toString()
+        .split(':')
+        .last
+        .trim()
+        .replaceAll(RegExp(r'[\s\[\]]+'), '')
+        .split(',')
+        .where((e) => e.trim().isNotEmpty)
+        .toList();
+  }
+
+  @override
   List<String> readTypeListFromAnnotationParamOfTopLevelFunction({
     required String property,
     required String annotation,
@@ -499,6 +527,34 @@ class DartFileImpl extends FileImpl implements DartFile {
       listLiteral.end,
       listText,
     );
+
+    write(output);
+  }
+
+  @override
+  void setTypeListOfAnnotationParamOfClass({
+    required String property,
+    required String annotation,
+    required String className,
+    required List<String> value,
+  }) {
+    final contents = read();
+
+    final declarations = _getTopLevelDeclarations(contents);
+
+    final function = declarations.firstWhere(
+      (e) => e is ClassDeclaration && e.name.lexeme == className,
+    );
+    final anot = function.metadata.firstWhere((e) => e.name.name == annotation);
+    final val = anot.arguments!.childEntities.firstWhere(
+            (e) => e is NamedExpression && e.name.label.name == property)
+        as NamedExpression;
+
+    final start = val.offset;
+    final end = val.end;
+
+    final output = contents.replaceRange(start, end,
+        '$property: [${value.join(',')}${value.isEmpty ? '' : ','}]');
 
     write(output);
   }

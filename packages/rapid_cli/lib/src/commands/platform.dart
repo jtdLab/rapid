@@ -31,8 +31,10 @@ mixin _PlatformMixin on _Rapid {
         languages: rootPackage.supportedLanguages(),
       );
 
-      // TODO if routing add router to root router list
-      await rootPackage.registerFeaturePackage(featurePackage);
+      await rootPackage.registerFeaturePackage(
+        featurePackage,
+        routing: routing,
+      );
 
       await bootstrap(packages: [rootPackage, featurePackage]);
 
@@ -451,7 +453,6 @@ mixin _PlatformMixin on _Rapid {
     final featurePackage = featuresDirectory.featurePackage(name: name);
     if (featurePackage.exists()) {
       final rootPackage = platformDirectory.rootPackage;
-      // TODO if routing add router to root router list
       await rootPackage.unregisterFeaturePackage(featurePackage);
 
       final remainingFeaturePackages = featuresDirectory.featurePackages()

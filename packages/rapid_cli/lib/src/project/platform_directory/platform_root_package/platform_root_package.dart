@@ -30,17 +30,24 @@ abstract class PlatformRootPackage
   @visibleForTesting
   InjectionFileBuilder? injectionFileOverrides;
 
+  /// Use to override [routerFile] for testing.
+  @visibleForTesting
+  RouterFileBuilder? routerFileOverrides;
+
   /// Returns the platform of this package.
   Platform get platform;
 
   /// Returns the project associated with this package.
   RapidProject get project;
 
-  /// Returns the localizations delegates file of this directory.
+  /// Returns the localizations delegates file of this package.
   LocalizationsDelegatesFile get localizationsDelegatesFile;
 
-  /// Returns the injection file of this directory.
+  /// Returns the injection file of this package.
   InjectionFile get injectionFile;
+
+  /// Returns the router file of this package.
+  RouterFile get routerFile;
 
   /// Returns the default language of this package.
   String defaultLanguage();
@@ -49,7 +56,10 @@ abstract class PlatformRootPackage
   Set<String> supportedLanguages();
 
   /// Registers [featurePackage] to this package.
-  Future<void> registerFeaturePackage(PlatformFeaturePackage featurePackage);
+  Future<void> registerFeaturePackage(
+    PlatformFeaturePackage featurePackage, {
+    required bool routing,
+  });
 
   /// Unregisters [featurePackage] from this package.
   Future<void> unregisterFeaturePackage(PlatformFeaturePackage featurePackage);
@@ -230,4 +240,30 @@ abstract class InjectionFile implements DartFile {
 
   /// Removes feature with [packageName] from this file.
   void removeFeaturePackage(String packageName);
+}
+
+/// Signature of [RouterFile.new].
+typedef RouterFileBuilder = RouterFile Function({
+  required PlatformRootPackage rootPackage,
+});
+
+/// {@template router_file}
+/// Abstraction of the router file of a platform root package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>/lib/router.dart`
+/// {@endtemplate}
+abstract class RouterFile implements DartFile {
+  /// {@macro router_file}
+  factory RouterFile({
+    required PlatformRootPackage rootPackage,
+  }) =>
+      RouterFileImpl(
+        rootPackage: rootPackage,
+      );
+
+  /// Adds module of [packageName] to this file.
+  void addRouterModule(String packageName);
+
+  /// Removes module of [packageName] from this file.
+  void removeRouterModule(String packageName);
 }

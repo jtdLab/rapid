@@ -51,6 +51,9 @@ mixin _CreateMixin on _Rapid {
       ),
     );
 
+    // TODO show a hint if more than 2 platforms are selcted
+    // Multiple platforms: This can take some time!
+
     await flutterPubGet([
       project,
       ...project.packages,

@@ -1,11 +1,9 @@
+import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 
 import '../../base.dart';
 import '../../util/dart_package_name_rest.dart';
-
-/// The default description.
-const _defaultDescription = 'A Rapid feature.';
 
 class PlatformAddFeatureCommand extends RapidLeafCommand
     with DartPackageNameGetter {
@@ -14,9 +12,7 @@ class PlatformAddFeatureCommand extends RapidLeafCommand
       ..addSeparator('')
       ..addOption(
         'desc',
-        help:
-            'The description of this new feature.', // TODO rename to the might be the case in other descriptions too
-        defaultsTo: _defaultDescription,
+        help: 'The description of the new feature.',
       )
       // TODO maybe add a option to specify features that want a dependency before melos bs runs
       ..addFlag(
@@ -45,7 +41,7 @@ class PlatformAddFeatureCommand extends RapidLeafCommand
   @override
   Future<void> run() {
     final name = super.dartPackageName;
-    final description = argResults['desc'] ?? _defaultDescription;
+    final description = argResults['desc'] ?? 'The ${name.pascalCase} feature.';
     final routing = argResults['routing'] ?? false;
 
     return rapid.platformAddFeature(

@@ -234,8 +234,9 @@ Future<void> _updatePackageTemplates({
     }
   }
 
-  final plaformPackageTemplates =
-      templates.whereType<PlatformPackageTemplate>();
+  final plaformPackageTemplates = templates
+      .whereType<PlatformPackageTemplate>()
+      .where((e) => e.name != 'platform_navigation_package');
 
   for (final template in plaformPackageTemplates) {
     for (var i = 0; i < platforms.length; i++) {

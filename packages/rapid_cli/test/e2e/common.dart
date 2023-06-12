@@ -523,21 +523,6 @@ List<File> languageFiles(
       ],
     ];
 
-File l10nBarrelFile({
-  required String featureName,
-  required Platform platform,
-}) =>
-    File(
-      p.join(
-        featurePackage(featureName, platform).path,
-        'lib',
-        'src',
-        'presentation',
-        'l10n',
-        'l10n.dart',
-      ),
-    );
-
 extension IterableX<E extends FileSystemEntity> on Iterable<E> {
   /// All entities inside this without [iterable].
   Iterable<E> without(Iterable<E> iterable) =>

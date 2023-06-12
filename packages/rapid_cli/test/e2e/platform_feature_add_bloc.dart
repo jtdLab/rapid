@@ -39,6 +39,10 @@ Future<void> performTest({
       platform: platform,
       outputDir: outputDir,
     ),
+    applicationBarrelFile(
+      featureName: featureName,
+      platform: platform,
+    ),
   });
   if (type != TestType.fast) {
     await verifyTestsPassWith100PercentCoverage([

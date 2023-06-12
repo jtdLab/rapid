@@ -25,14 +25,23 @@ void main() {
 
       group('domain <sub_domain> remove value_object', () {
         Future<void> performTest({
+          required String subDomain,
           String? dir,
           TestType type = TestType.normal,
         }) async {
           // Arrange
+          if (subDomain != 'default') {
+            await runRapidCommand([
+              'domain',
+              'add',
+              'sub_domain',
+              subDomain,
+            ]);
+          }
           final name = 'FooBar';
           await runRapidCommand([
             'domain',
-            'default',
+            subDomain,
             'add',
             'value_object',
             name,
@@ -43,7 +52,7 @@ void main() {
           // Act
           await runRapidCommand([
             'domain',
-            'default',
+            subDomain,
             'remove',
             'value_object',
             name,
@@ -67,9 +76,50 @@ void main() {
           }
         }
 
+        group('(default)', () {
+          test(
+            '(fast) ',
+            () => performTest(
+              subDomain: 'default',
+              type: TestType.fast,
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+            tags: ['fast'],
+          );
+
+          test(
+            'with dir (fast) ',
+            () => performTest(
+              subDomain: 'default',
+              dir: 'foo',
+              type: TestType.fast,
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+            tags: ['fast'],
+          );
+
+          test(
+            '',
+            () => performTest(
+              subDomain: 'default',
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+          );
+
+          test(
+            'with dir',
+            () => performTest(
+              subDomain: 'default',
+              dir: 'foo',
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+          );
+        });
+
         test(
           '(fast) ',
           () => performTest(
+            subDomain: 'foo_bar',
             type: TestType.fast,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
@@ -79,6 +129,7 @@ void main() {
         test(
           'with dir (fast) ',
           () => performTest(
+            subDomain: 'foo_bar',
             dir: 'foo',
             type: TestType.fast,
           ),
@@ -88,13 +139,16 @@ void main() {
 
         test(
           '',
-          () => performTest(),
+          () => performTest(
+            subDomain: 'foo_bar',
+          ),
           timeout: const Timeout(Duration(minutes: 4)),
         );
 
         test(
           'with dir',
           () => performTest(
+            subDomain: 'foo_bar',
             dir: 'foo',
           ),
           timeout: const Timeout(Duration(minutes: 4)),

@@ -26,17 +26,25 @@ void main() {
       group('infrastructure <sub_infrastructure> remove service_implementation',
           () {
         Future<void> performTest({
+          required String subInfrastructure,
           String? dir,
           TestType type = TestType.normal,
         }) async {
           // Arrange
-          await setupProject();
+          if (subInfrastructure != 'default') {
+            await runRapidCommand([
+              'domain',
+              'add',
+              'sub_domain',
+              subInfrastructure,
+            ]);
+          }
           final name = 'Fake';
           final service = 'FooBar';
           final outputDir = 'foo';
           await runRapidCommand([
             'domain',
-            'default',
+            subInfrastructure,
             'add',
             'service_interface',
             service,
@@ -45,7 +53,7 @@ void main() {
           ]);
           await runRapidCommand([
             'infrastructure',
-            'default',
+            subInfrastructure,
             'add',
             'service_implementation',
             name,
@@ -58,7 +66,7 @@ void main() {
           // Act
           await runRapidCommand([
             'infrastructure',
-            'default',
+            subInfrastructure,
             'remove',
             'service_implementation',
             name,
@@ -88,9 +96,50 @@ void main() {
           }
         }
 
+        group('(default)', () {
+          test(
+            '(fast) ',
+            () => performTest(
+              subInfrastructure: 'default',
+              type: TestType.fast,
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+            tags: ['fast'],
+          );
+
+          test(
+            'with dir (fast) ',
+            () => performTest(
+              subInfrastructure: 'default',
+              dir: 'foo',
+              type: TestType.fast,
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+            tags: ['fast'],
+          );
+
+          test(
+            '',
+            () => performTest(
+              subInfrastructure: 'default',
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+          );
+
+          test(
+            'with dir',
+            () => performTest(
+              subInfrastructure: 'default',
+              dir: 'foo',
+            ),
+            timeout: const Timeout(Duration(minutes: 4)),
+          );
+        });
+
         test(
           '(fast) ',
           () => performTest(
+            subInfrastructure: 'foo_bar',
             type: TestType.fast,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
@@ -100,6 +149,7 @@ void main() {
         test(
           'with dir (fast) ',
           () => performTest(
+            subInfrastructure: 'foo_bar',
             dir: 'foo',
             type: TestType.fast,
           ),
@@ -109,13 +159,16 @@ void main() {
 
         test(
           '',
-          () => performTest(),
+          () => performTest(
+            subInfrastructure: 'foo_bar',
+          ),
           timeout: const Timeout(Duration(minutes: 4)),
         );
 
         test(
           'with dir',
           () => performTest(
+            subInfrastructure: 'foo_bar',
             dir: 'foo',
           ),
           timeout: const Timeout(Duration(minutes: 4)),

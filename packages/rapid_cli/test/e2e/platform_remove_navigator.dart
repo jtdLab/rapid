@@ -53,7 +53,6 @@ Future<void> performTest({
       ...platformDependentPackagesWithTests(platform),
       appFeaturePackage,
     ]);
-    // TODO
     await verifyTestsPass(feature, expectedCoverage: 100.0);
   }
 }

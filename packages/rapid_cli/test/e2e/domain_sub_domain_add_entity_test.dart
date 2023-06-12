@@ -54,11 +54,15 @@ void main() {
           await verifyNoFormattingIssues();
           verifyDoExist({
             ...platformIndependentPackages,
-            ...entityFiles(name: name, outputDir: outputDir),
+            ...entityFiles(
+              name: name,
+              subDomainName: subDomain,
+              outputDir: outputDir,
+            ),
           });
           if (type != TestType.fast) {
             await verifyTestsPassWith100PercentCoverage({
-              domainPackage(),
+              domainPackage(subDomain),
             });
           }
         }

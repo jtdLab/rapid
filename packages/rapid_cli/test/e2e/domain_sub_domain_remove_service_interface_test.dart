@@ -67,11 +67,15 @@ void main() {
             ...platformIndependentPackages,
           });
           verifyDoNotExist({
-            ...serviceInterfaceFiles(name: name, outputDir: dir),
+            ...serviceInterfaceFiles(
+              name: name,
+              subDomainName: subDomain,
+              outputDir: dir,
+            ),
           });
           if (type != TestType.fast) {
             verifyDoNotHaveTests({
-              domainPackage(),
+              domainPackage(subDomain),
             });
           }
         }

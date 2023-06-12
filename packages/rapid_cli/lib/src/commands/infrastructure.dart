@@ -8,7 +8,7 @@ mixin _InfrastructureMixin on _Rapid {
   }) async {
     logger
       ..command(
-        'rapid infrastructure $subInfrastructureName add data_transfer_object',
+        'rapid infrastructure ${subInfrastructureName ?? 'default'} add data_transfer_object',
       )
       ..newLine();
 
@@ -67,7 +67,7 @@ mixin _InfrastructureMixin on _Rapid {
   }) async {
     logger
       ..command(
-        'rapid infrastructure $subInfrastructureName add service_implementation',
+        'rapid infrastructure ${subInfrastructureName ?? 'default'} add service_implementation',
       )
       ..newLine();
 
@@ -132,7 +132,7 @@ mixin _InfrastructureMixin on _Rapid {
   }) async {
     logger
       ..command(
-        'rapid infrastructure $subInfrastructureName remove data_transfer_object',
+        'rapid infrastructure ${subInfrastructureName ?? 'default'} remove data_transfer_object',
       )
       ..newLine();
 
@@ -178,7 +178,7 @@ mixin _InfrastructureMixin on _Rapid {
   }) async {
     logger
       ..command(
-        'rapid infrastructure $subInfrastructureName remove service_implementation',
+        'rapid infrastructure ${subInfrastructureName ?? 'default'} remove service_implementation',
       )
       ..newLine();
 

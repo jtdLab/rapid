@@ -86,12 +86,13 @@ void main() {
             ...serviceImplementationFiles(
               name: name,
               serviceName: service,
+              subInfrastructureName: subInfrastructure,
               outputDir: outputDir,
             ),
           });
           if (type != TestType.fast) {
             verifyDoNotHaveTests({
-              infrastructurePackage(),
+              infrastructurePackage(subInfrastructure),
             });
           }
         }

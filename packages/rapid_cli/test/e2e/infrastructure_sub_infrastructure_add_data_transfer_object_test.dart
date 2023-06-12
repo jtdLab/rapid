@@ -66,11 +66,15 @@ void main() {
           await verifyNoFormattingIssues();
           verifyDoExist({
             ...platformIndependentPackages,
-            ...dataTransferObjectFiles(entity: entity, outputDir: outputDir),
+            ...dataTransferObjectFiles(
+              entity: entity,
+              subInfrastructureName: subInfrastructure,
+              outputDir: outputDir,
+            ),
           });
           if (type != TestType.fast) {
             await verifyTestsPassWith100PercentCoverage({
-              infrastructurePackage(),
+              infrastructurePackage(subInfrastructure),
             });
           }
         }

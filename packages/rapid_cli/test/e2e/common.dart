@@ -7,6 +7,8 @@ import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
+// TODO(jtdLab): refactor test setup to NOT use setup and teardown while setting cwd to tempdir
+
 enum TestType { slow, normal, fast }
 
 /// The directory `flutter/dart test` was called from.
@@ -102,19 +104,25 @@ final infrastructureDirectory =
 final loggingPackage =
     Directory(p.join('packages', projectName, '${projectName}_logging'));
 
-Directory domainPackage([String? name]) => Directory(
-      p.join(
-        domainDirectory.path,
-        '${projectName}_domain${name != null ? '_$name' : ''}',
-      ),
-    );
+Directory domainPackage([String? name]) {
+  name = name == 'default' ? null : name;
+  return Directory(
+    p.join(
+      domainDirectory.path,
+      '${projectName}_domain${name != null ? '_$name' : ''}',
+    ),
+  );
+}
 
-Directory infrastructurePackage([String? name]) => Directory(
-      p.join(
-        infrastructureDirectory.path,
-        '${projectName}_infrastructure${name != null ? '_$name' : ''}',
-      ),
-    );
+Directory infrastructurePackage([String? name]) {
+  name = name == 'default' ? null : name;
+  return Directory(
+    p.join(
+      infrastructureDirectory.path,
+      '${projectName}_infrastructure${name != null ? '_$name' : ''}',
+    ),
+  );
+}
 
 Directory platformDir(Platform platform) => Directory(
     p.join('packages', projectName, '${projectName}_${platform.name}'));
@@ -287,6 +295,20 @@ List<File> cubitFiles({
       ),
     ];
 
+File applicationBarrelFile({
+  required String featureName,
+  required Platform platform,
+}) =>
+    File(
+      p.join(
+        featurePackage(featureName, platform).path,
+        'lib',
+        'src',
+        'application',
+        'application.dart',
+      ),
+    );
+
 List<File> navigatorFiles({
   required String featureName,
   required Platform platform,
@@ -331,84 +353,96 @@ List<File> entityFiles({
   required String name,
   String? subDomainName,
   String? outputDir,
-}) =>
-    [
-      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-          outputDir ?? '', '${name.snakeCase}.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-          outputDir ?? '', '${name.snakeCase}.freezed.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'test', 'src',
-          outputDir ?? '', '${name.snakeCase}_test.dart')),
-    ];
+}) {
+  subDomainName = subDomainName == 'default' ? null : subDomainName;
+  return [
+    File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+        outputDir ?? '', '${name.snakeCase}.dart')),
+    File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+        outputDir ?? '', '${name.snakeCase}.freezed.dart')),
+    File(p.join(domainPackage(subDomainName).path, 'test', 'src',
+        outputDir ?? '', '${name.snakeCase}_test.dart')),
+  ];
+}
 
 List<File> valueObjectFiles({
   required String name,
   String? subDomainName,
   String? outputDir,
-}) =>
-    [
-      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-          outputDir ?? '', '${name.snakeCase}.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-          outputDir ?? '', '${name.snakeCase}.freezed.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'test', 'src',
-          outputDir ?? '', '${name.snakeCase}_test.dart')),
-    ];
+}) {
+  subDomainName = subDomainName == 'default' ? null : subDomainName;
+  return [
+    File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+        outputDir ?? '', '${name.snakeCase}.dart')),
+    File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+        outputDir ?? '', '${name.snakeCase}.freezed.dart')),
+    File(p.join(domainPackage(subDomainName).path, 'test', 'src',
+        outputDir ?? '', '${name.snakeCase}_test.dart')),
+  ];
+}
 
 List<File> serviceInterfaceFiles({
   required String name,
   String? subDomainName,
   String? outputDir,
-}) =>
-    [
-      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-          outputDir ?? '', 'i_${name.snakeCase}_service.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-          outputDir ?? '', 'i_${name.snakeCase}_service.freezed.dart')),
-    ];
+}) {
+  subDomainName = subDomainName == 'default' ? null : subDomainName;
+  return [
+    File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+        outputDir ?? '', 'i_${name.snakeCase}_service.dart')),
+    File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+        outputDir ?? '', 'i_${name.snakeCase}_service.freezed.dart')),
+  ];
+}
 
 List<File> dataTransferObjectFiles({
   required String entity,
   String? subInfrastructureName,
   String? outputDir,
-}) =>
-    [
-      File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib',
-          'src', outputDir ?? '', '${entity.snakeCase}_dto.dart')),
-      File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib',
-          'src', outputDir ?? '', '${entity.snakeCase}_dto.freezed.dart')),
-      File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib',
-          'src', outputDir ?? '', '${entity.snakeCase}_dto.g.dart')),
-      File(p.join(infrastructurePackage(subInfrastructureName).path, 'test',
-          'src', outputDir ?? '', '${entity.snakeCase}_dto_test.dart')),
-    ];
+}) {
+  subInfrastructureName =
+      subInfrastructureName == 'default' ? null : subInfrastructureName;
+  return [
+    File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib', 'src',
+        outputDir ?? '', '${entity.snakeCase}_dto.dart')),
+    File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib', 'src',
+        outputDir ?? '', '${entity.snakeCase}_dto.freezed.dart')),
+    File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib', 'src',
+        outputDir ?? '', '${entity.snakeCase}_dto.g.dart')),
+    File(p.join(infrastructurePackage(subInfrastructureName).path, 'test',
+        'src', outputDir ?? '', '${entity.snakeCase}_dto_test.dart')),
+  ];
+}
 
 List<File> serviceImplementationFiles({
   required String name,
   required String serviceName,
   String? subInfrastructureName,
   String? outputDir,
-}) =>
-    [
-      File(
-        p.join(
-          infrastructurePackage(subInfrastructureName).path,
-          'lib',
-          'src',
-          outputDir ?? '',
-          '${name.snakeCase}_${serviceName.snakeCase}_service.dart',
-        ),
+}) {
+  subInfrastructureName =
+      subInfrastructureName == 'default' ? null : subInfrastructureName;
+  return [
+    File(
+      p.join(
+        infrastructurePackage(subInfrastructureName).path,
+        'lib',
+        'src',
+        outputDir ?? '',
+        '${name.snakeCase}_${serviceName.snakeCase}_service.dart',
       ),
-      File(
-        p.join(
-          infrastructurePackage(subInfrastructureName).path,
-          'test',
-          'src',
-          outputDir ?? '',
-          '${name.snakeCase}_${serviceName.snakeCase}_service_test.dart',
-        ),
+    ),
+    File(
+      p.join(
+        infrastructurePackage(subInfrastructureName).path,
+        'test',
+        'src',
+        outputDir ?? '',
+        '${name.snakeCase}_${serviceName.snakeCase}_service_test.dart',
       ),
-    ];
+    ),
+  ];
+}
 
 List<File> widgetFiles({
   required String name,
@@ -488,6 +522,21 @@ List<File> languageFiles(
         ),
       ],
     ];
+
+File l10nBarrelFile({
+  required String featureName,
+  required Platform platform,
+}) =>
+    File(
+      p.join(
+        featurePackage(featureName, platform).path,
+        'lib',
+        'src',
+        'presentation',
+        'l10n',
+        'l10n.dart',
+      ),
+    );
 
 extension IterableX<E extends FileSystemEntity> on Iterable<E> {
   /// All entities inside this without [iterable].
@@ -631,6 +680,8 @@ class TestResult {
   final double? coverage;
 }
 
+// TODO(jtdLab): refactor this using https://pub.dev/packages/coverage/install
+
 /// Runs `flutter` or `dart` test` in [cwd].
 ///
 /// If [coverage] is true runs with `--coverage`
@@ -638,7 +689,7 @@ Future<TestResult> _runFlutterOrDartTest({
   required String cwd,
   bool coverage = true,
 }) async {
-  // TODO required because of https://github.com/dart-lang/test/issues/1977
+  // TODO: required because of https://github.com/dart-lang/test/issues/1977
   final pubspec = File(p.join(cwd, 'pubspec.yaml'));
   final content = pubspec.readAsStringSync();
   final hasFlutterTest = content.contains('flutter_test:');
@@ -654,29 +705,11 @@ Future<TestResult> _runFlutterOrDartTest({
       runInShell: true,
     );
   } else {
-    // dart test --coverage="coverage" format_coverage --lcov --in=coverage --out=coverage/coverage.lcov --report-on=lib
-
-    _println(
-        'Run "dart test${coverage ? ' --coverage="coverage" format_coverage --lcov --in=coverage --out=coverage/coverage.lcov --report-on=lib' : ''}" in $cwd\n');
+    _println('Run "test_with_coverage" in $cwd\n');
 
     result = await Process.run(
-      'dart',
-      [
-        'test',
-        '--coverage=coverage',
-      ],
-      workingDirectory: cwd,
-      runInShell: true,
-    );
-
-    await Process.run(
-      'format_coverage',
-      [
-        '--lcov',
-        '--in=coverage',
-        '--out=coverage/lcov.info',
-        '--report-on=lib',
-      ],
+      'test_with_coverage',
+      [],
       workingDirectory: cwd,
       runInShell: true,
     );
@@ -722,6 +755,8 @@ Future<TestResult> _runFlutterOrDartTest({
       workingDirectory: cwd,
       runInShell: true,
     );
+
+    print(coverageResult.stdout);
 
     // 100.00 when empty lcov
     totalCoverage = double.tryParse(

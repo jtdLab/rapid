@@ -101,6 +101,17 @@ class DomainPackageImpl extends DartPackageImpl
       },
     );
   }
+
+  @override
+  int compareTo(DomainPackage other) =>
+      (name ?? '').compareTo(other.name ?? '');
+
+  @override
+  bool operator ==(Object other) =>
+      other is DomainPackage && name == other.name && project == other.project;
+
+  @override
+  int get hashCode => Object.hash(name, project);
 }
 
 class EntityImpl extends FileSystemEntityCollection

@@ -67,11 +67,15 @@ void main() {
             ...platformIndependentPackages,
           });
           verifyDoNotExist({
-            ...entityFiles(name: name, outputDir: dir),
+            ...entityFiles(
+              name: name,
+              subDomainName: subDomain,
+              outputDir: dir,
+            ),
           });
           if (type != TestType.fast) {
             verifyDoNotHaveTests({
-              domainPackage(),
+              domainPackage(subDomain),
             });
           }
         }

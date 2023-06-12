@@ -20,7 +20,8 @@ typedef DomainPackageBuilder = DomainPackage Function({
 ///
 /// Location: `packages/<project name>/<project name>_domain/<project name>_domain_<name?>`
 /// {@endtemplate}
-abstract class DomainPackage implements DartPackage, OverridableGenerator {
+abstract class DomainPackage
+    implements DartPackage, OverridableGenerator, Comparable<DomainPackage> {
   /// {@macro domain_package}
   factory DomainPackage({
     String? name,

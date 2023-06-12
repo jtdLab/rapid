@@ -56,7 +56,11 @@ void main() {
           await verifyNoFormattingIssues();
           verifyDoExist({
             ...platformIndependentPackages,
-            ...valueObjectFiles(name: name, outputDir: outputDir),
+            ...valueObjectFiles(
+              name: name,
+              subDomainName: subDomain,
+              outputDir: outputDir,
+            ),
           });
         }
 

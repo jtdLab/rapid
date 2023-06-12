@@ -67,11 +67,15 @@ void main() {
             ...platformIndependentPackages,
           });
           verifyDoNotExist({
-            ...valueObjectFiles(name: name, outputDir: dir),
+            ...valueObjectFiles(
+              name: name,
+              subDomainName: subDomain,
+              outputDir: dir,
+            ),
           });
           if (type != TestType.fast) {
             verifyDoNotHaveTests({
-              domainPackage(),
+              domainPackage(subDomain),
             });
           }
         }

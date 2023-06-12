@@ -72,11 +72,15 @@ void main() {
             ...serviceImplementationFiles(
               name: name,
               serviceName: service,
+              subInfrastructureName: subInfrastructure,
               outputDir: outputDir,
             ),
           });
           if (type != TestType.fast) {
-            await verifyTestsPass(infrastructurePackage(), expectedCoverage: 0);
+            await verifyTestsPass(
+              infrastructurePackage(subInfrastructure),
+              expectedCoverage: 0,
+            );
           }
         }
 

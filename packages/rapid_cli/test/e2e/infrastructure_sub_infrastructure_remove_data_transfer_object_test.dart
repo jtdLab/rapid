@@ -79,11 +79,15 @@ void main() {
             ...platformIndependentPackages,
           });
           verifyDoNotExist({
-            ...dataTransferObjectFiles(entity: entity, outputDir: dir),
+            ...dataTransferObjectFiles(
+              entity: entity,
+              subInfrastructureName: subInfrastructure,
+              outputDir: dir,
+            ),
           });
           if (type != TestType.fast) {
             verifyDoNotHaveTests({
-              infrastructurePackage(),
+              infrastructurePackage(subInfrastructure),
             });
           }
         }

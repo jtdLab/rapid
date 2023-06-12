@@ -56,7 +56,11 @@ void main() {
           await verifyNoFormattingIssues();
           verifyDoExist({
             ...platformIndependentPackages,
-            ...serviceInterfaceFiles(name: name, outputDir: outputDir),
+            ...serviceInterfaceFiles(
+              name: name,
+              subDomainName: subDomain,
+              outputDir: outputDir,
+            ),
           });
         }
 

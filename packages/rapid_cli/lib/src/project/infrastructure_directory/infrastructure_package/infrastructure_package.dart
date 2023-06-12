@@ -19,7 +19,10 @@ typedef InfrastructurePackageBuilder = InfrastructurePackage Function({
 /// Location: `packages/<project name>/<project name>_infrastructure/<project name>_infrastructure_<name>`
 /// {@endtemplate}
 abstract class InfrastructurePackage
-    implements DartPackage, OverridableGenerator {
+    implements
+        DartPackage,
+        OverridableGenerator,
+        Comparable<InfrastructurePackage> {
   /// {@macro infrastructure_package}
   factory InfrastructurePackage({
     String? name,

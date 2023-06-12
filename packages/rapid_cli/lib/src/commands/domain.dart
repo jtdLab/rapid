@@ -40,6 +40,8 @@ mixin _DomainMixin on _Rapid {
 
         await codeGen(packages: rootPackages);
 
+        await dartFormatFix(project);
+
         logger
           ..newLine()
           ..success('Success $checkLabel');
@@ -108,7 +110,7 @@ mixin _DomainMixin on _Rapid {
     required String outputDir,
   }) async {
     logger
-      ..command('rapid domain $subDomainName add entity')
+      ..command('rapid domain ${subDomainName ?? 'default'} add entity')
       ..newLine();
 
     final domainPackage =
@@ -150,7 +152,8 @@ mixin _DomainMixin on _Rapid {
     required String outputDir,
   }) async {
     logger
-      ..command('rapid domain $subDomainName add service_interface')
+      ..command(
+          'rapid domain ${subDomainName ?? 'default'} add service_interface')
       ..newLine();
 
     final domainPackage =
@@ -195,7 +198,7 @@ mixin _DomainMixin on _Rapid {
     required String generics,
   }) async {
     logger
-      ..command('rapid domain $subDomainName add value_object')
+      ..command('rapid domain ${subDomainName ?? 'default'} add value_object')
       ..newLine();
 
     final domainPackage =
@@ -243,7 +246,7 @@ mixin _DomainMixin on _Rapid {
     required String dir,
   }) async {
     logger
-      ..command('rapid domain $subDomainName remove entity')
+      ..command('rapid domain ${subDomainName ?? 'default'} remove entity')
       ..newLine();
 
     final domainPackage =
@@ -282,7 +285,8 @@ mixin _DomainMixin on _Rapid {
     required String dir,
   }) async {
     logger
-      ..command('rapid domain $subDomainName remove service_interface')
+      ..command(
+          'rapid domain ${subDomainName ?? 'default'} remove service_interface')
       ..newLine();
 
     final domainPackage =
@@ -323,7 +327,8 @@ mixin _DomainMixin on _Rapid {
     required String dir,
   }) async {
     logger
-      ..command('rapid domain $subDomainName remove value_object')
+      ..command(
+          'rapid domain ${subDomainName ?? 'default'} remove value_object')
       ..newLine();
 
     final domainPackage =

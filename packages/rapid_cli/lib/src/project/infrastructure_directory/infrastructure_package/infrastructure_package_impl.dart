@@ -88,6 +88,19 @@ class InfrastructurePackageImpl extends DartPackageImpl
       },
     );
   }
+
+  @override
+  int compareTo(InfrastructurePackage other) =>
+      (name ?? '').compareTo(other.name ?? '');
+
+  @override
+  bool operator ==(Object other) =>
+      other is InfrastructurePackage &&
+      name == other.name &&
+      project == other.project;
+
+  @override
+  int get hashCode => Object.hash(name, project);
 }
 
 class DataTransferObjectImpl extends FileSystemEntityCollection

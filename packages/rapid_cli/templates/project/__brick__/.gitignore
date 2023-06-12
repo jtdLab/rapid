@@ -31,3 +31,6 @@ package.json
 
 # Commitlint
 commitlint.config.js
+
+# Rapid
+.rapid_tool/

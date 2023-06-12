@@ -14,6 +14,7 @@ import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart
 import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/project_config.dart';
+import 'package:rapid_cli/src/tool.dart';
 import 'package:rapid_cli/src/utils.dart';
 
 part 'activate.dart';
@@ -43,6 +44,7 @@ class Rapid extends _Rapid
         _UiMixin {
   Rapid({
     RapidProject? project,
+    RapidTool? tool,
     required this.logger,
   }) : _project = project;
 
@@ -58,6 +60,9 @@ class Rapid extends _Rapid
   }
 
   @override
+  RapidTool get tool => _tool ?? RapidTool(project: project);
+
+  @override
   set project(RapidProject project) {
     if (_project == null) {
       _project = project;
@@ -67,32 +72,14 @@ class Rapid extends _Rapid
   }
 
   RapidProject? _project;
+  RapidTool? _tool;
 }
 
 abstract class _Rapid {
   RapidLogger get logger;
+  RapidTool get tool;
   RapidProject get project;
   set project(RapidProject project);
-
-  // TODO: is this the correct place to do this.
-  // Consider moving this and execution of commands and grouping into workspace or package
-  String get dotRapidTool => p.join(project.path, '.rapid_tool');
-
-  String get dotRapidGroupActive => p.join(dotRapidTool, 'group-active');
-
-  String get dotRapidNeedBootstrap => p.join(dotRapidTool, 'need-bootstrap');
-
-  String get dotRapidNeedCodeGen => p.join(dotRapidTool, 'need-code-gen');
-
-  /// Wheter the command is running as a part of a Rapid command group.
-  bool get groupActive {
-    final file = File(dotRapidGroupActive);
-    if (file.existsSync()) {
-      return file.readAsStringSync() == 'true';
-    }
-
-    return false;
-  }
 
   FutureOr<T> task<T>(
     String description,
@@ -108,17 +95,8 @@ abstract class _Rapid {
   Future<void> bootstrap({
     required List<DartPackage> packages,
   }) async {
-    if (groupActive) {
-      final packageNames = packages.map((e) => e.packageName());
-      final file = File(dotRapidNeedBootstrap);
-      if (file.readAsStringSync().isEmpty) {
-        file.writeAsStringSync(packageNames.join(','), mode: FileMode.append);
-      } else {
-        file.writeAsStringSync(
-          ',${packageNames.join(',')}',
-          mode: FileMode.append,
-        );
-      }
+    if (tool.loadGroup().isActive) {
+      tool.markAsNeedBootstrap(packages);
     } else {
       final command = [
         'melos',
@@ -139,17 +117,8 @@ abstract class _Rapid {
   Future<void> codeGen({
     required List<DartPackage> packages,
   }) async {
-    if (groupActive) {
-      final packagePaths = packages.map((e) => e.path);
-      final file = File(dotRapidNeedCodeGen);
-      if (file.readAsStringSync().isEmpty) {
-        file.writeAsStringSync(packagePaths.join(','), mode: FileMode.append);
-      } else {
-        file.writeAsStringSync(
-          ',${packagePaths.join(',')}',
-          mode: FileMode.append,
-        );
-      }
+    if (tool.loadGroup().isActive) {
+      tool.markAsNeedCodeGen(packages);
     } else {
       await flutterPubGet(packages);
       await flutterPubRubBuildRunnerBuildDeleteConflictingOutputs(packages);

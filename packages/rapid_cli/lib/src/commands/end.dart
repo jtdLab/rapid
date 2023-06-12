@@ -4,46 +4,20 @@ mixin _EndMixin on _Rapid {
   Future<void> end() async {
     logger.command('rapid end');
 
-    final dotRapidTool = '.rapid_tool';
-
-    final rapidGroupActive = File(p.join(dotRapidTool, 'group-active'));
-
-    final rapidNeedBootstrap = File(p.join(dotRapidTool, 'need-bootstrap'));
-
-    final rapidNeedCodeGen = File(p.join(dotRapidTool, 'need-code-gen'));
-
-    if (!rapidGroupActive.existsSync() ||
-        !rapidNeedBootstrap.existsSync() ||
-        !rapidNeedCodeGen.existsSync()) {
-      _logAndThrow(
-        RapidEndException._noActiveGroup(),
-      );
+    if (!tool.loadGroup().isActive) {
+      _logAndThrow(RapidEndException._noActiveGroup());
     }
 
-    final groupActive = rapidGroupActive.readAsStringSync() == 'true';
-    if (!groupActive) {
-      _logAndThrow(
-        RapidEndException._noActiveGroup(),
-      );
+    tool.deactivateCommandGroup();
+
+    final group = tool.loadGroup();
+
+    if (group.packagesToBootstrap.isNotEmpty) {
+      await bootstrap(packages: group.packagesToBootstrap);
     }
-
-    // TODO uncomment
-/*     final packagesToBootstrap =
-        rapidNeedBootstrap.readAsStringSync().split(',').toSet().toList();
-    await melosBootstrap(cwd: '.', scope: packagesToBootstrap);
-
-    final packagesToCodeGen =
-        rapidNeedCodeGen.readAsStringSync().split(',').toSet().toList();
-    for (final packageToCodeGen in packagesToCodeGen) {
-      await flutterPubGet(packageToCodeGen);
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-        packageToCodeGen,
-      );
-    } */
-
-    rapidGroupActive.writeAsStringSync('false');
-    rapidNeedBootstrap.writeAsStringSync('');
-    rapidNeedCodeGen.writeAsStringSync('');
+    if (group.packagesToCodeGen.isNotEmpty) {
+      await codeGen(packages: group.packagesToCodeGen);
+    }
 
     logger.newLine();
     logger.success('Success $checkLabel');

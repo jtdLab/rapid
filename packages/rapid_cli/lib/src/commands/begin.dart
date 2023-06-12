@@ -4,34 +4,11 @@ mixin _BeginMixin on _Rapid {
   Future<void> begin() async {
     logger.command('rapid begin');
 
-    final dotRapidTool = p.join('.rapid_tool');
-
-    final rapidGroupActive = File(p.join(dotRapidTool, 'group-active'));
-
-    final rapidNeedBootstrap = File(p.join(dotRapidTool, 'need-bootstrap'));
-
-    final rapidNeedCodeGen = File(p.join(dotRapidTool, 'need-code-gen'));
-
-    if (!rapidGroupActive.existsSync()) {
-      rapidGroupActive.createSync(recursive: true);
+    if (tool.loadGroup().isActive) {
+      _logAndThrow(RapidBeginException._activeGroup());
     }
 
-    if (!rapidNeedBootstrap.existsSync()) {
-      rapidNeedBootstrap.createSync(recursive: true);
-    }
-
-    if (!rapidNeedCodeGen.existsSync()) {
-      rapidNeedCodeGen.createSync(recursive: true);
-    }
-
-    final groupActive = rapidGroupActive.readAsStringSync() == 'true';
-    if (groupActive) {
-      _logAndThrow(
-        RapidBeginException._activeGroup(),
-      );
-    }
-
-    rapidGroupActive.writeAsStringSync('true');
+    tool.activateCommandGroup();
 
     logger.newLine();
     logger.success('Success $checkLabel');

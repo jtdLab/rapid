@@ -132,7 +132,10 @@ void _updatePlatformNativeDirectoryTemplate({
   }
 
   if (platform == 'macos') {
-    for (final file in brickDir.listSync(recursive: true).whereType<File>()) {
+    for (final file in brickDir
+        .listSync(recursive: true)
+        .whereType<File>()
+        .where((e) => !e.isBinary)) {
       final content = file.readAsStringSync();
       file.writeAsStringSync(content
           .replaceAll('10.14', '10.15.7')

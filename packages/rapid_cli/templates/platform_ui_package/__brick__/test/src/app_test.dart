@@ -470,15 +470,7 @@ void main() {
         [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
       );
       expect(macosApp.locale, const Locale('en'));
-      expect(
-        macosApp.routeInformationProvider,
-        routerConfig.routeInformationProvider,
-      );
-      expect(macosApp.routerDelegate, routerConfig.routerDelegate);
-      expect(
-        macosApp.routeInformationParser,
-        routerConfig.routeInformationParser,
-      );
+      expect(macosApp.routerConfig, routerConfig);
       expect(macosApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
       expect(
@@ -512,15 +504,7 @@ void main() {
         [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
       );
       expect(macosApp.locale, const Locale('en'));
-      expect(
-        macosApp.routeInformationProvider,
-        routerConfig.routeInformationProvider,
-      );
-      expect(macosApp.routerDelegate, routerConfig.routerDelegate);
-      expect(
-        macosApp.routeInformationParser,
-        routerConfig.routeInformationParser,
-      );
+      expect(macosApp.routerConfig, routerConfig);
       expect(macosApp.home, null);
       final theme = tester.widget<Theme>(find.byType(Theme));
       expect(

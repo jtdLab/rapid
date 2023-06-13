@@ -378,10 +378,7 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
       locale: locale,
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
-      // TODO: migrate to routerConfig https://github.com/macosui/macos_ui/issues/388
-      routeInformationProvider: routerConfig?.routeInformationProvider,
-      routerDelegate: routerConfig!.routerDelegate,
-      routeInformationParser: routerConfig!.routeInformationParser!,
+      routerConfig: routerConfig,
       builder: _builder,
     );
   }

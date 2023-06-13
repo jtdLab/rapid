@@ -233,7 +233,10 @@ dependencies:
     sdk: flutter
   theme_tailor_annotation: ^2.0.0
   cupertino_icons: ^1.0.5
-  macos_ui: ^1.12.2
+  macos_ui:
+    git:
+      url: https://github.com/macosui/macos_ui.git
+      ref: f1053fc31958dbaa362a0a4c8288e8cf0919ab8c
   {{project_name}}_ui:
 
 dev_dependencies:

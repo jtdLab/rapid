@@ -159,6 +159,7 @@ import 'helpers/pump_app.dart';
 
       // Act
       await tester.pumpApp({{project_name.camelCase()}}ScaffoldTheme);
+      await tester.pumpAndSettle();
 
       // Assert
       final platformMenuBar =
@@ -183,6 +184,7 @@ import 'helpers/pump_app.dart';
 
       // Act
       await tester.pumpApp({{project_name.camelCase()}}ScaffoldTheme);
+      await tester.pumpAndSettle();
 
       // Assert
       final platformMenuBar =

@@ -25,8 +25,7 @@ class PubGetCommand extends RapidLeafCommand with PackageGetter {
 
   @override
   Future<void> run() {
-    // TODO should not be nullable
-    final packageName = super.package!;
+    final packageName = super.package;
 
     return rapid.pubGet(packageName: packageName);
   }

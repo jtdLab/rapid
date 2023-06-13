@@ -4,21 +4,14 @@ part of 'runner.dart';
 
 mixin _PubMixin on _Rapid {
   Future<void> pubAdd({
-    required String packageName,
+    required String? packageName,
     required List<String> packages,
   }) async {
     logger
       ..command('rapid pub add')
       ..newLine();
 
-    late DartPackage package;
-    try {
-      package =
-          project.packages.firstWhere((e) => e.packageName() == packageName);
-    } catch (_) {
-      // TODO
-      throw Error();
-    }
+    final package = _resolvePackage(packageName);
 
     final localPackagesToAdd = packages
         .where((e) => !e.trim().startsWith('dev') && e.trim().endsWith(':'))
@@ -55,8 +48,8 @@ mixin _PubMixin on _Rapid {
       package.pubspecFile.setDependency(name, dev: true);
     }
 
-    final dependingPackages =
-        project.packages.where((e) => e.pubspecFile.hasDependency(packageName));
+    final dependingPackages = project.packages
+        .where((e) => e.pubspecFile.hasDependency(package.packageName()));
 
     await bootstrap(
       packages: [
@@ -71,20 +64,13 @@ mixin _PubMixin on _Rapid {
   }
 
   Future<void> pubGet({
-    required String packageName,
+    required String? packageName,
   }) async {
     logger
       ..command('rapid pub get')
       ..newLine();
 
-    late DartPackage package;
-    try {
-      package =
-          project.packages.firstWhere((e) => e.packageName() == packageName);
-    } catch (_) {
-      // TODO
-      throw Error();
-    }
+    final package = _resolvePackage(packageName);
 
     List<DartPackage> packagesToBootstrap(List<DartPackage> initial) {
       final remaining = project.packages
@@ -125,26 +111,19 @@ mixin _PubMixin on _Rapid {
   }
 
   Future<void> pubRemove({
-    required String packageName,
+    required String? packageName,
     required List<String> packages,
   }) async {
     logger
       ..command('rapid pub remove')
       ..newLine();
 
-    late DartPackage package;
-    try {
-      package =
-          project.packages.firstWhere((e) => e.packageName() == packageName);
-    } catch (_) {
-      // TODO
-      throw Error();
-    }
+    final package = _resolvePackage(packageName);
 
     await flutterPubRemove(package, packagesToRemove: packages);
 
-    final dependingPackages =
-        project.packages.where((e) => e.pubspecFile.hasDependency(packageName));
+    final dependingPackages = project.packages
+        .where((e) => e.pubspecFile.hasDependency(package.packageName()));
 
     await bootstrap(
       packages: [
@@ -156,5 +135,21 @@ mixin _PubMixin on _Rapid {
     logger
       ..newLine()
       ..success('Success $checkLabel');
+  }
+
+  DartPackage _resolvePackage(String? packageName) {
+    try {
+      if (packageName != null) {
+        return project.packages
+            .firstWhere((e) => e.packageName() == packageName);
+      } else {
+        print(Directory.current.path);
+        return project.packages
+            .firstWhere((e) => e.path == Directory.current.path);
+      }
+    } catch (_) {
+      // TODO
+      throw Error();
+    }
   }
 }

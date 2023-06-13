@@ -25,8 +25,7 @@ class PubRemoveCommand extends RapidLeafCommand with PackageGetter {
 
   @override
   Future<void> run() {
-    // TODO should not be nullable
-    final packageName = super.package!;
+    final packageName = super.package;
     final packages = argResults.rest;
 
     return rapid.pubRemove(packageName: packageName, packages: packages);

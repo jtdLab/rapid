@@ -3,6 +3,8 @@ import 'package:cli_util/cli_logging.dart';
 
 import 'utils.dart';
 
+// TODO: rm unnecessary pieces
+
 final commandColor = AnsiStyles.blueBright;
 final commandLabelColor = AnsiStyles.yellowBright;
 final successMessageColor = AnsiStyles.green;

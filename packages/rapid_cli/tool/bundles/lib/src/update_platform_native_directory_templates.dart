@@ -130,6 +130,15 @@ void _updatePlatformNativeDirectoryTemplate({
       p.join(brickDir.path, '.gitignore'),
     );
   }
+
+  if (platform == 'macos') {
+    for (final file in brickDir.listSync(recursive: true).whereType<File>()) {
+      final content = file.readAsStringSync();
+      file.writeAsStringSync(content
+          .replaceAll('10.14', '10.15.7')
+          .replaceAll('10.14.6', '10.15.7'));
+    }
+  }
 }
 
 extension on File {

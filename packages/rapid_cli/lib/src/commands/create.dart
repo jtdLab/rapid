@@ -82,6 +82,17 @@ mixin _CreateMixin on _Rapid {
       await flutterConfigEnableWindows(project);
     }
 
+    // TODO: https://github.com/jtdLab/rapid/issues/96
+    if (macos) {
+      final rootPackage =
+          project.platformDirectory(platform: Platform.macos).rootPackage;
+
+      final podFile = File(p.join(rootPackage.path, 'macos', 'Podfile'));
+      podFile.writeAsStringSync(
+        podFile.readAsStringSync().replaceAll('10.14', '10.15.7'),
+      );
+    }
+
     // TODO log better summary + refs to doc
     logger
       ..newLine()

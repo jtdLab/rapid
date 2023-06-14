@@ -285,6 +285,7 @@ void main() {
             flags: ['android', 'ios', 'linux', 'macos', 'web', 'windows'],
           ),
           timeout: const Timeout(Duration(minutes: 24)),
+          tags: ['android', 'ios', 'linux', 'macos', 'web', 'windows'],
         );
       });
     },

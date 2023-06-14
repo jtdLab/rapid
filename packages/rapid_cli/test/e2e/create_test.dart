@@ -71,6 +71,14 @@ void main() {
                 ...featurePackages,
               ]);
             }
+            if (type == TestType.slow) {
+              final failedIntegrationTests = await runFlutterIntegrationTest(
+                platformRootPackage(platform),
+                pathToTests: 'integration_test/development_test.dart',
+                platform: platform,
+              );
+              expect(failedIntegrationTests, 0);
+            }
           }
         }
 

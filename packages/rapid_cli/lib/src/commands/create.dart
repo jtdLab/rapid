@@ -87,6 +87,9 @@ mixin _CreateMixin on _Rapid {
       final rootPackage =
           project.platformDirectory(platform: Platform.macos).rootPackage;
       final podFile = File(p.join(rootPackage.path, 'macos', 'Podfile'));
+      if(!podFile.existsSync()) {
+        podFile.createSync(recursive: true);
+      }
       podFile.writeAsStringSync(
         podFile.readAsStringSync().replaceAll(
               'platform :osx, \'10.14\'',

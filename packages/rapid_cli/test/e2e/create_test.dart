@@ -30,15 +30,13 @@ void main() {
           required List<String> flags,
         }) async {
           // Act
-          await runRapidCommand(
-            [
-              'create',
-              projectName,
-              for (final flag in flags) ...[
-                '--$flag',
-              ],
+          await runRapidCommand([
+            'create',
+            projectName,
+            for (final flag in flags) ...[
+              '--$flag',
             ],
-          );
+          ]);
 
           // Assert
           final platforms = flags

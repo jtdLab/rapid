@@ -81,6 +81,12 @@ jobs:
       - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
       # - uses: gradle/wrapper-validation-action@v1
 
+      - name: Get cached fixtures
+        uses: actions/cache/restore@v3
+        with:
+          path: packages/rapid_cli/test/e2e/fixtures
+          key: fixtures-${{ github.run_id }}
+
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -163,6 +169,12 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
 
+      - name: Get cached fixtures
+        uses: actions/cache/restore@v3
+        with:
+          path: packages/rapid_cli/test/e2e/fixtures
+          key: fixtures-${{ github.run_id }}
+
       - name: "List All Simulators"
         run: "xcrun xctrace list devices"
       - name: "Start Simulator"
@@ -219,6 +231,12 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
 
+      - name: Get cached fixtures
+        uses: actions/cache/restore@v3
+        with:
+          path: packages/rapid_cli/test/e2e/fixtures
+          key: fixtures-${{ github.run_id }}
+
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
@@ -266,6 +284,12 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
 
+      - name: Get cached fixtures
+        uses: actions/cache/restore@v3
+        with:
+          path: packages/rapid_cli/test/e2e/fixtures
+          key: fixtures-${{ github.run_id }}
+
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
@@ -309,6 +333,12 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+
+      - name: Get cached fixtures
+        uses: actions/cache/restore@v3
+        with:
+          path: packages/rapid_cli/test/e2e/fixtures
+          key: fixtures-${{ github.run_id }}
 
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
@@ -355,6 +385,12 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
       - run: git config --global core.longpaths true
+
+      - name: Get cached fixtures
+        uses: actions/cache/restore@v3
+        with:
+          path: packages/rapid_cli/test/e2e/fixtures
+          key: fixtures-${{ github.run_id }}
 
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
@@ -406,6 +442,12 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
       # - uses: gradle/wrapper-validation-action@v1
+
+      - name: Get cached fixtures
+        uses: actions/cache/restore@v3
+        with:
+          path: packages/rapid_cli/test/e2e/fixtures
+          key: fixtures-${{ github.run_id }}
 
       - name: Setup Java
         uses: actions/setup-java@v3
@@ -488,6 +530,12 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+
+      - name: Get cached fixtures
+        uses: actions/cache/restore@v3
+        with:
+          path: packages/rapid_cli/test/e2e/fixtures
+          key: fixtures-${{ github.run_id }}
 
       - name: "List All Simulators"
         run: "xcrun xctrace list devices"

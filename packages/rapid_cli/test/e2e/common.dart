@@ -34,8 +34,8 @@ late Directory cwd;
 Future<void> runRapidCommand(List<String> command) async {
   final commandRunner = RapidCommandRunner(
     project: await resolveProject(
-      ['rapid', ...command],
-      Directory.current,
+      command,
+      command.first == 'create' ? null : Directory.current,
     ),
   );
 

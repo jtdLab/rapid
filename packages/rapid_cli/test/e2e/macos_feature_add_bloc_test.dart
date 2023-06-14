@@ -28,7 +28,7 @@ void main() {
           '(fast)',
           () => performTest(
             platform: Platform.macos,
-            expectedCoverage: 75.0,
+            expectedCoverage: 80.0,
             type: TestType.fast,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
@@ -40,7 +40,7 @@ void main() {
           () => performTest(
             platform: Platform.macos,
             outputDir: 'foo',
-            expectedCoverage: 75.0,
+            expectedCoverage: 80.0,
             type: TestType.fast,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
@@ -51,7 +51,7 @@ void main() {
           '',
           () => performTest(
             platform: Platform.macos,
-            expectedCoverage: 75.0,
+            expectedCoverage: 80.0,
           ),
           timeout: const Timeout(Duration(minutes: 8)),
         );
@@ -61,7 +61,7 @@ void main() {
           () => performTest(
             platform: Platform.macos,
             outputDir: 'foo',
-            expectedCoverage: 75.0,
+            expectedCoverage: 80.0,
           ),
           timeout: const Timeout(Duration(minutes: 8)),
         );

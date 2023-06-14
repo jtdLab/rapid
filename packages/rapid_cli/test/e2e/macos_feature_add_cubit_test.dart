@@ -28,7 +28,7 @@ void main() {
           '(fast)',
           () => performTest(
             platform: Platform.macos,
-            expectedCoverage: 80.0,
+            expectedCoverage: 84.62,
             type: TestType.fast,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
@@ -39,7 +39,7 @@ void main() {
           '',
           () => performTest(
             platform: Platform.macos,
-            expectedCoverage: 80.0,
+            expectedCoverage: 84.62,
           ),
           timeout: const Timeout(Duration(minutes: 8)),
         );

@@ -1,12 +1,57 @@
-# TODO clean up and use fixtures.sh to gen fixtures in the workflow
+# TODO clean up
 name: rapid_cli_e2e_slow
 
 on:
   workflow_dispatch:
 
 jobs:
+  generate-fixtures:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/rapid_cli
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # TODO
+      # - run: sudo apt-get update -y
+
+      # - run: sudo apt-get install -y ninja-build libgtk-3-dev libblkid-dev
+      # # Setup Git to clone private Repos (this step should not be needed when rapid is public)
+      # - uses: webfactory/ssh-agent@v0.7.0
+      #   with:
+      #     ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      # - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.10.0
+          channel: stable
+          cache: true
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Setup Mason CLI
+        run: dart pub global activate mason_cli
+
+      - name: Setup Rapid CLI
+        run: melos dev:activate
+
+      - name: Cache fixtures
+        uses: actions/cache@v3
+        with:
+          path: packages/rapid_cli/test/e2e/fixtures
+          key: fixtures-${{ github.run_id }}
+
+      - name: Generate fixtures
+        run: bash tool/fixtures.sh
+
   e2e-android:
     runs-on: macos-latest
+    needs: generate-fixtures
     defaults:
       run:
         working-directory: packages/rapid_cli
@@ -95,6 +140,7 @@ jobs:
 
   e2e-ios:
     runs-on: macos-latest
+    needs: generate-fixtures
     defaults:
       run:
         working-directory: packages/rapid_cli
@@ -146,6 +192,7 @@ jobs:
 
   e2e-linux:
     runs-on: ubuntu-latest
+    needs: generate-fixtures
     defaults:
       run:
         working-directory: packages/rapid_cli
@@ -196,6 +243,7 @@ jobs:
 
   e2e-macos:
     runs-on: macos-latest
+    needs: generate-fixtures
     defaults:
       run:
         working-directory: packages/rapid_cli
@@ -239,6 +287,7 @@ jobs:
 
   e2e-web:
     runs-on: ubuntu-latest
+    needs: generate-fixtures
     defaults:
       run:
         working-directory: packages/rapid_cli
@@ -283,6 +332,7 @@ jobs:
 
   e2e-windows:
     runs-on: windows-latest
+    needs: generate-fixtures
     defaults:
       run:
         working-directory: packages/rapid_cli
@@ -324,8 +374,10 @@ jobs:
 
       - name: Run E2E Tests
         run: flutter test ${{ matrix.test }} -j 1 --run-skipped -t e2e,windows
+
   e2e-mobile-android:
     runs-on: macos-latest
+    needs: generate-fixtures
     defaults:
       run:
         working-directory: packages/rapid_cli
@@ -414,6 +466,7 @@ jobs:
 
   e2e-mobile-ios:
     runs-on: macos-latest
+    needs: generate-fixtures
     defaults:
       run:
         working-directory: packages/rapid_cli

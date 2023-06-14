@@ -86,68 +86,13 @@ mixin _CreateMixin on _Rapid {
     if (macos) {
       final rootPackage =
           project.platformDirectory(platform: Platform.macos).rootPackage;
-      final macosDir = Directory(p.join(rootPackage.path, 'macos'));
-
-      for (final file in macosDir
-          .listSync(recursive: true)
-          .whereType<File>()
-          .where((e) => !e.isBinary)) {
-        final content = file.readAsStringSync();
-        file.writeAsStringSync(
-          content
-              .replaceAll('10.14', '10.15.7.7')
-              .replaceAll('10.14.6', '10.15.7.7'),
-        );
-      }
-
-      final podFile = File(p.join(macosDir.path, 'Podfile'));
-      podFile.writeAsStringSync(r'''
-platform :osx, '10.15.7.7'
-
-# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
-ENV['COCOAPODS_DISABLE_STATS'] = 'true'
-
-project 'Runner', {
-  'Debug' => :debug,
-  'Profile' => :release,
-  'Release' => :release,
-}
-
-def flutter_root
-  generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'ephemeral', 'Flutter-Generated.xcconfig'), __FILE__)
-  unless File.exist?(generated_xcode_build_settings_path)
-    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure \"flutter pub get\" is executed first"
-  end
-
-  File.foreach(generated_xcode_build_settings_path) do |line|
-    matches = line.match(/FLUTTER_ROOT\=(.*)/)
-    return matches[1].strip if matches
-  end
-  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Flutter-Generated.xcconfig, then run \"flutter pub get\""
-end
-
-require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
-
-flutter_macos_podfile_setup
-
-target 'Runner' do
-  use_frameworks!
-  use_modular_headers!
-
-  flutter_install_all_macos_pods File.dirname(File.realpath(__FILE__))
-  target 'RunnerTests' do
-    inherit! :search_paths
-  end
-end
-
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    flutter_additional_macos_build_settings(target)
-    target.build_configurations.each do |config|
-      config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = '10.15.7.7'
-    end
-  end
-end''');
+      final podFile = File(p.join(rootPackage.path, 'macos', 'Podfile'));
+      podFile.writeAsStringSync(
+        podFile.readAsStringSync().replaceAll(
+              'platform :osx, \'10.14\'',
+              'platform :osx, \'10.15.7.7\'',
+            ),
+      );
     }
 
     // TODO log better summary + refs to doc

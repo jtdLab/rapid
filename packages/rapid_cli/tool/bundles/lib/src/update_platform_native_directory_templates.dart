@@ -9,7 +9,7 @@ import 'common.dart';
 
 const _descriptionPlaceholder = 'XXDESCXX';
 const _orgNamePlaceholder = 'xxx.xxx.xxx';
-const _projectNamePlaceholder = 'xlx';
+const _projectNamePlaceholder = 'xlx_xlx';
 
 Future<void> updatePlatformNativeDirectoryTemplates() async {
   print('Updating PlatformNativeDirectory templates...');
@@ -67,7 +67,9 @@ void _applyPlaceholders({
     (_orgNamePlaceholder, '{{org_name}}'),
     (_projectNamePlaceholder, '{{project_name}}'),
     // TODO maybe more cases ?
-    (_projectNamePlaceholder.titleCase, '{{project_name.titleCase()}}')
+    (_projectNamePlaceholder.titleCase, '{{project_name.titleCase()}}'),
+    (_projectNamePlaceholder.pascalCase, '{{project_name.pascalCase()}}'),
+    (_projectNamePlaceholder.camelCase, '{{project_name.camelCase()}}')
   ];
   final files =
       dir.listSync(recursive: true).whereType<File>().where((e) => !e.isBinary);

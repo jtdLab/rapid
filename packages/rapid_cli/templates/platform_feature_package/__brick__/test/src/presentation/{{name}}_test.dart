@@ -12,6 +12,7 @@ void main() {
         ],
         locale: const Locale('{{default_language}}'),
       );
+      await tester.pumpAndSettle();
 
       // Assert
       expect(find.byType({{project_name.pascalCase()}}Scaffold), findsOneWidget);
@@ -22,6 +23,7 @@ void main() {
         widget: const {{name.pascalCase()}}(),
         locale: const Locale('{{default_language}}'),
       );
+      await tester.pumpAndSettle();
 
       // Assert
       expect(find.byType({{project_name.pascalCase()}}Scaffold), findsOneWidget);

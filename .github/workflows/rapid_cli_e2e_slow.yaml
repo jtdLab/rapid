@@ -365,31 +365,31 @@ jobs:
     needs: generate-fixtures
     defaults:
       run:
-        working-directory: packages\rapid_cli
+        working-directory: packages/rapid_cli
 
     strategy:
       fail-fast: false
       matrix:
         test:
           # E2E tests for activate command
-          - test\e2e\activate_windows_test.dart
+          - test/e2e/activate_windows_test.dart
 
           # E2E tests for create command
-          - test\e2e\create_test.dart
+          - test/e2e/create_test.dart
 
     steps:
-      - run: git config --global core.longpaths true
       - uses: actions/checkout@v3
       # Setup Git to clone private Repos (this step should not be needed when rapid is public)
       - uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - run: git config --global core.longpaths true
       - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
 
       - name: Get cached fixtures
         uses: actions/cache/restore@v3
         with:
-          path: packages\rapid_cli\test\e2e\fixtures
+          path: packages/rapid_cli/test/e2e/fixtures
           key: fixtures-${{ github.run_id }}
 
       - name: Setup Flutter SDK

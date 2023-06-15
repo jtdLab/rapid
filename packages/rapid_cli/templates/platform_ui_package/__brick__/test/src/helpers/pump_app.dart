@@ -63,7 +63,7 @@ extension WidgetTesterX on WidgetTester {
       );
 }
 {{/linux}}{{#macos}}
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name}}_ui_macos/src/app.dart';
@@ -73,12 +73,12 @@ extension WidgetTesterX on WidgetTester {
   Future<void> pumpApp(
     Widget widget, {
     Locale? locale,
-    Brightness? brightness,
+    ThemeMode? themeMode,
   }) =>
       pumpWidget(
         {{project_name.pascalCase()}}App.test(
           locale: locale,
-          brightness: brightness,
+          themeMode: themeMode,
           home: widget,
         ),
       );

@@ -41,8 +41,16 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
   final RouterConfig<Object>? routerConfig;
-  ThemeData get lightTheme => ThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]);
-  ThemeData get darkTheme => ThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]);
+  ThemeData get lightTheme => ThemeData(
+        brightness: Brightness.light,
+        extensions: [...lightExtensions, ...ui.lightExtensions],
+        // TODO: override material light themes here.
+      );
+  ThemeData get darkTheme => ThemeData(
+        brightness: Brightness.dark,
+        extensions: [...darkExtensions, ...ui.darkExtensions],
+        // TODO: override material light themes here.
+      );
   final ThemeMode? themeMode;
   final Widget? home;
 }
@@ -137,6 +145,11 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
   final RouterConfig<Object>? routerConfig;
+  CupertinoThemeData get theme => CupertinoThemeData(
+        brightness: brightness,
+        // TODO: override cupertino themes here.
+        // Hint: Use CupertinoDynamicColor.withBrightness
+      );
   final Brightness? brightness;
   final Widget? home;
 
@@ -144,17 +157,26 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     final brightness =
         this.brightness ?? MediaQuery.of(context).platformBrightness;
 
-    if (brightness == Brightness.light) {
-      return Theme(
-        data: ThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]),
-        child: child!,
-      );
-    } else {
-      return Theme(
-        data: ThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]),
-        child: child!,
-      );
+    late final ThemeData data;
+    switch (brightness) {
+      case Brightness.light:
+        data = ThemeData(
+          brightness: brightness,
+          extensions: [...lightExtensions, ...ui.lightExtensions],
+          cupertinoOverrideTheme: theme,
+        );
+      case Brightness.dark:
+        data = ThemeData(
+          brightness: brightness,
+          extensions: [...darkExtensions, ...ui.darkExtensions],
+          cupertinoOverrideTheme: theme,
+        );
     }
+
+    return Theme(
+      data: data,
+      child: child!,
+    );
   }
 }
 
@@ -243,8 +265,16 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
   final RouterConfig<Object>? routerConfig;
-  ThemeData get lightTheme => ThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]);
-  ThemeData get darkTheme => ThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]);
+  ThemeData get lightTheme => ThemeData(
+        brightness: Brightness.light,
+        extensions: [...lightExtensions, ...ui.lightExtensions],
+        // TODO: override material light themes here.
+      );
+  ThemeData get darkTheme => ThemeData(
+        brightness: Brightness.dark,
+        extensions: [...darkExtensions, ...ui.darkExtensions],
+        // TODO: override material dark themes here.
+      );
   final ThemeMode? themeMode;
   final Widget? home;
 }
@@ -297,7 +327,7 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
 }
 {{/linux}}{{#macos}}
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show Theme, ThemeData;
+import 'package:flutter/material.dart' show Theme, ThemeData, ThemeMode;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
 import 'package:{{project_name}}_ui_macos/src/theme_extensions.dart';
@@ -310,7 +340,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     Iterable<Locale>? supportedLocales,
     Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
     this.routerConfig,
-    this.brightness,
+    this.themeMode,
     this.home,
   }) : _localizationsDelegates = localizationsDelegates,
         _supportedLocales = supportedLocales;
@@ -321,7 +351,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     required Iterable<Locale> supportedLocales,
     required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
     required RouterConfig<Object> routerConfig,
-    Brightness? brightness,
+    ThemeMode? themeMode,
   }) = _{{project_name.pascalCase()}}App;
 
   @visibleForTesting
@@ -329,7 +359,7 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     Key? key,
     Locale? locale,
     Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    Brightness? brightness,
+    ThemeMode? themeMode,
     required Widget home,
   }) = _{{project_name.pascalCase()}}AppTest;
 
@@ -341,24 +371,48 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
   final RouterConfig<Object>? routerConfig;
-  final Brightness? brightness;
+  MacosThemeData get lightTheme => MacosThemeData(
+        brightness: Brightness.light,
+        // TODO: override macos_ui light themes here.
+      );
+  MacosThemeData get darkTheme => MacosThemeData(
+        brightness: Brightness.dark,
+        // TODO: override macos_ui dark themes here.
+      );
+  final ThemeMode? themeMode;
   final Widget? home;
 
   Widget _builder(BuildContext context, Widget? child) {
-    final brightness =
-        this.brightness ?? MediaQuery.of(context).platformBrightness;
+    final themeMode = this.themeMode ?? ThemeMode.system;
 
-    if (brightness == Brightness.light) {
-      return Theme(
-        data: ThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]),
-        child: child!,
-      );
-    } else {
-      return Theme(
-        data: ThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]),
-        child: child!,
-      );
+    late final Brightness brightness;
+    switch (themeMode) {
+      case ThemeMode.light:
+        brightness = Brightness.light;
+      case ThemeMode.dark:
+        brightness = Brightness.dark;
+      case ThemeMode.system:
+        brightness = MediaQuery.of(context).platformBrightness;
     }
+
+    late final ThemeData data;
+    switch (brightness) {
+      case Brightness.light:
+        data = ThemeData(
+          brightness: brightness,
+          extensions: [...lightExtensions, ...ui.lightExtensions],
+        );
+      case Brightness.dark:
+        data = ThemeData(
+          brightness: brightness,
+          extensions: [...darkExtensions, ...ui.darkExtensions],
+        );
+    }
+
+    return Theme(
+      data: data,
+      child: child!,
+    );
   }
 }
 
@@ -369,7 +423,7 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
     required Iterable<Locale> super.supportedLocales,
     required Iterable<LocalizationsDelegate<dynamic>> super.localizationsDelegates,
     required RouterConfig<Object> super.routerConfig,
-    super.brightness,
+    super.themeMode,
   }) : super._();
 
   @override
@@ -380,6 +434,9 @@ class _{{project_name.pascalCase()}}App extends {{project_name.pascalCase()}}App
       localizationsDelegates: localizationsDelegates,
       routerConfig: routerConfig,
       builder: _builder,
+      themeMode: themeMode,
+      theme: lightTheme,
+      darkTheme: darkTheme,
     );
   }
 }
@@ -389,7 +446,7 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
     super.key,
     super.locale,
     super.localizationsDelegates,
-    super.brightness,
+    super.themeMode,
     required super.home,
   }) : super._();
 
@@ -400,6 +457,9 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       builder: _builder,
+      themeMode: themeMode,
+      theme: lightTheme,
+      darkTheme: darkTheme,
       home: home,
     );
   }
@@ -448,8 +508,16 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
   final RouterConfig<Object>? routerConfig;
-  ThemeData get lightTheme => ThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]);
-  ThemeData get darkTheme => ThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]);
+  ThemeData get lightTheme => ThemeData(
+        brightness: Brightness.light,
+        extensions: [...lightExtensions, ...ui.lightExtensions],
+        // TODO: override material light themes here.
+      );
+  ThemeData get darkTheme => ThemeData(
+        brightness: Brightness.dark,
+        extensions: [...darkExtensions, ...ui.darkExtensions],
+        // TODO: override material light themes here.
+      );
   final ThemeMode? themeMode;
   final Widget? home;
 }
@@ -544,8 +612,16 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
   final RouterConfig<Object>? routerConfig;
-  FluentThemeData get lightTheme => FluentThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]);
-  FluentThemeData get darkTheme => FluentThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]);
+  FluentThemeData get lightTheme => FluentThemeData(
+        brightness: Brightness.light,
+        extensions: [...lightExtensions, ...ui.lightExtensions],
+        // TODO: override fluent_ui light themes here.
+      );
+  FluentThemeData get darkTheme => FluentThemeData(
+        brightness: Brightness.dark,
+        extensions: [...darkExtensions, ...ui.darkExtensions],
+        // TODO: override fluent_ui light themes here.
+      );
   final ThemeMode? themeMode;
   final Widget? home;
 }
@@ -639,8 +715,16 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
   final RouterConfig<Object>? routerConfig;
-  ThemeData get lightTheme => ThemeData(extensions: [...lightExtensions, ...ui.lightExtensions]);
-  ThemeData get darkTheme => ThemeData(extensions: [...darkExtensions, ...ui.darkExtensions]);
+  ThemeData get lightTheme => ThemeData(
+        brightness: Brightness.light,
+        extensions: [...lightExtensions, ...ui.lightExtensions],
+        // TODO: override material light themes here.
+      );
+  ThemeData get darkTheme => ThemeData(
+        brightness: Brightness.dark,
+        extensions: [...darkExtensions, ...ui.darkExtensions],
+        // TODO: override material light themes here.
+      );
   final ThemeMode? themeMode;
   final Widget? home;
 }

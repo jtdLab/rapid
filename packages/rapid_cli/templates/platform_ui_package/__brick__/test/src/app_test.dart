@@ -1,4 +1,4 @@
-import 'package:flutter_localizations/flutter_localizations.dart';import 'package:flutter_test/flutter_test.dart';import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;{{#android}}import 'package:{{project_name}}_ui_android/src/app.dart';import 'package:{{project_name}}_ui_android/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/android}}{{#ios}}import 'package:{{project_name}}_ui_ios/src/app.dart';import 'package:{{project_name}}_ui_ios/src/theme_extensions.dart';import 'package:flutter/cupertino.dart';import 'package:flutter/material.dart' show Theme;{{/ios}}{{#linux}}import 'package:{{project_name}}_ui_linux/src/app.dart';import 'package:{{project_name}}_ui_linux/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/linux}}{{#macos}}import 'package:{{project_name}}_ui_macos/src/app.dart';import 'package:{{project_name}}_ui_macos/src/theme_extensions.dart';import 'package:flutter/widgets.dart';import 'package:flutter/material.dart' show Brightness, Theme;import 'package:macos_ui/macos_ui.dart';{{/macos}}{{#web}}import 'package:{{project_name}}_ui_web/src/app.dart';import 'package:{{project_name}}_ui_web/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/web}}{{#windows}}import 'package:{{project_name}}_ui_windows/src/app.dart';import 'package:{{project_name}}_ui_windows/src/theme_extensions.dart';import 'package:fluent_ui/fluent_ui.dart';{{/windows}}{{#mobile}}import 'package:{{project_name}}_ui_mobile/src/app.dart';import 'package:{{project_name}}_ui_mobile/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/mobile}}
+import 'package:flutter_localizations/flutter_localizations.dart';import 'package:flutter_test/flutter_test.dart';import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;{{#android}}import 'package:{{project_name}}_ui_android/src/app.dart';import 'package:{{project_name}}_ui_android/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/android}}{{#ios}}import 'package:{{project_name}}_ui_ios/src/app.dart';import 'package:{{project_name}}_ui_ios/src/theme_extensions.dart';import 'package:flutter/cupertino.dart';import 'package:flutter/material.dart' show Theme;{{/ios}}{{#linux}}import 'package:{{project_name}}_ui_linux/src/app.dart';import 'package:{{project_name}}_ui_linux/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/linux}}{{#macos}}import 'package:{{project_name}}_ui_macos/src/app.dart';import 'package:{{project_name}}_ui_macos/src/theme_extensions.dart';import 'package:flutter/widgets.dart';import 'package:flutter/material.dart' show Theme, ThemeMode;import 'package:macos_ui/macos_ui.dart';{{/macos}}{{#web}}import 'package:{{project_name}}_ui_web/src/app.dart';import 'package:{{project_name}}_ui_web/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/web}}{{#windows}}import 'package:{{project_name}}_ui_windows/src/app.dart';import 'package:{{project_name}}_ui_windows/src/theme_extensions.dart';import 'package:fluent_ui/fluent_ui.dart';{{/windows}}{{#mobile}}import 'package:{{project_name}}_ui_mobile/src/app.dart';import 'package:{{project_name}}_ui_mobile/src/theme_extensions.dart';import 'package:flutter/material.dart';{{/mobile}}
 
 import 'mocks.dart';
 
@@ -418,34 +418,34 @@ void main() {
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RouterConfig<Object> routerConfig,
-  Brightness? brightness,
+  ThemeMode? themeMode,
 }) {
   return {{project_name.pascalCase()}}App(
     locale: locale,
     supportedLocales: supportedLocales,
     localizationsDelegates: localizationsDelegates,
     routerConfig: routerConfig,
-    brightness: brightness,
+    themeMode: themeMode,
   );
 }
 
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}AppTest({
   Locale? locale,
   Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-  Brightness? brightness,
+  ThemeMode? themeMode,
   required Widget home,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale,
     localizationsDelegates: localizationsDelegates,
-    brightness: brightness,
+    themeMode: themeMode,
     home: home,
   );
 }
 
 void main() {
   group('{{project_name.pascalCase()}}App', () {
-    testWidgets('renders MacosApp correctly when brightness is light', (tester) async {
+    testWidgets('renders MacosApp correctly when themeMode is light', (tester) async {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
@@ -455,7 +455,7 @@ void main() {
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
         routerConfig: routerConfig,
-        brightness: Brightness.light,
+        themeMode: ThemeMode.light,
       );
 
       // Act
@@ -479,7 +479,7 @@ void main() {
       );
     });
   
-    testWidgets('renders MacosApp correctly when brightness is dark', (tester) async {
+    testWidgets('renders MacosApp correctly when themeMode is dark', (tester) async {
       // Arrange
       final supportedLocales = {const Locale('en')};
       final localizationsDelegates = [FakeLocalizationsDelegate()];
@@ -489,7 +489,7 @@ void main() {
         supportedLocales: supportedLocales,
         localizationsDelegates: localizationsDelegates,
         routerConfig: routerConfig,
-        brightness: Brightness.dark,
+        themeMode: ThemeMode.dark,
       );
 
       // Act
@@ -515,7 +515,7 @@ void main() {
   });
 
   group('{{project_name.pascalCase()}}App.test', () {
-    testWidgets('renders MacosApp correctly when brightness is light',
+    testWidgets('renders MacosApp correctly when themeMode is light',
         (tester) async {
       // Arrange
       final localizationsDelegates = [FakeLocalizationsDelegate()];
@@ -523,7 +523,7 @@ void main() {
       final {{project_name.camelCase()}}App = _get{{project_name.pascalCase()}}AppTest(
         locale: const Locale('en'),
         localizationsDelegates: localizationsDelegates,
-        brightness: Brightness.light,
+        themeMode: ThemeMode.light,
         home: home,
       );
 
@@ -548,7 +548,7 @@ void main() {
       );
     });
 
-    testWidgets('renders MacosApp correctly when brightness is dark',
+    testWidgets('renders MacosApp correctly when themeMode is dark',
         (tester) async {
       // Arrange
       final localizationsDelegates = [FakeLocalizationsDelegate()];
@@ -556,7 +556,7 @@ void main() {
       final {{project_name.camelCase()}}App = _get{{project_name.pascalCase()}}AppTest(
         locale: const Locale('en'),
         localizationsDelegates: localizationsDelegates,
-        brightness: Brightness.dark,
+        themeMode: ThemeMode.dark,
         home: home,
       );
 

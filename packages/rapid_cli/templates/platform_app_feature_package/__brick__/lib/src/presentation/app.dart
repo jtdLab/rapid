@@ -380,6 +380,7 @@ class _AppTestWidget extends App {
   }
 }
 {{/linux}}{{#macos}}import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';
 
 abstract class App extends StatelessWidget {
@@ -405,7 +406,7 @@ abstract class App extends StatelessWidget {
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     NavigatorObserver? navigatorObserver,
-    Brightness? brightness,
+    ThemeMode? themeMode,
   }) = _AppTest;
 
   @visibleForTesting
@@ -414,7 +415,7 @@ abstract class App extends StatelessWidget {
     required Widget widget,
     Locale locale,
     required List<LocalizationsDelegate> localizationsDelegates,
-    Brightness? brightness,
+    ThemeMode? themeMode,
   }) = _AppTestWidget;
 
   final List<LocalizationsDelegate> localizationsDelegates;
@@ -454,13 +455,13 @@ class _AppTest extends App {
     required RootStackRouter super.router,
     this.initialRoutes,
     this.navigatorObserver,
-    this.brightness,
+    this.themeMode,
   }) : super._();
 
   final Locale locale;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
   final NavigatorObserver? navigatorObserver;
-  final Brightness? brightness;
+  final ThemeMode? themeMode;
 
   List<Locale> get supportedLocales => [locale];
 
@@ -477,7 +478,7 @@ class _AppTest extends App {
             ? () => [navigatorObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
-      brightness: brightness,
+      themeMode: themeMode,
     );
   }
 }
@@ -488,12 +489,12 @@ class _AppTestWidget extends App {
     required this.widget,
     this.locale = const Locale('en'),
     required super.localizationsDelegates,
-    this.brightness
+    this.themeMode,
   }) : super._();
 
   final Locale locale;
   final Widget widget;
-  final Brightness? brightness;
+  final ThemeMode? themeMode;
 
   @override
   Widget build(BuildContext context) {
@@ -502,7 +503,7 @@ class _AppTestWidget extends App {
       locale: locale,
       localizationsDelegates: localizationsDelegates,
       home: widget,
-      brightness: brightness,
+      themeMode: themeMode,
     );
   }
 }

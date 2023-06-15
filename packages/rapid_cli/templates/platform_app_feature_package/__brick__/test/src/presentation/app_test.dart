@@ -617,6 +617,7 @@ void main() {
   });
 }
 {{/linux}}{{#macos}}import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:{{project_name}}_macos_app/src/presentation/app.dart';
 import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -644,7 +645,7 @@ App _getAppTest({
   required RootStackRouter router,
   List<PageRouteInfo<dynamic>>? initialRoutes,
   AutoRouterObserver? navigatorObserver,
-  Brightness? brightness,
+  ThemeMode? themeMode,
 }) {
   return App.test(
     locale: locale,
@@ -652,7 +653,7 @@ App _getAppTest({
     router: router,
     initialRoutes: initialRoutes,
     navigatorObserver: navigatorObserver,
-    brightness: brightness,
+    themeMode: themeMode,
   );
 }
 
@@ -660,13 +661,13 @@ App _getAppTestWidget({
   required Widget widget,
   required Locale locale,
   required List<LocalizationsDelegate<dynamic>> localizationsDelegates,
-  Brightness? brightness,
+  ThemeMode? themeMode,
 }) {
   return App.testWidget(
     widget: widget,
     locale: locale,
     localizationsDelegates: localizationsDelegates,
-    brightness: brightness,
+    themeMode: themeMode,
   );
 }
 
@@ -738,7 +739,7 @@ void main() {
         router: router,
         initialRoutes: const [FakePageRouteInfo()],
         navigatorObserver: navigatorObserver,
-        brightness: Brightness.dark,
+        themeMode: ThemeMode.dark,
       );
 
       // Act
@@ -788,7 +789,7 @@ void main() {
                   ),
             ),
       );
-      expect({{project_name.camelCase()}}App.brightness, Brightness.dark);
+      expect({{project_name.camelCase()}}App.themeMode, ThemeMode.dark);
     });
   });
 
@@ -800,7 +801,7 @@ void main() {
         widget: widget,
         locale: const Locale('fr'),
         localizationsDelegates: [GlobalWidgetsLocalizations.delegate],
-        brightness: Brightness.dark,
+        themeMode: ThemeMode.dark,
       );
 
       // Act
@@ -818,7 +819,7 @@ void main() {
         contains(GlobalWidgetsLocalizations.delegate),
       );
       expect({{project_name.camelCase()}}App.routerConfig, null);
-      expect({{project_name.camelCase()}}App.brightness, Brightness.dark);
+      expect({{project_name.camelCase()}}App.themeMode, ThemeMode.dark);
     });
   });
 }

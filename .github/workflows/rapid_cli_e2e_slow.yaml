@@ -378,13 +378,13 @@ jobs:
           - test/e2e/create_test.dart
 
     steps:
+      - run: git config --global core.longpaths true
       - uses: actions/checkout@v3
       # Setup Git to clone private Repos (this step should not be needed when rapid is public)
       - uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - run: git config --global url.ssh://git@github.com/.insteadOf https://github.com/
-      - run: git config --global core.longpaths true
 
       - name: Get cached fixtures
         uses: actions/cache/restore@v3

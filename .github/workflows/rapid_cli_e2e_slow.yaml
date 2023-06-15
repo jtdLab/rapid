@@ -365,17 +365,17 @@ jobs:
     needs: generate-fixtures
     defaults:
       run:
-        working-directory: packages/rapid_cli
+        working-directory: packages\rapid_cli
 
     strategy:
       fail-fast: false
       matrix:
         test:
           # E2E tests for activate command
-          - test/e2e/activate_windows_test.dart
+          - test\e2e\activate_windows_test.dart
 
           # E2E tests for create command
-          - test/e2e/create_test.dart
+          - test\e2e\create_test.dart
 
     steps:
       - run: git config --global core.longpaths true
@@ -389,7 +389,7 @@ jobs:
       - name: Get cached fixtures
         uses: actions/cache/restore@v3
         with:
-          path: packages/rapid_cli/test/e2e/fixtures
+          path: packages\rapid_cli\test\e2e\fixtures
           key: fixtures-${{ github.run_id }}
 
       - name: Setup Flutter SDK

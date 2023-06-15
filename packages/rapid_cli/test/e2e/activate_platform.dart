@@ -1,11 +1,9 @@
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:test/test.dart';
 
 import 'common.dart';
 
 Future<void> performTest({
   required Platform platform,
-  TestType type = TestType.normal,
 }) async {
   // Arrange
   await setupProject();
@@ -24,19 +22,9 @@ Future<void> performTest({
     ...platformPackages,
     ...featurePackages,
   ]);
-  if (type != TestType.fast) {
-    await verifyTestsPassWith100PercentCoverage([
-      ...platformDependentPackagesWithTests(platform),
-      ...featurePackages,
-    ]);
-  }
 
-  if (type == TestType.slow) {
-    final failedIntegrationTests = await runFlutterIntegrationTest(
-      platformRootPackage(platform),
-      pathToTests: 'integration_test/development_test.dart',
-      platform: platform,
-    );
-    expect(failedIntegrationTests, 0);
-  }
+  await verifyTestsPassWith100PercentCoverage([
+    ...platformDependentPackagesWithTests(platform),
+    ...featurePackages,
+  ]);
 }

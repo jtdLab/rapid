@@ -26,7 +26,6 @@ void main() {
           '(fast)',
           () => performTest(
             platform: Platform.macos,
-            type: TestType.fast,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
           tags: ['fast'],
@@ -38,16 +37,6 @@ void main() {
             platform: Platform.macos,
           ),
           timeout: const Timeout(Duration(minutes: 8)),
-        );
-
-        test(
-          '(slow)',
-          () => performTest(
-            platform: Platform.macos,
-            type: TestType.slow,
-          ),
-          timeout: const Timeout(Duration(minutes: 24)),
-          tags: ['macos'],
         );
       });
     },

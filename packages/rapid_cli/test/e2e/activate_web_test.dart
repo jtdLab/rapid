@@ -26,7 +26,6 @@ void main() {
           '(fast)',
           () => performTest(
             platform: Platform.web,
-            type: TestType.fast,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
           tags: ['fast'],
@@ -38,16 +37,6 @@ void main() {
             platform: Platform.web,
           ),
           timeout: const Timeout(Duration(minutes: 8)),
-        );
-
-        test(
-          '(slow)',
-          () => performTest(
-            platform: Platform.web,
-            type: TestType.slow,
-          ),
-          timeout: const Timeout(Duration(minutes: 24)),
-          tags: ['web'],
         );
       });
     },

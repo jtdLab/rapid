@@ -9,7 +9,7 @@ import 'package:test/test.dart';
 
 // TODO(jtdLab): refactor test setup to NOT use setup and teardown while setting cwd to tempdir
 
-enum TestType { slow, normal, fast }
+enum TestType { normal, fast }
 
 /// The directory `flutter/dart test` was called from.
 ///

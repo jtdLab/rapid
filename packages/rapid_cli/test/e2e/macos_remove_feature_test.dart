@@ -21,26 +21,12 @@ void main() {
         Directory.current = cwd;
       });
 
-      group(
+      test(
         'macos remove feature',
-        () {
-          test(
-            '(fast)',
-            () => performTest(
-              platform: Platform.macos,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              platform: Platform.macos,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-          );
-        },
+        () => performTest(
+          platform: Platform.macos,
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
       );
     },
   );

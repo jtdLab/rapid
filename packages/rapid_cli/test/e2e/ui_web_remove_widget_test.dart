@@ -21,25 +21,13 @@ void main() {
         Directory.current = cwd;
       });
 
-      group('ui web remove widget', () {
-        test(
-          '(fast)',
-          () => performTest(
-            platform: Platform.web,
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
-
-        test(
-          '',
-          () => performTest(
-            platform: Platform.web,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
-      });
+      test(
+        'ui web remove widget',
+        () => performTest(
+          platform: Platform.web,
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
     },
   );
 }

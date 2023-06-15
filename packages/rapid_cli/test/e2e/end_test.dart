@@ -23,15 +23,6 @@ void main() {
 
 /*       group('end', () {
         test(
-          '(fast)',
-          () => performTest(
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
-
-        test(
           '',
           () => performTest(),
           timeout: const Timeout(Duration(minutes: 8)),

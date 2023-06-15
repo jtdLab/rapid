@@ -23,49 +23,24 @@ void main() {
         Directory.current = cwd;
       });
 
-      group('macos <feature> add bloc', () {
-        test(
-          '(fast)',
-          () => performTest(
-            platform: Platform.macos,
-            expectedCoverage: 80.0,
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'macos <feature> add bloc',
+        () => performTest(
+          platform: Platform.macos,
+          expectedCoverage: 80.0,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
 
-        test(
-          'with output dir (fast)',
-          () => performTest(
-            platform: Platform.macos,
-            outputDir: 'foo',
-            expectedCoverage: 80.0,
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
-
-        test(
-          '',
-          () => performTest(
-            platform: Platform.macos,
-            expectedCoverage: 80.0,
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
-
-        test(
-          'with output dir',
-          () => performTest(
-            platform: Platform.macos,
-            outputDir: 'foo',
-            expectedCoverage: 80.0,
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
-      });
+      test(
+        'macos <feature> add bloc (with output dir)',
+        () => performTest(
+          platform: Platform.macos,
+          outputDir: 'foo',
+          expectedCoverage: 80.0,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
     },
   );
 }

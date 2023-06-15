@@ -21,24 +21,13 @@ void main() {
         Directory.current = cwd;
       });
 
-      group('activate ios', () {
-        test(
-          '(fast)',
-          () => performTest(
-            platform: Platform.ios,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
-
-        test(
-          '',
-          () => performTest(
-            platform: Platform.ios,
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
-      });
+      test(
+        'activate ios',
+        () => performTest(
+          platform: Platform.ios,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
     },
   );
 }

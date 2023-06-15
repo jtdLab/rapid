@@ -19,24 +19,12 @@ void main() {
       Directory.current = cwd;
     });
 
-    group('ui linux add widget', () {
-      test(
-        '(fast)',
-        () => performTest(
-          platform: Platform.linux,
-          type: TestType.fast,
-        ),
-        timeout: const Timeout(Duration(minutes: 4)),
-        tags: ['fast'],
-      );
-
-      test(
-        '',
-        () => performTest(
-          platform: Platform.linux,
-        ),
-        timeout: const Timeout(Duration(minutes: 4)),
-      );
-    });
+    test(
+      'ui linux add widget',
+      () => performTest(
+        platform: Platform.linux,
+      ),
+      timeout: const Timeout(Duration(minutes: 4)),
+    );
   });
 }

@@ -21,27 +21,12 @@ void main() {
         Directory.current = cwd;
       });
 
-      group(
+      test(
         'web remove language',
-        () {
-          test(
-            '(fast)',
-            () => performTest(
-              platform: Platform.web,
-              type: TestType.fast,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              platform: Platform.web,
-            ),
-            timeout: const Timeout(Duration(minutes: 6)),
-          );
-        },
+        () => performTest(
+          platform: Platform.web,
+        ),
+        timeout: const Timeout(Duration(minutes: 6)),
       );
     },
   );

@@ -21,24 +21,13 @@ void main() {
         Directory.current = cwd;
       });
 
-      group('activate macos', () {
-        test(
-          '(fast)',
-          () => performTest(
-            platform: Platform.macos,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
-
-        test(
-          '',
-          () => performTest(
-            platform: Platform.macos,
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
-      });
+      test(
+        'activate macos',
+        () => performTest(
+          platform: Platform.macos,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
     },
   );
 }

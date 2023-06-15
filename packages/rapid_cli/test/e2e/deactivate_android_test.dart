@@ -21,24 +21,13 @@ void main() {
         Directory.current = cwd;
       });
 
-      group('deactivate android', () {
-        test(
-          '(fast)',
-          () => performTest(
-            platform: Platform.android,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
-
-        test(
-          '',
-          () => performTest(
-            platform: Platform.android,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
-      });
+      test(
+        'deactivate android',
+        () => performTest(
+          platform: Platform.android,
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
     },
   );
 }

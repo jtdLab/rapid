@@ -21,26 +21,12 @@ void main() {
         Directory.current = cwd;
       });
 
-      group(
+      test(
         'ios remove feature',
-        () {
-          test(
-            '(fast)',
-            () => performTest(
-              platform: Platform.ios,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              platform: Platform.ios,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-          );
-        },
+        () => performTest(
+          platform: Platform.ios,
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
       );
     },
   );

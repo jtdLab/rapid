@@ -4,7 +4,6 @@ import 'common.dart';
 
 Future<void> performTest({
   required Platform platform,
-  TestType type = TestType.normal,
 }) async {
   // Arrange
   const language = 'fr';
@@ -30,10 +29,8 @@ Future<void> performTest({
   verifyDoNotExist({
     ...languageFiles('home_page', platform, [language]),
   });
-  if (type != TestType.fast) {
-    await verifyTestsPassWith100PercentCoverage([
-      featurePackage('app', platform),
-      featurePackage('home_page', platform),
-    ]);
-  }
+  await verifyTestsPassWith100PercentCoverage([
+    featurePackage('app', platform),
+    featurePackage('home_page', platform),
+  ]);
 }

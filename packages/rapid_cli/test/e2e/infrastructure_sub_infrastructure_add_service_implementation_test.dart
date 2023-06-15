@@ -5,8 +5,6 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
-// TODO test sub-infrastructure
-
 void main() {
   group(
     'E2E',
@@ -15,152 +13,101 @@ void main() {
 
       setUp(() async {
         Directory.current = getTempDir();
-
-        await setupProject();
       });
 
       tearDown(() {
         Directory.current = cwd;
       });
 
-      group('infrastructure <sub_infrastructure> add service_implementation',
-          () {
-        Future<void> performTest({
-          required String subInfrastructure,
-          String? outputDir,
-          TestType type = TestType.normal,
-        }) async {
-          // Arrange
-          if (subInfrastructure != 'default') {
-            await runRapidCommand([
-              'domain',
-              'add',
-              'sub_domain',
-              subInfrastructure,
-            ]);
-          }
-          final name = 'Fake';
-          final service = 'FooBar';
+      Future<void> performTest({
+        required String subInfrastructure,
+        String? outputDir,
+      }) async {
+        // Arrange
+        await setupProject();
+        if (subInfrastructure != 'default') {
           await runRapidCommand([
             'domain',
-            subInfrastructure,
             'add',
-            'service_interface',
-            service,
-            if (outputDir != null) '--output-dir',
-            if (outputDir != null) outputDir,
-          ]);
-
-          // Act
-          await runRapidCommand([
-            'infrastructure',
+            'sub_domain',
             subInfrastructure,
-            'add',
-            'service_implementation',
-            name,
-            '--service',
-            service,
-            if (outputDir != null) '--output-dir',
-            if (outputDir != null) outputDir
           ]);
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...serviceImplementationFiles(
-              name: name,
-              serviceName: service,
-              subInfrastructureName: subInfrastructure,
-              outputDir: outputDir,
-            ),
-          });
-          if (type != TestType.fast) {
-            await verifyTestsPass(
-              infrastructurePackage(subInfrastructure),
-              expectedCoverage: 0,
-            );
-          }
         }
+        final name = 'Fake';
+        final service = 'FooBar';
+        await runRapidCommand([
+          'domain',
+          subInfrastructure,
+          'add',
+          'service_interface',
+          service,
+          if (outputDir != null) '--output-dir',
+          if (outputDir != null) outputDir,
+        ]);
 
-        group('(default)', () {
-          test(
-            '(fast) ',
-            () => performTest(
-              subInfrastructure: 'default',
-              type: TestType.fast,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
+        // Act
+        await runRapidCommand([
+          'infrastructure',
+          subInfrastructure,
+          'add',
+          'service_implementation',
+          name,
+          '--service',
+          service,
+          if (outputDir != null) '--output-dir',
+          if (outputDir != null) outputDir
+        ]);
 
-          test(
-            'with output dir (fast) ',
-            () => performTest(
-              subInfrastructure: 'default',
-              outputDir: 'foo',
-              type: TestType.fast,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              subInfrastructure: 'default',
-            ),
-            timeout: const Timeout(Duration(minutes: 8)),
-          );
-
-          test(
-            'with output dir',
-            () => performTest(
-              subInfrastructure: 'default',
-              outputDir: 'foo',
-            ),
-            timeout: const Timeout(Duration(minutes: 8)),
-          );
+        // Assert
+        await verifyNoAnalyzerIssues();
+        await verifyNoFormattingIssues();
+        verifyDoExist({
+          ...serviceImplementationFiles(
+            name: name,
+            serviceName: service,
+            subInfrastructureName: subInfrastructure,
+            outputDir: outputDir,
+          ),
         });
-
-        test(
-          '(fast) ',
-          () => performTest(
-            subInfrastructure: 'foo_bar',
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
+        await verifyTestsPass(
+          infrastructurePackage(subInfrastructure),
+          expectedCoverage: 0,
         );
+      }
 
-        test(
-          'with output dir (fast) ',
-          () => performTest(
-            subInfrastructure: 'foo_bar',
-            outputDir: 'foo',
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'infrastructure default add service_implementation',
+        () => performTest(
+          subInfrastructure: 'default',
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
 
-        test(
-          '',
-          () => performTest(
-            subInfrastructure: 'foo_bar',
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
+      test(
+        'infrastructure default add service_implementation (with output dir)',
+        () => performTest(
+          subInfrastructure: 'default',
+          outputDir: 'foo',
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
 
-        test(
-          'with output dir',
-          () => performTest(
-            subInfrastructure: 'foo_bar',
-            outputDir: 'foo',
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
-      });
+      test(
+        'infrastructure <sub_infrastructure> add service_implementation',
+        () => performTest(
+          subInfrastructure: 'foo_bar',
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
+
+      test(
+        'infrastructure <sub_infrastructure> add service_implementation (with output dir)',
+        () => performTest(
+          subInfrastructure: 'foo_bar',
+          outputDir: 'foo',
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
     },
   );
 }

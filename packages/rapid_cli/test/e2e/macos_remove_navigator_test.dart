@@ -21,27 +21,12 @@ void main() {
         Directory.current = cwd;
       });
 
-      group(
+      test(
         'macos remove navigator',
-        () {
-          test(
-            '(fast)',
-            () => performTest(
-              platform: Platform.macos,
-              type: TestType.fast,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              platform: Platform.macos,
-            ),
-            timeout: const Timeout(Duration(minutes: 8)),
-          );
-        },
+        () => performTest(
+          platform: Platform.macos,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
       );
     },
   );

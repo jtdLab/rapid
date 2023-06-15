@@ -6,7 +6,6 @@ Future<void> performTest({
   required Platform platform,
   String? outputDir,
   required double expectedCoverage,
-  TestType type = TestType.normal,
 }) async {
   // Arrange
   final name = 'FooBar';
@@ -38,10 +37,8 @@ Future<void> performTest({
       platform: platform,
     ),
   });
-  if (type != TestType.fast) {
-    await verifyTestsPass(
-      featurePackage(featureName, platform),
-      expectedCoverage: expectedCoverage,
-    );
-  }
+  await verifyTestsPass(
+    featurePackage(featureName, platform),
+    expectedCoverage: expectedCoverage,
+  );
 }

@@ -21,24 +21,13 @@ void main() {
         Directory.current = cwd;
       });
 
-      group('activate web', () {
-        test(
-          '(fast)',
-          () => performTest(
-            platform: Platform.web,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
-
-        test(
-          '',
-          () => performTest(
-            platform: Platform.web,
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
-      });
+      test(
+        'activate web',
+        () => performTest(
+          platform: Platform.web,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
     },
   );
 }

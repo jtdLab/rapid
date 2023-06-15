@@ -23,28 +23,24 @@ void main() {
         Directory.current = cwd;
       });
 
-      group('windows <feature> add cubit', () {
-        test(
-          '(fast)',
-          () => performTest(
-            platform: Platform.windows,
-            expectedCoverage: 80.0,
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'windows <feature> add cubit',
+        () => performTest(
+          platform: Platform.windows,
+          expectedCoverage: 80.0,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
 
-        test(
-          '',
-          () => performTest(
-            platform: Platform.windows,
-            expectedCoverage: 80.0,
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
-      });
+      test(
+        'windows <feature> add cubit (with output dir)',
+        () => performTest(
+          platform: Platform.windows,
+          outputDir: 'foo',
+          expectedCoverage: 80.0,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
     },
-    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

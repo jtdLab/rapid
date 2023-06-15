@@ -23,28 +23,24 @@ void main() {
         Directory.current = cwd;
       });
 
-      group('mobile <feature> add cubit', () {
-        test(
-          '(fast)',
-          () => performTest(
-            platform: Platform.mobile,
-            expectedCoverage: 80.0,
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'mobile <feature> add cubit',
+        () => performTest(
+          platform: Platform.mobile,
+          expectedCoverage: 80.0,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
 
-        test(
-          '',
-          () => performTest(
-            platform: Platform.mobile,
-            expectedCoverage: 80.0,
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
-      });
+      test(
+        'mobile <feature> add cubit (with output dir)',
+        () => performTest(
+          platform: Platform.mobile,
+          outputDir: 'foo',
+          expectedCoverage: 80.0,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
     },
-    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

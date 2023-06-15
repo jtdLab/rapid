@@ -21,27 +21,12 @@ void main() {
         Directory.current = cwd;
       });
 
-      group(
+      test(
         'linux remove language',
-        () {
-          test(
-            '(fast)',
-            () => performTest(
-              platform: Platform.linux,
-              type: TestType.fast,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              platform: Platform.linux,
-            ),
-            timeout: const Timeout(Duration(minutes: 6)),
-          );
-        },
+        () => performTest(
+          platform: Platform.linux,
+        ),
+        timeout: const Timeout(Duration(minutes: 6)),
       );
     },
   );

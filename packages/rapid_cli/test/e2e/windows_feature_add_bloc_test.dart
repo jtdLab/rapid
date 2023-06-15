@@ -23,49 +23,24 @@ void main() {
         Directory.current = cwd;
       });
 
-      group('windows <feature> add bloc', () {
-        test(
-          '(fast)',
-          () => performTest(
-            platform: Platform.windows,
-            expectedCoverage: 75.0,
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'windows <feature> add bloc',
+        () => performTest(
+          platform: Platform.windows,
+          expectedCoverage: 75.0,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
 
-        test(
-          'with output dir (fast)',
-          () => performTest(
-            platform: Platform.windows,
-            outputDir: 'foo',
-            expectedCoverage: 75.0,
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
-
-        test(
-          '',
-          () => performTest(
-            platform: Platform.windows,
-            expectedCoverage: 75.0,
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
-
-        test(
-          'with output dir',
-          () => performTest(
-            platform: Platform.windows,
-            outputDir: 'foo',
-            expectedCoverage: 75.0,
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
-      });
+      test(
+        'windows <feature> add bloc (with output dir)',
+        () => performTest(
+          platform: Platform.windows,
+          outputDir: 'foo',
+          expectedCoverage: 75.0,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
     },
   );
 }

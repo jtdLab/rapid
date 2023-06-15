@@ -5,8 +5,6 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
-// TODO test sub-domain
-
 void main() {
   group(
     'E2E',
@@ -15,127 +13,84 @@ void main() {
 
       setUp(() async {
         Directory.current = getTempDir();
-
-        await setupProject();
       });
 
       tearDown(() {
         Directory.current = cwd;
       });
 
-      group('domain <sub_domain> add service_interface', () {
-        Future<void> performTest({
-          required String subDomain,
-          String? outputDir,
-        }) async {
-          // Arrange
-          if (subDomain != 'default') {
-            await runRapidCommand([
-              'domain',
-              'add',
-              'sub_domain',
-              subDomain,
-            ]);
-          }
-          final name = 'FooBar';
-
-          // Act
-          runRapidCommand([
+      Future<void> performTest({
+        required String subDomain,
+        String? outputDir,
+      }) async {
+        // Arrange
+        await setupProject();
+        if (subDomain != 'default') {
+          await runRapidCommand([
             'domain',
-            subDomain,
             'add',
-            'service_interface',
-            name,
-            if (outputDir != null) '--output-dir',
-            if (outputDir != null) outputDir,
+            'sub_domain',
+            subDomain,
           ]);
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...serviceInterfaceFiles(
-              name: name,
-              subDomainName: subDomain,
-              outputDir: outputDir,
-            ),
-          });
         }
+        final name = 'FooBar';
 
-        group('(default)', () {
-          test(
-            '(fast) ',
-            () => performTest(
-              subDomain: 'default',
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
+        // Act
+        runRapidCommand([
+          'domain',
+          subDomain,
+          'add',
+          'service_interface',
+          name,
+          if (outputDir != null) '--output-dir',
+          if (outputDir != null) outputDir,
+        ]);
 
-          test(
-            'with output dir (fast) ',
-            () => performTest(
-              subDomain: 'default',
-              outputDir: 'foo',
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              subDomain: 'default',
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-          );
-
-          test(
-            'with output dir',
-            () => performTest(
-              subDomain: 'default',
-              outputDir: 'foo',
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-          );
+        // Assert
+        await verifyNoAnalyzerIssues();
+        await verifyNoFormattingIssues();
+        verifyDoExist({
+          ...serviceInterfaceFiles(
+            name: name,
+            subDomainName: subDomain,
+            outputDir: outputDir,
+          ),
         });
+      }
 
-        test(
-          '(fast) ',
-          () => performTest(
-            subDomain: 'foo_bar',
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'domain default add service_interface',
+        () => performTest(
+          subDomain: 'default',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          'with output dir (fast) ',
-          () => performTest(
-            subDomain: 'foo_bar',
-            outputDir: 'foo',
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'domain default add service_interface (with output dir)',
+        () => performTest(
+          subDomain: 'default',
+          outputDir: 'foo',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          '',
-          () => performTest(
-            subDomain: 'foo_bar',
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
+      test(
+        'domain <sub_domain> add service_interface',
+        () => performTest(
+          subDomain: 'foo_bar',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          'with output dir',
-          () => performTest(
-            subDomain: 'foo_bar',
-            outputDir: 'foo',
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
-      });
+      test(
+        'domain <sub_domain> add service_interface (with output dir)',
+        () => performTest(
+          subDomain: 'foo_bar',
+          outputDir: 'foo',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
     },
   );
 }

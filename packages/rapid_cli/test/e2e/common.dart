@@ -8,8 +8,7 @@ import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
 // TODO(jtdLab): refactor test setup to NOT use setup and teardown while setting cwd to tempdir
-
-enum TestType { normal, fast }
+// TODO(jtdLab): cleanup stuff from slow and fast e2e tests
 
 /// The directory `flutter/dart test` was called from.
 ///

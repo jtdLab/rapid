@@ -23,28 +23,24 @@ void main() {
         Directory.current = cwd;
       });
 
-      group('macos <feature> add cubit', () {
-        test(
-          '(fast)',
-          () => performTest(
-            platform: Platform.macos,
-            expectedCoverage: 84.62,
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'macos <feature> add cubit',
+        () => performTest(
+          platform: Platform.macos,
+          expectedCoverage: 84.62,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
 
-        test(
-          '',
-          () => performTest(
-            platform: Platform.macos,
-            expectedCoverage: 84.62,
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
-      });
+      test(
+        'macos <feature> add cubit (with output dir)',
+        () => performTest(
+          platform: Platform.macos,
+          outputDir: 'foo',
+          expectedCoverage: 84.62,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
     },
-    timeout: const Timeout(Duration(minutes: 8)),
   );
 }

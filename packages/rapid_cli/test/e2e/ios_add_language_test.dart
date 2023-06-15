@@ -21,27 +21,12 @@ void main() {
         Directory.current = cwd;
       });
 
-      group(
+      test(
         'ios add language',
-        () {
-          test(
-            '(fast)',
-            () => performTest(
-              platform: Platform.ios,
-              type: TestType.fast,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              platform: Platform.ios,
-            ),
-            timeout: const Timeout(Duration(minutes: 8)),
-          );
-        },
+        () => performTest(
+          platform: Platform.ios,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
       );
     },
   );

@@ -5,8 +5,6 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
-// TODO test sub-domain
-
 void main() {
   group(
     'E2E',
@@ -15,146 +13,96 @@ void main() {
 
       setUp(() async {
         Directory.current = getTempDir();
-
-        await setupProject();
       });
 
       tearDown(() {
         Directory.current = cwd;
       });
 
-      group('domain <sub_domain> remove entity', () {
-        Future<void> performTest({
-          required String subDomain,
-          String? dir,
-          TestType type = TestType.normal,
-        }) async {
-          // Arrange
-          if (subDomain != 'default') {
-            await runRapidCommand([
-              'domain',
-              'add',
-              'sub_domain',
-              subDomain,
-            ]);
-          }
-          final name = 'FooBar';
+      Future<void> performTest({
+        required String subDomain,
+        String? dir,
+      }) async {
+        // Arrange
+        await setupProject();
+        if (subDomain != 'default') {
           await runRapidCommand([
             'domain',
-            subDomain,
             'add',
-            'service_interface',
-            name,
-            if (dir != null) '--output-dir',
-            if (dir != null) dir,
-          ]);
-
-          // Act
-          await runRapidCommand([
-            'domain',
+            'sub_domain',
             subDomain,
-            'remove',
-            'service_interface',
-            name,
-            if (dir != null) '--dir',
-            if (dir != null) dir,
           ]);
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoNotExist({
-            ...serviceInterfaceFiles(
-              name: name,
-              subDomainName: subDomain,
-              outputDir: dir,
-            ),
-          });
-          if (type != TestType.fast) {
-            verifyDoNotHaveTests({
-              domainPackage(subDomain),
-            });
-          }
         }
+        final name = 'FooBar';
+        await runRapidCommand([
+          'domain',
+          subDomain,
+          'add',
+          'service_interface',
+          name,
+          if (dir != null) '--output-dir',
+          if (dir != null) dir,
+        ]);
 
-        group('(default)', () {
-          test(
-            '(fast) ',
-            () => performTest(
-              subDomain: 'default',
-              type: TestType.fast,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
+        // Act
+        await runRapidCommand([
+          'domain',
+          subDomain,
+          'remove',
+          'service_interface',
+          name,
+          if (dir != null) '--dir',
+          if (dir != null) dir,
+        ]);
 
-          test(
-            'with dir (fast) ',
-            () => performTest(
-              subDomain: 'default',
-              dir: 'foo',
-              type: TestType.fast,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              subDomain: 'default',
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-          );
-
-          test(
-            'with dir',
-            () => performTest(
-              subDomain: 'default',
-              dir: 'foo',
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-          );
+        // Assert
+        await verifyNoAnalyzerIssues();
+        await verifyNoFormattingIssues();
+        verifyDoNotExist({
+          ...serviceInterfaceFiles(
+            name: name,
+            subDomainName: subDomain,
+            outputDir: dir,
+          ),
         });
+        verifyDoNotHaveTests({
+          domainPackage(subDomain),
+        });
+      }
 
-        test(
-          '(fast) ',
-          () => performTest(
-            subDomain: 'foo_bar',
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'domain default remove entity',
+        () => performTest(
+          subDomain: 'default',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          'with dir (fast) ',
-          () => performTest(
-            subDomain: 'foo_bar',
-            dir: 'foo',
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'domain default remove entity (with dir)',
+        () => performTest(
+          subDomain: 'default',
+          dir: 'foo',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          '',
-          () => performTest(
-            subDomain: 'foo_bar',
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
+      test(
+        'domain <sub_domain> remove entity',
+        () => performTest(
+          subDomain: 'foo_bar',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          'with dir',
-          () => performTest(
-            subDomain: 'foo_bar',
-            dir: 'foo',
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
-      });
+      test(
+        'domain <sub_domain> remove entity (with dir)',
+        () => performTest(
+          subDomain: 'foo_bar',
+          dir: 'foo',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
     },
   );
 }

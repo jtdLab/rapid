@@ -21,27 +21,12 @@ void main() {
         Directory.current = cwd;
       });
 
-      group(
+      test(
         'web add navigator',
-        () {
-          test(
-            '(fast)',
-            () => performTest(
-              platform: Platform.web,
-              type: TestType.fast,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              platform: Platform.web,
-            ),
-            timeout: const Timeout(Duration(minutes: 8)),
-          );
-        },
+        () => performTest(
+          platform: Platform.web,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
       );
     },
   );

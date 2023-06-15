@@ -23,49 +23,24 @@ void main() {
         Directory.current = cwd;
       });
 
-      group('android <feature> add bloc', () {
-        test(
-          '(fast)',
-          () => performTest(
-            platform: Platform.android,
-            expectedCoverage: 75.0,
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'android <feature> add bloc',
+        () => performTest(
+          platform: Platform.android,
+          expectedCoverage: 75.0,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
 
-        test(
-          'with output dir (fast)',
-          () => performTest(
-            platform: Platform.android,
-            outputDir: 'foo',
-            expectedCoverage: 75.0,
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
-
-        test(
-          '',
-          () => performTest(
-            platform: Platform.android,
-            expectedCoverage: 75.0,
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
-
-        test(
-          'with output dir',
-          () => performTest(
-            platform: Platform.android,
-            outputDir: 'foo',
-            expectedCoverage: 75.0,
-          ),
-          timeout: const Timeout(Duration(minutes: 8)),
-        );
-      });
+      test(
+        'android <feature> add bloc (with output dir)',
+        () => performTest(
+          platform: Platform.android,
+          outputDir: 'foo',
+          expectedCoverage: 75.0,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
     },
   );
 }

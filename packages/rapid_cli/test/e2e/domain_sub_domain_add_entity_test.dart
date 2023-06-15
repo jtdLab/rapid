@@ -13,137 +13,87 @@ void main() {
 
       setUp(() async {
         Directory.current = getTempDir();
-
-        await setupProject();
       });
 
       tearDown(() {
         Directory.current = cwd;
       });
 
-      group('domain <sub_domain> add entity', () {
-        Future<void> performTest({
-          required String subDomain,
-          String? outputDir,
-          TestType type = TestType.normal,
-        }) async {
-          // Arrange
-          if (subDomain != 'default') {
-            await runRapidCommand([
-              'domain',
-              'add',
-              'sub_domain',
-              subDomain,
-            ]);
-          }
-          final name = 'FooBar';
-
-          // Act
+      Future<void> performTest({
+        required String subDomain,
+        String? outputDir,
+      }) async {
+        // Arrange
+        await setupProject();
+        if (subDomain != 'default') {
           await runRapidCommand([
             'domain',
-            subDomain,
             'add',
-            'entity',
-            name,
-            if (outputDir != null) '--output-dir',
-            if (outputDir != null) outputDir,
+            'sub_domain',
+            subDomain,
           ]);
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...entityFiles(
-              name: name,
-              subDomainName: subDomain,
-              outputDir: outputDir,
-            ),
-          });
-          if (type != TestType.fast) {
-            await verifyTestsPassWith100PercentCoverage({
-              domainPackage(subDomain),
-            });
-          }
         }
+        final name = 'FooBar';
 
-        group('(default)', () {
-          test(
-            '(fast) ',
-            () => performTest(
-              subDomain: 'default',
-              type: TestType.fast,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
+        // Act
+        await runRapidCommand([
+          'domain',
+          subDomain,
+          'add',
+          'entity',
+          name,
+          if (outputDir != null) '--output-dir',
+          if (outputDir != null) outputDir,
+        ]);
 
-          test(
-            'with output dir (fast) ',
-            () => performTest(
-              subDomain: 'default',
-              outputDir: 'foo',
-              type: TestType.fast,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              subDomain: 'default',
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-          );
-
-          test(
-            'with output dir',
-            () => performTest(
-              subDomain: 'default',
-              outputDir: 'foo',
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-          );
+        // Assert
+        await verifyNoAnalyzerIssues();
+        await verifyNoFormattingIssues();
+        verifyDoExist({
+          ...entityFiles(
+            name: name,
+            subDomainName: subDomain,
+            outputDir: outputDir,
+          ),
         });
+        await verifyTestsPassWith100PercentCoverage({
+          domainPackage(subDomain),
+        });
+      }
 
-        test(
-          '(fast) ',
-          () => performTest(
-            subDomain: 'foo_bar',
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'domain default add entity',
+        () => performTest(
+          subDomain: 'default',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          'with output dir (fast) ',
-          () => performTest(
-            subDomain: 'foo_bar',
-            outputDir: 'foo',
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'domain default add entity (with output dir)',
+        () => performTest(
+          subDomain: 'default',
+          outputDir: 'foo',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          '',
-          () => performTest(
-            subDomain: 'foo_bar',
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
+      test(
+        'domain <sub_domain> add entity',
+        () => performTest(
+          subDomain: 'foo_bar',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          'with output dir',
-          () => performTest(
-            subDomain: 'foo_bar',
-            outputDir: 'foo',
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
-      });
+      test(
+        'domain <sub_domain> add entity (with output dir)',
+        () => performTest(
+          subDomain: 'foo_bar',
+          outputDir: 'foo',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
     },
   );
 }

@@ -21,25 +21,13 @@ void main() {
         Directory.current = cwd;
       });
 
-      group('ui android remove widget', () {
-        test(
-          '(fast)',
-          () => performTest(
-            platform: Platform.android,
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
-
-        test(
-          '',
-          () => performTest(
-            platform: Platform.android,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
-      });
+      test(
+        'ui android remove widget',
+        () => performTest(
+          platform: Platform.android,
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
     },
   );
 }

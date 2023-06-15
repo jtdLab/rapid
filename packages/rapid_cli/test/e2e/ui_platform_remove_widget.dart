@@ -4,7 +4,6 @@ import 'common.dart';
 
 Future<void> performTest({
   required Platform platform,
-  TestType type = TestType.normal,
 }) async {
   // Arrange
   await setupProject(platform);
@@ -32,7 +31,5 @@ Future<void> performTest({
   verifyDoNotExist({
     ...widgetFiles(name: name, platform: platform),
   });
-  if (type != TestType.fast) {
-    await verifyTestsPassWith100PercentCoverage([platformUiPackage(platform)]);
-  }
+  await verifyTestsPassWith100PercentCoverage([platformUiPackage(platform)]);
 }

@@ -4,7 +4,6 @@ import 'common.dart';
 
 Future<void> performTest({
   required Platform platform,
-  TestType type = TestType.normal,
 }) async {
   // Arrange
   const featureName = 'my_feature';
@@ -23,7 +22,5 @@ Future<void> performTest({
   await verifyNoFormattingIssues();
   final feature = featurePackage(featureName, platform);
   verifyDoExist([feature]);
-  if (type != TestType.fast) {
-    await verifyTestsPassWith100PercentCoverage([feature]);
-  }
+  await verifyTestsPassWith100PercentCoverage([feature]);
 }

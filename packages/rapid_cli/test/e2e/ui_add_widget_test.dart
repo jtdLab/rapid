@@ -17,50 +17,32 @@ void main() {
       Directory.current = cwd;
     });
 
-    group(
+    Future<void> performTest() async {
+      // Arrange
+      await setupProject();
+      final name = 'FooBar';
+
+      // Act
+      await runRapidCommand([
+        'ui',
+        'add',
+        'widget',
+        name,
+      ]);
+
+      // Assert
+      await verifyNoAnalyzerIssues();
+      await verifyNoFormattingIssues();
+      verifyDoExist({
+        ...widgetFiles(name: name),
+      });
+      await verifyTestsPassWith100PercentCoverage([uiPackage]);
+    }
+
+    test(
       'ui add widget',
-      () {
-        Future<void> performTest({
-          TestType type = TestType.normal,
-        }) async {
-          // Arrange
-          await setupProject();
-          final name = 'FooBar';
-
-          // Act
-          await runRapidCommand([
-            'ui',
-            'add',
-            'widget',
-            name,
-          ]);
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...widgetFiles(name: name),
-          });
-          if (type != TestType.fast) {
-            await verifyTestsPassWith100PercentCoverage([uiPackage]);
-          }
-        }
-
-        test(
-          '(fast)',
-          () => performTest(
-            type: TestType.fast,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
-
-        test(
-          '',
-          () => performTest(),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
-      },
+      () => performTest(),
+      timeout: const Timeout(Duration(minutes: 4)),
     );
   });
 }

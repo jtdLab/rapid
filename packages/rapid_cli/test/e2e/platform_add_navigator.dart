@@ -4,7 +4,6 @@ import 'common.dart';
 
 Future<void> performTest({
   required Platform platform,
-  TestType type = TestType.normal,
 }) async {
   // Arrange
   await setupProject(platform);
@@ -32,10 +31,8 @@ Future<void> performTest({
       platform: platform,
     ),
   });
-  if (type != TestType.fast) {
-    await verifyTestsPass(
-      featurePackage(featureName, platform),
-      expectedCoverage: 100.0,
-    );
-  }
+  await verifyTestsPass(
+    featurePackage(featureName, platform),
+    expectedCoverage: 100.0,
+  );
 }

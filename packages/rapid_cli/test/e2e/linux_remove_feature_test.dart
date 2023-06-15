@@ -21,26 +21,12 @@ void main() {
         Directory.current = cwd;
       });
 
-      group(
+      test(
         'linux remove feature',
-        () {
-          test(
-            '(fast)',
-            () => performTest(
-              platform: Platform.linux,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              platform: Platform.linux,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-          );
-        },
+        () => performTest(
+          platform: Platform.linux,
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
       );
     },
   );

@@ -21,26 +21,12 @@ void main() {
         Directory.current = cwd;
       });
 
-      group(
+      test(
         'web remove feature',
-        () {
-          test(
-            '(fast)',
-            () => performTest(
-              platform: Platform.web,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              platform: Platform.web,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-          );
-        },
+        () => performTest(
+          platform: Platform.web,
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
       );
     },
   );

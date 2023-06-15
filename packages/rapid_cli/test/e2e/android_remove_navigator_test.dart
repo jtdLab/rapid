@@ -21,27 +21,12 @@ void main() {
         Directory.current = cwd;
       });
 
-      group(
+      test(
         'android remove navigator',
-        () {
-          test(
-            '(fast)',
-            () => performTest(
-              platform: Platform.android,
-              type: TestType.fast,
-            ),
-            timeout: const Timeout(Duration(minutes: 4)),
-            tags: ['fast'],
-          );
-
-          test(
-            '',
-            () => performTest(
-              platform: Platform.android,
-            ),
-            timeout: const Timeout(Duration(minutes: 8)),
-          );
-        },
+        () => performTest(
+          platform: Platform.android,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
       );
     },
   );

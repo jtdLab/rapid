@@ -26,7 +26,6 @@ void main() {
           '(fast)',
           () => performTest(
             platform: Platform.mobile,
-            type: TestType.fast,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
           tags: ['fast'],

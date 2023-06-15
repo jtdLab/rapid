@@ -68,7 +68,6 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
           verifyDoExist({
-            ...platformIndependentPackages,
             ...serviceImplementationFiles(
               name: name,
               serviceName: service,

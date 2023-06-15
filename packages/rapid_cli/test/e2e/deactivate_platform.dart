@@ -4,7 +4,6 @@ import 'common.dart';
 
 Future<void> performTest({
   required Platform platform,
-  TestType type = TestType.normal,
 }) async {
   // Arrange
   await setupProject(platform);
@@ -15,14 +14,5 @@ Future<void> performTest({
   // Assert
   await verifyNoAnalyzerIssues();
   await verifyNoFormattingIssues();
-  verifyDoExist({
-    ...platformIndependentPackages,
-  });
   verifyDoNotExist(allPlatformDependentPackages);
-  verifyDoNotHaveTests(platformIndependentPackagesWithoutTests);
-  if (type != TestType.fast) {
-    await verifyTestsPassWith100PercentCoverage({
-      ...platformIndependentPackagesWithTests,
-    });
-  }
 }

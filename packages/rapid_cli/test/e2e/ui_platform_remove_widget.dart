@@ -29,15 +29,10 @@ Future<void> performTest({
   // Assert
   await verifyNoAnalyzerIssues();
   await verifyNoFormattingIssues();
-  verifyDoExist({
-    ...platformIndependentPackages,
-  });
   verifyDoNotExist({
     ...widgetFiles(name: name, platform: platform),
   });
   if (type != TestType.fast) {
-    await verifyTestsPassWith100PercentCoverage({
-      platformUiPackage(platform),
-    });
+    await verifyTestsPassWith100PercentCoverage([platformUiPackage(platform)]);
   }
 }

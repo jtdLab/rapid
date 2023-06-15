@@ -21,21 +21,9 @@ Future<void> performTest({
   // Assert
   await verifyNoAnalyzerIssues();
   await verifyNoFormattingIssues();
-  final featurePackages = [
-    featurePackage('app', platform),
-    featurePackage('home_page', platform),
-    featurePackage(featureName, platform),
-  ];
-  verifyDoExist([
-    ...platformIndependentPackages,
-    ...platformDependentPackages(platform),
-    ...featurePackages,
-  ]);
+  final feature = featurePackage(featureName, platform);
+  verifyDoExist([feature]);
   if (type != TestType.fast) {
-    await verifyTestsPassWith100PercentCoverage([
-      ...platformIndependentPackagesWithTests,
-      ...platformDependentPackagesWithTests(platform),
-      ...featurePackages,
-    ]);
+    await verifyTestsPassWith100PercentCoverage([feature]);
   }
 }

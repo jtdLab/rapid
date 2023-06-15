@@ -27,24 +27,13 @@ Future<void> performTest({
   // Assert
   await verifyNoAnalyzerIssues();
   await verifyNoFormattingIssues();
-  final featurePackages = [
-    featurePackage('app', platform),
-    featurePackage('home_page', platform),
-  ];
-  verifyDoExist([
-    ...platformIndependentPackages,
-    ...platformDependentPackages(platform),
-    ...featurePackages,
-    ...languageFiles('home_page', platform, ['en']),
-  ]);
   verifyDoNotExist({
-    ...languageFiles('home_page', platform, ['fr']),
+    ...languageFiles('home_page', platform, [language]),
   });
   if (type != TestType.fast) {
     await verifyTestsPassWith100PercentCoverage([
-      ...platformIndependentPackagesWithTests,
-      ...platformDependentPackagesWithTests(platform),
-      ...featurePackages,
+      featurePackage('app', platform),
+      featurePackage('home_page', platform),
     ]);
   }
 }

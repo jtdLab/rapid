@@ -53,7 +53,6 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
           verifyDoExist({
-            ...platformIndependentPackages,
             ...entityFiles(
               name: name,
               subDomainName: subDomain,

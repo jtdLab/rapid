@@ -28,7 +28,6 @@ void main() {
             '(fast)',
             () => performTest(
               platform: Platform.ios,
-              type: TestType.fast,
             ),
             timeout: const Timeout(Duration(minutes: 4)),
             tags: ['fast'],
@@ -39,7 +38,7 @@ void main() {
             () => performTest(
               platform: Platform.ios,
             ),
-            timeout: const Timeout(Duration(minutes: 8)),
+            timeout: const Timeout(Duration(minutes: 4)),
           );
         },
       );

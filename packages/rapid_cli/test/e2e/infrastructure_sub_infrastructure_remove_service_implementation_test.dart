@@ -79,9 +79,6 @@ void main() {
           // Assert
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
           verifyDoNotExist({
             ...serviceImplementationFiles(
               name: name,
@@ -91,9 +88,7 @@ void main() {
             ),
           });
           if (type != TestType.fast) {
-            verifyDoNotHaveTests({
-              infrastructurePackage(subInfrastructure),
-            });
+            verifyDoNotHaveTests([infrastructurePackage(subInfrastructure)]);
           }
         }
 

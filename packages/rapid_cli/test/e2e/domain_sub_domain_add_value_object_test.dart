@@ -27,7 +27,6 @@ void main() {
         Future<void> performTest({
           required String subDomain,
           String? outputDir,
-          TestType type = TestType.normal,
         }) async {
           // Arrange
           if (subDomain != 'default') {
@@ -55,7 +54,6 @@ void main() {
           await verifyHasAnalyzerIssues(3);
           await verifyNoFormattingIssues();
           verifyDoExist({
-            ...platformIndependentPackages,
             ...valueObjectFiles(
               name: name,
               subDomainName: subDomain,
@@ -69,7 +67,6 @@ void main() {
             '(fast) ',
             () => performTest(
               subDomain: 'default',
-              type: TestType.fast,
             ),
             timeout: const Timeout(Duration(minutes: 4)),
             tags: ['fast'],
@@ -80,7 +77,6 @@ void main() {
             () => performTest(
               subDomain: 'default',
               outputDir: 'foo',
-              type: TestType.fast,
             ),
             timeout: const Timeout(Duration(minutes: 4)),
             tags: ['fast'],
@@ -108,7 +104,6 @@ void main() {
           '(fast) ',
           () => performTest(
             subDomain: 'foo_bar',
-            type: TestType.fast,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
           tags: ['fast'],
@@ -119,7 +114,6 @@ void main() {
           () => performTest(
             subDomain: 'foo_bar',
             outputDir: 'foo',
-            type: TestType.fast,
           ),
           timeout: const Timeout(Duration(minutes: 4)),
           tags: ['fast'],

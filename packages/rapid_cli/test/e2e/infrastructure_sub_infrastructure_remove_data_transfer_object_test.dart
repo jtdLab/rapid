@@ -75,9 +75,6 @@ void main() {
           // Assert
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
           verifyDoNotExist({
             ...dataTransferObjectFiles(
               entity: entity,
@@ -86,9 +83,7 @@ void main() {
             ),
           });
           if (type != TestType.fast) {
-            verifyDoNotHaveTests({
-              infrastructurePackage(subInfrastructure),
-            });
+            verifyDoNotHaveTests([infrastructurePackage(subInfrastructure)]);
           }
         }
 

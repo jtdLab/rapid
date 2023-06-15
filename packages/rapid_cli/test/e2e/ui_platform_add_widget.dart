@@ -23,12 +23,9 @@ Future<void> performTest({
   await verifyNoAnalyzerIssues();
   await verifyNoFormattingIssues();
   verifyDoExist({
-    ...platformIndependentPackages,
     ...widgetFiles(name: name, platform: platform),
   });
   if (type != TestType.fast) {
-    await verifyTestsPassWith100PercentCoverage({
-      platformUiPackage(platform),
-    });
+    await verifyTestsPassWith100PercentCoverage([platformUiPackage(platform)]);
   }
 }

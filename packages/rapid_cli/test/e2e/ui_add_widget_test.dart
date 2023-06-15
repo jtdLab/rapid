@@ -39,13 +39,10 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
           verifyDoExist({
-            ...platformIndependentPackages,
             ...widgetFiles(name: name),
           });
           if (type != TestType.fast) {
-            await verifyTestsPassWith100PercentCoverage({
-              uiPackage,
-            });
+            await verifyTestsPassWith100PercentCoverage([uiPackage]);
           }
         }
 

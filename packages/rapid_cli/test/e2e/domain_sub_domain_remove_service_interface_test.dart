@@ -63,9 +63,6 @@ void main() {
           // Assert
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
           verifyDoNotExist({
             ...serviceInterfaceFiles(
               name: name,

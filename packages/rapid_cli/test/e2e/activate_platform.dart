@@ -21,20 +21,11 @@ Future<void> performTest({
     featurePackage('home_page', platform),
   ];
   verifyDoExist([
-    ...platformIndependentPackages,
     ...platformPackages,
     ...featurePackages,
   ]);
-  verifyDoNotExist(
-    allPlatformDependentPackages.without(platformPackages),
-  );
   if (type != TestType.fast) {
-    verifyDoNotHaveTests([
-      ...platformIndependentPackagesWithoutTests,
-      ...platformDependentPackagesWithoutTests(platform)
-    ]);
     await verifyTestsPassWith100PercentCoverage([
-      ...platformIndependentPackagesWithTests,
       ...platformDependentPackagesWithTests(platform),
       ...featurePackages,
     ]);

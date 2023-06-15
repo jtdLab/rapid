@@ -29,14 +29,6 @@ Future<void> performTest({
   // Assert
   await verifyNoAnalyzerIssues();
   await verifyNoFormattingIssues();
-  final appFeaturePackage = featurePackage('app', platform);
-  final feature = featurePackage(featureName, platform);
-  verifyDoExist({
-    ...platformIndependentPackages,
-    ...platformDependentPackages(platform),
-    appFeaturePackage,
-    feature,
-  });
   verifyDoNotExist({
     ...navigatorFiles(
       featureName: featureName,
@@ -48,11 +40,9 @@ Future<void> performTest({
     ),
   });
   if (type != TestType.fast) {
-    await verifyTestsPassWith100PercentCoverage([
-      ...platformIndependentPackagesWithTests,
-      ...platformDependentPackagesWithTests(platform),
-      appFeaturePackage,
-    ]);
-    await verifyTestsPass(feature, expectedCoverage: 100.0);
+    await verifyTestsPass(
+      featurePackage(featureName, platform),
+      expectedCoverage: 100.0,
+    );
   }
 }

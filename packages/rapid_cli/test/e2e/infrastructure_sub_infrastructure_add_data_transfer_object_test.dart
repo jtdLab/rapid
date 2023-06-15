@@ -65,7 +65,6 @@ void main() {
           await verifyNoAnalyzerIssues();
           await verifyNoFormattingIssues();
           verifyDoExist({
-            ...platformIndependentPackages,
             ...dataTransferObjectFiles(
               entity: entity,
               subInfrastructureName: subInfrastructure,

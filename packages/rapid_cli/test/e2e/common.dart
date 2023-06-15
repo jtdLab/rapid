@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:io/io.dart' show copyPath;
@@ -7,521 +8,531 @@ import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
-// TODO(jtdLab): refactor test setup to NOT use setup and teardown while setting cwd to tempdir
-// TODO(jtdLab): cleanup stuff from slow and fast e2e tests
-
-/// The directory `flutter/dart test` was called from.
+/// Runs [fn] in a temporary directory.
 ///
-/// **IMPORTANT**: This should be the rapid_cli package.
-/// If it is not fixtures can not be loaded and e2e tests might fail.
-///
-/// Store the directory `flutter test` or `dart test` was called from like this:
-///
-/// ```dart
-/// group(
-///   'E2E',
-///   () {
-///     cwd = Directory.current;
-///
-///     // e2e testing here
-///   }
-/// );
-/// ```
-late Directory cwd;
+/// The directory from where the test is executed is passed to [fn] via [root].
+/// This can be used to access fixtures and more.
+dynamic Function() withTempDir(FutureOr<void> Function(Directory root) fn) {
+  return () async {
+    final cwd = Directory.current;
+    final dir = Directory(p.join('.dart_tool', 'test', 'tmp'));
+    if (dir.existsSync()) {
+      dir.deleteSync(recursive: true);
+    }
+    dir.createSync(recursive: true);
 
-// Runs a rapid command
-Future<void> runRapidCommand(List<String> command) async {
-  final commandRunner = RapidCommandRunner(
-    project: await resolveProject(
-      command,
-      command.first == 'create' ? null : Directory.current,
-    ),
-  );
-
-  await commandRunner.run(command);
-}
-
-String tempPath = p.join(cwd.path, '.dart_tool', 'test', 'tmp');
-String fixturesPath = p.join(cwd.path, 'test', 'e2e', 'fixtures');
-
-Directory getTempDir() {
-  final dir = Directory(tempPath);
-  if (dir.existsSync()) {
-    dir.deleteSync(recursive: true);
-  }
-  dir.createSync(recursive: true);
-  return dir;
+    Directory.current = dir;
+    try {
+      await fn(cwd);
+    } catch (_) {
+      rethrow;
+    } finally {
+      Directory.current = cwd;
+      dir.deleteSync(recursive: true);
+    }
+  };
 }
 
 class FixtureNotFound implements Exception {}
 
-Directory _getFixture(String name) {
-  final dir = Directory(p.join(fixturesPath, name));
-  if (dir.existsSync()) {
-    return dir;
+final class RapidE2ETester {
+  late final String projectName;
+
+  RapidE2ETester(this.projectName);
+
+  /// Create a [RapidE2ETester] having a project with [activatedPlatform] setup in cwd.
+  ///
+  /// If [activatedPlatform] is null NO platform will be activated.
+  static Future<RapidE2ETester> withProject(
+    Directory root, [
+    Platform? activatedPlatform,
+  ]) async {
+    final tester = RapidE2ETester(
+      activatedPlatform != null
+          ? 'project_${activatedPlatform.name}'
+          : 'project_none',
+    );
+    final dir = Directory(
+      p.join(root.path, 'test', 'e2e', 'fixtures', tester.projectName),
+    );
+    if (dir.existsSync()) {
+      await copyPath(dir.path, Directory.current.path);
+
+      final dirsWithPubspec = Directory.current
+          .listSync(recursive: true)
+          .where((e) => e is File && e.path.endsWith('pubspec.yaml'))
+          .map((e) => e.parent);
+      for (final dirWithPubspec in dirsWithPubspec) {
+        await Process.run(
+          'flutter',
+          ['pub', 'get'],
+          workingDirectory: dirWithPubspec.path,
+        );
+      }
+
+      return tester;
+    }
+
+    throw FixtureNotFound();
   }
-  throw FixtureNotFound();
-}
 
-/// Set up a Rapid test project in the cwd with [activatedPlatform] platform activated.
-///
-/// If [activatedPlatform] is null NO platform will be activated.
-Future<void> setupProject([Platform? activatedPlatform]) async {
-  projectName = activatedPlatform != null
-      ? 'project_${activatedPlatform.name}'
-      : 'project_none';
-  await copyPath(
-    _getFixture(projectName).path,
-    Directory.current.path,
-  );
+  /// Runs a rapid command with [args].
+  ///
+  /// For example:
+  /// Runs `rapid activate android` for `args = ['activate', 'android']`
+  Future<void> runRapidCommand(List<String> args) async {
+    final commandRunner = RapidCommandRunner(
+      project: await resolveProject(
+        args,
+        args.first == 'create' ? null : Directory.current,
+      ),
+    );
 
-  final dirsWithPubspec = Directory.current
-      .listSync(recursive: true)
-      .where((e) => e is File && e.path.endsWith('pubspec.yaml'))
-      .map((e) => e.parent);
+    await commandRunner.run(args);
+  }
 
-  for (final dirWithPubspec in dirsWithPubspec) {
-    await Process.run(
-      'flutter',
-      ['pub', 'get'],
-      workingDirectory: dirWithPubspec.path,
+  Directory get diPackage =>
+      Directory(p.join('packages', projectName, '${projectName}_di'));
+
+  Directory get domainDirectory =>
+      Directory(p.join('packages', projectName, '${projectName}_domain'));
+
+  Directory get infrastructureDirectory => Directory(
+      p.join('packages', projectName, '${projectName}_infrastructure'));
+
+  Directory get loggingPackage =>
+      Directory(p.join('packages', projectName, '${projectName}_logging'));
+
+  Directory domainPackage([String? name]) {
+    name = name == 'default' ? null : name;
+    return Directory(
+      p.join(
+        domainDirectory.path,
+        '${projectName}_domain${name != null ? '_$name' : ''}',
+      ),
     );
   }
-}
 
-late String projectName;
-
-final diPackage =
-    Directory(p.join('packages', projectName, '${projectName}_di'));
-
-final domainDirectory =
-    Directory(p.join('packages', projectName, '${projectName}_domain'));
-
-final infrastructureDirectory =
-    Directory(p.join('packages', projectName, '${projectName}_infrastructure'));
-
-final loggingPackage =
-    Directory(p.join('packages', projectName, '${projectName}_logging'));
-
-Directory domainPackage([String? name]) {
-  name = name == 'default' ? null : name;
-  return Directory(
-    p.join(
-      domainDirectory.path,
-      '${projectName}_domain${name != null ? '_$name' : ''}',
-    ),
-  );
-}
-
-Directory infrastructurePackage([String? name]) {
-  name = name == 'default' ? null : name;
-  return Directory(
-    p.join(
-      infrastructureDirectory.path,
-      '${projectName}_infrastructure${name != null ? '_$name' : ''}',
-    ),
-  );
-}
-
-Directory platformDir(Platform platform) => Directory(
-    p.join('packages', projectName, '${projectName}_${platform.name}'));
-
-Directory platformRootPackage(Platform platform) => Directory(
+  Directory infrastructurePackage([String? name]) {
+    name = name == 'default' ? null : name;
+    return Directory(
       p.join(
-        'packages',
-        projectName,
-        '${projectName}_${platform.name}',
-        '${projectName}_${platform.name}',
+        infrastructureDirectory.path,
+        '${projectName}_infrastructure${name != null ? '_$name' : ''}',
       ),
     );
+  }
 
-Directory platformFeaturesDir(Platform platform) => Directory(
-      p.join(
-        'packages',
-        projectName,
-        '${projectName}_${platform.name}',
-        '${projectName}_${platform.name}_features',
-      ),
-    );
+  Directory platformDir(Platform platform) => Directory(
+      p.join('packages', projectName, '${projectName}_${platform.name}'));
 
-Directory featurePackage(String name, Platform platform) => Directory(
-      p.join(
-        platformFeaturesDir(platform).path,
-        '${projectName}_${platform.name}_$name',
-      ),
-    );
-
-Directory platformNavigationPackage(Platform platform) => Directory(
-      p.join(
-        'packages',
-        projectName,
-        '${projectName}_${platform.name}',
-        '${projectName}_${platform.name}_navigation',
-      ),
-    );
-
-final uiPackage =
-    Directory(p.join('packages', '${projectName}_ui', '${projectName}_ui'));
-
-Directory platformUiPackage(Platform platform) => Directory(
-      p.join(
-        'packages',
-        '${projectName}_ui',
-        '${projectName}_ui_${platform.name}',
-      ),
-    );
-
-final platformIndependentPackagesWithTests = [
-  diPackage,
-  loggingPackage,
-  uiPackage,
-];
-
-final platformIndependentPackagesWithoutTests = [
-  domainPackage(),
-  infrastructurePackage(),
-];
-
-final platformIndependentPackages = [
-  ...platformIndependentPackagesWithTests,
-  ...platformIndependentPackagesWithoutTests,
-];
-
-List<Directory> platformDependentPackagesWithTests(Platform platform) => [
-      platformRootPackage(platform),
-      platformUiPackage(platform),
-    ];
-
-List<Directory> platformDependentPackagesWithoutTests(Platform platform) => [
-      platformNavigationPackage(platform),
-    ];
-
-List<Directory> platformDependentPackages(Platform platform) => [
-      ...platformDependentPackagesWithTests(platform),
-      ...platformDependentPackagesWithoutTests(platform),
-    ];
-
-List<Directory> get allPlatformDependentPackages => [
-      for (final platform in Platform.values) ...[
-        ...platformDependentPackages(platform),
-      ],
-    ];
-
-List<File> blocFiles({
-  required String name,
-  required String featureName,
-  required Platform platform,
-  String? outputDir,
-}) =>
-    [
-      File(
+  Directory platformRootPackage(Platform platform) => Directory(
         p.join(
-          featurePackage(featureName, platform).path,
-          'lib',
-          'src',
-          'application',
-          outputDir ?? '',
-          '${name.snakeCase}_bloc.dart',
+          'packages',
+          projectName,
+          '${projectName}_${platform.name}',
+          '${projectName}_${platform.name}',
         ),
-      ),
-      File(
-        p.join(
-          featurePackage(featureName, platform).path,
-          'lib',
-          'src',
-          'application',
-          outputDir ?? '',
-          '${name.snakeCase}_bloc.freezed.dart',
-        ),
-      ),
-      File(
-        p.join(
-          featurePackage(featureName, platform).path,
-          'lib',
-          'src',
-          'application',
-          outputDir ?? '',
-          '${name.snakeCase}_event.dart',
-        ),
-      ),
-      File(
-        p.join(
-          featurePackage(featureName, platform).path,
-          'lib',
-          'src',
-          'application',
-          outputDir ?? '',
-          '${name.snakeCase}_state.dart',
-        ),
-      ),
-    ];
+      );
 
-List<File> cubitFiles({
-  required String name,
-  required String featureName,
-  required Platform platform,
-  String? outputDir,
-}) =>
-    [
-      File(
+  Directory platformFeaturesDir(Platform platform) => Directory(
         p.join(
-          featurePackage(featureName, platform).path,
-          'lib',
-          'src',
-          'application',
-          outputDir ?? '',
-          '${name.snakeCase}_cubit.dart',
+          'packages',
+          projectName,
+          '${projectName}_${platform.name}',
+          '${projectName}_${platform.name}_features',
         ),
-      ),
-      File(
-        p.join(
-          featurePackage(featureName, platform).path,
-          'lib',
-          'src',
-          'application',
-          outputDir ?? '',
-          '${name.snakeCase}_cubit.freezed.dart',
-        ),
-      ),
-      File(
-        p.join(
-          featurePackage(featureName, platform).path,
-          'lib',
-          'src',
-          'application',
-          outputDir ?? '',
-          '${name.snakeCase}_state.dart',
-        ),
-      ),
-    ];
+      );
 
-File applicationBarrelFile({
-  required String featureName,
-  required Platform platform,
-}) =>
-    File(
-      p.join(
-        featurePackage(featureName, platform).path,
-        'lib',
-        'src',
-        'application',
-        'application.dart',
-      ),
-    );
-
-List<File> navigatorFiles({
-  required String featureName,
-  required Platform platform,
-}) =>
-    [
-      File(
+  Directory featurePackage(String name, Platform platform) => Directory(
         p.join(
-          platformNavigationPackage(platform).path,
-          'lib',
-          'src',
-          'i_${featureName.snakeCase}_navigator.dart',
+          platformFeaturesDir(platform).path,
+          '${projectName}_${platform.name}_$name',
         ),
-      ),
-    ];
+      );
 
-List<File> navigatorImplementationFiles({
-  required String featureName,
-  required Platform platform,
-}) =>
-    [
-      File(
+  Directory platformNavigationPackage(Platform platform) => Directory(
         p.join(
-          featurePackage(featureName, platform).path,
-          'lib',
-          'src',
-          'presentation',
-          'navigator.dart',
+          'packages',
+          projectName,
+          '${projectName}_${platform.name}',
+          '${projectName}_${platform.name}_navigation',
         ),
-      ),
-      File(
+      );
+
+  Directory get uiPackage =>
+      Directory(p.join('packages', '${projectName}_ui', '${projectName}_ui'));
+
+  Directory platformUiPackage(Platform platform) => Directory(
         p.join(
-          featurePackage(featureName, platform).path,
-          'test',
-          'src',
-          'presentation',
-          'navigator_test.dart',
+          'packages',
+          '${projectName}_ui',
+          '${projectName}_ui_${platform.name}',
         ),
-      ),
-    ];
+      );
 
-List<File> entityFiles({
-  required String name,
-  String? subDomainName,
-  String? outputDir,
-}) {
-  subDomainName = subDomainName == 'default' ? null : subDomainName;
-  return [
-    File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-        outputDir ?? '', '${name.snakeCase}.dart')),
-    File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-        outputDir ?? '', '${name.snakeCase}.freezed.dart')),
-    File(p.join(domainPackage(subDomainName).path, 'test', 'src',
-        outputDir ?? '', '${name.snakeCase}_test.dart')),
-  ];
-}
+  List<Directory> get platformIndependentPackagesWithTests => [
+        diPackage,
+        loggingPackage,
+        uiPackage,
+      ];
 
-List<File> valueObjectFiles({
-  required String name,
-  String? subDomainName,
-  String? outputDir,
-}) {
-  subDomainName = subDomainName == 'default' ? null : subDomainName;
-  return [
-    File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-        outputDir ?? '', '${name.snakeCase}.dart')),
-    File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-        outputDir ?? '', '${name.snakeCase}.freezed.dart')),
-    File(p.join(domainPackage(subDomainName).path, 'test', 'src',
-        outputDir ?? '', '${name.snakeCase}_test.dart')),
-  ];
-}
+  List<Directory> get platformIndependentPackagesWithoutTests => [
+        domainPackage(),
+        infrastructurePackage(),
+      ];
 
-List<File> serviceInterfaceFiles({
-  required String name,
-  String? subDomainName,
-  String? outputDir,
-}) {
-  subDomainName = subDomainName == 'default' ? null : subDomainName;
-  return [
-    File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-        outputDir ?? '', 'i_${name.snakeCase}_service.dart')),
-    File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-        outputDir ?? '', 'i_${name.snakeCase}_service.freezed.dart')),
-  ];
-}
+  List<Directory> get platformIndependentPackages => [
+        ...platformIndependentPackagesWithTests,
+        ...platformIndependentPackagesWithoutTests,
+      ];
 
-List<File> dataTransferObjectFiles({
-  required String entity,
-  String? subInfrastructureName,
-  String? outputDir,
-}) {
-  subInfrastructureName =
-      subInfrastructureName == 'default' ? null : subInfrastructureName;
-  return [
-    File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib', 'src',
-        outputDir ?? '', '${entity.snakeCase}_dto.dart')),
-    File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib', 'src',
-        outputDir ?? '', '${entity.snakeCase}_dto.freezed.dart')),
-    File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib', 'src',
-        outputDir ?? '', '${entity.snakeCase}_dto.g.dart')),
-    File(p.join(infrastructurePackage(subInfrastructureName).path, 'test',
-        'src', outputDir ?? '', '${entity.snakeCase}_dto_test.dart')),
-  ];
-}
+  List<Directory> platformDependentPackagesWithTests(Platform platform) => [
+        platformRootPackage(platform),
+        platformUiPackage(platform),
+      ];
 
-List<File> serviceImplementationFiles({
-  required String name,
-  required String serviceName,
-  String? subInfrastructureName,
-  String? outputDir,
-}) {
-  subInfrastructureName =
-      subInfrastructureName == 'default' ? null : subInfrastructureName;
-  return [
-    File(
-      p.join(
-        infrastructurePackage(subInfrastructureName).path,
-        'lib',
-        'src',
-        outputDir ?? '',
-        '${name.snakeCase}_${serviceName.snakeCase}_service.dart',
-      ),
-    ),
-    File(
-      p.join(
-        infrastructurePackage(subInfrastructureName).path,
-        'test',
-        'src',
-        outputDir ?? '',
-        '${name.snakeCase}_${serviceName.snakeCase}_service_test.dart',
-      ),
-    ),
-  ];
-}
+  List<Directory> platformDependentPackagesWithoutTests(Platform platform) => [
+        platformNavigationPackage(platform),
+      ];
 
-List<File> widgetFiles({
-  required String name,
-  Platform? platform,
-}) =>
-    [
-      File(
-        p.join(
-          platform != null ? platformUiPackage(platform).path : uiPackage.path,
-          'lib',
-          'src',
-          '${name.snakeCase}_theme.dart',
-        ),
-      ),
-      File(
-        p.join(
-          platform != null ? platformUiPackage(platform).path : uiPackage.path,
-          'lib',
-          'src',
-          '${name.snakeCase}_theme.tailor.dart',
-        ),
-      ),
-      File(
-        p.join(
-          platform != null ? platformUiPackage(platform).path : uiPackage.path,
-          'lib',
-          'src',
-          '${name.snakeCase}.dart',
-        ),
-      ),
-      File(
-        p.join(
-          platform != null ? platformUiPackage(platform).path : uiPackage.path,
-          'test',
-          'src',
-          '${name.snakeCase}_theme_test.dart',
-        ),
-      ),
-      File(
-        p.join(
-          platform != null ? platformUiPackage(platform).path : uiPackage.path,
-          'test',
-          'src',
-          '${name.snakeCase}_test.dart',
-        ),
-      ),
-    ];
+  List<Directory> platformDependentPackages(Platform platform) => [
+        ...platformDependentPackagesWithTests(platform),
+        ...platformDependentPackagesWithoutTests(platform),
+      ];
 
-/// Source files a feature requires to support [languages].
-List<File> languageFiles(
-  String feature,
-  Platform platform,
-  List<String> languages,
-) =>
-    [
-      for (final language in languages) ...[
+  List<Directory> get allPlatformDependentPackages => [
+        for (final platform in Platform.values) ...[
+          ...platformDependentPackages(platform),
+        ],
+      ];
+
+  List<File> blocFiles({
+    required String name,
+    required String featureName,
+    required Platform platform,
+    String? outputDir,
+  }) =>
+      [
         File(
           p.join(
-            featurePackage(feature, platform).path,
+            featurePackage(featureName, platform).path,
             'lib',
             'src',
-            'presentation',
-            'l10n',
-            'arb',
-            '${feature}_$language.arb',
+            'application',
+            outputDir ?? '',
+            '${name.snakeCase}_bloc.dart',
           ),
         ),
         File(
           p.join(
-            featurePackage(feature, platform).path,
+            featurePackage(featureName, platform).path,
+            'lib',
+            'src',
+            'application',
+            outputDir ?? '',
+            '${name.snakeCase}_bloc.freezed.dart',
+          ),
+        ),
+        File(
+          p.join(
+            featurePackage(featureName, platform).path,
+            'lib',
+            'src',
+            'application',
+            outputDir ?? '',
+            '${name.snakeCase}_event.dart',
+          ),
+        ),
+        File(
+          p.join(
+            featurePackage(featureName, platform).path,
+            'lib',
+            'src',
+            'application',
+            outputDir ?? '',
+            '${name.snakeCase}_state.dart',
+          ),
+        ),
+      ];
+
+  List<File> cubitFiles({
+    required String name,
+    required String featureName,
+    required Platform platform,
+    String? outputDir,
+  }) =>
+      [
+        File(
+          p.join(
+            featurePackage(featureName, platform).path,
+            'lib',
+            'src',
+            'application',
+            outputDir ?? '',
+            '${name.snakeCase}_cubit.dart',
+          ),
+        ),
+        File(
+          p.join(
+            featurePackage(featureName, platform).path,
+            'lib',
+            'src',
+            'application',
+            outputDir ?? '',
+            '${name.snakeCase}_cubit.freezed.dart',
+          ),
+        ),
+        File(
+          p.join(
+            featurePackage(featureName, platform).path,
+            'lib',
+            'src',
+            'application',
+            outputDir ?? '',
+            '${name.snakeCase}_state.dart',
+          ),
+        ),
+      ];
+
+  File applicationBarrelFile({
+    required String featureName,
+    required Platform platform,
+  }) =>
+      File(
+        p.join(
+          featurePackage(featureName, platform).path,
+          'lib',
+          'src',
+          'application',
+          'application.dart',
+        ),
+      );
+
+  List<File> navigatorFiles({
+    required String featureName,
+    required Platform platform,
+  }) =>
+      [
+        File(
+          p.join(
+            platformNavigationPackage(platform).path,
+            'lib',
+            'src',
+            'i_${featureName.snakeCase}_navigator.dart',
+          ),
+        ),
+      ];
+
+  List<File> navigatorImplementationFiles({
+    required String featureName,
+    required Platform platform,
+  }) =>
+      [
+        File(
+          p.join(
+            featurePackage(featureName, platform).path,
             'lib',
             'src',
             'presentation',
-            'l10n',
-            '${projectName}_${platform.name}_${feature}_localizations_$language.dart',
+            'navigator.dart',
           ),
         ),
-      ],
+        File(
+          p.join(
+            featurePackage(featureName, platform).path,
+            'test',
+            'src',
+            'presentation',
+            'navigator_test.dart',
+          ),
+        ),
+      ];
+
+  List<File> entityFiles({
+    required String name,
+    String? subDomainName,
+    String? outputDir,
+  }) {
+    subDomainName = subDomainName == 'default' ? null : subDomainName;
+    return [
+      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+          outputDir ?? '', '${name.snakeCase}.dart')),
+      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+          outputDir ?? '', '${name.snakeCase}.freezed.dart')),
+      File(p.join(domainPackage(subDomainName).path, 'test', 'src',
+          outputDir ?? '', '${name.snakeCase}_test.dart')),
     ];
+  }
+
+  List<File> valueObjectFiles({
+    required String name,
+    String? subDomainName,
+    String? outputDir,
+  }) {
+    subDomainName = subDomainName == 'default' ? null : subDomainName;
+    return [
+      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+          outputDir ?? '', '${name.snakeCase}.dart')),
+      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+          outputDir ?? '', '${name.snakeCase}.freezed.dart')),
+      File(p.join(domainPackage(subDomainName).path, 'test', 'src',
+          outputDir ?? '', '${name.snakeCase}_test.dart')),
+    ];
+  }
+
+  List<File> serviceInterfaceFiles({
+    required String name,
+    String? subDomainName,
+    String? outputDir,
+  }) {
+    subDomainName = subDomainName == 'default' ? null : subDomainName;
+    return [
+      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+          outputDir ?? '', 'i_${name.snakeCase}_service.dart')),
+      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
+          outputDir ?? '', 'i_${name.snakeCase}_service.freezed.dart')),
+    ];
+  }
+
+  List<File> dataTransferObjectFiles({
+    required String entity,
+    String? subInfrastructureName,
+    String? outputDir,
+  }) {
+    subInfrastructureName =
+        subInfrastructureName == 'default' ? null : subInfrastructureName;
+    return [
+      File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib',
+          'src', outputDir ?? '', '${entity.snakeCase}_dto.dart')),
+      File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib',
+          'src', outputDir ?? '', '${entity.snakeCase}_dto.freezed.dart')),
+      File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib',
+          'src', outputDir ?? '', '${entity.snakeCase}_dto.g.dart')),
+      File(p.join(infrastructurePackage(subInfrastructureName).path, 'test',
+          'src', outputDir ?? '', '${entity.snakeCase}_dto_test.dart')),
+    ];
+  }
+
+  List<File> serviceImplementationFiles({
+    required String name,
+    required String serviceName,
+    String? subInfrastructureName,
+    String? outputDir,
+  }) {
+    subInfrastructureName =
+        subInfrastructureName == 'default' ? null : subInfrastructureName;
+    return [
+      File(
+        p.join(
+          infrastructurePackage(subInfrastructureName).path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          '${name.snakeCase}_${serviceName.snakeCase}_service.dart',
+        ),
+      ),
+      File(
+        p.join(
+          infrastructurePackage(subInfrastructureName).path,
+          'test',
+          'src',
+          outputDir ?? '',
+          '${name.snakeCase}_${serviceName.snakeCase}_service_test.dart',
+        ),
+      ),
+    ];
+  }
+
+  List<File> widgetFiles({
+    required String name,
+    Platform? platform,
+  }) =>
+      [
+        File(
+          p.join(
+            platform != null
+                ? platformUiPackage(platform).path
+                : uiPackage.path,
+            'lib',
+            'src',
+            '${name.snakeCase}_theme.dart',
+          ),
+        ),
+        File(
+          p.join(
+            platform != null
+                ? platformUiPackage(platform).path
+                : uiPackage.path,
+            'lib',
+            'src',
+            '${name.snakeCase}_theme.tailor.dart',
+          ),
+        ),
+        File(
+          p.join(
+            platform != null
+                ? platformUiPackage(platform).path
+                : uiPackage.path,
+            'lib',
+            'src',
+            '${name.snakeCase}.dart',
+          ),
+        ),
+        File(
+          p.join(
+            platform != null
+                ? platformUiPackage(platform).path
+                : uiPackage.path,
+            'test',
+            'src',
+            '${name.snakeCase}_theme_test.dart',
+          ),
+        ),
+        File(
+          p.join(
+            platform != null
+                ? platformUiPackage(platform).path
+                : uiPackage.path,
+            'test',
+            'src',
+            '${name.snakeCase}_test.dart',
+          ),
+        ),
+      ];
+
+  /// Source files a feature requires to support [languages].
+  List<File> languageFiles(
+    String feature,
+    Platform platform,
+    List<String> languages,
+  ) =>
+      [
+        for (final language in languages) ...[
+          File(
+            p.join(
+              featurePackage(feature, platform).path,
+              'lib',
+              'src',
+              'presentation',
+              'l10n',
+              'arb',
+              '${feature}_$language.arb',
+            ),
+          ),
+          File(
+            p.join(
+              featurePackage(feature, platform).path,
+              'lib',
+              'src',
+              'presentation',
+              'l10n',
+              '${projectName}_${platform.name}_${feature}_localizations_$language.dart',
+            ),
+          ),
+        ],
+      ];
+}
 
 extension IterableX<E extends FileSystemEntity> on Iterable<E> {
   /// All entities inside this without [iterable].

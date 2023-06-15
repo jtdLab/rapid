@@ -1,6 +1,3 @@
-@Tags(['e2e'])
-import 'dart:io';
-
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
@@ -10,60 +7,52 @@ void main() {
   group(
     'E2E',
     () {
-      cwd = Directory.current;
-
-      setUpAll(() {
-        projectName = 'test_app';
-      });
-
-      setUp(() {
-        Directory.current = getTempDir();
-      });
-
-      tearDown(() {
-        Directory.current = cwd;
-      });
-
       group('create', () {
-        Future<void> performTest({
+        dynamic performTest({
           required String flag,
-        }) async {
-          // Act
-          await runRapidCommand([
-            'create',
-            projectName,
-            '--$flag',
-          ]);
+        }) =>
+            withTempDir((_) async {
+              // Arrange
+              final tester = RapidE2ETester('test_app');
 
-          // Assert
-          final platform = Platform.values.firstWhere((p) => flag == p.name);
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoNotExist(
-            allPlatformDependentPackages.without(
-              platformDependentPackages(platform),
-            ),
-          );
-          final platformPackages = platformDependentPackages(platform);
-          final featurePackages = [
-            featurePackage('app', platform),
-            featurePackage('home_page', platform),
-          ];
-          verifyDoExist([
-            ...platformIndependentPackages,
-            ...platformPackages,
-            ...featurePackages,
-          ]);
-          verifyDoNotHaveTests([
-            ...platformIndependentPackagesWithoutTests,
-            ...platformDependentPackagesWithoutTests(platform)
-          ]);
-          await verifyTestsPassWith100PercentCoverage([
-            ...platformIndependentPackagesWithTests,
-            ...platformDependentPackagesWithTests(platform),
-            ...featurePackages,
-          ]);
-        }
+              // Act
+              await tester.runRapidCommand([
+                'create',
+                tester.projectName,
+                '--$flag',
+              ]);
+
+              // Assert
+              final platform =
+                  Platform.values.firstWhere((p) => flag == p.name);
+              await verifyNoAnalyzerIssues();
+              await verifyNoFormattingIssues();
+              verifyDoNotExist(
+                tester.allPlatformDependentPackages.without(
+                  tester.platformDependentPackages(platform),
+                ),
+              );
+              final platformPackages =
+                  tester.platformDependentPackages(platform);
+              final featurePackages = [
+                tester.featurePackage('app', platform),
+                tester.featurePackage('home_page', platform),
+              ];
+              verifyDoExist([
+                ...tester.platformIndependentPackages,
+                ...platformPackages,
+                ...featurePackages,
+              ]);
+              verifyDoNotHaveTests([
+                ...tester.platformIndependentPackagesWithoutTests,
+                ...tester.platformDependentPackagesWithoutTests(platform)
+              ]);
+              await verifyTestsPassWith100PercentCoverage([
+                ...tester.platformIndependentPackagesWithTests,
+                ...tester.platformDependentPackagesWithTests(platform),
+                ...featurePackages,
+              ]);
+            });
 
         test(
           '--android',

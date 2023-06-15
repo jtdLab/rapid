@@ -2,35 +2,36 @@ import 'package:rapid_cli/src/core/platform.dart';
 
 import 'common.dart';
 
-Future<void> performTest({
+dynamic performTest({
   required Platform platform,
-}) async {
-  // Arrange
-  const language = 'fr';
-  await setupProject(platform);
-  await runRapidCommand([
-    platform.name,
-    'add',
-    'language',
-    language,
-  ]);
+}) =>
+    withTempDir((root) async {
+      // Arrange
+      const language = 'fr';
+      final tester = await RapidE2ETester.withProject(root, platform);
+      await tester.runRapidCommand([
+        platform.name,
+        'add',
+        'language',
+        language,
+      ]);
 
-  // Act
-  await runRapidCommand([
-    platform.name,
-    'remove',
-    'language',
-    language,
-  ]);
+      // Act
+      await tester.runRapidCommand([
+        platform.name,
+        'remove',
+        'language',
+        language,
+      ]);
 
-  // Assert
-  await verifyNoAnalyzerIssues();
-  await verifyNoFormattingIssues();
-  verifyDoNotExist({
-    ...languageFiles('home_page', platform, [language]),
-  });
-  await verifyTestsPassWith100PercentCoverage([
-    featurePackage('app', platform),
-    featurePackage('home_page', platform),
-  ]);
-}
+      // Assert
+      await verifyNoAnalyzerIssues();
+      await verifyNoFormattingIssues();
+      verifyDoNotExist({
+        ...tester.languageFiles('home_page', platform, [language]),
+      });
+      await verifyTestsPassWith100PercentCoverage([
+        tester.featurePackage('app', platform),
+        tester.featurePackage('home_page', platform),
+      ]);
+    });

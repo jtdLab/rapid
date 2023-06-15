@@ -1,6 +1,3 @@
-@Tags(['e2e'])
-import 'dart:io';
-
 import 'package:test/test.dart';
 
 import 'common.dart';
@@ -9,67 +6,58 @@ void main() {
   group(
     'E2E',
     () {
-      cwd = Directory.current;
-
-      setUp(() async {
-        Directory.current = getTempDir();
-      });
-
-      tearDown(() {
-        Directory.current = cwd;
-      });
-
-      Future<void> performTest({
+      dynamic performTest({
         required String subInfrastructure,
         String? outputDir,
-      }) async {
-        // Arrange
-        await setupProject();
-        if (subInfrastructure != 'default') {
-          await runRapidCommand([
-            'domain',
-            'add',
-            'sub_domain',
-            subInfrastructure,
-          ]);
-        }
-        final entity = 'FooBar';
-        await runRapidCommand([
-          'domain',
-          subInfrastructure,
-          'add',
-          'entity',
-          entity,
-          if (outputDir != null) '--output-dir',
-          if (outputDir != null) outputDir,
-        ]);
+      }) =>
+          withTempDir((root) async {
+            // Arrange
+            final tester = await RapidE2ETester.withProject(root);
+            if (subInfrastructure != 'default') {
+              await tester.runRapidCommand([
+                'domain',
+                'add',
+                'sub_domain',
+                subInfrastructure,
+              ]);
+            }
+            final entity = 'FooBar';
+            await tester.runRapidCommand([
+              'domain',
+              subInfrastructure,
+              'add',
+              'entity',
+              entity,
+              if (outputDir != null) '--output-dir',
+              if (outputDir != null) outputDir,
+            ]);
 
-        // Act
-        await runRapidCommand([
-          'infrastructure',
-          subInfrastructure,
-          'add',
-          'data_transfer_object',
-          '--entity',
-          entity,
-          if (outputDir != null) '--output-dir',
-          if (outputDir != null) outputDir
-        ]);
+            // Act
+            await tester.runRapidCommand([
+              'infrastructure',
+              subInfrastructure,
+              'add',
+              'data_transfer_object',
+              '--entity',
+              entity,
+              if (outputDir != null) '--output-dir',
+              if (outputDir != null) outputDir
+            ]);
 
-        // Assert
-        await verifyNoAnalyzerIssues();
-        await verifyNoFormattingIssues();
-        verifyDoExist({
-          ...dataTransferObjectFiles(
-            entity: entity,
-            subInfrastructureName: subInfrastructure,
-            outputDir: outputDir,
-          ),
-        });
-        await verifyTestsPassWith100PercentCoverage({
-          infrastructurePackage(subInfrastructure),
-        });
-      }
+            // Assert
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+            verifyDoExist({
+              ...tester.dataTransferObjectFiles(
+                entity: entity,
+                subInfrastructureName: subInfrastructure,
+                outputDir: outputDir,
+              ),
+            });
+            await verifyTestsPassWith100PercentCoverage({
+              tester.infrastructurePackage(subInfrastructure),
+            });
+          });
 
       test(
         'infrastructure default add data_transfer_object',

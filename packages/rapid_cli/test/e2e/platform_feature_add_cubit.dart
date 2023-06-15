@@ -2,43 +2,45 @@ import 'package:rapid_cli/src/core/platform.dart';
 
 import 'common.dart';
 
-Future<void> performTest({
+dynamic performTest({
   required Platform platform,
   String? outputDir,
   required double expectedCoverage,
-}) async {
-  // Arrange
-  final name = 'FooBar';
-  final featureName = 'home_page';
+}) =>
+    withTempDir((root) async {
+      // Arrange
+      final tester = await RapidE2ETester.withProject(root, platform);
+      final name = 'FooBar';
+      final featureName = 'home_page';
 
-  // Act
-  await runRapidCommand([
-    platform.name,
-    featureName,
-    'add',
-    'cubit',
-    name,
-    if (outputDir != null) '--output-dir',
-    if (outputDir != null) outputDir,
-  ]);
+      // Act
+      await tester.runRapidCommand([
+        platform.name,
+        featureName,
+        'add',
+        'cubit',
+        name,
+        if (outputDir != null) '--output-dir',
+        if (outputDir != null) outputDir,
+      ]);
 
-  // Assert
-  await verifyNoAnalyzerIssues();
-  await verifyNoFormattingIssues();
-  verifyDoExist({
-    ...cubitFiles(
-      name: name,
-      featureName: featureName,
-      platform: platform,
-      outputDir: outputDir,
-    ),
-    applicationBarrelFile(
-      featureName: featureName,
-      platform: platform,
-    ),
-  });
-  await verifyTestsPass(
-    featurePackage(featureName, platform),
-    expectedCoverage: expectedCoverage,
-  );
-}
+      // Assert
+      await verifyNoAnalyzerIssues();
+      await verifyNoFormattingIssues();
+      verifyDoExist({
+        ...tester.cubitFiles(
+          name: name,
+          featureName: featureName,
+          platform: platform,
+          outputDir: outputDir,
+        ),
+        tester.applicationBarrelFile(
+          featureName: featureName,
+          platform: platform,
+        ),
+      });
+      await verifyTestsPass(
+        tester.featurePackage(featureName, platform),
+        expectedCoverage: expectedCoverage,
+      );
+    });

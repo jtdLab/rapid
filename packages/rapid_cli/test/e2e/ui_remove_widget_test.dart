@@ -1,6 +1,3 @@
-@Tags(['e2e'])
-import 'dart:io';
-
 import 'package:test/test.dart';
 
 import 'common.dart';
@@ -9,43 +6,33 @@ void main() {
   group(
     'E2E',
     () {
-      cwd = Directory.current;
+      dynamic performTest() => withTempDir((root) async {
+            // Arrange
+            final tester = await RapidE2ETester.withProject(root);
+            final name = 'FooBar';
+            await tester.runRapidCommand([
+              'ui',
+              'add',
+              'widget',
+              name,
+            ]);
 
-      setUp(() {
-        Directory.current = getTempDir();
-      });
+            // Act
+            await tester.runRapidCommand([
+              'ui',
+              'remove',
+              'widget',
+              name,
+            ]);
 
-      tearDown(() {
-        Directory.current = cwd;
-      });
-
-      Future<void> performTest() async {
-        // Arrange
-        await setupProject();
-        final name = 'FooBar';
-        await runRapidCommand([
-          'ui',
-          'add',
-          'widget',
-          name,
-        ]);
-
-        // Act
-        await runRapidCommand([
-          'ui',
-          'remove',
-          'widget',
-          name,
-        ]);
-
-        // Assert
-        await verifyNoAnalyzerIssues();
-        await verifyNoFormattingIssues();
-        verifyDoNotExist({
-          ...widgetFiles(name: name),
-        });
-        await verifyTestsPassWith100PercentCoverage([uiPackage]);
-      }
+            // Assert
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+            verifyDoNotExist({
+              ...tester.widgetFiles(name: name),
+            });
+            await verifyTestsPassWith100PercentCoverage([tester.uiPackage]);
+          });
 
       test(
         'ui add widget',

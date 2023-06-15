@@ -1,6 +1,3 @@
-@Tags(['e2e'])
-import 'dart:io';
-
 import 'package:test/test.dart';
 
 import 'common.dart';
@@ -9,54 +6,45 @@ void main() {
   group(
     'E2E',
     () {
-      cwd = Directory.current;
-
-      setUp(() async {
-        Directory.current = getTempDir();
-      });
-
-      tearDown(() {
-        Directory.current = cwd;
-      });
-
-      Future<void> performTest({
+      dynamic performTest({
         required String subDomain,
         String? outputDir,
-      }) async {
-        // Arrange
-        await setupProject();
-        if (subDomain != 'default') {
-          await runRapidCommand([
-            'domain',
-            'add',
-            'sub_domain',
-            subDomain,
-          ]);
-        }
-        final name = 'FooBar';
+      }) =>
+          withTempDir((root) async {
+            // Arrange
+            final tester = await RapidE2ETester.withProject(root);
+            if (subDomain != 'default') {
+              await tester.runRapidCommand([
+                'domain',
+                'add',
+                'sub_domain',
+                subDomain,
+              ]);
+            }
+            final name = 'FooBar';
 
-        // Act
-        await runRapidCommand([
-          'domain',
-          subDomain,
-          'add',
-          'value_object',
-          name,
-          if (outputDir != null) '--output-dir',
-          if (outputDir != null) outputDir,
-        ]);
+            // Act
+            await tester.runRapidCommand([
+              'domain',
+              subDomain,
+              'add',
+              'value_object',
+              name,
+              if (outputDir != null) '--output-dir',
+              if (outputDir != null) outputDir,
+            ]);
 
-        // Assert
-        await verifyHasAnalyzerIssues(3);
-        await verifyNoFormattingIssues();
-        verifyDoExist({
-          ...valueObjectFiles(
-            name: name,
-            subDomainName: subDomain,
-            outputDir: outputDir,
-          ),
-        });
-      }
+            // Assert
+            await verifyHasAnalyzerIssues(3);
+            await verifyNoFormattingIssues();
+            verifyDoExist({
+              ...tester.valueObjectFiles(
+                name: name,
+                subDomainName: subDomain,
+                outputDir: outputDir,
+              ),
+            });
+          });
 
       test(
         'domain default add value_object',

@@ -2,25 +2,26 @@ import 'package:rapid_cli/src/core/platform.dart';
 
 import 'common.dart';
 
-Future<void> performTest({
+dynamic performTest({
   required Platform platform,
-}) async {
-  // Arrange
-  const featureName = 'my_feature';
-  await setupProject(platform);
+}) =>
+    withTempDir((root) async {
+      // Arrange
+      const featureName = 'my_feature';
+      final tester = await RapidE2ETester.withProject(root, platform);
 
-  // Act
-  await runRapidCommand([
-    platform.name,
-    'add',
-    'feature',
-    featureName,
-  ]);
+      // Act
+      await tester.runRapidCommand([
+        platform.name,
+        'add',
+        'feature',
+        featureName,
+      ]);
 
-  // Assert
-  await verifyNoAnalyzerIssues();
-  await verifyNoFormattingIssues();
-  final feature = featurePackage(featureName, platform);
-  verifyDoExist([feature]);
-  await verifyTestsPassWith100PercentCoverage([feature]);
-}
+      // Assert
+      await verifyNoAnalyzerIssues();
+      await verifyNoFormattingIssues();
+      final feature = tester.featurePackage(featureName, platform);
+      verifyDoExist([feature]);
+      await verifyTestsPassWith100PercentCoverage([feature]);
+    });

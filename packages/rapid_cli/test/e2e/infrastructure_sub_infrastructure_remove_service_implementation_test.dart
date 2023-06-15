@@ -1,6 +1,3 @@
-@Tags(['e2e'])
-import 'dart:io';
-
 import 'package:test/test.dart';
 
 import 'common.dart';
@@ -9,80 +6,72 @@ void main() {
   group(
     'E2E',
     () {
-      cwd = Directory.current;
-
-      setUp(() async {
-        Directory.current = getTempDir();
-      });
-
-      tearDown(() {
-        Directory.current = cwd;
-      });
-
-      Future<void> performTest({
+      dynamic performTest({
         required String subInfrastructure,
         String? dir,
-      }) async {
-        // Arrange
-        await setupProject();
-        if (subInfrastructure != 'default') {
-          await runRapidCommand([
-            'domain',
-            'add',
-            'sub_domain',
-            subInfrastructure,
-          ]);
-        }
-        final name = 'Fake';
-        final service = 'FooBar';
-        final outputDir = 'foo';
-        await runRapidCommand([
-          'domain',
-          subInfrastructure,
-          'add',
-          'service_interface',
-          service,
-          if (dir != null) '--output-dir',
-          if (dir != null) outputDir,
-        ]);
-        await runRapidCommand([
-          'infrastructure',
-          subInfrastructure,
-          'add',
-          'service_implementation',
-          name,
-          '--service',
-          service,
-          if (dir != null) '--output-dir',
-          if (dir != null) outputDir,
-        ]);
+      }) =>
+          withTempDir((root) async {
+            // Arrange
+            final tester = await RapidE2ETester.withProject(root);
+            if (subInfrastructure != 'default') {
+              await tester.runRapidCommand([
+                'domain',
+                'add',
+                'sub_domain',
+                subInfrastructure,
+              ]);
+            }
+            final name = 'Fake';
+            final service = 'FooBar';
+            final outputDir = 'foo';
+            await tester.runRapidCommand([
+              'domain',
+              subInfrastructure,
+              'add',
+              'service_interface',
+              service,
+              if (dir != null) '--output-dir',
+              if (dir != null) outputDir,
+            ]);
+            await tester.runRapidCommand([
+              'infrastructure',
+              subInfrastructure,
+              'add',
+              'service_implementation',
+              name,
+              '--service',
+              service,
+              if (dir != null) '--output-dir',
+              if (dir != null) outputDir,
+            ]);
 
-        // Act
-        await runRapidCommand([
-          'infrastructure',
-          subInfrastructure,
-          'remove',
-          'service_implementation',
-          name,
-          '--service',
-          service,
-          if (dir != null) '--dir',
-          if (dir != null) outputDir
-        ]);
+            // Act
+            await tester.runRapidCommand([
+              'infrastructure',
+              subInfrastructure,
+              'remove',
+              'service_implementation',
+              name,
+              '--service',
+              service,
+              if (dir != null) '--dir',
+              if (dir != null) outputDir
+            ]);
 
-        // Assert
-        await verifyNoAnalyzerIssues();
-        await verifyNoFormattingIssues();
-        verifyDoNotExist({
-          ...serviceImplementationFiles(
-            name: name,
-            serviceName: service,
-            subInfrastructureName: subInfrastructure,
-            outputDir: outputDir,
-          ),
-        });
-        verifyDoNotHaveTests([infrastructurePackage(subInfrastructure)]);
-      }
+            // Assert
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+            verifyDoNotExist({
+              ...tester.serviceImplementationFiles(
+                name: name,
+                serviceName: service,
+                subInfrastructureName: subInfrastructure,
+                outputDir: outputDir,
+              ),
+            });
+            verifyDoNotHaveTests(
+                [tester.infrastructurePackage(subInfrastructure)]);
+          });
 
       test(
         'infrastructure default remove service_implementation',

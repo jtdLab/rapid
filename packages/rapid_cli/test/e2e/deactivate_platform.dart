@@ -2,17 +2,18 @@ import 'package:rapid_cli/src/core/platform.dart';
 
 import 'common.dart';
 
-Future<void> performTest({
+dynamic performTest({
   required Platform platform,
-}) async {
-  // Arrange
-  await setupProject(platform);
+}) =>
+    withTempDir((root) async {
+      // Arrange
+      final tester = await RapidE2ETester.withProject(root, platform);
 
-  // Act
-  await runRapidCommand(['deactivate', platform.name]);
+      // Act
+      await tester.runRapidCommand(['deactivate', platform.name]);
 
-  // Assert
-  await verifyNoAnalyzerIssues();
-  await verifyNoFormattingIssues();
-  verifyDoNotExist(allPlatformDependentPackages);
-}
+      // Assert
+      await verifyNoAnalyzerIssues();
+      await verifyNoFormattingIssues();
+      verifyDoNotExist(tester.allPlatformDependentPackages);
+    });

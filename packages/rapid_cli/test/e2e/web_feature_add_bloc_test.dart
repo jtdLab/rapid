@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'web <feature> add bloc',
-        () => performTest(
+        performTest(
           platform: Platform.web,
           expectedCoverage: 75.0,
         ),
@@ -19,7 +19,7 @@ void main() {
 
       test(
         'web <feature> add bloc (with output dir)',
-        () => performTest(
+        performTest(
           platform: Platform.web,
           outputDir: 'foo',
           expectedCoverage: 75.0,

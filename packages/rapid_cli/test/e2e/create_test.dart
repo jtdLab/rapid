@@ -57,7 +57,7 @@ void main() {
 
         test(
           '--android',
-          () => performTest(
+          performTest(
             flag: 'android',
           ),
           timeout: const Timeout(Duration(minutes: 16)),
@@ -65,7 +65,7 @@ void main() {
 
         test(
           '--ios',
-          () => performTest(
+          performTest(
             flag: 'ios',
           ),
           timeout: const Timeout(Duration(minutes: 16)),
@@ -73,7 +73,7 @@ void main() {
 
         test(
           '--linux',
-          () => performTest(
+          performTest(
             flag: 'linux',
           ),
           timeout: const Timeout(Duration(minutes: 16)),
@@ -81,7 +81,7 @@ void main() {
 
         test(
           '--macos',
-          () => performTest(
+          performTest(
             flag: 'macos',
           ),
           timeout: const Timeout(Duration(minutes: 16)),
@@ -89,7 +89,7 @@ void main() {
 
         test(
           '--web',
-          () => performTest(
+          performTest(
             flag: 'web',
           ),
           timeout: const Timeout(Duration(minutes: 16)),
@@ -97,7 +97,7 @@ void main() {
 
         test(
           '--windows',
-          () => performTest(
+          performTest(
             flag: 'windows',
           ),
           timeout: const Timeout(Duration(minutes: 16)),
@@ -105,7 +105,7 @@ void main() {
 
         test(
           '--mobile',
-          () => performTest(
+          performTest(
             flag: 'mobile',
           ),
           timeout: const Timeout(Duration(minutes: 16)),

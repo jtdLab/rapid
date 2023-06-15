@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'ui web remove widget',
-        () => performTest(
+        performTest(
           platform: Platform.web,
         ),
         timeout: const Timeout(Duration(minutes: 4)),

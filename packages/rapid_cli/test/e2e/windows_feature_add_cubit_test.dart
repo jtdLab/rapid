@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'windows <feature> add cubit',
-        () => performTest(
+        performTest(
           platform: Platform.windows,
           expectedCoverage: 80.0,
         ),
@@ -19,7 +19,7 @@ void main() {
 
       test(
         'windows <feature> add cubit (with output dir)',
-        () => performTest(
+        performTest(
           platform: Platform.windows,
           outputDir: 'foo',
           expectedCoverage: 80.0,

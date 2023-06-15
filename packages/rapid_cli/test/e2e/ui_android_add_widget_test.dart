@@ -8,7 +8,7 @@ void main() {
   group('E2E', () {
     test(
       'ui android add widget',
-      () => performTest(
+      performTest(
         platform: Platform.android,
       ),
       timeout: const Timeout(Duration(minutes: 4)),

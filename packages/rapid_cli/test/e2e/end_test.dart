@@ -10,7 +10,7 @@ void main() {
 /*       group('end', () {
         test(
           '',
-          () => performTest(),
+          performTest(),
           timeout: const Timeout(Duration(minutes: 8)),
         );
       }); */

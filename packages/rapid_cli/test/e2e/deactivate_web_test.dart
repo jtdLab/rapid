@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'deactivate web',
-        () => performTest(
+        performTest(
           platform: Platform.web,
         ),
         timeout: const Timeout(Duration(minutes: 4)),

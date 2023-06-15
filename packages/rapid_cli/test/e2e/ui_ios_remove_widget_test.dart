@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'ui ios remove widget',
-        () => performTest(
+        performTest(
           platform: Platform.ios,
         ),
         timeout: const Timeout(Duration(minutes: 4)),

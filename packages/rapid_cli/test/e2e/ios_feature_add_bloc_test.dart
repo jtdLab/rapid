@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'ios <feature> add bloc',
-        () => performTest(
+        performTest(
           platform: Platform.ios,
           expectedCoverage: 75.0,
         ),
@@ -19,7 +19,7 @@ void main() {
 
       test(
         'ios <feature> add bloc (with output dir)',
-        () => performTest(
+        performTest(
           platform: Platform.ios,
           outputDir: 'foo',
           expectedCoverage: 75.0,

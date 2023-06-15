@@ -66,7 +66,7 @@ void main() {
 
       test(
         'infrastructure default add service_implementation',
-        () => performTest(
+        performTest(
           subInfrastructure: 'default',
         ),
         timeout: const Timeout(Duration(minutes: 8)),
@@ -74,7 +74,7 @@ void main() {
 
       test(
         'infrastructure default add service_implementation (with output dir)',
-        () => performTest(
+        performTest(
           subInfrastructure: 'default',
           outputDir: 'foo',
         ),
@@ -83,7 +83,7 @@ void main() {
 
       test(
         'infrastructure <sub_infrastructure> add service_implementation',
-        () => performTest(
+        performTest(
           subInfrastructure: 'foo_bar',
         ),
         timeout: const Timeout(Duration(minutes: 8)),
@@ -91,7 +91,7 @@ void main() {
 
       test(
         'infrastructure <sub_infrastructure> add service_implementation (with output dir)',
-        () => performTest(
+        performTest(
           subInfrastructure: 'foo_bar',
           outputDir: 'foo',
         ),

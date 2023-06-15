@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'ios <feature> add cubit',
-        () => performTest(
+        performTest(
           platform: Platform.ios,
           expectedCoverage: 80.0,
         ),
@@ -19,7 +19,7 @@ void main() {
 
       test(
         'ios <feature> add cubit (with output dir)',
-        () => performTest(
+        performTest(
           platform: Platform.ios,
           outputDir: 'foo',
           expectedCoverage: 80.0,

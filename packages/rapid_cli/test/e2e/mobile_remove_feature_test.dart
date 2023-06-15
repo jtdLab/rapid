@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'mobile remove feature',
-        () => performTest(
+        performTest(
           platform: Platform.mobile,
         ),
         timeout: const Timeout(Duration(minutes: 4)),

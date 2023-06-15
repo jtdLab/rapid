@@ -76,7 +76,7 @@ void main() {
 
       test(
         'infrastructure default remove service_implementation',
-        () => performTest(
+        performTest(
           subInfrastructure: 'default',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
@@ -84,7 +84,7 @@ void main() {
 
       test(
         'infrastructure default remove service_implementation (with dir)',
-        () => performTest(
+        performTest(
           subInfrastructure: 'default',
           dir: 'foo',
         ),
@@ -93,7 +93,7 @@ void main() {
 
       test(
         'infrastructure <sub_infrastructure> remove service_implementation',
-        () => performTest(
+        performTest(
           subInfrastructure: 'foo_bar',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
@@ -101,7 +101,7 @@ void main() {
 
       test(
         'infrastructure <sub_infrastructure> remove service_implementation (with dir)',
-        () => performTest(
+        performTest(
           subInfrastructure: 'foo_bar',
           dir: 'foo',
         ),

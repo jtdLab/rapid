@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'web remove feature',
-        () => performTest(
+        performTest(
           platform: Platform.web,
         ),
         timeout: const Timeout(Duration(minutes: 4)),

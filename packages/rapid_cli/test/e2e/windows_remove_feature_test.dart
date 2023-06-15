@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'windows remove feature',
-        () => performTest(
+        performTest(
           platform: Platform.windows,
         ),
         timeout: const Timeout(Duration(minutes: 4)),

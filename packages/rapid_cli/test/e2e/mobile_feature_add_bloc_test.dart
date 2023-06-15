@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'mobile <feature> add bloc',
-        () => performTest(
+        performTest(
           platform: Platform.mobile,
           expectedCoverage: 75.0,
         ),
@@ -19,7 +19,7 @@ void main() {
 
       test(
         'mobile <feature> add bloc (with output dir)',
-        () => performTest(
+        performTest(
           platform: Platform.mobile,
           outputDir: 'foo',
           expectedCoverage: 75.0,

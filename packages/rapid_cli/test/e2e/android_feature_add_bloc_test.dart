@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'android <feature> add bloc',
-        () => performTest(
+        performTest(
           platform: Platform.android,
           expectedCoverage: 75.0,
         ),
@@ -19,7 +19,7 @@ void main() {
 
       test(
         'android <feature> add bloc (with output dir)',
-        () => performTest(
+        performTest(
           platform: Platform.android,
           outputDir: 'foo',
           expectedCoverage: 75.0,

@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'android add feature',
-        () => performTest(
+        performTest(
           platform: Platform.android,
         ),
         timeout: const Timeout(Duration(minutes: 8)),

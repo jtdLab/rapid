@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'deactivate mobile',
-        () => performTest(
+        performTest(
           platform: Platform.mobile,
         ),
         timeout: const Timeout(Duration(minutes: 4)),

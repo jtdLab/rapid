@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'linux <feature> add bloc',
-        () => performTest(
+        performTest(
           platform: Platform.linux,
           expectedCoverage: 75.0,
         ),
@@ -19,7 +19,7 @@ void main() {
 
       test(
         'linux <feature> add bloc (with output dir)',
-        () => performTest(
+        performTest(
           platform: Platform.linux,
           outputDir: 'foo',
           expectedCoverage: 75.0,

@@ -29,7 +29,7 @@ void main() {
 
     test(
       'ui add widget',
-      () => performTest(),
+      performTest(),
       timeout: const Timeout(Duration(minutes: 4)),
     );
   });

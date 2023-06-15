@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'windows <feature> add bloc',
-        () => performTest(
+        performTest(
           platform: Platform.windows,
           expectedCoverage: 75.0,
         ),
@@ -19,7 +19,7 @@ void main() {
 
       test(
         'windows <feature> add bloc (with output dir)',
-        () => performTest(
+        performTest(
           platform: Platform.windows,
           outputDir: 'foo',
           expectedCoverage: 75.0,

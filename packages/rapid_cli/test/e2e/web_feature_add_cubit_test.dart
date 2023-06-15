@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'web <feature> add cubit',
-        () => performTest(
+        performTest(
           platform: Platform.web,
           expectedCoverage: 80.0,
         ),
@@ -19,7 +19,7 @@ void main() {
 
       test(
         'web <feature> add cubit (with output dir)',
-        () => performTest(
+        performTest(
           platform: Platform.web,
           outputDir: 'foo',
           expectedCoverage: 80.0,

@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'activate macos',
-        () => performTest(
+        performTest(
           platform: Platform.macos,
         ),
         timeout: const Timeout(Duration(minutes: 8)),

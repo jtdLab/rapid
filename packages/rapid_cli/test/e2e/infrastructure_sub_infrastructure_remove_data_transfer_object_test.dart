@@ -71,7 +71,7 @@ void main() {
 
       test(
         'infrastructure default remove data_transfer_object',
-        () => performTest(
+        performTest(
           subInfrastructure: 'default',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
@@ -79,7 +79,7 @@ void main() {
 
       test(
         'infrastructure default remove data_transfer_object (with dir)',
-        () => performTest(
+        performTest(
           subInfrastructure: 'default',
           dir: 'foo',
         ),
@@ -88,7 +88,7 @@ void main() {
 
       test(
         'infrastructure <sub_infrastructure> remove data_transfer_object',
-        () => performTest(
+        performTest(
           subInfrastructure: 'foo_bar',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
@@ -96,7 +96,7 @@ void main() {
 
       test(
         'infrastructure <sub_infrastructure> remove data_transfer_object (with dir)',
-        () => performTest(
+        performTest(
           subInfrastructure: 'foo_bar',
           dir: 'foo',
         ),

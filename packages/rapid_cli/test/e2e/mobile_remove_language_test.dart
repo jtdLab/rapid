@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'mobile remove language',
-        () => performTest(
+        performTest(
           platform: Platform.mobile,
         ),
         timeout: const Timeout(Duration(minutes: 6)),

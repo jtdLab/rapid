@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'deactivate windows',
-        () => performTest(
+        performTest(
           platform: Platform.windows,
         ),
         timeout: const Timeout(Duration(minutes: 4)),

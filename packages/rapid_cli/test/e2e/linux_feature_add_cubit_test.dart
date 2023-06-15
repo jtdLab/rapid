@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'linux <feature> add cubit',
-        () => performTest(
+        performTest(
           platform: Platform.linux,
           expectedCoverage: 80.0,
         ),
@@ -19,7 +19,7 @@ void main() {
 
       test(
         'linux <feature> add cubit (with output dir)',
-        () => performTest(
+        performTest(
           platform: Platform.linux,
           outputDir: 'foo',
           expectedCoverage: 80.0,

@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'macos <feature> add bloc',
-        () => performTest(
+        performTest(
           platform: Platform.macos,
           expectedCoverage: 80.0,
         ),
@@ -19,7 +19,7 @@ void main() {
 
       test(
         'macos <feature> add bloc (with output dir)',
-        () => performTest(
+        performTest(
           platform: Platform.macos,
           outputDir: 'foo',
           expectedCoverage: 80.0,

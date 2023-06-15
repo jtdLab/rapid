@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'deactivate android',
-        () => performTest(
+        performTest(
           platform: Platform.android,
         ),
         timeout: const Timeout(Duration(minutes: 4)),

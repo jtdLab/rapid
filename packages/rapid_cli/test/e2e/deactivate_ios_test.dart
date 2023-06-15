@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'deactivate ios',
-        () => performTest(
+        performTest(
           platform: Platform.ios,
         ),
         timeout: const Timeout(Duration(minutes: 4)),

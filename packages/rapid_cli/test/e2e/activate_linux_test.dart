@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'activate linux',
-        () => performTest(
+        performTest(
           platform: Platform.linux,
         ),
         timeout: const Timeout(Duration(minutes: 8)),

@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'ui linux remove widget',
-        () => performTest(
+        performTest(
           platform: Platform.linux,
         ),
         timeout: const Timeout(Duration(minutes: 4)),

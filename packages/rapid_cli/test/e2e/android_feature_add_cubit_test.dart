@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'android <feature> add cubit',
-        () => performTest(
+        performTest(
           platform: Platform.android,
           expectedCoverage: 80.0,
         ),
@@ -19,7 +19,7 @@ void main() {
 
       test(
         'android <feature> add cubit (with output dir)',
-        () => performTest(
+        performTest(
           platform: Platform.android,
           outputDir: 'foo',
           expectedCoverage: 80.0,

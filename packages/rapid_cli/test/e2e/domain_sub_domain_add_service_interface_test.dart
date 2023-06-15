@@ -49,7 +49,7 @@ void main() {
 
       test(
         'domain default add service_interface',
-        () => performTest(
+        performTest(
           subDomain: 'default',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
@@ -57,7 +57,7 @@ void main() {
 
       test(
         'domain default add service_interface (with output dir)',
-        () => performTest(
+        performTest(
           subDomain: 'default',
           outputDir: 'foo',
         ),
@@ -66,7 +66,7 @@ void main() {
 
       test(
         'domain <sub_domain> add service_interface',
-        () => performTest(
+        performTest(
           subDomain: 'foo_bar',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
@@ -74,7 +74,7 @@ void main() {
 
       test(
         'domain <sub_domain> add service_interface (with output dir)',
-        () => performTest(
+        performTest(
           subDomain: 'foo_bar',
           outputDir: 'foo',
         ),

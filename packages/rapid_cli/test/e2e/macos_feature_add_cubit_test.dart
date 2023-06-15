@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'macos <feature> add cubit',
-        () => performTest(
+        performTest(
           platform: Platform.macos,
           expectedCoverage: 84.62,
         ),
@@ -19,7 +19,7 @@ void main() {
 
       test(
         'macos <feature> add cubit (with output dir)',
-        () => performTest(
+        performTest(
           platform: Platform.macos,
           outputDir: 'foo',
           expectedCoverage: 84.62,

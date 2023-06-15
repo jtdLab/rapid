@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'windows add language',
-        () => performTest(
+        performTest(
           platform: Platform.windows,
         ),
         timeout: const Timeout(Duration(minutes: 8)),

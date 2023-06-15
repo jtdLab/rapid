@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'web add language',
-        () => performTest(
+        performTest(
           platform: Platform.web,
         ),
         timeout: const Timeout(Duration(minutes: 8)),

@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'activate windows',
-        () => performTest(
+        performTest(
           platform: Platform.windows,
         ),
         timeout: const Timeout(Duration(minutes: 8)),

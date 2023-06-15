@@ -8,7 +8,7 @@ void main() {
   group('E2E', () {
     test(
       'ui windows add widget',
-      () => performTest(
+      performTest(
         platform: Platform.windows,
       ),
       timeout: const Timeout(Duration(minutes: 4)),

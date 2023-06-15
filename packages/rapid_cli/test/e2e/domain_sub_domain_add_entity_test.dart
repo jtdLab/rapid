@@ -52,7 +52,7 @@ void main() {
 
       test(
         'domain default add entity',
-        () => performTest(
+        performTest(
           subDomain: 'default',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
@@ -60,7 +60,7 @@ void main() {
 
       test(
         'domain default add entity (with output dir)',
-        () => performTest(
+        performTest(
           subDomain: 'default',
           outputDir: 'foo',
         ),
@@ -69,7 +69,7 @@ void main() {
 
       test(
         'domain <sub_domain> add entity',
-        () => performTest(
+        performTest(
           subDomain: 'foo_bar',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
@@ -77,7 +77,7 @@ void main() {
 
       test(
         'domain <sub_domain> add entity (with output dir)',
-        () => performTest(
+        performTest(
           subDomain: 'foo_bar',
           outputDir: 'foo',
         ),

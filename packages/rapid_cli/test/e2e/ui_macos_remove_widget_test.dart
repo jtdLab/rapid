@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'ui macos remove widget',
-        () => performTest(
+        performTest(
           platform: Platform.macos,
         ),
         timeout: const Timeout(Duration(minutes: 4)),

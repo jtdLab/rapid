@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'linux remove language',
-        () => performTest(
+        performTest(
           platform: Platform.linux,
         ),
         timeout: const Timeout(Duration(minutes: 6)),

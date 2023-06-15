@@ -8,7 +8,7 @@ void main() {
   group('E2E', () {
     test(
       'ui web add widget',
-      () => performTest(
+      performTest(
         platform: Platform.web,
       ),
       timeout: const Timeout(Duration(minutes: 4)),

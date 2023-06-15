@@ -61,7 +61,7 @@ void main() {
 
       test(
         'domain default remove value_object',
-        () => performTest(
+        performTest(
           subDomain: 'default',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
@@ -69,7 +69,7 @@ void main() {
 
       test(
         'domain default remove value_object (with dir)',
-        () => performTest(
+        performTest(
           subDomain: 'default',
           dir: 'foo',
         ),
@@ -78,7 +78,7 @@ void main() {
 
       test(
         'domain <sub_domain> remove value_object',
-        () => performTest(
+        performTest(
           subDomain: 'foo_bar',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
@@ -86,7 +86,7 @@ void main() {
 
       test(
         'domain <sub_domain> remove value_object (with dir)',
-        () => performTest(
+        performTest(
           subDomain: 'foo_bar',
           dir: 'foo',
         ),

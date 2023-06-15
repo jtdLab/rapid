@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'linux add feature',
-        () => performTest(
+        performTest(
           platform: Platform.linux,
         ),
         timeout: const Timeout(Duration(minutes: 8)),

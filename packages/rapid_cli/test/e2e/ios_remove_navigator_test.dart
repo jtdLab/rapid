@@ -10,7 +10,7 @@ void main() {
     () {
       test(
         'ios remove navigator',
-        () => performTest(
+        performTest(
           platform: Platform.ios,
         ),
         timeout: const Timeout(Duration(minutes: 8)),

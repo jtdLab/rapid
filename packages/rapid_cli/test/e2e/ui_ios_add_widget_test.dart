@@ -8,7 +8,7 @@ void main() {
   group('E2E', () {
     test(
       'ui ios add widget',
-      () => performTest(
+      performTest(
         platform: Platform.ios,
       ),
       timeout: const Timeout(Duration(minutes: 4)),

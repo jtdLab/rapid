@@ -49,7 +49,7 @@ void main() {
 
       test(
         'domain default add value_object',
-        () => performTest(
+        performTest(
           subDomain: 'default',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
@@ -57,7 +57,7 @@ void main() {
 
       test(
         'domain default add value_object (with output dir)',
-        () => performTest(
+        performTest(
           subDomain: 'default',
           outputDir: 'foo',
         ),
@@ -66,7 +66,7 @@ void main() {
 
       test(
         'domain <sub_domain> add value_object',
-        () => performTest(
+        performTest(
           subDomain: 'foo_bar',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
@@ -74,7 +74,7 @@ void main() {
 
       test(
         'domain <sub_domain> add value_object (with output dir)',
-        () => performTest(
+        performTest(
           subDomain: 'foo_bar',
           outputDir: 'foo',
         ),

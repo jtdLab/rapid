@@ -28,7 +28,7 @@ Future<void> performTest({
   ];
   verifyDoExist([
     ...platformIndependentPackages,
-    ...platformDependentPackages([platform]),
+    ...platformDependentPackages(platform),
     ...featurePackages,
   ]);
   if (type != TestType.fast) {

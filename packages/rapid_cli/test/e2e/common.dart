@@ -197,15 +197,16 @@ List<Directory> platformDependentPackagesWithoutTests(Platform platform) => [
       platformNavigationPackage(platform),
     ];
 
-List<Directory> platformDependentPackages(List<Platform> platforms) => [
-      for (final platform in platforms) ...[
-        ...platformDependentPackagesWithTests(platform),
-        ...platformDependentPackagesWithoutTests(platform),
-      ]
+List<Directory> platformDependentPackages(Platform platform) => [
+      ...platformDependentPackagesWithTests(platform),
+      ...platformDependentPackagesWithoutTests(platform),
     ];
 
-List<Directory> get allPlatformDependentPackages =>
-    platformDependentPackages(Platform.values);
+List<Directory> get allPlatformDependentPackages => [
+      for (final platform in Platform.values) ...[
+        ...platformDependentPackages(platform),
+      ],
+    ];
 
 List<File> blocFiles({
   required String name,

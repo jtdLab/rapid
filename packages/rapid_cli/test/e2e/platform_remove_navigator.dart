@@ -33,7 +33,7 @@ Future<void> performTest({
   final feature = featurePackage(featureName, platform);
   verifyDoExist({
     ...platformIndependentPackages,
-    ...platformDependentPackages([platform]),
+    ...platformDependentPackages(platform),
     appFeaturePackage,
     feature,
   });

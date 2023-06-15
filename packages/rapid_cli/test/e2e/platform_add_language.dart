@@ -27,7 +27,7 @@ Future<void> performTest({
   ];
   verifyDoExist([
     ...platformIndependentPackages,
-    ...platformDependentPackages([platform]),
+    ...platformDependentPackages(platform),
     ...featurePackages,
     ...languageFiles('home_page', platform, ['en', language]),
   ]);

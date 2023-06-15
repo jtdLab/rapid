@@ -15,7 +15,7 @@ Future<void> performTest({
   // Assert
   await verifyNoAnalyzerIssues();
   await verifyNoFormattingIssues();
-  final platformPackages = platformDependentPackages([platform]);
+  final platformPackages = platformDependentPackages(platform);
   final featurePackages = [
     featurePackage('app', platform),
     featurePackage('home_page', platform),

@@ -25,6 +25,7 @@ import 'injection.config.dart';
     {{#mobile}}{{project_name.pascalCase()}}MobileHomePagePackageModule,{{/mobile}}
   ],
 )
-void configureDependencies(String environment, String platform) => getIt.init(
+Future<void> configureDependencies(String environment, String platform) async =>
+    await getIt.init(
       environmentFilter: NoEnvOrContainsAny({environment, platform}),
     );

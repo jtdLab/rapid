@@ -6,7 +6,7 @@ import 'bootstrap.dart';
 import 'injection.dart';
 
 void main() => runOnAndroid(() async {
-      configureDependencies(Environment.test, Platform.android);
+      await configureDependencies(Environment.test, Platform.android);
       // TODO: add Android test setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
       // TODO: add Android test setup here (post WidgetsFlutterBinding.ensureInitialized())
@@ -21,7 +21,7 @@ import 'bootstrap.dart';
 import 'injection.dart';
 
 void main() => runOnIos(() async {
-      configureDependencies(Environment.test, Platform.ios);
+      await configureDependencies(Environment.test, Platform.ios);
       // TODO: add iOS test setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
       // TODO: add iOS test setup here (post WidgetsFlutterBinding.ensureInitialized())
@@ -37,7 +37,7 @@ import 'bootstrap.dart';
 import 'injection.dart';
 
 void main() => runOnWeb(() async {
-      configureDependencies(Environment.test, Platform.web);
+      await configureDependencies(Environment.test, Platform.web);
       setPathUrlStrategy();
       // TODO: add Web test setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
@@ -53,7 +53,7 @@ import 'bootstrap.dart';
 import 'injection.dart';
 
 void main() => runOnLinux(() async {
-      configureDependencies(Environment.test, Platform.linux);
+      await configureDependencies(Environment.test, Platform.linux);
       // TODO: add Linux test setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
       // TODO: add Linux test setup here (post WidgetsFlutterBinding.ensureInitialized())
@@ -68,7 +68,7 @@ import 'bootstrap.dart';
 import 'injection.dart';
 
 void main() => runOnMacos(() async {
-      configureDependencies(Environment.test, Platform.macos);
+      await configureDependencies(Environment.test, Platform.macos);
       // TODO: add macOS test setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
       // TODO: add macOS test setup here (post WidgetsFlutterBinding.ensureInitialized())
@@ -83,7 +83,7 @@ import 'bootstrap.dart';
 import 'injection.dart';
 
 void main() => runOnWindows(() async {
-      configureDependencies(Environment.test, Platform.windows);
+      await configureDependencies(Environment.test, Platform.windows);
       // TODO: add Windows test setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
       // TODO: add Windows test setup here (post WidgetsFlutterBinding.ensureInitialized())
@@ -98,7 +98,7 @@ import 'bootstrap.dart';
 import 'injection.dart';
 
 void main() => runOnMobile(() async {
-      configureDependencies(Environment.test, Platform.mobile);
+      await configureDependencies(Environment.test, Platform.mobile);
       // TODO: add Mobile test setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
       // TODO: add Mobile test setup here (post WidgetsFlutterBinding.ensureInitialized())

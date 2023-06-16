@@ -15,6 +15,7 @@ It will behave similarly to their native counterparts but also do some additiona
   values={[
     { label: "add", value: "add" },
     { label: "remove", value: "remove" },
+    { label: "get", value: "get" },
   ]}
 >
 <TabItem value="add">
@@ -37,6 +38,21 @@ Remove packages in a Rapid environment.
 
 ```bash
 rapid pub remove [packages]
+```
+
+## Parameters
+
+### `--package (-p)`
+
+- Description: The package where the command is run.
+- Type: String
+- Required: Yes
+</TabItem>
+<TabItem value="get">
+Get packages in a Rapid environment.
+
+```bash
+rapid pub get
 ```
 
 ## Parameters

@@ -9,17 +9,13 @@
 
 ## Dependency Injection Package
 
-### Responsibilities
+🎯 Provide a dependency injection container.
 
-- Provide a dependency injection container.
-
-- Provide platform annotations to setup dependency injection.
+🎯 Provide platform annotations for platform-dependent dependency injection.
 
 ## Logging Package
 
-### Responsibilities
-
-- Provide a logger.
+🎯 Provide a logger.
 
 ## Platform Root Package
 
@@ -29,13 +25,9 @@ More infos about testing a Platform Root Package can be found [here](/architectu
 
 ## Platform Navigation Package
 
-### Responsibilities
+🎯 Provide Navigator Interfaces to navigate across Platform Feature Packages.
 
-- Provide Navigator Interfaces to navigate across Platform Feature Packages.
-
-### Components
-
-#### Navigator Interface
+### Navigator Interface
 
 ```dart
 TODO
@@ -43,25 +35,22 @@ TODO
 
 ## Platform Feature Package
 
-### Responsibilities
-
+🎯 Implement states and user interface of a feature.
 TODO
 
-### Components
-
-#### Bloc
+### Bloc
 
 ```dart
 TODO
 ```
 
-#### Cubit
+### Cubit
 
 ```dart
 TODO
 ```
 
-#### Navigator Implementation
+### Navigator Implementation
 
 ```dart
 TODO
@@ -71,31 +60,27 @@ More infos about testing a Platform Feature Package can be found [here](/archite
 
 ## Domain Package
 
-### Responsibilities
+🎯 Abstract a domain using [Entities](#domain-package), Service Interfaces, Value Objects and Failures.
 
-TODO
-
-### Components
-
-#### Entity
+### Entity
 
 ```dart
 TODO
 ```
 
-#### Service Interface
+### Service Interface
 
 ```dart
 TODO
 ```
 
-#### Value Object
+### Value Object
 
 ```dart
 TODO
 ```
 
-#### Failure
+### Failure
 
 ```dart
 TODO
@@ -105,25 +90,17 @@ More infos about testing a Domain Package can be found [here](/architecture/test
 
 ## Infrastructure Package
 
-### Responsibilities
+🎯 Implements Service Interfaces of its associated Domain Package.
 
 TODO
 
-### Components
-
-#### Data Transfer Object
+### Data Transfer Object
 
 ```dart
 TODO
 ```
 
-#### Service Implementation
-
-```dart
-TODO
-```
-
-#### Value Object
+### Service Implementation
 
 ```dart
 TODO

@@ -9,13 +9,17 @@ import 'start_app.dart' as start_app;
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
+  setUpAll(() {
+    test.setUrlStrategy = null;
+  });
+
   setUp(() async {
     await getIt.reset();
   });
 
   group('E2E (test)', () {
     testWidgets('start app', (tester) async {
-      test.main();
+      await test.main();
 
       await start_app.performTest(tester);
     });

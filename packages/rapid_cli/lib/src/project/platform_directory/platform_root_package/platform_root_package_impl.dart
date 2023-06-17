@@ -440,9 +440,23 @@ class RouterFileImpl extends DartFileImpl implements RouterFile {
 
   @override
   void addRouterModule(String packageName) {
+    // TODO rm mulitple reads to the file
     final projectName = rootPackage.project.name;
     final platformName = rootPackage.platform.name;
     addImport('package:$packageName/$packageName.dart');
+
+    final moduleName =
+        '${packageName.replaceAll('${projectName}_${platformName}_', '').pascalCase}Module';
+
+    final content = read();
+    final lines = content.split('\n');
+    final lastImportOrExportIndex =
+        lines.lastIndexWhere((e) => e.startsWith(RegExp('import|export')));
+    lines.insertAll(
+      lastImportOrExportIndex + 1,
+      ['\n', '// TODO: Add routes of $moduleName to the router.'],
+    );
+    write(lines.join('\n'));
 
     final existingModules = _readModules();
 
@@ -452,7 +466,7 @@ class RouterFileImpl extends DartFileImpl implements RouterFile {
       className: 'Router',
       value: {
         ...existingModules,
-        '${packageName.replaceAll('${projectName}_${platformName}_', '').pascalCase}Module',
+        moduleName,
       }.toList(),
     );
   }

@@ -130,20 +130,30 @@ void main() {
 <TabItem value="rapid">
 
 ```bash
+# Run e2e tests in development environment
 melos test:e2e:dev
 
+# Run e2e tests in test environment
 melos test:e2e:test
 
+# Run e2e tests in production environment
 melos test:e2e:prod
 ```
 
 Web:
 
 ```bash
+chromedriver --port=4444
+```
+
+```bash
+# Run e2e tests in development environment
 melos test:e2e:dev:web
 
+# Run e2e tests in test environment
 melos test:e2e:test:web
 
+# Run e2e tests in production environment
 melos test:e2e:prod:web
 ```
 

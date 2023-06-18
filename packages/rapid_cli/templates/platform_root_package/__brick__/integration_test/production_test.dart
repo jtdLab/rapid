@@ -9,10 +9,10 @@ import 'start_app.dart' as start_app;
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  setUpAll(() {
+{{#web}}  setUpAll(() {
     production.setUrlStrategy = null;
   });
-
+{{/web}}
   setUp(() async {
     await getIt.reset();
   });
@@ -23,5 +23,7 @@ void main() {
 
       await start_app.performTest(tester);
     });
+
+    // TODO: add integration tests here (production)
   });
 }

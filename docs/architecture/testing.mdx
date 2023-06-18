@@ -161,10 +161,13 @@ melos test:e2e:prod:web
 <TabItem value="native">
 
 ```bash
+# Run e2e tests in development environment
 flutter test integration_test/development_test.dart
 
+# Run e2e tests in test environment
 flutter test integration_test/test_test.dart
 
+# Run e2e tests in production environment
 flutter test integration_test/production_test.dart
 ```
 
@@ -175,16 +178,19 @@ chromedriver --port=4444
 ```
 
 ```bash
+# Run e2e tests in development environment
 flutter drive \
   --driver=test_driver/integration_test.dart \
   --target=integration_test/development_test.dart \
   -d chrome
 
+# Run e2e tests in test environment
   flutter drive \
   --driver=test_driver/integration_test.dart \
   --target=integration_test/test_test.dart \
   -d chrome
 
+# Run e2e tests in production environment
   flutter drive \
   --driver=test_driver/integration_test.dart \
   --target=integration_test/production_test.dart \

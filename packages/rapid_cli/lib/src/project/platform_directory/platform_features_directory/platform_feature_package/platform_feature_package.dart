@@ -19,28 +19,11 @@ typedef PlatformFeaturePackageBuilder<T extends PlatformFeaturePackage> = T
   required RapidProject project,
 });
 
-/// {@template platform_feature_package}
-/// Abstraction of a platform feature package of a Rapid project.
-///
-/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_<feature name>`
-/// {@endtemplate}
 abstract class PlatformFeaturePackage
     implements
         DartPackage,
         OverridableGenerator,
         Comparable<PlatformFeaturePackage> {
-  /// {@macro platform_feature_package}
-  factory PlatformFeaturePackage(
-    String name,
-    Platform platform, {
-    required RapidProject project,
-  }) =>
-      PlatformFeaturePackageImpl(
-        name,
-        platform,
-        project: project,
-      );
-
   @visibleForTesting
   L10nFileBuilder? l10nFileOverrides;
 
@@ -57,9 +40,6 @@ abstract class PlatformFeaturePackage
   CubitBuilder? cubitOverrides;
 
   @visibleForTesting
-  PlatformFeaturePackageNavigatorBuilder? get navigatorImplementationOverrides;
-
-  @visibleForTesting
   PlatformFeaturePackageApplicationBarrelFileBuilder?
       applicationBarrelFileOverrides;
 
@@ -72,32 +52,135 @@ abstract class PlatformFeaturePackage
 
   RapidProject get project;
 
-  Set<String> supportedLanguages();
-
-  String defaultLanguage();
-
   Bloc bloc({required String name, required String dir});
 
   Cubit cubit({required String name, required String dir});
-
-  PlatformFeaturePackageNavigatorImplementation get navigatorImplementation;
 
   PlatformFeaturePackageApplicationBarrelFile get applicationBarrelFile;
 
   PlatformFeaturePackageBarrelFile get barrelFile;
 
-  Future<void> create({
-    String? description,
-    bool routing,
-    required String defaultLanguage,
-    required Set<String> languages,
-  });
+  Set<String> supportedLanguages();
+
+  String defaultLanguage();
 
   Future<void> setDefaultLanguage(String newDefaultLanguage);
 
   Future<void> addLanguage(String language);
 
   Future<void> removeLanguage(String language);
+}
+
+abstract class PlatformRoutableFeaturePackage extends PlatformFeaturePackage {
+  @visibleForTesting
+  PlatformFeaturePackageNavigatorBuilder? get navigatorImplementationOverrides;
+
+  PlatformFeaturePackageNavigatorImplementation get navigatorImplementation;
+}
+
+/// {@template platform_custom_feature_package}
+/// Abstraction of a platform custom feature package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_<name>`
+/// {@endtemplate}
+abstract class PlatformCustomFeaturePackage
+    implements PlatformRoutableFeaturePackage {
+  /// {@macro platform_custom_feature_package}
+  factory PlatformCustomFeaturePackage(
+    String name,
+    Platform platform, {
+    required RapidProject project,
+  }) =>
+      PlatformCustomFeaturePackageImpl(
+        name,
+        platform,
+        project: project,
+      );
+
+  Future<void> create({
+    String? description,
+    required bool routing,
+    required String defaultLanguage,
+    required Set<String> languages,
+  });
+}
+
+/// {@template platform_flow_feature_package}
+/// Abstraction of a platform flow feature package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_<name>_flow`
+/// {@endtemplate}
+abstract class PlatformFlowFeaturePackage
+    implements PlatformRoutableFeaturePackage {
+  /// {@macro platform_flow_feature_package}
+  factory PlatformFlowFeaturePackage(
+    String name,
+    Platform platform, {
+    required RapidProject project,
+  }) =>
+      PlatformFlowFeaturePackageImpl(
+        name,
+        platform,
+        project: project,
+      );
+
+  Future<void> create({
+    required bool tabs,
+    String? description,
+    required String defaultLanguage,
+    required Set<String> languages,
+  });
+}
+
+/// {@template platform_page_feature_package}
+/// Abstraction of a platform page feature package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_<name>_page`
+/// {@endtemplate}
+abstract class PlatformPageFeaturePackage
+    implements PlatformRoutableFeaturePackage {
+  /// {@macro platform_page_feature_package}
+  factory PlatformPageFeaturePackage(
+    String name,
+    Platform platform, {
+    required RapidProject project,
+  }) =>
+      PlatformPageFeaturePackageImpl(
+        name,
+        platform,
+        project: project,
+      );
+
+  Future<void> create({
+    String? description,
+    required String defaultLanguage,
+    required Set<String> languages,
+  });
+}
+
+/// {@template platform_widget_feature_package}
+/// Abstraction of a platform widget feature package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_<name>_widget`
+/// {@endtemplate}
+abstract class PlatformWidgetFeaturePackage implements PlatformFeaturePackage {
+  /// {@macro platform_widget_feature_package}
+  factory PlatformWidgetFeaturePackage(
+    String name,
+    Platform platform, {
+    required RapidProject project,
+  }) =>
+      PlatformWidgetFeaturePackageImpl(
+        name,
+        platform,
+        project: project,
+      );
+
+  Future<void> create({
+    String? description,
+    required String defaultLanguage,
+    required Set<String> languages,
+  });
 }
 
 /// {@template platform_app_feature_package}
@@ -115,6 +198,13 @@ abstract class PlatformAppFeaturePackage implements PlatformFeaturePackage {
         platform,
         project: project,
       );
+
+  Future<void> create({
+    String? description,
+    bool routing,
+    required String defaultLanguage,
+    required Set<String> languages,
+  });
 }
 
 /// Thrown when [L10nFile.readTemplateArbFile] fails to read the `template-arb-file` property.

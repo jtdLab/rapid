@@ -35,11 +35,21 @@ class PlatformFeaturesDirectoryImpl extends DartPackageImpl
   final RapidProject project;
 
   @override
-  T featurePackage<T extends PlatformFeaturePackage>({required String name}) =>
-      featurePackageOverrides?.call(name, _platform, project: project) as T? ??
-      (name == 'app'
-          ? PlatformAppFeaturePackage(_platform, project: project)
-          : PlatformFeaturePackage(name, _platform, project: project)) as T;
+  T featurePackage<T extends PlatformFeaturePackage>({required String name}) {
+    if (T == PlatformAppFeaturePackage && name.endsWith('app')) {
+      return PlatformAppFeaturePackage(_platform, project: project) as T;
+    } else if (T == PlatformPageFeaturePackage && name.endsWith('_page')) {
+      return PlatformPageFeaturePackage(name, _platform, project: project) as T;
+    } else if (T == PlatformFlowFeaturePackage && name.endsWith('_flow')) {
+      return PlatformFlowFeaturePackage(name, _platform, project: project) as T;
+    } else if (T == PlatformWidgetFeaturePackage && name.endsWith('_widget')) {
+      return PlatformWidgetFeaturePackage(name, _platform, project: project)
+          as T;
+    } else {
+      return PlatformCustomFeaturePackage(name, _platform, project: project)
+          as T;
+    }
+  }
 
   @override
   List<PlatformFeaturePackage> featurePackages() {

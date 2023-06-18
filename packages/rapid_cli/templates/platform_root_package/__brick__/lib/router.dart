@@ -14,7 +14,7 @@ import 'router.gr.dart';
 class Router extends $Router {
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: HomeRoute.page, path: '/'),
-        // more routes go here
+        AutoRoute(page: HomePageRoute.page, path: '/'),
+        // TODO: add routes here
       ];
 }

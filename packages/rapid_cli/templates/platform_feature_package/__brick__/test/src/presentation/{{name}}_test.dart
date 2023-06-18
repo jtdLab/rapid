@@ -8,7 +8,7 @@ void main() {
       // Act
       await tester.pumpApp(
         initialRoutes: [
-          const {{route_name}}Route(),
+          const {{name.pascalCase()}}Route(),
         ],
         locale: const Locale('{{default_language}}'),
       );

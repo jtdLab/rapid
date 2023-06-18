@@ -14,7 +14,7 @@
 
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(page: {{route_name}}Route.page, path: '/'),
+        AutoRoute(page: {{name.pascalCase()}}Route.page, path: '/'),
       ];
 }{{/routable}}
 

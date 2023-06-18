@@ -8,13 +8,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = context.l10n.title;
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
 
     return {{project_name.pascalCase()}}Scaffold(
       body: Center(
         child: Text(title),
       ),
-    );
+    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
+    {{#isTabFlow}}    return const AutoTabsRouter(
+      routes: [
+        // TODO: add tab routes here
+      ],
+    );{{/isTabFlow}}
+    {{#isWidget}}    return Container();{{/isWidget}}
   }
 }
 {{/android}}{{#ios}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
@@ -27,13 +34,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = context.l10n.title;
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
 
     return {{project_name.pascalCase()}}Scaffold(
       body: Center(
         child: Text(title),
       ),
-    );
+    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
+    {{#isTabFlow}}    return const AutoTabsRouter(
+      routes: [
+        // TODO: add tab routes here
+      ],
+    );{{/isTabFlow}}
+    {{#isWidget}}    return Container();{{/isWidget}}
   }
 }
 {{/ios}}{{#linux}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
@@ -46,13 +60,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = context.l10n.title;
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
 
     return {{project_name.pascalCase()}}Scaffold(
       body: Center(
         child: Text(title),
       ),
-    );
+    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
+    {{#isTabFlow}}    return const AutoTabsRouter(
+      routes: [
+        // TODO: add tab routes here
+      ],
+    );{{/isTabFlow}}
+    {{#isWidget}}    return Container();{{/isWidget}}
   }
 }
 {{/linux}}{{#macos}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
@@ -65,19 +86,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = context.l10n.title;
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
 
     return {{project_name.pascalCase()}}Scaffold(
-      children: [
-        ContentArea(
-          builder: (context, _) {
-            return Center(
-              child: Text(title),
-            );
-          },
-        ),
+      body: Center(
+        child: Text(title),
+      ),
+    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
+    {{#isTabFlow}}    return const AutoTabsRouter(
+      routes: [
+        // TODO: add tab routes here
       ],
-    );
+    );{{/isTabFlow}}
+    {{#isWidget}}    return Container();{{/isWidget}}
   }
 }
 {{/macos}}{{#web}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
@@ -90,13 +112,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = context.l10n.title;
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
 
     return {{project_name.pascalCase()}}Scaffold(
       body: Center(
         child: Text(title),
       ),
-    );
+    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
+    {{#isTabFlow}}    return const AutoTabsRouter(
+      routes: [
+        // TODO: add tab routes here
+      ],
+    );{{/isTabFlow}}
+    {{#isWidget}}    return Container();{{/isWidget}}
   }
 }
 {{/web}}{{#windows}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
@@ -109,13 +138,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = context.l10n.title;
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
 
     return {{project_name.pascalCase()}}Scaffold(
       body: Center(
         child: Text(title),
       ),
-    );
+    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
+    {{#isTabFlow}}    return const AutoTabsRouter(
+      routes: [
+        // TODO: add tab routes here
+      ],
+    );{{/isTabFlow}}
+    {{#isWidget}}    return Container();{{/isWidget}}
   }
 }
 {{/windows}}{{#mobile}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
@@ -128,13 +164,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = context.l10n.title;
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
 
     return {{project_name.pascalCase()}}Scaffold(
       body: Center(
         child: Text(title),
       ),
-    );
+    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
+    {{#isTabFlow}}    return const AutoTabsRouter(
+      routes: [
+        // TODO: add tab routes here
+      ],
+    );{{/isTabFlow}}
+    {{#isWidget}}    return Container();{{/isWidget}}
   }
 }
 {{/mobile}}

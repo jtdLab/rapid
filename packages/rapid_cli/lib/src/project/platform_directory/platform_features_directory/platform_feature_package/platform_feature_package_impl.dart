@@ -22,7 +22,7 @@ import 'platform_app_feature_package_bundle.dart';
 import 'platform_feature_package.dart';
 import 'platform_feature_package_bundle.dart';
 
-class PlatformFeaturePackageImpl extends DartPackageImpl
+abstract class PlatformFeaturePackageImpl extends DartPackageImpl
     with OverridableGenerator, Generatable
     implements PlatformFeaturePackage {
   PlatformFeaturePackageImpl(
@@ -68,9 +68,6 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   CubitBuilder? cubitOverrides;
 
   @override
-  PlatformFeaturePackageNavigatorBuilder? navigatorImplementationOverrides;
-
-  @override
   PlatformFeaturePackageApplicationBarrelFileBuilder?
       applicationBarrelFileOverrides;
 
@@ -103,13 +100,6 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
       );
 
   @override
-  PlatformFeaturePackageNavigatorImplementation get navigatorImplementation =>
-      (navigatorImplementationOverrides ??
-          PlatformFeaturePackageNavigatorImplementation.new)(
-        platformFeaturePackage: this,
-      );
-
-  @override
   PlatformFeaturePackageApplicationBarrelFile get applicationBarrelFile =>
       (applicationBarrelFileOverrides ??
           PlatformFeaturePackageApplicationBarrelFile.new)(
@@ -119,47 +109,6 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   @override
   PlatformFeaturePackageBarrelFile get barrelFile => (barrelFileOverrides ??
       PlatformFeaturePackageBarrelFile.new)(platformFeaturePackage: this);
-
-  @override
-  Future<void> create({
-    String? description,
-    bool routing = true,
-    required String defaultLanguage,
-    required Set<String> languages,
-  }) async {
-    final projectName = project.name;
-
-    await generate(
-      bundle: platformFeaturePackageBundle,
-      vars: <String, dynamic>{
-        'name': name,
-        'description': description ?? 'The ${name.titleCase} feature',
-        'project_name': projectName,
-        'android': platform == Platform.android,
-        'ios': platform == Platform.ios,
-        'linux': platform == Platform.linux,
-        'macos': platform == Platform.macos,
-        'web': platform == Platform.web,
-        'windows': platform == Platform.windows,
-        'mobile': platform == Platform.mobile,
-        'default_language': defaultLanguage,
-        'routable': routing,
-        'route_name':
-            name.pascalCase.replaceAll('Page', '').replaceAll('Screen', ''),
-      },
-    );
-
-    await _arbDirectory.create(
-      languages: languages,
-      translations: (language) => [
-        {
-          'name': 'title',
-          'translation': '${name.titleCase} title for $language',
-          'description': 'Title text shown in the ${name.titleCase}',
-        }
-      ],
-    );
-  }
 
   @override
   Set<String> supportedLanguages() =>
@@ -217,6 +166,236 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
 
   @override
   int get hashCode => Object.hash(name, platform, project);
+}
+
+abstract class PlatformRoutableFeaturePackageImpl
+    extends PlatformFeaturePackageImpl
+    implements PlatformRoutableFeaturePackage {
+  PlatformRoutableFeaturePackageImpl(
+    super.name,
+    super.platform, {
+    required super.project,
+  });
+
+  @override
+  PlatformFeaturePackageNavigatorBuilder? navigatorImplementationOverrides;
+
+  @override
+  PlatformFeaturePackageNavigatorImplementation get navigatorImplementation =>
+      (navigatorImplementationOverrides ??
+          PlatformFeaturePackageNavigatorImplementation.new)(
+        platformFeaturePackage: this,
+      );
+}
+
+class PlatformCustomFeaturePackageImpl
+    extends PlatformRoutableFeaturePackageImpl
+    implements PlatformCustomFeaturePackage {
+  PlatformCustomFeaturePackageImpl(
+    super.name,
+    super.platform, {
+    required super.project,
+  });
+
+  @override
+  Future<void> create({
+    String? description,
+    required bool routing,
+    required String defaultLanguage,
+    required Set<String> languages,
+  }) async {
+    final projectName = project.name;
+
+    await generate(
+      bundle: platformFeaturePackageBundle,
+      vars: <String, dynamic>{
+        'name': name,
+        'description': description ?? 'The ${name.titleCase} feature',
+        'project_name': projectName,
+        'android': platform == Platform.android,
+        'ios': platform == Platform.ios,
+        'linux': platform == Platform.linux,
+        'macos': platform == Platform.macos,
+        'web': platform == Platform.web,
+        'windows': platform == Platform.windows,
+        'mobile': platform == Platform.mobile,
+        'default_language': defaultLanguage,
+        'routable': routing,
+        'isCustom': true, // TODO needed?
+        'isFlow': false,
+        'isTabFlow': false,
+        'isWidget': false,
+      },
+    );
+
+    // TODO create flows/pages and widgets inside this
+
+    await _arbDirectory.create(
+      languages: languages,
+      translations: (language) => [
+        {
+          'name': 'title',
+          'translation': '${name.titleCase} title for $language',
+          'description': 'Title text shown in the ${name.titleCase}',
+        }
+      ],
+    );
+  }
+}
+
+class PlatformFlowFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
+    implements PlatformFlowFeaturePackage {
+  PlatformFlowFeaturePackageImpl(
+    super.name,
+    super.platform, {
+    required super.project,
+  });
+
+  @override
+  Future<void> create({
+    required bool tabs,
+    String? description,
+    required String defaultLanguage,
+    required Set<String> languages,
+  }) async {
+    final projectName = project.name;
+
+    await generate(
+      bundle: platformFeaturePackageBundle,
+      vars: <String, dynamic>{
+        'name': name,
+        'description': description ?? 'The ${name.titleCase} feature',
+        'project_name': projectName,
+        'android': platform == Platform.android,
+        'ios': platform == Platform.ios,
+        'linux': platform == Platform.linux,
+        'macos': platform == Platform.macos,
+        'web': platform == Platform.web,
+        'windows': platform == Platform.windows,
+        'mobile': platform == Platform.mobile,
+        'default_language': defaultLanguage,
+        'routable': true,
+        'isCustom': false,
+        'isFlow': !tabs,
+        'isTabFlow': tabs,
+        'isWidget': false,
+      },
+    );
+
+    await _arbDirectory.create(
+      languages: languages,
+      translations: (language) => [
+        {
+          'name': 'title',
+          'translation': '${name.titleCase} title for $language',
+          'description': 'Title text shown in the ${name.titleCase}',
+        }
+      ],
+    );
+  }
+}
+
+class PlatformPageFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
+    implements PlatformPageFeaturePackage {
+  PlatformPageFeaturePackageImpl(
+    super.name,
+    super.platform, {
+    required super.project,
+  });
+
+  @override
+  Future<void> create({
+    String? description,
+    required String defaultLanguage,
+    required Set<String> languages,
+  }) async {
+    final projectName = project.name;
+
+    await generate(
+      bundle: platformFeaturePackageBundle,
+      vars: <String, dynamic>{
+        'name': name,
+        'description': description ?? 'The ${name.titleCase} feature',
+        'project_name': projectName,
+        'android': platform == Platform.android,
+        'ios': platform == Platform.ios,
+        'linux': platform == Platform.linux,
+        'macos': platform == Platform.macos,
+        'web': platform == Platform.web,
+        'windows': platform == Platform.windows,
+        'mobile': platform == Platform.mobile,
+        'default_language': defaultLanguage,
+        'routable': true,
+        'isCustom': false,
+        'isFlow': false,
+        'isTabFlow': false,
+        'isWidget': false,
+      },
+    );
+
+    await _arbDirectory.create(
+      languages: languages,
+      translations: (language) => [
+        {
+          'name': 'title',
+          'translation': '${name.titleCase} title for $language',
+          'description': 'Title text shown in the ${name.titleCase}',
+        }
+      ],
+    );
+  }
+}
+
+class PlatformWidgetFeaturePackageImpl
+    extends PlatformRoutableFeaturePackageImpl
+    implements PlatformWidgetFeaturePackage {
+  PlatformWidgetFeaturePackageImpl(
+    super.name,
+    super.platform, {
+    required super.project,
+  });
+
+  @override
+  Future<void> create({
+    String? description,
+    required String defaultLanguage,
+    required Set<String> languages,
+  }) async {
+    final projectName = project.name;
+
+    await generate(
+      bundle: platformFeaturePackageBundle,
+      vars: <String, dynamic>{
+        'name': name,
+        'description': description ?? 'The ${name.titleCase} feature',
+        'project_name': projectName,
+        'android': platform == Platform.android,
+        'ios': platform == Platform.ios,
+        'linux': platform == Platform.linux,
+        'macos': platform == Platform.macos,
+        'web': platform == Platform.web,
+        'windows': platform == Platform.windows,
+        'mobile': platform == Platform.mobile,
+        'default_language': defaultLanguage,
+        'routable': false,
+        'isCustom': false,
+        'isFlow': false,
+        'isTabFlow': false,
+        'isWidget': true,
+      },
+    );
+
+    await _arbDirectory.create(
+      languages: languages,
+      translations: (language) => [
+        {
+          'name': 'title',
+          'translation': '${name.titleCase} title for $language',
+          'description': 'Title text shown in the ${name.titleCase}',
+        }
+      ],
+    );
+  }
 }
 
 class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl

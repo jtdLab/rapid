@@ -58,7 +58,7 @@ void main() {
     ...
 
     testWidgets('sign in with username and password', (tester) async {
-      dev.main();
+      await dev.main();
 
       await sign_in_username_password.performTest(tester);
     });
@@ -83,7 +83,7 @@ void main() {
     ...
 
     testWidgets('sign in with username and password', (tester) async {
-      test.main();
+      await test.main();
 
       await sign_in_username_password.performTest(tester);
     });
@@ -108,7 +108,7 @@ void main() {
     ...
 
     testWidgets('sign in with username and password', (tester) async {
-      production.main();
+      await production.main();
 
       await sign_in_username_password.performTest(tester);
     });
@@ -129,22 +129,26 @@ void main() {
 >
 <TabItem value="rapid">
 
-TODO
-
 ```bash
-melos test:e2e
+melos test:e2e:dev
+
+melos test:e2e:test
+
+melos test:e2e:prod
 ```
 
 Web:
 
 ```bash
-melos test:e2e:web
+melos test:e2e:dev:web
+
+melos test:e2e:test:web
+
+melos test:e2e:prod:web
 ```
 
 </TabItem>
 <TabItem value="native">
-
-TODO
 
 ```bash
 flutter test integration_test/development_test.dart
@@ -158,7 +162,9 @@ Web:
 
 ```bash
 chromedriver --port=4444
+```
 
+```bash
 flutter drive \
   --driver=test_driver/integration_test.dart \
   --target=integration_test/development_test.dart \

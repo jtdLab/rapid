@@ -7,6 +7,7 @@ mixin _PlatformMixin on _Rapid {
     required String description,
     required bool routing,
     required bool navigator,
+    required bool localization,
   }) async {
     if (!project.platformIsActivated(platform)) {
       _logAndThrow(
@@ -27,6 +28,7 @@ mixin _PlatformMixin on _Rapid {
       await featurePackage.create(
         description: description,
         routing: routing,
+        localization: localization,
         // TODO take default lang from featurs or from roots supported langs?
         defaultLanguage: rootPackage.defaultLanguage(),
         languages: rootPackage.supportedLanguages(),
@@ -35,6 +37,7 @@ mixin _PlatformMixin on _Rapid {
       await rootPackage.registerFeaturePackage(
         featurePackage,
         routing: routing,
+        localization: localization,
       );
 
       if (navigator) {
@@ -66,7 +69,9 @@ mixin _PlatformMixin on _Rapid {
         if (navigator) featurePackage,
       ]);
 
-      await flutterGenl10n([featurePackage]);
+      if (localization) {
+        await flutterGenl10n([featurePackage]);
+      }
 
       await dartFormatFix(project);
 
@@ -83,9 +88,10 @@ mixin _PlatformMixin on _Rapid {
   Future<void> platformAddFeatureFlow(
     Platform platform, {
     required String name,
-    required bool tabs,
+    required bool tab,
     required String description,
     required bool navigator,
+    required bool localization,
   }) async {
     if (!project.platformIsActivated(platform)) {
       _logAndThrow(
@@ -104,8 +110,9 @@ mixin _PlatformMixin on _Rapid {
       final rootPackage = platformDirectory.rootPackage;
 
       await featurePackage.create(
-        tabs: tabs,
+        tab: tab,
         description: description,
+        localization: localization,
         // TODO take default lang from featurs or from roots supported langs?
         defaultLanguage: rootPackage.defaultLanguage(),
         languages: rootPackage.supportedLanguages(),
@@ -114,6 +121,7 @@ mixin _PlatformMixin on _Rapid {
       await rootPackage.registerFeaturePackage(
         featurePackage,
         routing: true,
+        localization: localization,
       );
 
       if (navigator) {
@@ -145,7 +153,9 @@ mixin _PlatformMixin on _Rapid {
         if (navigator) featurePackage,
       ]);
 
-      await flutterGenl10n([featurePackage]);
+      if (localization) {
+        await flutterGenl10n([featurePackage]);
+      }
 
       await dartFormatFix(project);
 
@@ -167,6 +177,7 @@ mixin _PlatformMixin on _Rapid {
     required String name,
     required String description,
     required bool navigator,
+    required bool localization,
   }) async {
     if (!project.platformIsActivated(platform)) {
       _logAndThrow(
@@ -186,6 +197,7 @@ mixin _PlatformMixin on _Rapid {
 
       await featurePackage.create(
         description: description,
+        localization: localization,
         // TODO take default lang from featurs or from roots supported langs?
         defaultLanguage: rootPackage.defaultLanguage(),
         languages: rootPackage.supportedLanguages(),
@@ -194,6 +206,7 @@ mixin _PlatformMixin on _Rapid {
       await rootPackage.registerFeaturePackage(
         featurePackage,
         routing: true,
+        localization: localization,
       );
 
       if (navigator) {
@@ -225,7 +238,9 @@ mixin _PlatformMixin on _Rapid {
         if (navigator) featurePackage,
       ]);
 
-      await flutterGenl10n([featurePackage]);
+      if (localization) {
+        await flutterGenl10n([featurePackage]);
+      }
 
       await dartFormatFix(project);
 
@@ -246,6 +261,7 @@ mixin _PlatformMixin on _Rapid {
     Platform platform, {
     required String name,
     required String description,
+    required bool localization,
   }) async {
     if (!project.platformIsActivated(platform)) {
       _logAndThrow(
@@ -265,6 +281,7 @@ mixin _PlatformMixin on _Rapid {
 
       await featurePackage.create(
         description: description,
+        localization: localization,
         // TODO take default lang from featurs or from roots supported langs?
         defaultLanguage: rootPackage.defaultLanguage(),
         languages: rootPackage.supportedLanguages(),
@@ -273,6 +290,7 @@ mixin _PlatformMixin on _Rapid {
       await rootPackage.registerFeaturePackage(
         featurePackage,
         routing: false,
+        localization: localization,
       );
 
       await bootstrap(packages: [rootPackage, featurePackage]);
@@ -281,7 +299,9 @@ mixin _PlatformMixin on _Rapid {
         rootPackage,
       ]);
 
-      await flutterGenl10n([featurePackage]);
+      if (localization) {
+        await flutterGenl10n([featurePackage]);
+      }
 
       await dartFormatFix(project);
 
@@ -313,15 +333,17 @@ mixin _PlatformMixin on _Rapid {
       ..newLine();
 
     final platformDirectory = project.platformDirectory(platform: platform);
-    final featurePackages =
-        platformDirectory.featuresDirectory.featurePackages();
-    if (featurePackages.isEmpty) {
+    final featurePackagesWithLanguages = platformDirectory.featuresDirectory
+        .featurePackages()
+        .where((e) => e.hasLanguages)
+        .toList();
+    if (featurePackagesWithLanguages.isEmpty) {
       _logAndThrow(
-        RapidPlatformException._noFeaturesFound(platform),
+        RapidPlatformException._noFeaturesWithLocalizationFound(platform),
       );
     }
 
-    if (!featurePackages.supportSameLanguages()) {
+    if (!featurePackagesWithLanguages.supportSameLanguages()) {
       _logAndThrow(
         RapidPlatformException._projectCorrupted(
           'Because not all features support the same languages.',
@@ -330,7 +352,7 @@ mixin _PlatformMixin on _Rapid {
       );
     }
 
-    if (!featurePackages.haveSameDefaultLanguage()) {
+    if (!featurePackagesWithLanguages.haveSameDefaultLanguage()) {
       _logAndThrow(
         RapidPlatformException._projectCorrupted(
           'Because not all features have the same default language.',
@@ -339,21 +361,19 @@ mixin _PlatformMixin on _Rapid {
       );
     }
 
-    if (featurePackages.supportLanguage(language)) {
+    if (featurePackagesWithLanguages.supportLanguage(language)) {
       _logAndThrow(
         RapidPlatformException._languageAlreadyPresent(language),
       );
     }
 
-    final rootPackage = platformDirectory.rootPackage;
+    await platformDirectory.rootPackage.addLanguage(language);
 
-    await rootPackage.addLanguage(language);
-
-    for (final featurePackage in featurePackages) {
+    for (final featurePackage in featurePackagesWithLanguages) {
       await featurePackage.addLanguage(language);
     }
 
-    await flutterGenl10n(featurePackages);
+    await flutterGenl10n(featurePackagesWithLanguages);
 
     await dartFormatFix(project);
 
@@ -767,15 +787,17 @@ mixin _PlatformMixin on _Rapid {
       ..newLine();
 
     final platformDirectory = project.platformDirectory(platform: platform);
-    final featurePackages =
-        platformDirectory.featuresDirectory.featurePackages();
-    if (featurePackages.isEmpty) {
+    final featurePackagesWithLanguages = platformDirectory.featuresDirectory
+        .featurePackages()
+        .where((e) => e.hasLanguages)
+        .toList();
+    if (featurePackagesWithLanguages.isEmpty) {
       _logAndThrow(
-        RapidPlatformException._noFeaturesFound(platform),
+        RapidPlatformException._noFeaturesWithLocalizationFound(platform),
       );
     }
 
-    if (!featurePackages.supportSameLanguages()) {
+    if (!featurePackagesWithLanguages.supportSameLanguages()) {
       _logAndThrow(
         RapidPlatformException._projectCorrupted(
           'Because not all features support the same languages.',
@@ -784,7 +806,7 @@ mixin _PlatformMixin on _Rapid {
       );
     }
 
-    if (!featurePackages.haveSameDefaultLanguage()) {
+    if (!featurePackagesWithLanguages.haveSameDefaultLanguage()) {
       _logAndThrow(
         RapidPlatformException._projectCorrupted(
           'Because not all features have the same default language.',
@@ -793,14 +815,14 @@ mixin _PlatformMixin on _Rapid {
       );
     }
 
-    if (!featurePackages.supportLanguage(language)) {
+    if (!featurePackagesWithLanguages.supportLanguage(language)) {
       // TODO better hint
       _logAndThrow(
         RapidPlatformException._languageNotFound(language),
       );
     }
 
-    if (featurePackages.first.defaultLanguage() == language) {
+    if (featurePackagesWithLanguages.first.defaultLanguage() == language) {
       // TODO add hint how to change default language
       _logAndThrow(
         RapidPlatformException._cantRemoveDefaultLanguage(language),
@@ -810,11 +832,11 @@ mixin _PlatformMixin on _Rapid {
     final rootPackage = platformDirectory.rootPackage;
     await rootPackage.removeLanguage(language);
 
-    for (final featurePackage in featurePackages) {
+    for (final featurePackage in featurePackagesWithLanguages) {
       await featurePackage.removeLanguage(language);
     }
 
-    await flutterGenl10n(featurePackages);
+    await flutterGenl10n(featurePackagesWithLanguages);
 
     await dartFormatFix(project);
 
@@ -903,16 +925,18 @@ mixin _PlatformMixin on _Rapid {
       ..newLine();
 
     final platformDirectory = project.platformDirectory(platform: platform);
-    final featurePackages =
-        platformDirectory.featuresDirectory.featurePackages();
+    final featurePackagesWithLanguages = platformDirectory.featuresDirectory
+        .featurePackages()
+        .where((e) => e.hasLanguages)
+        .toList();
 
-    if (featurePackages.isEmpty) {
+    if (featurePackagesWithLanguages.isEmpty) {
       _logAndThrow(
-        RapidPlatformException._noFeaturesFound(platform),
+        RapidPlatformException._noFeaturesWithLocalizationFound(platform),
       );
     }
 
-    if (!featurePackages.supportSameLanguages()) {
+    if (!featurePackagesWithLanguages.supportSameLanguages()) {
       _logAndThrow(
         RapidPlatformException._projectCorrupted(
           'Because not all features support the same languages.',
@@ -921,7 +945,7 @@ mixin _PlatformMixin on _Rapid {
       );
     }
 
-    if (!featurePackages.haveSameDefaultLanguage()) {
+    if (!featurePackagesWithLanguages.haveSameDefaultLanguage()) {
       _logAndThrow(
         RapidPlatformException._projectCorrupted(
           'Because not all features have the same default language.',
@@ -930,23 +954,23 @@ mixin _PlatformMixin on _Rapid {
       );
     }
 
-    if (!featurePackages.supportLanguage(language)) {
+    if (!featurePackagesWithLanguages.supportLanguage(language)) {
       _logAndThrow(
         RapidPlatformException._languageNotFound(language),
       );
     }
 
-    if (featurePackages.first.defaultLanguage() == language) {
+    if (featurePackagesWithLanguages.first.defaultLanguage() == language) {
       _logAndThrow(
         RapidPlatformException._languageIsAlreadyDefaultLanguage(language),
       );
     }
 
-    for (final featurePackage in featurePackages) {
+    for (final featurePackage in featurePackagesWithLanguages) {
       await featurePackage.setDefaultLanguage(language);
     }
 
-    await flutterGenl10n(featurePackages);
+    await flutterGenl10n(featurePackagesWithLanguages);
 
     await dartFormatFix(project);
 
@@ -1006,9 +1030,10 @@ class RapidPlatformException extends RapidException {
     );
   }
 
-  factory RapidPlatformException._noFeaturesFound(Platform platform) {
+  factory RapidPlatformException._noFeaturesWithLocalizationFound(
+      Platform platform) {
     return RapidPlatformException._(
-      'No ${platform.prettyName} features found!\n'
+      'No ${platform.prettyName} features with localizations found!\n'
       'Run "rapid ${platform.name} add feature" to add your first ${platform.prettyName} feature.',
     );
   }

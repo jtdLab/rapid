@@ -89,6 +89,8 @@ class NoneIosDirectoryImpl extends PlatformDirectoryImpl
         .featurePackage<PlatformPageFeaturePackage>(name: 'home_page');
     await homePageFeaturePackage.create(
       description: 'The Home Page feature.', // TODO platform info
+      localization: true,
+      exampleTranslation: true,
       defaultLanguage: language,
       languages: {language},
     );
@@ -130,6 +132,7 @@ class IosDirectoryImpl extends PlatformDirectoryImpl implements IosDirectory {
         .featurePackage<PlatformPageFeaturePackage>(name: 'home_page');
     await homePageFeaturePackage.create(
       description: 'The Home Page feature.', // TODO platform info
+      localization: true,
       defaultLanguage: language,
       languages: {language},
     );
@@ -177,6 +180,7 @@ class MobileDirectoryImpl extends PlatformDirectoryImpl
         .featurePackage<PlatformPageFeaturePackage>(name: 'home_page');
     await homePageFeaturePackage.create(
       description: 'The Home Page feature.', // TODO platform info
+      localization: true,
       defaultLanguage: language,
       languages: {language},
     );

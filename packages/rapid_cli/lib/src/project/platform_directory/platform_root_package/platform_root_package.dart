@@ -59,6 +59,7 @@ abstract class PlatformRootPackage
   Future<void> registerFeaturePackage(
     PlatformFeaturePackage featurePackage, {
     required bool routing,
+    required bool localization,
   });
 
   /// Unregisters [featurePackage] from this package.

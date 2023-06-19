@@ -49,6 +49,12 @@ vars:
   mobile:
     type: boolean
     description: The project supports the Mobile (Android + iOS shared) platform
+  localization:
+    type: boolean
+    description: Wheter the feature has localizations
+  exampleTranslation:
+    type: boolean
+    description: Wheter the feature has an example translation.
   default_language:
     type: string
     description: The default language of the feature
@@ -64,6 +70,9 @@ vars:
   isTabFlow:
     type: boolean
     description: Wheter the feature is a tab flow
+  isPage:
+    type: boolean
+    description: Wheter the feature is a page
   isWidget:
     type: boolean
     description: Wheter the feature is a widget

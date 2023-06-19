@@ -143,7 +143,6 @@ mixin _PubMixin on _Rapid {
         return project.packages
             .firstWhere((e) => e.packageName() == packageName);
       } else {
-        print(Directory.current.path);
         return project.packages
             .firstWhere((e) => e.path == Directory.current.path);
       }

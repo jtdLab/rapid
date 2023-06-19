@@ -28,6 +28,9 @@ abstract class PlatformFeaturePackage
   L10nFileBuilder? l10nFileOverrides;
 
   @visibleForTesting
+  L10nDirectoryBuilder? l10nDirectoryOverrides;
+
+  @visibleForTesting
   LanguageLocalizationsFileBuilder? languageLocalizationsFileOverrides;
 
   @visibleForTesting
@@ -59,6 +62,8 @@ abstract class PlatformFeaturePackage
   PlatformFeaturePackageApplicationBarrelFile get applicationBarrelFile;
 
   PlatformFeaturePackageBarrelFile get barrelFile;
+
+  bool get hasLanguages;
 
   Set<String> supportedLanguages();
 
@@ -98,8 +103,9 @@ abstract class PlatformCustomFeaturePackage
       );
 
   Future<void> create({
-    String? description,
+    required String description,
     required bool routing,
+    required bool localization,
     required String defaultLanguage,
     required Set<String> languages,
   });
@@ -125,8 +131,9 @@ abstract class PlatformFlowFeaturePackage
       );
 
   Future<void> create({
-    required bool tabs,
-    String? description,
+    required bool tab,
+    required String description,
+    required bool localization,
     required String defaultLanguage,
     required Set<String> languages,
   });
@@ -152,7 +159,9 @@ abstract class PlatformPageFeaturePackage
       );
 
   Future<void> create({
-    String? description,
+    required String description,
+    required bool localization,
+    bool exampleTranslation,
     required String defaultLanguage,
     required Set<String> languages,
   });
@@ -177,7 +186,8 @@ abstract class PlatformWidgetFeaturePackage implements PlatformFeaturePackage {
       );
 
   Future<void> create({
-    String? description,
+    required String description,
+    required bool localization,
     required String defaultLanguage,
     required Set<String> languages,
   });
@@ -200,11 +210,30 @@ abstract class PlatformAppFeaturePackage implements PlatformFeaturePackage {
       );
 
   Future<void> create({
-    String? description,
+    required String description,
     bool routing,
     required String defaultLanguage,
     required Set<String> languages,
   });
+}
+
+typedef L10nDirectoryBuilder = L10nDirectory Function({
+  required PlatformFeaturePackage platformFeaturePackage,
+});
+
+/// {@template l10n_directory}
+/// Abstraction of the l10n directory of a platform customizable feature package of an existing Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_<feature name>/l10n.yaml`
+/// {@endtemplate}
+abstract class L10nDirectory implements Directory {
+  /// {@macro l10n_directory}
+  factory L10nDirectory({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) =>
+      L10nDirectoryImpl(
+        platformFeaturePackage: platformFeaturePackage,
+      );
 }
 
 /// Thrown when [L10nFile.readTemplateArbFile] fails to read the `template-arb-file` property.

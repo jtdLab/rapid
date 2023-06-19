@@ -1,5 +1,5 @@
 {{#android}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
-import 'package:{{project_name}}_android_{{name}}/src/presentation/l10n/l10n.dart';
+{{#exampleTranslation}}import 'package:{{project_name}}_android_{{name}}/src/presentation/l10n/l10n.dart';{{/exampleTranslation}}
 import 'package:{{project_name}}_ui_android/{{project_name}}_ui_android.dart';
 
 {{#routable}}@RoutePage(){{/routable}}
@@ -8,15 +8,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
-
-    return {{project_name.pascalCase()}}Scaffold(
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}{{^isPage}}    return {{project_name.pascalCase()}}Scaffold(
       body: Center(
-        child: Text(title),
+        child: Text(toString()),
       ),
-    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
-    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
-    {{#isTabFlow}}    return const AutoTabsRouter(
+    );{{/isPage}}{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+{{#isFlow}}    return const AutoRouter();{{/isFlow}}
+{{#isPage}}{{#exampleTranslation}}final title = context.l10n.title;
+
+{{/exampleTranslation}}    return {{project_name.pascalCase()}}Scaffold(
+      body: Center(
+        child: Text({{#exampleTranslation}}title{{/exampleTranslation}}{{^exampleTranslation}}toString(){{/exampleTranslation}}),
+      ),
+    );{{/isPage}}
+{{#isTabFlow}}    return const AutoTabsRouter(
       routes: [
         // TODO: add tab routes here
       ],
@@ -25,7 +30,7 @@ class {{name.pascalCase()}} extends StatelessWidget {
   }
 }
 {{/android}}{{#ios}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
-import 'package:{{project_name}}_ios_{{name}}/src/presentation/l10n/l10n.dart';
+{{#exampleTranslation}}import 'package:{{project_name}}_ios_{{name}}/src/presentation/l10n/l10n.dart';{{/exampleTranslation}}
 import 'package:{{project_name}}_ui_ios/{{project_name}}_ui_ios.dart';
 
 {{#routable}}@RoutePage(){{/routable}}
@@ -34,15 +39,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
-
-    return {{project_name.pascalCase()}}Scaffold(
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}{{^isPage}}    return {{project_name.pascalCase()}}Scaffold(
       body: Center(
-        child: Text(title),
+        child: Text(toString()),
       ),
-    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
-    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
-    {{#isTabFlow}}    return const AutoTabsRouter(
+    );{{/isPage}}{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+{{#isFlow}}    return const AutoRouter();{{/isFlow}}
+{{#isPage}}{{#exampleTranslation}}final title = context.l10n.title;
+
+{{/exampleTranslation}}    return {{project_name.pascalCase()}}Scaffold(
+      body: Center(
+        child: Text({{#exampleTranslation}}title{{/exampleTranslation}}{{^exampleTranslation}}toString(){{/exampleTranslation}}),
+      ),
+    );{{/isPage}}
+{{#isTabFlow}}    return const AutoTabsRouter(
       routes: [
         // TODO: add tab routes here
       ],
@@ -51,7 +61,7 @@ class {{name.pascalCase()}} extends StatelessWidget {
   }
 }
 {{/ios}}{{#linux}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
-import 'package:{{project_name}}_linux_{{name}}/src/presentation/l10n/l10n.dart';
+{{#exampleTranslation}}import 'package:{{project_name}}_linux_{{name}}/src/presentation/l10n/l10n.dart';{{/exampleTranslation}}
 import 'package:{{project_name}}_ui_linux/{{project_name}}_ui_linux.dart';
 
 {{#routable}}@RoutePage(){{/routable}}
@@ -60,15 +70,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
-
-    return {{project_name.pascalCase()}}Scaffold(
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}{{^isPage}}    return {{project_name.pascalCase()}}Scaffold(
       body: Center(
-        child: Text(title),
+        child: Text(toString()),
       ),
-    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
-    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
-    {{#isTabFlow}}    return const AutoTabsRouter(
+    );{{/isPage}}{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+{{#isFlow}}    return const AutoRouter();{{/isFlow}}
+{{#isPage}}{{#exampleTranslation}}final title = context.l10n.title;
+
+{{/exampleTranslation}}    return {{project_name.pascalCase()}}Scaffold(
+      body: Center(
+        child: Text({{#exampleTranslation}}title{{/exampleTranslation}}{{^exampleTranslation}}toString(){{/exampleTranslation}}),
+      ),
+    );{{/isPage}}
+{{#isTabFlow}}    return const AutoTabsRouter(
       routes: [
         // TODO: add tab routes here
       ],
@@ -77,7 +92,7 @@ class {{name.pascalCase()}} extends StatelessWidget {
   }
 }
 {{/linux}}{{#macos}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
-import 'package:{{project_name}}_macos_{{name}}/src/presentation/l10n/l10n.dart';
+{{#exampleTranslation}}import 'package:{{project_name}}_macos_{{name}}/src/presentation/l10n/l10n.dart';{{/exampleTranslation}}
 import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';
 
 {{#routable}}@RoutePage(){{/routable}}
@@ -86,15 +101,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
-
-    return {{project_name.pascalCase()}}Scaffold(
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}{{^isPage}}    return {{project_name.pascalCase()}}Scaffold(
       body: Center(
-        child: Text(title),
+        child: Text(toString()),
       ),
-    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
-    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
-    {{#isTabFlow}}    return const AutoTabsRouter(
+    );{{/isPage}}{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+{{#isFlow}}    return const AutoRouter();{{/isFlow}}
+{{#isPage}}{{#exampleTranslation}}final title = context.l10n.title;
+
+{{/exampleTranslation}}    return {{project_name.pascalCase()}}Scaffold(
+      body: Center(
+        child: Text({{#exampleTranslation}}title{{/exampleTranslation}}{{^exampleTranslation}}toString(){{/exampleTranslation}}),
+      ),
+    );{{/isPage}}
+{{#isTabFlow}}    return const AutoTabsRouter(
       routes: [
         // TODO: add tab routes here
       ],
@@ -104,7 +124,7 @@ class {{name.pascalCase()}} extends StatelessWidget {
 }
 {{/macos}}{{#web}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
 import 'package:{{project_name}}_ui_web/{{project_name}}_ui_web.dart';
-import 'package:{{project_name}}_web_{{name}}/src/presentation/l10n/l10n.dart';
+{{#exampleTranslation}}import 'package:{{project_name}}_web_{{name}}/src/presentation/l10n/l10n.dart';{{/exampleTranslation}}
 
 {{#routable}}@RoutePage(){{/routable}}
 class {{name.pascalCase()}} extends StatelessWidget {
@@ -112,15 +132,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
-
-    return {{project_name.pascalCase()}}Scaffold(
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}{{^isPage}}    return {{project_name.pascalCase()}}Scaffold(
       body: Center(
-        child: Text(title),
+        child: Text(toString()),
       ),
-    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
-    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
-    {{#isTabFlow}}    return const AutoTabsRouter(
+    );{{/isPage}}{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+{{#isFlow}}    return const AutoRouter();{{/isFlow}}
+{{#isPage}}{{#exampleTranslation}}final title = context.l10n.title;
+
+{{/exampleTranslation}}    return {{project_name.pascalCase()}}Scaffold(
+      body: Center(
+        child: Text({{#exampleTranslation}}title{{/exampleTranslation}}{{^exampleTranslation}}toString(){{/exampleTranslation}}),
+      ),
+    );{{/isPage}}
+{{#isTabFlow}}    return const AutoTabsRouter(
       routes: [
         // TODO: add tab routes here
       ],
@@ -130,7 +155,7 @@ class {{name.pascalCase()}} extends StatelessWidget {
 }
 {{/web}}{{#windows}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
 import 'package:{{project_name}}_ui_windows/{{project_name}}_ui_windows.dart';
-import 'package:{{project_name}}_windows_{{name}}/src/presentation/l10n/l10n.dart';
+{{#exampleTranslation}}import 'package:{{project_name}}_windows_{{name}}/src/presentation/l10n/l10n.dart';{{/exampleTranslation}}
 
 {{#routable}}@RoutePage(){{/routable}}
 class {{name.pascalCase()}} extends StatelessWidget {
@@ -138,15 +163,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
-
-    return {{project_name.pascalCase()}}Scaffold(
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}{{^isPage}}    return {{project_name.pascalCase()}}Scaffold(
       body: Center(
-        child: Text(title),
+        child: Text(toString()),
       ),
-    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
-    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
-    {{#isTabFlow}}    return const AutoTabsRouter(
+    );{{/isPage}}{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+{{#isFlow}}    return const AutoRouter();{{/isFlow}}
+{{#isPage}}{{#exampleTranslation}}final title = context.l10n.title;
+
+{{/exampleTranslation}}    return {{project_name.pascalCase()}}Scaffold(
+      body: Center(
+        child: Text({{#exampleTranslation}}title{{/exampleTranslation}}{{^exampleTranslation}}toString(){{/exampleTranslation}}),
+      ),
+    );{{/isPage}}
+{{#isTabFlow}}    return const AutoTabsRouter(
       routes: [
         // TODO: add tab routes here
       ],
@@ -156,7 +186,7 @@ class {{name.pascalCase()}} extends StatelessWidget {
 }
 {{/windows}}{{#mobile}}{{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}
 import 'package:{{project_name}}_ui_mobile/{{project_name}}_ui_mobile.dart';
-import 'package:{{project_name}}_mobile_{{name}}/src/presentation/l10n/l10n.dart';
+{{#exampleTranslation}}import 'package:{{project_name}}_mobile_{{name}}/src/presentation/l10n/l10n.dart';{{/exampleTranslation}}
 
 {{#routable}}@RoutePage(){{/routable}}
 class {{name.pascalCase()}} extends StatelessWidget {
@@ -164,15 +194,20 @@ class {{name.pascalCase()}} extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-{{^isFlow}}{{^isTabFlow}}{{^isWidget}}    final title = context.l10n.title;
-
-    return {{project_name.pascalCase()}}Scaffold(
+{{^isFlow}}{{^isTabFlow}}{{^isWidget}}{{^isPage}}    return {{project_name.pascalCase()}}Scaffold(
       body: Center(
-        child: Text(title),
+        child: Text(toString()),
       ),
-    );{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
-    {{#isFlow}}    return const AutoRouter();{{/isFlow}}
-    {{#isTabFlow}}    return const AutoTabsRouter(
+    );{{/isPage}}{{/isWidget}}{{/isTabFlow}}{{/isFlow}}
+{{#isFlow}}    return const AutoRouter();{{/isFlow}}
+{{#isPage}}{{#exampleTranslation}}final title = context.l10n.title;
+
+{{/exampleTranslation}}    return {{project_name.pascalCase()}}Scaffold(
+      body: Center(
+        child: Text({{#exampleTranslation}}title{{/exampleTranslation}}{{^exampleTranslation}}toString(){{/exampleTranslation}}),
+      ),
+    );{{/isPage}}
+{{#isTabFlow}}    return const AutoTabsRouter(
       routes: [
         // TODO: add tab routes here
       ],

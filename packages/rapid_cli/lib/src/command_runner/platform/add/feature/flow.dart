@@ -5,13 +5,15 @@ import 'package:rapid_cli/src/core/platform.dart';
 
 import '../../../base.dart';
 
+const _defaultLocalization = true;
+
 class PlatformAddFeatureFlowCommand extends RapidLeafCommand
     with DartPackageNameGetter {
   PlatformAddFeatureFlowCommand(this.platform, super.project) {
     argParser
       ..addSeparator('')
       ..addFlag(
-        'tabs',
+        'tab',
         help: 'Wheter the new feature is a tabflow.',
         negatable: false,
       )
@@ -24,6 +26,11 @@ class PlatformAddFeatureFlowCommand extends RapidLeafCommand
         'navigator',
         help: 'Wheter to generate a navigator for the new feature.',
         negatable: false,
+      )
+      ..addFlag(
+        'localization',
+        help: 'Wether the new feature as localizations.',
+        defaultsTo: _defaultLocalization,
       );
   }
 
@@ -43,17 +50,19 @@ class PlatformAddFeatureFlowCommand extends RapidLeafCommand
   @override
   Future<void> run() {
     final name = super.dartPackageName;
-    final tabs = argResults['tabs'] ?? false;
+    final tab = argResults['tab'] ?? false;
     final description =
         argResults['desc'] ?? 'The ${name.pascalCase} flow feature.';
     final navigator = argResults['navigator'] ?? false;
+    final localization = argResults['localization'] ?? _defaultLocalization;
 
     return rapid.platformAddFeatureFlow(
       platform,
       name: name,
-      tabs: tabs,
+      tab: tab,
       description: description,
       navigator: navigator,
+      localization: localization,
     );
   }
 }

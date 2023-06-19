@@ -40,6 +40,9 @@ abstract class PlatformFeaturePackageImpl extends DartPackageImpl
           ),
         );
 
+  L10nDirectory get _l10nDirectory => (l10nDirectoryOverrides ??
+      L10nDirectory.new)(platformFeaturePackage: this);
+
   L10nFile get _l10nFile =>
       (l10nFileOverrides ?? L10nFile.new)(platformFeaturePackage: this);
   ArbDirectory get _arbDirectory => (arbDirectoryOverrides ?? ArbDirectory.new)(
@@ -54,6 +57,9 @@ abstract class PlatformFeaturePackageImpl extends DartPackageImpl
 
   @override
   L10nFileBuilder? l10nFileOverrides;
+
+  @override
+  L10nDirectoryBuilder? l10nDirectoryOverrides;
 
   @override
   LanguageLocalizationsFileBuilder? languageLocalizationsFileOverrides;
@@ -109,6 +115,9 @@ abstract class PlatformFeaturePackageImpl extends DartPackageImpl
   @override
   PlatformFeaturePackageBarrelFile get barrelFile => (barrelFileOverrides ??
       PlatformFeaturePackageBarrelFile.new)(platformFeaturePackage: this);
+
+  @override
+  bool get hasLanguages => _l10nDirectory.exists() && _l10nFile.exists();
 
   @override
   Set<String> supportedLanguages() =>
@@ -199,8 +208,9 @@ class PlatformCustomFeaturePackageImpl
 
   @override
   Future<void> create({
-    String? description,
+    required String description,
     required bool routing,
+    required bool localization,
     required String defaultLanguage,
     required Set<String> languages,
   }) async {
@@ -210,7 +220,7 @@ class PlatformCustomFeaturePackageImpl
       bundle: platformFeaturePackageBundle,
       vars: <String, dynamic>{
         'name': name,
-        'description': description ?? 'The ${name.titleCase} feature',
+        'description': description,
         'project_name': projectName,
         'android': platform == Platform.android,
         'ios': platform == Platform.ios,
@@ -219,27 +229,22 @@ class PlatformCustomFeaturePackageImpl
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
         'mobile': platform == Platform.mobile,
+        'localization': localization,
         'default_language': defaultLanguage,
         'routable': routing,
         'isCustom': true, // TODO needed?
         'isFlow': false,
         'isTabFlow': false,
+        'isPage': false,
         'isWidget': false,
       },
     );
 
     // TODO create flows/pages and widgets inside this
 
-    await _arbDirectory.create(
-      languages: languages,
-      translations: (language) => [
-        {
-          'name': 'title',
-          'translation': '${name.titleCase} title for $language',
-          'description': 'Title text shown in the ${name.titleCase}',
-        }
-      ],
-    );
+    if (localization) {
+      await _arbDirectory.create(languages: languages);
+    }
   }
 }
 
@@ -253,8 +258,9 @@ class PlatformFlowFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
 
   @override
   Future<void> create({
-    required bool tabs,
-    String? description,
+    required bool tab,
+    required String description,
+    required bool localization,
     required String defaultLanguage,
     required Set<String> languages,
   }) async {
@@ -264,7 +270,7 @@ class PlatformFlowFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
       bundle: platformFeaturePackageBundle,
       vars: <String, dynamic>{
         'name': name,
-        'description': description ?? 'The ${name.titleCase} feature',
+        'description': description,
         'project_name': projectName,
         'android': platform == Platform.android,
         'ios': platform == Platform.ios,
@@ -273,25 +279,20 @@ class PlatformFlowFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
         'mobile': platform == Platform.mobile,
+        'localization': localization,
         'default_language': defaultLanguage,
         'routable': true,
         'isCustom': false,
-        'isFlow': !tabs,
-        'isTabFlow': tabs,
+        'isFlow': !tab,
+        'isTabFlow': tab,
+        'isPage': false,
         'isWidget': false,
       },
     );
 
-    await _arbDirectory.create(
-      languages: languages,
-      translations: (language) => [
-        {
-          'name': 'title',
-          'translation': '${name.titleCase} title for $language',
-          'description': 'Title text shown in the ${name.titleCase}',
-        }
-      ],
-    );
+    if (localization) {
+      await _arbDirectory.create(languages: languages);
+    }
   }
 }
 
@@ -305,7 +306,9 @@ class PlatformPageFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
 
   @override
   Future<void> create({
-    String? description,
+    required String description,
+    required bool localization,
+    bool exampleTranslation = false,
     required String defaultLanguage,
     required Set<String> languages,
   }) async {
@@ -315,7 +318,7 @@ class PlatformPageFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
       bundle: platformFeaturePackageBundle,
       vars: <String, dynamic>{
         'name': name,
-        'description': description ?? 'The ${name.titleCase} feature',
+        'description': description,
         'project_name': projectName,
         'android': platform == Platform.android,
         'ios': platform == Platform.ios,
@@ -324,25 +327,32 @@ class PlatformPageFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
         'mobile': platform == Platform.mobile,
+        'localization': localization,
+        'exampleTranslation': exampleTranslation,
         'default_language': defaultLanguage,
         'routable': true,
         'isCustom': false,
         'isFlow': false,
         'isTabFlow': false,
+        'isPage': true,
         'isWidget': false,
       },
     );
 
-    await _arbDirectory.create(
-      languages: languages,
-      translations: (language) => [
-        {
-          'name': 'title',
-          'translation': '${name.titleCase} title for $language',
-          'description': 'Title text shown in the ${name.titleCase}',
-        }
-      ],
-    );
+    if (localization) {
+      await _arbDirectory.create(
+        languages: languages,
+        translations: exampleTranslation
+            ? (language) => [
+                  {
+                    'name': 'title',
+                    'translation': '${name.titleCase} title for $language',
+                    'description': 'Title text shown in the ${name.titleCase}',
+                  }
+                ]
+            : null,
+      );
+    }
   }
 }
 
@@ -357,7 +367,8 @@ class PlatformWidgetFeaturePackageImpl
 
   @override
   Future<void> create({
-    String? description,
+    required String description,
+    required bool localization,
     required String defaultLanguage,
     required Set<String> languages,
   }) async {
@@ -367,7 +378,7 @@ class PlatformWidgetFeaturePackageImpl
       bundle: platformFeaturePackageBundle,
       vars: <String, dynamic>{
         'name': name,
-        'description': description ?? 'The ${name.titleCase} feature',
+        'description': description,
         'project_name': projectName,
         'android': platform == Platform.android,
         'ios': platform == Platform.ios,
@@ -376,28 +387,24 @@ class PlatformWidgetFeaturePackageImpl
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
         'mobile': platform == Platform.mobile,
+        'localization': localization,
         'default_language': defaultLanguage,
         'routable': false,
         'isCustom': false,
         'isFlow': false,
         'isTabFlow': false,
+        'isPage': false,
         'isWidget': true,
       },
     );
 
-    await _arbDirectory.create(
-      languages: languages,
-      translations: (language) => [
-        {
-          'name': 'title',
-          'translation': '${name.titleCase} title for $language',
-          'description': 'Title text shown in the ${name.titleCase}',
-        }
-      ],
-    );
+    if (localization) {
+      await _arbDirectory.create(languages: languages);
+    }
   }
 }
 
+// TODO rm localization files initially
 class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
     implements PlatformAppFeaturePackage {
   PlatformAppFeaturePackageImpl(
@@ -426,14 +433,25 @@ class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
         'windows': platform == Platform.windows,
         'mobile': platform == Platform.mobile,
         'default_language': defaultLanguage,
-        'routable': routing,
-        'route_name':
-            name.pascalCase.replaceAll('Page', '').replaceAll('Screen', ''),
       },
     );
 
     await _arbDirectory.create(languages: languages);
   }
+}
+
+class L10nDirectoryImpl extends DirectoryImpl implements L10nDirectory {
+  L10nDirectoryImpl({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) : super(
+          path: p.join(
+            platformFeaturePackage.path,
+            'lib',
+            'src',
+            'presentation',
+            'l10n',
+          ),
+        );
 }
 
 class L10nFileImpl extends YamlFileImpl implements L10nFile {

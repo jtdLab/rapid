@@ -73,11 +73,14 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
   Future<void> registerFeaturePackage(
     PlatformFeaturePackage featurePackage, {
     required bool routing,
+    required bool localization,
   }) async {
     final packageName = featurePackage.packageName();
-    localizationsDelegatesFile.addLocalizationsDelegate(packageName);
     pubspecFile.setDependency(packageName);
     injectionFile.addFeaturePackage(packageName);
+    if (localization) {
+      localizationsDelegatesFile.addLocalizationsDelegate(packageName);
+    }
     if (routing) {
       routerFile.addRouterModule(packageName);
     }
@@ -350,14 +353,14 @@ class LocalizationsDelegatesFileImpl extends DartFileImpl
   void removeLocalizationsDelegate(String packageName) {
     removeImport('package:$packageName/$packageName.dart');
 
-    final deleteToRemove = '${packageName.pascalCase}Localizations.delegate';
+    final delegateToRemove = '${packageName.pascalCase}Localizations.delegate';
     final existingDelegates =
         readTopLevelListVar(name: 'localizationsDelegates');
 
-    if (existingDelegates.contains(deleteToRemove)) {
+    if (existingDelegates.contains(delegateToRemove)) {
       setTopLevelListVar(
         name: 'localizationsDelegates',
-        value: existingDelegates..remove(deleteToRemove),
+        value: existingDelegates..remove(delegateToRemove),
       );
     }
   }
@@ -482,10 +485,6 @@ class RouterFileImpl extends DartFileImpl implements RouterFile {
     }
 
     final existingModules = _readModules();
-
-    print(packageName
-        .replaceAll('${projectName}_${platformName}_', '')
-        .pascalCase);
 
     setTypeListOfAnnotationParamOfClass(
       property: 'modules',

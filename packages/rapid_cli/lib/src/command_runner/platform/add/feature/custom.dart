@@ -6,6 +6,8 @@ import 'package:rapid_cli/src/core/platform.dart';
 
 import '../../../base.dart';
 
+const _defaultLocalization = true;
+
 class PlatformAddFeatureCustomCommand extends RapidLeafCommand
     with DartPackageNameGetter {
   PlatformAddFeatureCustomCommand(this.platform, super.project) {
@@ -25,6 +27,11 @@ class PlatformAddFeatureCustomCommand extends RapidLeafCommand
         'navigator',
         help: 'Wheter to generate a navigator for the new feature.',
         negatable: false,
+      )
+      ..addFlag(
+        'localization',
+        help: 'Wether the new feature as localizations.',
+        defaultsTo: _defaultLocalization,
       );
   }
 
@@ -47,6 +54,7 @@ class PlatformAddFeatureCustomCommand extends RapidLeafCommand
     final description = argResults['desc'] ?? 'The ${name.pascalCase} feature.';
     final routing = argResults['routing'] ?? false;
     final navigator = argResults['navigator'] ?? false;
+    final localization = argResults['localization'] ?? _defaultLocalization;
 
     if (!routing && navigator) {
       throw UsageException(
@@ -61,6 +69,7 @@ class PlatformAddFeatureCustomCommand extends RapidLeafCommand
       description: description,
       routing: routing,
       navigator: navigator,
+      localization: localization,
     );
   }
 }

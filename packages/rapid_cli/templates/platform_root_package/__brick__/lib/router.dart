@@ -7,6 +7,7 @@ import 'router.gr.dart';
 ///
 /// For more info see: https://pub.dev/packages/auto_route#setup-and-usage
 @AutoRouterConfig(
+  replaceInRouteName: null,
   modules: [
     HomePageModule,
   ],

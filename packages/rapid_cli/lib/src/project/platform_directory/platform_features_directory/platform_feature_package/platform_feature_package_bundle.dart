@@ -50,7 +50,7 @@ final platformFeaturePackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "lib/src/presentation/{{#routable}}routes.dart{{/routable}}",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOmF1dG9fcm91dGUvYXV0b19yb3V0ZS5kYXJ0JzsKCmltcG9ydCAncm91dGVzLmdtLmRhcnQnOwoKLy8vIFNldHVwIGF1dG8gcm91dGUgd2hpY2ggZ2VuZXJhdGVzIHJvdXRpbmcgY29kZS4KLy8vCi8vLyBGb3IgbW9yZSBpbmZvIHNlZTogaHR0cHM6Ly9wdWIuZGV2L3BhY2thZ2VzL2F1dG9fcm91dGUjaW5jbHVkaW5nLW1pY3JvZXh0ZXJuYWwtcGFja2FnZXMKQEF1dG9Sb3V0ZXJDb25maWcubW9kdWxlKCkKY2xhc3Mge3tuYW1lLnBhc2NhbENhc2UoKX19TW9kdWxlIGV4dGVuZHMgJHt7bmFtZS5wYXNjYWxDYXNlKCl9fU1vZHVsZSB7fQ==",
+          "aW1wb3J0ICdwYWNrYWdlOmF1dG9fcm91dGUvYXV0b19yb3V0ZS5kYXJ0JzsKCmltcG9ydCAncm91dGVzLmdtLmRhcnQnOwoKLy8vIFNldHVwIGF1dG8gcm91dGUgd2hpY2ggZ2VuZXJhdGVzIHJvdXRpbmcgY29kZS4KLy8vCi8vLyBGb3IgbW9yZSBpbmZvIHNlZTogaHR0cHM6Ly9wdWIuZGV2L3BhY2thZ2VzL2F1dG9fcm91dGUjaW5jbHVkaW5nLW1pY3JvZXh0ZXJuYWwtcGFja2FnZXMKQEF1dG9Sb3V0ZXJDb25maWcubW9kdWxlKAogIHJlcGxhY2VJblJvdXRlTmFtZTogbnVsbCwKKQpjbGFzcyB7e25hbWUucGFzY2FsQ2FzZSgpfX1Nb2R1bGUgZXh0ZW5kcyAke3tuYW1lLnBhc2NhbENhc2UoKX19TW9kdWxlIHt9",
       "type": "text"
     },
     {

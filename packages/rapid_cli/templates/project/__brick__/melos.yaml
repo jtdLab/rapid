@@ -81,6 +81,15 @@ scripts:
       dirExists:
         - test
 
+  test:update:goldens:
+    exec: flutter test --update-goldens
+    description: Update goldens of a package.
+    packageFilters:
+      dirExists:
+        - test
+      dependsOn:
+        - alchemist
+
   test:e2e:dev:
     exec: flutter test integration_test/development_test.dart
     description: |

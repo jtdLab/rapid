@@ -1,5 +1,6 @@
 import 'dart:io' as io;
 
+import 'package:collection/collection.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/arb_file_impl.dart';
@@ -263,6 +264,7 @@ class PlatformFlowFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
     required bool localization,
     required String defaultLanguage,
     required Set<String> languages,
+    required Set<PlatformFeaturePackage>? features,
   }) async {
     final projectName = project.name;
 
@@ -287,6 +289,11 @@ class PlatformFlowFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
         'isTabFlow': tab,
         'isPage': false,
         'isWidget': false,
+        if (tab)
+          'subRoutes': features!
+              .mapIndexed(
+                  (i, e) => {'name': e.name.pascalCase, 'isFirst': i == 0})
+              .toList(),
       },
     );
 

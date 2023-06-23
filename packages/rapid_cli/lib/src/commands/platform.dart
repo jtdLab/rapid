@@ -92,6 +92,7 @@ mixin _PlatformMixin on _Rapid {
     required String description,
     required bool navigator,
     required bool localization,
+    required Set<String>? features,
   }) async {
     if (!project.platformIsActivated(platform)) {
       _logAndThrow(
@@ -107,6 +108,27 @@ mixin _PlatformMixin on _Rapid {
     final featurePackage = platformDirectory.featuresDirectory
         .featurePackage<PlatformFlowFeaturePackage>(name: '${name}_flow');
     if (!featurePackage.exists()) {
+      final List<PlatformFeaturePackage> featurePackages = [];
+      if (tab) {
+        for (final feature in features!) {
+          if (platformDirectory.featuresDirectory
+              .featurePackages()
+              .any((e) => feature == e.packageName() || feature == e.name)) {
+            featurePackages.add(
+              platformDirectory.featuresDirectory.featurePackages().firstWhere(
+                  (e) => feature == e.packageName() || feature == e.name),
+            );
+          } else {
+            _logAndThrow(
+              RapidPlatformException._featureNotFound(
+                feature,
+                platform: platform,
+              ),
+            );
+          }
+        }
+      }
+
       final rootPackage = platformDirectory.rootPackage;
 
       await featurePackage.create(
@@ -116,6 +138,7 @@ mixin _PlatformMixin on _Rapid {
         // TODO take default lang from featurs or from roots supported langs?
         defaultLanguage: rootPackage.defaultLanguage(),
         languages: rootPackage.supportedLanguages(),
+        features: tab ? featurePackages.toSet() : null,
       );
 
       await rootPackage.registerFeaturePackage(

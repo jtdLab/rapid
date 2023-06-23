@@ -136,6 +136,7 @@ abstract class PlatformFlowFeaturePackage
     required bool localization,
     required String defaultLanguage,
     required Set<String> languages,
+    required Set<PlatformFeaturePackage>? features,
   });
 }
 

@@ -20,7 +20,7 @@ abstract class App extends StatelessWidget {
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     NavigatorObserver? navigatorObserver,
@@ -69,7 +69,7 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
     this.navigatorObserver,
@@ -147,7 +147,7 @@ abstract class App extends StatelessWidget {
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     NavigatorObserver? navigatorObserver,
@@ -196,7 +196,7 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
     this.navigatorObserver,
@@ -274,7 +274,7 @@ abstract class App extends StatelessWidget {
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     NavigatorObserver? navigatorObserver,
@@ -323,7 +323,7 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
     this.navigatorObserver,
@@ -402,7 +402,7 @@ abstract class App extends StatelessWidget {
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     NavigatorObserver? navigatorObserver,
@@ -451,7 +451,7 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
     this.navigatorObserver,
@@ -529,7 +529,7 @@ abstract class App extends StatelessWidget {
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     NavigatorObserver? navigatorObserver,
@@ -578,7 +578,7 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
     this.navigatorObserver,
@@ -656,7 +656,7 @@ abstract class App extends StatelessWidget {
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     NavigatorObserver? navigatorObserver,
@@ -705,7 +705,7 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
     this.navigatorObserver,
@@ -783,7 +783,7 @@ abstract class App extends StatelessWidget {
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
     NavigatorObserver? navigatorObserver,
@@ -832,7 +832,7 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
     this.navigatorObserver,

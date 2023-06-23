@@ -501,6 +501,20 @@ final class RapidE2ETester {
         ),
       ];
 
+  Directory l10nDirectory(
+    String feature,
+    Platform platform,
+  ) =>
+      Directory(
+        p.join(
+          featurePackage(feature, platform).path,
+          'lib',
+          'src',
+          'presentation',
+          'l10n',
+        ),
+      );
+
   /// Source files a feature requires to support [languages].
   List<File> languageFiles(
     String feature,
@@ -692,11 +706,17 @@ Future<TestResult> _runFlutterOrDartTest({
 
   late ProcessResult result;
   if (hasFlutterTest) {
-    _println('Run "flutter test${coverage ? ' --coverage' : ''}" in $cwd\n');
+    _println(
+        'Run "flutter test --run-skipped --update-goldens${coverage ? ' --coverage' : ''}" in $cwd\n');
 
     result = await Process.run(
       'flutter',
-      ['test', if (coverage) '--coverage'],
+      [
+        'test',
+        '--run-skipped',
+        '--update-goldens',
+        if (coverage) '--coverage',
+      ],
       workingDirectory: cwd,
       runInShell: true,
     );

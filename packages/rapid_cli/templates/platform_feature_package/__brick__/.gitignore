@@ -32,3 +32,8 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage
+
+# Alchemist
+test/**/goldens/**/*.*
+test/**/failures/**/*.*
+!test/**/goldens/ci/*.*

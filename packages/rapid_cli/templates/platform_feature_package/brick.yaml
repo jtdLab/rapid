@@ -76,3 +76,6 @@ vars:
   isWidget:
     type: boolean
     description: Wheter the feature is a widget
+  subRoutes:
+    type: array
+    description: The subroutes if the feature is a flow

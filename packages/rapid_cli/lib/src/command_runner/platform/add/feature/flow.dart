@@ -1,3 +1,4 @@
+import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner/util/dart_package_name_rest.dart';
 import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
@@ -12,14 +13,18 @@ class PlatformAddFeatureFlowCommand extends RapidLeafCommand
   PlatformAddFeatureFlowCommand(this.platform, super.project) {
     argParser
       ..addSeparator('')
-      ..addFlag(
-        'tab',
-        help: 'Wheter the new feature is a tabflow.',
-        negatable: false,
+      ..addOption(
+        'features',
+        help: 'The features that have this flow as a parent.',
       )
       ..addOption(
         'desc',
         help: 'The description of the new feature.',
+      )
+      ..addFlag(
+        'tab',
+        help: 'Wheter the new feature is a tabflow.',
+        negatable: false,
       )
       // TODO maybe add a option to specify features that want a dependency before melos bs runs
       ..addFlag(
@@ -55,6 +60,7 @@ class PlatformAddFeatureFlowCommand extends RapidLeafCommand
         argResults['desc'] ?? 'The ${name.pascalCase} flow feature.';
     final navigator = argResults['navigator'] ?? false;
     final localization = argResults['localization'] ?? _defaultLocalization;
+    final features = tab ? _validateSubFeatures(argResults['features']) : null;
 
     return rapid.platformAddFeatureFlow(
       platform,
@@ -63,6 +69,18 @@ class PlatformAddFeatureFlowCommand extends RapidLeafCommand
       description: description,
       navigator: navigator,
       localization: localization,
+      features: features,
     );
+  }
+
+  Set<String> _validateSubFeatures(String? features) {
+    if (features == null) {
+      throw UsageException(
+        'No option specified for the features.',
+        usage,
+      );
+    }
+
+    return features.split(',').map((e) => e.trim()).toSet();
   }
 }

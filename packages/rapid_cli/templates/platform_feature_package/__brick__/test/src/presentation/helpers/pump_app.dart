@@ -148,7 +148,7 @@ class _Placeholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return {{project_name.pascalCase()}}Scaffold(
       body: Stack(
         children: [
           const Placeholder(),

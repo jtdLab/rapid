@@ -18,7 +18,7 @@ class PlatformAddFeatureWidgetCommand extends RapidLeafCommand
       )
       ..addFlag(
         'localization',
-        help: 'Wether the new feature as localizations.',
+        help: 'Whether the new feature has localizations.',
         defaultsTo: _defaultLocalization,
       );
     // TODO maybe add a option to specify features that want a dependency before melos bs runs

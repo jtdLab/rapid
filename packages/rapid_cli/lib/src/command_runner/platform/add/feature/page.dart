@@ -19,13 +19,13 @@ class PlatformAddFeaturePageCommand extends RapidLeafCommand
       // TODO maybe add a option to specify features that want a dependency before melos bs runs
       ..addFlag(
         'navigator',
-        help: 'Wheter to generate a navigator for the new feature.',
+        help: 'Whether to generate a navigator for the new feature.',
         negatable: false,
       )
       // TODO share
       ..addFlag(
         'localization',
-        help: 'Wether the new feature as localizations.',
+        help: 'Whether the new feature as localizations.',
         defaultsTo: _defaultLocalization,
       );
   }

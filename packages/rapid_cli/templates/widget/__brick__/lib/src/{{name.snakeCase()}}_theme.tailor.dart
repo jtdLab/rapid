@@ -73,7 +73,7 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}}Theme extends ThemeExten
   }
 }
 
-extension {{project_name.pascalCase()}}{{name.pascalCase()}}ThemeBuildContext on BuildContext {
+{{^windows}}extension {{project_name.pascalCase()}}{{name.pascalCase()}}ThemeBuildContext on BuildContext {
   {{project_name.pascalCase()}}{{name.pascalCase()}}Theme get {{project_name.camelCase()}}{{name.pascalCase()}}Theme =>
       Theme.of(this).extension<{{project_name.pascalCase()}}{{name.pascalCase()}}Theme>()!;
-}
+}{{/windows}}

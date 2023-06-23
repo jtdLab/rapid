@@ -472,11 +472,6 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
     );
   }
 }
-
-extension {{project_name.pascalCase()}}ScaffoldThemeBuildContext on BuildContext {
-  {{project_name.pascalCase()}}ScaffoldTheme get {{project_name.camelCase()}}ScaffoldTheme =>
-      Theme.of(this).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
-}
 {{/windows}}{{#mobile}}// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, unused_element, unnecessary_cast

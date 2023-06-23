@@ -17,7 +17,19 @@ void main() {
       'renders correctly',
       fileName: '{{name.snakeCase()}}',
       builder: () => GoldenTestGroup(
-        scenarioConstraints: const BoxConstraints(minWidth: 250, maxHeight: {{#isWidget}}250{{/isWidget}}{{^isWidget}}500{{/isWidget}}),
+{{#linux}}        scenarioConstraints: const BoxConstraints.expand(
+          width: 1000,
+          height: 500,
+        ),{{/linux}}
+{{#macos}}        scenarioConstraints: const BoxConstraints.expand(
+          width: 1000,
+          height: 500,
+        ),{{/macos}}
+{{#windows}}        scenarioConstraints: const BoxConstraints.expand(
+          width: 1000,
+          height: 500,
+        ),{{/windows}}
+{{^linux}}{{^macos}}{{^windows}}        scenarioConstraints: const BoxConstraints(minWidth: 250, maxHeight: {{#isWidget}}250{{/isWidget}}{{^isWidget}}500{{/isWidget}}),{{/windows}}{{/macos}}{{/linux}}  
         children: [
           GoldenTestScenario(
             name: '{{#localization}}{{default_language}} - {{/localization}}light',

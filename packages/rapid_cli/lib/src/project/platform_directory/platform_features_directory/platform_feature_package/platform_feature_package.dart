@@ -272,7 +272,7 @@ typedef LanguageLocalizationsFileBuilder = LanguageLocalizationsFile Function(
 /// {@template language_localizations_file}
 /// Abstraction of the localizations file of a specific language of a platform customizable feature package of an existing Rapid project.
 ///
-/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_<feature name>/lib/src/presentation/l10n/<project name>_<platform>_<feature name>_localizations_<language>.dart`
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_<feature name>/lib/src/presentation/l10n/<feature name>_localizations_<language>.dart`
 /// {@endtemplate}
 abstract class LanguageLocalizationsFile implements DartFile {
   /// {@macro language_localizations_file}

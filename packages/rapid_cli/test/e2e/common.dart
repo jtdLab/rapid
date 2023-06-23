@@ -541,7 +541,7 @@ final class RapidE2ETester {
               'src',
               'presentation',
               'l10n',
-              '${projectName}_${platform.name}_${feature}_localizations_$language.dart',
+              '${feature}_localizations_$language.dart',
             ),
           ),
         ],

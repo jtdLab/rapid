@@ -1,85 +1,78 @@
 {{#android}}// coverage:ignore-file
 import 'package:flutter/widgets.dart';
+import 'app_localizations.dart';
 
-import '{{project_name}}_android_app_localizations.dart';
+export 'app_localizations.dart';
 
-export '{{project_name}}_android_app_localizations.dart';
-
-extension {{project_name.pascalCase()}}AndroidAppLocalizationsX on BuildContext {
+extension AppLocalizationsX on BuildContext {
   /// The l10n object which holds all localized strings.
-  {{project_name.pascalCase()}}AndroidAppLocalizations get l10n =>
-      {{project_name.pascalCase()}}AndroidAppLocalizations.of(this);
+  AppLocalizations get l10n =>
+      AppLocalizations.of(this);
 }
 {{/android}}{{#ios}}// coverage:ignore-file
 import 'package:flutter/widgets.dart';
+import 'app_localizations.dart';
 
-import '{{project_name}}_ios_app_localizations.dart';
+export 'app_localizations.dart';
 
-export '{{project_name}}_ios_app_localizations.dart';
-
-extension {{project_name.pascalCase()}}IosAppLocalizationsX on BuildContext {
+extension AppLocalizationsX on BuildContext {
   /// The l10n object which holds all localized strings.
-  {{project_name.pascalCase()}}IosAppLocalizations get l10n =>
-      {{project_name.pascalCase()}}IosAppLocalizations.of(this);
+  AppLocalizations get l10n =>
+      AppLocalizations.of(this);
 }
 {{/ios}}{{#linux}}// coverage:ignore-file
 import 'package:flutter/widgets.dart';
+import 'app_localizations.dart';
 
-import '{{project_name}}_linux_app_localizations.dart';
+export 'app_localizations.dart';
 
-export '{{project_name}}_linux_app_localizations.dart';
-
-extension {{project_name.pascalCase()}}LinuxAppLocalizationsX on BuildContext {
+extension AppLocalizationsX on BuildContext {
   /// The l10n object which holds all localized strings.
-  {{project_name.pascalCase()}}LinuxAppLocalizations get l10n =>
-      {{project_name.pascalCase()}}LinuxAppLocalizations.of(this);
+  AppLocalizations get l10n =>
+      AppLocalizations.of(this);
 }
 {{/linux}}{{#macos}}// coverage:ignore-file
 import 'package:flutter/widgets.dart';
+import 'app_localizations.dart';
 
-import '{{project_name}}_macos_app_localizations.dart';
+export 'app_localizations.dart';
 
-export '{{project_name}}_macos_app_localizations.dart';
-
-extension {{project_name.pascalCase()}}MacosAppLocalizationsX on BuildContext {
+extension AppLocalizationsX on BuildContext {
   /// The l10n object which holds all localized strings.
-  {{project_name.pascalCase()}}MacosAppLocalizations get l10n =>
-      {{project_name.pascalCase()}}MacosAppLocalizations.of(this);
+  AppLocalizations get l10n =>
+      AppLocalizations.of(this);
 }
 {{/macos}}{{#web}}// coverage:ignore-file
 import 'package:flutter/widgets.dart';
+import 'app_localizations.dart';
 
-import '{{project_name}}_web_app_localizations.dart';
+export 'app_localizations.dart';
 
-export '{{project_name}}_web_app_localizations.dart';
-
-extension {{project_name.pascalCase()}}WebAppLocalizationsX on BuildContext {
+extension AppLocalizationsX on BuildContext {
   /// The l10n object which holds all localized strings.
-  {{project_name.pascalCase()}}WebAppLocalizations get l10n =>
-      {{project_name.pascalCase()}}WebAppLocalizations.of(this);
+  AppLocalizations get l10n =>
+      AppLocalizations.of(this);
 }
 {{/web}}{{#windows}}// coverage:ignore-file
 import 'package:flutter/widgets.dart';
+import 'app_localizations.dart';
 
-import '{{project_name}}_windows_app_localizations.dart';
+export 'app_localizations.dart';
 
-export '{{project_name}}_windows_app_localizations.dart';
-
-extension {{project_name.pascalCase()}}WindowsAppLocalizationsX on BuildContext {
+extension AppLocalizationsX on BuildContext {
   /// The l10n object which holds all localized strings.
-  {{project_name.pascalCase()}}WindowsAppLocalizations get l10n =>
-      {{project_name.pascalCase()}}WindowsAppLocalizations.of(this);
+  AppLocalizations get l10n =>
+      AppLocalizations.of(this);
 }
 {{/windows}}{{#mobile}}// coverage:ignore-file
 import 'package:flutter/widgets.dart';
+import 'app_localizations.dart';
 
-import '{{project_name}}_mobile_app_localizations.dart';
+export 'app_localizations.dart';
 
-export '{{project_name}}_mobile_app_localizations.dart';
-
-extension {{project_name.pascalCase()}}MobileAppLocalizationsX on BuildContext {
+extension AppLocalizationsX on BuildContext {
   /// The l10n object which holds all localized strings.
-  {{project_name.pascalCase()}}MobileAppLocalizations get l10n =>
-      {{project_name.pascalCase()}}MobileAppLocalizations.of(this);
+  AppLocalizations get l10n =>
+      AppLocalizations.of(this);
 }
 {{/mobile}}

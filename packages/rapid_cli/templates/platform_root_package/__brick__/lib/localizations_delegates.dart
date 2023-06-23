@@ -3,7 +3,7 @@ import 'package:{{project_name}}_android_app/{{project_name}}_android_app.dart';
 import 'package:{{project_name}}_android_home_page/{{project_name}}_android_home_page.dart';
 
 const localizationsDelegates = <LocalizationsDelegate>[
-  {{project_name.pascalCase()}}AndroidAppLocalizations.delegate,
+  AppLocalizations.delegate,
   HomePageLocalizations.delegate,
 ];
 
@@ -15,7 +15,7 @@ import 'package:{{project_name}}_ios_app/{{project_name}}_ios_app.dart';
 import 'package:{{project_name}}_ios_home_page/{{project_name}}_ios_home_page.dart';
 
 const localizationsDelegates = <LocalizationsDelegate>[
-  {{project_name.pascalCase()}}IosAppLocalizations.delegate,
+  AppLocalizations.delegate,
   HomePageLocalizations.delegate,
 ];
 
@@ -27,7 +27,7 @@ import 'package:{{project_name}}_linux_app/{{project_name}}_linux_app.dart';
 import 'package:{{project_name}}_linux_home_page/{{project_name}}_linux_home_page.dart';
 
 const localizationsDelegates = <LocalizationsDelegate>[
-  {{project_name.pascalCase()}}LinuxAppLocalizations.delegate,
+  AppLocalizations.delegate,
   HomePageLocalizations.delegate,
 ];
 
@@ -39,7 +39,7 @@ import 'package:{{project_name}}_macos_app/{{project_name}}_macos_app.dart';
 import 'package:{{project_name}}_macos_home_page/{{project_name}}_macos_home_page.dart';
 
 const localizationsDelegates = <LocalizationsDelegate>[
-  {{project_name.pascalCase()}}MacosAppLocalizations.delegate,
+  AppLocalizations.delegate,
   HomePageLocalizations.delegate,
 ];
 
@@ -51,7 +51,7 @@ import 'package:{{project_name}}_web_app/{{project_name}}_web_app.dart';
 import 'package:{{project_name}}_web_home_page/{{project_name}}_web_home_page.dart';
 
 const localizationsDelegates = <LocalizationsDelegate>[
-  {{project_name.pascalCase()}}WebAppLocalizations.delegate,
+  AppLocalizations.delegate,
   HomePageLocalizations.delegate,
 ];
 
@@ -63,7 +63,7 @@ import 'package:{{project_name}}_windows_app/{{project_name}}_windows_app.dart';
 import 'package:{{project_name}}_windows_home_page/{{project_name}}_windows_home_page.dart';
 
 const localizationsDelegates = <LocalizationsDelegate>[
-  {{project_name.pascalCase()}}WindowsAppLocalizations.delegate,
+  AppLocalizations.delegate,
   HomePageLocalizations.delegate,
 ];
 
@@ -75,7 +75,7 @@ import 'package:{{project_name}}_mobile_app/{{project_name}}_mobile_app.dart';
 import 'package:{{project_name}}_mobile_home_page/{{project_name}}_mobile_home_page.dart';
 
 const localizationsDelegates = <LocalizationsDelegate>[
-  {{project_name.pascalCase()}}MobileAppLocalizations.delegate,
+  AppLocalizations.delegate,
   HomePageLocalizations.delegate,
 ];
 

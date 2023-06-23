@@ -1,56 +1,56 @@
 {{#android}}arb-dir: lib/src/presentation/l10n/arb
-output-class: {{project_name.pascalCase()}}AndroidAppLocalizations
+output-class: AppLocalizations
 output-dir: lib/src/presentation/l10n
 template-arb-file: app_{{default_language}}.arb
-output-localization-file: {{project_name}}_android_app_localizations.dart
+output-localization-file: app_localizations.dart
 nullable-getter: false
 synthetic-package: false
 header: // coverage:ignore-file
 {{/android}}{{#ios}}arb-dir: lib/src/presentation/l10n/arb
-output-class: {{project_name.pascalCase()}}IosAppLocalizations
+output-class: AppLocalizations
 output-dir: lib/src/presentation/l10n
 template-arb-file: app_{{default_language}}.arb
-output-localization-file: {{project_name}}_ios_app_localizations.dart
+output-localization-file: app_localizations.dart
 nullable-getter: false
 synthetic-package: false
 header: // coverage:ignore-file
 {{/ios}}{{#linux}}arb-dir: lib/src/presentation/l10n/arb
-output-class: {{project_name.pascalCase()}}LinuxAppLocalizations
+output-class: AppLocalizations
 output-dir: lib/src/presentation/l10n
 template-arb-file: app_{{default_language}}.arb
-output-localization-file: {{project_name}}_linux_app_localizations.dart
+output-localization-file: app_localizations.dart
 nullable-getter: false
 synthetic-package: false
 header: // coverage:ignore-file
 {{/linux}}{{#macos}}arb-dir: lib/src/presentation/l10n/arb
-output-class: {{project_name.pascalCase()}}MacosAppLocalizations
+output-class: AppLocalizations
 output-dir: lib/src/presentation/l10n
 template-arb-file: app_{{default_language}}.arb
-output-localization-file: {{project_name}}_macos_app_localizations.dart
+output-localization-file: app_localizations.dart
 nullable-getter: false
 synthetic-package: false
 header: // coverage:ignore-file
 {{/macos}}{{#web}}arb-dir: lib/src/presentation/l10n/arb
-output-class: {{project_name.pascalCase()}}WebAppLocalizations
+output-class: AppLocalizations
 output-dir: lib/src/presentation/l10n
 template-arb-file: app_{{default_language}}.arb
-output-localization-file: {{project_name}}_web_app_localizations.dart
+output-localization-file: app_localizations.dart
 nullable-getter: false
 synthetic-package: false
 header: // coverage:ignore-file
 {{/web}}{{#windows}}arb-dir: lib/src/presentation/l10n/arb
-output-class: {{project_name.pascalCase()}}WindowsAppLocalizations
+output-class: AppLocalizations
 output-dir: lib/src/presentation/l10n
 template-arb-file: app_{{default_language}}.arb
-output-localization-file: {{project_name}}_windows_app_localizations.dart
+output-localization-file: app_localizations.dart
 nullable-getter: false
 synthetic-package: false
 header: // coverage:ignore-file
 {{/windows}}{{#mobile}}arb-dir: lib/src/presentation/l10n/arb
-output-class: {{project_name.pascalCase()}}MobileAppLocalizations
+output-class: AppLocalizations
 output-dir: lib/src/presentation/l10n
 template-arb-file: app_{{default_language}}.arb
-output-localization-file: {{project_name}}_mobile_app_localizations.dart
+output-localization-file: app_localizations.dart
 nullable-getter: false
 synthetic-package: false
 header: // coverage:ignore-file

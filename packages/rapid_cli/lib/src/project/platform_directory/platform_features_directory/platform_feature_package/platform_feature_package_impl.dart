@@ -497,8 +497,7 @@ class LanguageLocalizationsFileImpl extends DartFileImpl
             'presentation',
             'l10n',
           ),
-          name:
-              '${platformFeaturePackage.packageName()}_localizations_$language',
+          name: '${platformFeaturePackage.name}_localizations_$language',
         );
 }
 

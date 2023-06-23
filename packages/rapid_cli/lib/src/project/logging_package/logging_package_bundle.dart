@@ -8,7 +8,7 @@ final loggingPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": ".gitignore",
       "data":
-          "IyBGaWxlcyBhbmQgZGlyZWN0b3JpZXMgY3JlYXRlZCBieSBwdWIuCi5kYXJ0X3Rvb2wvCi5wYWNrYWdlcwoKIyBDb252ZW50aW9uYWwgZGlyZWN0b3J5IGZvciBidWlsZCBvdXRwdXRzLgpidWlsZC8KCiMgQ29udmVudGlvbmFsIGRpcmVjdG9yeSBmb3IgY292ZXJhZ2Ugb3V0cHV0cy4KL2NvdmVyYWdlCg==",
+          "IyBNaXNjZWxsYW5lb3VzCiouY2xhc3MKKi5sb2cKKi5weWMKKi5zd3AKLkRTX1N0b3JlCi5hdG9tLwouYnVpbGRsb2cvCi5oaXN0b3J5Ci5zdm4vCm1pZ3JhdGVfd29ya2luZ19kaXIvCgojIEludGVsbGlKIHJlbGF0ZWQKKi5pbWwKKi5pcHIKKi5pd3MKLmlkZWEvCgojIFRoZSAudnNjb2RlIGZvbGRlciBjb250YWlucyBsYXVuY2ggY29uZmlndXJhdGlvbiBhbmQgdGFza3MgeW91IGNvbmZpZ3VyZSBpbgojIFZTIENvZGUgd2hpY2ggeW91IG1heSB3aXNoIHRvIGJlIGluY2x1ZGVkIGluIHZlcnNpb24gY29udHJvbCwgc28gdGhpcyBsaW5lCiMgaXMgY29tbWVudGVkIG91dCBieSBkZWZhdWx0LgojLnZzY29kZS8KCiMgRmlsZXMgYW5kIGRpcmVjdG9yaWVzIGNyZWF0ZWQgYnkgcHViLgouZGFydF90b29sLwoucGFja2FnZXMKCiMgQ29udmVudGlvbmFsIGRpcmVjdG9yeSBmb3IgYnVpbGQgb3V0cHV0cy4KYnVpbGQvCgojIENvbnZlbnRpb25hbCBkaXJlY3RvcnkgZm9yIGNvdmVyYWdlIG91dHB1dHMuCi9jb3ZlcmFnZQo=",
       "type": "text"
     },
     {

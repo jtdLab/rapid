@@ -25,7 +25,7 @@ dynamic performTest({
       await verifyNoAnalyzerIssues();
       await verifyNoFormattingIssues();
       final feature = tester.featurePackage('${featureName}_page', platform);
-      final l10nDir = tester.l10nDirectory('${featureName}_widget', platform);
+      final l10nDir = tester.l10nDirectory('${featureName}_page', platform);
       verifyDoExist([
         feature,
         if (localization) l10nDir,

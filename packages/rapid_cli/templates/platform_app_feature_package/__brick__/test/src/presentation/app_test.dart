@@ -617,7 +617,6 @@ void main() {
   });
 }
 {{/linux}}{{#macos}}import 'package:auto_route/auto_route.dart';
-import 'package:flutter/material.dart' show ThemeMode;
 import 'package:{{project_name}}_macos_app/src/presentation/app.dart';
 import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';

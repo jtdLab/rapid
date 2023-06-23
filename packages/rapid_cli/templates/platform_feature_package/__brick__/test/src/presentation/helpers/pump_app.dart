@@ -1,7 +1,7 @@
 {{#routable}}import 'package:auto_route/auto_route.dart';{{/routable}}{{#isWidget}}import 'package:auto_route/auto_route.dart';{{/isWidget}}import 'package:flutter_bloc/flutter_bloc.dart';import 'package:flutter_test/flutter_test.dart';{{#android}}import 'package:{{project_name}}_android_app/{{project_name}}_android_app.dart';{{#isTabFlow}}{{#subRoutes}}import 'package:{{project_name}}_android_{{name.snakeCase()}}/{{project_name}}_android_{{name.snakeCase()}}.dart';{{/subRoutes}}{{/isTabFlow}}{{^isWidget}}import 'package:{{project_name}}_android_{{name.snakeCase()}}/{{project_name}}_android_{{name.snakeCase()}}.dart';{{/isWidget}}{{#isWidget}}{{#localization}}import 'package:{{project_name}}_android_{{name.snakeCase()}}/{{project_name}}_android_{{name.snakeCase()}}.dart';{{/localization}}{{/isWidget}}import 'package:{{project_name}}_ui_android/{{project_name}}_ui_android.dart';{{/android}}
 {{#ios}}import 'package:{{project_name}}_ios_app/{{project_name}}_ios_app.dart';{{#isTabFlow}}{{#subRoutes}}import 'package:{{project_name}}_ios_{{name.snakeCase()}}/{{project_name}}_ios_{{name.snakeCase()}}.dart';{{/subRoutes}}{{/isTabFlow}}{{^isWidget}}import 'package:{{project_name}}_ios_{{name.snakeCase()}}/{{project_name}}_ios_{{name.snakeCase()}}.dart';{{/isWidget}}{{#isWidget}}{{#localization}}import 'package:{{project_name}}_ios_{{name.snakeCase()}}/{{project_name}}_ios_{{name.snakeCase()}}.dart';{{/localization}}{{/isWidget}}import 'package:{{project_name}}_ui_ios/{{project_name}}_ui_ios.dart';{{/ios}}
 {{#linux}}import 'package:{{project_name}}_linux_app/{{project_name}}_linux_app.dart';{{#isTabFlow}}{{#subRoutes}}import 'package:{{project_name}}_linux_{{name.snakeCase()}}/{{project_name}}_linux_{{name.snakeCase()}}.dart';{{/subRoutes}}{{/isTabFlow}}{{^isWidget}}import 'package:{{project_name}}_linux_{{name.snakeCase()}}/{{project_name}}_linux_{{name.snakeCase()}}.dart';{{/isWidget}}{{#isWidget}}{{#localization}}import 'package:{{project_name}}_linux_{{name.snakeCase()}}/{{project_name}}_linux_{{name.snakeCase()}}.dart';{{/localization}}{{/isWidget}}import 'package:{{project_name}}_ui_linux/{{project_name}}_ui_linux.dart';{{/linux}}
-{{#macos}}import 'package:{{project_name}}_macos_app/{{project_name}}_macos_app.dart';{{#isTabFlow}}{{#subRoutes}}import 'package:{{project_name}}_macos_{{name.snakeCase()}}/{{project_name}}_macos_{{name.snakeCase()}}.dart';{{/subRoutes}}{{/isTabFlow}}{{^isWidget}}import 'package:{{project_name}}_macos_{{name.snakeCase()}}/{{project_name}}_macos_{{name.snakeCase()}}.dart';{{/isWidget}}{{#isWidget}}{{#localization}}import 'package:{{project_name}}_macos_{{name.snakeCase()}}/{{project_name}}_macos_{{name.snakeCase()}}.dart';{{/localization}}{{/isWidget}}import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';import 'package:flutter/material.dart' show ThemeMode;{{/macos}}
+{{#macos}}import 'package:{{project_name}}_macos_app/{{project_name}}_macos_app.dart';{{#isTabFlow}}{{#subRoutes}}import 'package:{{project_name}}_macos_{{name.snakeCase()}}/{{project_name}}_macos_{{name.snakeCase()}}.dart';{{/subRoutes}}{{/isTabFlow}}{{^isWidget}}import 'package:{{project_name}}_macos_{{name.snakeCase()}}/{{project_name}}_macos_{{name.snakeCase()}}.dart';{{/isWidget}}{{#isWidget}}{{#localization}}import 'package:{{project_name}}_macos_{{name.snakeCase()}}/{{project_name}}_macos_{{name.snakeCase()}}.dart';{{/localization}}{{/isWidget}}import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';{{/macos}}
 {{#web}}import 'package:{{project_name}}_web_app/{{project_name}}_web_app.dart';{{#isTabFlow}}{{#subRoutes}}import 'package:{{project_name}}_web_{{name.snakeCase()}}/{{project_name}}_web_{{name.snakeCase()}}.dart';{{/subRoutes}}{{/isTabFlow}}{{^isWidget}}import 'package:{{project_name}}_web_{{name.snakeCase()}}/{{project_name}}_web_{{name.snakeCase()}}.dart';{{/isWidget}}{{#isWidget}}{{#localization}}import 'package:{{project_name}}_web_{{name.snakeCase()}}/{{project_name}}_web_{{name.snakeCase()}}.dart';{{/localization}}{{/isWidget}}import 'package:{{project_name}}_ui_web/{{project_name}}_ui_web.dart';{{/web}}
 {{#windows}}import 'package:{{project_name}}_windows_app/{{project_name}}_windows_app.dart';{{#isTabFlow}}{{#subRoutes}}import 'package:{{project_name}}_windows_{{name.snakeCase()}}/{{project_name}}_windows_{{name.snakeCase()}}.dart';{{/subRoutes}}{{/isTabFlow}}{{^isWidget}}import 'package:{{project_name}}_windows_{{name.snakeCase()}}/{{project_name}}_windows_{{name.snakeCase()}}.dart';{{/isWidget}}{{#isWidget}}{{#localization}}import 'package:{{project_name}}_windows_{{name.snakeCase()}}/{{project_name}}_windows_{{name.snakeCase()}}.dart';{{/localization}}{{/isWidget}}import 'package:{{project_name}}_ui_windows/{{project_name}}_ui_windows.dart';{{/windows}}
 {{#mobile}}import 'package:{{project_name}}_mobile_app/{{project_name}}_mobile_app.dart';{{#isTabFlow}}{{#subRoutes}}import 'package:{{project_name}}_mobile_{{name.snakeCase()}}/{{project_name}}_mobile_{{name.snakeCase()}}.dart';{{/subRoutes}}{{/isTabFlow}}{{^isWidget}}import 'package:{{project_name}}_mobile_{{name.snakeCase()}}/{{project_name}}_mobile_{{name.snakeCase()}}.dart';{{/isWidget}}{{#isWidget}}{{#localization}}import 'package:{{project_name}}_mobile_{{name.snakeCase()}}/{{project_name}}_mobile_{{name.snakeCase()}}.dart';{{/localization}}{{/isWidget}}import 'package:{{project_name}}_ui_mobile/{{project_name}}_ui_mobile.dart';{{/mobile}}
@@ -18,7 +18,7 @@
 /// The [providers] parameter enables injection of blocs or cubits
 /// into the widget tree above [widget].
 ///
-/// Set the [withScaffold] option to wrap [widget] with an [ApfelHaScaffold].
+/// Set the [withScaffold] option to wrap [widget] with an [{{project_name.pascalCase()}}Scaffold].
 /// This is particularly useful when testing subwidgets within a page or flow.
 Widget appWrapper({
   {{#localization}}Locale? locale,{{/localization}}
@@ -39,7 +39,8 @@ Widget appWrapper({
   }
 
   if (withScaffold) {
-    child = {{projectName.pascalCase()}}Scaffold(body: child);
+{{^macos}}    child = {{project_name.pascalCase()}}Scaffold(body: child);{{/macos}}
+{{#macos}}    child = {{project_name.pascalCase()}}Scaffold(children: [child]);{{/macos}}
   }
 
   return App.test(
@@ -56,7 +57,7 @@ Widget appWrapper({
 extension WidgetTesterX on WidgetTester {
   Future<void> pumpApp({
     {{#localization}}Locale? locale,{{/localization}}
-    ThemeMode? themeMode,
+    {{#android}}ThemeMode? themeMode{{/android}}{{#ios}}Brightness? brightness{{/ios}}{{#linux}}ThemeMode? themeMode{{/linux}}{{#macos}}ThemeMode? themeMode{{/macos}}{{#web}}ThemeMode? themeMode{{/web}}{{#windows}}ThemeMode? themeMode{{/windows}}{{#mobile}}ThemeMode? themeMode{{/mobile}},
     NavigatorObserver? observer,
     List<BlocProvider> providers = const [],
     bool withScaffold = false,
@@ -65,7 +66,7 @@ extension WidgetTesterX on WidgetTester {
     await pumpWidget(
       appWrapper(
         {{#localization}}locale: locale,{{/localization}}
-        themeMode: themeMode,
+        {{#android}}themeMode: themeMode{{/android}}{{#ios}}brightness: brightness{{/ios}}{{#linux}}themeMode: themeMode{{/linux}}{{#macos}}themeMode: themeMode{{/macos}}{{#web}}themeMode: themeMode{{/web}}{{#windows}}themeMode: themeMode{{/windows}}{{#mobile}}themeMode: themeMode{{/mobile}},
         observer: observer,
         providers: providers,
         withScaffold: withScaffold,

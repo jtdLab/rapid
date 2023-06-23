@@ -127,9 +127,15 @@ class {{name.pascalCase()}} extends StatelessWidget {
 {{#isPage}}{{#exampleTranslation}}final title = context.l10n.title;
 
 {{/exampleTranslation}}    return {{project_name.pascalCase()}}Scaffold(
-      body: Center(
-        child: Text({{#exampleTranslation}}title{{/exampleTranslation}}{{^exampleTranslation}}toString(){{/exampleTranslation}}),
-      ),
+      children: [
+        ContentArea(
+          builder: (context, _) {
+            return Center(
+              child: Text({{#exampleTranslation}}title{{/exampleTranslation}}{{^exampleTranslation}}toString(){{/exampleTranslation}}),
+            );
+          },
+        ),
+      ],
     );{{/isPage}}
 {{#isTabFlow}}    // TODO: See https://pub.dev/packages/auto_route#tab-navigation
     return const AutoTabsRouter(

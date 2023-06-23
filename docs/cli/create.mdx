@@ -1,0 +1,91 @@
+# Create Command
+
+This command creates a new Rapid project.
+
+```
+rapid create <project name> [arguments]
+```
+
+Example:
+
+```bash
+# create a new project named "cool_app" supporting no platforms
+rapid create cool_app
+
+# create a new project named "cool_app" supporting ios and web platforms
+rapid create cool_app --ios --web
+```
+
+## Parameters
+
+### `--output-dir (-o)`
+
+- Description: The directory where to generate the new project.
+- Type: String
+- Required: No
+- Default: `"."`
+
+### `--desc`
+
+- Description: The description of the new project.
+- Type: String
+- Required: No
+- Default: `"A Rapid app."`
+
+### `--org-name`
+
+- Description: The organization of the new project.
+- Type: String
+- Required: No
+- Default: `"com.example"`
+
+### `--language`
+
+- Description: The default language of the new project.
+- Type: String
+- Required: No
+- Default: `"en"`
+
+## Flags
+
+### `--android`
+
+- Description: Whether the new project supports the Android platform.
+- Type: Boolean
+- Required: No
+
+### `--ios`
+
+- Description: Whether the new project supports the iOS platform.
+- Type: Boolean
+- Required: No
+
+### `--linux`
+
+- Description: Whether the new project supports the Linux platform.
+- Type: Boolean
+- Required: No
+
+### `--macos`
+
+- Description: Whether the new project supports the macOS platform.
+- Type: Boolean
+- Required: No
+
+### `--web`
+
+- Description: Whether the new project supports the Web platform.
+- Type: Boolean
+- Required: No
+
+### `--windows`
+
+- Description: Whether the new project supports the Windows platform.
+- Type: Boolean
+- Required: No
+
+### `--mobile`
+
+- Description: Whether the new project supports the Mobile platform.
+- Type: Boolean
+- Required: No

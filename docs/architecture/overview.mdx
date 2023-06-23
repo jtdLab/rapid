@@ -1,0 +1,62 @@
+# Overview
+
+The foundation of Rapid Architecture draws inspiration from both Domain-Driven Design and Clean Architecture, incorporating key concepts from these methodologies into the context of Flutter development. By leveraging popular packages from [pub.dev](https.//pub.dev), Rapid Architecture empowers developers with a robust framework.
+
+🧩 Modularization: Organize code into small packages for better structure, reusability, and maintainability.
+
+🧪 Testability: Facilitate comprehensive unit testing and integration testing to ensure code reliability.
+
+➡️ Unidirectional Data Flow: Implement a predictable data flow pattern for better control and maintainability.
+
+📥 Dependency Injection: Manage object dependencies with dependency injection for loose coupling and flexibility.
+
+🔄 State Management: Effectively manage application state for smooth UI updates and better user experience.
+
+🗺️ Routing: Implement a navigation system for seamless screen transitions and user flow control.
+
+🌍 Localization/Internationalization: Support multiple languages and adapt to different locales.
+
+🎨 Design System, Theming: Establish a design system and implement theming for consistent and visually appealing UI.
+
+🧱 Immutable Data Classes: Utilize immutable data classes for safer and more predictable data handling.
+
+## Layers & Data Flow
+
+<Image
+  src="assets/dataflow.svg"
+  alt="Dataflow"
+  zoom={false}
+  width="300"
+  height="525"
+/>
+
+In the Rapid Architecture, the application is organized into four layers: Presentation, Application, Domain, and Infrastructure. These layers define the flow of data within the system.
+
+The data flows from the user through each layer, starting with the Presentation layer. This layer handles the user interface and user interactions, collecting and forwarding the data to the subsequent layers.
+
+From the Presentation layer, the data moves to the Application layer. Here, the business logic and application-specific operations are performed. The Application layer acts as a mediator, coordinating the flow of data between the Presentation and Domain layers.
+
+Next, the data reaches the Domain layer, which represents the core domain of the application. This layer encapsulates the business rules, entities, and domain-specific logic. The Domain layer processes and manipulates the data according to the defined business requirements.
+
+After the Domain layer, the data passes through the Infrastructure layer. This layer interacts with external or local data sources and services, such as databases or APIs, to fetch or store data as needed. The Infrastructure layer handles data persistence, network communications, and other technical aspects.
+
+Finally, the data flows back through the layers in the reverse order, from the Infrastructure layer to the Domain layer, then to the Application layer, and finally to the Presentation layer. Each layer may apply transformations or modifications to the data before passing it to the next layer, ensuring consistency and adherence to the defined business rules.
+
+This layered architecture allows for a structured and organized approach to data flow, ensuring separation of concerns and modularity in the application. It facilitates easy integration with external systems and services while maintaining a clear distinction between business logic and technical implementation.
+
+## Overall Structure
+
+<Image
+  src="assets/project_overview.svg"
+  alt="Project Overview"
+  zoom={false}
+  width="300"
+  height="300"
+/>
+
+The image above illustrates the architecture of the Rapid project, showcasing the different modules and their relationships. The project consists of two main modules: the UI Module and the App Module.
+
+- The [UI Module](/architecture/ui-module) is dedicated to the user interface aspects of the application, with a primary focus on implementing a custom design language that embodies the brand identity. It aims to deliver a visually appealing and intuitive user experience, ensuring that users can interact with the application effortlessly and find it aesthetically pleasing.
+- The [App Module](/architecture/app-module) encompasses the core application logic, business rules, and data processing. It manages the application's functionality, orchestrates data flow between different layers, and implements the domain-specific operations.
+
+These modules work together in a coordinated manner to achieve the desired functionality and user experience. They have well-defined responsibilities and boundaries, allowing for modularity and maintainability in the project's architecture.

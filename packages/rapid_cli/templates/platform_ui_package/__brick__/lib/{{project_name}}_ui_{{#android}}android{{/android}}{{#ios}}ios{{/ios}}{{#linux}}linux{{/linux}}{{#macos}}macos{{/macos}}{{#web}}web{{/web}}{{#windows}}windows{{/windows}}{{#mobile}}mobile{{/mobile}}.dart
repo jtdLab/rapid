@@ -43,7 +43,7 @@ export 'src/scaffold_theme.dart';
 library {{project_name}}_ui_macos;
 
 export 'package:cupertino_icons/cupertino_icons.dart';
-export 'package:flutter/cupertino.dart' show Brightness;
+export 'package:flutter/material.dart' show ThemeMode;
 export 'package:flutter/widgets.dart' hide Router;
 export 'package:macos_ui/macos_ui.dart';
 export 'package:{{project_name}}_ui/{{project_name}}_ui.dart';

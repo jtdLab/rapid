@@ -1,130 +1,107 @@
 @Tags(['e2e'])
-import 'dart:io';
-
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
-
-// TODO test sub-infrastructure
 
 void main() {
   group(
     'E2E',
     () {
-      cwd = Directory.current;
+      dynamic performTest({
+        required String subInfrastructure,
+        String? dir,
+      }) =>
+          withTempDir((root) async {
+            // Arrange
+            final tester = await RapidE2ETester.withProject(root);
+            if (subInfrastructure != 'default') {
+              await tester.runRapidCommand([
+                'domain',
+                'add',
+                'sub_domain',
+                subInfrastructure,
+              ]);
+            }
+            final entity = 'FooBar';
+            await tester.runRapidCommand([
+              'domain',
+              subInfrastructure,
+              'add',
+              'entity',
+              entity,
+              if (dir != null) '--output-dir',
+              if (dir != null) dir,
+            ]);
+            await tester.runRapidCommand([
+              'infrastructure',
+              subInfrastructure,
+              'add',
+              'data_transfer_object',
+              '--entity',
+              entity,
+              if (dir != null) '--output-dir',
+              if (dir != null) dir,
+            ]);
 
-      late RapidCommandRunner commandRunner;
+            // Act
+            await tester.runRapidCommand([
+              'infrastructure',
+              subInfrastructure,
+              'remove',
+              'data_transfer_object',
+              '--entity',
+              entity,
+              if (dir != null) '--dir',
+              if (dir != null) dir
+            ]);
 
-      setUp(() async {
-        Directory.current = getTempDir();
-
-        await setupProject();
-        commandRunner = RapidCommandRunner();
-      });
-
-      tearDown(() {
-        Directory.current = cwd;
-      });
-
-      group('infrastructure <sub_infrastructure> remove data_transfer_object',
-          () {
-        Future<void> performTest({
-          String? dir,
-          TestType type = TestType.normal,
-          required RapidCommandRunner commandRunner,
-        }) async {
-          // Arrange
-          await setupProject();
-          final entity = 'FooBar';
-          await commandRunner.run([
-            'domain',
-            'default',
-            'add',
-            'entity',
-            entity,
-            if (dir != null) '--output-dir',
-            if (dir != null) dir,
-          ]);
-          await commandRunner.run([
-            'infrastructure',
-            'default',
-            'add',
-            'data_transfer_object',
-            '--entity',
-            entity,
-            if (dir != null) '--output-dir',
-            if (dir != null) dir,
-          ]);
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'infrastructure',
-            'default',
-            'remove',
-            'data_transfer_object',
-            '--entity',
-            entity,
-            if (dir != null) '--dir',
-            if (dir != null) dir
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist({
-            ...dataTransferObjectFiles(entity: entity, outputDir: dir),
-          });
-          if (type != TestType.fast) {
-            verifyDoNotHaveTests({
-              infrastructurePackage(),
+            // Assert
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+            verifyDoNotExist({
+              ...tester.dataTransferObjectFiles(
+                entity: entity,
+                subInfrastructureName: subInfrastructure,
+                outputDir: dir,
+              ),
             });
-          }
-        }
+            verifyDoNotHaveTests(
+                [tester.infrastructurePackage(subInfrastructure)]);
+          });
 
-        test(
-          '(fast) ',
-          () => performTest(
-            type: TestType.fast,
-            commandRunner: commandRunner,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'infrastructure default remove data_transfer_object',
+        performTest(
+          subInfrastructure: 'default',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          'with dir (fast) ',
-          () => performTest(
-            dir: 'foo',
-            type: TestType.fast,
-            commandRunner: commandRunner,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'infrastructure default remove data_transfer_object (with dir)',
+        performTest(
+          subInfrastructure: 'default',
+          dir: 'foo',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          '',
-          () => performTest(
-            commandRunner: commandRunner,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
+      test(
+        'infrastructure <sub_infrastructure> remove data_transfer_object',
+        performTest(
+          subInfrastructure: 'foo_bar',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          'with dir',
-          () => performTest(
-            dir: 'foo',
-            commandRunner: commandRunner,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
-      });
+      test(
+        'infrastructure <sub_infrastructure> remove data_transfer_object (with dir)',
+        performTest(
+          subInfrastructure: 'foo_bar',
+          dir: 'foo',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
     },
   );
 }

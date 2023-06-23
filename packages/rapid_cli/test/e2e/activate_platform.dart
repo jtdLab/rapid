@@ -1,59 +1,32 @@
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:test/test.dart';
 
 import 'common.dart';
 
-Future<void> performTest({
+dynamic performTest({
   required Platform platform,
-  TestType type = TestType.normal,
-  required RapidCommandRunner commandRunner,
-}) async {
-  // Arrange
-  await setupProject();
+}) =>
+    withTempDir((root) async {
+      // Arrange
+      final tester = await RapidE2ETester.withProject(root);
 
-  // Act
-  final commandResult = await commandRunner.run([
-    'activate',
-    platform.name,
-  ]);
+      // Act
+      await tester.runRapidCommand(['activate', platform.name]);
 
-  // Assert
-  expect(commandResult, equals(ExitCode.success.code));
-  await verifyNoAnalyzerIssues();
-  await verifyNoFormattingIssues();
-  final platformPackages = platformDependentPackages([platform]);
-  final featurePackages = [
-    featurePackage('app', platform),
-    featurePackage('home_page', platform),
-  ];
-  verifyDoExist([
-    ...platformIndependentPackages,
-    ...platformPackages,
-    ...featurePackages,
-  ]);
-  verifyDoNotExist(
-    allPlatformDependentPackages.without(platformPackages),
-  );
-  if (type != TestType.fast) {
-    verifyDoNotHaveTests([
-      ...platformIndependentPackagesWithoutTests,
-      ...platformDependentPackagesWithoutTests(platform)
-    ]);
-    await verifyTestsPassWith100PercentCoverage([
-      ...platformIndependentPackagesWithTests,
-      ...platformDependentPackagesWithTests(platform),
-      ...featurePackages,
-    ]);
-  }
+      // Assert
+      await verifyNoAnalyzerIssues();
+      await verifyNoFormattingIssues();
+      final platformPackages = tester.platformDependentPackages(platform);
+      final featurePackages = [
+        tester.featurePackage('app', platform),
+        tester.featurePackage('home_page', platform),
+      ];
+      verifyDoExist([
+        ...platformPackages,
+        ...featurePackages,
+      ]);
 
-  if (type == TestType.slow) {
-    final failedIntegrationTests = await runFlutterIntegrationTest(
-      platformRootPackage(platform),
-      pathToTests: 'integration_test/development_test.dart',
-      platform: platform,
-    );
-    expect(failedIntegrationTests, 0);
-  }
-}
+      await verifyTestsPassWith100PercentCoverage([
+        ...tester.platformDependentPackagesWithTests(platform),
+        ...featurePackages,
+      ]);
+    });

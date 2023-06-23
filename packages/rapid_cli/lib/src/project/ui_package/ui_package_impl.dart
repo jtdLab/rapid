@@ -22,8 +22,8 @@ class UiPackageImpl extends DartPackageImpl
           path: p.join(
             project.path,
             'packages',
-            '${project.name()}_ui',
-            '${project.name()}_ui',
+            '${project.name}_ui',
+            '${project.name}_ui',
           ),
         );
 
@@ -37,7 +37,7 @@ class UiPackageImpl extends DartPackageImpl
   WidgetBuilder? widgetOverrides;
 
   @override
-  final Project project;
+  final RapidProject project;
 
   @override
   ThemeExtensionsFile get themeExtensionsFile =>
@@ -64,7 +64,7 @@ class UiPackageImpl extends DartPackageImpl
 
   @override
   Future<void> create() async {
-    final projectName = project.name();
+    final projectName = project.name;
 
     await generate(
       bundle: uiPackageBundle,
@@ -139,7 +139,7 @@ class WidgetImpl extends FileSystemEntityCollection
 
   @override
   Future<void> create() async {
-    final projectName = _uiPackage.project.name();
+    final projectName = _uiPackage.project.name;
 
     final generator = await super.generator(widgetBundle);
     await generator.generate(
@@ -178,7 +178,7 @@ class ThemeExtensionsFileImpl extends DartFileImpl
 
   @override
   void addThemeExtension(String name) {
-    final projectName = _uiPackage.project.name();
+    final projectName = _uiPackage.project.name;
 
     final themes = ['light', 'dark']; // TODO read from file
 
@@ -201,7 +201,7 @@ class ThemeExtensionsFileImpl extends DartFileImpl
 
   @override
   void removeThemeExtension(String name) {
-    final projectName = _uiPackage.project.name();
+    final projectName = _uiPackage.project.name;
 
     final themes = ['light', 'dark']; // TODO read from file
 

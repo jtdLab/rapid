@@ -25,6 +25,15 @@ import 'injection.config.dart';
     {{#mobile}}{{project_name.pascalCase()}}MobileHomePagePackageModule,{{/mobile}}
   ],
 )
-void configureDependencies(String environment, String platform) => getIt.init(
+Future<void> configureDependencies(String environment, String platform) async =>
+    await getIt.init(
       environmentFilter: NoEnvOrContainsAny({environment, platform}),
     );
+
+/// Setup registering third party packages.
+///
+/// For more info see: https://pub.dev/packages/injectable#registering-third-party-types
+@module
+abstract class RegisterModule {
+  // TODO: register third party dependencies here
+}

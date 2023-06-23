@@ -49,12 +49,33 @@ vars:
   mobile:
     type: boolean
     description: The project supports the Mobile (Android + iOS shared) platform
+  localization:
+    type: boolean
+    description: Wheter the feature has localizations
+  exampleTranslation:
+    type: boolean
+    description: Wheter the feature has an example translation.
   default_language:
     type: string
     description: The default language of the feature
   routable:
     type: boolean
     description: Wheter the feature has its own sub router
-  route_name:
-    type: string
-    description: The name of the route
+  isCustom:
+    type: boolean
+    description: Wheter the feature is custom
+  isFlow:
+    type: boolean
+    description: Wheter the feature is a standard flow
+  isTabFlow:
+    type: boolean
+    description: Wheter the feature is a tab flow
+  isPage:
+    type: boolean
+    description: Wheter the feature is a page
+  isWidget:
+    type: boolean
+    description: Wheter the feature is a widget
+  subRoutes:
+    type: array
+    description: The subroutes if the feature is a flow

@@ -1,78 +1,40 @@
-import 'package:meta/meta.dart';
-import 'package:rapid_cli/src/core/directory.dart';
+import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/core/yaml_file.dart';
-import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/domain_directory/domain_directory.dart';
-import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_directory.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_root_package.dart';
+import 'package:rapid_cli/src/project/project_impl.dart';
 
+import '../project_config.dart';
+import 'core/generator_mixins.dart';
 import 'di_package/di_package.dart';
+import 'domain_directory/domain_directory.dart';
+import 'infrastructure_directory/infrastructure_directory.dart';
 import 'logging_package/logging_package.dart';
 import 'platform_directory/platform_directory.dart';
 import 'platform_ui_package/platform_ui_package.dart';
-import 'project_impl.dart';
 import 'ui_package/ui_package.dart';
 
-// TODO: all create methods of project entities need better docs.
-
-class RapidException implements Exception {
-  final String message;
-
-  RapidException([this.message = '']);
-
-  @override
-  String toString() => 'RapidException($message)';
-}
-
-/// Signature of [Project.new].
-typedef ProjectBuilder = Project Function({String path});
-
-/// {@template project}
+/// {@template rapid_project}
 /// Abstraction of a Rapid project.
 /// {@endtemplate}
-abstract class Project implements Directory, OverridableGenerator {
-  /// {@macro project}
-  factory Project({
-    String path = '.',
+abstract class RapidProject extends DartPackageImpl
+    with OverridableGenerator, Generatable {
+  /// {@macro rapid_project}
+  factory RapidProject({
+    required RapidProjectConfig config,
   }) =>
-      ProjectImpl(
-        path: path,
-      );
+      RapidProjectImpl(config: config);
 
-  /// Use to override [melosFile] for testing.
-  @visibleForTesting
-  MelosFileBuilder? melosFileOverrides;
+  /// The required name as defined in the rapid section of "pubspec.yaml".
+  /// This name is used for naming project directories, files and components.
+  String get name;
 
-  /// Use to override [diPackage] for testing.
-  @visibleForTesting
-  DiPackageBuilder? diPackageOverrides;
+  /// Full file path to the location of this project.
+  @override
+  String get path;
 
-  /// Use to override [domainDirectory] for testing.
-  @visibleForTesting
-  DomainDirectoryBuilder? domainDirectoryOverrides;
-
-  /// Use to override [infrastructureDirectory] for testing.
-  @visibleForTesting
-  InfrastructureDirectoryBuilder? infrastructureDirectoryOverrides;
-
-  /// Use to override [loggingPackage] for testing.
-  @visibleForTesting
-  LoggingPackageBuilder? loggingPackageOverrides;
-
-  /// Use to override [platformDirectory] for testing.
-  @visibleForTesting
-  PlatformDirectoryBuilder? platformDirectoryOverrides;
-
-  /// Use to override [uiPackage] for testing.
-  @visibleForTesting
-  UiPackageBuilder? uiPackageOverrides;
-
-  /// Use to override [platformUiPackage] for testing.
-  @visibleForTesting
-  PlatformUiPackageBuilder? platformUiPackageOverrides;
-
-  /// Returns the melos file of this projet.
-  MelosFile get melosFile;
+  RapidProjectConfig get config;
 
   /// Returns the di package of this projet.
   DiPackage get diPackage;
@@ -97,17 +59,17 @@ abstract class Project implements Directory, OverridableGenerator {
   /// Returns the platform ui package for [platform] of this projet.
   PlatformUiPackage platformUiPackage({required Platform platform});
 
-  /// Returns the file of this project.
-  String name();
-
-  /// Returns wheter all files of this project exist.
-  bool existsAll();
-
-  /// Returns wheter any file of this project exist.
-  bool existsAny();
-
   /// Returns wheter the [platform] is activated for this project.
   bool platformIsActivated(Platform platform);
+
+  /// All packages of this project.
+  List<DartPackage> get packages;
+
+  /// All feature packages of all active platforms of this project.
+  List<PlatformFeaturePackage> get featurePackages;
+
+  /// All root packages of all active platforms of this project.
+  List<PlatformRootPackage> get rootPackages;
 
   /// Creates this project on disk.
   Future<void> create({
@@ -117,31 +79,4 @@ abstract class Project implements Directory, OverridableGenerator {
     required String language,
     required Set<Platform> platforms,
   });
-}
-
-// TODO replace with RapidException
-class ReadNameFailure implements Exception {}
-
-/// Signature of [MelosFile.new].
-typedef MelosFileBuilder = MelosFile Function({required Project project});
-
-/// {@template melos_file}
-/// Abstraction of the melos file of a Rapid project.
-///
-/// Location: `melos.yaml`
-/// {@endtemplate}
-abstract class MelosFile implements YamlFile {
-  /// {@macro melos_file}
-  factory MelosFile({
-    required Project project,
-  }) =>
-      MelosFileImpl(
-        project: project,
-      );
-
-  /// Returns the project associated with this file.
-  Project get project;
-
-  /// Reads the `name` of this file from disk.
-  String readName();
 }

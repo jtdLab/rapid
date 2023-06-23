@@ -1,11 +1,11 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, unused_element
+// ignore_for_file: type=lint, unused_element, unnecessary_cast
 
 part of 'color_theme.dart';
 
 // **************************************************************************
-// ThemeTailorGenerator
+// TailorAnnotationsGenerator
 // **************************************************************************
 
 class {{project_name.pascalCase()}}ColorTheme extends ThemeExtension<{{project_name.pascalCase()}}ColorTheme>
@@ -45,8 +45,9 @@ class {{project_name.pascalCase()}}ColorTheme extends ThemeExtension<{{project_n
   }
 
   @override
-  {{project_name.pascalCase()}}ColorTheme lerp(ThemeExtension<{{project_name.pascalCase()}}ColorTheme>? other, double t) {
-    if (other is! {{project_name.pascalCase()}}ColorTheme) return this;
+  {{project_name.pascalCase()}}ColorTheme lerp(
+      covariant ThemeExtension<{{project_name.pascalCase()}}ColorTheme>? other, double t) {
+    if (other is! {{project_name.pascalCase()}}ColorTheme) return this as {{project_name.pascalCase()}}ColorTheme;
     return {{project_name.pascalCase()}}ColorTheme(
       primary: Color.lerp(primary, other.primary, t)!,
       secondary: Color.lerp(secondary, other.secondary, t)!,
@@ -74,8 +75,9 @@ class {{project_name.pascalCase()}}ColorTheme extends ThemeExtension<{{project_n
   @override
   int get hashCode {
     return Object.hash(
-        runtimeType,
-        const DeepCollectionEquality().hash(primary),
-        const DeepCollectionEquality().hash(secondary));
+      runtimeType.hashCode,
+      const DeepCollectionEquality().hash(primary),
+      const DeepCollectionEquality().hash(secondary),
+    );
   }
 }

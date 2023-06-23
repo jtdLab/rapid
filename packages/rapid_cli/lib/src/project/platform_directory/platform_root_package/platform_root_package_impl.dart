@@ -5,11 +5,11 @@ import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_native_directory/platform_native_directory.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
+import '../../infrastructure_directory/infrastructure_package/infrastructure_package.dart';
+import '../../project.dart';
+import '../platform_features_directory/platform_feature_package/platform_feature_package.dart';
+import 'platform_native_directory/platform_native_directory.dart';
 import 'platform_root_package.dart';
 import 'platform_root_package_bundle.dart';
 
@@ -23,9 +23,9 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
           path: p.join(
             project.path,
             'packages',
-            project.name(),
-            '${project.name()}_${platform.name}',
-            '${project.name()}_${platform.name}',
+            project.name,
+            '${project.name}_${platform.name}',
+            '${project.name}_${platform.name}',
           ),
         );
 
@@ -34,6 +34,9 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
 
   @override
   InjectionFileBuilder? injectionFileOverrides;
+
+  @override
+  RouterFileBuilder? routerFileOverrides;
 
   @override
   LocalizationsDelegatesFile get localizationsDelegatesFile =>
@@ -48,10 +51,15 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
       );
 
   @override
+  RouterFile get routerFile => (routerFileOverrides ?? RouterFile.new)(
+        rootPackage: this,
+      );
+
+  @override
   final Platform platform;
 
   @override
-  final Project project;
+  final RapidProject project;
 
   // TODO is this correct ??????
   @override
@@ -63,12 +71,19 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
 
   @override
   Future<void> registerFeaturePackage(
-    PlatformFeaturePackage featurePackage,
-  ) async {
+    PlatformFeaturePackage featurePackage, {
+    required bool routing,
+    required bool localization,
+  }) async {
     final packageName = featurePackage.packageName();
-    localizationsDelegatesFile.addLocalizationsDelegate(packageName);
     pubspecFile.setDependency(packageName);
     injectionFile.addFeaturePackage(packageName);
+    if (localization) {
+      localizationsDelegatesFile.addLocalizationsDelegate(packageName);
+    }
+    if (routing) {
+      routerFile.addRouterModule(packageName);
+    }
   }
 
   @override
@@ -79,6 +94,7 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
     localizationsDelegatesFile.removeLocalizationsDelegate(packageName);
     pubspecFile.removeDependency(packageName);
     injectionFile.removeFeaturePackage(packageName);
+    routerFile.removeRouterModule(packageName);
   }
 
   @override
@@ -133,7 +149,7 @@ class NoneIosRootPackageImpl extends PlatformRootPackageImpl
     String? description,
     String? orgName,
   }) async {
-    final projectName = project.name();
+    final projectName = project.name;
 
     await generate(
       bundle: platformRootPackageBundle,
@@ -176,7 +192,7 @@ class IosRootPackageImpl extends PlatformRootPackageImpl
     required String orgName,
     required String language,
   }) async {
-    final projectName = project.name();
+    final projectName = project.name;
 
     await generate(
       bundle: platformRootPackageBundle,
@@ -242,7 +258,7 @@ class MobileRootPackageImpl extends PlatformRootPackageImpl
     required String language,
     String? description,
   }) async {
-    final projectName = project.name();
+    final projectName = project.name;
 
     await generate(
       bundle: platformRootPackageBundle,
@@ -337,14 +353,14 @@ class LocalizationsDelegatesFileImpl extends DartFileImpl
   void removeLocalizationsDelegate(String packageName) {
     removeImport('package:$packageName/$packageName.dart');
 
-    final deleteToRemove = '${packageName.pascalCase}Localizations.delegate';
+    final delegateToRemove = '${packageName.pascalCase}Localizations.delegate';
     final existingDelegates =
         readTopLevelListVar(name: 'localizationsDelegates');
 
-    if (existingDelegates.contains(deleteToRemove)) {
+    if (existingDelegates.contains(delegateToRemove)) {
       setTopLevelListVar(
         name: 'localizationsDelegates',
-        value: existingDelegates..remove(deleteToRemove),
+        value: existingDelegates..remove(delegateToRemove),
       );
     }
   }
@@ -402,7 +418,7 @@ class InjectionFileImpl extends DartFileImpl implements InjectionFile {
       annotation: 'InjectableInit',
       functionName: 'configureDependencies',
       value: existingExternalPackageModules
-          .where((e) => !e.contains(packageName.pascalCase))
+          .where((e) => !e.contains('${packageName.pascalCase}PackageModule'))
           .toList(),
     );
   }
@@ -412,5 +428,83 @@ class InjectionFileImpl extends DartFileImpl implements InjectionFile {
         property: 'externalPackageModules',
         annotation: 'InjectableInit',
         functionName: 'configureDependencies',
+      );
+}
+
+class RouterFileImpl extends DartFileImpl implements RouterFile {
+  RouterFileImpl({
+    required this.rootPackage,
+  }) : super(
+          path: p.join(rootPackage.path, 'lib'),
+          name: 'router',
+        );
+
+  final PlatformRootPackage rootPackage;
+
+  @override
+  void addRouterModule(String packageName) {
+    // TODO rm mulitple reads to the file
+    final projectName = rootPackage.project.name;
+    final platformName = rootPackage.platform.name;
+    addImport('package:$packageName/$packageName.dart');
+
+    final moduleName =
+        '${packageName.replaceAll('${projectName}_${platformName}_', '').pascalCase}Module';
+
+    final content = read();
+    final lines = content.split('\n');
+    final lastImportOrExportIndex =
+        lines.lastIndexWhere((e) => e.startsWith(RegExp('import|export')));
+    lines.insertAll(
+      lastImportOrExportIndex + 1,
+      ['\n', '// TODO: Add routes of $moduleName to the router.'],
+    );
+    write(lines.join('\n'));
+
+    final existingModules = _readModules();
+
+    setTypeListOfAnnotationParamOfClass(
+      property: 'modules',
+      annotation: 'AutoRouterConfig',
+      className: 'Router',
+      value: {
+        ...existingModules,
+        moduleName,
+      }.toList(),
+    );
+  }
+
+  @override
+  void removeRouterModule(String packageName) {
+    final projectName = rootPackage.project.name;
+    final platformName = rootPackage.platform.name;
+
+    final imports = readImports().where((e) => e.contains(packageName));
+    for (final import in imports) {
+      removeImport(import);
+    }
+
+    final existingModules = _readModules();
+
+    setTypeListOfAnnotationParamOfClass(
+      property: 'modules',
+      annotation: 'AutoRouterConfig',
+      className: 'Router',
+      value: existingModules
+          .where(
+            (e) => !e.contains(
+              packageName
+                  .replaceAll('${projectName}_${platformName}_', '')
+                  .pascalCase,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  List<String> _readModules() => readTypeListFromAnnotationParamOfClass(
+        property: 'modules',
+        annotation: 'AutoRouterConfig',
+        className: 'Router',
       );
 }

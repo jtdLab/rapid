@@ -1,12 +1,13 @@
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/directory_impl.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_features_directory.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_navigation_package/platform_navigation_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_root_package.dart';
-import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
 
+import '../project.dart';
 import 'platform_directory.dart';
+import 'platform_features_directory/platform_features_directory.dart';
+import 'platform_navigation_package/platform_navigation_package.dart';
+import 'platform_root_package/platform_root_package.dart';
 
 abstract class PlatformDirectoryImpl extends DirectoryImpl
     implements PlatformDirectory {
@@ -17,8 +18,8 @@ abstract class PlatformDirectoryImpl extends DirectoryImpl
           path: p.join(
             project.path,
             'packages',
-            project.name(),
-            '${project.name()}_${platform.name}',
+            project.name,
+            '${project.name}_${platform.name}',
           ),
         );
 
@@ -32,7 +33,7 @@ abstract class PlatformDirectoryImpl extends DirectoryImpl
   final Platform platform;
 
   @override
-  final Project project;
+  final RapidProject project;
 
   @override
   PlatformNavigationPackage get navigationPackage =>
@@ -76,17 +77,20 @@ class NoneIosDirectoryImpl extends PlatformDirectoryImpl
 
     await navigationPackage.create();
 
-    final appFeaturePackage = featuresDirectory.featurePackage(name: 'app');
+    final appFeaturePackage = featuresDirectory
+        .featurePackage<PlatformAppFeaturePackage>(name: 'app');
     await appFeaturePackage.create(
       description: 'The App feature.', // TODO platform info
       defaultLanguage: language,
       languages: {language},
     );
 
-    final homePageFeaturePackage =
-        featuresDirectory.featurePackage(name: 'home_page');
+    final homePageFeaturePackage = featuresDirectory
+        .featurePackage<PlatformPageFeaturePackage>(name: 'home_page');
     await homePageFeaturePackage.create(
       description: 'The Home Page feature.', // TODO platform info
+      localization: true,
+      exampleTranslation: true,
       defaultLanguage: language,
       languages: {language},
     );
@@ -116,17 +120,19 @@ class IosDirectoryImpl extends PlatformDirectoryImpl implements IosDirectory {
 
     await navigationPackage.create();
 
-    final appFeaturePackage = featuresDirectory.featurePackage(name: 'app');
+    final appFeaturePackage = featuresDirectory
+        .featurePackage<PlatformAppFeaturePackage>(name: 'app');
     await appFeaturePackage.create(
       description: 'The App feature.', // TODO platform info
       defaultLanguage: language,
       languages: {language},
     );
 
-    final homePageFeaturePackage =
-        featuresDirectory.featurePackage(name: 'home_page');
+    final homePageFeaturePackage = featuresDirectory
+        .featurePackage<PlatformPageFeaturePackage>(name: 'home_page');
     await homePageFeaturePackage.create(
       description: 'The Home Page feature.', // TODO platform info
+      localization: true,
       defaultLanguage: language,
       languages: {language},
     );
@@ -162,17 +168,19 @@ class MobileDirectoryImpl extends PlatformDirectoryImpl
 
     await navigationPackage.create();
 
-    final appFeaturePackage = featuresDirectory.featurePackage(name: 'app');
+    final appFeaturePackage = featuresDirectory
+        .featurePackage<PlatformAppFeaturePackage>(name: 'app');
     await appFeaturePackage.create(
       description: 'The App feature.', // TODO platform info
       defaultLanguage: language,
       languages: {language},
     );
 
-    final homePageFeaturePackage =
-        featuresDirectory.featurePackage(name: 'home_page');
+    final homePageFeaturePackage = featuresDirectory
+        .featurePackage<PlatformPageFeaturePackage>(name: 'home_page');
     await homePageFeaturePackage.create(
       description: 'The Home Page feature.', // TODO platform info
+      localization: true,
       defaultLanguage: language,
       languages: {language},
     );

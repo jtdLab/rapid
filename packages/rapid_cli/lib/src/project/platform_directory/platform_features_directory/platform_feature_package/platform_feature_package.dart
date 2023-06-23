@@ -7,8 +7,8 @@ import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
+import '../../../project.dart';
 import 'platform_feature_package_impl.dart';
 
 /// Signature for method that returns the [PlatformFeaturePackage] for [name].
@@ -16,33 +16,19 @@ typedef PlatformFeaturePackageBuilder<T extends PlatformFeaturePackage> = T
     Function(
   String name,
   Platform platform, {
-  required Project project,
+  required RapidProject project,
 });
 
-/// {@template platform_feature_package}
-/// Abstraction of a platform feature package of a Rapid project.
-///
-/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_<feature name>`
-/// {@endtemplate}
 abstract class PlatformFeaturePackage
     implements
         DartPackage,
         OverridableGenerator,
         Comparable<PlatformFeaturePackage> {
-  /// {@macro platform_feature_package}
-  factory PlatformFeaturePackage(
-    String name,
-    Platform platform, {
-    required Project project,
-  }) =>
-      PlatformFeaturePackageImpl(
-        name,
-        platform,
-        project: project,
-      );
-
   @visibleForTesting
   L10nFileBuilder? l10nFileOverrides;
+
+  @visibleForTesting
+  L10nDirectoryBuilder? l10nDirectoryOverrides;
 
   @visibleForTesting
   LanguageLocalizationsFileBuilder? languageLocalizationsFileOverrides;
@@ -57,9 +43,6 @@ abstract class PlatformFeaturePackage
   CubitBuilder? cubitOverrides;
 
   @visibleForTesting
-  PlatformFeaturePackageNavigatorBuilder? get navigatorImplementationOverrides;
-
-  @visibleForTesting
   PlatformFeaturePackageApplicationBarrelFileBuilder?
       applicationBarrelFileOverrides;
 
@@ -70,55 +53,144 @@ abstract class PlatformFeaturePackage
 
   Platform get platform;
 
-  Project get project;
-
-  Set<String> supportedLanguages();
-
-  String defaultLanguage();
+  RapidProject get project;
 
   Bloc bloc({required String name, required String dir});
 
   Cubit cubit({required String name, required String dir});
 
-  PlatformFeaturePackageNavigatorImplementation get navigatorImplementation;
-
   PlatformFeaturePackageApplicationBarrelFile get applicationBarrelFile;
 
   PlatformFeaturePackageBarrelFile get barrelFile;
 
-  Future<void> create({
-    String? description,
-    bool routing,
-    required String defaultLanguage,
-    required Set<String> languages,
-  });
+  bool get hasLanguages;
+
+  Set<String> supportedLanguages();
+
+  String defaultLanguage();
 
   Future<void> setDefaultLanguage(String newDefaultLanguage);
 
   Future<void> addLanguage(String language);
 
   Future<void> removeLanguage(String language);
+}
 
-  // TODO consider required !
+abstract class PlatformRoutableFeaturePackage extends PlatformFeaturePackage {
+  @visibleForTesting
+  PlatformFeaturePackageNavigatorBuilder? get navigatorImplementationOverrides;
 
-  Future<Bloc> addBloc({
-    required String name,
-    required String dir,
+  PlatformFeaturePackageNavigatorImplementation get navigatorImplementation;
+}
+
+/// {@template platform_custom_feature_package}
+/// Abstraction of a platform custom feature package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_<name>`
+/// {@endtemplate}
+abstract class PlatformCustomFeaturePackage
+    implements PlatformRoutableFeaturePackage {
+  /// {@macro platform_custom_feature_package}
+  factory PlatformCustomFeaturePackage(
+    String name,
+    Platform platform, {
+    required RapidProject project,
+  }) =>
+      PlatformCustomFeaturePackageImpl(
+        name,
+        platform,
+        project: project,
+      );
+
+  Future<void> create({
+    required String description,
+    required bool routing,
+    required bool localization,
+    required String defaultLanguage,
+    required Set<String> languages,
   });
+}
 
-  Future<Bloc> removeBloc({
-    required String name,
-    required String dir,
+/// {@template platform_flow_feature_package}
+/// Abstraction of a platform flow feature package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_<name>_flow`
+/// {@endtemplate}
+abstract class PlatformFlowFeaturePackage
+    implements PlatformRoutableFeaturePackage {
+  /// {@macro platform_flow_feature_package}
+  factory PlatformFlowFeaturePackage(
+    String name,
+    Platform platform, {
+    required RapidProject project,
+  }) =>
+      PlatformFlowFeaturePackageImpl(
+        name,
+        platform,
+        project: project,
+      );
+
+  Future<void> create({
+    required bool tab,
+    required String description,
+    required bool localization,
+    required String defaultLanguage,
+    required Set<String> languages,
+    required Set<PlatformFeaturePackage>? features,
   });
+}
 
-  Future<Cubit> addCubit({
-    required String name,
-    required String dir,
+/// {@template platform_page_feature_package}
+/// Abstraction of a platform page feature package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_<name>_page`
+/// {@endtemplate}
+abstract class PlatformPageFeaturePackage
+    implements PlatformRoutableFeaturePackage {
+  /// {@macro platform_page_feature_package}
+  factory PlatformPageFeaturePackage(
+    String name,
+    Platform platform, {
+    required RapidProject project,
+  }) =>
+      PlatformPageFeaturePackageImpl(
+        name,
+        platform,
+        project: project,
+      );
+
+  Future<void> create({
+    required String description,
+    required bool localization,
+    bool exampleTranslation,
+    required String defaultLanguage,
+    required Set<String> languages,
   });
+}
 
-  Future<Cubit> removeCubit({
-    required String name,
-    required String dir,
+/// {@template platform_widget_feature_package}
+/// Abstraction of a platform widget feature package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_<name>_widget`
+/// {@endtemplate}
+abstract class PlatformWidgetFeaturePackage implements PlatformFeaturePackage {
+  /// {@macro platform_widget_feature_package}
+  factory PlatformWidgetFeaturePackage(
+    String name,
+    Platform platform, {
+    required RapidProject project,
+  }) =>
+      PlatformWidgetFeaturePackageImpl(
+        name,
+        platform,
+        project: project,
+      );
+
+  Future<void> create({
+    required String description,
+    required bool localization,
+    required String defaultLanguage,
+    required Set<String> languages,
   });
 }
 
@@ -131,11 +203,37 @@ abstract class PlatformAppFeaturePackage implements PlatformFeaturePackage {
   /// {@macro platform_app_feature_package}
   factory PlatformAppFeaturePackage(
     Platform platform, {
-    required Project project,
+    required RapidProject project,
   }) =>
       PlatformAppFeaturePackageImpl(
         platform,
         project: project,
+      );
+
+  Future<void> create({
+    required String description,
+    bool routing,
+    required String defaultLanguage,
+    required Set<String> languages,
+  });
+}
+
+typedef L10nDirectoryBuilder = L10nDirectory Function({
+  required PlatformFeaturePackage platformFeaturePackage,
+});
+
+/// {@template l10n_directory}
+/// Abstraction of the l10n directory of a platform customizable feature package of an existing Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_<feature name>/l10n.yaml`
+/// {@endtemplate}
+abstract class L10nDirectory implements Directory {
+  /// {@macro l10n_directory}
+  factory L10nDirectory({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) =>
+      L10nDirectoryImpl(
+        platformFeaturePackage: platformFeaturePackage,
       );
 }
 
@@ -219,16 +317,6 @@ abstract class ArbDirectory implements Directory {
   Future<void> create({
     required Set<String> languages,
     List<Map<String, dynamic>> Function(String language)? translations,
-  });
-
-  // TODO consider required ?
-
-  Future<void> addLanguageArbFile({
-    required String language,
-  });
-
-  Future<void> removeLanguageArbFile({
-    required String language,
   });
 }
 

@@ -148,7 +148,7 @@ import 'helpers/pump_app.dart';
 }
 {{/linux}}{{#macos}}void main() {
   group('{{project_name.pascalCase()}}Scaffold', () {
-    testWidgets('renders PlatformMenuBar with MacosWindow and MacosScaffold correctly', (tester) async {
+    testWidgets('renders MacosScaffold correctly', (tester) async {
       // Arrange
       const theme = {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12));
       final children = [ContentArea(builder: (_, __) => Container())];
@@ -159,21 +159,16 @@ import 'helpers/pump_app.dart';
 
       // Act
       await tester.pumpApp({{project_name.camelCase()}}ScaffoldTheme);
+      await tester.pumpAndSettle();
 
       // Assert
-      final platformMenuBar =
-          tester.widget<PlatformMenuBar>(find.byType(PlatformMenuBar));
-      final macosWindow = tester.widget<MacosWindow>(find.byType(MacosWindow));
-      expect(platformMenuBar.child, macosWindow);
       final macosScaffold =
           tester.widget<MacosScaffold>(find.byType(MacosScaffold));
-      expect(macosWindow.backgroundColor, const Color(0xFF12FF12));
-      expect(macosWindow.child, macosScaffold);
       expect(macosScaffold.backgroundColor, const Color(0xFF12FF12));
       expect(macosScaffold.children, children);
     });
 
-    testWidgets('renders  PlatformMenuBar with MacosWindow and MacosScaffold correctly when no theme is provided',
+    testWidgets('renders MacosScaffold correctly when no theme is provided',
         (tester) async {
       // Arrange
       final children = [ContentArea(builder: (_, __) => Container())];
@@ -183,19 +178,11 @@ import 'helpers/pump_app.dart';
 
       // Act
       await tester.pumpApp({{project_name.camelCase()}}ScaffoldTheme);
+      await tester.pumpAndSettle();
 
       // Assert
-      final platformMenuBar =
-          tester.widget<PlatformMenuBar>(find.byType(PlatformMenuBar));
-      final macosWindow = tester.widget<MacosWindow>(find.byType(MacosWindow));
-      expect(platformMenuBar.child, macosWindow);
       final macosScaffold =
           tester.widget<MacosScaffold>(find.byType(MacosScaffold));
-      expect(
-        macosWindow.backgroundColor,
-        {{project_name.pascalCase()}}ScaffoldTheme.light.backgroundColor,
-      );
-      expect(macosWindow.child, macosScaffold);
       expect(
         macosScaffold.backgroundColor,
         {{project_name.pascalCase()}}ScaffoldTheme.light.backgroundColor,

@@ -24,7 +24,7 @@ Future<void> bootstrap() async {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       router: router,
-      routerObserverBuilder: () => [
+      navigatorObserverBuilder: () => [
         {{project_name.pascalCase()}}RouterObserver(logger),
       ],
     ),

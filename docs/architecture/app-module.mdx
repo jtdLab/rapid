@@ -1,0 +1,116 @@
+# App Module
+
+<Image
+  src="assets/app_module_overview.svg"
+  alt="App Module Overview"
+  zoom={true}
+  height="250"
+/>
+
+## Dependency Injection Package
+
+🎯 Provide a dependency injection container.
+
+🎯 Provide platform annotations for dependency injection.
+
+## Logging Package
+
+🎯 Provide a logger.
+
+## Platform Root Package
+
+🎯 Provide entrypoints to run the application in diffrent environments.
+
+🎯 Setup Dependency Injection.
+
+🎯 Setup Routing.
+
+🎯 Setup Localization.
+
+🎯 Provide a BlocObserver.
+
+🎯 Provide a RouterObserver.
+
+More information about testing a [Platform Root Package](/architecture/app-module#platform-root-package) can be found [here](/architecture/testing#testing-platform-root-package).
+
+## Platform Navigation Package
+
+🎯 Provide [Navigator Interfaces](/architecture/app-module#navigator-interface) to navigate between [Platform Feature Packages](/architecture/app-module#platform-feature-package).
+
+### Navigator Interface
+
+```dart
+TODO
+```
+
+## Platform Feature Package
+
+🎯 Implement states and user interface of a feature.
+
+### Bloc
+
+```dart
+TODO
+```
+
+### Cubit
+
+```dart
+TODO
+```
+
+### Navigator Implementation
+
+```dart
+TODO
+```
+
+More information about testing a [Platform Feature Package](/architecture/app-module#platform-feature-package) can be found [here](/architecture/testing#testing-platform-feature-package).
+
+## Domain Package
+
+🎯 Abstract a domain using [Entities](/architecture/app-module#entity), [Service Interfaces](/architecture/app-module#service-interface), [Value Objects](/architecture/app-module#value-object) and [Failures](/architecture/app-module#failure).
+
+### Entity
+
+```dart
+TODO
+```
+
+### Service Interface
+
+```dart
+TODO
+```
+
+### Value Object
+
+```dart
+TODO
+```
+
+### Failure
+
+```dart
+TODO
+```
+
+More information about testing a [Domain Package](/architecture/app-module#domain-package) can be found [here](/architecture/testing#testing-domain-package).
+
+## Infrastructure Package
+
+🎯 Implement [Service Interfaces](/architecture/app-module#service-interface) of its associated [Domain Package](/architecture/app-module#domain-package).
+
+### Data Transfer Object
+
+```dart
+TODO
+```
+
+### Service Implementation
+
+```dart
+TODO
+```
+
+More information about testing an [Infrastructure Package](/architecture/app-module#infrastructure-package) can be found [here](/architecture/testing#testing-infrastructure-package).

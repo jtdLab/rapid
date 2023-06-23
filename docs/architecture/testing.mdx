@@ -1,0 +1,227 @@
+# Testing
+
+## Integration Testing (E2E)
+
+With [integration testing](https://docs.flutter.dev/cookbook/testing/integration/introduction), developers can confidently deliver a robust user experience by verifying that all parts of the application work harmoniously together, minimizing the risk of issues arising from the integration of different functionalities and reducing the chance of unexpected problems for end-users.
+Every Rapid project comes with a ready-to-use integration testing setup located inside the root package of each supported platform, and supports running integration tests in multiple environments.
+
+<Image
+  src="assets/integration_test_setup.png"
+  alt="Integration Test Setup"
+  zoom={false}
+  width="300"
+  height="525"
+  caption="Integration Test Setup."
+/>
+
+### Adding Integration Tests
+
+Adding a new integration test includes two steps:
+
+1. Create a new file inside the `integration_test` directory.
+
+```dart
+// sign_in_username_password.dart
+
+import 'package:flutter_test/flutter_test.dart';
+
+Future<void> performTest(WidgetTester tester) async {
+  await tester.pumpAndSettle();
+
+  // testing logic goes here
+}
+```
+
+2. Add the test to the environment runners.
+
+<Tabs
+  groupId="environments"
+  values={[
+    { label: "development", value: "development" },
+    { label: "test", value: "test" },
+    { label: "production", value: "production" },
+  ]}
+>
+<TabItem value="development">
+
+```dart
+// development_test.dart
+
+...
+import 'sign_in_username_password.dart' as sign_in_username_password;
+
+
+void main() {
+  ...
+
+  group('E2E (development)', () {
+    ...
+
+    testWidgets('sign in with username and password', (tester) async {
+      await dev.main();
+
+      await sign_in_username_password.performTest(tester);
+    });
+  });
+}
+```
+
+</TabItem>
+<TabItem value="test">
+
+```dart
+// test_test.dart
+
+...
+import 'sign_in_username_password.dart' as sign_in_username_password;
+
+
+void main() {
+  ...
+
+  group('E2E (test)', () {
+    ...
+
+    testWidgets('sign in with username and password', (tester) async {
+      await test.main();
+
+      await sign_in_username_password.performTest(tester);
+    });
+  });
+}
+```
+
+</TabItem>
+<TabItem value="production">
+
+```dart
+// production_test.dart
+
+...
+import 'sign_in_username_password.dart' as sign_in_username_password;
+
+
+void main() {
+  ...
+
+  group('E2E (production)', () {
+    ...
+
+    testWidgets('sign in with username and password', (tester) async {
+      await production.main();
+
+      await sign_in_username_password.performTest(tester);
+    });
+  });
+}
+```
+
+</TabItem>
+</Tabs>
+
+### Running Integration Tests
+
+<Tabs
+  values={[
+    { label: "rapid", value: "rapid" },
+    { label: "native", value: "native" },
+  ]}
+>
+<TabItem value="rapid">
+
+```bash
+# Run e2e tests in development environment
+melos test:e2e:dev
+
+# Run e2e tests in test environment
+melos test:e2e:test
+
+# Run e2e tests in production environment
+melos test:e2e:prod
+```
+
+Web:
+
+```bash
+chromedriver --port=4444
+```
+
+```bash
+# Run e2e tests in development environment
+melos test:e2e:dev:web
+
+# Run e2e tests in test environment
+melos test:e2e:test:web
+
+# Run e2e tests in production environment
+melos test:e2e:prod:web
+```
+
+</TabItem>
+<TabItem value="native">
+
+```bash
+# Run e2e tests in development environment
+flutter test integration_test/development_test.dart
+
+# Run e2e tests in test environment
+flutter test integration_test/test_test.dart
+
+# Run e2e tests in production environment
+flutter test integration_test/production_test.dart
+```
+
+Web:
+
+```bash
+chromedriver --port=4444
+```
+
+```bash
+# Run e2e tests in development environment
+flutter drive \
+  --driver=test_driver/integration_test.dart \
+  --target=integration_test/development_test.dart \
+  -d chrome
+
+# Run e2e tests in test environment
+  flutter drive \
+  --driver=test_driver/integration_test.dart \
+  --target=integration_test/test_test.dart \
+  -d chrome
+
+# Run e2e tests in production environment
+  flutter drive \
+  --driver=test_driver/integration_test.dart \
+  --target=integration_test/production_test.dart \
+  -d chrome
+```
+
+</TabItem>
+</Tabs>
+
+## Unit & Widget Testing
+
+### Testing UI Package
+
+TODO
+
+### Testing Platform Root Package
+
+TODO
+
+### Testing Platform Feature Package
+
+TODO
+
+### Testing Domain Package
+
+TODO
+
+### Testing Infrastructure Package
+
+TODO
+
+### Running Tests
+
+TODO

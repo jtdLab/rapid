@@ -1,5 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+// coverage:ignore-file
+
 part of '{{entity_name.snakeCase()}}_dto.dart';
 
 // **************************************************************************

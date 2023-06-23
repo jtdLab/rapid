@@ -8,24 +8,36 @@
     ["Overview", "/"],
     ["Getting Started", "/getting-started"],
     [
-      "Commands",
+      "Architecture",
       [
-        ["activate", "/commands/activate"],
-        ["android", "/commands/android"],
-        ["begin", "/commands/begin"],
-        ["create", "/commands/create"],
-        ["deactivate", "/commands/deactivate"],
-        ["domain", "/commands/domain"],
-        ["end", "/commands/end"],
-        ["infrastructure", "/commands/infrastructure"],
-        ["ios", "/commands/ios"],
-        ["linux", "/commands/linux"],
-        ["macos", "/commands/macos"],
-        ["pub", "/commands/pub"],
-        ["ui", "/commands/ui"],
-        ["web", "/commands/web"],
-        ["windows", "/commands/windows"]
+        ["Overview", "/architecture/overview"],
+        ["UI Module", "/architecture/ui-module"],
+        ["App Module", "/architecture/app-module"],
+        ["Testing", "/architecture/testing"],
+        ["Productivity", "/architecture/productivity"]
       ]
-    ]
+    ],
+    [
+      "CLI",
+        [
+          ["activate", "/cli/activate"],
+          ["<platform>", "/cli/platform"],  
+          ["begin", "/cli/begin"],
+          ["create", "/cli/create"],
+          ["deactivate", "/cli/deactivate"],
+          ["domain", "/cli/domain"],
+          ["end", "/cli/end"],
+          ["infrastructure", "/cli/infrastructure"],
+          ["pub", "/cli/pub"],
+          ["ui", "/cli/ui"]
+        ]
+    ],
+    [
+      "Advanced",
+        [
+          ["Command Group", "/advanced/command-group"]
+        ]
+    ],
+    ["IDE Support", "/ide-support"]
   ]
 }

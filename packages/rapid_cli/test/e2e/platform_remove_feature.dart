@@ -1,54 +1,34 @@
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:test/test.dart';
 
 import 'common.dart';
 
-Future<void> performTest({
+dynamic performTest({
   required Platform platform,
-  TestType type = TestType.normal,
-  required RapidCommandRunner commandRunner,
-}) async {
-  // Arrange
-  const featureName = 'foo_bar';
-  await setupProject(platform);
-  await commandRunner.run([
-    platform.name,
-    'add',
-    'feature',
-    featureName,
-  ]);
+}) =>
+    withTempDir((root) async {
+      // Arrange
+      const featureName = 'foo_bar';
+      final tester = await RapidE2ETester.withProject(root, platform);
+      await tester.runRapidCommand([
+        platform.name,
+        'add',
+        'feature',
+        'page',
+        featureName,
+      ]);
 
-  // Act
-  final commandResult = await commandRunner.run([
-    platform.name,
-    'remove',
-    'feature',
-    featureName,
-  ]);
+      // Act
+      await tester.runRapidCommand([
+        platform.name,
+        'remove',
+        'feature',
+        '${featureName}_page',
+      ]);
 
-  // Assert
-  expect(commandResult, equals(ExitCode.success.code));
-  await verifyNoAnalyzerIssues();
-  await verifyNoFormattingIssues();
-  final featurePackages = [
-    featurePackage('app', platform),
-    featurePackage('home_page', platform),
-  ];
-  verifyDoExist([
-    ...platformIndependentPackages,
-    ...platformDependentPackages([platform]),
-    ...featurePackages,
-  ]);
-  verifyDoNotExist([
-    featurePackage(featureName, platform),
-  ]);
-  if (type != TestType.fast) {
-    await verifyTestsPassWith100PercentCoverage([
-      ...platformIndependentPackagesWithTests,
-      ...platformDependentPackagesWithTests(platform),
-      ...featurePackages,
-    ]);
-  }
-}
+      // Assert
+      await verifyNoAnalyzerIssues();
+      await verifyNoFormattingIssues();
+      verifyDoNotExist([
+        tester.featurePackage('${featureName}_page', platform),
+      ]);
+    });

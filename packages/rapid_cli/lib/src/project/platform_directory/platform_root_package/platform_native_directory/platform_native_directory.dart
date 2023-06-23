@@ -2,8 +2,8 @@ import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/plist_file.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_root_package.dart';
 
+import '../platform_root_package.dart';
 import 'platform_native_directory_impl.dart';
 
 // TODO: consider IosNativeDirectory add/remove lang

@@ -1,11 +1,11 @@
 {{#android}}// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, unused_element
+// ignore_for_file: type=lint, unused_element, unnecessary_cast
 
 part of 'scaffold_theme.dart';
 
 // **************************************************************************
-// ThemeTailorGenerator
+// TailorAnnotationsGenerator
 // **************************************************************************
 
 class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>
@@ -40,8 +40,8 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
 
   @override
   {{project_name.pascalCase()}}ScaffoldTheme lerp(
-      ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
-    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this;
+      covariant ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
+    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this as {{project_name.pascalCase()}}ScaffoldTheme;
     return {{project_name.pascalCase()}}ScaffoldTheme(
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t)!,
     );
@@ -67,7 +67,9 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
   @override
   int get hashCode {
     return Object.hash(
-        runtimeType, const DeepCollectionEquality().hash(backgroundColor));
+      runtimeType.hashCode, 
+      const DeepCollectionEquality().hash(backgroundColor),
+    );
   }
 }
 
@@ -78,12 +80,12 @@ extension {{project_name.pascalCase()}}ScaffoldThemeBuildContext on BuildContext
 {{/android}}{{#ios}}
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, unused_element
+// ignore_for_file: type=lint, unused_element, unnecessary_cast
 
 part of 'scaffold_theme.dart';
 
 // **************************************************************************
-// ThemeTailorGenerator
+// TailorAnnotationsGenerator
 // **************************************************************************
 
 class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>
@@ -118,8 +120,8 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
 
   @override
   {{project_name.pascalCase()}}ScaffoldTheme lerp(
-      ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
-    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this;
+      covariant ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
+    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this as {{project_name.pascalCase()}}ScaffoldTheme;
     return {{project_name.pascalCase()}}ScaffoldTheme(
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t)!,
     );
@@ -145,7 +147,9 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
   @override
   int get hashCode {
     return Object.hash(
-        runtimeType, const DeepCollectionEquality().hash(backgroundColor));
+      runtimeType.hashCode,
+      const DeepCollectionEquality().hash(backgroundColor),
+    );
   }
 }
 
@@ -156,12 +160,12 @@ extension {{project_name.pascalCase()}}ScaffoldThemeBuildContext on BuildContext
 {{/ios}}{{#linux}}
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, unused_element
+// ignore_for_file: type=lint, unused_element, unnecessary_cast
 
 part of 'scaffold_theme.dart';
 
 // **************************************************************************
-// ThemeTailorGenerator
+// TailorAnnotationsGenerator
 // **************************************************************************
 
 class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>
@@ -196,8 +200,8 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
 
   @override
   {{project_name.pascalCase()}}ScaffoldTheme lerp(
-      ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
-    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this;
+      covariant ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
+    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this as {{project_name.pascalCase()}}ScaffoldTheme;
     return {{project_name.pascalCase()}}ScaffoldTheme(
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t)!,
     );
@@ -223,7 +227,9 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
   @override
   int get hashCode {
     return Object.hash(
-        runtimeType, const DeepCollectionEquality().hash(backgroundColor));
+      runtimeType.hashCode, 
+      const DeepCollectionEquality().hash(backgroundColor),
+    );
   }
 }
 
@@ -234,12 +240,12 @@ extension {{project_name.pascalCase()}}ScaffoldThemeBuildContext on BuildContext
 {{/linux}}{{#macos}}
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, unused_element
+// ignore_for_file: type=lint, unused_element, unnecessary_cast
 
 part of 'scaffold_theme.dart';
 
 // **************************************************************************
-// ThemeTailorGenerator
+// TailorAnnotationsGenerator
 // **************************************************************************
 
 class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>
@@ -274,8 +280,8 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
 
   @override
   {{project_name.pascalCase()}}ScaffoldTheme lerp(
-      ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
-    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this;
+      covariant ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
+    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this as {{project_name.pascalCase()}}ScaffoldTheme;
     return {{project_name.pascalCase()}}ScaffoldTheme(
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t)!,
     );
@@ -301,7 +307,9 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
   @override
   int get hashCode {
     return Object.hash(
-        runtimeType, const DeepCollectionEquality().hash(backgroundColor));
+      runtimeType.hashCode,
+      const DeepCollectionEquality().hash(backgroundColor),
+    );
   }
 }
 
@@ -312,12 +320,12 @@ extension {{project_name.pascalCase()}}ScaffoldThemeBuildContext on BuildContext
 {{/macos}}{{#web}}
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, unused_element
+// ignore_for_file: type=lint, unused_element, unnecessary_cast
 
 part of 'scaffold_theme.dart';
 
 // **************************************************************************
-// ThemeTailorGenerator
+// TailorAnnotationsGenerator
 // **************************************************************************
 
 class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>
@@ -352,8 +360,8 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
 
   @override
   {{project_name.pascalCase()}}ScaffoldTheme lerp(
-      ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
-    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this;
+      covariant ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
+    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this as {{project_name.pascalCase()}}ScaffoldTheme;
     return {{project_name.pascalCase()}}ScaffoldTheme(
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t)!,
     );
@@ -379,7 +387,9 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
   @override
   int get hashCode {
     return Object.hash(
-        runtimeType, const DeepCollectionEquality().hash(backgroundColor));
+      runtimeType.hashCode,
+      const DeepCollectionEquality().hash(backgroundColor),
+    );
   }
 }
 
@@ -390,12 +400,12 @@ extension {{project_name.pascalCase()}}ScaffoldThemeBuildContext on BuildContext
 {{/web}}{{#windows}}
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, unused_element
+// ignore_for_file: type=lint, unused_element, unnecessary_cast
 
 part of 'scaffold_theme.dart';
 
 // **************************************************************************
-// ThemeTailorGenerator
+// TailorAnnotationsGenerator
 // **************************************************************************
 
 class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>
@@ -430,8 +440,8 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
 
   @override
   {{project_name.pascalCase()}}ScaffoldTheme lerp(
-      ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
-    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this;
+      covariant ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
+    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this as {{project_name.pascalCase()}}ScaffoldTheme;
     return {{project_name.pascalCase()}}ScaffoldTheme(
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t)!,
     );
@@ -457,22 +467,19 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
   @override
   int get hashCode {
     return Object.hash(
-        runtimeType, const DeepCollectionEquality().hash(backgroundColor));
+      runtimeType.hashCode,
+      const DeepCollectionEquality().hash(backgroundColor),
+    );
   }
-}
-
-extension {{project_name.pascalCase()}}ScaffoldThemeBuildContext on BuildContext {
-  {{project_name.pascalCase()}}ScaffoldTheme get {{project_name.camelCase()}}ScaffoldTheme =>
-      Theme.of(this).extension<{{project_name.pascalCase()}}ScaffoldTheme>()!;
 }
 {{/windows}}{{#mobile}}// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, unused_element
+// ignore_for_file: type=lint, unused_element, unnecessary_cast
 
 part of 'scaffold_theme.dart';
 
 // **************************************************************************
-// ThemeTailorGenerator
+// TailorAnnotationsGenerator
 // **************************************************************************
 
 class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>
@@ -507,8 +514,8 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
 
   @override
   {{project_name.pascalCase()}}ScaffoldTheme lerp(
-      ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
-    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this;
+      covariant ThemeExtension<{{project_name.pascalCase()}}ScaffoldTheme>? other, double t) {
+    if (other is! {{project_name.pascalCase()}}ScaffoldTheme) return this as {{project_name.pascalCase()}}ScaffoldTheme;
     return {{project_name.pascalCase()}}ScaffoldTheme(
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t)!,
     );
@@ -534,7 +541,9 @@ class {{project_name.pascalCase()}}ScaffoldTheme extends ThemeExtension<{{projec
   @override
   int get hashCode {
     return Object.hash(
-        runtimeType, const DeepCollectionEquality().hash(backgroundColor));
+      runtimeType.hashCode,
+      const DeepCollectionEquality().hash(backgroundColor),
+    );
   }
 }
 

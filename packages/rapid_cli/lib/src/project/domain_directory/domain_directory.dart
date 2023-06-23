@@ -1,12 +1,13 @@
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
-import 'package:rapid_cli/src/project/domain_directory/domain_directory_impl.dart';
-import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
+
+import 'domain_directory_impl.dart';
+import 'domain_package/domain_package.dart';
 
 /// Signature of [DomainDirectory.new].
 typedef DomainDirectoryBuilder = DomainDirectory Function({
-  required Project project,
+  required RapidProject project,
 });
 
 /// {@template domain_directory}
@@ -17,7 +18,7 @@ typedef DomainDirectoryBuilder = DomainDirectory Function({
 abstract class DomainDirectory extends Directory {
   /// {@macro domain_directory}
   factory DomainDirectory({
-    required Project project,
+    required RapidProject project,
   }) =>
       DomainDirectoryImpl(
         project: project,

@@ -1,118 +1,97 @@
 @Tags(['e2e'])
-import 'dart:io';
-
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:test/test.dart';
 
 import 'common.dart';
-
-// TODO test sub-domain
 
 void main() {
   group(
     'E2E',
     () {
-      cwd = Directory.current;
+      dynamic performTest({
+        required String subDomain,
+        String? dir,
+      }) =>
+          withTempDir((root) async {
+            // Arrange
+            final tester = await RapidE2ETester.withProject(root);
+            if (subDomain != 'default') {
+              await tester.runRapidCommand([
+                'domain',
+                'add',
+                'sub_domain',
+                subDomain,
+              ]);
+            }
+            final name = 'FooBar';
+            await tester.runRapidCommand([
+              'domain',
+              subDomain,
+              'add',
+              'service_interface',
+              name,
+              if (dir != null) '--output-dir',
+              if (dir != null) dir,
+            ]);
 
-      late RapidCommandRunner commandRunner;
+            // Act
+            await tester.runRapidCommand([
+              'domain',
+              subDomain,
+              'remove',
+              'service_interface',
+              name,
+              if (dir != null) '--dir',
+              if (dir != null) dir,
+            ]);
 
-      setUp(() async {
-        Directory.current = getTempDir();
-
-        await setupProject();
-        commandRunner = RapidCommandRunner();
-      });
-
-      tearDown(() {
-        Directory.current = cwd;
-      });
-
-      group('domain <sub_domain> remove entity', () {
-        Future<void> performTest({
-          String? dir,
-          TestType type = TestType.normal,
-          required RapidCommandRunner commandRunner,
-        }) async {
-          // Arrange
-          final name = 'FooBar';
-
-          await commandRunner.run([
-            'domain',
-            'default',
-            'add',
-            'service_interface',
-            name,
-            if (dir != null) '--output-dir',
-            if (dir != null) dir,
-          ]);
-
-          // Act
-          final commandResult = await commandRunner.run([
-            'domain',
-            'default',
-            'remove',
-            'service_interface',
-            name,
-            if (dir != null) '--dir',
-            if (dir != null) dir,
-          ]);
-
-          // Assert
-          expect(commandResult, equals(ExitCode.success.code));
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoExist({
-            ...platformIndependentPackages,
-          });
-          verifyDoNotExist({
-            ...serviceInterfaceFiles(name: name, outputDir: dir),
-          });
-          if (type != TestType.fast) {
-            verifyDoNotHaveTests({
-              domainPackage(),
+            // Assert
+            await verifyNoAnalyzerIssues();
+            await verifyNoFormattingIssues();
+            verifyDoNotExist({
+              ...tester.serviceInterfaceFiles(
+                name: name,
+                subDomainName: subDomain,
+                outputDir: dir,
+              ),
             });
-          }
-        }
+            verifyDoNotHaveTests({
+              tester.domainPackage(subDomain),
+            });
+          });
 
-        test(
-          '(fast) ',
-          () => performTest(
-            type: TestType.fast,
-            commandRunner: commandRunner,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'domain default remove entity',
+        performTest(
+          subDomain: 'default',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          'with dir (fast) ',
-          () => performTest(
-            dir: 'foo',
-            type: TestType.fast,
-            commandRunner: commandRunner,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-          tags: ['fast'],
-        );
+      test(
+        'domain default remove entity (with dir)',
+        performTest(
+          subDomain: 'default',
+          dir: 'foo',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          '',
-          () => performTest(
-            commandRunner: commandRunner,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
+      test(
+        'domain <sub_domain> remove entity',
+        performTest(
+          subDomain: 'foo_bar',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
 
-        test(
-          'with dir',
-          () => performTest(
-            dir: 'foo',
-            commandRunner: commandRunner,
-          ),
-          timeout: const Timeout(Duration(minutes: 4)),
-        );
-      });
+      test(
+        'domain <sub_domain> remove entity (with dir)',
+        performTest(
+          subDomain: 'foo_bar',
+          dir: 'foo',
+        ),
+        timeout: const Timeout(Duration(minutes: 4)),
+      );
     },
   );
 }

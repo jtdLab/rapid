@@ -1,15 +1,16 @@
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_directory_impl.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_features_directory.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_navigation_package/platform_navigation_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_root_package.dart';
-import 'package:rapid_cli/src/project/project.dart';
+
+import '../project.dart';
+import 'platform_directory_impl.dart';
+import 'platform_features_directory/platform_features_directory.dart';
+import 'platform_navigation_package/platform_navigation_package.dart';
+import 'platform_root_package/platform_root_package.dart';
 
 typedef PlatformDirectoryBuilder<T extends PlatformDirectory> = T Function({
   required Platform platform,
-  required Project project,
+  required RapidProject project,
 });
 
 /// {@template platform_directory}
@@ -30,7 +31,7 @@ abstract class PlatformDirectory implements Directory {
   Platform get platform;
 
   /// Returns the project associated with this directory.
-  Project get project;
+  RapidProject get project;
 
   /// Returns the root package of this directory.
   PlatformRootPackage get rootPackage;
@@ -53,7 +54,7 @@ abstract class NoneIosDirectory extends PlatformDirectory {
   /// {@macro none_ios_directory}
   factory NoneIosDirectory(
     Platform platform, {
-    required Project project,
+    required RapidProject project,
   }) =>
       NoneIosDirectoryImpl(platform, project: project);
 
@@ -80,7 +81,7 @@ abstract class NoneIosDirectory extends PlatformDirectory {
 abstract class IosDirectory extends PlatformDirectory {
   /// {@macro ios_directory}
   factory IosDirectory({
-    required Project project,
+    required RapidProject project,
   }) =>
       IosDirectoryImpl(project: project);
 
@@ -106,7 +107,7 @@ abstract class IosDirectory extends PlatformDirectory {
 abstract class MobileDirectory extends PlatformDirectory {
   /// {@macro ios_directory}
   factory MobileDirectory({
-    required Project project,
+    required RapidProject project,
   }) =>
       MobileDirectoryImpl(project: project);
 

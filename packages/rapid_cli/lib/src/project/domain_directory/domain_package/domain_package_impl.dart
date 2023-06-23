@@ -7,10 +7,10 @@ import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package.dart';
 import 'package:rapid_cli/src/project/domain_directory/domain_package/service_interface_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
+import 'domain_package.dart';
 import 'domain_package_bundle.dart';
 import 'entity_bundle.dart';
 import 'value_object_bundle.dart';
@@ -25,9 +25,9 @@ class DomainPackageImpl extends DartPackageImpl
           path: p.join(
             project.path,
             'packages',
-            project.name(),
-            '${project.name()}_domain',
-            '${project.name()}_domain${name != null ? '_$name' : ''}',
+            project.name,
+            '${project.name}_domain',
+            '${project.name}_domain${name != null ? '_$name' : ''}',
           ),
         );
 
@@ -47,7 +47,7 @@ class DomainPackageImpl extends DartPackageImpl
   final String? name;
 
   @override
-  final Project project;
+  final RapidProject project;
 
   @override
   DomainPackageBarrelFile get barrelFile =>
@@ -90,7 +90,7 @@ class DomainPackageImpl extends DartPackageImpl
 
   @override
   Future<void> create() async {
-    final projectName = project.name();
+    final projectName = project.name;
 
     await generate(
       bundle: domainPackageBundle,
@@ -101,6 +101,17 @@ class DomainPackageImpl extends DartPackageImpl
       },
     );
   }
+
+  @override
+  int compareTo(DomainPackage other) =>
+      (name ?? '').compareTo(other.name ?? '');
+
+  @override
+  bool operator ==(Object other) =>
+      other is DomainPackage && name == other.name && project == other.project;
+
+  @override
+  int get hashCode => Object.hash(name, project);
 }
 
 class EntityImpl extends FileSystemEntityCollection
@@ -149,7 +160,7 @@ class EntityImpl extends FileSystemEntityCollection
 
   @override
   Future<void> create() async {
-    final projectName = _domainPackage.project.name();
+    final projectName = _domainPackage.project.name;
     final subDomainName = _domainPackage.name;
 
     final generator = await super.generator(entityBundle);
@@ -204,7 +215,7 @@ class ServiceInterfaceImpl extends FileSystemEntityCollection
 
   @override
   Future<void> create() async {
-    final projectName = _domainPackage.project.name();
+    final projectName = _domainPackage.project.name;
 
     final generator = await super.generator(serviceInterfaceBundle);
     await generator.generate(
@@ -267,7 +278,7 @@ class ValueObjectImpl extends FileSystemEntityCollection
     required String type,
     required String generics,
   }) async {
-    final projectName = _domainPackage.project.name();
+    final projectName = _domainPackage.project.name;
     final subDomainName = _domainPackage.name;
 
     final generator = await super.generator(valueObjectBundle);

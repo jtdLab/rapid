@@ -82,6 +82,15 @@ abstract class DartFile implements File {
   /// Reads the values of a list stored in the top-level variable [name].
   List<String> readTopLevelListVar({required String name});
 
+  /// Reads the [property] of the [annotation] the class with [className] is annotated with.
+  ///
+  /// The property must be list of Type in source file.
+  List<String> readTypeListFromAnnotationParamOfClass({
+    required String property,
+    required String annotation,
+    required String className,
+  });
+
   /// Reads the [property] of the [annotation] the function with [functionName] is annotated with.
   ///
   /// The property must be list of Type in source file.
@@ -170,6 +179,36 @@ abstract class DartFile implements File {
     required String property,
     required String annotation,
     required String functionName,
+    required List<String> value,
+  });
+
+  /// Sets the [property] of the [annotation] the class with [className] is annotated with to [value].
+  ///
+  /// For example:
+  ///
+  /// Given:
+  /// ```dart
+  /// @SomeAnnotation(someProp: 5)
+  /// class Foo {}
+  /// ```
+  /// When call:
+  /// ```dart
+  /// setAnnotationProperty(
+  ///   property: 'someProp',
+  ///   annotation: 'SomeAnnotation',
+  ///   className: 'Foo
+  ///   value: 100
+  /// );
+  /// ```
+  /// The result is:
+  /// ```dart
+  /// @SomeAnnotation(someProp: 100)
+  /// class Foo {}
+  /// ```
+  void setTypeListOfAnnotationParamOfClass({
+    required String property,
+    required String annotation,
+    required String className,
     required List<String> value,
   });
 }

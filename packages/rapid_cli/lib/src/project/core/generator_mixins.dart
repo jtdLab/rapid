@@ -5,8 +5,6 @@ import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/generator_builder.dart';
 
-// TODO combine ?
-
 mixin OverridableGenerator {
   @visibleForTesting
   GeneratorBuilder? generatorOverrides;

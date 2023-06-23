@@ -3,16 +3,16 @@ import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_native_directory/platform_native_directory.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
+import '../../infrastructure_directory/infrastructure_package/infrastructure_package.dart';
+import '../../project.dart';
+import '../platform_features_directory/platform_feature_package/platform_feature_package.dart';
+import 'platform_native_directory/platform_native_directory.dart';
 import 'platform_root_package_impl.dart';
 
 typedef _PlatformRootPackageBuilder<T extends PlatformRootPackage> = T Function(
   Platform platform, {
-  required Project project,
+  required RapidProject project,
 });
 
 /// {@template platform_root_package}
@@ -30,17 +30,24 @@ abstract class PlatformRootPackage
   @visibleForTesting
   InjectionFileBuilder? injectionFileOverrides;
 
+  /// Use to override [routerFile] for testing.
+  @visibleForTesting
+  RouterFileBuilder? routerFileOverrides;
+
   /// Returns the platform of this package.
   Platform get platform;
 
   /// Returns the project associated with this package.
-  Project get project;
+  RapidProject get project;
 
-  /// Returns the localizations delegates file of this directory.
+  /// Returns the localizations delegates file of this package.
   LocalizationsDelegatesFile get localizationsDelegatesFile;
 
-  /// Returns the injection file of this directory.
+  /// Returns the injection file of this package.
   InjectionFile get injectionFile;
+
+  /// Returns the router file of this package.
+  RouterFile get routerFile;
 
   /// Returns the default language of this package.
   String defaultLanguage();
@@ -49,7 +56,11 @@ abstract class PlatformRootPackage
   Set<String> supportedLanguages();
 
   /// Registers [featurePackage] to this package.
-  Future<void> registerFeaturePackage(PlatformFeaturePackage featurePackage);
+  Future<void> registerFeaturePackage(
+    PlatformFeaturePackage featurePackage, {
+    required bool routing,
+    required bool localization,
+  });
 
   /// Unregisters [featurePackage] from this package.
   Future<void> unregisterFeaturePackage(PlatformFeaturePackage featurePackage);
@@ -78,7 +89,7 @@ typedef NoneIosRootPackageBuilder
 abstract class NoneIosRootPackage extends PlatformRootPackage {
   factory NoneIosRootPackage(
     Platform platform, {
-    required Project project,
+    required RapidProject project,
   }) =>
       NoneIosRootPackageImpl(
         platform,
@@ -110,7 +121,7 @@ typedef IosRootPackageBuilder = _PlatformRootPackageBuilder<IosRootPackage>;
 abstract class IosRootPackage extends PlatformRootPackage {
   /// {@macro ios_root_package}
   factory IosRootPackage({
-    required Project project,
+    required RapidProject project,
   }) =>
       IosRootPackageImpl(
         project: project,
@@ -142,7 +153,7 @@ typedef MobileRootPackageBuilder
 abstract class MobileRootPackage extends PlatformRootPackage {
   /// {@macro mobile_root_package}
   factory MobileRootPackage({
-    required Project project,
+    required RapidProject project,
   }) =>
       MobileRootPackageImpl(
         project: project,
@@ -230,4 +241,30 @@ abstract class InjectionFile implements DartFile {
 
   /// Removes feature with [packageName] from this file.
   void removeFeaturePackage(String packageName);
+}
+
+/// Signature of [RouterFile.new].
+typedef RouterFileBuilder = RouterFile Function({
+  required PlatformRootPackage rootPackage,
+});
+
+/// {@template router_file}
+/// Abstraction of the router file of a platform root package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>/lib/router.dart`
+/// {@endtemplate}
+abstract class RouterFile implements DartFile {
+  /// {@macro router_file}
+  factory RouterFile({
+    required PlatformRootPackage rootPackage,
+  }) =>
+      RouterFileImpl(
+        rootPackage: rootPackage,
+      );
+
+  /// Adds module of [packageName] to this file.
+  void addRouterModule(String packageName);
+
+  /// Removes module of [packageName] from this file.
+  void removeRouterModule(String packageName);
 }

@@ -9,15 +9,21 @@ import 'start_app.dart' as start_app;
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
+{{#web}}  setUpAll(() {
+    production.setUrlStrategy = null;
+  });
+{{/web}}
   setUp(() async {
     await getIt.reset();
   });
 
   group('E2E (production)', () {
     testWidgets('start app', (tester) async {
-      production.main();
+      await production.main();
 
       await start_app.performTest(tester);
     });
+
+    // TODO: add integration tests here (production)
   });
 }

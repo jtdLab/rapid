@@ -13,17 +13,17 @@ abstract class App extends StatelessWidget {
     required List<Locale> supportedLocales,
     required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
-    List<AutoRouterObserver> Function()? routerObserverBuilder,
+    List<NavigatorObserver> Function()? navigatorObserverBuilder,
   }) = _App;
 
   @visibleForTesting
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
-    AutoRouterObserver? routerObserver,
+    NavigatorObserver? navigatorObserver,
     ThemeMode? themeMode,
   }) = _AppTest;
 
@@ -46,10 +46,10 @@ class _App extends App {
     required this.supportedLocales,
     required super.localizationsDelegates,
     required RootStackRouter super.router,
-    this.routerObserverBuilder,
+    this.navigatorObserverBuilder,
   }) : super._();
 
-  final List<AutoRouterObserver> Function()? routerObserverBuilder;
+  final List<NavigatorObserver> Function()? navigatorObserverBuilder;
   final List<Locale> supportedLocales;
 
   @override
@@ -58,7 +58,7 @@ class _App extends App {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       routerConfig: router!.config(
-        navigatorObservers: routerObserverBuilder ??
+        navigatorObservers: navigatorObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
     );
@@ -69,16 +69,16 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
-    this.routerObserver,
+    this.navigatorObserver,
     this.themeMode,
   }) : super._();
 
   final Locale locale;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
-  final AutoRouterObserver? routerObserver;
+  final NavigatorObserver? navigatorObserver;
   final ThemeMode? themeMode;
 
   List<Locale> get supportedLocales => [locale];
@@ -92,8 +92,8 @@ class _AppTest extends App {
       routerConfig: router!.config(
         deepLinkBuilder:
             initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
-        navigatorObservers: routerObserver != null
-            ? () => [routerObserver!]
+        navigatorObservers: navigatorObserver!= null
+            ? () => [navigatorObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
       themeMode: themeMode,
@@ -140,17 +140,17 @@ abstract class App extends StatelessWidget {
     required List<Locale> supportedLocales,
     required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
-    List<AutoRouterObserver> Function()? routerObserverBuilder,
+    List<NavigatorObserver> Function()? navigatorObserverBuilder,
   }) = _App;
 
   @visibleForTesting
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
-    AutoRouterObserver? routerObserver,
+    NavigatorObserver? navigatorObserver,
     Brightness? brightness,
   }) = _AppTest;
 
@@ -173,10 +173,10 @@ class _App extends App {
     required this.supportedLocales,
     required super.localizationsDelegates,
     required RootStackRouter super.router,
-    this.routerObserverBuilder,
+    this.navigatorObserverBuilder,
   }) : super._();
 
-  final List<AutoRouterObserver> Function()? routerObserverBuilder;
+  final List<NavigatorObserver> Function()? navigatorObserverBuilder;
   final List<Locale> supportedLocales;
 
   @override
@@ -185,7 +185,7 @@ class _App extends App {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       routerConfig: router!.config(
-        navigatorObservers: routerObserverBuilder ??
+        navigatorObservers: navigatorObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
     );
@@ -196,16 +196,16 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
-    this.routerObserver,
+    this.navigatorObserver,
     this.brightness,
   }) : super._();
 
   final Locale locale;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
-  final AutoRouterObserver? routerObserver;
+  final NavigatorObserver? navigatorObserver;
   final Brightness? brightness;
 
   List<Locale> get supportedLocales => [locale];
@@ -219,8 +219,8 @@ class _AppTest extends App {
       routerConfig: router!.config(
         deepLinkBuilder:
             initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
-        navigatorObservers: routerObserver != null
-            ? () => [routerObserver!]
+        navigatorObservers: navigatorObserver!= null
+            ? () => [navigatorObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
       brightness: brightness,
@@ -267,17 +267,17 @@ abstract class App extends StatelessWidget {
     required List<Locale> supportedLocales,
     required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
-    List<AutoRouterObserver> Function()? routerObserverBuilder,
+    List<NavigatorObserver> Function()? navigatorObserverBuilder,
   }) = _App;
 
   @visibleForTesting
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
-    AutoRouterObserver? routerObserver,
+    NavigatorObserver? navigatorObserver,
     ThemeMode? themeMode,
   }) = _AppTest;
 
@@ -300,10 +300,10 @@ class _App extends App {
     required this.supportedLocales,
     required super.localizationsDelegates,
     required RootStackRouter super.router,
-    this.routerObserverBuilder,
+    this.navigatorObserverBuilder,
   }) : super._();
 
-  final List<AutoRouterObserver> Function()? routerObserverBuilder;
+  final List<NavigatorObserver> Function()? navigatorObserverBuilder;
   final List<Locale> supportedLocales;
 
   @override
@@ -312,7 +312,7 @@ class _App extends App {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       routerConfig: router!.config(
-        navigatorObservers: routerObserverBuilder ??
+        navigatorObservers: navigatorObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
     );
@@ -323,16 +323,16 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
-    this.routerObserver,
+    this.navigatorObserver,
     this.themeMode,
   }) : super._();
 
   final Locale locale;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
-  final AutoRouterObserver? routerObserver;
+  final NavigatorObserver? navigatorObserver;
   final ThemeMode? themeMode;
 
   List<Locale> get supportedLocales => [locale];
@@ -346,8 +346,8 @@ class _AppTest extends App {
       routerConfig: router!.config(
         deepLinkBuilder:
             initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
-        navigatorObservers: routerObserver != null
-            ? () => [routerObserver!]
+        navigatorObservers: navigatorObserver!= null
+            ? () => [navigatorObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
       themeMode: themeMode,
@@ -394,18 +394,18 @@ abstract class App extends StatelessWidget {
     required List<Locale> supportedLocales,
     required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
-    List<AutoRouterObserver> Function()? routerObserverBuilder,
+    List<NavigatorObserver> Function()? navigatorObserverBuilder,
   }) = _App;
 
   @visibleForTesting
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
-    AutoRouterObserver? routerObserver,
-    Brightness? brightness,
+    NavigatorObserver? navigatorObserver,
+    ThemeMode? themeMode,
   }) = _AppTest;
 
   @visibleForTesting
@@ -414,7 +414,7 @@ abstract class App extends StatelessWidget {
     required Widget widget,
     Locale locale,
     required List<LocalizationsDelegate> localizationsDelegates,
-    Brightness? brightness,
+    ThemeMode? themeMode,
   }) = _AppTestWidget;
 
   final List<LocalizationsDelegate> localizationsDelegates;
@@ -427,10 +427,10 @@ class _App extends App {
     required this.supportedLocales,
     required super.localizationsDelegates,
     required RootStackRouter super.router,
-    this.routerObserverBuilder,
+    this.navigatorObserverBuilder,
   }) : super._();
 
-  final List<AutoRouterObserver> Function()? routerObserverBuilder;
+  final List<NavigatorObserver> Function()? navigatorObserverBuilder;
   final List<Locale> supportedLocales;
 
   @override
@@ -439,7 +439,7 @@ class _App extends App {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       routerConfig: router!.config(
-        navigatorObservers: routerObserverBuilder ??
+        navigatorObservers: navigatorObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
     );
@@ -450,17 +450,17 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
-    this.routerObserver,
-    this.brightness,
+    this.navigatorObserver,
+    this.themeMode,
   }) : super._();
 
   final Locale locale;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
-  final AutoRouterObserver? routerObserver;
-  final Brightness? brightness;
+  final NavigatorObserver? navigatorObserver;
+  final ThemeMode? themeMode;
 
   List<Locale> get supportedLocales => [locale];
 
@@ -473,11 +473,11 @@ class _AppTest extends App {
       routerConfig: router!.config(
         deepLinkBuilder:
             initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
-        navigatorObservers: routerObserver != null
-            ? () => [routerObserver!]
+        navigatorObservers: navigatorObserver!= null
+            ? () => [navigatorObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
-      brightness: brightness,
+      themeMode: themeMode,
     );
   }
 }
@@ -488,12 +488,12 @@ class _AppTestWidget extends App {
     required this.widget,
     this.locale = const Locale('en'),
     required super.localizationsDelegates,
-    this.brightness
+    this.themeMode,
   }) : super._();
 
   final Locale locale;
   final Widget widget;
-  final Brightness? brightness;
+  final ThemeMode? themeMode;
 
   @override
   Widget build(BuildContext context) {
@@ -502,7 +502,7 @@ class _AppTestWidget extends App {
       locale: locale,
       localizationsDelegates: localizationsDelegates,
       home: widget,
-      brightness: brightness,
+      themeMode: themeMode,
     );
   }
 }
@@ -521,17 +521,17 @@ abstract class App extends StatelessWidget {
     required List<Locale> supportedLocales,
     required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
-    List<AutoRouterObserver> Function()? routerObserverBuilder,
+    List<NavigatorObserver> Function()? navigatorObserverBuilder,
   }) = _App;
 
   @visibleForTesting
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
-    AutoRouterObserver? routerObserver,
+    NavigatorObserver? navigatorObserver,
     ThemeMode? themeMode,
   }) = _AppTest;
 
@@ -554,10 +554,10 @@ class _App extends App {
     required this.supportedLocales,
     required super.localizationsDelegates,
     required RootStackRouter super.router,
-    this.routerObserverBuilder,
+    this.navigatorObserverBuilder,
   }) : super._();
 
-  final List<AutoRouterObserver> Function()? routerObserverBuilder;
+  final List<NavigatorObserver> Function()? navigatorObserverBuilder;
   final List<Locale> supportedLocales;
 
   @override
@@ -566,7 +566,7 @@ class _App extends App {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       routerConfig: router!.config(
-        navigatorObservers: routerObserverBuilder ??
+        navigatorObservers: navigatorObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
     );
@@ -577,16 +577,16 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
-    this.routerObserver,
+    this.navigatorObserver,
     this.themeMode,
   }) : super._();
 
   final Locale locale;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
-  final AutoRouterObserver? routerObserver;
+  final NavigatorObserver? navigatorObserver;
   final ThemeMode? themeMode;
 
   List<Locale> get supportedLocales => [locale];
@@ -600,8 +600,8 @@ class _AppTest extends App {
       routerConfig: router!.config(
         deepLinkBuilder:
             initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
-        navigatorObservers: routerObserver != null
-            ? () => [routerObserver!]
+        navigatorObservers: navigatorObserver!= null
+            ? () => [navigatorObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
       themeMode: themeMode,
@@ -648,17 +648,17 @@ abstract class App extends StatelessWidget {
     required List<Locale> supportedLocales,
     required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
-    List<AutoRouterObserver> Function()? routerObserverBuilder,
+    List<NavigatorObserver> Function()? navigatorObserverBuilder,
   }) = _App;
 
   @visibleForTesting
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
-    AutoRouterObserver? routerObserver,
+    NavigatorObserver? navigatorObserver,
     ThemeMode? themeMode,
   }) = _AppTest;
 
@@ -681,10 +681,10 @@ class _App extends App {
     required this.supportedLocales,
     required super.localizationsDelegates,
     required RootStackRouter super.router,
-    this.routerObserverBuilder,
+    this.navigatorObserverBuilder,
   }) : super._();
 
-  final List<AutoRouterObserver> Function()? routerObserverBuilder;
+  final List<NavigatorObserver> Function()? navigatorObserverBuilder;
   final List<Locale> supportedLocales;
 
   @override
@@ -693,7 +693,7 @@ class _App extends App {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       routerConfig: router!.config(
-        navigatorObservers: routerObserverBuilder ??
+        navigatorObservers: navigatorObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
     );
@@ -704,16 +704,16 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
-    this.routerObserver,
+    this.navigatorObserver,
     this.themeMode,
   }) : super._();
 
   final Locale locale;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
-  final AutoRouterObserver? routerObserver;
+  final NavigatorObserver? navigatorObserver;
   final ThemeMode? themeMode;
 
   List<Locale> get supportedLocales => [locale];
@@ -727,8 +727,8 @@ class _AppTest extends App {
       routerConfig: router!.config(
         deepLinkBuilder:
             initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
-        navigatorObservers: routerObserver != null
-            ? () => [routerObserver!]
+        navigatorObservers: navigatorObserver!= null
+            ? () => [navigatorObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
       themeMode: themeMode,
@@ -775,17 +775,17 @@ abstract class App extends StatelessWidget {
     required List<Locale> supportedLocales,
     required List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
-    List<AutoRouterObserver> Function()? routerObserverBuilder,
+    List<NavigatorObserver> Function()? navigatorObserverBuilder,
   }) = _App;
 
   @visibleForTesting
   const factory App.test({
     Key? key,
     Locale locale,
-    required List<LocalizationsDelegate> localizationsDelegates,
+    List<LocalizationsDelegate> localizationsDelegates,
     required RootStackRouter router,
     List<PageRouteInfo<dynamic>>? initialRoutes,
-    AutoRouterObserver? routerObserver,
+    NavigatorObserver? navigatorObserver,
     ThemeMode? themeMode,
   }) = _AppTest;
 
@@ -808,10 +808,10 @@ class _App extends App {
     required this.supportedLocales,
     required super.localizationsDelegates,
     required RootStackRouter super.router,
-    this.routerObserverBuilder,
+    this.navigatorObserverBuilder,
   }) : super._();
 
-  final List<AutoRouterObserver> Function()? routerObserverBuilder;
+  final List<NavigatorObserver> Function()? navigatorObserverBuilder;
   final List<Locale> supportedLocales;
 
   @override
@@ -820,7 +820,7 @@ class _App extends App {
       supportedLocales: supportedLocales,
       localizationsDelegates: localizationsDelegates,
       routerConfig: router!.config(
-        navigatorObservers: routerObserverBuilder ??
+        navigatorObservers: navigatorObserverBuilder ??
             AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
     );
@@ -831,16 +831,16 @@ class _AppTest extends App {
   const _AppTest({
     super.key,
     this.locale = const Locale('en'),
-    required super.localizationsDelegates,
+    super.localizationsDelegates = const [],
     required RootStackRouter super.router,
     this.initialRoutes,
-    this.routerObserver,
+    this.navigatorObserver,
     this.themeMode,
   }) : super._();
 
   final Locale locale;
   final List<PageRouteInfo<dynamic>>? initialRoutes;
-  final AutoRouterObserver? routerObserver;
+  final NavigatorObserver? navigatorObserver;
   final ThemeMode? themeMode;
 
   List<Locale> get supportedLocales => [locale];
@@ -854,8 +854,8 @@ class _AppTest extends App {
       routerConfig: router!.config(
         deepLinkBuilder:
             initialRoutes != null ? (_) => DeepLink(initialRoutes!) : null,
-        navigatorObservers: routerObserver != null
-            ? () => [routerObserver!]
+        navigatorObservers: navigatorObserver!= null
+            ? () => [navigatorObserver!]
             : AutoRouterDelegate.defaultNavigatorObserversBuilder,
       ),
       themeMode: themeMode,

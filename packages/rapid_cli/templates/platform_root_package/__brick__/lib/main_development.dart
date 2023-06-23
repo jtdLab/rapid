@@ -5,8 +5,8 @@ import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 import 'bootstrap.dart';
 import 'injection.dart';
 
-void main() => runOnAndroid(() async {
-      configureDependencies(Environment.dev, Platform.android);
+Future<void> main() => runOnAndroid(() async {
+      await configureDependencies(Environment.dev, Platform.android);
       // TODO: add Android development setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
       // TODO: add Android development setup here (post WidgetsFlutterBinding.ensureInitialized())
@@ -20,8 +20,8 @@ import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 import 'bootstrap.dart';
 import 'injection.dart';
 
-void main() => runOnIos(() async {
-      configureDependencies(Environment.dev, Platform.ios);
+Future<void> main() => runOnIos(() async {
+      await configureDependencies(Environment.dev, Platform.ios);
       // TODO: add iOS development setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
       // TODO: add iOS development setup here (post WidgetsFlutterBinding.ensureInitialized())
@@ -30,15 +30,19 @@ void main() => runOnIos(() async {
     });
 {{/ios}}{{#web}}import 'package:{{project_name}}_di/{{project_name}}_di.dart';
 import 'package:{{project_name}}_web/run_on_web.dart';
-import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
-import 'package:url_strategy/url_strategy.dart';
+import 'package:flutter/widgets.dart'
+    show WidgetsFlutterBinding, visibleForTesting;
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import 'bootstrap.dart';
 import 'injection.dart';
 
-void main() => runOnWeb(() async {
-      configureDependencies(Environment.dev, Platform.web);
-      setPathUrlStrategy();
+@visibleForTesting
+void Function()? setUrlStrategy = usePathUrlStrategy;
+
+Future<void> main() => runOnWeb(() async {
+      await configureDependencies(Environment.dev, Platform.web);
+      setUrlStrategy?.call();
       // TODO: add Web development setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
       // TODO: add Web development setup here (post WidgetsFlutterBinding.ensureInitialized())
@@ -52,8 +56,8 @@ import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 import 'bootstrap.dart';
 import 'injection.dart';
 
-void main() => runOnLinux(() async {
-      configureDependencies(Environment.dev, Platform.linux);
+Future<void> main() => runOnLinux(() async {
+      await configureDependencies(Environment.dev, Platform.linux);
       // TODO: add Linux development setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
       // TODO: add Linux development setup here (post WidgetsFlutterBinding.ensureInitialized())
@@ -67,8 +71,8 @@ import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 import 'bootstrap.dart';
 import 'injection.dart';
 
-void main() => runOnMacos(() async {
-      configureDependencies(Environment.dev, Platform.macos);
+Future<void> main() => runOnMacos(() async {
+      await configureDependencies(Environment.dev, Platform.macos);
       // TODO: add macOS development setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
       // TODO: add macOS development setup here (post WidgetsFlutterBinding.ensureInitialized())
@@ -82,8 +86,8 @@ import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 import 'bootstrap.dart';
 import 'injection.dart';
 
-void main() => runOnWindows(() async {
-      configureDependencies(Environment.dev, Platform.windows);
+Future<void> main() => runOnWindows(() async {
+      await configureDependencies(Environment.dev, Platform.windows);
       // TODO: add Windows development setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
       // TODO: add Windows development setup here (post WidgetsFlutterBinding.ensureInitialized())
@@ -97,8 +101,8 @@ import 'package:flutter/widgets.dart' show WidgetsFlutterBinding;
 import 'bootstrap.dart';
 import 'injection.dart';
 
-void main() => runOnMobile(() async {
-      configureDependencies(Environment.dev, Platform.mobile);
+Future<void> main() => runOnMobile(() async {
+      await configureDependencies(Environment.dev, Platform.mobile);
       // TODO: add Mobile development setup here (pre WidgetsFlutterBinding.ensureInitialized())
       WidgetsFlutterBinding.ensureInitialized();
       // TODO: add Mobile development setup here (post WidgetsFlutterBinding.ensureInitialized())

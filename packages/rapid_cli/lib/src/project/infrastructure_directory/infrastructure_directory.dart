@@ -1,12 +1,13 @@
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
-import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_directory_impl.dart';
-import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/project.dart';
+
+import 'infrastructure_directory_impl.dart';
+import 'infrastructure_package/infrastructure_package.dart';
 
 /// Signature of [InfrastructureDirectory.new].
 typedef InfrastructureDirectoryBuilder = InfrastructureDirectory Function({
-  required Project project,
+  required RapidProject project,
 });
 
 /// {@template infrastructure_directory}
@@ -17,7 +18,7 @@ typedef InfrastructureDirectoryBuilder = InfrastructureDirectory Function({
 abstract class InfrastructureDirectory extends Directory {
   /// {@macro infrastructure_directory}
   factory InfrastructureDirectory({
-    required Project project,
+    required RapidProject project,
   }) =>
       InfrastructureDirectoryImpl(
         project: project,

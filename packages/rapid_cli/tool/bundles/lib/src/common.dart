@@ -1,30 +1,39 @@
-const platforms = ['android', 'ios', 'linux', 'macos', 'web', 'windows', 'mobile'];
+const platforms = [
+  'android',
+  'ios',
+  'linux',
+  'macos',
+  'web',
+  'windows',
+  'mobile'
+];
 const dart = DartDependency('3.0.0', '4.0.0');
 const flutter = FlutterDependency('3.10.0');
 final packages = [
+  PackageDependency('alchemist', '0.6.1'),
   PackageDependency('auto_route', '7.2.0'),
   PackageDependency('auto_route_generator', '7.1.1'),
   PackageDependency('bloc_concurrency', '0.2.2'),
-  PackageDependency('bloc_test', '9.1.2'),
+  PackageDependency('bloc_test', '9.1.3'),
   PackageDependency('bloc', '8.1.2'),
-  PackageDependency('build_runner', '2.4.4'),
+  PackageDependency('build_runner', '2.4.5'),
   PackageDependency('cupertino_icons', '1.0.5'),
   PackageDependency('dartz', '0.10.1'),
   PackageDependency('faker', '2.1.0'),
-  PackageDependency('fluent_ui', '4.6.1'),
+  PackageDependency('fluent_ui', '4.6.2'),
   PackageDependency('flutter_bloc', '8.1.3'),
   PackageDependency('flutter_gen_runner', '5.3.1'),
   PackageDependency('flutter_lints', '2.0.1'),
   PackageDependency('freezed_annotation', '2.2.0'),
-  PackageDependency('freezed', '2.3.4'),
+  PackageDependency('freezed', '2.3.5'),
   PackageDependency('get_it', '7.6.0'),
-  PackageDependency('injectable_generator', '2.1.5'),
-  PackageDependency('injectable', '2.1.1'),
+  PackageDependency('injectable_generator', '2.1.6'),
+  PackageDependency('injectable', '2.1.2'),
   PackageDependency('json_annotation', '4.8.1'),
   PackageDependency('json_serializable', '6.7.0'),
   PackageDependency('lints', '2.1.0'),
   PackageDependency('macos_ui', '1.12.2'),
-  PackageDependency('melos', '3.0.1'),
+  PackageDependency('melos', '3.1.0'),
   PackageDependency('meta', '1.9.1'),
   PackageDependency('mocktail', '0.3.0'),
   PackageDependency('test', '1.24.3'),
@@ -32,7 +41,7 @@ final packages = [
   PackageDependency('theme_tailor', '2.0.0'),
   PackageDependency('url_strategy', '0.2.0'),
   PackageDependency('yaru_icons', '1.0.4'),
-  PackageDependency('yaru', '0.7.0'),
+  PackageDependency('yaru', '0.8.0'),
 ];
 
 const arbFile = Template(

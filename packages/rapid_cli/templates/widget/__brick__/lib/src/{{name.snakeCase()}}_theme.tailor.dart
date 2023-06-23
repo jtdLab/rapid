@@ -1,11 +1,11 @@
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint, unused_element
+// ignore_for_file: type=lint, unused_element, unnecessary_cast
 
 part of '{{name.snakeCase()}}_theme.dart';
 
 // **************************************************************************
-// ThemeTailorGenerator
+// TailorAnnotationsGenerator
 // **************************************************************************
 
 class {{project_name.pascalCase()}}{{name.pascalCase()}}Theme extends ThemeExtension<{{project_name.pascalCase()}}{{name.pascalCase()}}Theme>
@@ -40,8 +40,8 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}}Theme extends ThemeExten
 
   @override
   {{project_name.pascalCase()}}{{name.pascalCase()}}Theme lerp(
-      ThemeExtension<{{project_name.pascalCase()}}{{name.pascalCase()}}Theme>? other, double t) {
-    if (other is! {{project_name.pascalCase()}}{{name.pascalCase()}}Theme) return this;
+      covariant ThemeExtension<{{project_name.pascalCase()}}{{name.pascalCase()}}Theme>? other, double t) {
+    if (other is! {{project_name.pascalCase()}}{{name.pascalCase()}}Theme) return this as {{project_name.pascalCase()}}{{name.pascalCase()}}Theme;
     return {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(
       backgroundColor: Color.lerp(backgroundColor, other.backgroundColor, t)!,
     );
@@ -67,11 +67,13 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}}Theme extends ThemeExten
   @override
   int get hashCode {
     return Object.hash(
-        runtimeType, const DeepCollectionEquality().hash(backgroundColor));
+      runtimeType.hashCode,
+      const DeepCollectionEquality().hash(backgroundColor),
+    );
   }
 }
 
-extension {{project_name.pascalCase()}}{{name.pascalCase()}}ThemeBuildContext on BuildContext {
+{{^windows}}extension {{project_name.pascalCase()}}{{name.pascalCase()}}ThemeBuildContext on BuildContext {
   {{project_name.pascalCase()}}{{name.pascalCase()}}Theme get {{project_name.camelCase()}}{{name.pascalCase()}}Theme =>
       Theme.of(this).extension<{{project_name.pascalCase()}}{{name.pascalCase()}}Theme>()!;
-}
+}{{/windows}}

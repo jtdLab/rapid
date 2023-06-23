@@ -234,8 +234,9 @@ Future<void> _updatePackageTemplates({
     }
   }
 
-  final plaformPackageTemplates =
-      templates.whereType<PlatformPackageTemplate>();
+  final plaformPackageTemplates = templates
+      .whereType<PlatformPackageTemplate>()
+      .where((e) => e.name != 'platform_navigation_package');
 
   for (final template in plaformPackageTemplates) {
     for (var i = 0; i < platforms.length; i++) {
@@ -267,7 +268,7 @@ Future<void> _updatePackageTemplates({
   }
 
   final packageTemplates = templates.whereType<PackageTemplate>().where((e) =>
-      !plaformPackageTemplates.contains(e) &&
+      ![...plaformPackageTemplates, platformNavigationPackage].contains(e) &&
       !plaformNamedPackageTemplates.contains(e));
 
   for (final template in packageTemplates) {

@@ -1,0 +1,186 @@
+# Activate Command
+
+This command adds support for a platform to the current project.
+
+```
+rapid activate <platform>
+```
+
+This can be useful to support more platforms as your app grows.
+
+## Subcommands
+
+<Tabs
+  groupId="platforms"
+  values={[
+    { label: "android", value: "android" },
+    { label: "ios", value: "ios" },
+    { label: "linux", value: "linux" },
+    { label: "macos", value: "macos" },
+    { label: "mobile", value: "mobile" },
+    { label: "web", value: "web" },
+    { label: "windows", value: "windows" },
+  ]}
+>
+<TabItem value="android">
+```bash
+rapid activate android
+```
+
+## Parameters
+
+### `--desc`
+
+- Description: The description for the native Android project.
+- Type: String
+- Required: No
+- Default: `"A Rapid app."`
+
+### `--org-name`
+
+- Description: The organization for the native Android project.
+- Type: String
+- Required: No
+- Default: `"com.example"`
+
+### `--language`
+
+- The default language for Android.
+- Type: String
+- Required: No
+- Default: `"en"`
+</TabItem>
+<TabItem value="ios">
+```bash
+rapid activate ios
+```
+
+## Parameters
+
+### `--org-name`
+
+- Description: The organization for the native iOS project.
+- Type: String
+- Required: No
+- Default: `"com.example"`
+
+### `--language`
+
+- The default language for iOS.
+- Type: String
+- Required: No
+- Default: `"en"`
+</TabItem>
+<TabItem value="linux">
+```bash
+rapid activate linux
+```
+
+## Parameters
+
+### `--org-name`
+
+- Description: The organization for the native Linux project.
+- Type: String
+- Required: No
+- Default: `"com.example"`
+
+### `--language`
+
+- The default language for Linux.
+- Type: String
+- Required: No
+- Default: `"en"`
+</TabItem>
+<TabItem value="macos">
+```bash
+rapid activate macos
+```
+
+## Parameters
+
+### `--org-name`
+
+- Description: The organization for the native macOS project.
+- Type: String
+- Required: No
+- Default: `"com.example"`
+
+### `--language`
+
+- The default language for macOS.
+- Type: String
+- Required: No
+- Default: `"en"`
+</TabItem>
+<TabItem value="mobile">
+```bash
+rapid activate mobile
+```
+
+## Parameters
+
+### `--desc`
+
+- Description: The description for the native Android project.
+- Type: String
+- Required: No
+- Default: `"A Rapid app."`
+
+### `--org-name`
+
+- Description: The organization for the native Mobile projects.
+- Type: String
+- Required: No
+- Default: `"com.example"`
+
+### `--language`
+
+- The default language for Mobile.
+- Type: String
+- Required: No
+- Default: `"en"`
+</TabItem>
+<TabItem value="web">
+```bash
+rapid activate web
+```
+
+## Parameters
+
+### `--desc`
+
+- Description: The description for the native Web project.
+- Type: String
+- Required: No
+- Default: `"A Rapid app."`
+
+### `--language`
+
+- The default language for Web.
+- Type: String
+- Required: No
+- Default: `"en"`
+</TabItem>
+<TabItem value="windows">
+```bash
+rapid activate windows
+```
+
+## Parameters
+
+### `--org-name`
+
+- Description: The organization for the native Windows project.
+- Type: String
+- Required: No
+- Default: `"com.example"`
+
+### `--language`
+
+- The default language for Windows.
+- Type: String
+- Required: No
+- Default: `"en"`
+</TabItem>
+</Tabs>

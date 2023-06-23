@@ -1,64 +1,46 @@
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:test/test.dart';
 
 import 'common.dart';
 
-Future<void> performTest({
+dynamic performTest({
   required Platform platform,
-  TestType type = TestType.normal,
-  required RapidCommandRunner commandRunner,
-}) async {
-  // Arrange
-  await setupProject(platform);
-  final featureName = 'home_page';
-  await commandRunner.run([
-    platform.name,
-    'add',
-    'navigator',
-    '-f',
-    featureName,
-  ]);
+}) =>
+    withTempDir((root) async {
+      // Arrange
+      final tester = await RapidE2ETester.withProject(root, platform);
+      final featureName = 'home_page';
+      await tester.runRapidCommand([
+        platform.name,
+        'add',
+        'navigator',
+        '-f',
+        featureName,
+      ]);
 
-  // Act
-  final commandResult = await commandRunner.run([
-    platform.name,
-    'remove',
-    'navigator',
-    '-f',
-    featureName,
-  ]);
+      // Act
+      await tester.runRapidCommand([
+        platform.name,
+        'remove',
+        'navigator',
+        '-f',
+        featureName,
+      ]);
 
-  // Assert
-  expect(commandResult, equals(ExitCode.success.code));
-  await verifyNoAnalyzerIssues();
-  await verifyNoFormattingIssues();
-  final appFeaturePackage = featurePackage('app', platform);
-  final feature = featurePackage(featureName, platform);
-  verifyDoExist({
-    ...platformIndependentPackages,
-    ...platformDependentPackages([platform]),
-    appFeaturePackage,
-    feature,
-  });
-  verifyDoNotExist({
-    ...navigatorFiles(
-      featureName: featureName,
-      platform: platform,
-    ),
-    ...navigatorImplementationFiles(
-      featureName: featureName,
-      platform: platform,
-    ),
-  });
-  if (type != TestType.fast) {
-    await verifyTestsPassWith100PercentCoverage([
-      ...platformIndependentPackagesWithTests,
-      ...platformDependentPackagesWithTests(platform),
-      appFeaturePackage,
-    ]);
-    // TODO
-    await verifyTestsPass(feature, expectedCoverage: 100.0);
-  }
-}
+      // Assert
+      await verifyNoAnalyzerIssues();
+      await verifyNoFormattingIssues();
+      verifyDoNotExist({
+        ...tester.navigatorFiles(
+          featureName: featureName,
+          platform: platform,
+        ),
+        ...tester.navigatorImplementationFiles(
+          featureName: featureName,
+          platform: platform,
+        ),
+      });
+      await verifyTestsPass(
+        tester.featurePackage(featureName, platform),
+        expectedCoverage: 100.0,
+      );
+    });

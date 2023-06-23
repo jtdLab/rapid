@@ -16,7 +16,7 @@ abstract class ${{name.pascalCase()}}Module extends _i2.AutoRouterModule {
 
   @override
   final Map<String, _i2.PageFactory> pagesMap = {
-    {{route_name}}Route.name: (routeData) {
+    {{name.pascalCase()}}Route.name: (routeData) {
       return _i2.AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const _i1.{{name.pascalCase()}}(),
@@ -27,14 +27,14 @@ abstract class ${{name.pascalCase()}}Module extends _i2.AutoRouterModule {
 
 /// generated route for
 /// [_i1.{{name.pascalCase()}}]
-class {{route_name}}Route extends _i2.PageRouteInfo<void> {
-  const {{route_name}}Route({List<_i2.PageRouteInfo>? children})
+class {{name.pascalCase()}}Route extends _i2.PageRouteInfo<void> {
+  const {{name.pascalCase()}}Route({List<_i2.PageRouteInfo>? children})
       : super(
-          {{route_name}}Route.name,
+          {{name.pascalCase()}}Route.name,
           initialChildren: children,
         );
 
-  static const String name = '{{route_name}}Route';
+  static const String name = '{{name.pascalCase()}}Route';
 
   static const _i2.PageInfo<void> page = _i2.PageInfo<void>(name);
 }

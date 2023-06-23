@@ -1,5 +1,6 @@
 import 'dart:io' as io;
 
+import 'package:collection/collection.dart';
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/arb_file_impl.dart';
@@ -13,8 +14,8 @@ import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file_impl.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/navigator_implementation_bundle.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
+import '../../../project.dart';
 import 'arb_file_bundle.dart';
 import 'bloc_bundle.dart';
 import 'cubit_bundle.dart';
@@ -22,7 +23,7 @@ import 'platform_app_feature_package_bundle.dart';
 import 'platform_feature_package.dart';
 import 'platform_feature_package_bundle.dart';
 
-class PlatformFeaturePackageImpl extends DartPackageImpl
+abstract class PlatformFeaturePackageImpl extends DartPackageImpl
     with OverridableGenerator, Generatable
     implements PlatformFeaturePackage {
   PlatformFeaturePackageImpl(
@@ -33,12 +34,15 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
           path: p.join(
             project.path,
             'packages',
-            project.name(),
-            '${project.name()}_${platform.name}',
-            '${project.name()}_${platform.name}_features',
-            '${project.name()}_${platform.name}_$name',
+            project.name,
+            '${project.name}_${platform.name}',
+            '${project.name}_${platform.name}_features',
+            '${project.name}_${platform.name}_$name',
           ),
         );
+
+  L10nDirectory get _l10nDirectory => (l10nDirectoryOverrides ??
+      L10nDirectory.new)(platformFeaturePackage: this);
 
   L10nFile get _l10nFile =>
       (l10nFileOverrides ?? L10nFile.new)(platformFeaturePackage: this);
@@ -56,6 +60,9 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   L10nFileBuilder? l10nFileOverrides;
 
   @override
+  L10nDirectoryBuilder? l10nDirectoryOverrides;
+
+  @override
   LanguageLocalizationsFileBuilder? languageLocalizationsFileOverrides;
 
   @override
@@ -66,9 +73,6 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
 
   @override
   CubitBuilder? cubitOverrides;
-
-  @override
-  PlatformFeaturePackageNavigatorBuilder? navigatorImplementationOverrides;
 
   @override
   PlatformFeaturePackageApplicationBarrelFileBuilder?
@@ -84,7 +88,7 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   final Platform platform;
 
   @override
-  final Project project;
+  final RapidProject project;
 
   @override
   Bloc bloc({required String name, required String dir}) =>
@@ -103,13 +107,6 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
       );
 
   @override
-  PlatformFeaturePackageNavigatorImplementation get navigatorImplementation =>
-      (navigatorImplementationOverrides ??
-          PlatformFeaturePackageNavigatorImplementation.new)(
-        platformFeaturePackage: this,
-      );
-
-  @override
   PlatformFeaturePackageApplicationBarrelFile get applicationBarrelFile =>
       (applicationBarrelFileOverrides ??
           PlatformFeaturePackageApplicationBarrelFile.new)(
@@ -121,45 +118,7 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
       PlatformFeaturePackageBarrelFile.new)(platformFeaturePackage: this);
 
   @override
-  Future<void> create({
-    String? description,
-    bool routing = true,
-    required String defaultLanguage,
-    required Set<String> languages,
-  }) async {
-    final projectName = project.name();
-
-    await generate(
-      bundle: platformFeaturePackageBundle,
-      vars: <String, dynamic>{
-        'name': name,
-        'description': description ?? 'The ${name.titleCase} feature',
-        'project_name': projectName,
-        'android': platform == Platform.android,
-        'ios': platform == Platform.ios,
-        'linux': platform == Platform.linux,
-        'macos': platform == Platform.macos,
-        'web': platform == Platform.web,
-        'windows': platform == Platform.windows,
-        'mobile': platform == Platform.mobile,
-        'default_language': defaultLanguage,
-        'routable': routing,
-        'route_name':
-            name.pascalCase.replaceAll('Page', '').replaceAll('Screen', ''),
-      },
-    );
-
-    await _arbDirectory.create(
-      languages: languages,
-      translations: (language) => [
-        {
-          'name': 'title',
-          'translation': '${name.titleCase} title for $language',
-          'description': 'Title text shown in the ${name.titleCase}',
-        }
-      ],
-    );
-  }
+  bool get hasLanguages => _l10nDirectory.exists() && _l10nFile.exists();
 
   @override
   Set<String> supportedLanguages() =>
@@ -186,77 +145,23 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
 
   @override
   Future<void> addLanguage(String language) async {
-    await _arbDirectory.addLanguageArbFile(language: language);
+    final languageArbFile = _arbDirectory.languageArbFile(language: language);
+    if (!languageArbFile.exists()) {
+      await languageArbFile.create();
+    }
   }
 
   @override
   Future<void> removeLanguage(String language) async {
-    await _arbDirectory.removeLanguageArbFile(language: language);
+    final languageArbFile = _arbDirectory.languageArbFile(language: language);
+    if (languageArbFile.exists()) {
+      languageArbFile.delete();
+    }
 
     final languageLocalizationsFile = _languageLocalizationsFile(language);
     if (languageLocalizationsFile.exists()) {
       languageLocalizationsFile.delete();
     }
-  }
-
-  @override
-  Future<Bloc> addBloc({
-    required String name,
-    required String dir,
-  }) async {
-    final bloc = this.bloc(name: name, dir: dir);
-    if (bloc.existsAny()) {
-      throw RapidException('The ${name}Bloc at $dir already exists');
-    }
-
-    await bloc.create();
-
-    return bloc;
-  }
-
-  @override
-  Future<Bloc> removeBloc({
-    required String name,
-    required String dir,
-  }) async {
-    final bloc = this.bloc(name: name, dir: dir);
-    if (!bloc.existsAny()) {
-      throw RapidException('The ${name}Bloc at $dir does not exist');
-    }
-
-    bloc.delete();
-
-    return bloc;
-  }
-
-  @override
-  Future<Cubit> addCubit({
-    required String name,
-    required String dir,
-  }) async {
-    final cubit = this.cubit(name: name, dir: dir);
-    if (cubit.existsAny()) {
-      throw RapidException('The ${name}Cubit at $dir already exists');
-    }
-
-    await cubit.create();
-
-    return cubit;
-  }
-
-  @override
-  Future<Cubit> removeCubit({
-    required String name,
-    required String dir,
-  }) async {
-    final cubit = this.cubit(name: name, dir: dir);
-    if (!cubit.existsAny()) {
-      throw RapidException('The ${name}Cubit at $dir does not exist');
-    }
-
-    cubit.delete();
-
-    return cubit;
   }
 
   @override
@@ -273,6 +178,240 @@ class PlatformFeaturePackageImpl extends DartPackageImpl
   int get hashCode => Object.hash(name, platform, project);
 }
 
+abstract class PlatformRoutableFeaturePackageImpl
+    extends PlatformFeaturePackageImpl
+    implements PlatformRoutableFeaturePackage {
+  PlatformRoutableFeaturePackageImpl(
+    super.name,
+    super.platform, {
+    required super.project,
+  });
+
+  @override
+  PlatformFeaturePackageNavigatorBuilder? navigatorImplementationOverrides;
+
+  @override
+  PlatformFeaturePackageNavigatorImplementation get navigatorImplementation =>
+      (navigatorImplementationOverrides ??
+          PlatformFeaturePackageNavigatorImplementation.new)(
+        platformFeaturePackage: this,
+      );
+}
+
+class PlatformCustomFeaturePackageImpl
+    extends PlatformRoutableFeaturePackageImpl
+    implements PlatformCustomFeaturePackage {
+  PlatformCustomFeaturePackageImpl(
+    super.name,
+    super.platform, {
+    required super.project,
+  });
+
+  @override
+  Future<void> create({
+    required String description,
+    required bool routing,
+    required bool localization,
+    required String defaultLanguage,
+    required Set<String> languages,
+  }) async {
+    final projectName = project.name;
+
+    await generate(
+      bundle: platformFeaturePackageBundle,
+      vars: <String, dynamic>{
+        'name': name,
+        'description': description,
+        'project_name': projectName,
+        'android': platform == Platform.android,
+        'ios': platform == Platform.ios,
+        'linux': platform == Platform.linux,
+        'macos': platform == Platform.macos,
+        'web': platform == Platform.web,
+        'windows': platform == Platform.windows,
+        'mobile': platform == Platform.mobile,
+        'localization': localization,
+        'default_language': defaultLanguage,
+        'routable': routing,
+        'isCustom': true, // TODO needed?
+        'isFlow': false,
+        'isTabFlow': false,
+        'isPage': false,
+        'isWidget': false,
+      },
+    );
+
+    // TODO create flows/pages and widgets inside this
+
+    if (localization) {
+      await _arbDirectory.create(languages: languages);
+    }
+  }
+}
+
+class PlatformFlowFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
+    implements PlatformFlowFeaturePackage {
+  PlatformFlowFeaturePackageImpl(
+    super.name,
+    super.platform, {
+    required super.project,
+  });
+
+  @override
+  Future<void> create({
+    required bool tab,
+    required String description,
+    required bool localization,
+    required String defaultLanguage,
+    required Set<String> languages,
+    required Set<PlatformFeaturePackage>? features,
+  }) async {
+    final projectName = project.name;
+
+    await generate(
+      bundle: platformFeaturePackageBundle,
+      vars: <String, dynamic>{
+        'name': name,
+        'description': description,
+        'project_name': projectName,
+        'android': platform == Platform.android,
+        'ios': platform == Platform.ios,
+        'linux': platform == Platform.linux,
+        'macos': platform == Platform.macos,
+        'web': platform == Platform.web,
+        'windows': platform == Platform.windows,
+        'mobile': platform == Platform.mobile,
+        'localization': localization,
+        'default_language': defaultLanguage,
+        'routable': true,
+        'isCustom': false,
+        'isFlow': !tab,
+        'isTabFlow': tab,
+        'isPage': false,
+        'isWidget': false,
+        if (tab)
+          'subRoutes': features!
+              .mapIndexed(
+                  (i, e) => {'name': e.name.pascalCase, 'isFirst': i == 0})
+              .toList(),
+      },
+    );
+
+    if (localization) {
+      await _arbDirectory.create(languages: languages);
+    }
+  }
+}
+
+class PlatformPageFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
+    implements PlatformPageFeaturePackage {
+  PlatformPageFeaturePackageImpl(
+    super.name,
+    super.platform, {
+    required super.project,
+  });
+
+  @override
+  Future<void> create({
+    required String description,
+    required bool localization,
+    bool exampleTranslation = false,
+    required String defaultLanguage,
+    required Set<String> languages,
+  }) async {
+    final projectName = project.name;
+
+    await generate(
+      bundle: platformFeaturePackageBundle,
+      vars: <String, dynamic>{
+        'name': name,
+        'description': description,
+        'project_name': projectName,
+        'android': platform == Platform.android,
+        'ios': platform == Platform.ios,
+        'linux': platform == Platform.linux,
+        'macos': platform == Platform.macos,
+        'web': platform == Platform.web,
+        'windows': platform == Platform.windows,
+        'mobile': platform == Platform.mobile,
+        'localization': localization,
+        'exampleTranslation': exampleTranslation,
+        'default_language': defaultLanguage,
+        'routable': true,
+        'isCustom': false,
+        'isFlow': false,
+        'isTabFlow': false,
+        'isPage': true,
+        'isWidget': false,
+      },
+    );
+
+    if (localization) {
+      await _arbDirectory.create(
+        languages: languages,
+        translations: exampleTranslation
+            ? (language) => [
+                  {
+                    'name': 'title',
+                    'translation': '${name.titleCase} title for $language',
+                    'description': 'Title text shown in the ${name.titleCase}',
+                  }
+                ]
+            : null,
+      );
+    }
+  }
+}
+
+class PlatformWidgetFeaturePackageImpl
+    extends PlatformRoutableFeaturePackageImpl
+    implements PlatformWidgetFeaturePackage {
+  PlatformWidgetFeaturePackageImpl(
+    super.name,
+    super.platform, {
+    required super.project,
+  });
+
+  @override
+  Future<void> create({
+    required String description,
+    required bool localization,
+    required String defaultLanguage,
+    required Set<String> languages,
+  }) async {
+    final projectName = project.name;
+
+    await generate(
+      bundle: platformFeaturePackageBundle,
+      vars: <String, dynamic>{
+        'name': name,
+        'description': description,
+        'project_name': projectName,
+        'android': platform == Platform.android,
+        'ios': platform == Platform.ios,
+        'linux': platform == Platform.linux,
+        'macos': platform == Platform.macos,
+        'web': platform == Platform.web,
+        'windows': platform == Platform.windows,
+        'mobile': platform == Platform.mobile,
+        'localization': localization,
+        'default_language': defaultLanguage,
+        'routable': false,
+        'isCustom': false,
+        'isFlow': false,
+        'isTabFlow': false,
+        'isPage': false,
+        'isWidget': true,
+      },
+    );
+
+    if (localization) {
+      await _arbDirectory.create(languages: languages);
+    }
+  }
+}
+
+// TODO rm localization files initially
 class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
     implements PlatformAppFeaturePackage {
   PlatformAppFeaturePackageImpl(
@@ -287,7 +426,7 @@ class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
     required String defaultLanguage,
     required Set<String> languages,
   }) async {
-    final projectName = project.name();
+    final projectName = project.name;
 
     await generate(
       bundle: platformAppFeaturePackageBundle,
@@ -301,14 +440,25 @@ class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
         'windows': platform == Platform.windows,
         'mobile': platform == Platform.mobile,
         'default_language': defaultLanguage,
-        'routable': routing,
-        'route_name':
-            name.pascalCase.replaceAll('Page', '').replaceAll('Screen', ''),
       },
     );
 
     await _arbDirectory.create(languages: languages);
   }
+}
+
+class L10nDirectoryImpl extends DirectoryImpl implements L10nDirectory {
+  L10nDirectoryImpl({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) : super(
+          path: p.join(
+            platformFeaturePackage.path,
+            'lib',
+            'src',
+            'presentation',
+            'l10n',
+          ),
+        );
 }
 
 class L10nFileImpl extends YamlFileImpl implements L10nFile {
@@ -413,34 +563,6 @@ class ArbDirectoryImpl extends DirectoryImpl implements ArbDirectory {
         }
       }
     }
-  }
-
-  @override
-  Future<LanguageArbFile> addLanguageArbFile({
-    required String language,
-  }) async {
-    final languageArbFile = this.languageArbFile(language: language);
-    if (languageArbFile.exists()) {
-      throw RapidException('The file $language.arb already exists');
-    }
-
-    await languageArbFile.create();
-
-    return languageArbFile;
-  }
-
-  @override
-  Future<LanguageArbFile> removeLanguageArbFile({
-    required String language,
-  }) async {
-    final languageArbFile = this.languageArbFile(language: language);
-    if (!languageArbFile.exists()) {
-      throw RapidException('The file $language.arb does not exist');
-    }
-
-    languageArbFile.delete();
-
-    return languageArbFile;
   }
 }
 
@@ -558,7 +680,7 @@ class BlocImpl extends FileSystemEntityCollection
 
   @override
   Future<void> create() async {
-    final projectName = _platformFeaturePackage.project.name();
+    final projectName = _platformFeaturePackage.project.name;
     final platform = _platformFeaturePackage.platform.name;
     final featureName = _platformFeaturePackage.name;
 
@@ -635,7 +757,7 @@ class CubitImpl extends FileSystemEntityCollection
 
   @override
   Future<void> create() async {
-    final projectName = _platformFeaturePackage.project.name();
+    final projectName = _platformFeaturePackage.project.name;
     final platform = _platformFeaturePackage.platform.name;
     final featureName = _platformFeaturePackage.name;
 
@@ -687,7 +809,7 @@ class PlatformFeaturePackageNavigatorImplementationImpl
 
   @override
   Future<void> create() async {
-    final projectName = _platformFeaturePackage.project.name();
+    final projectName = _platformFeaturePackage.project.name;
     final name = _platformFeaturePackage.name;
     final platform = _platformFeaturePackage.platform;
 

@@ -9,7 +9,7 @@ import 'common.dart';
 
 const _descriptionPlaceholder = 'XXDESCXX';
 const _orgNamePlaceholder = 'xxx.xxx.xxx';
-const _projectNamePlaceholder = 'xlx';
+const _projectNamePlaceholder = 'xlx_xlx';
 
 Future<void> updatePlatformNativeDirectoryTemplates() async {
   print('Updating PlatformNativeDirectory templates...');
@@ -67,7 +67,9 @@ void _applyPlaceholders({
     (_orgNamePlaceholder, '{{org_name}}'),
     (_projectNamePlaceholder, '{{project_name}}'),
     // TODO maybe more cases ?
-    (_projectNamePlaceholder.titleCase, '{{project_name.titleCase()}}')
+    (_projectNamePlaceholder.titleCase, '{{project_name.titleCase()}}'),
+    (_projectNamePlaceholder.pascalCase, '{{project_name.pascalCase()}}'),
+    (_projectNamePlaceholder.camelCase, '{{project_name.camelCase()}}')
   ];
   final files =
       dir.listSync(recursive: true).whereType<File>().where((e) => !e.isBinary);
@@ -129,6 +131,19 @@ void _updatePlatformNativeDirectoryTemplate({
     gitignoreFile.copySync(
       p.join(brickDir.path, '.gitignore'),
     );
+  }
+
+  // TODO: https://github.com/jtdLab/rapid/issues/96
+  if (platform == 'macos') {
+    for (final file in brickDir
+        .listSync(recursive: true)
+        .whereType<File>()
+        .where((e) => !e.isBinary)) {
+      final content = file.readAsStringSync();
+      file.writeAsStringSync(content
+          .replaceAll('10.14', '10.15.7')
+          .replaceAll('10.14.6', '10.15.7'));
+    }
   }
 }
 

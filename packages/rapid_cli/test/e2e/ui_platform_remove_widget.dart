@@ -1,48 +1,37 @@
-import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/core/platform.dart';
-import 'package:test/test.dart';
 
 import 'common.dart';
 
-Future<void> performTest({
+dynamic performTest({
   required Platform platform,
-  TestType type = TestType.normal,
-  required RapidCommandRunner commandRunner,
-}) async {
-  // Arrange
-  await setupProject(platform);
-  final name = 'FooBar';
-  await commandRunner.run([
-    'ui',
-    platform.name,
-    'add',
-    'widget',
-    name,
-  ]);
+}) =>
+    withTempDir((root) async {
+      // Arrange
+      final tester = await RapidE2ETester.withProject(root, platform);
+      final name = 'FooBar';
+      await tester.runRapidCommand([
+        'ui',
+        platform.name,
+        'add',
+        'widget',
+        name,
+      ]);
 
-  // Act
-  final commandResult = await commandRunner.run([
-    'ui',
-    platform.name,
-    'remove',
-    'widget',
-    name,
-  ]);
+      // Act
+      await tester.runRapidCommand([
+        'ui',
+        platform.name,
+        'remove',
+        'widget',
+        name,
+      ]);
 
-  // Assert
-  expect(commandResult, equals(ExitCode.success.code));
-  await verifyNoAnalyzerIssues();
-  await verifyNoFormattingIssues();
-  verifyDoExist({
-    ...platformIndependentPackages,
-  });
-  verifyDoNotExist({
-    ...widgetFiles(name: name, platform: platform),
-  });
-  if (type != TestType.fast) {
-    await verifyTestsPassWith100PercentCoverage({
-      platformUiPackage(platform),
+      // Assert
+      await verifyNoAnalyzerIssues();
+      await verifyNoFormattingIssues();
+      verifyDoNotExist({
+        ...tester.widgetFiles(name: name, platform: platform),
+      });
+      await verifyTestsPassWith100PercentCoverage(
+          [tester.platformUiPackage(platform)]);
     });
-  }
-}

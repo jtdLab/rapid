@@ -3,13 +3,14 @@ import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package_impl.dart';
 import 'package:rapid_cli/src/project/project.dart';
+
+import 'infrastructure_package_impl.dart';
 
 /// Signature of [InfrastructurePackage.new].
 typedef InfrastructurePackageBuilder = InfrastructurePackage Function({
   String? name,
-  required Project project,
+  required RapidProject project,
 });
 
 /// {@template infrastructure_package}
@@ -18,11 +19,14 @@ typedef InfrastructurePackageBuilder = InfrastructurePackage Function({
 /// Location: `packages/<project name>/<project name>_infrastructure/<project name>_infrastructure_<name>`
 /// {@endtemplate}
 abstract class InfrastructurePackage
-    implements DartPackage, OverridableGenerator {
+    implements
+        DartPackage,
+        OverridableGenerator,
+        Comparable<InfrastructurePackage> {
   /// {@macro infrastructure_package}
   factory InfrastructurePackage({
     String? name,
-    required Project project,
+    required RapidProject project,
   }) =>
       InfrastructurePackageImpl(
         name: name,
@@ -45,7 +49,7 @@ abstract class InfrastructurePackage
   String? get name;
 
   /// Returns the project associated with this package.
-  Project get project;
+  RapidProject get project;
 
   /// Returns the barrel file of this package.
   InfrastructurePackageBarrelFile get barrelFile;

@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   get_it: ^7.6.0
-  injectable: ^2.1.1
+  injectable: ^2.1.2
 
 dev_dependencies:
   lints: ^2.1.0

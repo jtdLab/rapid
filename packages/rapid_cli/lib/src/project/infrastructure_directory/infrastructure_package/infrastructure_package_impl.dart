@@ -8,10 +8,10 @@ import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/data_transfer_object_bundle.dart';
-import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package.dart';
 import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/service_implementation_bundle.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
+import 'infrastructure_package.dart';
 import 'infrastructure_package_bundle.dart';
 
 class InfrastructurePackageImpl extends DartPackageImpl
@@ -24,9 +24,9 @@ class InfrastructurePackageImpl extends DartPackageImpl
           path: p.join(
             project.path,
             'packages',
-            project.name(),
-            '${project.name()}_infrastructure',
-            '${project.name()}_infrastructure${name != null ? '_$name' : ''}',
+            project.name,
+            '${project.name}_infrastructure',
+            '${project.name}_infrastructure${name != null ? '_$name' : ''}',
           ),
         );
 
@@ -43,7 +43,7 @@ class InfrastructurePackageImpl extends DartPackageImpl
   final String? name;
 
   @override
-  final Project project;
+  final RapidProject project;
 
   @override
   InfrastructurePackageBarrelFile get barrelFile =>
@@ -77,7 +77,7 @@ class InfrastructurePackageImpl extends DartPackageImpl
 
   @override
   Future<void> create() async {
-    final projectName = project.name();
+    final projectName = project.name;
 
     await generate(
       bundle: infrastructurePackageBundle,
@@ -88,6 +88,19 @@ class InfrastructurePackageImpl extends DartPackageImpl
       },
     );
   }
+
+  @override
+  int compareTo(InfrastructurePackage other) =>
+      (name ?? '').compareTo(other.name ?? '');
+
+  @override
+  bool operator ==(Object other) =>
+      other is InfrastructurePackage &&
+      name == other.name &&
+      project == other.project;
+
+  @override
+  int get hashCode => Object.hash(name, project);
 }
 
 class DataTransferObjectImpl extends FileSystemEntityCollection
@@ -145,7 +158,7 @@ class DataTransferObjectImpl extends FileSystemEntityCollection
 
   @override
   Future<void> create() async {
-    final projectName = _infrastructurePackage.project.name();
+    final projectName = _infrastructurePackage.project.name;
     final subInfrastructureName = _infrastructurePackage.name;
 
     final generator = await super.generator(dataTransferObjectBundle);
@@ -203,7 +216,7 @@ class ServiceImplementationImpl extends FileSystemEntityCollection
 
   @override
   Future<void> create() async {
-    final projectName = _infrastructurePackage.project.name();
+    final projectName = _infrastructurePackage.project.name;
     final subInfrastructureName = _infrastructurePackage.name;
 
     final generator = await super.generator(serviceImplementationBundle);

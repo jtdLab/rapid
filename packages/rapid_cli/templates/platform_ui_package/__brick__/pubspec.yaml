@@ -18,7 +18,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.4.4
+  build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
@@ -30,6 +30,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -88,7 +92,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.4.4
+  build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
@@ -100,6 +104,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -149,14 +157,14 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   theme_tailor_annotation: ^2.0.0
-  yaru: ^0.7.0
+  yaru: ^0.8.0
   yaru_icons: ^1.0.4
   {{project_name}}_ui:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.4.4
+  build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
@@ -168,6 +176,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -221,13 +233,16 @@ dependencies:
     sdk: flutter
   theme_tailor_annotation: ^2.0.0
   cupertino_icons: ^1.0.5
-  macos_ui: ^1.12.2
+  macos_ui:
+    git:
+      url: https://github.com/macosui/macos_ui.git
+      ref: f1053fc31958dbaa362a0a4c8288e8cf0919ab8c
   {{project_name}}_ui:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.4.4
+  build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
@@ -239,6 +254,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -293,7 +312,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.4.4
+  build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
@@ -305,6 +324,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -357,13 +380,13 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   theme_tailor_annotation: ^2.0.0
-  fluent_ui: ^4.6.1
+  fluent_ui: ^4.6.2
   {{project_name}}_ui:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.4.4
+  build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
@@ -375,6 +398,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -432,7 +459,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.4.4
+  build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
@@ -444,6 +471,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:

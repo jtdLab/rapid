@@ -1,11 +1,12 @@
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
-import 'package:rapid_cli/src/project/logging_package/logging_package_impl.dart';
 import 'package:rapid_cli/src/project/project.dart';
+
+import 'logging_package_impl.dart';
 
 /// Signature of [LoggingPackage.new].
 typedef LoggingPackageBuilder = LoggingPackage Function({
-  required Project project,
+  required RapidProject project,
 });
 
 /// {@template logging_package}
@@ -16,7 +17,7 @@ typedef LoggingPackageBuilder = LoggingPackage Function({
 abstract class LoggingPackage implements DartPackage, OverridableGenerator {
   /// {@macro logging_package}
   factory LoggingPackage({
-    required Project project,
+    required RapidProject project,
   }) =>
       LoggingPackageImpl(
         project: project,

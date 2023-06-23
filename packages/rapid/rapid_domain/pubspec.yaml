@@ -1,6 +1,8 @@
 name: rapid_domain
 description: Domain utils for Rapid apps.
-version: 0.1.0
+version: 0.0.1
+repository: https://github.com/jtdLab/rapid/tree/main/packages/rapid/rapid_domain
+issue_tracker: https://github.com/jtdLab/rapid/issues
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -10,6 +12,6 @@ dependencies:
   meta: ^1.9.1
 
 dev_dependencies:
-  lints: ^2.1.0
+  lints: ^2.1.1
   mocktail: ^0.3.0
   test: ^1.24.3

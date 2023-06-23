@@ -17,7 +17,7 @@ dependencies:
   bloc: ^8.1.2
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.3
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -26,11 +26,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.2
+  bloc_test: ^9.1.3
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  freezed: ^2.3.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  freezed: ^2.3.5
+  injectable_generator: ^2.1.6
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
@@ -41,6 +41,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -97,7 +101,7 @@ dependencies:
   bloc: ^8.1.2
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.3
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -106,11 +110,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.2
+  bloc_test: ^9.1.3
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  freezed: ^2.3.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  freezed: ^2.3.5
+  injectable_generator: ^2.1.6
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
@@ -121,6 +125,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -174,7 +182,7 @@ dependencies:
   bloc: ^8.1.2
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.3
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -183,11 +191,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.2
+  bloc_test: ^9.1.3
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  freezed: ^2.3.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  freezed: ^2.3.5
+  injectable_generator: ^2.1.6
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
@@ -198,6 +206,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -254,7 +266,7 @@ dependencies:
   bloc: ^8.1.2
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.3
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -263,11 +275,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.2
+  bloc_test: ^9.1.3
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  freezed: ^2.3.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  freezed: ^2.3.5
+  injectable_generator: ^2.1.6
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
@@ -278,6 +290,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -331,7 +347,7 @@ dependencies:
   bloc: ^8.1.2
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.3
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -340,11 +356,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.2
+  bloc_test: ^9.1.3
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  freezed: ^2.3.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  freezed: ^2.3.5
+  injectable_generator: ^2.1.6
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
@@ -355,6 +371,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -411,7 +431,7 @@ dependencies:
   bloc: ^8.1.2
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.3
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -420,11 +440,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.2
+  bloc_test: ^9.1.3
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  freezed: ^2.3.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  freezed: ^2.3.5
+  injectable_generator: ^2.1.6
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
@@ -435,6 +455,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
@@ -491,7 +515,7 @@ dependencies:
   bloc: ^8.1.2
   freezed_annotation: ^2.2.0
   flutter_bloc: ^8.1.3
-  injectable: ^2.1.1
+  injectable: ^2.1.2
   auto_route: ^7.2.0
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -500,11 +524,11 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  bloc_test: ^9.1.2
+  bloc_test: ^9.1.3
   mocktail: ^0.3.0
-  build_runner: ^2.4.4
-  freezed: ^2.3.4
-  injectable_generator: ^2.1.5
+  build_runner: ^2.4.5
+  freezed: ^2.3.5
+  injectable_generator: ^2.1.6
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.1
 
@@ -515,6 +539,10 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
+
+  assets:
+    outputs:
+      package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:

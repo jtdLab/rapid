@@ -20,7 +20,7 @@ final projectBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZToge3twcm9qZWN0X25hbWV9fQoKZW52aXJvbm1lbnQ6CiAgc2RrOiAiPj0zLjAuMCA8NC4wLjAiCgpkZXZfZGVwZW5kZW5jaWVzOgogIG1lbG9zOiBeMy4xLjAKICByYXBpZF9jbGk6CiAgICBnaXQ6CiAgICAgIHVybDogaHR0cHM6Ly9naXRodWIuY29tL2p0ZExhYi9yYXBpZC5naXQKICAgICAgcGF0aDogcGFja2FnZXMvcmFwaWRfY2xpCiAgICAgIHJlZjogcmV3cml0ZQoKcmFwaWQ6CiAgbmFtZToge3twcm9qZWN0X25hbWV9fQo=",
+          "bmFtZToge3twcm9qZWN0X25hbWV9fQoKZW52aXJvbm1lbnQ6CiAgc2RrOiAiPj0zLjAuMCA8NC4wLjAiCgpkZXZfZGVwZW5kZW5jaWVzOgogIG1lbG9zOiBeMy4xLjAKICByYXBpZF9jbGk6CiAgICBnaXQ6CiAgICAgIHVybDogaHR0cHM6Ly9naXRodWIuY29tL2p0ZExhYi9yYXBpZC5naXQKICAgICAgcGF0aDogcGFja2FnZXMvcmFwaWRfY2xpCiAgICAgIHJlZjogZmVhdC1tdWx0aXBsZS1mZWF0dXJlLXR5cGVzCgpyYXBpZDoKICBuYW1lOiB7e3Byb2plY3RfbmFtZX19Cg==",
       "type": "text"
     },
     {"path": "README.md", "data": "VE9ETwo=", "type": "text"}

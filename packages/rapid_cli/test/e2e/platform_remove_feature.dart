@@ -13,6 +13,7 @@ dynamic performTest({
         platform.name,
         'add',
         'feature',
+        'page',
         featureName,
       ]);
 
@@ -21,13 +22,13 @@ dynamic performTest({
         platform.name,
         'remove',
         'feature',
-        featureName,
+        '${featureName}_page',
       ]);
 
       // Assert
       await verifyNoAnalyzerIssues();
       await verifyNoFormattingIssues();
       verifyDoNotExist([
-        tester.featurePackage(featureName, platform),
+        tester.featurePackage('${featureName}_page', platform),
       ]);
     });

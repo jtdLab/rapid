@@ -105,7 +105,9 @@ jobs:
           - test/e2e/ui_windows_remove_widget_test.dart
 
           # E2E tests for <platform> command
-          - test/e2e/android_add_feature_test.dart
+          - test/e2e/android_add_feature_flow_test.dart
+          - test/e2e/android_add_feature_page_test.dart
+          - test/e2e/android_add_feature_widget_test.dart
           - test/e2e/android_add_language_test.dart
           - test/e2e/android_add_navigator_test.dart
           - test/e2e/android_feature_add_bloc_test.dart
@@ -114,7 +116,9 @@ jobs:
           - test/e2e/android_remove_language_test.dart
           - test/e2e/android_remove_navigator_test.dart
 
-          - test/e2e/ios_add_feature_test.dart
+          - test/e2e/ios_add_feature_flow_test.dart
+          - test/e2e/ios_add_feature_page_test.dart
+          - test/e2e/ios_add_feature_widget_test.dart
           - test/e2e/ios_add_language_test.dart
           - test/e2e/ios_add_navigator_test.dart
           - test/e2e/ios_feature_add_bloc_test.dart
@@ -123,7 +127,9 @@ jobs:
           - test/e2e/ios_remove_language_test.dart
           - test/e2e/ios_remove_navigator_test.dart
 
-          - test/e2e/linux_add_feature_test.dart
+          - test/e2e/linux_add_feature_flow_test.dart
+          - test/e2e/linux_add_feature_page_test.dart
+          - test/e2e/linux_add_feature_widget_test.dart
           - test/e2e/linux_add_language_test.dart
           - test/e2e/linux_add_navigator_test.dart
           - test/e2e/linux_feature_add_bloc_test.dart
@@ -132,7 +138,9 @@ jobs:
           - test/e2e/linux_remove_language_test.dart
           - test/e2e/linux_remove_navigator_test.dart
 
-          - test/e2e/macos_add_feature_test.dart
+          - test/e2e/macos_add_feature_flow_test.dart
+          - test/e2e/macos_add_feature_page_test.dart
+          - test/e2e/macos_add_feature_widget_test.dart
           - test/e2e/macos_add_language_test.dart
           - test/e2e/macos_add_navigator_test.dart
           - test/e2e/macos_feature_add_bloc_test.dart
@@ -141,7 +149,9 @@ jobs:
           - test/e2e/macos_remove_language_test.dart
           - test/e2e/macos_remove_navigator_test.dart
 
-          - test/e2e/mobile_add_feature_test.dart
+          - test/e2e/mobile_add_feature_flow_test.dart
+          - test/e2e/mobile_add_feature_page_test.dart
+          - test/e2e/mobile_add_feature_widget_test.dart
           - test/e2e/mobile_add_language_test.dart
           - test/e2e/mobile_add_navigator_test.dart
           - test/e2e/mobile_feature_add_bloc_test.dart
@@ -150,7 +160,9 @@ jobs:
           - test/e2e/mobile_remove_language_test.dart
           - test/e2e/mobile_remove_navigator_test.dart
 
-          - test/e2e/web_add_feature_test.dart
+          - test/e2e/web_add_feature_flow_test.dart
+          - test/e2e/web_add_feature_page_test.dart
+          - test/e2e/web_add_feature_widget_test.dart
           - test/e2e/web_add_language_test.dart
           - test/e2e/web_add_navigator_test.dart
           - test/e2e/web_feature_add_bloc_test.dart
@@ -159,7 +171,9 @@ jobs:
           - test/e2e/web_remove_language_test.dart
           - test/e2e/web_remove_navigator_test.dart
 
-          - test/e2e/windows_add_feature_test.dart
+          - test/e2e/windows_add_feature_flow_test.dart
+          - test/e2e/windows_add_feature_page_test.dart
+          - test/e2e/windows_add_feature_widget_test.dart
           - test/e2e/windows_add_language_test.dart
           - test/e2e/windows_add_navigator_test.dart
           - test/e2e/windows_feature_add_bloc_test.dart

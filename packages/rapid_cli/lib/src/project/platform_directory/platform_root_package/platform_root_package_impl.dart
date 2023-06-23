@@ -79,7 +79,7 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
     pubspecFile.setDependency(packageName);
     injectionFile.addFeaturePackage(packageName);
     if (localization) {
-      localizationsDelegatesFile.addLocalizationsDelegate(packageName);
+      localizationsDelegatesFile.addLocalizationsDelegate(featurePackage);
     }
     if (routing) {
       routerFile.addRouterModule(packageName);
@@ -91,7 +91,7 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
     PlatformFeaturePackage featurePackage,
   ) async {
     final packageName = featurePackage.packageName();
-    localizationsDelegatesFile.removeLocalizationsDelegate(packageName);
+    localizationsDelegatesFile.removeLocalizationsDelegate(featurePackage);
     pubspecFile.removeDependency(packageName);
     injectionFile.removeFeaturePackage(packageName);
     routerFile.removeRouterModule(packageName);
@@ -315,10 +315,12 @@ class LocalizationsDelegatesFileImpl extends DartFileImpl
           .toSet();
 
   @override
-  void addLocalizationsDelegate(String packageName) {
+  void addLocalizationsDelegate(PlatformFeaturePackage feature) {
+    final packageName = feature.packageName();
+    final featureName = feature.name;
     addImport('package:$packageName/$packageName.dart');
 
-    final newDelegate = '${packageName.pascalCase}Localizations.delegate';
+    final newDelegate = '${featureName.pascalCase}Localizations.delegate';
     final existingDelegates =
         readTopLevelListVar(name: 'localizationsDelegates');
 
@@ -350,10 +352,12 @@ class LocalizationsDelegatesFileImpl extends DartFileImpl
   }
 
   @override
-  void removeLocalizationsDelegate(String packageName) {
+  void removeLocalizationsDelegate(PlatformFeaturePackage feature) {
+    final packageName = feature.packageName();
+    final featureName = feature.name;
     removeImport('package:$packageName/$packageName.dart');
 
-    final delegateToRemove = '${packageName.pascalCase}Localizations.delegate';
+    final delegateToRemove = '${featureName.pascalCase}Localizations.delegate';
     final existingDelegates =
         readTopLevelListVar(name: 'localizationsDelegates');
 

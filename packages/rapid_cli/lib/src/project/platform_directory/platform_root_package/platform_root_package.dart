@@ -204,14 +204,14 @@ abstract class LocalizationsDelegatesFile implements DartFile {
   /// Returns the supported locales of this file.
   Set<String> supportedLocales();
 
-  /// Adds localizations delegate of feature with [packageName] to this file.
-  void addLocalizationsDelegate(String packageName);
+  /// Adds localizations delegate of [feature] to this file.
+  void addLocalizationsDelegate(PlatformFeaturePackage feature);
 
   /// Adds [locale] to the supported locales of this file.
   void addSupportedLocale(String locale);
 
-  /// Removes the localizations delegate of feature with [packageName] from this file.
-  void removeLocalizationsDelegate(String packageName);
+  /// Removes the localizations delegate of [feature] from this file.
+  void removeLocalizationsDelegate(PlatformFeaturePackage feature);
 
   /// Adds [locale] from the supported locales of this file.
   void removeSupportedLocale(String locale);

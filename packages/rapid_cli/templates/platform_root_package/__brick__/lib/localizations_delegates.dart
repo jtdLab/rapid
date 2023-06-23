@@ -4,7 +4,7 @@ import 'package:{{project_name}}_android_home_page/{{project_name}}_android_home
 
 const localizationsDelegates = <LocalizationsDelegate>[
   {{project_name.pascalCase()}}AndroidAppLocalizations.delegate,
-  {{project_name.pascalCase()}}AndroidHomePageLocalizations.delegate,
+  HomePageLocalizations.delegate,
 ];
 
 final supportedLocales = <Locale>[
@@ -16,7 +16,7 @@ import 'package:{{project_name}}_ios_home_page/{{project_name}}_ios_home_page.da
 
 const localizationsDelegates = <LocalizationsDelegate>[
   {{project_name.pascalCase()}}IosAppLocalizations.delegate,
-  {{project_name.pascalCase()}}IosHomePageLocalizations.delegate,
+  HomePageLocalizations.delegate,
 ];
 
 final supportedLocales = <Locale>[
@@ -28,7 +28,7 @@ import 'package:{{project_name}}_linux_home_page/{{project_name}}_linux_home_pag
 
 const localizationsDelegates = <LocalizationsDelegate>[
   {{project_name.pascalCase()}}LinuxAppLocalizations.delegate,
-  {{project_name.pascalCase()}}LinuxHomePageLocalizations.delegate,
+  HomePageLocalizations.delegate,
 ];
 
 final supportedLocales = <Locale>[
@@ -40,7 +40,7 @@ import 'package:{{project_name}}_macos_home_page/{{project_name}}_macos_home_pag
 
 const localizationsDelegates = <LocalizationsDelegate>[
   {{project_name.pascalCase()}}MacosAppLocalizations.delegate,
-  {{project_name.pascalCase()}}MacosHomePageLocalizations.delegate,
+  HomePageLocalizations.delegate,
 ];
 
 final supportedLocales = <Locale>[
@@ -52,7 +52,7 @@ import 'package:{{project_name}}_web_home_page/{{project_name}}_web_home_page.da
 
 const localizationsDelegates = <LocalizationsDelegate>[
   {{project_name.pascalCase()}}WebAppLocalizations.delegate,
-  {{project_name.pascalCase()}}WebHomePageLocalizations.delegate,
+  HomePageLocalizations.delegate,
 ];
 
 final supportedLocales = <Locale>[
@@ -64,7 +64,7 @@ import 'package:{{project_name}}_windows_home_page/{{project_name}}_windows_home
 
 const localizationsDelegates = <LocalizationsDelegate>[
   {{project_name.pascalCase()}}WindowsAppLocalizations.delegate,
-  {{project_name.pascalCase()}}WindowsHomePageLocalizations.delegate,
+  HomePageLocalizations.delegate,
 ];
 
 final supportedLocales = <Locale>[
@@ -76,7 +76,7 @@ import 'package:{{project_name}}_mobile_home_page/{{project_name}}_mobile_home_p
 
 const localizationsDelegates = <LocalizationsDelegate>[
   {{project_name.pascalCase()}}MobileAppLocalizations.delegate,
-  {{project_name.pascalCase()}}MobileHomePageLocalizations.delegate,
+  HomePageLocalizations.delegate,
 ];
 
 final supportedLocales = <Locale>[

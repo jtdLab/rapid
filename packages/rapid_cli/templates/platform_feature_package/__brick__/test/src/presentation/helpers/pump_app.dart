@@ -46,7 +46,7 @@ Widget appWrapper({
   return App.test(
     {{#localization}}locale: locale ?? const Locale('{{default_language}}'),
     localizationsDelegates: const [
-      {{project_name.pascalCase()}}{{#android}}Android{{/android}}{{#ios}}Ios{{/ios}}{{#linux}}Linux{{/linux}}{{#macos}}Macos{{/macos}}{{#web}}Web{{/web}}{{#windows}}Windows{{/windows}}{{#mobile}}Mobile{{/mobile}}{{name.pascalCase()}}Localizations.delegate,
+      {{name.pascalCase()}}Localizations.delegate,
     ],{{/localization}}
     {{#android}}themeMode: themeMode{{/android}}{{#ios}}brightness: brightness{{/ios}}{{#linux}}themeMode: themeMode{{/linux}}{{#macos}}themeMode: themeMode{{/macos}}{{#web}}themeMode: themeMode{{/web}}{{#windows}}themeMode: themeMode{{/windows}}{{#mobile}}themeMode: themeMode{{/mobile}},
     router: _TestRouter(child),

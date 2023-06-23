@@ -47,7 +47,7 @@ jobs:
           else
             echo "files_exist=false" >> "$GITHUB_OUTPUT"
           fi
-      - uses: actions/setup-java@v2
+      - uses: actions/setup-java@v3
         if: ${{ steps.changes.outputs.android == 'true' && steps.check_files.outputs.files_exist == 'true' }}
         with:
           distribution: zulu

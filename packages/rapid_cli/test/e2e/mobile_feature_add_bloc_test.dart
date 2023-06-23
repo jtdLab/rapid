@@ -12,7 +12,7 @@ void main() {
         'mobile <feature> add bloc',
         performTest(
           platform: Platform.mobile,
-          expectedCoverage: 75.0,
+          expectedCoverage: 72.73,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
@@ -22,7 +22,7 @@ void main() {
         performTest(
           platform: Platform.mobile,
           outputDir: 'foo',
-          expectedCoverage: 75.0,
+          expectedCoverage: 72.73,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );

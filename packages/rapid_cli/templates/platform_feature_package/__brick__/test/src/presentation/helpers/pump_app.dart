@@ -175,8 +175,30 @@ class _Placeholder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
+    return {{project_name.pascalCase()}}Scaffold(
+{{#macos}}      children: [
+        ContentArea(
+          builder: (context, _) {
+            return Stack(
+              children: [
+                const Placeholder(),
+                Center(
+                  child: Container(
+                    color: const Color(0xFFFFFFFF),
+                    child: Text(
+                      name,
+                      style: const TextStyle(
+                        color: Color(0xFF000000),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
+{{/macos}}{{^macos}}      body: Stack(
         children: [
           const Placeholder(),
           Center(
@@ -191,7 +213,7 @@ class _Placeholder extends StatelessWidget {
             ),
           ),
         ],
-      ),
+      ),{{/macos}}
     );
   }
 }{{/isTabFlow}}

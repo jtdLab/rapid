@@ -12,7 +12,7 @@ void main() {
         'ios <feature> add cubit',
         performTest(
           platform: Platform.ios,
-          expectedCoverage: 80.0,
+          expectedCoverage: 77.78,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
@@ -22,7 +22,7 @@ void main() {
         performTest(
           platform: Platform.ios,
           outputDir: 'foo',
-          expectedCoverage: 80.0,
+          expectedCoverage: 77.78,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );

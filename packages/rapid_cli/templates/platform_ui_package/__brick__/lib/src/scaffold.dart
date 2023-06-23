@@ -92,14 +92,13 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
     final theme = this.theme ?? context.{{project_name.camelCase()}}ScaffoldTheme;
     final backgroundColor = theme.backgroundColor;
 
-    return PlatformMenuBar(
-      menus: const [],
-      child: MacosWindow(
+    // TODO: https://github.com/macosui/macos_ui/issues/428
+    return MacosOverlayFilter(
+      borderRadius: BorderRadius.zero,
+      color: backgroundColor,
+      child: MacosScaffold(
         backgroundColor: backgroundColor,
-        child: MacosScaffold(
-          backgroundColor: backgroundColor,
-          children: children,
-        ),
+        children: children,
       ),
     );
   }

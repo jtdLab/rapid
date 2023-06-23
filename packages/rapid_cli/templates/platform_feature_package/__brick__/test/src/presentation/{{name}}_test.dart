@@ -16,6 +16,10 @@ void main() {
     goldenTest(
       'renders correctly',
       fileName: '{{name.snakeCase()}}',
+{{#macos}}      whilePerforming: (tester) async {
+        await tester.pumpAndSettle();
+        return;
+      },{{/macos}}
       builder: () => GoldenTestGroup(
 {{#linux}}        scenarioConstraints: const BoxConstraints.expand(
           width: 1000,

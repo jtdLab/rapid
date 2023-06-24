@@ -213,6 +213,7 @@ abstract class PlatformAppFeaturePackage implements PlatformFeaturePackage {
   Future<void> create({
     required String description,
     bool routing,
+    required bool localization,
     required String defaultLanguage,
     required Set<String> languages,
   });

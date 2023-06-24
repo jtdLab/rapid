@@ -59,7 +59,9 @@ mixin _CreateMixin on _Rapid {
       ...project.packages,
     ]);
 
-    await flutterGenl10n(project.featurePackages);
+    await flutterGenl10n(
+      project.featurePackages.where((e) => e.hasLanguages).toList(),
+    );
 
     await dartFormatFix(project);
 
@@ -102,13 +104,6 @@ mixin _CreateMixin on _Rapid {
     logger
       ..newLine()
       ..success('Success $checkLabel');
-  }
-}
-
-extension on File {
-  bool get isBinary {
-    final extension = p.extension(path);
-    return extension == '.ico' || extension == '.png';
   }
 }
 

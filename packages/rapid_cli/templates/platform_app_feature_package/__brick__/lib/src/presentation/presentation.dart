@@ -1,2 +1,2 @@
 export 'app.dart';
-export 'l10n/app_localizations.dart';
+{{#localization}}export 'l10n/app_localizations.dart';{{/localization}}

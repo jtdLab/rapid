@@ -81,6 +81,7 @@ class NoneIosDirectoryImpl extends PlatformDirectoryImpl
         .featurePackage<PlatformAppFeaturePackage>(name: 'app');
     await appFeaturePackage.create(
       description: 'The App feature.', // TODO platform info
+      localization: false,
       defaultLanguage: language,
       languages: {language},
     );
@@ -124,6 +125,7 @@ class IosDirectoryImpl extends PlatformDirectoryImpl implements IosDirectory {
         .featurePackage<PlatformAppFeaturePackage>(name: 'app');
     await appFeaturePackage.create(
       description: 'The App feature.', // TODO platform info
+      localization: false,
       defaultLanguage: language,
       languages: {language},
     );
@@ -132,7 +134,7 @@ class IosDirectoryImpl extends PlatformDirectoryImpl implements IosDirectory {
         .featurePackage<PlatformPageFeaturePackage>(name: 'home_page');
     await homePageFeaturePackage.create(
       description: 'The Home Page feature.', // TODO platform info
-      localization: true,
+      localization: true, // TODO good?
       defaultLanguage: language,
       languages: {language},
     );
@@ -172,6 +174,7 @@ class MobileDirectoryImpl extends PlatformDirectoryImpl
         .featurePackage<PlatformAppFeaturePackage>(name: 'app');
     await appFeaturePackage.create(
       description: 'The App feature.', // TODO platform info
+      localization: false,
       defaultLanguage: language,
       languages: {language},
     );
@@ -180,7 +183,7 @@ class MobileDirectoryImpl extends PlatformDirectoryImpl
         .featurePackage<PlatformPageFeaturePackage>(name: 'home_page');
     await homePageFeaturePackage.create(
       description: 'The Home Page feature.', // TODO platform info
-      localization: true,
+      localization: true, // TODO good
       defaultLanguage: language,
       languages: {language},
     );

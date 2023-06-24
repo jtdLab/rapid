@@ -43,6 +43,9 @@ vars:
   mobile:
     type: boolean
     description: The project supports the Mobile (Android + iOS shared) platform
+  localization:
+    type: boolean
+    description: Wheter the feature has localizations
   default_language:
     type: string
     description: The default language of the feature

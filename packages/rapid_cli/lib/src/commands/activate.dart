@@ -189,7 +189,9 @@ mixin _ActivateMixin on _Rapid {
 
     await codeGen(packages: [platformRootPackage]);
 
-    await flutterGenl10n(platformFeaturePackages);
+    await flutterGenl10n(
+      project.featurePackages.where((e) => e.hasLanguages).toList(),
+    );
 
     await dartFormatFix(project);
 

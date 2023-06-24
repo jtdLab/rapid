@@ -411,7 +411,6 @@ class PlatformWidgetFeaturePackageImpl
   }
 }
 
-// TODO rm localization files initially
 class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
     implements PlatformAppFeaturePackage {
   PlatformAppFeaturePackageImpl(
@@ -423,6 +422,7 @@ class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
   Future<void> create({
     String? description,
     bool routing = false,
+    required bool localization,
     required String defaultLanguage,
     required Set<String> languages,
   }) async {
@@ -439,11 +439,14 @@ class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
         'mobile': platform == Platform.mobile,
+        'localization': localization,
         'default_language': defaultLanguage,
       },
     );
 
-    await _arbDirectory.create(languages: languages);
+    if (localization) {
+      await _arbDirectory.create(languages: languages);
+    }
   }
 }
 

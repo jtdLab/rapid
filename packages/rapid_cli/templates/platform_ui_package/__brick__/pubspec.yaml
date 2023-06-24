@@ -18,6 +18,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  alchemist: ^0.6.1
   build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
@@ -92,6 +93,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  alchemist: ^0.6.1
   build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
@@ -164,6 +166,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  alchemist: ^0.6.1
   build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
@@ -242,6 +245,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  alchemist: ^0.6.1
   build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
@@ -312,6 +316,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  alchemist: ^0.6.1
   build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
@@ -386,6 +391,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  alchemist: ^0.6.1
   build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
@@ -459,6 +465,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  alchemist: ^0.6.1
   build_runner: ^2.4.5
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1

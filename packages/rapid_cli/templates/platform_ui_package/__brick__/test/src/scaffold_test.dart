@@ -1,8 +1,9 @@
+import 'package:alchemist/alchemist.dart';
 import 'package:flutter_test/flutter_test.dart';
-{{#android}}import 'package:flutter/material.dart';{{/android}}{{#ios}}import 'package:flutter/cupertino.dart';{{/ios}}{{#linux}}import 'package:flutter/material.dart';{{/linux}}{{#macos}}import 'package:flutter/widgets.dart';import 'package:macos_ui/macos_ui.dart';{{/macos}}{{#web}}import 'package:flutter/material.dart';{{/web}}{{#windows}}import 'package:fluent_ui/fluent_ui.dart';{{/windows}}{{#mobile}}import 'package:flutter/material.dart';{{/mobile}}
+{{#android}}import 'package:flutter/material.dart';{{/android}}{{#ios}}import 'package:flutter/cupertino.dart';{{/ios}}{{#linux}}import 'package:flutter/material.dart';{{/linux}}{{#macos}}import 'package:flutter/material.dart' show ThemeMode;import 'package:flutter/widgets.dart';{{/macos}}{{#web}}import 'package:flutter/material.dart';{{/web}}{{#windows}}import 'package:fluent_ui/fluent_ui.dart';{{/windows}}{{#mobile}}import 'package:flutter/material.dart';{{/mobile}}
 {{#android}}import 'package:{{project_name}}_ui_android/src/scaffold.dart';import 'package:{{project_name}}_ui_android/src/scaffold_theme.dart';{{/android}}{{#ios}}import 'package:{{project_name}}_ui_ios/src/scaffold.dart';import 'package:{{project_name}}_ui_ios/src/scaffold_theme.dart';{{/ios}}{{#linux}}import 'package:{{project_name}}_ui_linux/src/scaffold.dart';import 'package:{{project_name}}_ui_linux/src/scaffold_theme.dart';{{/linux}}{{#macos}}import 'package:{{project_name}}_ui_macos/src/scaffold.dart';import 'package:{{project_name}}_ui_macos/src/scaffold_theme.dart';{{/macos}}{{#web}}import 'package:{{project_name}}_ui_web/src/scaffold.dart';import 'package:{{project_name}}_ui_web/src/scaffold_theme.dart';{{/web}}{{#windows}}import 'package:{{project_name}}_ui_windows/src/scaffold.dart';import 'package:{{project_name}}_ui_windows/src/scaffold_theme.dart';{{/windows}}{{#mobile}}import 'package:{{project_name}}_ui_mobile/src/scaffold.dart';import 'package:{{project_name}}_ui_mobile/src/scaffold_theme.dart';{{/mobile}}
 
-import 'helpers/pump_app.dart';
+import 'helpers/helpers.dart';
 
 {{^macos}}{{project_name.pascalCase()}}Scaffold _get{{project_name.pascalCase()}}Scaffold({
   {{project_name.pascalCase()}}ScaffoldTheme? theme,
@@ -25,297 +26,387 @@ import 'helpers/pump_app.dart';
 
 {{#android}}void main() {
   group('{{project_name.pascalCase()}}Scaffold', () {
-    testWidgets('renders Scaffold correctly', (tester) async {
-      // Arrange
-      const theme = {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12));
-      final body = Container();
-      final {{project_name.camelCase()}}Scaffold = _get{{project_name.pascalCase()}}Scaffold(
-        theme: theme,
-        body: body,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}Scaffold);
-
-      // Assert
-      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(scaffold.backgroundColor, const Color(0xFF12FF12));
-      expect(scaffold.body, body);
-    });
-
-    testWidgets('renders Scaffold correctly when no theme is provided',
-        (tester) async {
-      // Arrange
-      final body = Container();
-      final {{project_name.camelCase()}}Scaffold = _get{{project_name.pascalCase()}}Scaffold(
-        body: body,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}Scaffold);
-
-      // Assert
-      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(
-        scaffold.backgroundColor,
-        {{project_name.pascalCase()}}ScaffoldTheme.light.backgroundColor,
-      );
-      expect(scaffold.body, body);
-    });
+    goldenTest(
+      'renders correctly',
+      fileName: 'scaffold',
+      builder: () => GoldenTestGroup(
+        scenarioConstraints:
+            const BoxConstraints(minWidth: 250, maxHeight: 500),
+        children: [
+          GoldenTestScenario(
+            name: 'light - with theme',
+            child: appWrapper(
+              themeMode: ThemeMode.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'light - without theme',
+            child: appWrapper(
+              themeMode: ThemeMode.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - with theme',
+            child: appWrapper(
+              themeMode: ThemeMode.dark,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - without theme',
+            child: appWrapper(
+              themeMode: ThemeMode.dark,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          // TODO: add more scenarios
+        ],
+      ),
+    );
   });
 }
 {{/android}}{{#ios}}void main() {
   group('{{project_name.pascalCase()}}Scaffold', () {
-    testWidgets('renders CupertinoPageScaffold correctly', (tester) async {
-      // Arrange
-      const theme = {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12));
-      final body = Container();
-      final {{project_name.camelCase()}}Scaffold = _get{{project_name.pascalCase()}}Scaffold(
-        theme: theme,
-        body: body,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}Scaffold);
-
-      // Assert
-      final pageScaffold = tester.widget<CupertinoPageScaffold>(find.byType(CupertinoPageScaffold));
-      expect(pageScaffold.backgroundColor, const Color(0xFF12FF12));
-      expect(pageScaffold.child, body);
-    });
-
-    testWidgets('renders CupertinoPageScaffold correctly when no theme is provided',
-        (tester) async {
-      // Arrange
-      final body = Container();
-      final {{project_name.camelCase()}}Scaffold = _get{{project_name.pascalCase()}}Scaffold(
-        body: body,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}Scaffold);
-
-      // Assert
-      final pageScaffold = tester.widget<CupertinoPageScaffold>(find.byType(CupertinoPageScaffold));
-      expect(
-        pageScaffold.backgroundColor,
-        {{project_name.pascalCase()}}ScaffoldTheme.light.backgroundColor,
-      );
-      expect(pageScaffold.child, body);
-    });
+    goldenTest(
+      'renders correctly',
+      fileName: 'scaffold',
+      builder: () => GoldenTestGroup(
+        scenarioConstraints:
+            const BoxConstraints(minWidth: 250, maxHeight: 500),
+        children: [
+          GoldenTestScenario(
+            name: 'light - with theme',
+            child: appWrapper(
+              brightness: Brightness.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'light - without theme',
+            child: appWrapper(
+              brightness: Brightness.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - with theme',
+            child: appWrapper(
+              brightness: Brightness.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - without theme',
+            child: appWrapper(
+              brightness: Brightness.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          // TODO: add more scenarios
+        ],
+      ),
+    );
   });
 }
 {{/ios}}{{#linux}}void main() {
   group('{{project_name.pascalCase()}}Scaffold', () {
-    testWidgets('renders Scaffold correctly', (tester) async {
-      // Arrange
-      const theme = {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12));
-      final body = Container();
-      final {{project_name.camelCase()}}Scaffold = _get{{project_name.pascalCase()}}Scaffold(
-        theme: theme,
-        body: body,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}Scaffold);
-
-      // Assert
-      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(scaffold.backgroundColor, const Color(0xFF12FF12));
-      expect(scaffold.body, body);
-    });
-
-    testWidgets('renders Scaffold correctly when no theme is provided',
-        (tester) async {
-      // Arrange
-      final body = Container();
-      final {{project_name.camelCase()}}Scaffold = _get{{project_name.pascalCase()}}Scaffold(
-        body: body,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}Scaffold);
-
-      // Assert
-      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(
-        scaffold.backgroundColor,
-        {{project_name.pascalCase()}}ScaffoldTheme.light.backgroundColor,
-      );
-      expect(scaffold.body, body);
-    });
+    goldenTest(
+      'renders correctly',
+      fileName: 'scaffold',
+      builder: () => GoldenTestGroup(
+        scenarioConstraints:
+            const BoxConstraints(minWidth: 250, maxHeight: 500),
+        children: [
+          GoldenTestScenario(
+            name: 'light - with theme',
+            child: appWrapper(
+              themeMode: ThemeMode.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'light - without theme',
+            child: appWrapper(
+              themeMode: ThemeMode.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - with theme',
+            child: appWrapper(
+              themeMode: ThemeMode.dark,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - without theme',
+            child: appWrapper(
+              themeMode: ThemeMode.dark,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          // TODO: add more scenarios
+        ],
+      ),
+    );
   });
 }
 {{/linux}}{{#macos}}void main() {
   group('{{project_name.pascalCase()}}Scaffold', () {
-    testWidgets('renders MacosScaffold correctly', (tester) async {
-      // Arrange
-      const theme = {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12));
-      final children = [ContentArea(builder: (_, __) => Container())];
-      final {{project_name.camelCase()}}ScaffoldTheme = _get{{project_name.pascalCase()}}Scaffold(
-        theme: theme,
-        children: children,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}ScaffoldTheme);
-      await tester.pumpAndSettle();
-
-      // Assert
-      final macosScaffold =
-          tester.widget<MacosScaffold>(find.byType(MacosScaffold));
-      expect(macosScaffold.backgroundColor, const Color(0xFF12FF12));
-      expect(macosScaffold.children, children);
-    });
-
-    testWidgets('renders MacosScaffold correctly when no theme is provided',
-        (tester) async {
-      // Arrange
-      final children = [ContentArea(builder: (_, __) => Container())];
-      final {{project_name.camelCase()}}ScaffoldTheme = _get{{project_name.pascalCase()}}Scaffold(
-        children: children,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}ScaffoldTheme);
-      await tester.pumpAndSettle();
-
-      // Assert
-      final macosScaffold =
-          tester.widget<MacosScaffold>(find.byType(MacosScaffold));
-      expect(
-        macosScaffold.backgroundColor,
-        {{project_name.pascalCase()}}ScaffoldTheme.light.backgroundColor,
-      );
-      expect(macosScaffold.children, children);
-    });
+    goldenTest(
+      'renders correctly',
+      fileName: 'scaffold',
+      builder: () => GoldenTestGroup(
+        scenarioConstraints:
+            const BoxConstraints(minWidth: 250, maxHeight: 500),
+        children: [
+          GoldenTestScenario(
+            name: 'light - with theme',
+            child: appWrapper(
+              themeMode: ThemeMode.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'light - without theme',
+            child: appWrapper(
+              themeMode: ThemeMode.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - with theme',
+            child: appWrapper(
+              themeMode: ThemeMode.dark,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - without theme',
+            child: appWrapper(
+              themeMode: ThemeMode.dark,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          // TODO: add more scenarios
+        ],
+      ),
+    );
   });
 }
 {{/macos}}{{#web}}void main() {
   group('{{project_name.pascalCase()}}Scaffold', () {
-    testWidgets('renders Scaffold correctly', (tester) async {
-      // Arrange
-      const theme = {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12));
-      final body = Container();
-      final {{project_name.camelCase()}}ScaffoldTheme = _get{{project_name.pascalCase()}}Scaffold(
-        theme: theme,
-        body: body,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}ScaffoldTheme);
-
-      // Assert
-      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(scaffold.backgroundColor, const Color(0xFF12FF12));
-      expect(scaffold.body, body);
-    });
-
-    testWidgets('renders Scaffold correctly when no theme is provided',
-        (tester) async {
-      // Arrange
-      final body = Container();
-      final {{project_name.camelCase()}}Scaffold = _get{{project_name.pascalCase()}}Scaffold(
-        body: body,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}Scaffold);
-
-      // Assert
-      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(
-        scaffold.backgroundColor,
-        {{project_name.pascalCase()}}ScaffoldTheme.light.backgroundColor,
-      );
-      expect(scaffold.body, body);
-    });
+    goldenTest(
+      'renders correctly',
+      fileName: 'scaffold',
+      builder: () => GoldenTestGroup(
+        scenarioConstraints:
+            const BoxConstraints(minWidth: 250, maxHeight: 500),
+        children: [
+          GoldenTestScenario(
+            name: 'light - with theme',
+            child: appWrapper(
+              themeMode: ThemeMode.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'light - without theme',
+            child: appWrapper(
+              themeMode: ThemeMode.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - with theme',
+            child: appWrapper(
+              themeMode: ThemeMode.dark,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - without theme',
+            child: appWrapper(
+              themeMode: ThemeMode.dark,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          // TODO: add more scenarios
+        ],
+      ),
+    );
   });
 }
 {{/web}}{{#windows}}void main() {
   group('{{project_name.pascalCase()}}Scaffold', () {
-    testWidgets('renders NavigationView correctly', (tester) async {
-      // Arrange
-      const theme = {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12));
-      final body = Container();
-      final {{project_name.camelCase()}}Scaffold = _get{{project_name.pascalCase()}}Scaffold(
-        theme: theme,
-        body: body,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}Scaffold);
-
-      // Assert
-      final navigationView =
-          tester.widget<NavigationView>(find.byType(NavigationView));
-      final content = navigationView.content;
-      expect(content, isA<Container>());
-      expect((content as Container).color, const Color(0xFF12FF12));
-    });
-
-    testWidgets('renders NavigationView correctly when no theme is provided',
-        (tester) async {
-      // Arrange
-      final body = Container();
-      final {{project_name.camelCase()}}Scaffold = _get{{project_name.pascalCase()}}Scaffold(
-        body: body,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}Scaffold);
-
-      // Assert
-      final navigationView =
-          tester.widget<NavigationView>(find.byType(NavigationView));
-      final content = navigationView.content;
-      expect(content, isA<Container>());
-      expect(
-        (content as Container).color,
-        {{project_name.pascalCase()}}ScaffoldTheme.light.backgroundColor,
-      );
-    });
+    goldenTest(
+      'renders correctly',
+      fileName: 'scaffold',
+      builder: () => GoldenTestGroup(
+        scenarioConstraints:
+            const BoxConstraints(minWidth: 250, maxHeight: 500),
+        children: [
+          GoldenTestScenario(
+            name: 'light - with theme',
+            child: appWrapper(
+              themeMode: ThemeMode.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'light - without theme',
+            child: appWrapper(
+              themeMode: ThemeMode.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - with theme',
+            child: appWrapper(
+              themeMode: ThemeMode.dark,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - without theme',
+            child: appWrapper(
+              themeMode: ThemeMode.dark,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          // TODO: add more scenarios
+        ],
+      ),
+    );
   });
 }
 {{/windows}}{{#mobile}}void main() {
   group('{{project_name.pascalCase()}}Scaffold', () {
-    testWidgets('renders Scaffold correctly', (tester) async {
-      // Arrange
-      const theme = {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12));
-      final body = Container();
-      final {{project_name.camelCase()}}Scaffold = _get{{project_name.pascalCase()}}Scaffold(
-        theme: theme,
-        body: body,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}Scaffold);
-
-      // Assert
-      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(scaffold.backgroundColor, const Color(0xFF12FF12));
-      expect(scaffold.body, body);
-    });
-
-    testWidgets('renders Scaffold correctly when no theme is provided',
-        (tester) async {
-      // Arrange
-      final body = Container();
-      final {{project_name.camelCase()}}Scaffold = _get{{project_name.pascalCase()}}Scaffold(
-        body: body,
-      );
-
-      // Act
-      await tester.pumpApp({{project_name.camelCase()}}Scaffold);
-
-      // Assert
-      final scaffold = tester.widget<Scaffold>(find.byType(Scaffold));
-      expect(
-        scaffold.backgroundColor,
-        {{project_name.pascalCase()}}ScaffoldTheme.light.backgroundColor,
-      );
-      expect(scaffold.body, body);
-    });
+    goldenTest(
+      'renders correctly',
+      fileName: 'scaffold',
+      builder: () => GoldenTestGroup(
+        scenarioConstraints:
+            const BoxConstraints(minWidth: 250, maxHeight: 500),
+        children: [
+          GoldenTestScenario(
+            name: 'light - with theme',
+            child: appWrapper(
+              themeMode: ThemeMode.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'light - without theme',
+            child: appWrapper(
+              themeMode: ThemeMode.light,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - with theme',
+            child: appWrapper(
+              themeMode: ThemeMode.dark,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                theme:
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          GoldenTestScenario(
+            name: 'dark - without theme',
+            child: appWrapper(
+              themeMode: ThemeMode.dark,
+              widget: _get{{project_name.pascalCase()}}Scaffold(
+                {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
+              ),
+            ),
+          ),
+          // TODO: add more scenarios
+        ],
+      ),
+    );
   });
 }
 {{/mobile}}

@@ -48,7 +48,7 @@ jobs:
           app_id: ${{ secrets.APP_ID }}
           private_key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - uses: peterjgrainger/action-create-branch@v2.2.0
+      - uses: peterjgrainger/action-create-branch@v2.4.0
         env:
           GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         with:

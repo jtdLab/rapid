@@ -94,7 +94,6 @@ scripts:
     exec: flutter test integration_test/development_test.dart
     description: |
       Run e2e tests in non web root package. (development)
-       - Requires
     packageFilters:
       ignore: "*web*"
       fileExists:
@@ -125,7 +124,6 @@ scripts:
     exec: flutter test integration_test/test_test.dart
     description: |
       Run e2e tests in non web root package. (test)
-       - Requires
     packageFilters:
       ignore: "*web*"
       fileExists:
@@ -156,7 +154,6 @@ scripts:
     exec: flutter test integration_test/production_test.dart
     description: |
       Run e2e tests in non web root package. (production)
-       - Requires
     packageFilters:
       ignore: "*web*"
       fileExists:

@@ -29,11 +29,15 @@ void main() {
           width: 1000,
           height: 500,
         ),{{/macos}}
+{{#web}}        scenarioConstraints: const BoxConstraints.expand(
+          width: 1000,
+          height: 500,
+        ),{{/web}}
 {{#windows}}        scenarioConstraints: const BoxConstraints.expand(
           width: 1000,
           height: 500,
         ),{{/windows}}
-{{^linux}}{{^macos}}{{^windows}}        scenarioConstraints: const BoxConstraints(minWidth: 250, maxHeight: {{#isWidget}}250{{/isWidget}}{{^isWidget}}500{{/isWidget}}),{{/windows}}{{/macos}}{{/linux}}  
+{{^linux}}{{^macos}}{{^web}}{{^windows}}        scenarioConstraints: const BoxConstraints(minWidth: 250, maxHeight: {{#isWidget}}250{{/isWidget}}{{^isWidget}}500{{/isWidget}}),{{/windows}}{{/web}}{{/macos}}{{/linux}}  
         children: [
           GoldenTestScenario(
             name: '{{#localization}}{{default_language}} - {{/localization}}light',

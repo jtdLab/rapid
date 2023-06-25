@@ -512,6 +512,40 @@ void main() {
         {...darkExtensions, ...ui.darkExtensions},
       );
     });
+
+    testWidgets('renders MacosApp correctly when themeMode is system', (tester) async {
+      // Arrange
+      final supportedLocales = {const Locale('en')};
+      final localizationsDelegates = [FakeLocalizationsDelegate()];
+      final routerConfig = FakeRouterConfig();
+      final {{project_name.camelCase()}}App = _get{{project_name.pascalCase()}}App(
+        locale: const Locale('en'),
+        supportedLocales: supportedLocales,
+        localizationsDelegates: localizationsDelegates,
+        routerConfig: routerConfig,
+        themeMode: ThemeMode.system,
+      );
+
+      // Act
+      await tester.pumpWidget({{project_name.camelCase()}}App);
+      await tester.pump();
+
+      // Assert
+      final macosApp = tester.widget<MacosApp>(find.byType(MacosApp));
+      expect(macosApp.supportedLocales, supportedLocales);
+      expect(
+        macosApp.localizationsDelegates,
+        [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
+      );
+      expect(macosApp.locale, const Locale('en'));
+      expect(macosApp.routerConfig, routerConfig);
+      expect(macosApp.home, null);
+      final theme = tester.widget<Theme>(find.byType(Theme));
+      expect(
+        theme.data.extensions.values.toSet(),
+        {...lightExtensions, ...ui.lightExtensions},
+      );
+    });
   });
 
   group('{{project_name.pascalCase()}}App.test', () {
@@ -578,6 +612,39 @@ void main() {
       expect(
         theme.data.extensions.values.toSet(),
         {...darkExtensions, ...ui.darkExtensions},
+      );
+    });
+
+    testWidgets('renders MacosApp correctly when themeMode is system',
+        (tester) async {
+      // Arrange
+      final localizationsDelegates = [FakeLocalizationsDelegate()];
+      final home = Container();
+      final {{project_name.camelCase()}}App = _get{{project_name.pascalCase()}}AppTest(
+        locale: const Locale('en'),
+        localizationsDelegates: localizationsDelegates,
+        themeMode: ThemeMode.system,
+        home: home,
+      );
+
+      // Act
+      await tester.pumpWidget({{project_name.camelCase()}}App);
+      await tester.pumpAndSettle();
+
+      // Assert
+      final macosApp =
+          tester.widget<MacosApp>(find.byType(MacosApp));
+      expect(macosApp.locale, const Locale('en'));
+      expect(
+        macosApp.localizationsDelegates,
+        [...GlobalMaterialLocalizations.delegates, ...localizationsDelegates],
+      );
+      expect(macosApp.supportedLocales, equals([const Locale('en')]));
+      expect(macosApp.home, home);
+      final theme = tester.widget<Theme>(find.byType(Theme));
+      expect(
+        theme.data.extensions.values.toSet(),
+        {...lightExtensions, ...ui.lightExtensions},
       );
     });
   });

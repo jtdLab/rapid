@@ -35,6 +35,10 @@ dynamic performTest({
           platform,
           ['en'],
         ),
+        tester.l10nBarrelFile(
+          '${featureName}_page',
+          platform,
+        ),
       });
       await verifyTestsPass(
         tester.featurePackage('${featureName}_page', platform),

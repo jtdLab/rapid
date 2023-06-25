@@ -515,6 +515,21 @@ final class RapidE2ETester {
         ),
       );
 
+  File l10nBarrelFile(
+    String feature,
+    Platform platform,
+  ) =>
+      File(
+        p.join(
+          featurePackage(feature, platform).path,
+          'lib',
+          'src',
+          'presentation',
+          'l10n',
+          'l10n.dart',
+        ),
+      );
+
   /// Source files a feature requires to support [languages].
   List<File> languageFiles(
     String feature,
@@ -522,16 +537,6 @@ final class RapidE2ETester {
     List<String> languages,
   ) =>
       [
-        File(
-          p.join(
-            featurePackage(feature, platform).path,
-            'lib',
-            'src',
-            'presentation',
-            'l10n',
-            'l10n.dart',
-          ),
-        ),
         for (final language in languages) ...[
           File(
             p.join(

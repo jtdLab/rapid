@@ -182,7 +182,8 @@ abstract class PlatformFeaturePackageImpl extends DartPackageImpl
 
     await _l10nBarrelFile.create();
 
-    presentationBarrelFile.addExport('l10n/jol_page_localizations.dart');
+    presentationBarrelFile
+        .addExport('l10n/${name.snakeCase}_localizations.dart');
 
     await _arbDirectory.create(languages: languages);
   }
@@ -526,6 +527,7 @@ class L10nBarrelFileImpl extends DartFileImpl implements L10nBarrelFile {
 
   @override
   Future<void> create() async {
+    await super.create();
     write(
       [
         '// coverage:ignore-file',

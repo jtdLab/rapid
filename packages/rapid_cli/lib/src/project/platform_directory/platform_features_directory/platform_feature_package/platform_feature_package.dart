@@ -266,6 +266,9 @@ abstract class L10nBarrelFile implements DartFile {
       L10nBarrelFileImpl(
         platformFeaturePackage: platformFeaturePackage,
       );
+
+  @override
+  Future<void> create();
 }
 
 /// Thrown when [L10nFile.readTemplateArbFile] fails to read the `template-arb-file` property.

@@ -12,7 +12,7 @@ void main() {
         'linux <feature> add cubit',
         performTest(
           platform: Platform.linux,
-          expectedCoverage: 80.0,
+          expectedCoverage: 81.82,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
@@ -22,7 +22,7 @@ void main() {
         performTest(
           platform: Platform.linux,
           outputDir: 'foo',
-          expectedCoverage: 80.0,
+          expectedCoverage: 81.82,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );

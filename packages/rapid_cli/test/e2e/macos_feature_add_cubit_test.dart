@@ -12,7 +12,7 @@ void main() {
         'macos <feature> add cubit',
         performTest(
           platform: Platform.macos,
-          expectedCoverage: 84.62,
+          expectedCoverage: 85.71,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
@@ -22,7 +22,7 @@ void main() {
         performTest(
           platform: Platform.macos,
           outputDir: 'foo',
-          expectedCoverage: 84.62,
+          expectedCoverage: 85.71,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );

@@ -12,7 +12,7 @@ void main() {
         'web <feature> add bloc',
         performTest(
           platform: Platform.web,
-          expectedCoverage: 75.0,
+          expectedCoverage: 76.92,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
@@ -22,7 +22,7 @@ void main() {
         performTest(
           platform: Platform.web,
           outputDir: 'foo',
-          expectedCoverage: 75.0,
+          expectedCoverage: 76.92,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );

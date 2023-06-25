@@ -21,7 +21,7 @@ dynamic performTest({
       // Act
       await tester.runRapidCommand([
         platform.name,
-        featureName,
+        '${featureName}_page',
         'add',
         'localization',
       ]);

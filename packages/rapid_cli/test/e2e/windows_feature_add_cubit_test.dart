@@ -12,7 +12,7 @@ void main() {
         'windows <feature> add cubit',
         performTest(
           platform: Platform.windows,
-          expectedCoverage: 80.0,
+          expectedCoverage: 81.82,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
@@ -22,7 +22,7 @@ void main() {
         performTest(
           platform: Platform.windows,
           outputDir: 'foo',
-          expectedCoverage: 80.0,
+          expectedCoverage: 81.82,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );

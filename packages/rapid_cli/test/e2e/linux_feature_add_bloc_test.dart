@@ -12,7 +12,7 @@ void main() {
         'linux <feature> add bloc',
         performTest(
           platform: Platform.linux,
-          expectedCoverage: 75.0,
+          expectedCoverage: 76.92,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
@@ -22,7 +22,7 @@ void main() {
         performTest(
           platform: Platform.linux,
           outputDir: 'foo',
-          expectedCoverage: 75.0,
+          expectedCoverage: 76.92,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );

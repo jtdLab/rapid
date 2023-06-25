@@ -12,7 +12,7 @@ void main() {
         'android <feature> add cubit',
         performTest(
           platform: Platform.android,
-          expectedCoverage: 80.0,
+          expectedCoverage: 81.82,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
@@ -22,7 +22,7 @@ void main() {
         performTest(
           platform: Platform.android,
           outputDir: 'foo',
-          expectedCoverage: 80.0,
+          expectedCoverage: 81.82,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );

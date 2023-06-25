@@ -522,6 +522,16 @@ final class RapidE2ETester {
     List<String> languages,
   ) =>
       [
+        File(
+          p.join(
+            featurePackage(feature, platform).path,
+            'lib',
+            'src',
+            'presentation',
+            'l10n',
+            'l10n.dart',
+          ),
+        ),
         for (final language in languages) ...[
           File(
             p.join(

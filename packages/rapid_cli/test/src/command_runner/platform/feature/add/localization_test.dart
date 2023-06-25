@@ -1,24 +1,20 @@
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/command_runner/platform/feature/add/localization.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
-import '../../../common.dart';
-import '../../../mocks.dart';
+import '../../../../common.dart';
+import '../../../../mocks.dart';
 
 List<String> expectedUsage(
   String featurePackage, {
   required Platform platform,
 }) {
   return [
-    'Add components to $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
+    'Adds localizations to $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
         '\n'
-        'Usage: rapid ${platform.name} $featurePackage add <component>\n'
+        'Usage: rapid ${platform.name} package_a add localization\n'
         '-h, --help    Print this usage information.\n'
-        '\n'
-        'Available subcommands:\n'
-        '  bloc           Adds a bloc to $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  cubit          Adds a cubit to $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  localization   Adds localizations to $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
         '\n'
         'Run "rapid help" to see global options.'
   ];
@@ -30,13 +26,13 @@ void main() {
   });
 
   for (final platform in Platform.values) {
-    group('${platform.name} <feature> add', () {
+    group('${platform.name} <feature> add localization', () {
       test(
         'help',
         withRunner(
           (commandRunner, _, __, printLogs) async {
             await commandRunner.run(
-              [platform.name, 'package_a', 'add', '--help'],
+              [platform.name, 'package_a', 'add', 'localization', '--help'],
             );
             expect(
               printLogs,
@@ -45,7 +41,9 @@ void main() {
 
             printLogs.clear();
 
-            await commandRunner.run([platform.name, 'package_a', 'add', '-h']);
+            await commandRunner.run(
+              [platform.name, 'package_a', 'add', 'localization', '-h'],
+            );
             expect(
               printLogs,
               equals(expectedUsage('package_a', platform: platform)),
@@ -66,6 +64,28 @@ void main() {
           },
         ),
       );
+
+      test('completes', () async {
+        final rapid = MockRapid();
+        when(
+          () => rapid.platformFeatureAddLocalization(
+            any(),
+            featureName: any(named: 'featureName'),
+          ),
+        ).thenAnswer((_) async {});
+        final command =
+            PlatformFeatureAddLocalizationCommand(platform, 'package_a', null)
+              ..rapidOverrides = rapid;
+
+        await command.run();
+
+        verify(
+          () => rapid.platformFeatureAddLocalization(
+            platform,
+            featureName: 'package_a',
+          ),
+        ).called(1);
+      });
     });
   }
 }

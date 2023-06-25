@@ -44,6 +44,9 @@ abstract class PlatformFeaturePackageImpl extends DartPackageImpl
   L10nDirectory get _l10nDirectory => (l10nDirectoryOverrides ??
       L10nDirectory.new)(platformFeaturePackage: this);
 
+  L10nBarrelFile get _l10nBarrelFile => (l10nBarrelFileOverrides ??
+      L10nBarrelFile.new)(platformFeaturePackage: this);
+
   L10nFile get _l10nFile =>
       (l10nFileOverrides ?? L10nFile.new)(platformFeaturePackage: this);
   ArbDirectory get _arbDirectory => (arbDirectoryOverrides ?? ArbDirectory.new)(
@@ -57,10 +60,13 @@ abstract class PlatformFeaturePackageImpl extends DartPackageImpl
       );
 
   @override
-  L10nFileBuilder? l10nFileOverrides;
+  L10nDirectoryBuilder? l10nDirectoryOverrides;
 
   @override
-  L10nDirectoryBuilder? l10nDirectoryOverrides;
+  L10nBarrelFileBuilder? l10nBarrelFileOverrides;
+
+  @override
+  L10nFileBuilder? l10nFileOverrides;
 
   @override
   LanguageLocalizationsFileBuilder? languageLocalizationsFileOverrides;
@@ -73,6 +79,10 @@ abstract class PlatformFeaturePackageImpl extends DartPackageImpl
 
   @override
   CubitBuilder? cubitOverrides;
+
+  @override
+  PlatformFeaturePackagePresentationBarrelFileBuilder?
+      presentationBarrelFileOverrides;
 
   @override
   PlatformFeaturePackageApplicationBarrelFileBuilder?
@@ -103,6 +113,13 @@ abstract class PlatformFeaturePackageImpl extends DartPackageImpl
       (cubitOverrides ?? Cubit.new)(
         name: name,
         dir: dir,
+        platformFeaturePackage: this,
+      );
+
+  @override
+  PlatformFeaturePackagePresentationBarrelFile get presentationBarrelFile =>
+      (presentationBarrelFileOverrides ??
+          PlatformFeaturePackagePresentationBarrelFile.new)(
         platformFeaturePackage: this,
       );
 
@@ -141,6 +158,33 @@ abstract class PlatformFeaturePackageImpl extends DartPackageImpl
       newDefaultLanguage,
     );
     l10nFile.setValue(['template-arb-file'], newTemplateArbFile);
+  }
+
+  @override
+  Future<void> addLocalizations(
+    String defaultLanguage,
+    Set<String> languages,
+  ) async {
+    assert(languages.contains(defaultLanguage));
+
+    // TODO this should be all in side l10n create
+    await _l10nFile.create();
+    _l10nFile.write([
+      'arb-dir: lib/src/presentation/l10n/arb',
+      'output-class: ${name.pascalCase}Localizations',
+      'output-dir: lib/src/presentation/l10n',
+      'template-arb-file: ${name.snakeCase}_$defaultLanguage.arb',
+      'output-localization-file: ${name.snakeCase}_localizations.dart',
+      'nullable-getter: false',
+      'synthetic-package: false',
+      'header: // coverage:ignore-file',
+    ].join('\n'));
+
+    await _l10nBarrelFile.create();
+
+    presentationBarrelFile.addExport('l10n/jol_page_localizations.dart');
+
+    await _arbDirectory.create(languages: languages);
   }
 
   @override
@@ -462,6 +506,42 @@ class L10nDirectoryImpl extends DirectoryImpl implements L10nDirectory {
             'l10n',
           ),
         );
+}
+
+class L10nBarrelFileImpl extends DartFileImpl implements L10nBarrelFile {
+  L10nBarrelFileImpl({
+    required this.platformFeaturePackage,
+  }) : super(
+          path: p.join(
+            platformFeaturePackage.path,
+            'lib',
+            'src',
+            'presentation',
+            'l10n',
+          ),
+          name: 'l10n',
+        );
+
+  final PlatformFeaturePackage platformFeaturePackage;
+
+  @override
+  Future<void> create() async {
+    write(
+      [
+        '// coverage:ignore-file',
+        'import \'package:flutter/widgets.dart\';',
+        '',
+        'import \'${platformFeaturePackage.name.snakeCase}_localizations.dart\';',
+        '',
+        'export \'${platformFeaturePackage.name.snakeCase}_localizations.dart\';',
+        '',
+        'extension ${platformFeaturePackage.name.pascalCase}LocalizationsX on BuildContext {',
+        '  /// The l10n object which holds all localized strings.',
+        '  ${platformFeaturePackage.name.pascalCase}Localizations get l10n => ${platformFeaturePackage.name.pascalCase}Localizations.of(this);',
+        '}',
+      ].join('\n'),
+    );
+  }
 }
 
 class L10nFileImpl extends YamlFileImpl implements L10nFile {
@@ -831,6 +911,21 @@ class PlatformFeaturePackageNavigatorImplementationImpl
       },
     );
   }
+}
+
+class PlatformFeaturePackagePresentationBarrelFileImpl extends DartFileImpl
+    implements PlatformFeaturePackagePresentationBarrelFile {
+  PlatformFeaturePackagePresentationBarrelFileImpl({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) : super(
+          path: p.join(
+            platformFeaturePackage.path,
+            'lib',
+            'src',
+            'presentation',
+          ),
+          name: 'presentation',
+        );
 }
 
 class PlatformFeaturePackageApplicationBarrelFileImpl extends DartFileImpl

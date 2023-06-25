@@ -23,6 +23,9 @@ abstract class File implements FileSystemEntity {
   /// Reads the contents of the file.
   String read();
 
+  // Creates the file
+  Future<void> create();
+
   /// Writes [contents] to the file.
   ///
   /// This flushes the data to disc before returning.

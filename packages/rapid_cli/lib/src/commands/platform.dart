@@ -610,6 +610,60 @@ mixin _PlatformMixin on _Rapid {
     }
   }
 
+  Future<void> platformFeatureAddLocalization(
+    Platform platform, {
+    required String featureName,
+  }) async {
+    if (!project.platformIsActivated(platform)) {
+      _logAndThrow(
+        RapidPlatformException._platformNotActivated(platform),
+      );
+    }
+
+    logger
+      ..command('rapid ${platform.name} $featureName add localization')
+      ..newLine();
+
+    final platformDirectory = project.platformDirectory(platform: platform);
+
+    final featurePackage =
+        platformDirectory.featuresDirectory.featurePackage(name: featureName);
+    if (featurePackage.exists()) {
+      if (!featurePackage.hasLanguages) {
+        final rootPackage = platformDirectory.rootPackage;
+        await featurePackage.addLocalizations(
+          rootPackage.defaultLanguage(),
+          rootPackage.supportedLanguages(),
+        );
+
+        rootPackage.localizationsDelegatesFile
+            .addLocalizationsDelegate(featurePackage);
+
+        await flutterGenl10n([featurePackage]);
+        await dartFormatFix(project);
+
+        // TODO: add hint for how to modify tests when localizations are added
+
+        logger.newLine();
+        logger.success('Success $checkLabel');
+      } else {
+        _logAndThrow(
+          RapidPlatformException._localizationAlreadyExists(
+            featureName,
+            platform: platform,
+          ),
+        );
+      }
+    } else {
+      _logAndThrow(
+        RapidPlatformException._featureNotFound(
+          featureName,
+          platform: platform,
+        ),
+      );
+    }
+  }
+
   Future<void> platformFeatureRemoveBloc(
     Platform platform, {
     required String name,
@@ -1093,6 +1147,15 @@ class RapidPlatformException extends RapidException {
   }) {
     return RapidPlatformException._(
       'The ${name}Cubit does already exist in "$featureName". (${platform.prettyName})',
+    );
+  }
+
+  factory RapidPlatformException._localizationAlreadyExists(
+    String featureName, {
+    required Platform platform,
+  }) {
+    return RapidPlatformException._(
+      'The localizations do already exist in "$featureName". (${platform.prettyName})',
     );
   }
 

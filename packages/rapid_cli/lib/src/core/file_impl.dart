@@ -45,5 +45,8 @@ class FileImpl implements File {
   void write(String contents) => _file.writeAsStringSync(contents, flush: true);
 
   @override
+  Future<void> create() => _file.create(recursive: true);
+
+  @override
   void delete() => _file.deleteSync(recursive: true);
 }

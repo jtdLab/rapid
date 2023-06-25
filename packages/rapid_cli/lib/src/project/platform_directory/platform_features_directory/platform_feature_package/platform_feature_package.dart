@@ -31,6 +31,9 @@ abstract class PlatformFeaturePackage
   L10nDirectoryBuilder? l10nDirectoryOverrides;
 
   @visibleForTesting
+  L10nBarrelFileBuilder? l10nBarrelFileOverrides;
+
+  @visibleForTesting
   LanguageLocalizationsFileBuilder? languageLocalizationsFileOverrides;
 
   @visibleForTesting
@@ -41,6 +44,10 @@ abstract class PlatformFeaturePackage
 
   @visibleForTesting
   CubitBuilder? cubitOverrides;
+
+  @visibleForTesting
+  PlatformFeaturePackagePresentationBarrelFileBuilder?
+      presentationBarrelFileOverrides;
 
   @visibleForTesting
   PlatformFeaturePackageApplicationBarrelFileBuilder?
@@ -59,6 +66,8 @@ abstract class PlatformFeaturePackage
 
   Cubit cubit({required String name, required String dir});
 
+  PlatformFeaturePackagePresentationBarrelFile get presentationBarrelFile;
+
   PlatformFeaturePackageApplicationBarrelFile get applicationBarrelFile;
 
   PlatformFeaturePackageBarrelFile get barrelFile;
@@ -70,6 +79,8 @@ abstract class PlatformFeaturePackage
   String defaultLanguage();
 
   Future<void> setDefaultLanguage(String newDefaultLanguage);
+
+  Future<void> addLocalizations(String defaultLanguage, Set<String> languages);
 
   Future<void> addLanguage(String language);
 
@@ -226,7 +237,7 @@ typedef L10nDirectoryBuilder = L10nDirectory Function({
 /// {@template l10n_directory}
 /// Abstraction of the l10n directory of a platform customizable feature package of an existing Rapid project.
 ///
-/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_<feature name>/l10n.yaml`
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_<feature name>/lib/src/presentation/l10n`
 /// {@endtemplate}
 abstract class L10nDirectory implements Directory {
   /// {@macro l10n_directory}
@@ -234,6 +245,25 @@ abstract class L10nDirectory implements Directory {
     required PlatformFeaturePackage platformFeaturePackage,
   }) =>
       L10nDirectoryImpl(
+        platformFeaturePackage: platformFeaturePackage,
+      );
+}
+
+typedef L10nBarrelFileBuilder = L10nBarrelFile Function({
+  required PlatformFeaturePackage platformFeaturePackage,
+});
+
+/// {@template l10n_directory}
+/// Abstraction of the l10n barrel file of a platform customizable feature package of an existing Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_<feature name>/lib/src/presentation/l10n/l10n.dart`
+/// {@endtemplate}
+abstract class L10nBarrelFile implements DartFile {
+  /// {@macro l10n_barrel_file}
+  factory L10nBarrelFile({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) =>
+      L10nBarrelFileImpl(
         platformFeaturePackage: platformFeaturePackage,
       );
 }
@@ -263,6 +293,9 @@ abstract class L10nFile implements YamlFile {
   String readTemplateArbFile();
 
   void setTemplateArbFile(String newTemplateArbFile);
+
+  @override
+  Future<void> create();
 }
 
 typedef LanguageLocalizationsFileBuilder = LanguageLocalizationsFile Function(
@@ -345,6 +378,7 @@ abstract class LanguageArbFile
 
   String get language;
 
+  @override
   Future<void> create();
 
   void addTranslation({
@@ -427,6 +461,27 @@ abstract class PlatformFeaturePackageNavigatorImplementation
   Future<void> create();
 }
 
+typedef PlatformFeaturePackagePresentationBarrelFileBuilder
+    = PlatformFeaturePackagePresentationBarrelFile Function({
+  required PlatformFeaturePackage platformFeaturePackage,
+});
+
+/// {@template platform_feature_package_presentation_barrel_file}
+/// Abstraction of the barrel file of a platform feature package of a Rapid project.
+///
+/// Location: `packages/<project name>/<project name>_<platform>/<project name>_<platform>_features/<project name>_<platform>_<feature name>/lib/src/presentation/presentation.dart`
+/// {@endtemplate}
+abstract class PlatformFeaturePackagePresentationBarrelFile
+    implements DartFile {
+  /// {@macro platform_feature_package_presentation_barrel_file}
+  factory PlatformFeaturePackagePresentationBarrelFile({
+    required PlatformFeaturePackage platformFeaturePackage,
+  }) =>
+      PlatformFeaturePackagePresentationBarrelFileImpl(
+        platformFeaturePackage: platformFeaturePackage,
+      );
+}
+
 typedef PlatformFeaturePackageApplicationBarrelFileBuilder
     = PlatformFeaturePackageApplicationBarrelFile Function({
   required PlatformFeaturePackage platformFeaturePackage,
@@ -445,8 +500,6 @@ abstract class PlatformFeaturePackageApplicationBarrelFile implements DartFile {
       PlatformFeaturePackageApplicationBarrelFileImpl(
         platformFeaturePackage: platformFeaturePackage,
       );
-
-  Future<void> create();
 }
 
 typedef PlatformFeaturePackageBarrelFileBuilder

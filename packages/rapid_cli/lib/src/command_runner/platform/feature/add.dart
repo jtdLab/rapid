@@ -4,6 +4,7 @@ import 'package:rapid_cli/src/core/platform.dart';
 import '../../base.dart';
 import 'add/bloc.dart';
 import 'add/cubit.dart';
+import 'add/localization.dart';
 
 class PlatformFeatureAddCommand extends RapidBranchCommand {
   PlatformFeatureAddCommand(
@@ -12,9 +13,13 @@ class PlatformFeatureAddCommand extends RapidBranchCommand {
     super.project,
   ) {
     addSubcommand(
-        PlatformFeatureAddBlocCommand(platform, featureName, project));
+      PlatformFeatureAddBlocCommand(platform, featureName, project),
+    );
     addSubcommand(
       PlatformFeatureAddCubitCommand(platform, featureName, project),
+    );
+    addSubcommand(
+      PlatformFeatureAddLocalizationCommand(platform, featureName, project),
     );
   }
 

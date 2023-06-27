@@ -16,7 +16,7 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('add remove', () {
+  group('pub add', () {
     setUpAll(() {
       registerFallbackValues();
     });

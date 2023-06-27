@@ -11,6 +11,7 @@ const expectedUsage = [
       '\n'
       'Available subcommands:\n'
       '  add      Add packages in a Rapid environment.\n'
+      '  get      Get packages in a Rapid environment.\n'
       '  remove   Remove packages in a Rapid environment.\n'
       '\n'
       'Run "rapid help" to see global options.'

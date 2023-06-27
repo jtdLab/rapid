@@ -1,3 +1,7 @@
+void main() {
+  // TODO impl
+}
+
 /// import 'package:mocktail/mocktail.dart';
 /// import 'package:rapid_cli/src/command_runner/platform/add/feature/custom.dart';
 /// import 'package:rapid_cli/src/core/platform.dart';

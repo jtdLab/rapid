@@ -6,15 +6,15 @@ import '../../../mocks.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Removes features or languages from the ${platform.prettyName} part of an existing Rapid project.\n'
+    'Add features to the ${platform.prettyName} part of an existing Rapid project.\n'
         '\n'
-        'Usage: rapid ${platform.name} remove <subcommand>\n'
+        'Usage: rapid ${platform.name} add feature <type>\n'
         '-h, --help    Print this usage information.\n'
         '\n'
         'Available subcommands:\n'
-        '  feature     Removes a feature from the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  language    Removes a language from the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  navigator   Remove a navigator from the ${platform.prettyName} part of an existing Rapid project.\n'
+        '  flow     Add a flow feature to the ${platform.prettyName} part of an existing Rapid project.\n'
+        '  page     Add a page feature to the ${platform.prettyName} part of an existing Rapid project.\n'
+        '  widget   Add a widget feature to the ${platform.prettyName} part of an existing Rapid project.\n'
         '\n'
         'Run "rapid help" to see global options.'
   ];

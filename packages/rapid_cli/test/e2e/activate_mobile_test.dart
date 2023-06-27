@@ -15,6 +15,15 @@ void main() {
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
+
+      test(
+        'activate mobile (with language)',
+        performTest(
+          platform: Platform.mobile,
+          language: 'zh_Hant_HK',
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
     },
   );
 }

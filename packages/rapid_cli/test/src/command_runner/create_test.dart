@@ -1,5 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner/create.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:test/test.dart';
 
 import '../common.dart';
@@ -229,7 +230,7 @@ void main() {
           outputDir: '.',
           description: 'A description.',
           orgName: 'com.foo.bar',
-          language: 'de',
+          language: Language(languageCode: 'de'),
           android: true,
           ios: false,
           linux: true,

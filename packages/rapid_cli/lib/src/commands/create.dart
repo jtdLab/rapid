@@ -15,6 +15,7 @@ mixin _CreateMixin on _Rapid {
     required bool web,
     required bool windows,
   }) async {
+    outputDir = Directory(outputDir).absolute.path;
     project = RapidProject(
       config: RapidProjectConfig(
         path: outputDir,

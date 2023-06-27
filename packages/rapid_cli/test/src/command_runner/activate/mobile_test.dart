@@ -1,5 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner/activate/mobile.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:test/test.dart';
 
 import '../../common.dart';
@@ -62,7 +63,7 @@ void main() {
         () => rapid.activateMobile(
           description: 'A description.',
           orgName: 'com.foo.bar',
-          language: 'de',
+          language: Language(languageCode: 'de'),
         ),
       ).called(1);
     });

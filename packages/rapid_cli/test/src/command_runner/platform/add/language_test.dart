@@ -1,5 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner/platform/add/language.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
@@ -54,7 +55,10 @@ void main() {
         await command.run();
 
         verify(
-          () => rapid.platformAddLanguage(platform, language: 'de'),
+          () => rapid.platformAddLanguage(
+            platform,
+            language: Language(languageCode: 'de'),
+          ),
         ).called(1);
       });
     });

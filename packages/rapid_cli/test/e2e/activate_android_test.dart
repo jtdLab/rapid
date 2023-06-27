@@ -15,6 +15,15 @@ void main() {
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
+
+      test(
+        'activate android (with language)',
+        performTest(
+          platform: Platform.android,
+          language: 'zh_Hant_HK',
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
     },
   );
 }

@@ -15,6 +15,15 @@ void main() {
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
+
+      test(
+        'activate ios (with language)',
+        performTest(
+          platform: Platform.ios,
+          language: 'zh_Hant_HK',
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
     },
   );
 }

@@ -4,13 +4,19 @@ import 'common.dart';
 
 dynamic performTest({
   required Platform platform,
+  String? language,
 }) =>
     withTempDir((root) async {
       // Arrange
       final tester = await RapidE2ETester.withProject(root);
 
       // Act
-      await tester.runRapidCommand(['activate', platform.name]);
+      await tester.runRapidCommand([
+        'activate',
+        platform.name,
+        if (language != null) '--language',
+        if (language != null) language,
+      ]);
 
       // Assert
       await verifyNoAnalyzerIssues();

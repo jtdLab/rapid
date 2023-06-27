@@ -5,6 +5,7 @@ import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/domain_directory/domain_directory.dart';
 import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package.dart';
@@ -20,6 +21,7 @@ import 'package:rapid_cli/src/project_config.dart';
 
 void registerFallbackValues() {
   registerFallbackValue(Platform.android);
+  registerFallbackValue(FakeLanguage());
 }
 
 class MockDomainDirectory extends Mock implements DomainDirectory {}
@@ -131,6 +133,8 @@ class FakeProcess {
     throw UnimplementedError();
   }
 }
+
+class FakeLanguage extends Fake implements Language {}
 
 /* import 'dart:io';
 

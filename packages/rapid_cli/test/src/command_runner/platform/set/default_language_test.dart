@@ -1,5 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner/platform/set/default_language.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:test/test.dart';
 
@@ -60,7 +61,7 @@ void main() {
         verify(
           () => rapid.platformSetDefaultLanguage(
             platform,
-            language: 'de',
+            language: Language(languageCode: 'de'),
           ),
         ).called(1);
       });

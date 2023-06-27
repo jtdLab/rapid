@@ -1,5 +1,6 @@
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_root_package.dart';
@@ -132,7 +133,7 @@ class RapidProjectImpl extends DartPackageImpl
     required String projectName,
     required String description,
     required String orgName,
-    required String language,
+    required Language language,
     required Set<Platform> platforms,
   }) async {
     await generate(

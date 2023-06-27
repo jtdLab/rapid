@@ -1,6 +1,7 @@
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/directory_impl.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/plist_file_impl.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
@@ -92,7 +93,7 @@ class IosNativeDirectoryImpl extends PlatformNativeDirectoryImpl
   @override
   Future<void> create({
     required String orgName,
-    required String language,
+    required Set<Language> languages,
   }) async {
     final projectName = _rootPackage.project.name;
 
@@ -101,17 +102,26 @@ class IosNativeDirectoryImpl extends PlatformNativeDirectoryImpl
       vars: <String, dynamic>{
         'project_name': projectName,
         'org_name': orgName,
-        'language': language, // TODO update ios template
+        'languages': [
+          for (final language in languages)
+            {
+              'language_code': language.languageCode,
+              'has_script_code': language.hasScriptCode,
+              'script_code': language.scriptCode,
+              'has_country_code': language.hasCountryCode,
+              'country_code': language.countryCode,
+            },
+        ],
       },
     );
   }
 
   @override
-  void addLanguage({required String language}) =>
+  void addLanguage({required Language language}) =>
       _infoPlistFile.addLanguage(language: language);
 
   @override
-  void removeLanguage({required String language}) =>
+  void removeLanguage({required Language language}) =>
       _infoPlistFile.removeLanguage(language: language);
 }
 
@@ -124,26 +134,49 @@ class InfoPlistFileImpl extends PlistFileImpl implements InfoPlistFile {
         );
 
   @override
-  void addLanguage({required String language}) {
+  void addLanguage({required Language language}) {
     final dict = readDict();
 
-    final languages =
-        ((dict['CFBundleLocalizations'] ?? []) as List).cast<String>();
+    var languages = ((dict['CFBundleLocalizations'] ?? []) as List)
+        .cast<String>()
+        .map((e) => Language.fromString(e));
     if (!languages.contains(language)) {
-      dict['CFBundleLocalizations'] = [...languages, language];
-      setDict(dict);
+      dict['CFBundleLocalizations'] = {
+        ...languages,
+        language,
+      }.map((e) => e.toStringWithSeperator('-')).toList();
     }
+
+    setDict(dict);
   }
 
   @override
-  void removeLanguage({required String language}) {
+  void removeLanguage({required Language language}) {
     final dict = readDict();
 
-    final languages =
-        ((dict['CFBundleLocalizations'] ?? []) as List).cast<String>();
+    var languages = ((dict['CFBundleLocalizations'] ?? []) as List)
+        .cast<String>()
+        .map((e) => Language.fromString(e))
+        .toList();
     if (languages.contains(language)) {
-      dict['CFBundleLocalizations'] = languages..remove(language);
-      setDict(dict);
+      dict['CFBundleLocalizations'] = (languages..remove(language))
+          .map((e) => e.toStringWithSeperator('-'))
+          .toList();
     }
+
+    languages = ((dict['CFBundleLocalizations'] ?? []) as List)
+        .cast<String>()
+        .map((e) => Language.fromString(e))
+        .toList();
+    if (!language.hasScriptCode && !language.hasCountryCode) {
+      dict['CFBundleLocalizations'] = (languages
+            ..removeWhere(
+              (e) => e.languageCode.startsWith(language.languageCode),
+            ))
+          .map((e) => e.toStringWithSeperator('-'))
+          .toList();
+    }
+
+    setDict(dict);
   }
 }

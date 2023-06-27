@@ -22,6 +22,6 @@ vars:
   org_name:
     type: string
     description: The organization name
-  language:
-    type: string
-    description: The default language of project
+  languages:
+    type: array
+    description: The languages of project

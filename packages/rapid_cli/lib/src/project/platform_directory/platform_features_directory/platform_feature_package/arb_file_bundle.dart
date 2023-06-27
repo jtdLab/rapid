@@ -6,8 +6,10 @@ import 'package:mason/mason.dart';
 final arbFileBundle = MasonBundle.fromJson(<String, dynamic>{
   "files": [
     {
-      "path": "{{feature_name}}_{{language}}.arb",
-      "data": "ewogICJAQGxvY2FsZSI6ICJ7e2xhbmd1YWdlfX0iCn0=",
+      "path":
+          "{{feature_name}}_{{language}}{{#has_script_code}}_{{script_code}}{{/has_script_code}}{{#has_country_code}}_{{country_code}}{{/has_country_code}}.arb",
+      "data":
+          "ewogICJAQGxvY2FsZSI6ICJ7e2xhbmd1YWdlfX17eyNoYXNfc2NyaXB0X2NvZGV9fV97e3NjcmlwdF9jb2RlfX17ey9oYXNfc2NyaXB0X2NvZGV9fXt7I2hhc19jb3VudHJ5X2NvZGV9fV97e2NvdW50cnlfY29kZX19e3svaGFzX2NvdW50cnlfY29kZX19Igp9",
       "type": "text"
     }
   ],
@@ -32,6 +34,16 @@ final arbFileBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "string",
       "description": "The name of the feature"
     },
-    "language": {"type": "string", "description": "The language"}
+    "language": {"type": "string", "description": "The language"},
+    "has_script_code": {
+      "type": "boolean",
+      "description": "Wheter this has a script code"
+    },
+    "script_code": {"type": "string", "description": "The script code"},
+    "has_country_code": {
+      "type": "boolean",
+      "description": "Wheter this has a country code"
+    },
+    "country_code": {"type": "string", "description": "The country code"}
   }
 });

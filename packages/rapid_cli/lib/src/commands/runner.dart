@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/command_runner/util/platform_feature_packages_x.dart';
 import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/exception.dart';
 import 'package:rapid_cli/src/logging.dart';

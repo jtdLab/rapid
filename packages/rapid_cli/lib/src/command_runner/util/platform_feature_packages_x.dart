@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
 
 extension PlatformFeaturePackagesX on Iterable<PlatformFeaturePackage> {
@@ -15,6 +16,6 @@ extension PlatformFeaturePackagesX on Iterable<PlatformFeaturePackage> {
       map((e) => e.defaultLanguage()).toSet().length == 1;
 
   /// Wheter all [PlatformFeaturePackage]s support [language].
-  bool supportLanguage(String language) =>
+  bool supportLanguage(Language language) =>
       every((e) => e.supportedLanguages().contains(language));
 }

@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:meta/meta.dart';
+import 'package:rapid_cli/src/core/language.dart';
 
 import '../base.dart';
 import 'validate_language.dart';
@@ -8,12 +9,12 @@ import 'validate_language.dart';
 mixin LanguageGetter on RapidLeafCommand {
   /// Gets the language specified as the first positional argument.
   @protected
-  String get language => _validateLanguageArg(argResults.rest);
+  Language get language => _validateLanguageArg(argResults.rest);
 
   /// Validates whether [args] contains a valid language as the first element.
   ///
   /// Returns the language when valid.
-  String _validateLanguageArg(List<String> args) {
+  Language _validateLanguageArg(List<String> args) {
     if (args.isEmpty) {
       throw UsageException(
         'No option specified for the language.',
@@ -25,7 +26,7 @@ mixin LanguageGetter on RapidLeafCommand {
       throw UsageException('Multiple languages specified.', usage);
     }
 
-    final language = args.first;
+    final language = Language.fromString(args.first);
     final isValid = isValidLanguage(language);
     if (!isValid) {
       throw UsageException(

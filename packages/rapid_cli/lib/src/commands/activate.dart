@@ -4,7 +4,7 @@ mixin _ActivateMixin on _Rapid {
   Future<void> activateAndroid({
     required String description,
     required String orgName,
-    required String language,
+    required Language language,
   }) async {
     return _activatePlatform(
       Platform.android,
@@ -25,7 +25,7 @@ mixin _ActivateMixin on _Rapid {
 
   Future<void> activateIos({
     required String orgName,
-    required String language,
+    required Language language,
   }) async {
     return _activatePlatform(
       Platform.ios,
@@ -45,7 +45,7 @@ mixin _ActivateMixin on _Rapid {
 
   Future<void> activateLinux({
     required String orgName,
-    required String language,
+    required Language language,
   }) async {
     return _activatePlatform(
       Platform.linux,
@@ -65,7 +65,7 @@ mixin _ActivateMixin on _Rapid {
 
   Future<void> activateMacos({
     required String orgName,
-    required String language,
+    required Language language,
   }) async {
     return _activatePlatform(
       Platform.macos,
@@ -85,7 +85,7 @@ mixin _ActivateMixin on _Rapid {
 
   Future<void> activateWeb({
     required String description,
-    required String language,
+    required Language language,
   }) async {
     return _activatePlatform(
       Platform.web,
@@ -105,7 +105,7 @@ mixin _ActivateMixin on _Rapid {
 
   Future<void> activateWindows({
     required String orgName,
-    required String language,
+    required Language language,
   }) async {
     return _activatePlatform(
       Platform.windows,
@@ -126,7 +126,7 @@ mixin _ActivateMixin on _Rapid {
   Future<void> activateMobile({
     required String description,
     required String orgName,
-    required String language,
+    required Language language,
   }) async {
     return _activatePlatform(
       Platform.mobile,

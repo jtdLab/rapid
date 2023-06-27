@@ -343,7 +343,7 @@ mixin _PlatformMixin on _Rapid {
 
   Future<void> platformAddLanguage(
     Platform platform, {
-    required String language,
+    required Language language,
   }) async {
     if (!project.platformIsActivated(platform)) {
       _logAndThrow(
@@ -390,10 +390,18 @@ mixin _PlatformMixin on _Rapid {
       );
     }
 
-    await platformDirectory.rootPackage.addLanguage(language);
-
     for (final featurePackage in featurePackagesWithLanguages) {
+      await platformDirectory.rootPackage.addLanguage(language);
       await featurePackage.addLanguage(language);
+      // TODO coonsider moving this down into the addLanguage method of rootPkg and featurePkg
+      if (language.hasScriptCode || language.hasCountryCode) {
+        await platformDirectory.rootPackage.addLanguage(
+          Language(languageCode: language.languageCode),
+        );
+        await featurePackage.addLanguage(
+          Language(languageCode: language.languageCode),
+        );
+      }
     }
 
     await flutterGenl10n(featurePackagesWithLanguages);
@@ -851,7 +859,7 @@ mixin _PlatformMixin on _Rapid {
 
   Future<void> platformRemoveLanguage(
     Platform platform, {
-    required String language,
+    required Language language,
   }) async {
     if (!project.platformIsActivated(platform)) {
       _logAndThrow(
@@ -989,7 +997,7 @@ mixin _PlatformMixin on _Rapid {
 
   Future<void> platformSetDefaultLanguage(
     Platform platform, {
-    required String language,
+    required Language language,
   }) async {
     if (!project.platformIsActivated(platform)) {
       _logAndThrow(
@@ -1115,7 +1123,7 @@ class RapidPlatformException extends RapidException {
     );
   }
 
-  factory RapidPlatformException._languageAlreadyPresent(String language) {
+  factory RapidPlatformException._languageAlreadyPresent(Language language) {
     return RapidPlatformException._(
       'The language "$language" is already present.',
     );
@@ -1179,20 +1187,20 @@ class RapidPlatformException extends RapidException {
     );
   }
 
-  factory RapidPlatformException._languageNotFound(String language) {
+  factory RapidPlatformException._languageNotFound(Language language) {
     return RapidPlatformException._(
       'The language "$language" is not present.',
     );
   }
 
-  factory RapidPlatformException._cantRemoveDefaultLanguage(String language) {
+  factory RapidPlatformException._cantRemoveDefaultLanguage(Language language) {
     return RapidPlatformException._(
       'Can not remove language "$language" because it is the default language.',
     );
   }
 
   factory RapidPlatformException._languageIsAlreadyDefaultLanguage(
-    String language,
+    Language language,
   ) {
     return RapidPlatformException._(
       'The language "$language" already is the default language.',

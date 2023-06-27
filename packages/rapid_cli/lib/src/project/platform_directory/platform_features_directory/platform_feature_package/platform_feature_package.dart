@@ -4,6 +4,7 @@ import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:rapid_cli/src/core/directory.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
@@ -74,17 +75,20 @@ abstract class PlatformFeaturePackage
 
   bool get hasLanguages;
 
-  Set<String> supportedLanguages();
+  Set<Language> supportedLanguages();
 
-  String defaultLanguage();
+  Language defaultLanguage();
 
-  Future<void> setDefaultLanguage(String newDefaultLanguage);
+  Future<void> setDefaultLanguage(Language newDefaultLanguage);
 
-  Future<void> addLocalizations(String defaultLanguage, Set<String> languages);
+  Future<void> addLocalizations(
+    Language defaultLanguage,
+    Set<Language> languages,
+  );
 
-  Future<void> addLanguage(String language);
+  Future<void> addLanguage(Language language);
 
-  Future<void> removeLanguage(String language);
+  Future<void> removeLanguage(Language language);
 }
 
 abstract class PlatformRoutableFeaturePackage extends PlatformFeaturePackage {
@@ -117,8 +121,8 @@ abstract class PlatformCustomFeaturePackage
     required String description,
     required bool routing,
     required bool localization,
-    required String defaultLanguage,
-    required Set<String> languages,
+    required Language defaultLanguage,
+    required Set<Language> languages,
   });
 }
 
@@ -145,8 +149,8 @@ abstract class PlatformFlowFeaturePackage
     required bool tab,
     required String description,
     required bool localization,
-    required String defaultLanguage,
-    required Set<String> languages,
+    required Language defaultLanguage,
+    required Set<Language> languages,
     required Set<PlatformFeaturePackage>? features,
   });
 }
@@ -174,8 +178,8 @@ abstract class PlatformPageFeaturePackage
     required String description,
     required bool localization,
     bool exampleTranslation,
-    required String defaultLanguage,
-    required Set<String> languages,
+    required Language defaultLanguage,
+    required Set<Language> languages,
   });
 }
 
@@ -200,8 +204,8 @@ abstract class PlatformWidgetFeaturePackage implements PlatformFeaturePackage {
   Future<void> create({
     required String description,
     required bool localization,
-    required String defaultLanguage,
-    required Set<String> languages,
+    required Language defaultLanguage,
+    required Set<Language> languages,
   });
 }
 
@@ -225,8 +229,8 @@ abstract class PlatformAppFeaturePackage implements PlatformFeaturePackage {
     required String description,
     bool routing,
     required bool localization,
-    required String defaultLanguage,
-    required Set<String> languages,
+    required Language defaultLanguage,
+    required Set<Language> languages,
   });
 }
 
@@ -302,7 +306,7 @@ abstract class L10nFile implements YamlFile {
 }
 
 typedef LanguageLocalizationsFileBuilder = LanguageLocalizationsFile Function(
-  String language, {
+  Language language, {
   required PlatformFeaturePackage platformFeaturePackage,
 });
 
@@ -314,7 +318,7 @@ typedef LanguageLocalizationsFileBuilder = LanguageLocalizationsFile Function(
 abstract class LanguageLocalizationsFile implements DartFile {
   /// {@macro language_localizations_file}
   factory LanguageLocalizationsFile(
-    String language, {
+    Language language, {
     required PlatformFeaturePackage platformFeaturePackage,
   }) =>
       LanguageLocalizationsFileImpl(
@@ -347,18 +351,18 @@ abstract class ArbDirectory implements Directory {
   PlatformFeaturePackage
       get platformFeaturePackage; // TODO needs to be visible?
 
-  LanguageArbFile languageArbFile({required String language});
+  LanguageArbFile languageArbFile({required Language language});
 
   List<LanguageArbFile> languageArbFiles();
 
   Future<void> create({
-    required Set<String> languages,
-    List<Map<String, dynamic>> Function(String language)? translations,
+    required Set<Language> languages,
+    List<Map<String, dynamic>> Function(Language language)? translations,
   });
 }
 
 typedef LanguageArbFileBuilder = LanguageArbFile Function({
-  required String language,
+  required Language language,
   required ArbDirectory arbDirectory,
 });
 
@@ -371,7 +375,7 @@ abstract class LanguageArbFile
     implements ArbFile, OverridableGenerator, Comparable<LanguageArbFile> {
   /// {@macro language_arb_file}
   factory LanguageArbFile({
-    required String language,
+    required Language language,
     required ArbDirectory arbDirectory,
   }) =>
       LanguageArbFileImpl(
@@ -379,7 +383,7 @@ abstract class LanguageArbFile
         arbDirectory: arbDirectory,
       );
 
-  String get language;
+  Language get language;
 
   @override
   Future<void> create();

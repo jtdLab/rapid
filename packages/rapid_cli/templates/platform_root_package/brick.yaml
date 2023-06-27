@@ -43,3 +43,6 @@ vars:
   mobile:
     type: boolean
     description: The project supports the Mobile (Android + iOS shared) platform
+  languages:
+    type: array
+    description: The languages

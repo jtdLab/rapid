@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/dart_file.dart';
 import 'package:rapid_cli/src/core/dart_package.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 
@@ -50,10 +51,10 @@ abstract class PlatformRootPackage
   RouterFile get routerFile;
 
   /// Returns the default language of this package.
-  String defaultLanguage();
+  Language defaultLanguage();
 
   /// Returns the languages supported by this package.
-  Set<String> supportedLanguages();
+  Set<Language> supportedLanguages();
 
   /// Registers [featurePackage] to this package.
   Future<void> registerFeaturePackage(
@@ -76,10 +77,10 @@ abstract class PlatformRootPackage
   );
 
   /// Adds [language] to this package.
-  Future<void> addLanguage(String language);
+  Future<void> addLanguage(Language language);
 
   /// Removes [language] from this package.
-  Future<void> removeLanguage(String language);
+  Future<void> removeLanguage(Language language);
 }
 
 /// Signature of [NoneIosRootPackage.new].
@@ -107,6 +108,7 @@ abstract class NoneIosRootPackage extends PlatformRootPackage {
   Future<void> create({
     String? description,
     String? orgName,
+    required Set<Language> languages,
   });
 }
 
@@ -137,7 +139,7 @@ abstract class IosRootPackage extends PlatformRootPackage {
   /// Creates this package on disk.
   Future<void> create({
     required String orgName,
-    required String language,
+    required Set<Language> languages,
   });
 }
 
@@ -176,7 +178,7 @@ abstract class MobileRootPackage extends PlatformRootPackage {
   /// Creates this package on disk.
   Future<void> create({
     required String orgName,
-    required String language,
+    required Set<Language> languages,
     String? description,
   });
 }
@@ -202,19 +204,19 @@ abstract class LocalizationsDelegatesFile implements DartFile {
       );
 
   /// Returns the supported locales of this file.
-  Set<String> supportedLocales();
+  Set<Language> supportedLocales();
 
   /// Adds localizations delegate of [feature] to this file.
   void addLocalizationsDelegate(PlatformFeaturePackage feature);
 
   /// Adds [locale] to the supported locales of this file.
-  void addSupportedLocale(String locale);
+  void addSupportedLocale(Language locale);
 
   /// Removes the localizations delegate of [feature] from this file.
   void removeLocalizationsDelegate(PlatformFeaturePackage feature);
 
   /// Adds [locale] from the supported locales of this file.
-  void removeSupportedLocale(String locale);
+  void removeSupportedLocale(Language locale);
 }
 
 /// Signature of [InjectionFile.new].

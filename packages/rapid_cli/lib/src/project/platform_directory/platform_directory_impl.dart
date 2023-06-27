@@ -1,5 +1,6 @@
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/directory_impl.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
 
@@ -67,13 +68,22 @@ class NoneIosDirectoryImpl extends PlatformDirectoryImpl
         project: project,
       );
 
+  // TODO maybe pass languages into this method not just lang
   @override
   Future<void> create({
     String? description,
     String? orgName,
-    required String language,
+    required Language language,
   }) async {
-    await rootPackage.create(description: description, orgName: orgName);
+    await rootPackage.create(
+      description: description,
+      orgName: orgName,
+      languages: {
+        language,
+        if (language.hasCountryCode || language.hasScriptCode)
+          Language(languageCode: language.languageCode),
+      },
+    );
 
     await navigationPackage.create();
 
@@ -83,7 +93,11 @@ class NoneIosDirectoryImpl extends PlatformDirectoryImpl
       description: 'The App feature.', // TODO platform info
       localization: false,
       defaultLanguage: language,
-      languages: {language},
+      languages: {
+        language,
+        if (language.hasCountryCode || language.hasScriptCode)
+          Language(languageCode: language.languageCode),
+      },
     );
 
     final homePageFeaturePackage = featuresDirectory
@@ -93,7 +107,11 @@ class NoneIosDirectoryImpl extends PlatformDirectoryImpl
       localization: true,
       exampleTranslation: true,
       defaultLanguage: language,
-      languages: {language},
+      languages: {
+        language,
+        if (language.hasCountryCode || language.hasScriptCode)
+          Language(languageCode: language.languageCode),
+      },
     );
   }
 }
@@ -112,12 +130,20 @@ class IosDirectoryImpl extends PlatformDirectoryImpl implements IosDirectory {
         project: project,
       );
 
+  // TODO maybe pass languages into this method not just lang
   @override
   Future<void> create({
     required String orgName,
-    required String language,
+    required Language language,
   }) async {
-    await rootPackage.create(orgName: orgName, language: language);
+    await rootPackage.create(
+      orgName: orgName,
+      languages: {
+        language,
+        if (language.hasCountryCode || language.hasScriptCode)
+          Language(languageCode: language.languageCode),
+      },
+    );
 
     await navigationPackage.create();
 
@@ -127,7 +153,11 @@ class IosDirectoryImpl extends PlatformDirectoryImpl implements IosDirectory {
       description: 'The App feature.', // TODO platform info
       localization: false,
       defaultLanguage: language,
-      languages: {language},
+      languages: {
+        language,
+        if (language.hasCountryCode || language.hasScriptCode)
+          Language(languageCode: language.languageCode),
+      },
     );
 
     final homePageFeaturePackage = featuresDirectory
@@ -136,7 +166,11 @@ class IosDirectoryImpl extends PlatformDirectoryImpl implements IosDirectory {
       description: 'The Home Page feature.', // TODO platform info
       localization: true, // TODO good?
       defaultLanguage: language,
-      languages: {language},
+      languages: {
+        language,
+        if (language.hasCountryCode || language.hasScriptCode)
+          Language(languageCode: language.languageCode),
+      },
     );
   }
 }
@@ -156,15 +190,20 @@ class MobileDirectoryImpl extends PlatformDirectoryImpl
         project: project,
       );
 
+  // TODO maybe pass languages into this method not just lang
   @override
   Future<void> create({
     required String orgName,
-    required String language,
+    required Language language,
     String? description,
   }) async {
     await rootPackage.create(
       orgName: orgName,
-      language: language,
+      languages: {
+        language,
+        if (language.hasCountryCode || language.hasScriptCode)
+          Language(languageCode: language.languageCode),
+      },
       description: description,
     );
 
@@ -176,7 +215,11 @@ class MobileDirectoryImpl extends PlatformDirectoryImpl
       description: 'The App feature.', // TODO platform info
       localization: false,
       defaultLanguage: language,
-      languages: {language},
+      languages: {
+        language,
+        if (language.hasCountryCode || language.hasScriptCode)
+          Language(languageCode: language.languageCode),
+      },
     );
 
     final homePageFeaturePackage = featuresDirectory
@@ -185,7 +228,11 @@ class MobileDirectoryImpl extends PlatformDirectoryImpl
       description: 'The Home Page feature.', // TODO platform info
       localization: true, // TODO good
       defaultLanguage: language,
-      languages: {language},
+      languages: {
+        language,
+        if (language.hasCountryCode || language.hasScriptCode)
+          Language(languageCode: language.languageCode),
+      },
     );
   }
 }

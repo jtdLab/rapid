@@ -6,7 +6,7 @@ mixin _CreateMixin on _Rapid {
     required String outputDir,
     required String description,
     required String orgName,
-    required String language,
+    required Language language,
     required bool android,
     required bool ios,
     required bool linux,

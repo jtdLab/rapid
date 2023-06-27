@@ -1,0 +1,3 @@
+{
+  "@@locale": "{{language}}{{#has_script_code}}_{{script_code}}{{/has_script_code}}{{#has_country_code}}_{{country_code}}{{/has_country_code}}"
+}

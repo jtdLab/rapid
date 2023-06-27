@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 
 import '../project.dart';
@@ -69,7 +70,7 @@ abstract class NoneIosDirectory extends PlatformDirectory {
   Future<void> create({
     String? description,
     String? orgName,
-    required String language,
+    required Language language,
   });
 }
 
@@ -95,7 +96,7 @@ abstract class IosDirectory extends PlatformDirectory {
   /// Creates this directory on disk.
   Future<void> create({
     required String orgName,
-    required String language,
+    required Language language,
   });
 }
 
@@ -121,7 +122,7 @@ abstract class MobileDirectory extends PlatformDirectory {
   /// Creates this directory on disk.
   Future<void> create({
     required String orgName,
-    required String language,
+    required Language language,
     String? description,
   });
 }

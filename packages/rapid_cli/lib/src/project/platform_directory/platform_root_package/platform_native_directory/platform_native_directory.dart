@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/core/directory.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/core/plist_file.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 
@@ -72,12 +73,12 @@ abstract class IosNativeDirectory extends PlatformNativeDirectory {
   /// Creates this directory on disk.
   Future<void> create({
     required String orgName,
-    required String language,
+    required Set<Language> languages,
   });
 
-  void addLanguage({required String language});
+  void addLanguage({required Language language});
 
-  void removeLanguage({required String language});
+  void removeLanguage({required Language language});
 }
 
 /// {@template info_plist_file}
@@ -94,7 +95,7 @@ abstract class InfoPlistFile implements PlistFile {
         iosNativeDirectory: iosNativeDirectory,
       );
 
-  void addLanguage({required String language});
+  void addLanguage({required Language language});
 
-  void removeLanguage({required String language});
+  void removeLanguage({required Language language});
 }

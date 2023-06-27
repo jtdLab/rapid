@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/core/dart_file_impl.dart';
 import 'package:rapid_cli/src/core/dart_package_impl.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
 
@@ -63,10 +64,10 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
 
   // TODO is this correct ??????
   @override
-  String defaultLanguage() => supportedLanguages().first;
+  Language defaultLanguage() => supportedLanguages().first;
 
   @override
-  Set<String> supportedLanguages() =>
+  Set<Language> supportedLanguages() =>
       localizationsDelegatesFile.supportedLocales();
 
   @override
@@ -117,14 +118,26 @@ abstract class PlatformRootPackageImpl extends DartPackageImpl
 
   @mustCallSuper
   @override
-  Future<void> addLanguage(String language) async {
+  Future<void> addLanguage(
+    Language language,
+  ) async {
     localizationsDelegatesFile.addSupportedLocale(language);
   }
 
   @mustCallSuper
   @override
-  Future<void> removeLanguage(String language) async {
+  Future<void> removeLanguage(
+    Language language,
+  ) async {
     localizationsDelegatesFile.removeSupportedLocale(language);
+
+    if (!language.hasScriptCode && !language.hasCountryCode) {
+      for (final locale in localizationsDelegatesFile
+          .supportedLocales()
+          .where((e) => e.languageCode == language.languageCode)) {
+        localizationsDelegatesFile.removeSupportedLocale(locale);
+      }
+    }
   }
 }
 
@@ -148,6 +161,7 @@ class NoneIosRootPackageImpl extends PlatformRootPackageImpl
   Future<void> create({
     String? description,
     String? orgName,
+    required Set<Language> languages,
   }) async {
     final projectName = project.name;
 
@@ -162,6 +176,16 @@ class NoneIosRootPackageImpl extends PlatformRootPackageImpl
         'macos': platform == Platform.macos,
         'web': platform == Platform.web,
         'windows': platform == Platform.windows,
+        'languages': [
+          for (final language in languages)
+            {
+              'language_code': language.languageCode,
+              'has_script_code': language.hasScriptCode,
+              'script_code': language.scriptCode,
+              'has_country_code': language.hasCountryCode,
+              'country_code': language.countryCode,
+            },
+        ],
       },
     );
 
@@ -190,7 +214,7 @@ class IosRootPackageImpl extends PlatformRootPackageImpl
   @override
   Future<void> create({
     required String orgName,
-    required String language,
+    required Set<Language> languages,
   }) async {
     final projectName = project.name;
 
@@ -206,23 +230,33 @@ class IosRootPackageImpl extends PlatformRootPackageImpl
         'web': false,
         'windows': false,
         'mobile': false,
+        'languages': [
+          for (final language in languages)
+            {
+              'language_code': language.languageCode,
+              'has_script_code': language.hasScriptCode,
+              'script_code': language.scriptCode,
+              'has_country_code': language.hasCountryCode,
+              'country_code': language.countryCode,
+            },
+        ],
       },
     );
 
     await nativeDirectory.create(
       orgName: orgName,
-      language: language,
+      languages: languages,
     );
   }
 
   @override
-  Future<void> addLanguage(String language) async {
+  Future<void> addLanguage(Language language) async {
     await super.addLanguage(language);
     nativeDirectory.addLanguage(language: language);
   }
 
   @override
-  Future<void> removeLanguage(String language) async {
+  Future<void> removeLanguage(Language language) async {
     await super.removeLanguage(language);
     nativeDirectory.removeLanguage(language: language);
   }
@@ -255,7 +289,7 @@ class MobileRootPackageImpl extends PlatformRootPackageImpl
   @override
   Future<void> create({
     required String orgName,
-    required String language,
+    required Set<Language> languages,
     String? description,
   }) async {
     final projectName = project.name;
@@ -272,12 +306,22 @@ class MobileRootPackageImpl extends PlatformRootPackageImpl
         'web': false,
         'windows': false,
         'mobile': true,
+        'languages': [
+          for (final language in languages)
+            {
+              'language_code': language.languageCode,
+              'has_script_code': language.hasScriptCode,
+              'script_code': language.scriptCode,
+              'has_country_code': language.hasCountryCode,
+              'country_code': language.countryCode,
+            },
+        ],
       },
     );
 
     await iosNativeDirectory.create(
       orgName: orgName,
-      language: language,
+      languages: languages,
     );
     await androidNativeDirectory.create(
       description: description,
@@ -286,13 +330,13 @@ class MobileRootPackageImpl extends PlatformRootPackageImpl
   }
 
   @override
-  Future<void> addLanguage(String language) async {
+  Future<void> addLanguage(Language language) async {
     await super.addLanguage(language);
     iosNativeDirectory.addLanguage(language: language);
   }
 
   @override
-  Future<void> removeLanguage(String language) async {
+  Future<void> removeLanguage(Language language) async {
     await super.removeLanguage(language);
     iosNativeDirectory.removeLanguage(language: language);
   }
@@ -307,12 +351,13 @@ class LocalizationsDelegatesFileImpl extends DartFileImpl
           name: 'localizations_delegates',
         );
 
-  // TODO impl cleaner without ! ?
   @override
-  Set<String> supportedLocales() =>
-      readTopLevelListVar(name: 'supportedLocales')
-          .map((e) => RegExp(r"Locale\('([a-z]+)'\)").firstMatch(e)!.group(1)!)
-          .toSet();
+  Set<Language> supportedLocales() {
+    final supportedLanguagesRaw = readTopLevelListVar(name: 'supportedLocales');
+    return supportedLanguagesRaw
+        .map((e) => e.toLanguageFromDartLocale())
+        .toSet();
+  }
 
   @override
   void addLocalizationsDelegate(PlatformFeaturePackage feature) {
@@ -336,17 +381,18 @@ class LocalizationsDelegatesFileImpl extends DartFileImpl
   }
 
   @override
-  void addSupportedLocale(String locale) {
-    final newLocale = 'const Locale(\'$locale\')';
-    final existingLocales = readTopLevelListVar(name: 'supportedLocales');
+  void addSupportedLocale(Language locale) {
+    final existingLocales = supportedLocales();
 
     if (!existingLocales.contains(locale)) {
       setTopLevelListVar(
         name: 'supportedLocales',
-        value: [
-          newLocale,
+        value: ([
+          locale,
           ...existingLocales,
-        ]..sort(),
+        ]..sort())
+            .map((e) => e.toDartLocal())
+            .toList(),
       );
     }
   }
@@ -370,14 +416,15 @@ class LocalizationsDelegatesFileImpl extends DartFileImpl
   }
 
   @override
-  void removeSupportedLocale(String locale) {
-    final localeToRemove = 'const Locale(\'$locale\')';
-    final existingLocales = readTopLevelListVar(name: 'supportedLocales');
+  void removeSupportedLocale(Language locale) {
+    final existingLocales = supportedLocales();
 
-    if (existingLocales.contains(localeToRemove)) {
+    if (existingLocales.contains(locale)) {
       setTopLevelListVar(
         name: 'supportedLocales',
-        value: existingLocales..remove(localeToRemove),
+        value: (existingLocales.toList()..remove(locale))
+            .map((e) => e.toDartLocal())
+            .toList(),
       );
     }
   }
@@ -511,4 +558,164 @@ class RouterFileImpl extends DartFileImpl implements RouterFile {
         annotation: 'AutoRouterConfig',
         className: 'Router',
       );
+}
+
+extension on Language {
+  String toDartLocal() {
+    final countryCodeSegment =
+        countryCode != null ? ', countryCode: \'$countryCode\'' : '';
+    final scriptCodeSegment =
+        scriptCode != null ? ', scriptCode: \'$scriptCode\'' : '';
+
+    return 'const Locale.fromSubtags(languageCode: \'$languageCode\'$scriptCodeSegment$countryCodeSegment)';
+  }
+}
+
+extension on String {
+  Language toLanguageFromDartLocale() {
+    final self = replaceAll('\r\n', '')
+        .replaceAll('\n', '')
+        .replaceAll(RegExp(r'\s\s+'), '');
+    final RegExpMatch match;
+    if (RegExp(r"Locale\('([A-z]+)'\)").hasMatch(self)) {
+      match = RegExp(r"Locale\('([A-z]+)'\)").firstMatch(self)!;
+      return Language(languageCode: match.group(1)!);
+    } else if (RegExp(r"Locale\('([A-z]+)', '([A-z]+)'\)").hasMatch(self)) {
+      match = RegExp(r"Locale\('([A-z]+)', '([A-z]+)'\)").firstMatch(self)!;
+      return Language(
+          languageCode: match.group(1)!, countryCode: match.group(2)!);
+    } else if (RegExp(r"Locale.fromSubtags\(\)").hasMatch(self)) {
+      match = RegExp(r"Locale.fromSubtags\(\)").firstMatch(self)!;
+      return Language(languageCode: 'und');
+    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(languageCode: match.group(1)!);
+    } else if (RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(languageCode: 'und', countryCode: match.group(1)!);
+    } else if (RegExp(r"Locale.fromSubtags\(scriptCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(r"Locale.fromSubtags\(scriptCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(languageCode: 'und', scriptCode: match.group(1)!);
+    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)', countryCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(languageCode: '([A-z]+)', countryCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(
+          languageCode: match.group(1)!, countryCode: match.group(2)!);
+    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)', scriptCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(languageCode: '([A-z]+)', scriptCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(
+          languageCode: match.group(1)!, scriptCode: match.group(2)!);
+    } else if (RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)', languageCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(countryCode: '([A-z]+)', languageCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(
+          countryCode: match.group(1)!, languageCode: match.group(2)!);
+    } else if (RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)', scriptCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(countryCode: '([A-z]+)', scriptCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(
+        languageCode: 'und',
+        countryCode: match.group(1)!,
+        scriptCode: match.group(2)!,
+      );
+    } else if (RegExp(r"Locale.fromSubtags\(scriptCode: '([A-z]+)', languageCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(scriptCode: '([A-z]+)', languageCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(
+          scriptCode: match.group(1)!, languageCode: match.group(2)!);
+    } else if (RegExp(r"Locale.fromSubtags\(scriptCode: '([A-z]+)', countryCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(scriptCode: '([A-z]+)', countryCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(
+        languageCode: 'und',
+        scriptCode: match.group(1)!,
+        countryCode: match.group(2)!,
+      );
+    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)', countryCode: '([A-z]+)', scriptCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(languageCode: '([A-z]+)', countryCode: '([A-z]+)', scriptCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(
+        languageCode: match.group(1)!,
+        countryCode: match.group(2)!,
+        scriptCode: match.group(3)!,
+      );
+    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)', scriptCode: '([A-z]+)', countryCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(languageCode: '([A-z]+)', scriptCode: '([A-z]+)', countryCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(
+        languageCode: match.group(1)!,
+        scriptCode: match.group(2)!,
+        countryCode: match.group(3)!,
+      );
+    } else if (RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)', languageCode: '([A-z]+)', scriptCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(countryCode: '([A-z]+)', languageCode: '([A-z]+)', scriptCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(
+        countryCode: match.group(1)!,
+        languageCode: match.group(2)!,
+        scriptCode: match.group(3)!,
+      );
+    } else if (RegExp(
+            r"Locale.fromSubtags\(countryCode: '([A-z]+)', scriptCode: '([A-z]+)', languageCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(countryCode: '([A-z]+)', scriptCode: '([A-z]+)', languageCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(
+        countryCode: match.group(1)!,
+        scriptCode: match.group(2)!,
+        languageCode: match.group(3)!,
+      );
+    } else if (RegExp(
+            r"Locale.fromSubtags\(scriptCode: '([A-z]+)', languageCode: '([A-z]+)', countryCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(scriptCode: '([A-z]+)', languageCode: '([A-z]+)', countryCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(
+        scriptCode: match.group(1)!,
+        languageCode: match.group(2)!,
+        countryCode: match.group(3)!,
+      );
+    } else if (RegExp(
+            r"Locale.fromSubtags\(scriptCode: '([A-z]+)', countryCode: '([A-z]+)', languageCode: '([A-z]+)'\)")
+        .hasMatch(self)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(scriptCode: '([A-z]+)', countryCode: '([A-z]+)', languageCode: '([A-z]+)'\)")
+          .firstMatch(self)!;
+      return Language(
+        scriptCode: match.group(1)!,
+        countryCode: match.group(2)!,
+        languageCode: match.group(3)!,
+      );
+    }
+
+    // TODO
+    throw Error();
+  }
 }

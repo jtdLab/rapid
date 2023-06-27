@@ -10,6 +10,7 @@ import 'package:rapid_cli/src/core/dart_package_impl.dart';
 import 'package:rapid_cli/src/core/directory_impl.dart';
 import 'package:rapid_cli/src/core/file.dart';
 import 'package:rapid_cli/src/core/file_system_entity_collection.dart';
+import 'package:rapid_cli/src/core/language.dart';
 import 'package:rapid_cli/src/core/platform.dart';
 import 'package:rapid_cli/src/core/yaml_file_impl.dart';
 import 'package:rapid_cli/src/project/core/generator_mixins.dart';
@@ -53,7 +54,7 @@ abstract class PlatformFeaturePackageImpl extends DartPackageImpl
         platformFeaturePackage: this,
       );
 
-  LanguageLocalizationsFile _languageLocalizationsFile(String language) =>
+  LanguageLocalizationsFile _languageLocalizationsFile(Language language) =>
       (languageLocalizationsFileOverrides ?? LanguageLocalizationsFile.new)(
         language,
         platformFeaturePackage: this,
@@ -138,32 +139,37 @@ abstract class PlatformFeaturePackageImpl extends DartPackageImpl
   bool get hasLanguages => _l10nDirectory.exists() && _l10nFile.exists();
 
   @override
-  Set<String> supportedLanguages() =>
+  Set<Language> supportedLanguages() =>
       _arbDirectory.languageArbFiles().map((e) => e.language).toSet();
 
   @override
-  String defaultLanguage() {
+  Language defaultLanguage() {
     final templateArbFile = _l10nFile.readTemplateArbFile();
 
-    return templateArbFile.split('.').first.split('_').last;
+    return Language.fromString(
+      templateArbFile
+          .substring(templateArbFile.indexOf('_') + 1)
+          .split('.')
+          .first,
+    );
   }
 
   @override
-  Future<void> setDefaultLanguage(String newDefaultLanguage) async {
+  Future<void> setDefaultLanguage(Language newDefaultLanguage) async {
     final l10nFile = _l10nFile;
     final templateArbFile = l10nFile.readTemplateArbFile();
     final newTemplateArbFile = templateArbFile.replaceRange(
-      templateArbFile.lastIndexOf('_') + 1,
+      templateArbFile.indexOf('_') + 1,
       templateArbFile.lastIndexOf('.arb'),
-      newDefaultLanguage,
+      newDefaultLanguage.toStringWithSeperator(),
     );
     l10nFile.setValue(['template-arb-file'], newTemplateArbFile);
   }
 
   @override
   Future<void> addLocalizations(
-    String defaultLanguage,
-    Set<String> languages,
+    Language defaultLanguage,
+    Set<Language> languages,
   ) async {
     assert(languages.contains(defaultLanguage));
 
@@ -189,18 +195,34 @@ abstract class PlatformFeaturePackageImpl extends DartPackageImpl
   }
 
   @override
-  Future<void> addLanguage(String language) async {
-    final languageArbFile = _arbDirectory.languageArbFile(language: language);
+  Future<void> addLanguage(
+    Language language,
+  ) async {
+    final languageArbFile = _arbDirectory.languageArbFile(
+      language: language,
+    );
     if (!languageArbFile.exists()) {
       await languageArbFile.create();
     }
   }
 
   @override
-  Future<void> removeLanguage(String language) async {
-    final languageArbFile = _arbDirectory.languageArbFile(language: language);
+  Future<void> removeLanguage(Language language) async {
+    final languageArbFile = _arbDirectory.languageArbFile(
+      language: language,
+    );
     if (languageArbFile.exists()) {
       languageArbFile.delete();
+    }
+
+    if (!language.hasScriptCode && !language.hasCountryCode) {
+      for (final languageArbFile in _arbDirectory
+          .languageArbFiles()
+          .where((e) => e.language.languageCode == language.languageCode)) {
+        if (languageArbFile.exists()) {
+          languageArbFile.delete();
+        }
+      }
     }
 
     final languageLocalizationsFile = _languageLocalizationsFile(language);
@@ -257,8 +279,8 @@ class PlatformCustomFeaturePackageImpl
     required String description,
     required bool routing,
     required bool localization,
-    required String defaultLanguage,
-    required Set<String> languages,
+    required Language defaultLanguage,
+    required Set<Language> languages,
   }) async {
     final projectName = project.name;
 
@@ -307,8 +329,8 @@ class PlatformFlowFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
     required bool tab,
     required String description,
     required bool localization,
-    required String defaultLanguage,
-    required Set<String> languages,
+    required Language defaultLanguage,
+    required Set<Language> languages,
     required Set<PlatformFeaturePackage>? features,
   }) async {
     final projectName = project.name;
@@ -361,8 +383,8 @@ class PlatformPageFeaturePackageImpl extends PlatformRoutableFeaturePackageImpl
     required String description,
     required bool localization,
     bool exampleTranslation = false,
-    required String defaultLanguage,
-    required Set<String> languages,
+    required Language defaultLanguage,
+    required Set<Language> languages,
   }) async {
     final projectName = project.name;
 
@@ -421,8 +443,8 @@ class PlatformWidgetFeaturePackageImpl
   Future<void> create({
     required String description,
     required bool localization,
-    required String defaultLanguage,
-    required Set<String> languages,
+    required Language defaultLanguage,
+    required Set<Language> languages,
   }) async {
     final projectName = project.name;
 
@@ -468,8 +490,8 @@ class PlatformAppFeaturePackageImpl extends PlatformFeaturePackageImpl
     String? description,
     bool routing = false,
     required bool localization,
-    required String defaultLanguage,
-    required Set<String> languages,
+    required Language defaultLanguage,
+    required Set<Language> languages,
   }) async {
     final projectName = project.name;
 
@@ -572,7 +594,7 @@ class L10nFileImpl extends YamlFileImpl implements L10nFile {
 class LanguageLocalizationsFileImpl extends DartFileImpl
     implements LanguageLocalizationsFile {
   LanguageLocalizationsFileImpl(
-    String language, {
+    Language language, {
     required PlatformFeaturePackage platformFeaturePackage,
   }) : super(
           path: p.join(
@@ -607,7 +629,9 @@ class ArbDirectoryImpl extends DirectoryImpl implements ArbDirectory {
   final PlatformFeaturePackage platformFeaturePackage;
 
   @override
-  LanguageArbFile languageArbFile({required String language}) =>
+  LanguageArbFile languageArbFile({
+    required Language language,
+  }) =>
       (languageArbFileOverrides ?? LanguageArbFile.new)(
         language: language,
         arbDirectory: this,
@@ -620,7 +644,9 @@ class ArbDirectoryImpl extends DirectoryImpl implements ArbDirectory {
       .where((e) => e.name != null)
       .map(
         (e) => LanguageArbFile(
-          language: e.name!.split('_').last,
+          language: Language.fromString(
+            e.name!.substring(platformFeaturePackage.name.length + 1),
+          ),
           arbDirectory: this,
         ),
       )
@@ -629,15 +655,14 @@ class ArbDirectoryImpl extends DirectoryImpl implements ArbDirectory {
 
   @override
   Future<void> create({
-    required Set<String> languages,
-    List<Map<String, dynamic>> Function(String language)? translations,
+    required Set<Language> languages,
+    List<Map<String, dynamic>> Function(Language language)? translations,
   }) async {
     for (final language in languages) {
       final languageArbFile = this.languageArbFile(language: language);
-
       await languageArbFile.create();
       if (translations != null) {
-        final languageTranslation = translations(language);
+        final languageTranslation = translations(languageArbFile.language);
         for (final t in languageTranslation) {
           languageArbFile.addTranslation(
             name: t['name'],
@@ -665,7 +690,7 @@ class LanguageArbFileImpl extends ArbFileImpl
   final ArbDirectory _arbDirectory;
 
   @override
-  final String language;
+  final Language language;
 
   @override
   Future<void> create() async {
@@ -676,7 +701,11 @@ class LanguageArbFileImpl extends ArbFileImpl
       DirectoryGeneratorTarget(io.Directory(_arbDirectory.path)),
       vars: <String, dynamic>{
         'feature_name': featureName,
-        'language': language,
+        'language': language.languageCode,
+        'has_script_code': language.hasScriptCode,
+        'script_code': language.scriptCode,
+        'has_country_code': language.hasCountryCode,
+        'country_code': language.countryCode,
       },
     );
   }

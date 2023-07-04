@@ -787,8 +787,6 @@ Future<TestResult> _runFlutterOrDartTest({
       runInShell: true,
     );
 
-    print(coverageResult.stdout);
-
     // 100.00 when empty lcov
     totalCoverage = double.tryParse(
       (coverageResult.stdout as String).replaceAll('.00', '.0'),

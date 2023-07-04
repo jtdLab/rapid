@@ -15,9 +15,18 @@ Future<List<GeneratedFile>> generate({
 }) async {
   final generator =
       await (generatorOverrides ?? MasonGenerator.fromBundle)(bundle);
-  await generator.hooks.preGen(vars: vars);
-  return generator.generate(
+  await generator.hooks.preGen(
+    vars: vars,
+    onVarsChanged: (newVars) => vars = newVars,
+  );
+  final files = await generator.generate(
     DirectoryGeneratorTarget(target),
     vars: vars,
   );
+  await generator.hooks.postGen(
+    workingDirectory: target.path,
+    vars: vars,
+  );
+
+  return files;
 }

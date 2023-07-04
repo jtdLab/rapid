@@ -39,7 +39,7 @@ final blocBundle = MasonBundle.fromJson(<String, dynamic>{
   "description":
       "A brick generating a bloc of a platform feature package of a Rapid project.",
   "version": "0.1.0",
-  "environment": {"mason": ">=0.1.0-dev.47 <0.1.0"},
+  "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {
     "path": "README.md",
     "data": "IyBibG9jCgpUT0RPCg==",

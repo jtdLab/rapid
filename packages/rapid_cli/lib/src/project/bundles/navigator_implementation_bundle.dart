@@ -28,7 +28,7 @@ final navigatorImplementationBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZTogbmF2aWdhdG9yX2ltcGxlbWVudGF0aW9uX2hvb2tzCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBtYXNvbjogYW55CiAgaG9va3M6Cg==",
+          "bmFtZTogbmF2aWdhdG9yX2ltcGxlbWVudGF0aW9uX2hvb2tzCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBtYXNvbjogYW55CiAgIyBUT0RPOiBodHRwczovL2dpdGh1Yi5jb20vZmVsYW5nZWwvbWFzb24vaXNzdWVzLzk5NgogIGhvb2tzOgogICAgZ2l0OgogICAgICB1cmw6IGh0dHBzOi8vZ2l0aHViLmNvbS9qdGRMYWIvcmFwaWQuZ2l0CiAgICAgIHBhdGg6IHBhY2thZ2VzL3JhcGlkX2NsaS90ZW1wbGF0ZXMvaG9va3MKICAgICAgcmVmOiBkZXYK",
       "type": "text"
     }
   ],
@@ -36,7 +36,7 @@ final navigatorImplementationBundle = MasonBundle.fromJson(<String, dynamic>{
   "description":
       "A brick generating a navigator_implementation a platform feature package of a Rapid project.",
   "version": "0.1.0",
-  "environment": {"mason": ">=0.1.0-dev.47 <0.1.0"},
+  "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {
     "path": "README.md",
     "data": "IyBuYXZpZ2F0b3JfaW1wbGVtZW50YXRpb24KClRPRE8=",

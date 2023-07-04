@@ -189,6 +189,12 @@ extension RapidProjectUtils on RapidProject {
       .toList();
 }
 
+extension LanguageUtils on Language {
+  bool get needsFallback => hasScriptCode || hasCountryCode;
+
+  Language fallback() => Language(languageCode: languageCode);
+}
+
 extension PlatformRootPackageUtils on PlatformRootPackage {
   Future<void> registerFeaturePackage(
     PlatformFeaturePackage featurePackage,
@@ -551,7 +557,6 @@ extension on String {
     final self = replaceAll('\r\n', '')
         .replaceAll('\n', '')
         .replaceAll(RegExp(r'\s\s+'), '');
-    print(self);
     final RegExpMatch match;
     if (RegExp(r"Locale\('([A-z]+)',?\)").hasMatch(self)) {
       match = RegExp(r"Locale\('([A-z]+)',?\)").firstMatch(self)!;

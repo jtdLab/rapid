@@ -121,7 +121,7 @@ mixin _ActivateMixin on _Rapid {
     await task('Generating ${platform.prettyName} packages', () async {
       await appFeaturePackage.generate();
       await homePageFeaturePackage.generate();
-      await localizationPackage.generate(language: language);
+      await localizationPackage.generate(defaultLanguage: language);
       await navigationPackage.generate();
 
       // TODO the ! is not good practice
@@ -147,7 +147,7 @@ mixin _ActivateMixin on _Rapid {
             description: description!,
           );
       }
-      await platformUiPackage.create();
+      await platformUiPackage.generate();
     });
 
     await taskGroup(

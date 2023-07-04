@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 
+import '../io.dart';
 import '../project/platform.dart';
 import 'base.dart';
 import 'util/language_option.dart';
@@ -86,7 +87,7 @@ class CreateCommand extends RapidLeafCommand
   @override
   Future<void> run() {
     final projectName = _validateProjectNameArg(argResults.rest);
-    final outputDir = super.outputDir;
+    final outputDir = Directory(super.outputDir).absolute.path; // TODO cleaner?
     final description = argResults['desc'] ?? _defaultDescription;
     final orgName = super.orgName;
     final language = super.language;

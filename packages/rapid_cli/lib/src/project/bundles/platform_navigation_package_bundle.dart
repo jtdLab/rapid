@@ -51,7 +51,7 @@ final platformNavigationPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZTogcGxhdGZvcm1fbmF2aWdhdGlvbl9wYWNrYWdlX2hvb2tzCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBtYXNvbjogYW55CiAgaG9va3M6Cg==",
+          "bmFtZTogcGxhdGZvcm1fbmF2aWdhdGlvbl9wYWNrYWdlX2hvb2tzCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBtYXNvbjogYW55CiAgIyBUT0RPOiBodHRwczovL2dpdGh1Yi5jb20vZmVsYW5nZWwvbWFzb24vaXNzdWVzLzk5NgogIGhvb2tzOgogICAgZ2l0OgogICAgICB1cmw6IGh0dHBzOi8vZ2l0aHViLmNvbS9qdGRMYWIvcmFwaWQuZ2l0CiAgICAgIHBhdGg6IHBhY2thZ2VzL3JhcGlkX2NsaS90ZW1wbGF0ZXMvaG9va3MKICAgICAgcmVmOiBkZXYK",
       "type": "text"
     }
   ],
@@ -59,7 +59,7 @@ final platformNavigationPackageBundle = MasonBundle.fromJson(<String, dynamic>{
   "description":
       "A brick generating a platform navigation package of a Rapid project.",
   "version": "0.1.0",
-  "environment": {"mason": ">=0.1.0-dev.47 <0.1.0"},
+  "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {
     "path": "README.md",
     "data": "IyBwbGF0Zm9ybV9uYXZpZ2F0aW9uX3BhY2thZ2UKClRPRE8K",

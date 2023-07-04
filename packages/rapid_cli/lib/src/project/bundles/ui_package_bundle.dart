@@ -90,7 +90,7 @@ final uiPackageBundle = MasonBundle.fromJson(<String, dynamic>{
   "name": "ui_package",
   "description": "A brick generating the ui package of a Rapid project.",
   "version": "0.1.0",
-  "environment": {"mason": ">=0.1.0-dev.47 <0.1.0"},
+  "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {
     "path": "README.md",
     "data": "IyB1aV9wYWNrYWdlCgpUT0RPCg==",

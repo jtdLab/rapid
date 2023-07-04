@@ -41,7 +41,7 @@ Widget appWrapper({
   }
 
   return App.test(
-    locale: locale ?? const Locale('{{default_language}}'),
+    locale: locale ?? const Locale('default_language'),
     localizationsDelegates: const [
       {{project_name.pascalCase()}}Localizations.delegate,
     ],
@@ -73,7 +73,6 @@ extension WidgetTesterX on WidgetTester {
     await pump();
   }
 }
-
 
 class _TestRouter extends RootStackRouter {
   final Widget widget;

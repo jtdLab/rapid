@@ -3,6 +3,7 @@ name: templates
 packages:
   - hooks
   - "*/hooks"
+  - "platform_root_package/*/hooks"
 
 command:
   bootstrap:

@@ -4,19 +4,16 @@
 
 // TODO maybe rename AppModule to AppDirectory
 
-// TODO maybe rename UiModule to UiDirectory
-
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
+import 'package:rapid_cli/src/utils.dart';
 
-import '../project_config.dart';
-import 'bundles/bundles.dart';
 import '../io.dart';
 import '../mason.dart' as mason;
+import '../project_config.dart';
+import 'bundles/bundles.dart';
 
 part 'project/app_module.dart';
 part 'project/app_module/bloc.dart';

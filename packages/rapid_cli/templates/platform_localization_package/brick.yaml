@@ -4,7 +4,7 @@ description: A brick generating a platform localization package of a Rapid proje
 version: 0.1.0
 
 environment:
-  mason: ">=0.1.0-dev.47 <0.1.0"
+  mason: ">=0.1.0-dev <0.1.0"
 
 # Variables specify dynamic values that your brick depends on.
 # Zero or more variables can be specified for a given brick.
@@ -20,5 +20,15 @@ vars:
     type: string
   platform:
     type: string
-  languages:
-    type: array
+  default_language_code:
+    type: string
+  default_has_script_code:
+    type: boolean
+  default_script_code:
+    type: string
+  default_has_country_code:
+    type: boolean
+  default_country_code:
+    type: string
+  fallback_language_code:
+    type: string

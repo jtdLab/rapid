@@ -59,7 +59,7 @@ final domainPackageBundle = MasonBundle.fromJson(<String, dynamic>{
   "name": "domain_package",
   "description": "A brick generating the domain package of a Rapid project.",
   "version": "0.1.0",
-  "environment": {"mason": ">=0.1.0-dev.47 <0.1.0"},
+  "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {
     "path": "README.md",
     "data": "IyBkb21haW5fcGFja2FnZQoKVE9ETwo=",

@@ -40,7 +40,7 @@ abstract class FileSystemEntityCollection {
 }
 
 class Directory implements io.Directory {
-  Directory(String path) : _directory = io.Directory(path);
+  Directory(String path) : _directory = io.Directory(p.normalize(path));
 
   static Directory current = Directory._fromIO(io.Directory.current);
 
@@ -139,7 +139,7 @@ class Directory implements io.Directory {
 }
 
 class File implements io.File {
-  File(String path) : _file = io.File(path);
+  File(String path) : _file = io.File(p.normalize(path));
 
   File._fromIO(io.File file) : _file = file;
 

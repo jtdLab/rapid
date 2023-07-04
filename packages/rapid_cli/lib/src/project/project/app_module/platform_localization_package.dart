@@ -36,19 +36,22 @@ class PlatformLocalizationPackage extends DartPackage {
 
   YamlFile get l10nFile => YamlFile(p.join(path, 'l10n.yaml'));
 
-  Future<void> generate({required Language language}) async {
+  Future<void> generate({required Language defaultLanguage}) async {
     await mason.generate(
       bundle: platformLocalizationPackageBundle,
       target: this,
       vars: <String, dynamic>{
         'project_name': projectName,
         'platform': platform.name,
-        // TODO multiple languages can be needed? when a script or country code are specified
-        'language_code': language.languageCode,
-        'has_script_code': language.hasScriptCode,
-        'script_code': language.scriptCode,
-        'has_country_code': language.hasCountryCode,
-        'country_code': language.countryCode,
+        'default_language_code': defaultLanguage.languageCode,
+        'default_has_script_code':
+            defaultLanguage.hasScriptCode, // TODO inside hook ?
+        'default_script_code': defaultLanguage.scriptCode,
+        'default_has_country_code':
+            defaultLanguage.hasCountryCode, // TODO inside hook ?
+        'default_country_code': defaultLanguage.countryCode,
+        if (defaultLanguage.needsFallback)
+          'fallback_language_code': defaultLanguage.languageCode,
       },
     );
   }

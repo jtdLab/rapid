@@ -1,4 +1,4 @@
-name: {{project_name}}_{{platform}}_{{localization}}
+name: {{project_name}}_{{platform}}_localization
 description: Localization of {{project_name.titleCase()}}.
 publish_to: none
 version: 1.0.0

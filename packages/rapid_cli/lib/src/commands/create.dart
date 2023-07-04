@@ -30,6 +30,7 @@ mixin _CreateMixin on _ActivateMixin {
           .infrastructurePackage()
           .generate();
       await project.appModule.loggingPackage.generate();
+      await project.uiModule.uiPackage.generate();
     });
 
     for (final platform in platforms) {

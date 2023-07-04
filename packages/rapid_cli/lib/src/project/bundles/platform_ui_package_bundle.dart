@@ -127,14 +127,14 @@ final platformUiPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZTogcGxhdGZvcm1fdWlfaG9va3MKCmVudmlyb25tZW50OgogIHNkazogIj49My4wLjAgPDQuMC4wIgoKZGVwZW5kZW5jaWVzOgogIG1hc29uOiBhbnkKICBob29rczoK",
+          "bmFtZTogcGxhdGZvcm1fdWlfaG9va3MKCmVudmlyb25tZW50OgogIHNkazogIj49My4wLjAgPDQuMC4wIgoKZGVwZW5kZW5jaWVzOgogIG1hc29uOiBhbnkKICAjIFRPRE86IGh0dHBzOi8vZ2l0aHViLmNvbS9mZWxhbmdlbC9tYXNvbi9pc3N1ZXMvOTk2CiAgaG9va3M6CiAgICBnaXQ6CiAgICAgIHVybDogaHR0cHM6Ly9naXRodWIuY29tL2p0ZExhYi9yYXBpZC5naXQKICAgICAgcGF0aDogcGFja2FnZXMvcmFwaWRfY2xpL3RlbXBsYXRlcy9ob29rcwogICAgICByZWY6IGRldgo=",
       "type": "text"
     }
   ],
   "name": "platform_ui_package",
   "description": "A brick generating a platform ui package of a Rapid project.",
   "version": "0.1.0",
-  "environment": {"mason": ">=0.1.0-dev.47 <0.1.0"},
+  "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {
     "path": "README.md",
     "data": "IyBwbGF0Zm9ybV91aV9wYWNrYWdlCgpUT0RPCg==",

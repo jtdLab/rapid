@@ -26,12 +26,7 @@ final platformLocalizationPackageBundle =
     {
       "path": "l10n.yaml",
       "data":
-          "YXJiLWRpcjogbGliL3NyYy9hcmIKb3V0cHV0LWNsYXNzOiB7e3Byb2plY3RfbmFtZS5wYXNjYWxDYXNlKCl9fUxvY2FsaXphdGlvbnMKb3V0cHV0LWRpcjogbGliL3NyYy8KdGVtcGxhdGUtYXJiLWZpbGU6IHt7cHJvamVjdF9uYW1lfX1fe3tkZWZhdWx0X2xhbmd1YWdlfX0uYXJiCm91dHB1dC1sb2NhbGl6YXRpb24tZmlsZToge3twcm9qZWN0X25hbWV9fV9sb2NhbGl6YXRpb25zLmRhcnQKbnVsbGFibGUtZ2V0dGVyOiBmYWxzZQpzeW50aGV0aWMtcGFja2FnZTogZmFsc2UKaGVhZGVyOiAvLyBjb3ZlcmFnZTppZ25vcmUtZmlsZQ==",
-      "type": "text"
-    },
-    {
-      "path": "lib/src/arb/{{project_name}}_en.arb",
-      "data": "ewogICJAQGxvY2FsZSI6ICJlbiIKfQ==",
+          "YXJiLWRpcjogbGliL3NyYy9hcmIKb3V0cHV0LWNsYXNzOiB7e3Byb2plY3RfbmFtZS5wYXNjYWxDYXNlKCl9fUxvY2FsaXphdGlvbnMKb3V0cHV0LWRpcjogbGliL3NyYy8KdGVtcGxhdGUtYXJiLWZpbGU6IHt7cHJvamVjdF9uYW1lfX1fe3tkZWZhdWx0X2xhbmd1YWdlX2NvZGV9fXt7I2RlZmF1bHRfaGFzX3NjcmlwdF9jb2RlfX1fe3tkZWZhdWx0X3NjcmlwdF9jb2RlfX17ey9kZWZhdWx0X2hhc19zY3JpcHRfY29kZX19e3sjZGVmYXVsdF9oYXNfY291bnRyeV9jb2RlfX1fe3tkZWZhdWx0X2NvdW50cnlfY29kZX19e3svZGVmYXVsdF9oYXNfY291bnRyeV9jb2RlfX0uYXJiCm91dHB1dC1sb2NhbGl6YXRpb24tZmlsZToge3twcm9qZWN0X25hbWV9fV9sb2NhbGl6YXRpb25zLmRhcnQKbnVsbGFibGUtZ2V0dGVyOiBmYWxzZQpzeW50aGV0aWMtcGFja2FnZTogZmFsc2UKaGVhZGVyOiAvLyBjb3ZlcmFnZTppZ25vcmUtZmlsZQ==",
       "type": "text"
     },
     {
@@ -49,7 +44,7 @@ final platformLocalizationPackageBundle =
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZToge3twcm9qZWN0X25hbWV9fV97e3BsYXRmb3JtfX1fe3tsb2NhbGl6YXRpb259fQpkZXNjcmlwdGlvbjogTG9jYWxpemF0aW9uIG9mIHt7cHJvamVjdF9uYW1lLnRpdGxlQ2FzZSgpfX0uCnB1Ymxpc2hfdG86IG5vbmUKdmVyc2lvbjogMS4wLjAKCmVudmlyb25tZW50OgogIHNkazogIj49My4wLjAgPDQuMC4wIgogIGZsdXR0ZXI6ICI+PTMuMTAuMCIKCmRlcGVuZGVuY2llczoKICBmbHV0dGVyOgogICAgc2RrOiBmbHV0dGVyCiAgZmx1dHRlcl9sb2NhbGl6YXRpb25zOgogICAgc2RrOiBmbHV0dGVyCiAgaW50bDogYW55CgpkZXZfZGVwZW5kZW5jaWVzOgogIGZsdXR0ZXJfdGVzdDoKICAgIHNkazogZmx1dHRlcgogIGZsdXR0ZXJfbGludHM6IF4yLjAuMQo=",
+          "bmFtZToge3twcm9qZWN0X25hbWV9fV97e3BsYXRmb3JtfX1fbG9jYWxpemF0aW9uCmRlc2NyaXB0aW9uOiBMb2NhbGl6YXRpb24gb2Yge3twcm9qZWN0X25hbWUudGl0bGVDYXNlKCl9fS4KcHVibGlzaF90bzogbm9uZQp2ZXJzaW9uOiAxLjAuMAoKZW52aXJvbm1lbnQ6CiAgc2RrOiAiPj0zLjAuMCA8NC4wLjAiCiAgZmx1dHRlcjogIj49My4xMC4wIgoKZGVwZW5kZW5jaWVzOgogIGZsdXR0ZXI6CiAgICBzZGs6IGZsdXR0ZXIKICBmbHV0dGVyX2xvY2FsaXphdGlvbnM6CiAgICBzZGs6IGZsdXR0ZXIKICBpbnRsOiBhbnkKCmRldl9kZXBlbmRlbmNpZXM6CiAgZmx1dHRlcl90ZXN0OgogICAgc2RrOiBmbHV0dGVyCiAgZmx1dHRlcl9saW50czogXjIuMC4xCg==",
       "type": "text"
     },
     {
@@ -61,15 +56,21 @@ final platformLocalizationPackageBundle =
   ],
   "hooks": [
     {
+      "path": "post_gen.dart",
+      "data":
+          "aW1wb3J0ICdkYXJ0OmlvJzsKCmltcG9ydCAncGFja2FnZTptYXNvbi9tYXNvbi5kYXJ0JzsKCnZvaWQgcnVuKEhvb2tDb250ZXh0IGNvbnRleHQpIHsKICBmaW5hbCBwcm9qZWN0TmFtZSA9IGNvbnRleHQudmFyc1sncHJvamVjdF9uYW1lJ107CgogIGdlbmVyYXRlQXJiRmlsZSgKICAgIHByb2plY3ROYW1lOiBwcm9qZWN0TmFtZSwKICAgIGxhbmd1YWdlQ29kZTogY29udGV4dC52YXJzWydkZWZhdWx0X2xhbmd1YWdlX2NvZGUnXSwKICAgIHNjcmlwdENvZGU6IGNvbnRleHQudmFyc1snZGVmYXVsdF9zY3JpcHRfY29kZSddLAogICAgY291bnRyeUNvZGU6IGNvbnRleHQudmFyc1snZGVmYXVsdF9jb3VudHJ5X2NvZGUnXSwKICApOwogIGZpbmFsIGZhbGxiYWNrTGFuZ3VhZ2VDb2RlID0gY29udGV4dC52YXJzWydmYWxsYmFja19sYW5ndWFnZV9jb2RlJ107CiAgaWYgKGZhbGxiYWNrTGFuZ3VhZ2VDb2RlICE9IG51bGwpIHsKICAgIGdlbmVyYXRlQXJiRmlsZSgKICAgICAgcHJvamVjdE5hbWU6IHByb2plY3ROYW1lLAogICAgICBsYW5ndWFnZUNvZGU6IGZhbGxiYWNrTGFuZ3VhZ2VDb2RlLAogICAgKTsKICB9Cn0KCnZvaWQgZ2VuZXJhdGVBcmJGaWxlKHsKICByZXF1aXJlZCBTdHJpbmcgcHJvamVjdE5hbWUsCiAgcmVxdWlyZWQgU3RyaW5nIGxhbmd1YWdlQ29kZSwKICBTdHJpbmc/IHNjcmlwdENvZGUsCiAgU3RyaW5nPyBjb3VudHJ5Q29kZSwKfSkgewogIGZpbmFsIHNjcmlwdENvZGVTZWdtZW50ID0gc2NyaXB0Q29kZSAhPSBudWxsID8gJ18ke3NjcmlwdENvZGV9JyA6ICcnOwogIGZpbmFsIGNvdW50cnlDb2RlU2VnbWVudCA9IGNvdW50cnlDb2RlICE9IG51bGwgPyAnXyR7Y291bnRyeUNvZGV9JyA6ICcnOwoKICBmaW5hbCBhcmJGaWxlID0gRmlsZSgKICAgICdsaWIvc3JjL2FyYi8ke3Byb2plY3ROYW1lfV8kbGFuZ3VhZ2VDb2RlJHNjcmlwdENvZGVTZWdtZW50JGNvdW50cnlDb2RlU2VnbWVudC5hcmInLAogICk7CgogIGlmICghYXJiRmlsZS5leGlzdHNTeW5jKCkpIHsKICAgIGFyYkZpbGUuY3JlYXRlU3luYyhyZWN1cnNpdmU6IHRydWUpOwogIH0KCiAgYXJiRmlsZS53cml0ZUFzU3RyaW5nU3luYygKICAgIFsKICAgICAgJ3snLAogICAgICAnICAiQEBsb2NhbGUiOiAiJGxhbmd1YWdlQ29kZSRzY3JpcHRDb2RlU2VnbWVudCRjb3VudHJ5Q29kZVNlZ21lbnQiJywKICAgICAgJ30nLAogICAgXS5qb2luKCdcbicpLAogICk7Cn0K",
+      "type": "text"
+    },
+    {
       "path": "pre_gen.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6aG9va3MvaG9va3MuZGFydCc7Cgp2b2lkIHJ1bihIb29rQ29udGV4dCBjb250ZXh0KSB7CiAgYWRkTGFuZ3VhZ2VGbGFncyhjb250ZXh0KTsKfQo=",
+          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6aG9va3MvaG9va3MuZGFydCc7Cgp2b2lkIHJ1bihIb29rQ29udGV4dCBjb250ZXh0KSB7CiAgLy8gVE9ETyB0aGlzIG5lZWRzIHRvIGJlIHVwZGF0ZWQKICBhZGRMYW5ndWFnZUZsYWdzKGNvbnRleHQpOwp9Cg==",
       "type": "text"
     },
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZTogcGxhdGZvcm1fbG9jYWxpemF0aW9uc19wYWNrYWdlX2hvb2tzCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBtYXNvbjogYW55CiAgaG9va3M6Cg==",
+          "bmFtZTogcGxhdGZvcm1fbG9jYWxpemF0aW9uc19wYWNrYWdlX2hvb2tzCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBtYXNvbjogYW55CiAgIyBUT0RPOiBodHRwczovL2dpdGh1Yi5jb20vZmVsYW5nZWwvbWFzb24vaXNzdWVzLzk5NgogIGhvb2tzOgogICAgZ2l0OgogICAgICB1cmw6IGh0dHBzOi8vZ2l0aHViLmNvbS9qdGRMYWIvcmFwaWQuZ2l0CiAgICAgIHBhdGg6IHBhY2thZ2VzL3JhcGlkX2NsaS90ZW1wbGF0ZXMvaG9va3MKICAgICAgcmVmOiBkZXYK",
       "type": "text"
     }
   ],
@@ -77,7 +78,7 @@ final platformLocalizationPackageBundle =
   "description":
       "A brick generating a platform localization package of a Rapid project.",
   "version": "0.1.0",
-  "environment": {"mason": ">=0.1.0-dev.47 <0.1.0"},
+  "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {
     "path": "README.md",
     "data": "IyBwbGF0Zm9ybV9sb2NhbGl6YXRpb25fcGFja2FnZQoKVE9ETwo=",
@@ -91,6 +92,11 @@ final platformLocalizationPackageBundle =
   "vars": {
     "project_name": {"type": "string"},
     "platform": {"type": "string"},
-    "languages": {"type": "array"}
+    "default_language_code": {"type": "string"},
+    "default_has_script_code": {"type": "boolean"},
+    "default_script_code": {"type": "string"},
+    "default_has_country_code": {"type": "boolean"},
+    "default_country_code": {"type": "string"},
+    "fallback_language_code": {"type": "string"}
   }
 });

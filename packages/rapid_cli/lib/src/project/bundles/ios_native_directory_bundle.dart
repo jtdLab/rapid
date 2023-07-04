@@ -251,7 +251,7 @@ final iosNativeDirectoryBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZTogaW9zX25hdGl2ZV9kaXJlY3RvcnlfaG9va3MKCmVudmlyb25tZW50OgogIHNkazogIj49My4wLjAgPDQuMC4wIgoKZGVwZW5kZW5jaWVzOgogIG1hc29uOiBhbnkKICBob29rczoK",
+          "bmFtZTogaW9zX25hdGl2ZV9kaXJlY3RvcnlfaG9va3MKCmVudmlyb25tZW50OgogIHNkazogIj49My4wLjAgPDQuMC4wIgoKZGVwZW5kZW5jaWVzOgogIG1hc29uOiBhbnkKICAjIFRPRE86IGh0dHBzOi8vZ2l0aHViLmNvbS9mZWxhbmdlbC9tYXNvbi9pc3N1ZXMvOTk2CiAgaG9va3M6CiAgICBnaXQ6CiAgICAgIHVybDogaHR0cHM6Ly9naXRodWIuY29tL2p0ZExhYi9yYXBpZC5naXQKICAgICAgcGF0aDogcGFja2FnZXMvcmFwaWRfY2xpL3RlbXBsYXRlcy9ob29rcwogICAgICByZWY6IGRldgo=",
       "type": "text"
     }
   ],
@@ -259,7 +259,7 @@ final iosNativeDirectoryBundle = MasonBundle.fromJson(<String, dynamic>{
   "description":
       "A brick generating the ios native directory of a Rapid project.",
   "version": "0.1.0",
-  "environment": {"mason": ">=0.1.0-dev.47 <0.1.0"},
+  "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {
     "path": "README.md",
     "data": "IyBpb3NfbmF0aXZlX2RpcmVjdG9yeQoKVE9ETwo=",

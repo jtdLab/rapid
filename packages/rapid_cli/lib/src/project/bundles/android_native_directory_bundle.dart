@@ -126,7 +126,7 @@ final androidNativeDirectoryBundle = MasonBundle.fromJson(<String, dynamic>{
   "description":
       "A brick generating the android native directory of a Rapid project.",
   "version": "0.1.0",
-  "environment": {"mason": ">=0.1.0-dev.47 <0.1.0"},
+  "environment": {"mason": ">=0.1.0-dev <0.1.0"},
   "readme": {
     "path": "README.md",
     "data": "IyBhbmRyb2lkX25hdGl2ZV9kaXJlY3RvcnkKClRPRE8K",

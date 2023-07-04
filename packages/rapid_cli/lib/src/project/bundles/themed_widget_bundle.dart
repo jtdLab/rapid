@@ -46,7 +46,7 @@ final themedWidgetBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZTogdGhlbWVkX3dpZGdldF9ob29rcwoKZW52aXJvbm1lbnQ6CiAgc2RrOiAiPj0zLjAuMCA8NC4wLjAiCgpkZXBlbmRlbmNpZXM6CiAgbWFzb246IGFueQogIGhvb2tzOgo=",
+          "bmFtZTogdGhlbWVkX3dpZGdldF9ob29rcwoKZW52aXJvbm1lbnQ6CiAgc2RrOiAiPj0zLjAuMCA8NC4wLjAiCgpkZXBlbmRlbmNpZXM6CiAgbWFzb246IGFueQogICMgVE9ETzogaHR0cHM6Ly9naXRodWIuY29tL2ZlbGFuZ2VsL21hc29uL2lzc3Vlcy85OTYKICBob29rczoKICAgIGdpdDoKICAgICAgdXJsOiBodHRwczovL2dpdGh1Yi5jb20vanRkTGFiL3JhcGlkLmdpdAogICAgICBwYXRoOiBwYWNrYWdlcy9yYXBpZF9jbGkvdGVtcGxhdGVzL2hvb2tzCiAgICAgIHJlZjogZGV2Cg==",
       "type": "text"
     }
   ],

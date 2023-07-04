@@ -5,7 +5,7 @@ import 'package:args/command_runner.dart';
 import 'package:cli_launcher/cli_launcher.dart';
 import 'package:mason/mason.dart' hide packageVersion;
 import 'package:pub_updater/pub_updater.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/utils.dart';
 
@@ -185,7 +185,7 @@ Future<RapidProject?> resolveProject(
     config = await RapidProjectConfig.fromProjectRoot(projectRoot);
   }
 
-  return RapidProject(config: config);
+  return RapidProject.fromConfig(config);
 }
 
 extension on List<String> {

@@ -45,14 +45,13 @@ class InfrastructureSubInfrastructureAddServiceImplementationCommand
     final subInfrastructureName = this.subInfrastructureName == 'default'
         ? null
         : this.subInfrastructureName;
-    final serviceName = super.service;
-    final outputDir = super.outputDir;
+    final serviceName = super.service; // TODO rename
+    // final outputDir = super.outputDir; TODO rm?
 
     return rapid.infrastructureSubInfrastructureAddServiceImplementation(
       name: name,
       subInfrastructureName: subInfrastructureName,
-      serviceName: serviceName,
-      outputDir: outputDir,
+      serviceInterfaceName: serviceName,
     );
   }
 }

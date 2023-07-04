@@ -1,0 +1,57 @@
+{{#android}}arb-dir: lib/src/presentation/l10n/arb
+output-class: {{name.pascalCase()}}Localizations
+output-dir: lib/src/presentation/l10n
+template-arb-file: {{name}}_{{default_language}}.arb
+output-localization-file: {{name}}_localizations.dart
+nullable-getter: false
+synthetic-package: false
+header: // coverage:ignore-file
+{{/android}}{{#ios}}arb-dir: lib/src/presentation/l10n/arb
+output-class: {{name.pascalCase()}}Localizations
+output-dir: lib/src/presentation/l10n
+template-arb-file: {{name}}_{{default_language}}.arb
+output-localization-file: {{name}}_localizations.dart
+nullable-getter: false
+synthetic-package: false
+header: // coverage:ignore-file
+{{/ios}}{{#linux}}arb-dir: lib/src/presentation/l10n/arb
+output-class: {{name.pascalCase()}}Localizations
+output-dir: lib/src/presentation/l10n
+template-arb-file: {{name}}_{{default_language}}.arb
+output-localization-file: {{name}}_localizations.dart
+nullable-getter: false
+synthetic-package: false
+header: // coverage:ignore-file
+{{/linux}}{{#macos}}arb-dir: lib/src/presentation/l10n/arb
+output-class: {{name.pascalCase()}}Localizations
+output-dir: lib/src/presentation/l10n
+template-arb-file: {{name}}_{{default_language}}.arb
+output-localization-file: {{name}}_localizations.dart
+nullable-getter: false
+synthetic-package: false
+header: // coverage:ignore-file
+{{/macos}}{{#web}}arb-dir: lib/src/presentation/l10n/arb
+output-class: {{name.pascalCase()}}Localizations
+output-dir: lib/src/presentation/l10n
+template-arb-file: {{name}}_{{default_language}}.arb
+output-localization-file: {{name}}_localizations.dart
+nullable-getter: false
+synthetic-package: false
+header: // coverage:ignore-file
+{{/web}}{{#windows}}arb-dir: lib/src/presentation/l10n/arb
+output-class: {{name.pascalCase()}}Localizations
+output-dir: lib/src/presentation/l10n
+template-arb-file: {{name}}_{{default_language}}.arb
+output-localization-file: {{name}}_localizations.dart
+nullable-getter: false
+synthetic-package: false
+header: // coverage:ignore-file
+{{/windows}}{{#mobile}}arb-dir: lib/src/presentation/l10n/arb
+output-class: {{name.pascalCase()}}Localizations
+output-dir: lib/src/presentation/l10n
+template-arb-file: {{name}}_{{default_language}}.arb
+output-localization-file: {{name}}_localizations.dart
+nullable-getter: false
+synthetic-package: false
+header: // coverage:ignore-file
+{{/mobile}}

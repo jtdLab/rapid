@@ -1,124 +1,64 @@
 part of 'runner.dart';
 
-mixin _CreateMixin on _Rapid {
+mixin _CreateMixin on _ActivateMixin {
   Future<void> create({
     required String projectName,
     required String outputDir,
     required String description,
     required String orgName,
     required Language language,
-    required bool android,
-    required bool ios,
-    required bool linux,
-    required bool macos,
-    required bool mobile,
-    required bool web,
-    required bool windows,
+    required Set<Platform> platforms,
   }) async {
-    outputDir = Directory(outputDir).absolute.path;
-    project = RapidProject(
-      config: RapidProjectConfig(
+    if (!dirIsEmpty(outputDir)) {
+      throw OutputDirNotEmptyException._(outputDir);
+    }
+
+    project = RapidProject.fromConfig(
+      RapidProjectConfig(
         path: outputDir,
         name: projectName,
       ),
     );
 
-    if (project.exists() && !project.isEmpty) {
-      _logAndThrow(
-        RapidCreateException._outputDirNotEmpty(outputDir),
-      );
-    }
+    logger.newLine();
 
-    logger
-      ..command('rapid create')
-      ..newLine();
+    await task('Creating project', () async {
+      await project.rootPackage.generate();
+      await project.appModule.diPackage.generate();
+      await project.appModule.domainDirectory.domainPackage().generate();
+      await project.appModule.infrastructureDirectory
+          .infrastructurePackage()
+          .generate();
+      await project.appModule.loggingPackage.generate();
+    });
 
-    await task(
-      'Generating project files',
-      () async => project.create(
-        projectName: projectName,
-        description: description,
-        orgName: orgName,
-        language: language,
-        platforms: {
-          if (android) Platform.android,
-          if (ios) Platform.ios,
-          if (linux) Platform.linux,
-          if (macos) Platform.macos,
-          if (web) Platform.web,
-          if (windows) Platform.windows,
-          if (mobile) Platform.mobile,
-        },
-      ),
-    );
+    for (final platform in platforms) {
+      await task('Activating ${platform.prettyName}', () async {
+        await __activatePlatform(
+          platform,
+          orgName: orgName,
+          description: description,
+          language: language,
+        );
 
-    // TODO show a hint if more than 2 platforms are selcted
-    // Multiple platforms: This can take some time!
-
-    await flutterPubGet([
-      project,
-      ...project.packages,
-    ]);
-
-    await flutterGenl10n(
-      project.featurePackages.where((e) => e.hasLanguages).toList(),
-    );
-
-    await dartFormatFix(project);
-
-    if (android || mobile) {
-      await flutterConfigEnableAndroid(project);
-    }
-    if (ios || mobile) {
-      await flutterConfigEnableIos(project);
-    }
-    if (linux) {
-      await flutterConfigEnableLinux(project);
-    }
-    if (macos) {
-      await flutterConfigEnableMacos(project);
-    }
-    if (web) {
-      await flutterConfigEnableWeb(project);
-    }
-    if (windows) {
-      await flutterConfigEnableWindows(project);
-    }
-
-    // TODO: https://github.com/jtdLab/rapid/issues/96
-    if (macos) {
-      final rootPackage =
-          project.platformDirectory(platform: Platform.macos).rootPackage;
-      final podFile = File(p.join(rootPackage.path, 'macos', 'Podfile'));
-      if (!podFile.existsSync()) {
-        podFile.createSync(recursive: true);
-      }
-      podFile.writeAsStringSync(
-        podFile.readAsStringSync().replaceAll(
-              'platform :osx, \'10.14\'',
-              'platform :osx, \'10.15.7.7\'',
-            ),
-      );
+        // TODO log platform success
+      });
     }
 
     // TODO log better summary + refs to doc
     logger
       ..newLine()
-      ..success('Success $checkLabel');
+      ..commandSuccess('Created Project!');
   }
 }
 
-class RapidCreateException extends RapidException {
-  RapidCreateException._(super.message);
+class OutputDirNotEmptyException extends RapidException {
+  OutputDirNotEmptyException._(this.outputDir);
 
-  factory RapidCreateException._outputDirNotEmpty(String outputDir) {
-    return RapidCreateException._(
-      'The output directory "$outputDir" must be empty.',
-    );
-  }
+  final String outputDir;
 
   @override
   String toString() {
-    return 'RapidCreateException: $message';
+    return 'The output directory "$outputDir" must be empty.';
   }
 }

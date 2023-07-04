@@ -1,0 +1,11 @@
+import 'package:flutter/widgets.dart';
+
+import '{{name}}_localizations.dart';
+
+export '{{name}}_localizations.dart';
+
+extension {{name.pascalCase()}}LocalizationsX on BuildContext {
+  /// The l10n object which holds all localized strings.
+  {{name.pascalCase()}}Localizations get l10n =>
+      {{name.pascalCase()}}Localizations.of(this);
+}

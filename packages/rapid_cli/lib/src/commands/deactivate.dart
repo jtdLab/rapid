@@ -3,44 +3,35 @@ part of 'runner.dart';
 mixin _DeactivateMixin on _Rapid {
   Future<void> deactivatePlatform(Platform platform) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidDeactivateException._platformAlreadyDeactivated(platform),
-      );
+      throw PlatformAlreadyDeactivatedException._(platform);
     }
 
-    logger
-      ..command('rapid deactivate ${platform.name}')
-      ..newLine();
+    logger.newLine();
 
     await task(
-      'Delete platform directory (${platform.prettyName})',
-      () async => project.platformDirectory(platform: platform).delete(),
+      'Deleting Platform Directory',
+      () =>
+          project.appModule.platformDirectory(platform: platform).deleteSync(),
     );
 
     await task(
-      'Delete platform ui package (${platform.prettyName})',
-      () async => project.platformUiPackage(platform: platform).delete(),
+      'Deleting Platform Ui Package',
+      () => project.uiModule.platformUiPackage(platform: platform).deleteSync(),
     );
 
     logger
       ..newLine()
-      ..success('Success $checkLabel');
+      ..commandSuccess('Deactivated ${platform.prettyName}!');
   }
 }
 
-class RapidDeactivateException extends RapidException {
-  RapidDeactivateException._(super.message);
+class PlatformAlreadyDeactivatedException extends RapidException {
+  final Platform platform;
 
-  factory RapidDeactivateException._platformAlreadyDeactivated(
-    Platform platform,
-  ) {
-    return RapidDeactivateException._(
-      'The platform ${platform.prettyName} is already deactivated.',
-    );
-  }
+  PlatformAlreadyDeactivatedException._(this.platform);
 
   @override
   String toString() {
-    return 'RapidDeactivateException: $message';
+    return 'The platform ${platform.prettyName} is already deactivated.';
   }
 }

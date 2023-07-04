@@ -1,0 +1,8 @@
+arb-dir: lib/src/arb
+output-class: {{project_name.pascalCase()}}Localizations
+output-dir: lib/src/
+template-arb-file: {{project_name}}_{{default_language}}.arb
+output-localization-file: {{project_name}}_localizations.dart
+nullable-getter: false
+synthetic-package: false
+header: // coverage:ignore-file

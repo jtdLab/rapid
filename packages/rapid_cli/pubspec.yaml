@@ -34,6 +34,8 @@ dependencies:
   cli_util: ^0.3.5
   file: ^6.1.0
   process: ^4.2.4
+  pubspec: ^2.3.0
+  pub_semver: ^2.1.4
 
 dependency_overrides:
   mason:

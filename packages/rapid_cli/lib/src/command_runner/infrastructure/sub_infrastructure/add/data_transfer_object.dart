@@ -45,12 +45,11 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
         ? null
         : this.subInfrastructureName;
     final entityName = super.entity;
-    final outputDir = super.outputDir;
+    // final outputDir = super.outputDir; TODO rm?
 
     return rapid.infrastructureSubInfrastructureAddDataTransferObject(
       subInfrastructureName: subInfrastructureName,
       entityName: entityName,
-      outputDir: outputDir,
     );
   }
 }

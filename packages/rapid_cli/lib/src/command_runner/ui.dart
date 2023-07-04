@@ -1,4 +1,4 @@
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 
 import 'base.dart';
 import 'ui/add.dart';

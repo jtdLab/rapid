@@ -18,10 +18,11 @@ environment:
 vars:
   project_name:
     type: string
-    description: The project name
   org_name:
     type: string
-    description: The organization name
-  languages:
-    type: array
-    description: The languages of project
+  language_code:
+    type: string
+  script_code:
+    type: string
+  country_code:
+    type: string

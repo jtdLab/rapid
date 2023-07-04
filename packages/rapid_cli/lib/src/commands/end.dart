@@ -2,40 +2,45 @@ part of 'runner.dart';
 
 mixin _EndMixin on _Rapid {
   Future<void> end() async {
-    logger.command('rapid end');
-
     if (!tool.loadGroup().isActive) {
-      _logAndThrow(RapidEndException._noActiveGroup());
+      throw NoActiveGroupException._();
     }
 
     tool.deactivateCommandGroup();
 
     final group = tool.loadGroup();
-
     if (group.packagesToBootstrap.isNotEmpty) {
-      await bootstrap(packages: group.packagesToBootstrap);
+      await task(
+        'Bootstrapping packages',
+        () async => bootstrap(packages: group.packagesToBootstrap),
+      );
     }
     if (group.packagesToCodeGen.isNotEmpty) {
-      await codeGen(packages: group.packagesToCodeGen);
+      taskGroup(
+        'Running code generation',
+        group.packagesToCodeGen
+            .map(
+              (package) => (
+                package.packageName,
+                () async => codeGen(package: package),
+              ),
+            )
+            .toList(),
+      );
     }
 
-    logger.newLine();
-    logger.success('Success $checkLabel');
+    logger
+      ..newLine()
+      ..commandSuccess('Completed Command Group!');
   }
 }
 
-class RapidEndException extends RapidException {
-  RapidEndException._(super.message);
-
-  factory RapidEndException._noActiveGroup() {
-    return RapidEndException._(
-      'There is no active group. '
-      'Did you call "rapid begin" before?',
-    );
-  }
+class NoActiveGroupException extends RapidException {
+  NoActiveGroupException._();
 
   @override
   String toString() {
-    return 'RapidEndException: $message';
+    return 'There is no active group. '
+        'Did you call "rapid begin" before?';
   }
 }

@@ -1,6 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:meta/meta.dart';
-import 'package:rapid_cli/src/core/language.dart';
+import 'package:rapid_cli/src/language.dart';
 
 import '../base.dart';
 import 'validate_language.dart';

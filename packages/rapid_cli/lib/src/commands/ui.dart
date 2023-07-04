@@ -1,212 +1,150 @@
 part of 'runner.dart';
 
-// TODO consider removing output-dir/dir option for widgets completly
-
 mixin _UiMixin on _Rapid {
-  Future<void> uiAddWidget({required String name}) async {
-    logger
-      ..command('rapid ui add widget')
-      ..newLine();
+  Future<void> uiAddWidget({required String name}) async =>
+      _uiAddWidget(name: name);
 
-    final uiPackage = project.uiPackage;
-    final widget = uiPackage.widget(name: name, dir: '.');
-    if (!widget.existsAny()) {
-      final themeExtensionsFile = uiPackage.themeExtensionsFile;
-      final barrelFile = uiPackage.barrelFile;
-
-      await task(
-        'Creating widget files',
-        () async => widget.create(),
-      );
-
-      // TODO better title
-      await task(
-        'Adding ThemeExtension to ${p.relative(themeExtensionsFile.path, from: project.path)} ',
-        () async => themeExtensionsFile.addThemeExtension(name),
-      );
-
-      // TODO better title
-      await task(
-        'Adding exports to ${p.relative(barrelFile.path, from: project.path)} ',
-        () {
-          barrelFile.addExport('src/${name.snakeCase}.dart');
-          barrelFile.addExport('src/${name.snakeCase}_theme.dart');
-        },
-      );
-
-      await dartFormatFix(uiPackage);
-
-      logger
-        ..newLine()
-        ..success('Success $checkLabel');
-    } else {
-      // TODO: maybe add info which files exists
-      _logAndThrow(
-        RapidUiException._widgetAlreadyExists(name),
-      );
-    }
-  }
-
-  Future<void> uiRemoveWidget({required String name}) async {
-    logger
-      ..command('rapid ui remove widget')
-      ..newLine();
-
-    final uiPackage = project.uiPackage;
-    final widget = uiPackage.widget(name: name, dir: '.');
-    if (widget.existsAny()) {
-      final themeExtensionsFile = uiPackage.themeExtensionsFile;
-      final barrelFile = uiPackage.barrelFile;
-
-      await task(
-        'Deleting widget files',
-        () async => widget.delete(),
-      );
-
-      // TODO better title
-      await task(
-        'Removing ThemeExtension from ${p.relative(themeExtensionsFile.path, from: project.path)} ',
-        () async => themeExtensionsFile.removeThemeExtension(name),
-      );
-
-      // TODO better title
-      await task(
-        'Removing exports from ${p.relative(barrelFile.path, from: project.path)} ',
-        () {
-          barrelFile.removeExport('src/${name.snakeCase}.dart');
-          barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
-        },
-      );
-
-      logger
-        ..newLine()
-        ..success('Success $checkLabel');
-    } else {
-      _logAndThrow(
-        RapidUiException._widgetNotFound(name),
-      );
-    }
-  }
+  Future<void> uiRemoveWidget({required String name}) async =>
+      _uiRemoveWidget(name: name);
 
   Future<void> uiPlatformAddWidget(
     Platform platform, {
     required String name,
-  }) async {
-    logger
-      ..command('rapid ui ${platform.name} add widget')
-      ..newLine();
-
-    final platformUiPackage = project.platformUiPackage(platform: platform);
-    final widget = platformUiPackage.widget(name: name, dir: '.');
-    if (!widget.existsAny()) {
-      final themeExtensionsFile = platformUiPackage.themeExtensionsFile;
-      final barrelFile = platformUiPackage.barrelFile;
-
-      await task(
-        'Creating widget files',
-        () async => widget.create(),
-      );
-
-      // TODO better title
-      await task(
-        'Adding ThemeExtension to ${p.relative(themeExtensionsFile.path, from: project.path)} ',
-        () async => themeExtensionsFile.addThemeExtension(name),
-      );
-
-      // TODO better title
-      await task(
-        'Adding exports to ${p.relative(barrelFile.path, from: project.path)} ',
-        () {
-          barrelFile.addExport('src/${name.snakeCase}.dart');
-          barrelFile.addExport('src/${name.snakeCase}_theme.dart');
-        },
-      );
-
-      await dartFormatFix(platformUiPackage);
-
-      logger
-        ..newLine()
-        ..success('Success $checkLabel');
-    } else {
-      // TODO: maybe add info which files exists
-      _logAndThrow(
-        RapidUiException._widgetAlreadyExists(name, platform),
-      );
-    }
-  }
+  }) async =>
+      _uiAddWidget(platform: platform, name: name);
 
   Future<void> uiPlatformRemoveWidget(
     Platform platform, {
     required String name,
+  }) async =>
+      _uiAddWidget(platform: platform, name: name);
+
+  Future<void> _uiAddWidget({
+    required String name,
+    Platform? platform,
   }) async {
-    logger
-      ..command('rapid ui ${platform.name} remove widget')
-      ..newLine();
+    logger.newLine();
 
-    final platformUiPackage = project.platformUiPackage(platform: platform);
-    // TODO remove dir completly ?
-    final widget = platformUiPackage.widget(name: name, dir: '.');
+    final uiPackage = switch (platform) {
+      null => project.uiModule.uiPackage,
+      _ => project.uiModule.platformUiPackage(platform: platform),
+    };
+    final widget = uiPackage.widget(name: name);
+    if (!widget.existsAny) {
+      final themeExtensionsFile = uiPackage.themeExtensionsFile;
+      final barrelFile = uiPackage.barrelFile;
 
-    if (widget.existsAny()) {
-      final themeExtensionsFile = platformUiPackage.themeExtensionsFile;
-      final barrelFile = platformUiPackage.barrelFile;
+      await task('Creating widget', () async {
+        // TODO maybe 2 sub tasks with create widget and create theme
+        await widget.generate();
+        barrelFile.addExport('src/${name.snakeCase}.dart');
+        // ### TODO
+        final projectName = uiPackage.projectName;
 
-      await task(
-        'Deleting widget files',
-        () async => widget.delete(),
-      );
+        final themes = ['light', 'dark']; // TODO read from file
 
-      // TODO better title
-      await task(
-        'Removing ThemeExtension from ${p.relative(themeExtensionsFile.path, from: project.path)} ',
-        () async => themeExtensionsFile.removeThemeExtension(name),
-      );
+        for (final theme in themes) {
+          final extension = '${projectName.pascalCase}${name}Theme.$theme';
+          final existingExtensions = themeExtensionsFile.readTopLevelListVar(
+            name: '${theme}Extensions',
+          );
 
-      // TODO better title
-      await task(
-        'Removing exports from ${p.relative(barrelFile.path, from: project.path)} ',
-        () {
-          barrelFile.removeExport('src/${name.snakeCase}.dart');
-          barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
-        },
-      );
+          if (!existingExtensions.contains(extension)) {
+            themeExtensionsFile.setTopLevelListVar(
+              name: '${theme}Extensions',
+              value: [
+                extension,
+                ...existingExtensions,
+              ]..sort(),
+            );
+          }
+        }
+        // ###
+        barrelFile.addExport('src/${name.snakeCase}_theme.dart');
+        await dartFormatFix(package: uiPackage);
+      });
 
       logger
         ..newLine()
-        ..success('Success $checkLabel');
+        ..commandSuccess('Added Widget!');
     } else {
-      _logAndThrow(
-        RapidUiException._widgetNotFound(name, platform),
-      );
+      // TODO: maybe add info which files exists
+
+      throw WidgetAlreadyExistsException._(name);
+    }
+  }
+
+  Future<void> _uiRemoveWidget({
+    required String name,
+    Platform? platform,
+  }) async {
+    logger.newLine();
+
+    final uiPackage = switch (platform) {
+      null => project.uiModule.uiPackage,
+      _ => project.uiModule.platformUiPackage(platform: platform),
+    };
+    final widget = uiPackage.widget(name: name);
+    if (widget.existsAny) {
+      final themeExtensionsFile = uiPackage.themeExtensionsFile;
+      final barrelFile = uiPackage.barrelFile;
+
+      await task('Deleting widget', () async {
+        // TODO maybe 2 sub tasks with delete widget and delete theme
+        widget.delete();
+        barrelFile.removeExport('src/${name.snakeCase}.dart');
+
+        // TODO ####
+        final projectName = uiPackage.projectName;
+
+        final themes = ['light', 'dark']; // TODO read from file
+
+        for (final theme in themes) {
+          final extension = '${projectName.pascalCase}${name}Theme.$theme';
+          final existingExtensions = themeExtensionsFile.readTopLevelListVar(
+            name: '${theme}Extensions',
+          );
+
+          if (existingExtensions.contains(extension)) {
+            themeExtensionsFile.setTopLevelListVar(
+              name: '${theme}Extensions',
+              value: existingExtensions..remove(extension),
+            );
+          }
+        }
+
+        // ####
+
+        barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
+      });
+
+      logger
+        ..newLine()
+        ..commandSuccess('Removed Widget!');
+    } else {
+      throw WidgetNotFoundException._(name);
     }
   }
 }
 
-class RapidUiException extends RapidException {
-  RapidUiException._(super.message);
+class WidgetAlreadyExistsException extends RapidException {
+  WidgetAlreadyExistsException._(this.name);
 
-  factory RapidUiException._widgetAlreadyExists(
-    String name, [
-    Platform? platform,
-  ]) {
-    final suffix = platform != null ? ' (${platform.prettyName})' : '';
-    return RapidUiException._(
-      'Widget $name already exists$suffix.',
-    );
-  }
-
-  factory RapidUiException._widgetNotFound(
-    String name, [
-    Platform? platform,
-  ]) {
-    final suffix = platform != null ? ' (${platform.prettyName})' : '';
-    return RapidUiException._(
-      'Widget $name not found$suffix.',
-    );
-  }
+  final String name;
 
   @override
   String toString() {
-    return 'RapidUiException: $message';
+    return 'Widget $name already exists.';
+  }
+}
+
+class WidgetNotFoundException extends RapidException {
+  WidgetNotFoundException._(this.name);
+
+  final String name;
+
+  @override
+  String toString() {
+    return 'Widget $name not found.';
   }
 }

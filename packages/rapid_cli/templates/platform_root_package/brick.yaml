@@ -18,31 +18,7 @@ environment:
 vars:
   project_name:
     type: string
-    description: The project name
   description:
     type: string
-    description: A short project description
-  android:
-    type: boolean
-    description: The project supports the Android platform
-  ios:
-    type: boolean
-    description: The project supports the iOS platform
-  web:
-    type: boolean
-    description: The project supports the Web platform
-  linux:
-    type: boolean
-    description: The project supports the Linux platform
-  macos:
-    type: boolean
-    description: The project supports the macOS platform
-  windows:
-    type: boolean
-    description: The project supports the Windows platform
-  mobile:
-    type: boolean
-    description: The project supports the Mobile (Android + iOS shared) platform
-  languages:
-    type: array
-    description: The languages
+  platform:
+    type: string

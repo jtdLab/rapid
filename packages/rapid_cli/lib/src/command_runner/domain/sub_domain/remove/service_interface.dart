@@ -40,12 +40,11 @@ class DomainSubDomainRemoveServiceInterfaceCommand extends RapidLeafCommand
     final name = super.className;
     final subDomainName =
         this.subDomainName == 'default' ? null : this.subDomainName;
-    final dir = super.dir;
+    // final dir = super.dir; // TODO rm
 
     return rapid.domainSubDomainRemoveServiceInterface(
       name: name,
       subDomainName: subDomainName,
-      dir: dir,
     );
   }
 }

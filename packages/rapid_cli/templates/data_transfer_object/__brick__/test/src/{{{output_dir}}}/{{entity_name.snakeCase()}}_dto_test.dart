@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
-import 'package:{{project_name}}_domain{{#has_subinfrastructure_name}}_{{subinfrastructure_name}}{{/has_subinfrastructure_name}}/{{project_name}}_domain{{#has_subinfrastructure_name}}_{{subinfrastructure_name}}{{/has_subinfrastructure_name}}.dart';
-import 'package:{{project_name}}_infrastructure{{#has_subinfrastructure_name}}_{{subinfrastructure_name}}{{/has_subinfrastructure_name}}/src{{^output_dir_is_cwd}}/{{{output_dir}}}{{/output_dir_is_cwd}}/{{entity_name.snakeCase()}}_dto.dart';
+import 'package:{{project_name}}_domain{{#has_sub_infrastructure_name}}_{{sub_infrastructure_name}}{{/has_sub_infrastructure_name}}/{{project_name}}_domain{{#has_sub_infrastructure_name}}_{{sub_infrastructure_name}}{{/has_sub_infrastructure_name}}.dart';
+import 'package:{{project_name}}_infrastructure{{#has_sub_infrastructure_name}}_{{sub_infrastructure_name}}{{/has_sub_infrastructure_name}}/src{{^output_dir_is_cwd}}/{{{output_dir}}}{{/output_dir_is_cwd}}/{{entity_name.snakeCase()}}_dto.dart';
 
 void main() {
   group('{{entity_name.pascalCase()}}Dto', () {

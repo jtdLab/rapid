@@ -18,7 +18,5 @@ environment:
 vars:
   project_name:
     type: string
-    description: The project name
   description:
     type: string
-    description: A short project description

@@ -7,7 +7,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;
 import 'package:platform/platform.dart' hide Platform;
 import 'package:rapid_cli/src/command_runner.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/utils.dart';
 

@@ -1,83 +1,85 @@
-import 'package:rapid_cli/src/core/dart_package.dart';
-import 'package:rapid_cli/src/core/dart_package_impl.dart';
-import 'package:rapid_cli/src/core/language.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_root_package/platform_root_package.dart';
-import 'package:rapid_cli/src/project/project_impl.dart';
+// TODO: currently its not possible to resolve a project completly because
+// 1. cant distinct feature types and custom feature, entity and value objects, widgets and not widgets files
+// -> could be solved by maintaining a graph of the project in a  .lock file or smth
+
+// TODO maybe rename AppModule to AppDirectory
+
+// TODO maybe rename UiModule to UiDirectory
+
+import 'dart:io';
+
+import 'package:collection/collection.dart';
+import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/language.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 
 import '../project_config.dart';
-import 'core/generator_mixins.dart';
-import 'di_package/di_package.dart';
-import 'domain_directory/domain_directory.dart';
-import 'infrastructure_directory/infrastructure_directory.dart';
-import 'logging_package/logging_package.dart';
-import 'platform_directory/platform_directory.dart';
-import 'platform_ui_package/platform_ui_package.dart';
-import 'ui_package/ui_package.dart';
+import 'bundles/bundles.dart';
+import '../io.dart';
+import '../mason.dart' as mason;
 
-/// {@template rapid_project}
-/// Abstraction of a Rapid project.
-/// {@endtemplate}
-abstract class RapidProject extends DartPackageImpl
-    with OverridableGenerator, Generatable {
-  /// {@macro rapid_project}
-  factory RapidProject({
-    required RapidProjectConfig config,
-  }) =>
-      RapidProjectImpl(config: config);
+part 'project/app_module.dart';
+part 'project/app_module/bloc.dart';
+part 'project/app_module/cubit.dart';
+part 'project/app_module/data_transfer_object.dart';
+part 'project/app_module/di_package.dart';
+part 'project/app_module/domain_directory.dart';
+part 'project/app_module/domain_package.dart';
+part 'project/app_module/entity.dart';
+part 'project/app_module/infrastructure_directory.dart';
+part 'project/app_module/infrastructure_package.dart';
+part 'project/app_module/logging_package.dart';
+part 'project/app_module/navigator_implementation.dart';
+part 'project/app_module/navigator_interface.dart';
+part 'project/app_module/platform_directory.dart';
+part 'project/app_module/platform_feature_package.dart';
+part 'project/app_module/platform_features_directory.dart';
+part 'project/app_module/platform_localization_package.dart';
+part 'project/app_module/platform_native_directory.dart';
+part 'project/app_module/platform_navigation_package.dart';
+part 'project/app_module/platform_root_package.dart';
+part 'project/app_module/service_implementation.dart';
+part 'project/app_module/service_interface.dart';
+part 'project/app_module/value_object.dart';
+part 'project/root_package.dart';
+part 'project/ui_module.dart';
+part 'project/ui_module/platform_ui_package.dart';
+part 'project/ui_module/ui_package.dart';
+part 'project/ui_module/widget.dart';
 
-  /// The required name as defined in the rapid section of "pubspec.yaml".
-  /// This name is used for naming project directories, files and components.
-  String get name;
-
-  /// Full file path to the location of this project.
-  @override
-  String get path;
-
-  RapidProjectConfig get config;
-
-  /// Returns the di package of this projet.
-  DiPackage get diPackage;
-
-  /// Returns the domain package of this projet.
-  DomainDirectory get domainDirectory;
-
-  /// Returns the infrastructure package of this projet.
-  InfrastructureDirectory get infrastructureDirectory;
-
-  /// Returns the logging package of this projet.
-  LoggingPackage get loggingPackage;
-
-  /// Returns the platform directory for [platform] of this projet.
-  T platformDirectory<T extends PlatformDirectory>({
-    required Platform platform,
+class RapidProject {
+  RapidProject({
+    required this.name,
+    required this.path,
+    required this.rootPackage,
+    required this.uiModule,
+    required this.appModule,
   });
 
-  /// Returns the platform-independent ui package for this project.
-  UiPackage get uiPackage;
+  factory RapidProject.fromConfig(RapidProjectConfig config) {
+    final name = config.name;
+    final path = config.path;
+    final rootPackage =
+        RootPackage.resolve(projectName: name, projectPath: path);
+    final appModule = AppModule.resolve(projectName: name, projectPath: path);
+    final uiModule = UiModule.resolve(projectName: name, projectPath: path);
 
-  /// Returns the platform ui package for [platform] of this projet.
-  PlatformUiPackage platformUiPackage({required Platform platform});
+    return RapidProject(
+      name: name,
+      path: path,
+      rootPackage: rootPackage,
+      appModule: appModule,
+      uiModule: uiModule,
+    );
+  }
 
-  /// Returns wheter the [platform] is activated for this project.
-  bool platformIsActivated(Platform platform);
+  final String path;
 
-  /// All packages of this project.
-  List<DartPackage> get packages;
+  final String name;
 
-  /// All feature packages of all active platforms of this project.
-  List<PlatformFeaturePackage> get featurePackages;
+  final RootPackage rootPackage;
 
-  /// All root packages of all active platforms of this project.
-  List<PlatformRootPackage> get rootPackages;
+  final AppModule appModule;
 
-  /// Creates this project on disk.
-  Future<void> create({
-    required String projectName,
-    required String description,
-    required String orgName,
-    required Language language,
-    required Set<Platform> platforms,
-  });
+  final UiModule uiModule;
 }

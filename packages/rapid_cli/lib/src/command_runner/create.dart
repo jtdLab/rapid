@@ -1,5 +1,6 @@
 import 'package:args/command_runner.dart';
 
+import '../project/platform.dart';
 import 'base.dart';
 import 'util/language_option.dart';
 import 'util/org_name_option.dart';
@@ -98,19 +99,20 @@ class CreateCommand extends RapidLeafCommand
     final mobile = argResults['mobile'] ?? false;
 
     return rapid.create(
-      projectName: projectName,
-      outputDir: outputDir,
-      description: description,
-      orgName: orgName,
-      language: language,
-      android: android,
-      ios: ios,
-      linux: linux,
-      macos: macos,
-      web: web,
-      windows: windows,
-      mobile: mobile,
-    );
+        projectName: projectName,
+        outputDir: outputDir,
+        description: description,
+        orgName: orgName,
+        language: language,
+        platforms: {
+          if (android) Platform.android,
+          if (ios) Platform.ios,
+          if (linux) Platform.linux,
+          if (macos) Platform.macos,
+          if (web) Platform.web,
+          if (windows) Platform.windows,
+          if (mobile) Platform.mobile,
+        });
   }
 
   /// Validates whether [args] contains ONLY a valid project name.

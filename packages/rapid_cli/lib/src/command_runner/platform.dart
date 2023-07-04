@@ -1,5 +1,6 @@
 import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
+import 'package:rapid_cli/src/utils.dart';
 
 import 'base.dart';
 import 'platform/add.dart';
@@ -11,8 +12,8 @@ class PlatformCommand extends RapidBranchCommand {
   PlatformCommand(this.platform, super.project) {
     addSubcommand(PlatformAddCommand(platform, project));
 
-    final featurePackages = project
-        ?.platformDirectory(platform: platform)
+    final featurePackages = project?.appModule
+        .platformDirectory(platform: platform)
         .featuresDirectory
         .featurePackages();
     for (final featurePackage in featurePackages ?? []) {

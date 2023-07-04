@@ -33,12 +33,11 @@ class DomainSubDomainAddEntityCommand extends RapidLeafCommand
     final name = super.className;
     final subDomainName =
         this.subDomainName == 'default' ? null : this.subDomainName;
-    final outputDir = super.outputDir;
+    // final outputDir = super.outputDir; TODO rm?
 
     return rapid.domainSubDomainAddEntity(
       name: name,
       subDomainName: subDomainName,
-      outputDir: outputDir,
     );
   }
 }

@@ -2,422 +2,393 @@ part of 'runner.dart';
 
 mixin _DomainMixin on _Rapid {
   Future<void> domainAddSubDomain({required String name}) async {
-    logger
-      ..command('rapid domain add sub_domain')
-      ..newLine();
+    logger.newLine();
 
-    final domainPackage = project.domainDirectory.domainPackage(name: name);
-    if (!domainPackage.exists()) {
-      final infrastructurePackage =
-          project.infrastructureDirectory.infrastructurePackage(name: name);
-      if (!infrastructurePackage.exists()) {
+    final domainPackage =
+        project.appModule.domainDirectory.domainPackage(name: name);
+    if (!domainPackage.existsSync()) {
+      final infrastructurePackage = project.appModule.infrastructureDirectory
+          .infrastructurePackage(name: name);
+      final rootPackages = project.rootPackages();
+
+      if (!infrastructurePackage.existsSync()) {
         await task(
-          'Creating domain package files',
-          () async => domainPackage.create(),
-        );
-
-        await task(
-          'Creating infrastructure package files',
-          () async => infrastructurePackage.create(),
-        );
-
-        final rootPackages = await task(
-          'Registering infrastructure package in platform root packages',
+          'Creating domain package',
           () async {
-            final rootPackages = project.rootPackages;
+            await domainPackage.generate();
+            // TODO needed ?
+            await dartFormatFix(package: domainPackage);
+          },
+        );
+
+        await task(
+          'Creating infrastructure package',
+          () async {
+            await infrastructurePackage.generate();
             for (final rootPackage in rootPackages) {
               await rootPackage.registerInfrastructurePackage(
                 infrastructurePackage,
               );
             }
-            return rootPackages;
+            // TODO needed ?
+            await dartFormatFix(package: infrastructurePackage);
           },
         );
 
         await bootstrap(
-          packages: [domainPackage, infrastructurePackage, ...rootPackages],
+          packages: [
+            domainPackage,
+            infrastructurePackage,
+            ...rootPackages,
+          ],
         );
 
-        await codeGen(packages: rootPackages);
-
-        await dartFormatFix(project);
+        for (final rootPackage in rootPackages) {
+          await codeGen(package: rootPackage);
+        }
 
         logger
           ..newLine()
-          ..success('Success $checkLabel');
+          ..commandSuccess('Added Sub Domain!');
       } else {
-        _logAndThrow(
-          RapidDomainException._subInfrastructureAlreadyExists(name),
-        );
+        throw SubInfrastructureAlreadyExistsException._(name);
       }
     } else {
-      _logAndThrow(
-        RapidDomainException._subDomainAlreadyExists(name),
-      );
+      throw SubDomainAlreadyExistsException._(name);
     }
   }
 
   Future<void> domainRemoveSubDomain({required String name}) async {
-    logger
-      ..command('rapid domain remove sub_domain')
-      ..newLine();
+    logger.newLine();
 
-    final domainPackage = project.domainDirectory.domainPackage(name: name);
-    if (domainPackage.exists()) {
-      final infrastructurePackage =
-          project.infrastructureDirectory.infrastructurePackage(name: name);
-      if (infrastructurePackage.exists()) {
+    final domainPackage =
+        project.appModule.domainDirectory.domainPackage(name: name);
+    if (domainPackage.existsSync()) {
+      final infrastructurePackage = project.appModule.infrastructureDirectory
+          .infrastructurePackage(name: name);
+      final rootPackages = project.rootPackages();
+
+      if (infrastructurePackage.existsSync()) {
         await task(
-          'Deleting domain package files',
+          'Deleting domain package',
           () async => domainPackage.delete(),
         );
 
         await task(
-          'Deleting infrastructure package files',
-          () async => infrastructurePackage.delete(),
-        );
-
-        final rootPackages = await task(
-          'Unegistering infrastructure package from platform root packages',
+          'Deleting infrastructure package',
           () async {
-            final rootPackages = project.rootPackages;
+            infrastructurePackage.deleteSync();
             for (final rootPackage in rootPackages) {
-              await rootPackage
-                  .unregisterInfrastructurePackage(infrastructurePackage);
+              await rootPackage.unregisterInfrastructurePackage(
+                infrastructurePackage,
+              );
             }
-            return rootPackages;
           },
         );
 
-        await bootstrap(packages: [...rootPackages]);
-
-        await codeGen(packages: rootPackages);
+        await bootstrap(packages: rootPackages);
+        for (final rootPackage in rootPackages) {
+          await codeGen(package: rootPackage);
+        }
 
         logger
           ..newLine()
-          ..success('Success $checkLabel');
+          ..commandSuccess('Removed Sub Domain!');
       } else {
-        _logAndThrow(RapidDomainException._subInfrastructureDoesNotExist(name));
+        throw SubInfrastructureDoesNotExistException._(name);
       }
     } else {
-      _logAndThrow(RapidDomainException._subDomainDoesNotExist(name));
+      throw SubDomainDoesNotExistException._(name);
     }
   }
 
   Future<void> domainSubDomainAddEntity({
     required String name,
     required String? subDomainName,
-    required String outputDir,
   }) async {
-    logger
-      ..command('rapid domain ${subDomainName ?? 'default'} add entity')
-      ..newLine();
+    logger.newLine();
 
     final domainPackage =
-        project.domainDirectory.domainPackage(name: subDomainName);
-    final entity = domainPackage.entity(name: name, dir: outputDir);
-    if (!entity.existsAny()) {
+        project.appModule.domainDirectory.domainPackage(name: subDomainName);
+    final entity = domainPackage.entity(name: name);
+    if (!entity.existsAny) {
       final barrelFile = domainPackage.barrelFile;
 
       await task(
-        'Creating entity files',
-        () async => entity.create(),
+        'Creating entity',
+        () async {
+          await entity.generate();
+          barrelFile.addExport(
+            p.normalize(p.join('src', '${name.snakeCase}.dart')),
+          );
+          // TODO needed?
+          await dartFormatFix(package: domainPackage);
+        },
       );
-
-      // TODO better title
-      await task(
-        'Adding exports to ${p.relative(barrelFile.path, from: project.path)} ',
-        () => barrelFile.addExport(
-          p.normalize(
-            p.join('src', outputDir, '${name.snakeCase}.dart'),
-          ),
-        ),
-      );
-
-      await dartFormatFix(domainPackage);
 
       logger
         ..newLine()
-        ..success('Success $checkLabel');
+        ..commandSuccess('Added Entity!');
     } else {
-      _logAndThrow(
-        RapidDomainException._entityOrValueObjectAlreadyExists(name),
-      );
+      throw EntityOrValueObjectAlreadyExistsException._(name);
     }
   }
 
   Future<void> domainSubDomainAddServiceInterface({
     required String name,
     required String? subDomainName,
-    required String outputDir,
   }) async {
-    logger
-      ..command(
-          'rapid domain ${subDomainName ?? 'default'} add service_interface')
-      ..newLine();
+    logger.newLine();
 
     final domainPackage =
-        project.domainDirectory.domainPackage(name: subDomainName);
-    final serviceInterface =
-        domainPackage.serviceInterface(name: name, dir: outputDir);
-    if (!serviceInterface.existsAny()) {
+        project.appModule.domainDirectory.domainPackage(name: subDomainName);
+    final serviceInterface = domainPackage.serviceInterface(name: name);
+    if (!serviceInterface.existsAny) {
       final barrelFile = domainPackage.barrelFile;
 
       await task(
-        'Creating service interface files',
-        () async => serviceInterface.create(),
+        'Creating service interface',
+        () async {
+          await serviceInterface.generate();
+          barrelFile.addExport(
+            p.normalize(p.join('src', 'i_${name.snakeCase}_service.dart')),
+          );
+          // TODO needed?
+          await dartFormatFix(package: domainPackage);
+        },
       );
-
-      // TODO better title
-      await task(
-        'Adding exports to ${p.relative(barrelFile.path, from: project.path)} ',
-        () => barrelFile.addExport(
-          p.normalize(
-            p.join('src', outputDir, 'i_${name.snakeCase}_service.dart'),
-          ),
-        ),
-      );
-
-      await dartFormatFix(domainPackage);
 
       logger
         ..newLine()
-        ..success('Success $checkLabel');
+        ..commandSuccess('Added Service Interface!');
     } else {
-      _logAndThrow(
-        RapidDomainException._serviceInterfaceAlreadyExists(name),
-      );
+      throw ServiceInterfaceAlreadyExistsException._(name);
     }
   }
 
   Future<void> domainSubDomainAddValueObject({
     required String name,
     required String? subDomainName,
-    required String outputDir,
     required String type,
     required String generics,
   }) async {
-    logger
-      ..command('rapid domain ${subDomainName ?? 'default'} add value_object')
-      ..newLine();
+    logger.newLine();
 
     final domainPackage =
-        project.domainDirectory.domainPackage(name: subDomainName);
-    final valueObject = domainPackage.valueObject(
-      name: name,
-      dir: outputDir,
-    );
+        project.appModule.domainDirectory.domainPackage(name: subDomainName);
+    final valueObject = domainPackage.valueObject(name: name);
 
-    if (!valueObject.existsAny()) {
+    if (!valueObject.existsAny) {
       final barrelFile = domainPackage.barrelFile;
 
       await task(
-        'Creating value object files',
-        () async => valueObject.create(type: type, generics: generics),
+        'Creating value object',
+        () async {
+          await valueObject.generate(type: type, generics: generics);
+          barrelFile.addExport(
+            p.normalize(p.join('src', '${name.snakeCase}.dart')),
+          );
+        },
       );
 
-      // TODO better title
-      await task(
-        'Adding exports to ${p.relative(barrelFile.path, from: project.path)} ',
-        () => barrelFile.addExport(
-          p.normalize(
-            p.join('src', outputDir, '${name.snakeCase}.dart'),
-          ),
-        ),
-      );
-
-      await codeGen(packages: [domainPackage]);
-
-      await dartFormatFix(domainPackage);
+      await codeGen(package: domainPackage);
+      await dartFormatFix(package: domainPackage);
 
       logger
         ..newLine()
-        ..success('Success $checkLabel');
+        ..commandSuccess('Added Value Object!');
     } else {
-      _logAndThrow(
-        RapidDomainException._entityOrValueObjectAlreadyExists(name),
-      );
+      throw EntityOrValueObjectAlreadyExistsException._(name);
     }
   }
 
   Future<void> domainSubDomainRemoveEntity({
     required String name,
     required String? subDomainName,
-    required String dir,
   }) async {
-    logger
-      ..command('rapid domain ${subDomainName ?? 'default'} remove entity')
-      ..newLine();
+    logger.newLine();
 
     final domainPackage =
-        project.domainDirectory.domainPackage(name: subDomainName);
-    final entity = domainPackage.entity(name: name, dir: dir);
+        project.appModule.domainDirectory.domainPackage(name: subDomainName);
+    final entity = domainPackage.entity(name: name);
     // TODO this does delete a value_object because they have same files
-    if (entity.existsAny()) {
+    if (entity.existsAny) {
       final barrelFile = domainPackage.barrelFile;
 
       await task(
-        'Deleting entity files',
-        () async => entity.delete(),
-      );
-
-      // TODO better title
-      await task(
-        'Removing exports from ${p.relative(barrelFile.path, from: project.path)} ',
-        () => barrelFile.removeExport(
-          p.normalize(
-            p.join('src', dir, '${name.snakeCase}.dart'),
-          ),
-        ),
+        'Deleting entity',
+        () async {
+          entity.delete();
+          barrelFile.removeExport(
+            p.normalize(p.join('src', '${name.snakeCase}.dart')),
+          );
+        },
       );
 
       logger
         ..newLine()
-        ..success('Success $checkLabel');
+        ..commandSuccess('Removed Entity!');
     } else {
-      _logAndThrow(RapidDomainException._entityNotFound(name));
+      throw EntityNotFoundException._(name);
     }
   }
 
   Future<void> domainSubDomainRemoveServiceInterface({
     required String name,
     required String? subDomainName,
-    required String dir,
   }) async {
-    logger
-      ..command(
-          'rapid domain ${subDomainName ?? 'default'} remove service_interface')
-      ..newLine();
+    logger.newLine();
 
     final domainPackage =
-        project.domainDirectory.domainPackage(name: subDomainName);
-    final serviceInterface =
-        domainPackage.serviceInterface(name: name, dir: dir);
-    if (serviceInterface.existsAny()) {
+        project.appModule.domainDirectory.domainPackage(name: subDomainName);
+    final serviceInterface = domainPackage.serviceInterface(name: name);
+    if (serviceInterface.existsAny) {
       final barrelFile = domainPackage.barrelFile;
 
       await task(
         'Deleting service interface files',
-        () async => serviceInterface.delete(),
-      );
-
-      // TODO better title
-      await task(
-        'Removing exports from ${p.relative(barrelFile.path, from: project.path)} ',
-        () => barrelFile.removeExport(
-          p.normalize(
-            p.join('src', dir, 'i_${name.snakeCase}_service.dart'),
-          ),
-        ),
+        () async {
+          serviceInterface.delete();
+          barrelFile.removeExport(
+            p.normalize(p.join('src', 'i_${name.snakeCase}_service.dart')),
+          );
+        },
       );
 
       logger
         ..newLine()
-        ..success('Success $checkLabel');
+        ..commandSuccess('Removed Service Interface!');
     } else {
-      _logAndThrow(
-        RapidDomainException._serviceInterfaceNotFound(name),
-      );
+      throw ServiceInterfaceNotFoundException._(name);
     }
   }
 
   Future<void> domainSubDomainRemoveValueObject({
     required String name,
     required String? subDomainName,
-    required String dir,
   }) async {
-    logger
-      ..command(
-          'rapid domain ${subDomainName ?? 'default'} remove value_object')
-      ..newLine();
+    logger.newLine();
 
     final domainPackage =
-        project.domainDirectory.domainPackage(name: subDomainName);
-    final valueObject = domainPackage.valueObject(name: name, dir: dir);
-    if (valueObject.existsAny()) {
+        project.appModule.domainDirectory.domainPackage(name: subDomainName);
+    final valueObject = domainPackage.valueObject(name: name);
+    if (valueObject.existsAny) {
       final barrelFile = domainPackage.barrelFile;
 
       await task(
         'Deleting value object files',
-        () async => valueObject.delete(),
-      );
-
-      // TODO better title
-      await task(
-        'Removing exports from ${p.relative(barrelFile.path, from: project.path)} ',
-        () => barrelFile.removeExport(
-          p.normalize(
-            p.join('src', dir, '${name.snakeCase}.dart'),
-          ),
-        ),
+        () async {
+          valueObject.delete();
+          barrelFile.removeExport(
+            p.normalize(p.join('src', '${name.snakeCase}.dart')),
+          );
+        },
       );
 
       logger
         ..newLine()
-        ..success('Success $checkLabel');
+        ..commandSuccess('Removed Value Object!');
     } else {
-      _logAndThrow(RapidDomainException._valueObjectNotFound(name));
+      throw ValueObjectNotFoundException._(name);
     }
   }
 }
 
-class RapidDomainException extends RapidException {
-  RapidDomainException._(super.message);
+class ServiceInterfaceAlreadyExistsException extends RapidException {
+  final String name;
 
-  factory RapidDomainException._serviceInterfaceAlreadyExists(String name) {
-    return RapidDomainException._(
-      'Service Interface I${name}Service already exists.',
-    );
-  }
-
-  factory RapidDomainException._subInfrastructureAlreadyExists(String name) {
-    return RapidDomainException._(
-      'The subinfrastructure "$name" already exists.',
-    );
-  }
-
-  factory RapidDomainException._subDomainAlreadyExists(String name) {
-    return RapidDomainException._('The subdomain "$name" already exists.');
-  }
-
-  factory RapidDomainException._subInfrastructureDoesNotExist(String name) {
-    return RapidDomainException._(
-      'The subinfrastructure "$name" does not exist.',
-    );
-  }
-
-  factory RapidDomainException._subDomainDoesNotExist(String name) {
-    return RapidDomainException._(
-      'The subdomain "$name" does not exist.',
-    );
-  }
-
-  factory RapidDomainException._entityOrValueObjectAlreadyExists(String name) {
-    return RapidDomainException._(
-      'Entity or ValueObject $name already exists.',
-    );
-  }
-
-  factory RapidDomainException._entityNotFound(String name) {
-    return RapidDomainException._(
-      'Entity $name does not exist.',
-    );
-  }
-
-  factory RapidDomainException._serviceInterfaceNotFound(String name) {
-    return RapidDomainException._(
-      'Service Interface I${name}Service does not exist.',
-    );
-  }
-
-  factory RapidDomainException._valueObjectNotFound(String name) {
-    return RapidDomainException._(
-      'Value Object $name does not exist.',
-    );
-  }
+  ServiceInterfaceAlreadyExistsException._(this.name);
 
   @override
   String toString() {
-    return 'RapidDomainException: $message';
+    return 'Service Interface I${name}Service already exists.';
+  }
+}
+
+class SubInfrastructureAlreadyExistsException extends RapidException {
+  final String name;
+
+  SubInfrastructureAlreadyExistsException._(this.name);
+
+  @override
+  String toString() {
+    return 'The subinfrastructure "$name" already exists.';
+  }
+}
+
+class SubDomainAlreadyExistsException extends RapidException {
+  final String name;
+
+  SubDomainAlreadyExistsException._(this.name);
+
+  @override
+  String toString() {
+    return 'The subdomain "$name" already exists.';
+  }
+}
+
+class SubInfrastructureDoesNotExistException extends RapidException {
+  final String name;
+
+  SubInfrastructureDoesNotExistException._(this.name);
+
+  @override
+  String toString() {
+    return 'The subinfrastructure "$name" does not exist.';
+  }
+}
+
+class SubDomainDoesNotExistException extends RapidException {
+  final String name;
+
+  SubDomainDoesNotExistException._(this.name);
+
+  @override
+  String toString() {
+    return 'The subdomain "$name" does not exist.';
+  }
+}
+
+class EntityOrValueObjectAlreadyExistsException extends RapidException {
+  final String name;
+
+  EntityOrValueObjectAlreadyExistsException._(this.name);
+
+  @override
+  String toString() {
+    return 'Entity or ValueObject $name already exists.';
+  }
+}
+
+class EntityNotFoundException extends RapidException {
+  final String name;
+
+  EntityNotFoundException._(this.name);
+
+  @override
+  String toString() {
+    return 'Entity $name does not exist.';
+  }
+}
+
+class ServiceInterfaceNotFoundException extends RapidException {
+  final String name;
+
+  ServiceInterfaceNotFoundException._(this.name);
+
+  @override
+  String toString() {
+    return 'Service Interface I${name}Service does not exist.';
+  }
+}
+
+class ValueObjectNotFoundException extends RapidException {
+  final String name;
+
+  ValueObjectNotFoundException._(this.name);
+
+  @override
+  String toString() {
+    return 'Value Object $name does not exist.';
   }
 }

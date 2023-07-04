@@ -18,25 +18,7 @@ environment:
 vars:
   project_name:
     type: string
-    description: The project name
   name:
     type: string
-    description: The name of the navigator
-  android:
-    type: boolean
-    description: The project supports the Android platform
-  ios:
-    type: boolean
-    description: The project supports the iOS platform
-  web:
-    type: boolean
-    description: The project supports the Web platform
-  linux:
-    type: boolean
-    description: The project supports the Linux platform
-  macos:
-    type: boolean
-    description: The project supports the macOS platform
-  windows:
-    type: boolean
-    description: The project supports the Windows platform
+  platform:
+    type: string

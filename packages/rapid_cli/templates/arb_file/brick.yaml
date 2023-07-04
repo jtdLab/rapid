@@ -18,19 +18,13 @@ environment:
 vars:
   feature_name:
     type: string
-    description: The name of the feature
   language:
     type: string
-    description: The language
   has_script_code:
     type: boolean
-    description: Wheter this has a script code
   script_code:
     type: string
-    description: The script code
   has_country_code:
     type: boolean
-    description: Wheter this has a country code
   country_code:
     type: string
-    description: The country code

@@ -1,5 +1,13 @@
 import 'exception.dart';
 
+T assertNotNull<T>(T? value) {
+  if (value == null) {
+    throw Error(); // TODO
+  }
+
+  return value;
+}
+
 T assertIsA<T>({
   int? index,
   Object? key,
@@ -30,7 +38,7 @@ T assertKeyIsA<T>({
 }
 
 class RapidConfigException extends RapidException {
-  RapidConfigException(super.message);
+  RapidConfigException(this.message);
 
   RapidConfigException.missingKey({
     Object? key,
@@ -64,6 +72,8 @@ class RapidConfigException extends RapidException {
 
     throw UnimplementedError();
   }
+
+  final String message;
 
   @override
   String toString() => 'pubspec.yaml: $message';

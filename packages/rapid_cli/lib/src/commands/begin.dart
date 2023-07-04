@@ -2,31 +2,24 @@ part of 'runner.dart';
 
 mixin _BeginMixin on _Rapid {
   Future<void> begin() async {
-    logger.command('rapid begin');
-
     if (tool.loadGroup().isActive) {
-      _logAndThrow(RapidBeginException._activeGroup());
+      throw GroupAlreadyActiveException._();
     }
 
     tool.activateCommandGroup();
 
-    logger.newLine();
-    logger.success('Success $checkLabel');
+    logger
+      ..newLine()
+      ..commandSuccess('Started Command Group!');
   }
 }
 
-class RapidBeginException extends RapidException {
-  RapidBeginException._(super.message);
-
-  factory RapidBeginException._activeGroup() {
-    return RapidBeginException._(
-      'There is already an active group. '
-      'Call "rapid end" to complete it.',
-    );
-  }
+class GroupAlreadyActiveException extends RapidException {
+  GroupAlreadyActiveException._();
 
   @override
   String toString() {
-    return 'RapidBeginException: $message';
+    return 'There is already an active group. '
+        'Call "rapid end" to complete it.';
   }
 }

@@ -1,4 +1,4 @@
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 
 extension PlatformX on Platform {
   List<String> get aliases {

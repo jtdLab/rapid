@@ -5,7 +5,7 @@ import 'package:io/io.dart' show copyPath;
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/command_runner.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 /// Runs [fn] in a temporary directory.

@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:path/path.dart' as p;
+import 'package:rapid_cli/src/utils.dart';
 
-import 'core/dart_package.dart';
+import 'io.dart';
 import 'project/project.dart';
 
 class RapidTool {
@@ -66,7 +66,7 @@ class RapidTool {
   }
 
   /// Marks [packages] so `melos bootstrap` is run on them when the command group is ended.
-  void markAsNeedBootstrap(List<DartPackage> packages) {
+  void markAsNeedBootstrap({required List<DartPackage> packages}) {
     final group = loadGroup();
     final packagesToBootstrap = <DartPackage>[];
     for (final package in [...group.packagesToBootstrap, ...packages]) {
@@ -85,13 +85,13 @@ class RapidTool {
     );
   }
 
-  /// Marks [packages] so `flutter pub run build_runner build --delete-conflicting-outputs`
-  /// is run on them when the command group is ended.
-  void markAsNeedCodeGen(List<DartPackage> packages) {
+  /// Marks [package] so `flutter pub run build_runner build --delete-conflicting-outputs`
+  /// is run on it when the command group is ended.
+  void markAsNeedCodeGen({required DartPackage package}) {
     final group = loadGroup();
 
     final packagesToCodeGen = <DartPackage>[];
-    for (final package in [...group.packagesToCodeGen, ...packages]) {
+    for (final package in [...group.packagesToCodeGen, package]) {
       if (!packagesToCodeGen.any((e) => e.path == package.path)) {
         packagesToCodeGen.add(package);
       }
@@ -128,14 +128,16 @@ class CommandGroup {
     return CommandGroup._(
       project: project,
       isActive: json['isActive'],
-      packagesToBootstrap: project.packages
+      packagesToBootstrap: project
+          .packages()
           .where(
-            (e) => json['packagesToBootstrap'].contains(e.packageName()),
+            (e) => json['packagesToBootstrap'].contains(e.packageName),
           )
           .toList(),
-      packagesToCodeGen: project.packages
+      packagesToCodeGen: project
+          .packages()
           .where(
-            (e) => json['packagesToCodeGen'].contains(e.packageName()),
+            (e) => json['packagesToCodeGen'].contains(e.packageName),
           )
           .toList(),
     );
@@ -144,8 +146,8 @@ class CommandGroup {
   Map<String, dynamic> toJson() => {
         'isActive': isActive,
         'packagesToBootstrap':
-            packagesToBootstrap.map((e) => e.packageName()).toList(),
+            packagesToBootstrap.map((e) => e.packageName).toList(),
         'packagesToCodeGen':
-            packagesToCodeGen.map((e) => e.packageName()).toList(),
+            packagesToCodeGen.map((e) => e.packageName).toList(),
       };
 }

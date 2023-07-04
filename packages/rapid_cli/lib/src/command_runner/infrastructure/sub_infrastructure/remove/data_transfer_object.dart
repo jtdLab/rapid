@@ -44,12 +44,11 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
         ? null
         : this.subInfrastructureName;
     final entityName = super.entity;
-    final dir = super.dir;
+    // final dir = super.dir; // TODO rm
 
     return rapid.infrastructureSubInfrastructureRemoveDataTransferObject(
       subInfrastructureName: subInfrastructureName,
       entityName: entityName,
-      dir: dir,
     );
   }
 }

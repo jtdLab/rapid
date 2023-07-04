@@ -1,4 +1,4 @@
-import 'package:rapid_cli/src/core/language.dart';
+import 'package:rapid_cli/src/language.dart';
 
 /// Allowed languages extracted from:
 ///

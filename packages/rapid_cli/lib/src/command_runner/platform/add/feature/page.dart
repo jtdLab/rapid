@@ -1,11 +1,9 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner/util/dart_package_name_rest.dart';
 import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 
 import '../../../base.dart';
-
-const _defaultLocalization = true;
 
 class PlatformAddFeaturePageCommand extends RapidLeafCommand
     with DartPackageNameGetter {
@@ -21,12 +19,6 @@ class PlatformAddFeaturePageCommand extends RapidLeafCommand
         'navigator',
         help: 'Whether to generate a navigator for the new feature.',
         negatable: false,
-      )
-      // TODO share
-      ..addFlag(
-        'localization',
-        help: 'Whether the new feature as localizations.',
-        defaultsTo: _defaultLocalization,
       );
   }
 
@@ -49,14 +41,12 @@ class PlatformAddFeaturePageCommand extends RapidLeafCommand
     final description =
         argResults['desc'] ?? 'The ${name.pascalCase} page feature.';
     final navigator = argResults['navigator'] ?? false;
-    final localization = argResults['localization'] ?? _defaultLocalization;
 
     return rapid.platformAddFeaturePage(
       platform,
       name: name,
       description: description,
       navigator: navigator,
-      localization: localization,
     );
   }
 }

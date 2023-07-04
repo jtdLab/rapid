@@ -18,10 +18,5 @@ environment:
 vars:
   project_name:
     type: string
-    description: The project name
-  has_name:
-    type: boolean
-    description: Wheter name is not null
   name:
     type: string
-    description: The package name

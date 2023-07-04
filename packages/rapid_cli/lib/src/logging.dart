@@ -64,6 +64,14 @@ class RapidLogger with _DelegateLogger {
     }
   }
 
+  void commandSuccess(String message, {bool dryRun = false}) {
+    if (dryRun) {
+      stdout(successMessageColor(message));
+    } else {
+      stdout(successMessageColor(successStyle('✅ $message')));
+    }
+  }
+
   void success(String message, {bool dryRun = false}) {
     if (dryRun) {
       stdout(successMessageColor(message));

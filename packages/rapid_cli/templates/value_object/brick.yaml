@@ -21,12 +21,13 @@ vars:
   output_dir:
     type: string
   output_dir_is_cwd:
+  
     type: boolean
   type:
     type: string
   generics:
     type: string
-  has_subdomain_name:
+  has_sub_domain_name:
     type: boolean
-  subdomain_name:
+  sub_domain_name:
     type: string

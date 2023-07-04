@@ -30,6 +30,11 @@ final platformLocalizationPackageBundle =
       "type": "text"
     },
     {
+      "path": "lib/src/arb/{{project_name}}_en.arb",
+      "data": "ewogICJAQGxvY2FsZSI6ICJlbiIKfQ==",
+      "type": "text"
+    },
+    {
       "path": "lib/src/l10n.dart",
       "data":
           "aW1wb3J0ICdwYWNrYWdlOmZsdXR0ZXIvd2lkZ2V0cy5kYXJ0JzsKCmltcG9ydCAne3twcm9qZWN0X25hbWV9fV9sb2NhbGl6YXRpb25zLmRhcnQnOwoKZXh0ZW5zaW9uIHt7cHJvamVjdF9uYW1lLnBhc2NhbENhc2UoKX19TG9jYWxpemF0aW9uc1ggb24gQnVpbGRDb250ZXh0IHsKICAvLy8gVGhlIGwxMG4gb2JqZWN0IHdoaWNoIGhvbGRzIGFsbCBsb2NhbGl6ZWQgc3RyaW5ncy4KICB7e3Byb2plY3RfbmFtZS5wYXNjYWxDYXNlKCl9fUxvY2FsaXphdGlvbnMgZ2V0IGwxMG4gPT4KICAgICAge3twcm9qZWN0X25hbWUucGFzY2FsQ2FzZSgpfX1Mb2NhbGl6YXRpb25zLm9mKHRoaXMpOwp9Cg==",
@@ -86,8 +91,6 @@ final platformLocalizationPackageBundle =
   "vars": {
     "project_name": {"type": "string"},
     "platform": {"type": "string"},
-    "language_code": {"type": "string"},
-    "script_code": {"type": "string"},
-    "country_code": {"type": "string"}
+    "languages": {"type": "array"}
   }
 });

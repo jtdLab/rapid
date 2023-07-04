@@ -20,9 +20,5 @@ vars:
     type: string
   platform:
     type: string
-  language_code:
-    type: string
-  script_code:
-    type: string
-  country_code:
-    type: string
+  languages:
+    type: array

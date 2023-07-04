@@ -161,7 +161,7 @@ class PlatformPageFeaturePackage extends PlatformRoutableFeaturePackage {
       bundle: platformPageFeaturePackageBundle,
       target: this,
       vars: <String, dynamic>{
-        'name': name,
+        'name': name, // TODO this is foo_page shouldnt it just be foo?
         'description': description, // TODO default inside template
         'project_name': projectName,
         'platform': platform.name,

@@ -1,4 +1,7 @@
-import 'package:alchemist/alchemist.dart';import 'package:flutter_test/flutter_test.dart';{{#android}}import 'package:{{project_name}}_android_{{name.snakeCase()}}/src/presentation/presentation.dart';import 'package:{{project_name}}_ui_android/{{project_name}}_ui_android.dart';{{/android}}{{#ios}}import 'package:{{project_name}}_ios_{{name.snakeCase()}}/src/presentation/presentation.dart';import 'package:{{project_name}}_ui_ios/{{project_name}}_ui_ios.dart';{{/ios}}{{#linux}}import 'package:{{project_name}}_linux_{{name.snakeCase()}}/src/presentation/presentation.dart';import 'package:{{project_name}}_ui_linux/{{project_name}}_ui_linux.dart';{{/linux}}{{#macos}}import 'package:{{project_name}}_macos_{{name.snakeCase()}}/src/presentation/presentation.dart';import 'package:{{project_name}}_ui_macos/{{project_name}}_ui_macos.dart';{{/macos}}{{#web}}import 'package:{{project_name}}_web_{{name.snakeCase()}}/src/presentation/presentation.dart';import 'package:{{project_name}}_ui_web/{{project_name}}_ui_web.dart';{{/web}}{{#windows}}import 'package:{{project_name}}_windows_{{name.snakeCase()}}/src/presentation/presentation.dart';import 'package:{{project_name}}_ui_windows/{{project_name}}_ui_windows.dart';{{/windows}}{{#mobile}}import 'package:{{project_name}}_mobile_{{name.snakeCase()}}/src/presentation/presentation.dart';import 'package:{{project_name}}_ui_mobile/{{project_name}}_ui_mobile.dart';{{/mobile}}
+import 'package:alchemist/alchemist.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:{{project_name}}_{{platform}}_{{name.snakeCase()}}/src/presentation/presentation.dart';
+import 'package:{{project_name}}_ui_{{platform}}/{{project_name}}_ui_{{platform}}.dart';
 
 import 'helpers/helpers.dart';
 
@@ -40,17 +43,17 @@ void main() {
 {{^linux}}{{^macos}}{{^web}}{{^windows}}        scenarioConstraints: const BoxConstraints(minWidth: 250, maxHeight: {{#isWidget}}250{{/isWidget}}{{^isWidget}}500{{/isWidget}}),{{/windows}}{{/web}}{{/macos}}{{/linux}}  
         children: [
           GoldenTestScenario(
-            name: '{{#localization}}{{default_language}} - {{/localization}}light',
+            name: '{{#localization}}{{default_language}} - light',
             child: appWrapper(
-              {{#localization}}locale: const Locale('{{default_language}}'),{{/localization}}
+              locale: const Locale('{{default_language}}'),
               {{#android}}themeMode: ThemeMode.light{{/android}}{{#ios}}brightness: Brightness.light{{/ios}}{{#linux}}themeMode: ThemeMode.light{{/linux}}{{#macos}}themeMode: ThemeMode.light{{/macos}}{{#web}}themeMode: ThemeMode.light{{/web}}{{#windows}}themeMode: ThemeMode.light{{/windows}}{{#mobile}}themeMode: ThemeMode.light{{/mobile}},
               widget: const {{name.pascalCase()}}(),
             ),
           ),
           GoldenTestScenario(
-            name: '{{#localization}}{{default_language}} - {{/localization}}dark',
+            name: '{{#localization}}{{default_language}} - dark',
             child: appWrapper(
-              {{#localization}}locale: const Locale('{{default_language}}'),{{/localization}}
+              locale: const Locale('{{default_language}}'),
               {{#android}}themeMode: ThemeMode.dark{{/android}}{{#ios}}brightness: Brightness.dark{{/ios}}{{#linux}}themeMode: ThemeMode.dark{{/linux}}{{#macos}}themeMode: ThemeMode.dark{{/macos}}{{#web}}themeMode: ThemeMode.dark{{/web}}{{#windows}}themeMode: ThemeMode.dark{{/windows}}{{#mobile}}themeMode: ThemeMode.dark{{/mobile}},
               widget: const {{name.pascalCase()}}(),
             ),

@@ -25,7 +25,7 @@ final loggingPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "lib/src/injection.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOmluamVjdGFibGUvaW5qZWN0YWJsZS5kYXJ0JzsKCi8vLyBTZXR1cCBpbmplY3RhYmxlIHBhY2thZ2Ugd2hpY2ggZ2VuZXJhdGVzIGRlcGVuZGVuY3kgaW5qZWN0aW9uIGNvZGUuCi8vLwovLy8gRm9yIG1vcmUgaW5mbyBzZWU6IGh0dHBzOi8vcHViLmRldi9wYWNrYWdlcy9pbmplY3RhYmxlCkBJbmplY3RhYmxlSW5pdC5taWNyb1BhY2thZ2UoKQppbml0TWljcm9QYWNrYWdlKCkge30K",
+          "aW1wb3J0ICdwYWNrYWdlOmluamVjdGFibGUvaW5qZWN0YWJsZS5kYXJ0JzsKCi8vLyBTZXR1cCBpbmplY3RhYmxlIHBhY2thZ2Ugd2hpY2ggZ2VuZXJhdGVzIGRlcGVuZGVuY3kgaW5qZWN0aW9uIGNvZGUuCi8vLwovLy8gRm9yIG1vcmUgaW5mbyBzZWU6IGh0dHBzOi8vcHViLmRldi9wYWNrYWdlcy9pbmplY3RhYmxlI2luY2x1ZGluZy1taWNyb3BhY2thZ2VzLWFuZC1leHRlcm5hbC1tb2R1bGVzCkBJbmplY3RhYmxlSW5pdC5taWNyb1BhY2thZ2UoKQppbml0TWljcm9QYWNrYWdlKCkge30K",
       "type": "text"
     },
     {

@@ -43,6 +43,7 @@ class PlatformLocalizationPackage extends DartPackage {
       vars: <String, dynamic>{
         'project_name': projectName,
         'platform': platform.name,
+        // TODO multiple languages can be needed? when a script or country code are specified
         'language_code': language.languageCode,
         'has_script_code': language.hasScriptCode,
         'script_code': language.scriptCode,

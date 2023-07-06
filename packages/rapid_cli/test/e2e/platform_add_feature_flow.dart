@@ -35,7 +35,7 @@ dynamic performTest({
         'feature',
         'flow',
         featureName,
-        if (!localization) '--no-localization',
+        if (!localization) '--no-localization', // TODO
         if (tab) '--tab',
         '--features',
         '${subFeatureAName}_page, ${subFeatureBName}_page',
@@ -45,13 +45,6 @@ dynamic performTest({
       await verifyNoAnalyzerIssues();
       await verifyNoFormattingIssues();
       final feature = tester.featurePackage('${featureName}_flow', platform);
-      final l10nDir = tester.l10nDirectory('${featureName}_flow', platform);
-      verifyDoExist([
-        feature,
-        if (localization) l10nDir,
-      ]);
-      if (!localization) {
-        verifyDoNotExist([l10nDir]);
-      }
+      verifyDoExist([feature]);
       await verifyTestsPassWith100PercentCoverage([feature]);
     });

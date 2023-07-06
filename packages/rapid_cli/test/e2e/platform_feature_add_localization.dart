@@ -1,4 +1,5 @@
-import 'package:rapid_cli/src/project/platform.dart';
+// TODO rm
+/* import 'package:rapid_cli/src/project/platform.dart';
 
 import 'common.dart';
 
@@ -44,3 +45,4 @@ dynamic performTest({
         tester.featurePackage('${featureName}_page', platform),
       );
     });
+ */

@@ -18,20 +18,14 @@ dynamic performTest({
         'feature',
         'widget',
         featureName,
-        if (!localization) '--no-localization',
+        if (!localization) '--no-localization', // TODO
       ]);
 
       // Assert
       await verifyNoAnalyzerIssues();
       await verifyNoFormattingIssues();
       final feature = tester.featurePackage('${featureName}_widget', platform);
-      final l10nDir = tester.l10nDirectory('${featureName}_widget', platform);
-      verifyDoExist([
-        feature,
-        if (localization) l10nDir,
-      ]);
-      if (!localization) {
-        verifyDoNotExist([l10nDir]);
-      }
+      verifyDoExist([feature]);
+
       await verifyTestsPassWith100PercentCoverage([feature]);
     });

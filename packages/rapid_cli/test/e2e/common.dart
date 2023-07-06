@@ -511,36 +511,7 @@ final class RapidE2ETester {
         ),
       ];
 
-  Directory l10nDirectory(
-    String feature,
-    Platform platform,
-  ) =>
-      Directory(
-        p.join(
-          featurePackage(feature, platform).path,
-          'lib',
-          'src',
-          'presentation',
-          'l10n',
-        ),
-      );
-
-  File l10nBarrelFile(
-    String feature,
-    Platform platform,
-  ) =>
-      File(
-        p.join(
-          featurePackage(feature, platform).path,
-          'lib',
-          'src',
-          'presentation',
-          'l10n',
-          'l10n.dart',
-        ),
-      );
-
-  /// Source files a feature requires to support [languages].
+  /// Source files of a platform localization package to support [languages].
   List<File> languageFiles(
     String feature,
     Platform platform,
@@ -550,23 +521,19 @@ final class RapidE2ETester {
         for (final language in languages) ...[
           File(
             p.join(
-              featurePackage(feature, platform).path,
+              platformLocalizationPackage(platform).path,
               'lib',
               'src',
-              'presentation',
-              'l10n',
               'arb',
-              '${feature}_$language.arb',
+              '${projectName}_$language.arb',
             ),
           ),
           File(
             p.join(
-              featurePackage(feature, platform).path,
+              platformLocalizationPackage(platform).path,
               'lib',
               'src',
-              'presentation',
-              'l10n',
-              '${feature}_localizations_$language.dart',
+              '${projectName}_localizations_$language.dart',
             ),
           ),
         ],

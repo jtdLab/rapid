@@ -10,13 +10,16 @@ mixin _DeactivateMixin on _Rapid {
 
     await task(
       'Deleting Platform Directory',
-      () =>
-          project.appModule.platformDirectory(platform: platform).deleteSync(),
+      () => project.appModule
+          .platformDirectory(platform: platform)
+          .deleteSync(recursive: true),
     );
 
     await task(
       'Deleting Platform Ui Package',
-      () => project.uiModule.platformUiPackage(platform: platform).deleteSync(),
+      () => project.uiModule
+          .platformUiPackage(platform: platform)
+          .deleteSync(recursive: true),
     );
 
     logger

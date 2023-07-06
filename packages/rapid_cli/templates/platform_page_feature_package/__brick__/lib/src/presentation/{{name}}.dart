@@ -1,4 +1,4 @@
-{{#android}}import 'package:auto_route/auto_route.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:{{project_name}}_ui_{{platform}}/{{project_name}}_ui_{{platform}}.dart';
 
 @RoutePage()

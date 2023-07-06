@@ -128,8 +128,8 @@ final class NoneIosNativeDirectory extends PlatformNativeDirectory {
   }
 
   Future<void> generate({
-    required String orgName,
-    required String description,
+    String? orgName,
+    String? description,
   }) async {
     // TODO cleaner
     final mason.MasonBundle bundle;

@@ -17,8 +17,8 @@ mixin _EndMixin on _Rapid {
     }
     if (group.packagesToCodeGen.isNotEmpty) {
       taskGroup(
-        'Running code generation',
-        group.packagesToCodeGen
+        description: 'Running code generation',
+        tasks: group.packagesToCodeGen
             .map(
               (package) => (
                 package.packageName,

@@ -36,7 +36,7 @@ final platformLocalizationPackageBundle =
       "type": "text"
     },
     {
-      "path": "lib/{{platform}}_localization.dart",
+      "path": "lib/{{project_name}}_{{platform}}_localization.dart",
       "data":
           "ZXhwb3J0ICdzcmMvbDEwbi5kYXJ0JzsKZXhwb3J0ICdzcmMve3twcm9qZWN0X25hbWV9fV9sb2NhbGl6YXRpb25zLmRhcnQnOwo=",
       "type": "text"

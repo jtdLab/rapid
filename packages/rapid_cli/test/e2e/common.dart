@@ -151,6 +151,15 @@ final class RapidE2ETester {
         ),
       );
 
+  Directory platformLocalizationPackage(Platform platform) => Directory(
+        p.join(
+          'packages',
+          projectName,
+          '${projectName}_${platform.name}',
+          '${projectName}_${platform.name}_localization',
+        ),
+      );
+
   Directory platformNavigationPackage(Platform platform) => Directory(
         p.join(
           'packages',
@@ -193,6 +202,7 @@ final class RapidE2ETester {
       ];
 
   List<Directory> platformDependentPackagesWithoutTests(Platform platform) => [
+        platformLocalizationPackage(platform),
         platformNavigationPackage(platform),
       ];
 

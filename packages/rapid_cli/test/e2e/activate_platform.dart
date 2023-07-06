@@ -30,7 +30,6 @@ dynamic performTest({
         ...platformPackages,
         ...featurePackages,
       ]);
-
       await verifyTestsPassWith100PercentCoverage([
         ...tester.platformDependentPackagesWithTests(platform),
         ...featurePackages,

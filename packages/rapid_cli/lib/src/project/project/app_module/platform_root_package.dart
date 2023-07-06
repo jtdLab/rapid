@@ -149,8 +149,8 @@ final class NoneIosRootPackage extends PlatformRootPackage {
   final NoneIosNativeDirectory nativeDirectory;
 
   Future<void> generate({
-    required String description,
-    required String orgName,
+    String? description,
+    String? orgName,
   }) async {
     await mason.generate(
       bundle: platformRootPackageBundle,

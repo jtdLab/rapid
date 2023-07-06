@@ -1,4 +1,4 @@
-# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_ui,{{project_name}}_ui_{{platform}}
+# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_ui,{{project_name}}_ui_{{platform}},{{project_name}}_{{platform}}_localization
 dependency_overrides:
   {{project_name}}_di:
     path: ../../../{{project_name}}_di
@@ -8,3 +8,5 @@ dependency_overrides:
     path: ../../../../{{project_name}}_ui/{{project_name}}_ui
   {{project_name}}_ui_{{platform}}:
     path: ../../../../{{project_name}}_ui/{{project_name}}_ui_{{platform}}
+  {{project_name}}_{{platform}}_localization:
+    path: ../../{{project_name}}_{{platform}}_localization

@@ -22,6 +22,7 @@ dependencies:
   {{project_name}}_di:
   {{project_name}}_domain:
   {{project_name}}_ui_{{platform}}:
+  {{project_name}}_{{platform}}_localization:
   {{project_name}}_{{platform}}_navigation:
 
 dev_dependencies:

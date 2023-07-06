@@ -552,6 +552,11 @@ extension PlatformFeaturesDirectoryUtils on PlatformFeaturesDirectory {
   }
 }
 
+extension InfrastructurePackageUtils on InfrastructurePackage {
+  bool get isDefault => name == null;
+}
+
+// TODO needed ?
 extension on String {
   Language toLanguageFromDartLocale() {
     final self = replaceAll('\r\n', '')

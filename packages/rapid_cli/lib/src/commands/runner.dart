@@ -5,13 +5,13 @@ import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 
 import '../cli.dart';
-import '../language.dart';
 import '../exception.dart';
 import '../io.dart';
+import '../language.dart';
 import '../logging.dart';
 import '../mason.dart';
-import '../project_config.dart';
 import '../project/project.dart';
+import '../project_config.dart';
 import '../tool.dart';
 import '../utils.dart';
 
@@ -107,29 +107,43 @@ abstract class _Rapid {
     final progress = logger.progress(description);
     try {
       final result = await task();
-      progress.finish(message: '$checkLabel $description');
+      progress.complete();
       return result;
     } catch (e) {
-      progress.finish(message: '$xMarkLabel $description');
+      progress.fail();
       rethrow;
     }
   }
 
-  Future<void> taskGroup(
-    String description,
-    List<(String description, FutureOr<void> Function() task)> tasks, {
+  // parallelism = 1 indicates sequentiell execution
+  Future<void> taskGroup({
+    String? description,
+    required List<(String description, FutureOr<void> Function() task)> tasks,
     int? parallelism,
   }) async {
-    logger.log(description);
-    await Stream.fromIterable(tasks).parallel(
-      (t) async {
-        try {
-          return await task(t.$1, t.$2);
-        } catch (e) {
-          rethrow;
-        }
-      },
-      parallelism: parallelism,
-    ).drain<void>();
+    if (parallelism == 1) {
+      if (description != null) {
+        logger.log(description);
+      }
+      for (final task in tasks) {
+        await this.task(task.$1, task.$2);
+      }
+    } else {
+      final group = logger.progressGroup(description);
+      await Stream.fromIterable(tasks).parallel(
+        (t) async {
+          final progress = group.progress(t.$1);
+          try {
+            final result = await t.$2();
+            progress.complete();
+            return result;
+          } catch (e) {
+            progress.fail();
+            rethrow;
+          }
+        },
+        parallelism: parallelism,
+      ).drain<void>();
+    }
   }
 }

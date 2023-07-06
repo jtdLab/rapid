@@ -1,6 +1,5 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
-import 'package:cli_util/cli_logging.dart';
 import 'package:meta/meta.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
@@ -28,7 +27,7 @@ abstract class RapidLeafCommand extends RapidCommand {
   late final verbose = globalResults![globalOptionVerbose] as bool;
 
   late final logger = RapidLogger(
-    verbose ? Logger.verbose(logTime: false) : Logger.standard(),
+    level: verbose ? Level.verbose : Level.info,
   );
 
   /// [ArgResults] which can be overridden for testing.

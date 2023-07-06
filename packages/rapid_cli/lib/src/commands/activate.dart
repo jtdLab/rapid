@@ -94,6 +94,11 @@ mixin _ActivateMixin on _Rapid {
       language: language,
     );
 
+    await task(
+      'Running "dart format . --fix" in project',
+      () async => dartFormatFix(package: project.rootPackage),
+    );
+
     logger
       ..newLine()
       ..commandSuccess('Activated ${platform.prettyName}!');
@@ -117,42 +122,62 @@ mixin _ActivateMixin on _Rapid {
     final rootPackage = platformDirectory.rootPackage;
     final platformUiPackage =
         project.uiModule.platformUiPackage(platform: platform);
-
-    await task('Generating ${platform.prettyName} packages', () async {
-      await appFeaturePackage.generate();
-      await homePageFeaturePackage.generate();
-      await localizationPackage.generate(defaultLanguage: language);
-      await navigationPackage.generate();
-
-      // TODO the ! is not good practice
-      switch (platform) {
-        case Platform.ios:
-          await (rootPackage as IosRootPackage).generate(
-            orgName: orgName!,
-            language: language,
-          );
-        case Platform.macos:
-          await (rootPackage as MacosRootPackage).generate(
-            orgName: orgName!,
-          );
-        case Platform.mobile:
-          await (rootPackage as MobileRootPackage).generate(
-            orgName: orgName!,
-            description: description!,
-            language: language,
-          );
-        default:
-          await (rootPackage as NoneIosRootPackage).generate(
-            orgName: orgName!,
-            description: description!,
-          );
-      }
-      await platformUiPackage.generate();
-    });
+    final infrastructurePackages =
+        project.appModule.infrastructureDirectory.infrastructurePackages();
 
     await taskGroup(
-      'Running "flutter pub get" in ${platform.prettyName} packages...',
-      [
+      description:
+          '$rocket ${taskGroupTitleStyle('Activating ${platform.prettyName}')}',
+      tasks: [
+        (
+          'Generating ${platform.prettyName} packages',
+          () async {
+            await appFeaturePackage.generate();
+            await homePageFeaturePackage.generate();
+            await localizationPackage.generate(defaultLanguage: language);
+            await navigationPackage.generate();
+
+            // TODO the ! is not good practice
+            switch (platform) {
+              case Platform.ios:
+                await (rootPackage as IosRootPackage).generate(
+                  orgName: orgName!,
+                  language: language,
+                );
+              case Platform.macos:
+                await (rootPackage as MacosRootPackage).generate(
+                  orgName: orgName!,
+                );
+              case Platform.mobile:
+                await (rootPackage as MobileRootPackage).generate(
+                  orgName: orgName!,
+                  description: description!,
+                  language: language,
+                );
+              default:
+                await (rootPackage as NoneIosRootPackage).generate(
+                  orgName: orgName,
+                  description: description,
+                );
+            }
+            await platformUiPackage.generate();
+          },
+        ),
+      ],
+      parallelism: 1,
+    );
+
+    final infrastructureContainsNonDefaultPackage =
+        infrastructurePackages.any((e) => !e.isDefault);
+    if (infrastructureContainsNonDefaultPackage) {
+      for (final infrastructurePackage
+          in infrastructurePackages.where((e) => !e.isDefault)) {
+        await rootPackage.registerInfrastructurePackage(infrastructurePackage);
+      }
+    }
+
+    await taskGroup(
+      tasks: [
         appFeaturePackage,
         homePageFeaturePackage,
         localizationPackage,
@@ -162,27 +187,34 @@ mixin _ActivateMixin on _Rapid {
       ]
           .map(
             (package) => (
-              package.packageName,
+              'Running "flutter pub get" in ${package.packageName}',
               () async => flutterPubGet(package: package)
             ),
           )
           .toList(),
     );
 
-    await task(
-      'Running code generation in root package',
-      () async => codeGen(package: rootPackage),
-    );
+    if (infrastructureContainsNonDefaultPackage) {
+      await task(
+        'Running code generation in root package',
+        () async => codeGen(package: rootPackage),
+      );
+    }
 
     await task(
       'Running "flutter gen-l10n" in localization package',
       () async => flutterGenl10n(package: localizationPackage),
     );
 
-    await task(
-      'Running "dart format . --fix" in project',
-      () async => dartFormatFix(package: localizationPackage),
-    );
+    switch (platform) {
+      case Platform.mobile:
+        await flutterConfigEnable(platform: Platform.android, project: project);
+        await flutterConfigEnable(platform: Platform.ios, project: project);
+      default:
+        await flutterConfigEnable(platform: platform, project: project);
+    }
+
+    logger.newLine();
 
     // TODO: Required due to https://github.com/jtdLab/rapid/issues/96
     if (platform == Platform.macos) {
@@ -195,14 +227,6 @@ mixin _ActivateMixin on _Rapid {
         'platform :osx, \'10.14\'',
         'platform :osx, \'10.15.7.7\'',
       );
-    }
-
-    switch (platform) {
-      case Platform.mobile:
-        await flutterConfigEnable(platform: Platform.android, project: project);
-        await flutterConfigEnable(platform: Platform.ios, project: project);
-      default:
-        await flutterConfigEnable(platform: platform, project: project);
     }
   }
 }

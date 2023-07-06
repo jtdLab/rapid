@@ -21,9 +21,14 @@ String multiLine(List<String> lines) => lines.join('\n');
 
 const envKeyRapidTerminalWidth = 'RAPID_TERMINAL_WIDTH';
 
+bool dirExists(String directory) {
+  final dir = Directory(directory);
+  return dir.existsSync();
+}
+
 bool dirIsEmpty(String directory) {
   final dir = Directory(directory);
-  return dir.existsSync() && dir.listSync().isEmpty;
+  return dir.listSync().isEmpty;
 }
 
 void replaceInFile(File file, String from, String replace) {

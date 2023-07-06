@@ -9,7 +9,7 @@ mixin _CreateMixin on _ActivateMixin {
     required Language language,
     required Set<Platform> platforms,
   }) async {
-    if (!dirIsEmpty(outputDir)) {
+    if (dirExists(outputDir) && !dirIsEmpty(outputDir)) {
       throw OutputDirNotEmptyException._(outputDir);
     }
 

@@ -42,7 +42,7 @@ jobs:
           key: fixtures-${{ github.run_id }}
 
       - name: Generate fixtures
-        run: bash tool/fixtures.sh
+        run: cd test/e2e/fixtures && rapid create project_none -o project_none
 
   e2e:
     runs-on: ubuntu-latest

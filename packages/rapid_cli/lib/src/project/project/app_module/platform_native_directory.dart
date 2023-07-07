@@ -64,6 +64,8 @@ final class MacosNativeDirectory extends PlatformNativeDirectory {
   }) {
     final path = p.join(platformRootPackagePath, 'macos');
 
+    print(Directory(path).listSync());
+
     return MacosNativeDirectory(
       projectName: projectName,
       path: path,

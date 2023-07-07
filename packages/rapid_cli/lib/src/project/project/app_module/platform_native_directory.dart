@@ -79,8 +79,6 @@ final class MacosNativeDirectory extends PlatformNativeDirectory {
         'org_name': orgName,
       },
     );
-
-    print(Directory(path).listSync());
   }
 
   File get podFile => File(p.join(path, 'Podfile'));

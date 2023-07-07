@@ -176,6 +176,8 @@ mixin _ActivateMixin on _Rapid {
       }
     }
 
+    print(Directory(rootPackage.path).listSync());
+
     await taskGroup(
       tasks: [
         appFeaturePackage,
@@ -193,6 +195,8 @@ mixin _ActivateMixin on _Rapid {
           )
           .toList(),
     );
+
+    print(Directory(rootPackage.path).listSync());
 
     if (infrastructureContainsNonDefaultPackage) {
       await task(

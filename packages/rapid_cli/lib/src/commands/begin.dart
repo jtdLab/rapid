@@ -20,6 +20,6 @@ class GroupAlreadyActiveException extends RapidException {
   @override
   String toString() {
     return 'There is already an active group. '
-        'Call "rapid end" to complete it.';
+        'Call "rapid end" to complete it first.';
   }
 }

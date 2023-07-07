@@ -538,6 +538,8 @@ final class RapidE2ETester {
           ),
         ],
       ];
+
+  File get dotRapidToolGroupFile => File(p.join('.rapid_tool', 'group.json'));
 }
 
 extension IterableX<E extends FileSystemEntity> on Iterable<E> {

@@ -176,8 +176,6 @@ mixin _ActivateMixin on _Rapid {
       }
     }
 
-    print(Directory(rootPackage.path).listSync());
-
     await taskGroup(
       tasks: [
         appFeaturePackage,
@@ -195,8 +193,6 @@ mixin _ActivateMixin on _Rapid {
           )
           .toList(),
     );
-
-    print(Directory((rootPackage as MacosRootPackage).nativeDirectory.path).listSync());
 
     if (infrastructureContainsNonDefaultPackage) {
       await task(
@@ -222,6 +218,8 @@ mixin _ActivateMixin on _Rapid {
 
     // TODO: Required due to https://github.com/jtdLab/rapid/issues/96
     if (platform == Platform.macos) {
+      await melosBootstrap(scope: [rootPackage], project: project);
+
       /// Sets the `osx` version inside the `Podfile` of the `macos` app
       /// to `10.15.7.7`. This is required because rapid projects use a
       /// [macos_ui](https://pub.dev/packages/macos_ui) version from the dev channel.

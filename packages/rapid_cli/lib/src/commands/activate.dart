@@ -196,7 +196,7 @@ mixin _ActivateMixin on _Rapid {
           .toList(),
     );
 
-    print(Directory(rootPackage.path).listSync());
+    print(Directory((rootPackage as MacosRootPackage).nativeDirectory.path).listSync());
 
     if (infrastructureContainsNonDefaultPackage) {
       await task(

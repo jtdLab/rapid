@@ -186,7 +186,7 @@ extension RapidProjectUtils on RapidProject {
               .featurePackages(),
           uiModule.platformUiPackage(platform: platform),
         ],
-      ];
+      ].where((e) => e.existsSync()).toList();
 
   List<PlatformRootPackage> rootPackages() => Platform.values
       .where((e) => platformIsActivated(e))

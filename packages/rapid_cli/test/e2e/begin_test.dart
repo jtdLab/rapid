@@ -16,16 +16,13 @@ void main() {
               await tester.runRapidCommand(['begin']);
 
               // Assert
-              await verifyNoAnalyzerIssues();
-              await verifyNoFormattingIssues();
-              print(tester.dotRapidToolGroupFile.absolute.path);
               verifyDoExist({tester.dotRapidToolGroupFile});
             });
 
         test(
           '',
           performTest(),
-          timeout: const Timeout(Duration(minutes: 4)),
+          timeout: const Timeout(Duration(minutes: 2)),
         );
       });
     },

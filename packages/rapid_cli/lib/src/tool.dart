@@ -130,6 +130,7 @@ class CommandGroup {
       isActive: json['isActive'],
       packagesToBootstrap: project
           .packages()
+       
           .where(
             (e) => json['packagesToBootstrap'].contains(e.packageName),
           )

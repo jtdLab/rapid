@@ -5,6 +5,7 @@ import 'package:args/command_runner.dart';
 import 'package:cli_launcher/cli_launcher.dart';
 import 'package:mason/mason.dart' hide packageVersion;
 import 'package:pub_updater/pub_updater.dart';
+import 'package:rapid_cli/src/cli.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/utils.dart';
@@ -121,6 +122,10 @@ FutureOr<void> rapidEntryPoint(
 
     await RapidCommandRunner(project: project, logger: logger).run(arguments);
   } on RapidException catch (err) {
+    // TODO workaround
+    if (err is FlutterPubGetException) {
+      stderr.writeln(err.stderr);
+    }
     stderr.writeln(err.toString());
     exitCode = 1;
   } on UsageException catch (err) {

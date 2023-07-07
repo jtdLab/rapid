@@ -176,6 +176,14 @@ mixin _ActivateMixin on _Rapid {
       }
     }
 
+    switch (platform) {
+      case Platform.mobile:
+        await flutterConfigEnable(platform: Platform.android, project: project);
+        await flutterConfigEnable(platform: Platform.ios, project: project);
+      default:
+        await flutterConfigEnable(platform: platform, project: project);
+    }
+
     await taskGroup(
       tasks: [
         appFeaturePackage,
@@ -206,20 +214,10 @@ mixin _ActivateMixin on _Rapid {
       () async => flutterGenl10n(package: localizationPackage),
     );
 
-    switch (platform) {
-      case Platform.mobile:
-        await flutterConfigEnable(platform: Platform.android, project: project);
-        await flutterConfigEnable(platform: Platform.ios, project: project);
-      default:
-        await flutterConfigEnable(platform: platform, project: project);
-    }
-
     logger.newLine();
 
     // TODO: Required due to https://github.com/jtdLab/rapid/issues/96
     if (platform == Platform.macos) {
-      await melosBootstrap(scope: [rootPackage], project: project);
-
       /// Sets the `osx` version inside the `Podfile` of the `macos` app
       /// to `10.15.7.7`. This is required because rapid projects use a
       /// [macos_ui](https://pub.dev/packages/macos_ui) version from the dev channel.

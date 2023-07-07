@@ -20,16 +20,9 @@ final class IosNativeDirectory extends PlatformNativeDirectory {
 
   factory IosNativeDirectory.resolve({
     required String projectName,
-    required String projectPath,
+    required String platformRootPackagePath,
   }) {
-    final path = p.join(
-      projectPath,
-      'packages',
-      projectName,
-      '${projectName}_ios',
-      '${projectName}_ios',
-      'ios',
-    );
+    final path = p.join(platformRootPackagePath, 'ios');
 
     return IosNativeDirectory(
       projectName: projectName,
@@ -67,16 +60,9 @@ final class MacosNativeDirectory extends PlatformNativeDirectory {
 
   factory MacosNativeDirectory.resolve({
     required String projectName,
-    required String projectPath,
+    required String platformRootPackagePath,
   }) {
-    final path = p.join(
-      projectPath,
-      'packages',
-      projectName,
-      '${projectName}_macos',
-      '${projectName}_macos',
-      'macos',
-    );
+    final path = p.join(platformRootPackagePath, 'macos');
 
     return MacosNativeDirectory(
       projectName: projectName,
@@ -108,17 +94,10 @@ final class NoneIosNativeDirectory extends PlatformNativeDirectory {
 
   factory NoneIosNativeDirectory.resolve({
     required String projectName,
-    required String projectPath,
+    required String platformRootPackagePath,
     required Platform platform,
   }) {
-    final path = p.join(
-      projectPath,
-      'packages',
-      projectName,
-      '${projectName}_${platform.name}',
-      '${projectName}_${platform.name}',
-      platform.name,
-    );
+    final path = p.join(platformRootPackagePath, platform.name);
 
     return NoneIosNativeDirectory(
       projectName: projectName,

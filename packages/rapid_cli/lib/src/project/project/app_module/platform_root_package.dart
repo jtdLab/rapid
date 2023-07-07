@@ -36,7 +36,7 @@ final class IosRootPackage extends PlatformRootPackage {
     );
     final nativeDirectory = IosNativeDirectory.resolve(
       projectName: projectName,
-      projectPath: projectPath,
+      platformRootPackagePath: path,
     );
 
     return IosRootPackage(
@@ -85,7 +85,7 @@ final class MacosRootPackage extends PlatformRootPackage {
     );
     final nativeDirectory = MacosNativeDirectory.resolve(
       projectName: projectName,
-      projectPath: projectPath,
+      platformRootPackagePath: path,
     );
 
     return MacosRootPackage(
@@ -134,7 +134,7 @@ final class NoneIosRootPackage extends PlatformRootPackage {
     );
     final nativeDirectory = NoneIosNativeDirectory.resolve(
       projectName: projectName,
-      projectPath: projectPath,
+      platformRootPackagePath: path,
       platform: platform,
     );
 
@@ -187,12 +187,12 @@ final class MobileRootPackage extends PlatformRootPackage {
     );
     final androidNativeDirectory = NoneIosNativeDirectory.resolve(
       projectName: projectName,
-      projectPath: projectPath,
+      platformRootPackagePath: path,
       platform: Platform.android,
     );
     final iosNativeDirectory = IosNativeDirectory.resolve(
       projectName: projectName,
-      projectPath: projectPath,
+      platformRootPackagePath: path,
     );
 
     return MobileRootPackage(

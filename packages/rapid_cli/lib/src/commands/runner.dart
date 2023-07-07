@@ -93,7 +93,7 @@ abstract class _Rapid {
     } else {
       // need "flutter pub get" because else "flutter pub run build_runner build"
       // fails sometimes
-      await flutterPubGet(package: package);
+      await flutterPubGet(package: package); // TODO needed ?
       await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
         package: package,
       );

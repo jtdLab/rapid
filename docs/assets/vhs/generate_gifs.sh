@@ -21,8 +21,8 @@ for tape in "${tapes[@]}"; do
     mkdir "$dot_generated_directory"
     cd "$dot_generated_directory"
     # Create GIF
-    vhs $tape
+    vhs "../$tape"
     # Move GIF to /vhs
-    find "$dot_generated_directory" -type f -name "*.gif" -exec cp {} "$current_directory" \;
+    find . -type f -name "*.gif" -exec cp {} "$current_directory" \;
     cd ..
 done

@@ -9,8 +9,8 @@ Set Height 700
 Set Padding 30
 Set BorderRadius 24
 Set PlaybackSpeed 0.5
-Set MarginFill "#262E33"
-Set Theme "Obsidian"
+Set MarginFill "#222226"
+Set Theme { "name": "Obsidian", "background": "#222226" }
 Set WindowBar Colorful
 
 # Type a command in the terminal.

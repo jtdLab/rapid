@@ -8,8 +8,8 @@ Set Width 1000
 Set Height 700
 Set Padding 30
 Set Margin 20
-Set MarginFill "#FFFFFF"
-Set BorderRadius 10
+Set MarginFill "#2862EC"
+Set BorderRadius 16
 Set PlaybackSpeed 0.5
 
 # Type a command in the terminal.

@@ -9,7 +9,7 @@ mixin _PubMixin on _Rapid {
   }) async {
     logger.newLine();
 
-    final package = _resolvePackage(packageName);
+    final package = _findCurrentPackage(packageName);
 
     final localPackagesToAdd = packages
         .where((e) => !e.trim().startsWith('dev') && e.trim().endsWith(':'))
@@ -74,7 +74,7 @@ mixin _PubMixin on _Rapid {
   }) async {
     logger.newLine();
 
-    final package = _resolvePackage(packageName);
+    final package = _findCurrentPackage(packageName);
 
     List<DartPackage> packagesToBootstrap(List<DartPackage> initial) {
       final remaining = project.packages()
@@ -123,7 +123,7 @@ mixin _PubMixin on _Rapid {
   }) async {
     logger.newLine();
 
-    final package = _resolvePackage(packageName);
+    final package = _findCurrentPackage(packageName);
 
     await flutterPubRemove(package: package, packagesToRemove: packages);
 
@@ -143,22 +143,19 @@ mixin _PubMixin on _Rapid {
       ..commandSuccess('Removed Dependencies!');
   }
 
-  // TODO cleaner ?
-  DartPackage _resolvePackage(String? packageName) {
-    try {
-      if (packageName != null) {
-        return project
-            .packages()
-            .firstWhere((e) => e.packageName == packageName);
-      } else {
-        // TODO good?
-        return project
-            .packages()
-            .firstWhere((e) => e.path == Directory.current.path);
+  DartPackage _findCurrentPackage(String? packageName) {
+    if (packageName != null) {
+      try {
+        return project.findByPackageName(packageName);
+      } catch (_) {
+        throw Error(); // TODO
       }
-    } catch (_) {
-      // TODO
-      throw Error();
+    } else {
+      try {
+        return project.findByCwd();
+      } catch (_) {
+        throw Error(); // TODO
+      }
     }
   }
 }

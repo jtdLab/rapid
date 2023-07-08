@@ -192,6 +192,14 @@ extension RapidProjectUtils on RapidProject {
       .where((e) => platformIsActivated(e))
       .map((e) => appModule.platformDirectory(platform: e).rootPackage)
       .toList();
+
+  DartPackage findByPackageName(String packageName) {
+    return packages().firstWhere((e) => e.packageName == packageName);
+  }
+
+  DartPackage findByCwd() {
+    return packages().firstWhere((e) => e.path == Directory.current.path);
+  }
 }
 
 extension LanguageUtils on Language {

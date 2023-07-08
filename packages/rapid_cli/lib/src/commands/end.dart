@@ -10,11 +10,13 @@ mixin _EndMixin on _Rapid {
 
     final group = tool.loadGroup();
     if (group.packagesToBootstrap.isNotEmpty) {
+      // TODO cleaner
       await task(
         'Bootstrapping packages',
         () async => bootstrap(packages: group.packagesToBootstrap),
       );
     }
+    // TODO cleaner
     if (group.packagesToCodeGen.isNotEmpty) {
       taskGroup(
         description: 'Running code generation',

@@ -1,6 +1,6 @@
 Require rapid
 
-Output demo.gif
+Output create.gif
 
 Set Shell zsh
 Set FontSize 20

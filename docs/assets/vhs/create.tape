@@ -8,7 +8,7 @@ Set Width 1000
 Set Height 700
 Set Padding 30
 Set Margin 20
-Set MarginFill "#2862EC"
+Set MarginFill "#FFFFFF"
 Set BorderRadius 16
 Set PlaybackSpeed 0.5
 

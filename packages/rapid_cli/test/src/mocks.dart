@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:process/process.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
 import 'package:rapid_cli/src/io.dart';
 import 'package:rapid_cli/src/project/language.dart';
@@ -99,6 +100,8 @@ MockMasonGenerator getMasonGenerator() {
 }
 
 class MockAppModule extends Mock implements AppModule {}
+
+class MockProcessManager extends Mock implements ProcessManager {}
 
 // Fakes
 

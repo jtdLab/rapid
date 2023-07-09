@@ -1,11 +1,11 @@
 import 'package:mason/mason.dart';
 
 class Language implements Comparable<Language> {
-  String languageCode;
-  String? scriptCode;
-  String? countryCode;
+  final String languageCode;
+  final String? scriptCode;
+  final String? countryCode;
 
-  Language({
+  const Language({
     required this.languageCode,
     this.scriptCode,
     this.countryCode,

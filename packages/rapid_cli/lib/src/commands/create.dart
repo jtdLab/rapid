@@ -9,6 +9,7 @@ mixin _CreateMixin on _ActivateMixin {
     required Language language,
     required Set<Platform> platforms,
   }) async {
+    outputDir = p.normalize(p.absolute(outputDir));
     if (dirExists(outputDir) && !dirIsEmpty(outputDir)) {
       throw OutputDirNotEmptyException._(outputDir);
     }

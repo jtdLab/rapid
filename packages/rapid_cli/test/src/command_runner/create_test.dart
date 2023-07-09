@@ -1,6 +1,7 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner/create.dart';
 import 'package:rapid_cli/src/project/language.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../common.dart';
@@ -196,13 +197,7 @@ void main() {
           description: any(named: 'description'),
           orgName: any(named: 'orgName'),
           language: any(named: 'language'),
-          android: any(named: 'android'),
-          ios: any(named: 'ios'),
-          linux: any(named: 'linux'),
-          macos: any(named: 'macos'),
-          mobile: any(named: 'mobile'),
-          web: any(named: 'web'),
-          windows: any(named: 'windows'),
+          platforms: any(named: 'platforms'),
         ),
       ).thenAnswer((_) async => 0);
       final argResults = MockArgResults();
@@ -231,13 +226,11 @@ void main() {
           description: 'A description.',
           orgName: 'com.foo.bar',
           language: Language(languageCode: 'de'),
-          android: true,
-          ios: false,
-          linux: true,
-          macos: false,
-          mobile: false,
-          web: true,
-          windows: false,
+          platforms: {
+            Platform.android,
+            Platform.linux,
+            Platform.web,
+          },
         ),
       ).called(1);
     });

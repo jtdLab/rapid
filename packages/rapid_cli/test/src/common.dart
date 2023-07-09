@@ -121,17 +121,17 @@ void Function() withRunner(
       final infrastructureDirectory = MockInfrastructureDirectory();
       when(() => infrastructureDirectory.infrastructurePackages())
           .thenReturn([]);
-      final featuresDirectory = MockFeaturesDirectory();
-      when(() => featuresDirectory.featurePackages()).thenReturn([]);
+      final platformFeaturesDirectory = MockFeaturesDirectory();
+      when(() => platformFeaturesDirectory.featurePackages()).thenReturn([]);
       final platformDirectory = MockPlatformDirectory();
       when(() => platformDirectory.featuresDirectory)
-          .thenReturn(featuresDirectory);
+          .thenReturn(platformFeaturesDirectory);
 
       when(() => appModule.domainDirectory).thenReturn(domainDirectory);
       when(() => appModule.infrastructureDirectory)
           .thenReturn(infrastructureDirectory);
-      when(() => appModule.platformDirectory(platform: any(named: 'platform')))
-          .thenReturn(platformDirectory);
+      when(() => appModule.platformDirectory)
+          .thenReturn(({required Platform platform}) => platformDirectory);
 
       when(() => project.appModule).thenReturn(appModule);
 

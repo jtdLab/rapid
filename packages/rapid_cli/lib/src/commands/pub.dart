@@ -24,7 +24,6 @@ mixin _PubMixin on _Rapid {
 
     for (final localPackage in localPackagesToAdd) {
       final dev = localPackage.startsWith('dev');
-
       package.pubSpecFile.setDependency(
         name: dev
             ? localPackage.trim().split(':')[1]

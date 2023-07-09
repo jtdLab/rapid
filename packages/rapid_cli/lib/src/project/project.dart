@@ -6,7 +6,7 @@
 
 import 'package:collection/collection.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/language.dart';
+import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/utils.dart';
 
@@ -15,34 +15,34 @@ import '../mason.dart' as mason;
 import '../project_config.dart';
 import 'bundles/bundles.dart';
 
-part 'project/app_module.dart';
-part 'project/app_module/bloc.dart';
-part 'project/app_module/cubit.dart';
-part 'project/app_module/data_transfer_object.dart';
-part 'project/app_module/di_package.dart';
-part 'project/app_module/domain_directory.dart';
-part 'project/app_module/domain_package.dart';
-part 'project/app_module/entity.dart';
-part 'project/app_module/infrastructure_directory.dart';
-part 'project/app_module/infrastructure_package.dart';
-part 'project/app_module/logging_package.dart';
-part 'project/app_module/navigator_implementation.dart';
-part 'project/app_module/navigator_interface.dart';
-part 'project/app_module/platform_directory.dart';
-part 'project/app_module/platform_feature_package.dart';
-part 'project/app_module/platform_features_directory.dart';
-part 'project/app_module/platform_localization_package.dart';
-part 'project/app_module/platform_native_directory.dart';
-part 'project/app_module/platform_navigation_package.dart';
-part 'project/app_module/platform_root_package.dart';
-part 'project/app_module/service_implementation.dart';
-part 'project/app_module/service_interface.dart';
-part 'project/app_module/value_object.dart';
-part 'project/root_package.dart';
-part 'project/ui_module.dart';
-part 'project/ui_module/platform_ui_package.dart';
-part 'project/ui_module/ui_package.dart';
-part 'project/ui_module/widget.dart';
+part 'app_module/app_module.dart';
+part 'app_module/bloc.dart';
+part 'app_module/cubit.dart';
+part 'app_module/data_transfer_object.dart';
+part 'app_module/di_package.dart';
+part 'app_module/domain_directory.dart';
+part 'app_module/domain_package.dart';
+part 'app_module/entity.dart';
+part 'app_module/infrastructure_directory.dart';
+part 'app_module/infrastructure_package.dart';
+part 'app_module/logging_package.dart';
+part 'app_module/navigator_implementation.dart';
+part 'app_module/navigator_interface.dart';
+part 'app_module/platform_directory.dart';
+part 'app_module/platform_feature_package.dart';
+part 'app_module/platform_features_directory.dart';
+part 'app_module/platform_localization_package.dart';
+part 'app_module/platform_native_directory.dart';
+part 'app_module/platform_navigation_package.dart';
+part 'app_module/platform_root_package.dart';
+part 'app_module/service_implementation.dart';
+part 'app_module/service_interface.dart';
+part 'app_module/value_object.dart';
+part 'root_package.dart';
+part 'ui_module/platform_ui_package.dart';
+part 'ui_module/ui_module.dart';
+part 'ui_module/ui_package.dart';
+part 'ui_module/widget.dart';
 
 class RapidProject {
   RapidProject({

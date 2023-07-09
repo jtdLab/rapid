@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:mason/mason.dart' show StringCaseExtensions;
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/language.dart';
+import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:yaml/yaml.dart';
 
@@ -200,6 +200,34 @@ extension RapidProjectUtils on RapidProject {
   DartPackage findByCwd() {
     return packages().firstWhere((e) => e.path == Directory.current.path);
   }
+
+  /// Returns all packages that depend on [package].
+  ///
+  /// This includes packages that have a transitive dependency on [package].
+  List<DartPackage> dependentPackages(DartPackage package) {
+    return _dependentPackages(packages()
+        .where((e) => e.pubSpecFile.hasDependency(name: package.packageName))
+        .toList());
+  }
+
+  List<DartPackage> _dependentPackages(List<DartPackage> initial) {
+    final dependentPackages = packages()
+        .without(initial)
+        .where(
+          (e) => initial.any(
+            (i) => e.pubSpecFile.hasDependency(name: i.packageName),
+          ),
+        )
+        .toList();
+
+    if (dependentPackages.isEmpty) {
+      return initial;
+    } else {
+      return _dependentPackages(
+        initial + dependentPackages,
+      );
+    }
+  }
 }
 
 extension LanguageUtils on Language {
@@ -214,10 +242,8 @@ extension PlatformRootPackageUtils on PlatformRootPackage {
   ) async {
     final packageName = featurePackage.packageName;
     pubSpecFile.setDependency(
-      updatedDependency: MapEntry(
-        packageName,
-        HostedReference(VersionConstraint.empty),
-      ),
+      name: packageName,
+      dependency: HostedReference(VersionConstraint.empty),
     );
     _addFeaturePackage(packageName, injectionFile: injectionFile);
     if (PlatformFeaturePackage is PlatformRoutableFeaturePackage) {
@@ -241,10 +267,8 @@ extension PlatformRootPackageUtils on PlatformRootPackage {
   ) async {
     final packageName = infrastructurePackage.packageName;
     pubSpecFile.setDependency(
-      updatedDependency: MapEntry(
-        packageName,
-        HostedReference(VersionConstraint.empty),
-      ),
+      name: packageName,
+      dependency: HostedReference(VersionConstraint.empty),
     );
     _addFeaturePackage(packageName, injectionFile: injectionFile);
   }
@@ -567,6 +591,16 @@ extension PlatformFeaturesDirectoryUtils on PlatformFeaturesDirectory {
 
 extension InfrastructurePackageUtils on InfrastructurePackage {
   bool get isDefault => name == null;
+}
+
+extension DartPackageListUtils on List<DartPackage> {
+  List<DartPackage> without(List<DartPackage> packages) {
+    // TODO maybe override euqalitty in DartPackage
+    return this
+      ..removeWhere(
+        (e) => packages.map((e) => e.packageName).contains(e.packageName),
+      );
+  }
 }
 
 // TODO needed ?

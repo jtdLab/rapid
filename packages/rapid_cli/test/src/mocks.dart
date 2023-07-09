@@ -1,19 +1,10 @@
-import 'dart:io' hide Platform;
-
 import 'package:args/args.dart';
 import 'package:mason/mason.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
-import 'package:rapid_cli/src/core/dart_package.dart';
-import 'package:rapid_cli/src/language.dart';
+import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
-import 'package:rapid_cli/src/project/domain_directory/domain_directory.dart';
-import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package.dart';
-import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_directory.dart';
-import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_features_directory.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/project_config.dart';
 
@@ -66,15 +57,15 @@ class MockRapidProjectConfig extends Mock implements RapidProjectConfig {}
 
 class MockProgress extends Mock implements Progress {}
 
-class MockPubspecFile extends Mock implements PubspecFile {}
+class MockPubspecYamlFile extends Mock implements PubspecYamlFile {}
 
 class MockMasonGenerator extends Mock implements MasonGenerator {}
 
-MockPubspecFile getPubspecFile() {
-  final pubspecFile = MockPubspecFile();
-  when(() => pubspecFile.readName()).thenReturn('some_name');
+MockPubspecYamlFile getPubspecYamlFile() {
+  final pubspecYamlFile = MockPubspecYamlFile();
+  when(() => pubspecYamlFile.name).thenReturn('some_name');
 
-  return pubspecFile;
+  return pubspecYamlFile;
 }
 
 class MockRapid extends Mock implements Rapid {}
@@ -106,6 +97,8 @@ MockMasonGenerator getMasonGenerator() {
 
   return generator;
 }
+
+class MockAppModule extends Mock implements AppModule {}
 
 // Fakes
 
@@ -219,7 +212,7 @@ class MockPlatformCustomFeaturePackage extends Mock
 class MockPlatformRoutingFeaturePackage extends Mock
     implements PlatformRoutingFeaturePackage {}
 
-class MockPubspecFile extends Mock implements PubspecFile {}
+class MockPubspecYamlFile extends Mock implements PubspecYamlFile {}
 
 class MockInjectionFile extends Mock implements InjectionFile {}
 
@@ -548,11 +541,11 @@ MockAppPackage getAppPackage() {
   return appPackage;
 }
 
-MockPubspecFile getPubspecFile() {
-  final pubspecFile = MockPubspecFile();
-  when(() => pubspecFile.readName()).thenReturn('some_name');
+MockPubspecYamlFile getPubspecYamlFile() {
+  final pubspecYamlFile = MockPubspecYamlFile();
+  when(() => pubspecYamlFile.readName()).thenReturn('some_name');
 
-  return pubspecFile;
+  return pubspecYamlFile;
 }
 
 MockInjectionFile getInjectionFile() {

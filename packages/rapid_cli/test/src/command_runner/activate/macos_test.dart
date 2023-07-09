@@ -1,6 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner/activate/macos.dart';
-import 'package:rapid_cli/src/language.dart';
+import 'package:rapid_cli/src/project/language.dart';
 import 'package:test/test.dart';
 
 import '../../common.dart';

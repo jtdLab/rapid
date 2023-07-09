@@ -1,6 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner/platform/set/default_language.dart';
-import 'package:rapid_cli/src/language.dart';
+import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 

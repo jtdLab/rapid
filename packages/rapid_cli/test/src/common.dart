@@ -114,8 +114,8 @@ void Function() withRunner(
     overridePrint((printLogs) async {
       final project = MockRapidProject();
 
-      final config = MockRapidProjectConfig();
-      when(() => config.isEmpty).thenReturn(false);
+      final appModule = MockAppModule();
+
       final domainDirectory = MockDomainDirectory();
       when(() => domainDirectory.domainPackages()).thenReturn([]);
       final infrastructureDirectory = MockInfrastructureDirectory();
@@ -127,11 +127,13 @@ void Function() withRunner(
       when(() => platformDirectory.featuresDirectory)
           .thenReturn(featuresDirectory);
 
-      when(() => project.domainDirectory).thenReturn(domainDirectory);
-      when(() => project.infrastructureDirectory)
+      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
+      when(() => appModule.infrastructureDirectory)
           .thenReturn(infrastructureDirectory);
-      when(() => project.platformDirectory(platform: any(named: 'platform')))
+      when(() => appModule.platformDirectory(platform: any(named: 'platform')))
           .thenReturn(platformDirectory);
+
+      when(() => project.appModule).thenReturn(appModule);
 
       if (setupProject != null) {
         setupProject(project);

@@ -7,7 +7,7 @@ import 'package:rapid_cli/src/project/platform.dart';
 import '../cli.dart';
 import '../exception.dart';
 import '../io.dart';
-import '../language.dart';
+import '../project/language.dart';
 import '../logging.dart';
 import '../mason.dart';
 import '../project/project.dart';

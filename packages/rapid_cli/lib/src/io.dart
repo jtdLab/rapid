@@ -13,6 +13,8 @@ import 'package:xml/xml.dart' show XmlDocument;
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
+import 'exception.dart';
+
 export 'dart:io' hide Directory, File;
 
 export 'package:pub_semver/pub_semver.dart';
@@ -395,16 +397,15 @@ class PubspecYamlFile extends YamlFile {
   }
 
   void setDependency({
-    required MapEntry<String, DependencyReference> updatedDependency,
+    required String name,
+    required DependencyReference dependency,
     bool dev = false,
   }) {
     final newPubSpec = _pubSpec.copy(
-      dependencies: !dev
-          ? (_pubSpec.dependencies..addEntries([updatedDependency]))
-          : null,
-      devDependencies: dev
-          ? (_pubSpec.devDependencies..addEntries([updatedDependency]))
-          : null,
+      dependencies:
+          !dev ? (_pubSpec.dependencies..addAll({name: dependency})) : null,
+      devDependencies:
+          dev ? (_pubSpec.devDependencies..addAll({name: dependency})) : null,
     );
 
     _writeToFile(newPubSpec);
@@ -433,6 +434,100 @@ class PubspecYamlFile extends YamlFile {
     } finally {
       ioSink.close();
     }
+  }
+}
+
+// TODO rm dependency stuff
+String _beautifyRawPubSpecDependency(String raw) {
+  raw = raw.trim();
+  if (raw.startsWith('\'') && raw.endsWith('\'')) {
+    raw = raw.substring(1, raw.length - 1);
+  }
+
+  return raw;
+}
+
+class PubSpecDependency {
+  final String name;
+  final DependencyReference reference;
+
+  PubSpecDependency({
+    required this.name,
+    required this.reference,
+  });
+
+  factory PubSpecDependency.parse(String raw) {
+    raw = _beautifyRawPubSpecDependency(raw);
+
+    try {
+      if (raw.startsWith('dev')) {
+        return PubSpecDevDependency.parse(raw);
+      } else if (raw.startsWith('override')) {
+        return PubSpecOverride.parse(raw);
+      } else {
+        // TODO
+        return PubSpecDependency(
+          name: raw.substring(0, raw.indexOf(':')),
+          reference: DependencyReference.fromJson(raw.indexOf(':') + 1),
+        );
+      }
+    } catch (_) {
+      throw PubspecDependencyParseException._(raw);
+    }
+  }
+}
+
+class PubSpecDevDependency extends PubSpecDependency {
+  PubSpecDevDependency({
+    required super.name,
+    required super.reference,
+  });
+
+  factory PubSpecDevDependency.parse(String raw) {
+    raw = _beautifyRawPubSpecDependency(raw);
+    raw = raw.substring(0, 5);
+
+    try {
+      // TODO
+      return PubSpecDevDependency(
+        name: raw.substring(0, raw.indexOf(':')),
+        reference: DependencyReference.fromJson(raw.indexOf(':') + 1),
+      );
+    } catch (_) {
+      throw PubspecDependencyParseException._(raw);
+    }
+  }
+}
+
+class PubSpecOverride extends PubSpecDependency {
+  PubSpecOverride({
+    required super.name,
+    required super.reference,
+  });
+
+  factory PubSpecOverride.parse(String raw) {
+    raw = _beautifyRawPubSpecDependency(raw);
+
+    try {
+      // TODO
+      return PubSpecOverride(
+        name: raw.substring(0, raw.indexOf(':')),
+        reference: DependencyReference.fromJson(raw.indexOf(':') + 1),
+      );
+    } catch (_) {
+      throw PubspecDependencyParseException._(raw);
+    }
+  }
+}
+
+class PubspecDependencyParseException extends RapidException {
+  PubspecDependencyParseException._(this.raw);
+
+  final String raw;
+
+  @override
+  String toString() {
+    return 'Could not parse dependency $raw.';
   }
 }
 

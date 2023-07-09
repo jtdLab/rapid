@@ -1,7 +1,5 @@
 part of 'runner.dart';
 
-// TODO: throw exception on error
-
 mixin _PubMixin on _Rapid {
   Future<void> pubAdd({
     required String? packageName,
@@ -11,18 +9,11 @@ mixin _PubMixin on _Rapid {
 
     final package = _findCurrentPackage(packageName);
 
-    final localPackagesToAdd = packages
-        .where((e) => !e.trim().startsWith('dev') && e.trim().endsWith(':'))
-        .toList();
-    final localDevPackagesToAdd = packages
-        .where((e) => e.trim().startsWith('dev') && e.trim().endsWith(':'))
-        .toList();
-    final publicPackagesToAdd = packages
-        .where((e) => !e.trim().startsWith('dev') && !e.trim().endsWith(':'))
-        .toList();
-    final publicDevPackagesToAdd = packages
-        .where((e) => e.trim().startsWith('dev') && !e.trim().endsWith(':'))
-        .toList();
+    // TODO cleaner
+    final publicPackagesToAdd =
+        packages.map((e) => e.trim()).where((e) => !e.endsWith(':')).toList();
+    final localPackagesToAdd =
+        packages.map((e) => e.trim()).where((e) => e.endsWith(':')).toList();
 
     if (publicPackagesToAdd.isNotEmpty) {
       await flutterPubAdd(
@@ -30,37 +21,23 @@ mixin _PubMixin on _Rapid {
         dependenciesToAdd: publicPackagesToAdd,
       );
     }
-    if (publicDevPackagesToAdd.isNotEmpty) {
-      await flutterPubAdd(
-        package: package,
-        dependenciesToAdd: publicDevPackagesToAdd,
-      );
-    }
 
     for (final localPackage in localPackagesToAdd) {
-      final name = localPackage.trim().split(':').first;
-      package.pubSpecFile.setDependency(
-        updatedDependency:
-            MapEntry(name, HostedReference(VersionConstraint.empty)),
-      );
-    }
-    for (final localDevPackage in localDevPackagesToAdd) {
-      final name = localDevPackage.trim().split(':')[1];
-      package.pubSpecFile.setDependency(
-        updatedDependency:
-            MapEntry(name, HostedReference(VersionConstraint.empty)),
-        dev: true,
-      );
-    }
+      final dev = localPackage.startsWith('dev');
 
-    final dependingPackages = project
-        .packages()
-        .where((e) => e.pubSpecFile.hasDependency(name: package.packageName));
+      package.pubSpecFile.setDependency(
+        name: dev
+            ? localPackage.trim().split(':')[1]
+            : localPackage.trim().split(':').first,
+        dependency: HostedReference(VersionConstraint.empty),
+        dev: dev,
+      );
+    }
 
     await bootstrap(
       packages: [
         package,
-        ...dependingPackages,
+        ...project.dependentPackages(package),
       ],
     );
 
@@ -76,39 +53,10 @@ mixin _PubMixin on _Rapid {
 
     final package = _findCurrentPackage(packageName);
 
-    List<DartPackage> packagesToBootstrap(List<DartPackage> initial) {
-      final remaining = project.packages()
-        ..removeWhere(
-            (e) => initial.map((e) => e.packageName).contains(e.packageName));
-
-      final newPkgs = remaining
-          .where(
-            (rem) => initial.any(
-              (i) => rem.pubSpecFile.hasDependency(name: i.packageName),
-            ),
-          )
-          .toList();
-
-      if (newPkgs.isEmpty) {
-        return initial;
-      } else {
-        return packagesToBootstrap(
-          initial + newPkgs,
-        );
-      }
-    }
-
     final result = await flutterPubGet(package: package, dryRun: true);
     if (result.wouldChangeDependencies) {
       await bootstrap(
-        packages: packagesToBootstrap(
-          project
-              .packages()
-              .where(
-                (e) => e.pubSpecFile.hasDependency(name: package.packageName),
-              )
-              .toList(),
-        ),
+        packages: project.dependentPackages(package),
       );
     }
 
@@ -127,14 +75,10 @@ mixin _PubMixin on _Rapid {
 
     await flutterPubRemove(package: package, packagesToRemove: packages);
 
-    final dependingPackages = project
-        .packages()
-        .where((e) => e.pubSpecFile.hasDependency(name: package.packageName));
-
     await bootstrap(
       packages: [
         package,
-        ...dependingPackages,
+        ...project.dependentPackages(package),
       ],
     );
 
@@ -148,14 +92,36 @@ mixin _PubMixin on _Rapid {
       try {
         return project.findByPackageName(packageName);
       } catch (_) {
-        throw Error(); // TODO
+        throw PackageNotFoundException._(packageName);
       }
     } else {
       try {
         return project.findByCwd();
       } catch (_) {
-        throw Error(); // TODO
+        throw PackageAtCwdNotFoundException._(Directory.current.path);
       }
     }
+  }
+}
+
+class PackageNotFoundException extends RapidException {
+  PackageNotFoundException._(this.packageName);
+
+  final String packageName;
+
+  @override
+  String toString() {
+    return 'Could not find a dart package with $packageName that is part of a Rapid project.';
+  }
+}
+
+class PackageAtCwdNotFoundException extends RapidException {
+  PackageAtCwdNotFoundException._(this.cwdPath);
+
+  final String cwdPath;
+
+  @override
+  String toString() {
+    return 'Could not find a dart package at $cwdPath that is part of a Rapid project.';
   }
 }

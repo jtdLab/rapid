@@ -36,7 +36,7 @@ final dataTransferObjectBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pre_gen.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwoKdm9pZCBydW4oSG9va0NvbnRleHQgY29udGV4dCkgewogZmluYWwgb3V0cHV0RGlyID0gY29udGV4dC52YXJzWydvdXRwdXRfZGlyJ107CiAgZmluYWwgc3ViSW5mcmFzdHJ1Y3R1cmVOYW1lID0gY29udGV4dC52YXJzWydzdWJfaW5mcmFzdHJ1Y3R1cmVfbmFtZSddOwogIGNvbnRleHQudmFycyA9IHsKICAgIC4uLmNvbnRleHQudmFycywKICAgICdvdXRwdXRfZGlyX2lzX2N3ZCc6IG91dHB1dERpciA9PSAnLicsCiAgICAnaGFzX3N1Yl9pbmZyYXN0cnVjdHVyZV9uYW1lJzogc3ViSW5mcmFzdHJ1Y3R1cmVOYW1lICE9IG51bGwsCiAgfTsKfQo=",
+          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwoKdm9pZCBydW4oSG9va0NvbnRleHQgY29udGV4dCkgewogIGZpbmFsIG91dHB1dERpciA9IGNvbnRleHQudmFyc1snb3V0cHV0X2RpciddOwogIGZpbmFsIHN1YkluZnJhc3RydWN0dXJlTmFtZSA9IGNvbnRleHQudmFyc1snc3ViX2luZnJhc3RydWN0dXJlX25hbWUnXTsKICBjb250ZXh0LnZhcnMgPSB7CiAgICAuLi5jb250ZXh0LnZhcnMsCiAgICAnb3V0cHV0X2Rpcl9pc19jd2QnOiBvdXRwdXREaXIgPT0gJy4nLAogICAgJ2hhc19zdWJfaW5mcmFzdHJ1Y3R1cmVfbmFtZSc6IHN1YkluZnJhc3RydWN0dXJlTmFtZSAhPSBudWxsLAogIH07Cn0K",
       "type": "text"
     },
     {

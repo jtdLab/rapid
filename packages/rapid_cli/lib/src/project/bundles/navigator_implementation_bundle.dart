@@ -22,13 +22,13 @@ final navigatorImplementationBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pre_gen.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6aG9va3MvaG9va3MuZGFydCc7Cgp2b2lkIHJ1bihIb29rQ29udGV4dCBjb250ZXh0KSB7CiAgYWRkUGxhdGZvcm1GbGFncyhjb250ZXh0KTsKfQo=",
+          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwoKdm9pZCBydW4oSG9va0NvbnRleHQgY29udGV4dCkgewogIGFkZFBsYXRmb3JtRmxhZ3MoY29udGV4dCk7Cn0KCnZvaWQgYWRkUGxhdGZvcm1GbGFncyhIb29rQ29udGV4dCBjb250ZXh0KSB7CiAgY29udGV4dC52YXJzID0gewogICAgLi4uY29udGV4dC52YXJzLAogICAgJ2FuZHJvaWQnOiBmYWxzZSwKICAgICdpb3MnOiBmYWxzZSwKICAgICdsaW51eCc6IGZhbHNlLAogICAgJ21hY29zJzogZmFsc2UsCiAgICAnd2ViJzogZmFsc2UsCiAgICAnd2luZG93cyc6IGZhbHNlLAogICAgJ21vYmlsZSc6IGZhbHNlLAogIH07CgogIGZpbmFsIHBsYXRmb3JtID0gY29udGV4dC52YXJzWydwbGF0Zm9ybSddOwogIGlmIChwbGF0Zm9ybSAhPSBudWxsKSB7CiAgICBjb250ZXh0LnZhcnMgPSB7Li4uY29udGV4dC52YXJzLCBwbGF0Zm9ybTogdHJ1ZX07CiAgfQp9Cg==",
       "type": "text"
     },
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZTogbmF2aWdhdG9yX2ltcGxlbWVudGF0aW9uX2hvb2tzCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBtYXNvbjogYW55CiAgIyBUT0RPOiBodHRwczovL2dpdGh1Yi5jb20vZmVsYW5nZWwvbWFzb24vaXNzdWVzLzk5NgogIGhvb2tzOgogICAgZ2l0OgogICAgICB1cmw6IGh0dHBzOi8vZ2l0aHViLmNvbS9qdGRMYWIvcmFwaWQuZ2l0CiAgICAgIHBhdGg6IHBhY2thZ2VzL3JhcGlkX2NsaS90ZW1wbGF0ZXMvaG9va3MKICAgICAgcmVmOiBkZXYK",
+          "bmFtZTogbmF2aWdhdG9yX2ltcGxlbWVudGF0aW9uX2hvb2tzCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBtYXNvbjogYW55Cg==",
       "type": "text"
     }
   ],

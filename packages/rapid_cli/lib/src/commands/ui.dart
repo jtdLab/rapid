@@ -53,7 +53,8 @@ mixin _UiMixin on _Rapid {
           final projectName = uiPackage.projectName;
           final themes = ['light', 'dark']; // TODO read from file
           for (final theme in themes) {
-            final extension = '${projectName.pascalCase}${name}Theme.$theme';
+            final extension =
+                '${projectName.pascalCase}${name.pascalCase}Theme.$theme';
             final existingExtensions = themeExtensionsFile.readTopLevelListVar(
               name: '${theme}Extensions',
             );
@@ -114,7 +115,8 @@ mixin _UiMixin on _Rapid {
           final themes = ['light', 'dark']; // TODO read from file
 
           for (final theme in themes) {
-            final extension = '${projectName.pascalCase}${name}Theme.$theme';
+            final extension =
+                '${projectName.pascalCase}${name.pascalCase}Theme.$theme';
             final existingExtensions = themeExtensionsFile.readTopLevelListVar(
               name: '${theme}Extensions',
             );

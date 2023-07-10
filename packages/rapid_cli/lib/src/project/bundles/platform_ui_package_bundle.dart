@@ -121,13 +121,13 @@ final platformUiPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pre_gen.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6aG9va3MvaG9va3MuZGFydCc7Cgp2b2lkIHJ1bihIb29rQ29udGV4dCBjb250ZXh0KSB7CiAgYWRkUGxhdGZvcm1GbGFncyhjb250ZXh0KTsKfQo=",
+          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwoKdm9pZCBydW4oSG9va0NvbnRleHQgY29udGV4dCkgewogIGFkZFBsYXRmb3JtRmxhZ3MoY29udGV4dCk7Cn0KCnZvaWQgYWRkUGxhdGZvcm1GbGFncyhIb29rQ29udGV4dCBjb250ZXh0KSB7CiAgY29udGV4dC52YXJzID0gewogICAgLi4uY29udGV4dC52YXJzLAogICAgJ2FuZHJvaWQnOiBmYWxzZSwKICAgICdpb3MnOiBmYWxzZSwKICAgICdsaW51eCc6IGZhbHNlLAogICAgJ21hY29zJzogZmFsc2UsCiAgICAnd2ViJzogZmFsc2UsCiAgICAnd2luZG93cyc6IGZhbHNlLAogICAgJ21vYmlsZSc6IGZhbHNlLAogIH07CgogIGZpbmFsIHBsYXRmb3JtID0gY29udGV4dC52YXJzWydwbGF0Zm9ybSddOwogIGlmIChwbGF0Zm9ybSAhPSBudWxsKSB7CiAgICBjb250ZXh0LnZhcnMgPSB7Li4uY29udGV4dC52YXJzLCBwbGF0Zm9ybTogdHJ1ZX07CiAgfQp9Cg==",
       "type": "text"
     },
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZTogcGxhdGZvcm1fdWlfaG9va3MKCmVudmlyb25tZW50OgogIHNkazogIj49My4wLjAgPDQuMC4wIgoKZGVwZW5kZW5jaWVzOgogIG1hc29uOiBhbnkKICAjIFRPRE86IGh0dHBzOi8vZ2l0aHViLmNvbS9mZWxhbmdlbC9tYXNvbi9pc3N1ZXMvOTk2CiAgaG9va3M6CiAgICBnaXQ6CiAgICAgIHVybDogaHR0cHM6Ly9naXRodWIuY29tL2p0ZExhYi9yYXBpZC5naXQKICAgICAgcGF0aDogcGFja2FnZXMvcmFwaWRfY2xpL3RlbXBsYXRlcy9ob29rcwogICAgICByZWY6IGRldgo=",
+          "bmFtZTogcGxhdGZvcm1fdWlfaG9va3MKCmVudmlyb25tZW50OgogIHNkazogIj49My4wLjAgPDQuMC4wIgoKZGVwZW5kZW5jaWVzOgogIG1hc29uOiBhbnkK",
       "type": "text"
     }
   ],

@@ -245,13 +245,13 @@ final iosNativeDirectoryBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pre_gen.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6aG9va3MvaG9va3MuZGFydCc7Cgp2b2lkIHJ1bihIb29rQ29udGV4dCBjb250ZXh0KSB7CiAgYWRkTGFuZ3VhZ2VGbGFncyhjb250ZXh0KTsKfQo=",
+          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwoKdm9pZCBydW4oSG9va0NvbnRleHQgY29udGV4dCkgewogIGFkZExhbmd1YWdlRmxhZ3MoY29udGV4dCk7Cn0KCnZvaWQgYWRkTGFuZ3VhZ2VGbGFncyhIb29rQ29udGV4dCBjb250ZXh0KSB7CiAgZmluYWwgc2NyaXB0Q29kZSA9IGNvbnRleHQudmFyc1snc2NyaXB0X2NvZGUnXTsKICBmaW5hbCBjb3VudHJ5Q29kZSA9IGNvbnRleHQudmFyc1snY291bnRyeV9jb2RlJ107CiAgY29udGV4dC52YXJzID0gewogICAgLi4uY29udGV4dC52YXJzLAogICAgJ2hhc19zY3JpcHRfY29kZSc6IHNjcmlwdENvZGUgIT0gbnVsbCwKICAgICdoYXNfY291bnRyeV9jb2RlJzogY291bnRyeUNvZGUgIT0gbnVsbAogIH07Cn0K",
       "type": "text"
     },
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZTogaW9zX25hdGl2ZV9kaXJlY3RvcnlfaG9va3MKCmVudmlyb25tZW50OgogIHNkazogIj49My4wLjAgPDQuMC4wIgoKZGVwZW5kZW5jaWVzOgogIG1hc29uOiBhbnkKICAjIFRPRE86IGh0dHBzOi8vZ2l0aHViLmNvbS9mZWxhbmdlbC9tYXNvbi9pc3N1ZXMvOTk2CiAgaG9va3M6CiAgICBnaXQ6CiAgICAgIHVybDogaHR0cHM6Ly9naXRodWIuY29tL2p0ZExhYi9yYXBpZC5naXQKICAgICAgcGF0aDogcGFja2FnZXMvcmFwaWRfY2xpL3RlbXBsYXRlcy9ob29rcwogICAgICByZWY6IGRldgo=",
+          "bmFtZTogaW9zX25hdGl2ZV9kaXJlY3RvcnlfaG9va3MKCmVudmlyb25tZW50OgogIHNkazogIj49My4wLjAgPDQuMC4wIgoKZGVwZW5kZW5jaWVzOgogIG1hc29uOiBhbnkK",
       "type": "text"
     }
   ],

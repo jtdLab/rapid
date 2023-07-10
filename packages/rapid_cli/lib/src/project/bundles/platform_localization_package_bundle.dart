@@ -64,13 +64,13 @@ final platformLocalizationPackageBundle =
     {
       "path": "pre_gen.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6aG9va3MvaG9va3MuZGFydCc7Cgp2b2lkIHJ1bihIb29rQ29udGV4dCBjb250ZXh0KSB7CiAgLy8gVE9ETyB0aGlzIG5lZWRzIHRvIGJlIHVwZGF0ZWQKICBhZGRMYW5ndWFnZUZsYWdzKGNvbnRleHQpOwp9Cg==",
+          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwoKdm9pZCBydW4oSG9va0NvbnRleHQgY29udGV4dCkgewogIC8vIFRPRE8gdGhpcyBuZWVkcyB0byBiZSB1cGRhdGVkCiAgYWRkTGFuZ3VhZ2VGbGFncyhjb250ZXh0KTsKfQoKdm9pZCBhZGRMYW5ndWFnZUZsYWdzKEhvb2tDb250ZXh0IGNvbnRleHQpIHsKICBmaW5hbCBzY3JpcHRDb2RlID0gY29udGV4dC52YXJzWydzY3JpcHRfY29kZSddOwogIGZpbmFsIGNvdW50cnlDb2RlID0gY29udGV4dC52YXJzWydjb3VudHJ5X2NvZGUnXTsKICBjb250ZXh0LnZhcnMgPSB7CiAgICAuLi5jb250ZXh0LnZhcnMsCiAgICAnaGFzX3NjcmlwdF9jb2RlJzogc2NyaXB0Q29kZSAhPSBudWxsLAogICAgJ2hhc19jb3VudHJ5X2NvZGUnOiBjb3VudHJ5Q29kZSAhPSBudWxsCiAgfTsKfQo=",
       "type": "text"
     },
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZTogcGxhdGZvcm1fbG9jYWxpemF0aW9uc19wYWNrYWdlX2hvb2tzCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBtYXNvbjogYW55CiAgIyBUT0RPOiBodHRwczovL2dpdGh1Yi5jb20vZmVsYW5nZWwvbWFzb24vaXNzdWVzLzk5NgogIGhvb2tzOgogICAgZ2l0OgogICAgICB1cmw6IGh0dHBzOi8vZ2l0aHViLmNvbS9qdGRMYWIvcmFwaWQuZ2l0CiAgICAgIHBhdGg6IHBhY2thZ2VzL3JhcGlkX2NsaS90ZW1wbGF0ZXMvaG9va3MKICAgICAgcmVmOiBkZXYK",
+          "bmFtZTogcGxhdGZvcm1fbG9jYWxpemF0aW9uc19wYWNrYWdlX2hvb2tzCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBtYXNvbjogYW55Cg==",
       "type": "text"
     }
   ],

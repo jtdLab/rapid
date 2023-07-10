@@ -20,3 +20,4 @@ vars:
     type: string
   platform:
     type: string
+

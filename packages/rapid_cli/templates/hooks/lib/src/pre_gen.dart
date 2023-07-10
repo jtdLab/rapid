@@ -13,7 +13,9 @@ void addPlatformFlags(HookContext context) {
   };
 
   final platform = context.vars['platform'];
-  context.vars = {...context.vars, platform: true};
+  if (platform != null) {
+    context.vars = {...context.vars, platform: true};
+  }
 }
 
 void addLanguageFlags(HookContext context) {

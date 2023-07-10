@@ -22,7 +22,7 @@ final widgetBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pre_gen.dart",
       "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6aG9va3MvaG9va3MuZGFydCc7Cgp2b2lkIHJ1bihIb29rQ29udGV4dCBjb250ZXh0KSB7CiAgaWYgKGNvbnRleHQudmFyc1sncGxhdGZvcm0nXSAhPSBudWxsKSB7CiAgICBhZGRQbGF0Zm9ybUZsYWdzKGNvbnRleHQpOwogIH0KfQo=",
+          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwppbXBvcnQgJ3BhY2thZ2U6aG9va3MvaG9va3MuZGFydCc7Cgp2b2lkIHJ1bihIb29rQ29udGV4dCBjb250ZXh0KSB7CiAgYWRkUGxhdGZvcm1GbGFncyhjb250ZXh0KTsKfQo=",
       "type": "text"
     },
     {

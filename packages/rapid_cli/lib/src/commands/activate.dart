@@ -94,10 +94,7 @@ mixin _ActivateMixin on _Rapid {
       language: language,
     );
 
-    await task(
-      'Running "dart format . --fix" in project',
-      () async => dartFormatFix(package: project.rootPackage),
-    );
+    await dartFormatFixTask();
 
     logger
       ..newLine()
@@ -176,36 +173,24 @@ mixin _ActivateMixin on _Rapid {
       }
     }
 
-    await taskGroup(
-      tasks: [
+    await flutterPubGetTaskGroup(
+      packages: [
         appFeaturePackage,
         homePageFeaturePackage,
         localizationPackage,
         navigationPackage,
         rootPackage,
         platformUiPackage,
-      ]
-          .map(
-            (package) => (
-              'Running "flutter pub get" in ${package.packageName}',
-              () async => flutterPubGet(package: package)
-            ),
-          )
-          .toList(),
+      ],
     );
 
     if (infrastructureContainsNonDefaultPackage) {
-      await task(
-        'Running code generation in root package',
-        () async => codeGen(package: rootPackage),
-      );
+      await codeGenTask(package: rootPackage);
     }
 
-    await task(
-      'Running "flutter gen-l10n" in localization package',
-      () async => flutterGenl10n(package: localizationPackage),
-    );
+    await flutterGenl10nTask(package: localizationPackage);
 
+    // TODO use tasks
     switch (platform) {
       case Platform.mobile:
         await flutterConfigEnable(platform: Platform.android, project: project);

@@ -147,6 +147,20 @@ abstract class _Rapid {
     }
   }
 
+  Future<void> flutterPubGetTaskGroup({
+    required List<DartPackage> packages,
+  }) async =>
+      taskGroup(
+        tasks: packages
+            .map(
+              (package) => (
+                'Running "flutter pub get" in ${package.packageName}',
+                () async => flutterPubGet(package: package)
+              ),
+            )
+            .toList(),
+      );
+
   Future<void> flutterPubAddTask({
     required List<String> dependenciesToAdd,
     required DartPackage package,
@@ -181,7 +195,35 @@ abstract class _Rapid {
     required List<DartPackage> scope,
   }) async =>
       task(
-        'Running melos bootstrap --scope="${scope.map((e) => e.packageName).join(' ')}"',
+        'Running "melos bootstrap --scope="${scope.map((e) => e.packageName).join(' ')}""',
         () async => bootstrap(packages: scope),
+      );
+
+  Future<void> dartFormatFixTask() async => task(
+        'Running "dart format . --fix" in project',
+        () async => dartFormatFix(package: project.rootPackage),
+      );
+
+  Future<void> codeGenTask({required DartPackage package}) async => task(
+        'Running code generation in ${package.packageName}',
+        () async => codeGen(package: package),
+      );
+
+  Future<void> codeGenTaskGroup({required List<DartPackage> packages}) async =>
+      taskGroup(
+        tasks: packages
+            .map(
+              (package) => (
+                'Running code generation in ${package.packageName}',
+                () async => codeGen(package: package),
+              ),
+            )
+            .toList(),
+        parallelism: 1, // TODO is this the most performant way
+      );
+
+  Future<void> flutterGenl10nTask({required DartPackage package}) async => task(
+        'Running "flutter gen-l10n" in ${package.packageName}',
+        () async => flutterGenl10n(package: package),
       );
 }

@@ -43,22 +43,15 @@ mixin _CreateMixin on _ActivateMixin {
       parallelism: 1,
     );
 
-    await taskGroup(
-      tasks: [
+    await flutterPubGetTaskGroup(
+      packages: [
         project.rootPackage,
         project.appModule.diPackage,
         project.appModule.domainDirectory.domainPackage(),
         project.appModule.infrastructureDirectory.infrastructurePackage(),
         project.appModule.loggingPackage,
         project.uiModule.uiPackage,
-      ]
-          .map(
-            (package) => (
-              'Running "flutter pub get" in ${package.packageName}',
-              () async => flutterPubGet(package: package)
-            ),
-          )
-          .toList(),
+      ],
     );
 
     logger.newLine();
@@ -72,10 +65,7 @@ mixin _CreateMixin on _ActivateMixin {
       );
     }
 
-    await task(
-      'Running "dart format . --fix" in project',
-      () async => dartFormatFix(package: project.rootPackage),
-    );
+    await dartFormatFixTask();
 
     // TODO log better summary + refs to doc
     logger

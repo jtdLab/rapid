@@ -1,8 +1,11 @@
 part of 'runner.dart';
 
 mixin _UiMixin on _Rapid {
-  Future<void> uiAddWidget({required String name}) async =>
-      _uiAddWidget(name: name);
+  Future<void> uiAddWidget({
+    required String name,
+    required bool theme,
+  }) async =>
+      _uiAddWidget(name: name, theme: theme);
 
   Future<void> uiRemoveWidget({required String name}) async =>
       _uiRemoveWidget(name: name);
@@ -10,17 +13,19 @@ mixin _UiMixin on _Rapid {
   Future<void> uiPlatformAddWidget(
     Platform platform, {
     required String name,
+    required bool theme,
   }) async =>
-      _uiAddWidget(platform: platform, name: name);
+      _uiAddWidget(platform: platform, name: name, theme: theme);
 
   Future<void> uiPlatformRemoveWidget(
     Platform platform, {
     required String name,
   }) async =>
-      _uiAddWidget(platform: platform, name: name);
+      _uiRemoveWidget(platform: platform, name: name);
 
   Future<void> _uiAddWidget({
     required String name,
+    required bool theme,
     Platform? platform,
   }) async {
     logger.newLine();
@@ -29,9 +34,12 @@ mixin _UiMixin on _Rapid {
       null => project.uiModule.uiPackage,
       _ => project.uiModule.platformUiPackage(platform: platform),
     };
-    final widget = uiPackage.widget(name: name);
+
+    final widget = switch (theme) {
+      true => uiPackage.themedWidget(name: name),
+      false => uiPackage.widget(name: name),
+    };
     if (!widget.existsAny) {
-      final themeExtensionsFile = uiPackage.themeExtensionsFile;
       final barrelFile = uiPackage.barrelFile;
 
       await task('Creating widget', () async {
@@ -39,28 +47,31 @@ mixin _UiMixin on _Rapid {
         await widget.generate();
         barrelFile.addExport('src/${name.snakeCase}.dart');
         // ### TODO
-        final projectName = uiPackage.projectName;
 
-        final themes = ['light', 'dark']; // TODO read from file
-
-        for (final theme in themes) {
-          final extension = '${projectName.pascalCase}${name}Theme.$theme';
-          final existingExtensions = themeExtensionsFile.readTopLevelListVar(
-            name: '${theme}Extensions',
-          );
-
-          if (!existingExtensions.contains(extension)) {
-            themeExtensionsFile.setTopLevelListVar(
+        if (widget is ThemedWidget) {
+          final themeExtensionsFile = uiPackage.themeExtensionsFile;
+          final projectName = uiPackage.projectName;
+          final themes = ['light', 'dark']; // TODO read from file
+          for (final theme in themes) {
+            final extension = '${projectName.pascalCase}${name}Theme.$theme';
+            final existingExtensions = themeExtensionsFile.readTopLevelListVar(
               name: '${theme}Extensions',
-              value: [
-                extension,
-                ...existingExtensions,
-              ]..sort(),
             );
+
+            if (!existingExtensions.contains(extension)) {
+              themeExtensionsFile.setTopLevelListVar(
+                name: '${theme}Extensions',
+                value: [
+                  extension,
+                  ...existingExtensions,
+                ]..sort(),
+              );
+            }
           }
+
+          barrelFile.addExport('src/${name.snakeCase}_theme.dart');
         }
-        // ###
-        barrelFile.addExport('src/${name.snakeCase}_theme.dart');
+
         await dartFormatFix(package: uiPackage);
       });
 
@@ -84,9 +95,10 @@ mixin _UiMixin on _Rapid {
       null => project.uiModule.uiPackage,
       _ => project.uiModule.platformUiPackage(platform: platform),
     };
-    final widget = uiPackage.widget(name: name);
+    final widget = uiPackage.themedWidget(name: name).existsAll
+        ? uiPackage.themedWidget(name: name)
+        : uiPackage.widget(name: name);
     if (widget.existsAny) {
-      final themeExtensionsFile = uiPackage.themeExtensionsFile;
       final barrelFile = uiPackage.barrelFile;
 
       await task('Deleting widget', () async {
@@ -95,27 +107,33 @@ mixin _UiMixin on _Rapid {
         barrelFile.removeExport('src/${name.snakeCase}.dart');
 
         // TODO ####
-        final projectName = uiPackage.projectName;
+        if (widget is ThemedWidget) {
+          final themeExtensionsFile = uiPackage.themeExtensionsFile;
+          final projectName = uiPackage.projectName;
 
-        final themes = ['light', 'dark']; // TODO read from file
+          final themes = ['light', 'dark']; // TODO read from file
 
-        for (final theme in themes) {
-          final extension = '${projectName.pascalCase}${name}Theme.$theme';
-          final existingExtensions = themeExtensionsFile.readTopLevelListVar(
-            name: '${theme}Extensions',
-          );
-
-          if (existingExtensions.contains(extension)) {
-            themeExtensionsFile.setTopLevelListVar(
+          for (final theme in themes) {
+            final extension = '${projectName.pascalCase}${name}Theme.$theme';
+            final existingExtensions = themeExtensionsFile.readTopLevelListVar(
               name: '${theme}Extensions',
-              value: existingExtensions..remove(extension),
             );
+
+            if (existingExtensions.contains(extension)) {
+              themeExtensionsFile.setTopLevelListVar(
+                name: '${theme}Extensions',
+                value: existingExtensions..remove(extension),
+              );
+            }
           }
+
+          // ####
+
+          barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
+
+          // TODO simplify dartformat fix to make it run on whole project
+          await dartFormatFix(package: project.rootPackage);
         }
-
-        // ####
-
-        barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
       });
 
       logger

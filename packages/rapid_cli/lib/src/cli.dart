@@ -115,7 +115,6 @@ Future<void> flutterPubAdd({
   if (result.exitCode != 0) {
     throw FlutterPubAddException._(
       package,
-      'Failed to add dependencies.',
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -298,20 +297,22 @@ class FlutterPubRunBuildRunnerBuildException implements RapidException {
 
 class FlutterPubAddException implements RapidException {
   FlutterPubAddException._(
-    this.package,
-    this.message, {
+    this.package, {
     this.stdout,
     this.stderr,
   });
 
   final DartPackage package;
-  final String message;
+
   final String? stdout;
   final String? stderr;
 
   @override
   String toString() {
-    return 'FlutterPubAddException: $message: ${package.packageName} at ${package.path}.';
+    return [
+      'FlutterPubAddException: Failed to add dependencies to ${package.packageName} at ${package.path}.',
+      if (stderr != null) stderr,
+    ].join('\n');
   }
 }
 

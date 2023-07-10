@@ -9,36 +9,31 @@ mixin _PubMixin on _Rapid {
 
     final package = _findCurrentPackage(packageName);
 
-    // TODO cleaner
-    final publicPackagesToAdd =
+    // These packages can be handles by `dart pub add` directly
+    final packagesWithNonEmptyConstraint =
         packages.map((e) => e.trim()).where((e) => !e.endsWith(':')).toList();
-    final localPackagesToAdd =
-        packages.map((e) => e.trim()).where((e) => e.endsWith(':')).toList();
-
-    if (publicPackagesToAdd.isNotEmpty) {
-      await flutterPubAdd(
+    if (packagesWithNonEmptyConstraint.isNotEmpty) {
+      await flutterPubAddTask(
         package: package,
-        dependenciesToAdd: publicPackagesToAdd,
+        dependenciesToAdd: packagesWithNonEmptyConstraint,
       );
     }
 
-    for (final localPackage in localPackagesToAdd) {
-      final dev = localPackage.startsWith('dev');
+    // These packages must be handled manually
+    final packagesWithEmptyConstraint =
+        packages.map((e) => e.trim()).where((e) => e.endsWith(':')).toList();
+    for (final packageWithEmptyConstraint in packagesWithEmptyConstraint) {
+      final dev = packageWithEmptyConstraint.startsWith('dev');
       package.pubSpecFile.setDependency(
         name: dev
-            ? localPackage.trim().split(':')[1]
-            : localPackage.trim().split(':').first,
+            ? packageWithEmptyConstraint.split(':')[1]
+            : packageWithEmptyConstraint.split(':').first,
         dependency: HostedReference(VersionConstraint.empty),
         dev: dev,
       );
     }
 
-    await bootstrap(
-      packages: [
-        package,
-        ...project.dependentPackages(package),
-      ],
-    );
+    await melosBootstrapTask(scope: project.dependentPackages(package));
 
     logger
       ..newLine()
@@ -54,14 +49,11 @@ mixin _PubMixin on _Rapid {
 
     final result = await flutterPubGet(package: package, dryRun: true);
     if (result.wouldChangeDependencies) {
-      await bootstrap(
-        packages: project.dependentPackages(package),
-      );
+      await melosBootstrapTask(scope: project.dependentPackages(package));
+      logger.newLine();
     }
 
-    logger
-      ..newLine()
-      ..commandSuccess('Got Dependencies!');
+    logger.commandSuccess('Got Dependencies!');
   }
 
   Future<void> pubRemove({
@@ -72,14 +64,9 @@ mixin _PubMixin on _Rapid {
 
     final package = _findCurrentPackage(packageName);
 
-    await flutterPubRemove(package: package, packagesToRemove: packages);
+    await flutterPubRemoveTask(package: package, packagesToRemove: packages);
 
-    await bootstrap(
-      packages: [
-        package,
-        ...project.dependentPackages(package),
-      ],
-    );
+    await melosBootstrapTask(scope: project.dependentPackages(package));
 
     logger
       ..newLine()

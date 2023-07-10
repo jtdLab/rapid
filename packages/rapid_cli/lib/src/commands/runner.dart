@@ -7,9 +7,9 @@ import 'package:rapid_cli/src/project/platform.dart';
 import '../cli.dart';
 import '../exception.dart';
 import '../io.dart';
-import '../project/language.dart';
 import '../logging.dart';
 import '../mason.dart';
+import '../project/language.dart';
 import '../project/project.dart';
 import '../project_config.dart';
 import '../tool.dart';
@@ -146,4 +146,42 @@ abstract class _Rapid {
       ).drain<void>();
     }
   }
+
+  Future<void> flutterPubAddTask({
+    required List<String> dependenciesToAdd,
+    required DartPackage package,
+  }) async =>
+      task(
+          'Running "flutter pub add ${dependenciesToAdd.join(' ')}" in ${package.packageName}',
+          () async {
+        try {
+          await flutterPubAdd(
+            package: package,
+            dependenciesToAdd: dependenciesToAdd,
+          );
+        } catch (_) {
+          // TODO: https://github.com/dart-lang/sdk/issues/52895
+          await flutterPubGet(package: package);
+        }
+      });
+
+  Future<void> flutterPubRemoveTask({
+    required List<String> packagesToRemove,
+    required DartPackage package,
+  }) async =>
+      task(
+        'Running "flutter pub remove ${packagesToRemove.join(' ')}" in ${package.packageName}',
+        () async => flutterPubRemove(
+          package: package,
+          packagesToRemove: packagesToRemove,
+        ),
+      );
+
+  Future<void> melosBootstrapTask({
+    required List<DartPackage> scope,
+  }) async =>
+      task(
+        'Running melos bootstrap --scope="${scope.map((e) => e.packageName).join(' ')}"',
+        () async => bootstrap(packages: scope),
+      );
 }

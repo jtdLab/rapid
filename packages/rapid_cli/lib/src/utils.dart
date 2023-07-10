@@ -180,6 +180,10 @@ extension RapidProjectUtils on RapidProject {
           appModule.platformDirectory(platform: platform).rootPackage,
           appModule.platformDirectory(platform: platform).localizationPackage,
           appModule.platformDirectory(platform: platform).navigationPackage,
+          appModule
+              .platformDirectory(platform: platform)
+              .featuresDirectory
+              .appFeaturePackage,
           ...appModule
               .platformDirectory(platform: platform)
               .featuresDirectory

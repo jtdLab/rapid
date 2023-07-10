@@ -13,8 +13,6 @@ import 'package:xml/xml.dart' show XmlDocument;
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
-import 'exception.dart';
-
 export 'dart:io' hide Directory, File;
 
 export 'package:pub_semver/pub_semver.dart';
@@ -26,6 +24,23 @@ export 'package:pubspec/pubspec.dart'
         HostedReference,
         ExternalHostedReference,
         SdkReference;
+
+FileSystemEntity _entityFromIO(FileSystemEntity entity) =>
+    entity is io.Directory
+        ? Directory._fromIO(entity)
+        : entity is io.File
+            ? File._fromIO(entity)
+            : entity;
+
+Future<FileSystemEntity> _entityFromIOAsync(
+    Future<FileSystemEntity> entity) async {
+  final result = await entity;
+  return result is io.Directory
+      ? Directory._fromIO(result)
+      : result is io.File
+          ? File._fromIO(result)
+          : result;
+}
 
 abstract class FileSystemEntityCollection {
   Iterable<FileSystemEntity> get entities;
@@ -74,7 +89,7 @@ class Directory implements io.Directory {
 
   @override
   Future<FileSystemEntity> delete({bool recursive = false}) =>
-      _directory.delete(recursive: recursive);
+      _entityFromIOAsync(_directory.delete(recursive: recursive));
 
   @override
   void deleteSync({bool recursive = false}) =>
@@ -94,14 +109,19 @@ class Directory implements io.Directory {
     bool recursive = false,
     bool followLinks = true,
   }) =>
-      _directory.list(recursive: recursive, followLinks: followLinks);
+      _directory
+          .list(recursive: recursive, followLinks: followLinks)
+          .map(_entityFromIO);
 
   @override
   List<FileSystemEntity> listSync({
     bool recursive = false,
     bool followLinks = true,
   }) =>
-      _directory.listSync(recursive: recursive, followLinks: followLinks);
+      _directory
+          .listSync(recursive: recursive, followLinks: followLinks)
+          .map(_entityFromIO)
+          .toList();
 
   @override
   Directory get parent => Directory._fromIO(_directory.parent);
@@ -171,7 +191,7 @@ class File implements io.File {
 
   @override
   Future<FileSystemEntity> delete({bool recursive = false}) =>
-      _file.delete(recursive: recursive);
+      _entityFromIOAsync(_file.delete(recursive: recursive));
 
   @override
   void deleteSync({bool recursive = false}) =>
@@ -401,43 +421,39 @@ class PubspecYamlFile extends YamlFile {
     required DependencyReference dependency,
     bool dev = false,
   }) {
-    final newPubSpec = _pubSpec.copy(
-      dependencies:
-          !dev ? (_pubSpec.dependencies..addAll({name: dependency})) : null,
-      devDependencies:
-          dev ? (_pubSpec.devDependencies..addAll({name: dependency})) : null,
-    );
+    final editor = YamlEditor(readAsStringSync());
+    var json = dependency.toJson();
 
-    _writeToFile(newPubSpec);
+    if (dev) {
+      editor.update(['dev_dependencies', name], json);
+    } else {
+      editor.update(['dependencies', name], json);
+    }
+
+    var output = editor.toString();
+    final replacement = editor.edits.first.replacement;
+    output =
+        output.replaceAll(replacement, replacement.replaceAll(' <empty>', ''));
+
+    writeAsStringSync(output);
   }
 
   void removeDependency({
     required String name,
     bool dev = false,
   }) {
-    final newPubSpec = _pubSpec.copy(
-      dependencies: !dev
-          ? (_pubSpec.dependencies..removeWhere((key, _) => key == name))
-          : null,
-      devDependencies: dev
-          ? (_pubSpec.devDependencies..removeWhere((key, _) => key == name))
-          : null,
-    );
-
-    _writeToFile(newPubSpec);
-  }
-
-  void _writeToFile(PubSpec newPubSpec) {
-    final ioSink = openWrite();
-    try {
-      YamlToString().writeYamlString(newPubSpec.toJson(), ioSink);
-    } finally {
-      ioSink.close();
+    final editor = YamlEditor(readAsStringSync());
+    if (dev) {
+      editor.remove(['dev_dependencies', name]);
+    } else {
+      editor.remove(['dependencies', name]);
     }
+
+    writeAsStringSync(editor.toString());
   }
 }
 
-// TODO rm dependency stuff
+/* // TODO rm dependency stuff
 String _beautifyRawPubSpecDependency(String raw) {
   raw = raw.trim();
   if (raw.startsWith('\'') && raw.endsWith('\'')) {
@@ -530,7 +546,7 @@ class PubspecDependencyParseException extends RapidException {
     return 'Could not parse dependency $raw.';
   }
 }
-
+ */
 class DartFile extends File {
   DartFile(super.path) : assert(path.endsWith('.dart'));
 

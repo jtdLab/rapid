@@ -28,7 +28,6 @@ dynamic Function() withTempDir(FutureOr<void> Function(Directory root) fn) {
       rethrow;
     } finally {
       Directory.current = cwd;
-      dir.deleteSync(recursive: true);
     }
   };
 }

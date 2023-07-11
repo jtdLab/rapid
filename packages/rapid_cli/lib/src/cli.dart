@@ -40,7 +40,6 @@ Future<FlutterPubGetResult> flutterPubGet({
   if (result.exitCode != 0) {
     throw FlutterPubGetException._(
       package,
-      'Failed to install.',
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -221,20 +220,21 @@ class FlutterPubGetResult {
 
 class FlutterPubGetException implements RapidException {
   FlutterPubGetException._(
-    this.package,
-    this.message, {
+    this.package, {
     this.stdout,
     this.stderr,
   });
 
   final DartPackage package;
-  final String message;
   final String? stdout;
   final String? stderr;
 
   @override
   String toString() {
-    return 'FlutterPubGetException: $message: ${package.packageName} at ${package.path}.';
+    return [
+      'FlutterPubGetException: Failed to install ${package.packageName} at ${package.path}. ',
+      if (stderr != null) stderr,
+    ].join('\n');
   }
 }
 

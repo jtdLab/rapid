@@ -121,10 +121,10 @@ FutureOr<void> rapidEntryPoint(
 
     await RapidCommandRunner(project: project, logger: logger).run(arguments);
   } on RapidException catch (err) {
-    stderr.writeln(err.toString());
+    logger.err(err.toString());
     exitCode = 1;
   } on UsageException catch (err) {
-    stderr.writeln(err.toString());
+    logger.err(err.toString());
     exitCode = 1;
   } catch (err) {
     exitCode = 1;

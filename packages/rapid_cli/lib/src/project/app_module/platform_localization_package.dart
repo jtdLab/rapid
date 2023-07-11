@@ -5,6 +5,8 @@ class PlatformLocalizationPackage extends DartPackage {
     required this.projectName,
     required this.platform,
     required String path,
+    required this.languageArbFile,
+    required this.languageLocalizationsFile,
   }) : super(path);
 
   factory PlatformLocalizationPackage.resolve({
@@ -19,17 +21,41 @@ class PlatformLocalizationPackage extends DartPackage {
       '${projectName}_${platform.name}',
       '${projectName}_${platform.name}_localization',
     );
+    languageArbFile({required Language language}) => ArbFile(
+          p.join(
+            path,
+            'lib',
+            'src',
+            'arb',
+            '${projectName.snakeCase}_${language.toStringWithSeperator()}.arb',
+          ),
+        );
+    languageLocalizationsFile({required Language language}) => DartFile(
+          p.join(
+            path,
+            'lib',
+            'src',
+            '${projectName.snakeCase}_localizations_${language.toStringWithSeperator()}.dart',
+          ),
+        );
 
     return PlatformLocalizationPackage(
       projectName: projectName,
       path: path,
       platform: platform,
+      languageArbFile: languageArbFile,
+      languageLocalizationsFile: languageLocalizationsFile,
     );
   }
 
   final String projectName;
 
   final Platform platform;
+
+  final ArbFile Function({required Language language}) languageArbFile;
+
+  final DartFile Function({required Language language})
+      languageLocalizationsFile;
 
   DartFile get localizationsFile =>
       DartFile(p.join(path, 'lib', 'src', '${projectName}_localizations.dart'));

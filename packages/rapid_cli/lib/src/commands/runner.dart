@@ -79,7 +79,7 @@ abstract class _Rapid {
   RapidProject get project;
   set project(RapidProject project);
 
-  Future<void> bootstrap({required List<DartPackage> packages}) async {
+  Future<void> _bootstrap({required List<DartPackage> packages}) async {
     if (tool.loadGroup().isActive) {
       tool.markAsNeedBootstrap(packages: packages);
     } else {
@@ -87,7 +87,7 @@ abstract class _Rapid {
     }
   }
 
-  Future<void> codeGen({required DartPackage package}) async {
+  Future<void> _codeGen({required DartPackage package}) async {
     if (tool.loadGroup().isActive) {
       tool.markAsNeedCodeGen(package: package);
     } else {
@@ -196,7 +196,7 @@ abstract class _Rapid {
   }) async =>
       task(
         'Running "melos bootstrap --scope="${scope.map((e) => e.packageName).join(' ')}""',
-        () async => bootstrap(packages: scope),
+        () async => _bootstrap(packages: scope),
       );
 
   Future<void> dartFormatFixTask() async => task(
@@ -206,7 +206,7 @@ abstract class _Rapid {
 
   Future<void> codeGenTask({required DartPackage package}) async => task(
         'Running code generation in ${package.packageName}',
-        () async => codeGen(package: package),
+        () async => _codeGen(package: package),
       );
 
   Future<void> codeGenTaskGroup({required List<DartPackage> packages}) async =>
@@ -215,7 +215,7 @@ abstract class _Rapid {
             .map(
               (package) => (
                 'Running code generation in ${package.packageName}',
-                () async => codeGen(package: package),
+                () async => _codeGen(package: package),
               ),
             )
             .toList(),

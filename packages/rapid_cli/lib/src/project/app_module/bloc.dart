@@ -52,6 +52,7 @@ class Bloc extends FileSystemEntityCollection {
         'name': name,
         'platform': platform.name,
         'feature_name': featureName,
+        'output_dir': '.', // TODO
       },
     );
   }

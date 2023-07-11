@@ -488,7 +488,10 @@ extension MobileRootPackageUtils on MobileRootPackage {
 extension PlatformLocalizationPackageUtils on PlatformLocalizationPackage {
   Set<Language> supportedLanguages() {
     return localizationsFile
-        .readTopLevelListVar(name: 'supportedLocales')
+        .readListVarOfClass(
+          name: 'supportedLocales',
+          parentClass: '${projectName.pascalCase}Localizations',
+        )
         .map((e) => e.toLanguageFromDartLocale())
         .toSet();
   }
@@ -498,7 +501,8 @@ extension PlatformLocalizationPackageUtils on PlatformLocalizationPackage {
 
     return Language.fromString(
       templateArbFile
-          .substring(templateArbFile.indexOf('_') + 1) // TODO share ?
+          .substring(templateArbFile.indexOf('${projectName}_') +
+              (projectName.length + 1))
           .split('.')
           .first,
     );
@@ -507,7 +511,7 @@ extension PlatformLocalizationPackageUtils on PlatformLocalizationPackage {
   void setDefaultLanguage(Language language) {
     final templateArbFile = l10nFile.read<String>('template-arb-file');
     final newTemplateArbFile = templateArbFile.replaceRange(
-      templateArbFile.indexOf('_') + 1,
+      templateArbFile.indexOf('${projectName}_') + (projectName.length + 1),
       templateArbFile.lastIndexOf('.arb'),
       language.toStringWithSeperator(),
     );
@@ -518,7 +522,13 @@ extension PlatformLocalizationPackageUtils on PlatformLocalizationPackage {
     final existingLanguages = supportedLanguages();
 
     if (!existingLanguages.contains(language)) {
-      // TODO add arb file
+      final languageArbFile = this.languageArbFile(language: language);
+      languageArbFile.createSync(recursive: true);
+      languageArbFile.writeAsStringSync([
+        '{',
+        '  "@@locale": "${language.toStringWithSeperator()}"',
+        '}',
+      ].join('\n'));
     }
   }
 
@@ -526,7 +536,11 @@ extension PlatformLocalizationPackageUtils on PlatformLocalizationPackage {
     final existingLanguages = supportedLanguages();
 
     if (existingLanguages.contains(language)) {
-      // TODO rm arb file
+      languageArbFile(language: language).deleteSync(recursive: true);
+      if (!language.hasScriptCode && !language.hasCountryCode) {
+        languageLocalizationsFile(language: language)
+            .deleteSync(recursive: true);
+      }
     }
   }
 }

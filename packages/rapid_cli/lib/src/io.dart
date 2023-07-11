@@ -400,6 +400,8 @@ class YamlFile extends File {
       output =
           output.replaceAll(replacement, replacement.replaceAll(' null', ''));
     }
+
+    writeAsStringSync(output);
   }
 }
 
@@ -660,6 +662,37 @@ class DartFile extends File {
     }
 
     return output;
+  }
+
+  List<String> readListVarOfClass({
+    required String name,
+    required String parentClass,
+  }) {
+    final contents = readAsStringSync();
+
+    final declarations = _getTopLevelDeclarations(contents);
+
+    final clazz = declarations.firstWhere(
+      (e) => e is ClassDeclaration && e.name.lexeme == parentClass,
+    ) as ClassDeclaration;
+
+    final fieldDeclaration =
+        clazz.members.whereType<FieldDeclaration>().firstWhere(
+              (e) => e.childEntities.any((e) =>
+                  e is VariableDeclarationList &&
+                  e.variables.first.name.lexeme == name),
+            );
+
+    final declarationList = fieldDeclaration.childEntities
+        .whereType<VariableDeclarationList>()
+        .first;
+
+    final listLiteral = declarationList.variables.first.childEntities
+        .firstWhere((e) => e is ListLiteral) as ListLiteral;
+
+    return listLiteral.elements
+        .map((e) => contents.substring(e.offset, e.end))
+        .toList();
   }
 
   List<String> readTopLevelListVar({required String name}) {
@@ -990,23 +1023,18 @@ class PlistFile extends File {
   }
 }
 
-// TODO rm?
-/* class ArbFileImpl extends FileImpl implements ArbFile {
-  ArbFileImpl({
-    super.path,
-    required String super.name,
-  }) : super(extension: 'arb');
+class ArbFile extends File {
+  ArbFile(super.path) : assert(path.endsWith('.arb'));
 
-  @override
   void setValue<T extends Object?>(Iterable<String> path, T? value) {
     assert(path.length == 1);
 
-    final contents = read();
+    final contents = readAsStringSync();
 
     final json = jsonDecode(contents);
     json[path.first] = value;
 
     final output = JsonEncoder.withIndent('  ').convert(json);
-    write(output);
+    writeAsStringSync(output);
   }
-} */
+}

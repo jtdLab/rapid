@@ -133,27 +133,28 @@ class PlatformPageFeaturePackage extends PlatformRoutableFeaturePackage {
     required Platform platform,
     required String name,
   }) {
+    final selfName = name;
     final path = p.join(
       projectPath,
       'packages',
       projectName,
       '${projectName}_${platform.name}',
       '${projectName}_${platform.name}_features',
-      '${projectName}_${platform.name}_${name}_page',
+      '${projectName}_${platform.name}_${selfName}_page',
     );
     bloc({required String name}) => Bloc(
           projectName: projectName,
           platform: platform,
           name: name,
           path: path,
-          featureName: '${name}_page',
+          featureName: '${selfName}_page',
         );
     cubit({required String name}) => Cubit(
           projectName: projectName,
           platform: platform,
           name: name,
           path: path,
-          featureName: '${name}_page',
+          featureName: '${selfName}_page',
         );
     final navigatorImplementation = NavigatorImplementation(
       projectName: projectName,
@@ -204,27 +205,28 @@ class PlatformFlowFeaturePackage extends PlatformRoutableFeaturePackage {
     required Platform platform,
     required String name,
   }) {
+    final selfName = name;
     final path = p.join(
       projectPath,
       'packages',
       projectName,
       '${projectName}_${platform.name}',
       '${projectName}_${platform.name}_features',
-      '${projectName}_${platform.name}_${name}_flow',
+      '${projectName}_${platform.name}_${selfName}_flow',
     );
     bloc({required String name}) => Bloc(
           projectName: projectName,
           platform: platform,
           name: name,
           path: path,
-          featureName: '${name}_flow',
+          featureName: '${selfName}_flow',
         );
     cubit({required String name}) => Cubit(
           projectName: projectName,
           platform: platform,
           name: name,
           path: path,
-          featureName: '${name}_flow',
+          featureName: '${selfName}_flow',
         );
     final navigatorImplementation = NavigatorImplementation(
       projectName: projectName,
@@ -275,27 +277,28 @@ class PlatformTabFlowFeaturePackage extends PlatformRoutableFeaturePackage {
     required Platform platform,
     required String name,
   }) {
+    final selfName = name;
     final path = p.join(
       projectPath,
       'packages',
       projectName,
       '${projectName}_${platform.name}',
       '${projectName}_${platform.name}_features',
-      '${projectName}_${platform.name}_${name}_tab_flow',
+      '${projectName}_${platform.name}_${selfName}_tab_flow',
     );
     bloc({required String name}) => Bloc(
           projectName: projectName,
           platform: platform,
           name: name,
           path: path,
-          featureName: '${name}_tab_flow',
+          featureName: '${selfName}_tab_flow',
         );
     cubit({required String name}) => Cubit(
           projectName: projectName,
           platform: platform,
           name: name,
           path: path,
-          featureName: '${name}_tab_flow',
+          featureName: '${selfName}_tab_flow',
         );
     final navigatorImplementation = NavigatorImplementation(
       projectName: projectName,
@@ -351,27 +354,28 @@ class PlatformWidgetFeaturePackage extends PlatformFeaturePackage {
     required Platform platform,
     required String name,
   }) {
+    final selfName = name;
     final path = p.join(
       projectPath,
       'packages',
       projectName,
       '${projectName}_${platform.name}',
       '${projectName}_${platform.name}_features',
-      '${projectName}_${platform.name}_${name}_widget',
+      '${projectName}_${platform.name}_${selfName}_widget',
     );
     bloc({required String name}) => Bloc(
           projectName: projectName,
           platform: platform,
           name: name,
           path: path,
-          featureName: '${name}_widget',
+          featureName: '${selfName}_widget',
         );
     cubit({required String name}) => Cubit(
           projectName: projectName,
           platform: platform,
           name: name,
           path: path,
-          featureName: '${name}_widget',
+          featureName: '${selfName}_widget',
         );
 
     return PlatformWidgetFeaturePackage(

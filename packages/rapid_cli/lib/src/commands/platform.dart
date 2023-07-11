@@ -1,5 +1,7 @@
 part of 'runner.dart';
 
+// TODO add and remove navigator has to be refactored
+
 mixin _PlatformMixin on _Rapid {
   Future<void> platformAddFeatureFlow(
     Platform platform, {
@@ -51,7 +53,6 @@ mixin _PlatformMixin on _Rapid {
       ..commandSuccess('Added Flow Feature!');
   }
 
-  // TODO
   Future<void> platformAddFeatureTabFlow(
     Platform platform, {
     required String name,
@@ -78,7 +79,6 @@ mixin _PlatformMixin on _Rapid {
 
     logger.newLine();
 
-    // TODO rm
     /*  // TODO rewrite resolve featurePackages from features in one line
       // Is it evene needed to convert them to actual feature packages
       final Set<PlatformFeaturePackage> subFeaturePackages = {};
@@ -231,40 +231,37 @@ mixin _PlatformMixin on _Rapid {
       throw LanguageAlreadyPresentException._(language);
     }
 
-    final rootPackage = platformDirectory.rootPackage;
-
     logger.newLine();
 
-    // TODO cleaner
-    if (rootPackage is IosRootPackage) {
-      rootPackage.addLanguage(language);
-    }
-    if (rootPackage is MobileRootPackage) {
-      rootPackage.addLanguage(language);
-    }
+    await task('Adding language', () {
+      final rootPackage = platformDirectory.rootPackage;
+      switch (rootPackage) {
+        case IosRootPackage():
+          rootPackage.addLanguage(language);
+        case MobileRootPackage():
+          rootPackage.addLanguage(language);
+        default:
+      }
+      localizationPackage.addLanguage(language);
 
-    localizationPackage.addLanguage(language);
-    // TODO move down ? check if already there?
-    if (language.hasScriptCode || language.hasCountryCode) {
-      // TODO cleaner
-      if (rootPackage is IosRootPackage) {
-        rootPackage.addLanguage(
+      // TODO move down ? check if already there? cleaner
+      if (language.hasScriptCode || language.hasCountryCode) {
+        switch (rootPackage) {
+          case IosRootPackage():
+            rootPackage.addLanguage(language);
+          case MobileRootPackage():
+            rootPackage.addLanguage(language);
+          default:
+        }
+        localizationPackage.addLanguage(
           Language(languageCode: language.languageCode),
         );
       }
-      if (rootPackage is MobileRootPackage) {
-        rootPackage.addLanguage(
-          Language(languageCode: language.languageCode),
-        );
-      }
-      localizationPackage.addLanguage(
-        Language(languageCode: language.languageCode),
-      );
-    }
+    });
 
-    await flutterGenl10n(package: localizationPackage);
+    await flutterGenl10nTask(package: localizationPackage);
 
-    await dartFormatFix(package: localizationPackage);
+    await dartFormatFixTask();
 
     // TODO add hint how to work with localization
     logger
@@ -330,28 +327,31 @@ mixin _PlatformMixin on _Rapid {
       throw BlocAlreadyExistsException._(name, featurePackage, platform);
     }
 
-    final applicationBarrelFile = featurePackage.applicationBarrelFile;
-
     logger.newLine();
 
-    await bloc.generate();
+    await task('Creating bloc', () async {
+      await bloc.generate();
 
-    if (!applicationBarrelFile.existsSync()) {
-      final barrelFile = featurePackage.barrelFile;
+      final applicationBarrelFile = featurePackage.applicationBarrelFile;
+      if (!applicationBarrelFile.existsSync()) {
+        final barrelFile = featurePackage.barrelFile;
 
-      await applicationBarrelFile.create();
-      applicationBarrelFile.addExport(
-        p.normalize(p.join(outputDir, '${name.snakeCase}_bloc.dart')),
-      );
+        applicationBarrelFile.createSync(recursive: true);
+        applicationBarrelFile.addExport(
+          p.normalize(p.join(outputDir, '${name.snakeCase}_bloc.dart')),
+        );
 
-      barrelFile.addExport('src/application/application.dart');
-    } else {
-      applicationBarrelFile.addExport(
-        p.normalize(p.join(outputDir, '${name.snakeCase}_bloc.dart')),
-      );
-    }
+        barrelFile.addExport('src/application/application.dart');
+      } else {
+        applicationBarrelFile.addExport(
+          p.normalize(p.join(outputDir, '${name.snakeCase}_bloc.dart')),
+        );
+      }
+    });
 
-    await codeGen(package: featurePackage);
+    await codeGenTask(package: featurePackage);
+
+    await dartFormatFixTask();
 
     logger
       ..newLine()
@@ -383,28 +383,31 @@ mixin _PlatformMixin on _Rapid {
       throw CubitAlreadyExistsException._(name, featurePackage, platform);
     }
 
-    final applicationBarrelFile = featurePackage.applicationBarrelFile;
-
     logger.newLine();
 
-    await cubit.generate();
+    await task('Creating cubit', () async {
+      await cubit.generate();
 
-    if (!applicationBarrelFile.existsSync()) {
-      final barrelFile = featurePackage.barrelFile;
+      final applicationBarrelFile = featurePackage.applicationBarrelFile;
+      if (!applicationBarrelFile.existsSync()) {
+        final barrelFile = featurePackage.barrelFile;
 
-      await applicationBarrelFile.create();
-      applicationBarrelFile.addExport(
-        p.normalize(p.join(outputDir, '${name.snakeCase}_cubit.dart')),
-      );
+        applicationBarrelFile.createSync(recursive: true);
+        applicationBarrelFile.addExport(
+          p.normalize(p.join(outputDir, '${name.snakeCase}_cubit.dart')),
+        );
 
-      barrelFile.addExport('src/application/application.dart');
-    } else {
-      applicationBarrelFile.addExport(
-        p.normalize(p.join(outputDir, '${name.snakeCase}_cubit.dart')),
-      );
-    }
+        barrelFile.addExport('src/application/application.dart');
+      } else {
+        applicationBarrelFile.addExport(
+          p.normalize(p.join(outputDir, '${name.snakeCase}_cubit.dart')),
+        );
+      }
+    });
 
-    await codeGen(package: featurePackage);
+    await codeGenTask(package: featurePackage);
+
+    await dartFormatFixTask();
 
     logger
       ..newLine()
@@ -436,24 +439,28 @@ mixin _PlatformMixin on _Rapid {
       throw BlocNotFoundException._(name, featurePackage, platform);
     }
 
-    final applicationBarrelFile = featurePackage.applicationBarrelFile;
-
     logger.newLine();
 
-    bloc.delete();
+    await task('Removing bloc', () async {
+      final applicationBarrelFile = featurePackage.applicationBarrelFile;
 
-    // TODO delete application dir if empty
+      bloc.delete();
 
-    applicationBarrelFile.removeExport(
-      p.normalize(p.join(dir, '${name.snakeCase}_bloc.dart')),
-    );
-    if (!applicationBarrelFile.containsStatements()) {
-      applicationBarrelFile.delete();
-      final barrelFile = featurePackage.barrelFile;
-      barrelFile.removeExport('src/application/application.dart');
-    }
+      // TODO delete application dir if empty
 
-    await codeGen(package: featurePackage);
+      applicationBarrelFile.removeExport(
+        p.normalize(p.join(dir, '${name.snakeCase}_bloc.dart')),
+      );
+      if (!applicationBarrelFile.containsStatements()) {
+        applicationBarrelFile.deleteSync(recursive: true);
+        final barrelFile = featurePackage.barrelFile;
+        barrelFile.removeExport('src/application/application.dart');
+      }
+    });
+
+    await codeGenTask(package: featurePackage);
+
+    await dartFormatFixTask();
 
     logger
       ..newLine()
@@ -485,23 +492,26 @@ mixin _PlatformMixin on _Rapid {
       throw CubitNotFoundException._(name, featurePackage, platform);
     }
 
-    final applicationBarrelFile = featurePackage.applicationBarrelFile;
-
     logger.newLine();
 
-    cubit.delete();
-    // TODO delete application dir if empty
+    await task('Removing cubit', () async {
+      cubit.delete();
+      // TODO delete application dir if empty
 
-    applicationBarrelFile.removeExport(
-      p.normalize(p.join(dir, '${name.snakeCase}_cubit.dart')),
-    );
-    if (!applicationBarrelFile.containsStatements()) {
-      applicationBarrelFile.delete();
-      final barrelFile = featurePackage.barrelFile;
-      barrelFile.removeExport('src/application/application.dart');
-    }
+      final applicationBarrelFile = featurePackage.applicationBarrelFile;
+      applicationBarrelFile.removeExport(
+        p.normalize(p.join(dir, '${name.snakeCase}_cubit.dart')),
+      );
+      if (!applicationBarrelFile.containsStatements()) {
+        applicationBarrelFile.deleteSync(recursive: true);
+        final barrelFile = featurePackage.barrelFile;
+        barrelFile.removeExport('src/application/application.dart');
+      }
+    });
 
-    await codeGen(package: featurePackage);
+    await codeGenTask(package: featurePackage);
+
+    await dartFormatFixTask();
 
     logger
       ..newLine()
@@ -590,37 +600,39 @@ mixin _PlatformMixin on _Rapid {
       throw CantRemoveDefaultLanguageException._(language);
     }
 
-    final rootPackage = platformDirectory.rootPackage;
-
     logger.newLine();
 
-    // TODO cleaner
-    if (rootPackage is IosRootPackage) {
-      rootPackage.removeLanguage(language);
-    }
-    if (rootPackage is MobileRootPackage) {
-      rootPackage.removeLanguage(language);
-    }
-    localizationPackage.removeLanguage(language);
-    // TODO move down ?
-    if (!language.hasScriptCode && !language.hasCountryCode) {
-      for (final language in supportedLanguages
-          .where((e) => e.languageCode == language.languageCode)) {
-        // TODO cleaner
-        if (rootPackage is IosRootPackage) {
+    await task('Removing language', () {
+      final rootPackage = platformDirectory.rootPackage;
+      switch (rootPackage) {
+        case IosRootPackage():
           rootPackage.removeLanguage(language);
-        }
-        if (rootPackage is MobileRootPackage) {
+        case MobileRootPackage():
           rootPackage.removeLanguage(language);
-        }
-
-        localizationPackage.removeLanguage(language);
+        default:
       }
-    }
+      localizationPackage.removeLanguage(language);
 
-    await flutterGenl10n(package: localizationPackage);
+      // TODO move down ? cleaner
+      if (!language.hasScriptCode && !language.hasCountryCode) {
+        for (final language in supportedLanguages.where((e) =>
+            e.languageCode == language.languageCode &&
+            (e.hasScriptCode || e.hasCountryCode))) {
+          switch (rootPackage) {
+            case IosRootPackage():
+              rootPackage.removeLanguage(language);
+            case MobileRootPackage():
+              rootPackage.removeLanguage(language);
+            default:
+          }
+          localizationPackage.removeLanguage(language);
+        }
+      }
+    });
 
-    await dartFormatFix(package: localizationPackage);
+    await flutterGenl10nTask(package: localizationPackage);
+
+    await dartFormatFixTask();
 
     logger
       ..newLine()
@@ -648,20 +660,18 @@ mixin _PlatformMixin on _Rapid {
       throw FeatureNotFoundException._(featurePackage, platform);
     }
 
-    final navigationPackage = platformDirectory.navigationPackage;
-
     logger.newLine();
 
     await _removeNavigatorInterface(
       featurePackage: featurePackage,
-      navigationPackage: navigationPackage,
+      navigationPackage: platformDirectory.navigationPackage,
     );
 
     await _removeNavigatorImplementation(featurePackage: featurePackage);
 
-    await codeGen(package: featurePackage);
+    await codeGenTask(package: featurePackage);
 
-    await dartFormatFix(package: project.rootPackage);
+    await dartFormatFixTask();
 
     logger
       ..newLine()
@@ -689,11 +699,14 @@ mixin _PlatformMixin on _Rapid {
 
     logger.newLine();
 
-    localizationPackage.setDefaultLanguage(language);
+    await task(
+      'Setting default language',
+      () => localizationPackage.setDefaultLanguage(language),
+    );
 
-    await flutterGenl10n(package: localizationPackage);
+    await flutterGenl10nTask(package: localizationPackage);
 
-    await dartFormatFix(package: project.rootPackage);
+    await dartFormatFixTask();
 
     // TODO add hint how to work with localization
 
@@ -702,6 +715,7 @@ mixin _PlatformMixin on _Rapid {
       ..commandSuccess('Set Default Language!');
   }
 
+  // TODO
   Future<void> _addNavigator({
     required PlatformRoutableFeaturePackage featurePackage,
     required PlatformNavigationPackage navigationPackage,
@@ -724,6 +738,7 @@ mixin _PlatformMixin on _Rapid {
     }
   }
 
+  // TODO
   Future<void> _removeNavigatorInterface({
     required PlatformFeaturePackage featurePackage,
     required PlatformNavigationPackage navigationPackage,
@@ -739,6 +754,7 @@ mixin _PlatformMixin on _Rapid {
     }
   }
 
+  // TODO
   Future<void> _removeNavigatorImplementation({
     required PlatformRoutableFeaturePackage featurePackage,
   }) async {

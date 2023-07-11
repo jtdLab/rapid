@@ -585,7 +585,10 @@ extension PlatformFeaturesDirectoryUtils on PlatformFeaturesDirectory {
                   basename.endsWith('widget'),
             )
             .map(
-              (basename) => featurePackage(name: basename),
+              (basename) => featurePackage(
+                name:
+                    basename.replaceAll('${projectName}_${platform.name}_', ''),
+              ),
             )
             .toList()
         : [])

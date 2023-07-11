@@ -2,6 +2,7 @@ part of '../project.dart';
 
 class PlatformFeaturesDirectory extends Directory {
   PlatformFeaturesDirectory({
+    required this.projectName,
     required this.platform,
     required String path,
     required this.appFeaturePackage,
@@ -58,12 +59,15 @@ class PlatformFeaturesDirectory extends Directory {
     }
 
     return PlatformFeaturesDirectory(
+      projectName: projectName,
       platform: platform,
       path: path,
       appFeaturePackage: appFeaturePackage,
       featurePackage: featurePackage,
     );
   }
+
+  final String projectName;
 
   final Platform platform;
 

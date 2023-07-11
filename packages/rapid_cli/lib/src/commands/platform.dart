@@ -1,6 +1,7 @@
 part of 'runner.dart';
 
 mixin _PlatformMixin on _Rapid {
+  // TODO
   Future<void> platformAddFeatureFlow(
     Platform platform, {
     required String name,
@@ -50,6 +51,7 @@ mixin _PlatformMixin on _Rapid {
       ..commandSuccess('Added Flow Feature!');
   }
 
+  // TODO
   Future<void> platformAddFeatureTabFlow(
     Platform platform, {
     required String name,
@@ -145,24 +147,27 @@ mixin _PlatformMixin on _Rapid {
 
     logger.newLine();
 
-    await featurePackage.generate(description: description);
+    await task(
+      'Creating feature files',
+      () async {
+        await featurePackage.generate(description: description);
+        await rootPackage.registerFeaturePackage(featurePackage);
+        if (navigator) {
+          await _addNavigator(
+            featurePackage: featurePackage,
+            navigationPackage: platformDirectory.navigationPackage,
+          );
+        }
+      },
+    );
 
-    await rootPackage.registerFeaturePackage(featurePackage);
+    await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
-    if (navigator) {
-      await _addNavigator(
-        featurePackage: featurePackage,
-        navigationPackage: platformDirectory.navigationPackage,
-      );
-    }
+    await codeGenTaskGroup(
+      packages: [rootPackage, if (navigator) featurePackage],
+    );
 
-    await bootstrap(packages: [rootPackage, featurePackage]);
-
-    for (final package in [rootPackage, if (navigator) featurePackage]) {
-      await codeGen(package: package);
-    }
-
-    await dartFormatFix(package: project.rootPackage);
+    await dartFormatFixTask();
 
     // TODO add link doc to navigation and routing approach
     logger
@@ -192,15 +197,16 @@ mixin _PlatformMixin on _Rapid {
 
     logger.newLine();
 
-    await featurePackage.generate(description: description);
+    await task('Generating feature files', () async {
+      await featurePackage.generate(description: description);
+      await rootPackage.registerFeaturePackage(featurePackage);
+    });
 
-    await rootPackage.registerFeaturePackage(featurePackage);
+    await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
-    await bootstrap(packages: [rootPackage, featurePackage]);
+    await codeGenTask(package: rootPackage);
 
-    await codeGen(package: rootPackage);
-
-    await dartFormatFix(package: project.rootPackage);
+    await dartFormatFixTask();
 
     // TODO add link doc to navigation and routing approach
     logger
@@ -519,35 +525,41 @@ mixin _PlatformMixin on _Rapid {
     }
 
     final rootPackage = platformDirectory.rootPackage;
-
-    logger.newLine();
-
-    await rootPackage.unregisterFeaturePackage(featurePackage);
-
     final remainingFeaturePackages = featuresDirectory.featurePackages()
       ..remove(featurePackage);
 
-    for (final remainingFeaturePackage in remainingFeaturePackages) {
-      remainingFeaturePackage.pubSpecFile.removeDependency(
-        name: featurePackage.packageName,
+    logger.newLine();
+
+    await task('Deleting feature files', () async {
+      await rootPackage.unregisterFeaturePackage(featurePackage);
+
+      for (final remainingFeaturePackage in remainingFeaturePackages) {
+        if (remainingFeaturePackage.pubSpecFile
+            .hasDependency(name: featurePackage.packageName)) {
+          remainingFeaturePackage.pubSpecFile.removeDependency(
+            name: featurePackage.packageName,
+          );
+        }
+      }
+
+      await _removeNavigatorInterface(
+        featurePackage: featurePackage,
+        navigationPackage: platformDirectory.navigationPackage,
       );
-    }
 
-    featurePackage.delete();
+      featurePackage.deleteSync(recursive: true);
+    });
 
-    await _removeNavigatorInterface(
-      featurePackage: featurePackage,
-      navigationPackage: platformDirectory.navigationPackage,
-    );
-
-    await bootstrap(
-      packages: [
+    await melosBootstrapTask(
+      scope: [
         ...remainingFeaturePackages,
         rootPackage,
       ],
     );
 
-    await codeGen(package: rootPackage);
+    await codeGenTask(package: rootPackage);
+
+    await dartFormatFixTask();
 
     logger
       ..newLine()

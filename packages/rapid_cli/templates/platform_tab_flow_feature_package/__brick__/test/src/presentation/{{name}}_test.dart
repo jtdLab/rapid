@@ -2,6 +2,7 @@ import 'package:alchemist/alchemist.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name}}_{{platform}}_{{name.snakeCase()}}/src/presentation/presentation.dart';
 import 'package:{{project_name}}_ui_{{platform}}/{{project_name}}_ui_{{platform}}.dart';
+import 'package:{{project_name}}_{{platform}}_localization/{{project_name}}_{{platform}}_localization.dart';
 
 import 'helpers/helpers.dart';
 
@@ -40,25 +41,27 @@ void main() {
           width: 1000,
           height: 500,
         ),{{/windows}}
-{{^linux}}{{^macos}}{{^web}}{{^windows}}        scenarioConstraints: const BoxConstraints(minWidth: 250, maxHeight: {{#isWidget}}250{{/isWidget}}{{^isWidget}}500{{/isWidget}}),{{/windows}}{{/web}}{{/macos}}{{/linux}}  
+{{^linux}}{{^macos}}{{^web}}{{^windows}}        scenarioConstraints: const BoxConstraints(minWidth: 250, maxHeight: 500),{{/windows}}{{/web}}{{/macos}}{{/linux}}  
         children: [
-          GoldenTestScenario(
-            name: '{{default_language}} - light',
-            child: appWrapper(
-              locale: const Locale('{{default_language}}'),
-              {{#android}}themeMode: ThemeMode.light{{/android}}{{#ios}}brightness: Brightness.light{{/ios}}{{#linux}}themeMode: ThemeMode.light{{/linux}}{{#macos}}themeMode: ThemeMode.light{{/macos}}{{#web}}themeMode: ThemeMode.light{{/web}}{{#windows}}themeMode: ThemeMode.light{{/windows}}{{#mobile}}themeMode: ThemeMode.light{{/mobile}},
-              widget: const {{name.pascalCase()}}(),
+          for (final locale in {{project_name.pascalCase()}}Localizations.supportedLocales) ...[
+            GoldenTestScenario(
+              name: '$locale - light',
+              child: appWrapper(
+               locale: locale,
+                {{#android}}themeMode: ThemeMode.light{{/android}}{{#ios}}brightness: Brightness.light{{/ios}}{{#linux}}themeMode: ThemeMode.light{{/linux}}{{#macos}}themeMode: ThemeMode.light{{/macos}}{{#web}}themeMode: ThemeMode.light{{/web}}{{#windows}}themeMode: ThemeMode.light{{/windows}}{{#mobile}}themeMode: ThemeMode.light{{/mobile}},
+                widget: const {{name.pascalCase()}}(),
+              ),
             ),
-          ),
-          GoldenTestScenario(
-            name: '{{default_language}} - dark',
-            child: appWrapper(
-              locale: const Locale('{{default_language}}'),
-              {{#android}}themeMode: ThemeMode.dark{{/android}}{{#ios}}brightness: Brightness.dark{{/ios}}{{#linux}}themeMode: ThemeMode.dark{{/linux}}{{#macos}}themeMode: ThemeMode.dark{{/macos}}{{#web}}themeMode: ThemeMode.dark{{/web}}{{#windows}}themeMode: ThemeMode.dark{{/windows}}{{#mobile}}themeMode: ThemeMode.dark{{/mobile}},
-              widget: const {{name.pascalCase()}}(),
+            GoldenTestScenario(
+              name: '$locale - dark',
+              child: appWrapper(
+                locale: locale,
+                {{#android}}themeMode: ThemeMode.dark{{/android}}{{#ios}}brightness: Brightness.dark{{/ios}}{{#linux}}themeMode: ThemeMode.dark{{/linux}}{{#macos}}themeMode: ThemeMode.dark{{/macos}}{{#web}}themeMode: ThemeMode.dark{{/web}}{{#windows}}themeMode: ThemeMode.dark{{/windows}}{{#mobile}}themeMode: ThemeMode.dark{{/mobile}},
+                widget: const {{name.pascalCase()}}(),
+              ),
             ),
-          ),
-          // TODO: add more scenarios
+            // TODO: add more scenarios
+          ],
         ],
       ),
     );

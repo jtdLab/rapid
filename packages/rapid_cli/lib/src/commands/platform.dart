@@ -1,7 +1,6 @@
 part of 'runner.dart';
 
 mixin _PlatformMixin on _Rapid {
-  // TODO
   Future<void> platformAddFeatureFlow(
     Platform platform, {
     required String name,
@@ -25,25 +24,26 @@ mixin _PlatformMixin on _Rapid {
 
     logger.newLine();
 
-    await featurePackage.generate(description: description);
+    await task('Creating feature', () async {
+      await featurePackage.generate(description: description);
 
-    await rootPackage.registerFeaturePackage(featurePackage);
+      await rootPackage.registerFeaturePackage(featurePackage);
 
-    if (navigator) {
-      await _addNavigator(
-        featurePackage: featurePackage,
-        navigationPackage: platformDirectory.navigationPackage,
-      );
-    }
+      if (navigator) {
+        await _addNavigator(
+          featurePackage: featurePackage,
+          navigationPackage: platformDirectory.navigationPackage,
+        );
+      }
+    });
 
-    await bootstrap(packages: [rootPackage, featurePackage]);
+    await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
-    for (final package in [rootPackage, if (navigator) featurePackage]) {
-      await codeGen(package: package);
-    }
+    await codeGenTaskGroup(
+      packages: [rootPackage, if (navigator) featurePackage],
+    );
 
-    // good?
-    await dartFormatFix(package: project.rootPackage);
+    await dartFormatFixTask();
 
     // TODO add link doc to navigation and routing approach
     logger
@@ -95,28 +95,29 @@ mixin _PlatformMixin on _Rapid {
         subFeaturePackages.add(matchingPackage);
       } */
 
-    await featurePackage.generate(
-      description: description,
-      subFeatures: subFeatures,
+    await task('Creating feature', () async {
+      await featurePackage.generate(
+        description: description,
+        subFeatures: subFeatures,
+      );
+
+      await rootPackage.registerFeaturePackage(featurePackage);
+
+      if (navigator) {
+        await _addNavigator(
+          featurePackage: featurePackage,
+          navigationPackage: platformDirectory.navigationPackage,
+        );
+      }
+    });
+
+    await melosBootstrapTask(scope: [rootPackage, featurePackage]);
+
+    await codeGenTaskGroup(
+      packages: [rootPackage, if (navigator) featurePackage],
     );
 
-    await rootPackage.registerFeaturePackage(featurePackage);
-
-    if (navigator) {
-      await _addNavigator(
-        featurePackage: featurePackage,
-        navigationPackage: platformDirectory.navigationPackage,
-      );
-    }
-
-    await bootstrap(packages: [rootPackage, featurePackage]);
-
-    for (final package in [rootPackage, if (navigator) featurePackage]) {
-      await codeGen(package: package);
-    }
-
-    // good?
-    await dartFormatFix(package: project.rootPackage);
+    await dartFormatFixTask();
 
     // TODO add link doc to navigation and routing approach
     logger

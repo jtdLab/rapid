@@ -34,13 +34,6 @@ class PlatformFeaturesDirectory extends Directory {
           platform: platform,
           name: name.replaceAll('_page', ''),
         ) as T;
-      } else if (name.endsWith('flow')) {
-        return PlatformFlowFeaturePackage.resolve(
-          projectName: projectName,
-          projectPath: projectPath,
-          platform: platform,
-          name: name.replaceAll('_flow', ''),
-        ) as T;
       } else if (name.endsWith('tab_flow')) {
         return PlatformTabFlowFeaturePackage.resolve(
           projectName: projectName,
@@ -48,7 +41,15 @@ class PlatformFeaturesDirectory extends Directory {
           platform: platform,
           name: name.replaceAll('_tab_flow', ''),
         ) as T;
+      } else if (name.endsWith('flow')) {
+        return PlatformFlowFeaturePackage.resolve(
+          projectName: projectName,
+          projectPath: projectPath,
+          platform: platform,
+          name: name.replaceAll('_flow', ''),
+        ) as T;
       } else {
+        // TODO using else is wrong throw error in else and add else if clause for widget
         return PlatformWidgetFeaturePackage.resolve(
           projectName: projectName,
           projectPath: projectPath,

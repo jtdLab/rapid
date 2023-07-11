@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name}}_{{platform}}_app/{{project_name}}_{{platform}}_app.dart';
+{{#subRoutes}}import 'package:{{project_name}}_{{platform}}_{{name.snakeCase()}}/{{project_name}}_{{platform}}_{{name.snakeCase()}}.dart';{{/subRoutes}}
 import 'package:{{project_name}}_{{platform}}_{{name.snakeCase()}}/{{project_name}}_{{platform}}_{{name.snakeCase()}}.dart';
 import 'package:{{project_name}}_ui_{{platform}}/{{project_name}}_ui_{{platform}}.dart';
 
@@ -43,10 +44,7 @@ Widget appWrapper({
   }
 
   return App.test(
-    locale: locale ?? const Locale('{{default_language}}'),
-    localizationsDelegates: const [
-      {{project_name.pascalCase()}}Localizations.delegate,
-    ],
+    locale: locale,
     {{#android}}themeMode: themeMode{{/android}}{{#ios}}brightness: brightness{{/ios}}{{#linux}}themeMode: themeMode{{/linux}}{{#macos}}themeMode: themeMode{{/macos}}{{#web}}themeMode: themeMode{{/web}}{{#windows}}themeMode: themeMode{{/windows}}{{#mobile}}themeMode: themeMode{{/mobile}},
     router: _TestRouter(child),
     navigatorObserver: observer,

@@ -38,7 +38,7 @@ final platformLocalizationPackageBundle =
     {
       "path": "lib/{{project_name}}_{{platform}}_localization.dart",
       "data":
-          "ZXhwb3J0ICdzcmMvbDEwbi5kYXJ0JzsKZXhwb3J0ICdzcmMve3twcm9qZWN0X25hbWV9fV9sb2NhbGl6YXRpb25zLmRhcnQnOwo=",
+          "ZXhwb3J0ICdwYWNrYWdlOmZsdXR0ZXJfbG9jYWxpemF0aW9ucy9mbHV0dGVyX2xvY2FsaXphdGlvbnMuZGFydCc7CmV4cG9ydCAncGFja2FnZTppbnRsL2ludGwuZGFydCc7CgpleHBvcnQgJ3NyYy9sMTBuLmRhcnQnOwpleHBvcnQgJ3NyYy97e3Byb2plY3RfbmFtZX19X2xvY2FsaXphdGlvbnMuZGFydCc7Cg==",
       "type": "text"
     },
     {

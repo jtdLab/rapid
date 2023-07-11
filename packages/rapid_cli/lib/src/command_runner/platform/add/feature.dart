@@ -4,13 +4,14 @@ import 'package:rapid_cli/src/project/platform.dart';
 import '../../base.dart';
 import 'feature/flow.dart';
 import 'feature/page.dart';
+import 'feature/tab_flow.dart';
 import 'feature/widget.dart';
 
 class PlatformAddFeatureCommand extends RapidBranchCommand {
   PlatformAddFeatureCommand(this.platform, super.project) {
-    //addSubcommand(PlatformAddFeatureCustomCommand(platform, project));
     addSubcommand(PlatformAddFeatureFlowCommand(platform, project));
     addSubcommand(PlatformAddFeaturePageCommand(platform, project));
+    addSubcommand(PlatformAddFeatureTabFlowCommand(platform, project));
     addSubcommand(PlatformAddFeatureWidgetCommand(platform, project));
   }
 

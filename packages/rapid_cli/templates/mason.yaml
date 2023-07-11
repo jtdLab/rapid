@@ -29,6 +29,8 @@ bricks:
     path: platform_localization_package
   platform_navigation_package:
     path: platform_navigation_package
+  platform_page_feature_package:
+    path: platform_page_feature_package
   platform_root_package:
     path: platform_root_package
   android_native_directory:

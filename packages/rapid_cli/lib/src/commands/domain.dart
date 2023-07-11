@@ -14,11 +14,7 @@ mixin _DomainMixin on _Rapid {
       if (!infrastructurePackage.existsSync()) {
         await task(
           'Creating domain package',
-          () async {
-            await domainPackage.generate();
-            // TODO needed ?
-            await dartFormatFix(package: domainPackage);
-          },
+          () async => domainPackage.generate(),
         );
 
         await task(
@@ -30,22 +26,20 @@ mixin _DomainMixin on _Rapid {
                 infrastructurePackage,
               );
             }
-            // TODO needed ?
-            await dartFormatFix(package: infrastructurePackage);
           },
         );
 
-        await bootstrap(
-          packages: [
+        await melosBootstrapTask(
+          scope: [
             domainPackage,
             infrastructurePackage,
             ...rootPackages,
           ],
         );
 
-        for (final rootPackage in rootPackages) {
-          await codeGen(package: rootPackage);
-        }
+        await codeGenTaskGroup(packages: rootPackages);
+
+        await dartFormatFixTask();
 
         logger
           ..newLine()
@@ -71,25 +65,26 @@ mixin _DomainMixin on _Rapid {
       if (infrastructurePackage.existsSync()) {
         await task(
           'Deleting domain package',
-          () async => domainPackage.delete(),
+          () async => domainPackage.deleteSync(recursive: true),
         );
 
         await task(
           'Deleting infrastructure package',
           () async {
-            infrastructurePackage.deleteSync();
             for (final rootPackage in rootPackages) {
               await rootPackage.unregisterInfrastructurePackage(
                 infrastructurePackage,
               );
             }
+            infrastructurePackage.deleteSync(recursive: true);
           },
         );
 
-        await bootstrap(packages: rootPackages);
-        for (final rootPackage in rootPackages) {
-          await codeGen(package: rootPackage);
-        }
+        await melosBootstrapTask(scope: rootPackages);
+
+        await codeGenTaskGroup(packages: rootPackages);
+
+        await dartFormatFixTask();
 
         logger
           ..newLine()
@@ -121,10 +116,10 @@ mixin _DomainMixin on _Rapid {
           barrelFile.addExport(
             p.normalize(p.join('src', '${name.snakeCase}.dart')),
           );
-          // TODO needed?
-          await dartFormatFix(package: domainPackage);
         },
       );
+
+      await dartFormatFixTask();
 
       logger
         ..newLine()
@@ -153,10 +148,10 @@ mixin _DomainMixin on _Rapid {
           barrelFile.addExport(
             p.normalize(p.join('src', 'i_${name.snakeCase}_service.dart')),
           );
-          // TODO needed?
-          await dartFormatFix(package: domainPackage);
         },
       );
+
+      await dartFormatFixTask();
 
       logger
         ..newLine()
@@ -177,7 +172,6 @@ mixin _DomainMixin on _Rapid {
     final domainPackage =
         project.appModule.domainDirectory.domainPackage(name: subDomainName);
     final valueObject = domainPackage.valueObject(name: name);
-
     if (!valueObject.existsAny) {
       final barrelFile = domainPackage.barrelFile;
 
@@ -191,8 +185,9 @@ mixin _DomainMixin on _Rapid {
         },
       );
 
-      await codeGen(package: domainPackage);
-      await dartFormatFix(package: domainPackage);
+      await codeGenTask(package: domainPackage);
+
+      await dartFormatFixTask();
 
       logger
         ..newLine()
@@ -202,6 +197,7 @@ mixin _DomainMixin on _Rapid {
     }
   }
 
+  // TODO this does delete a value_object because they have same files
   Future<void> domainSubDomainRemoveEntity({
     required String name,
     required String? subDomainName,
@@ -211,7 +207,6 @@ mixin _DomainMixin on _Rapid {
     final domainPackage =
         project.appModule.domainDirectory.domainPackage(name: subDomainName);
     final entity = domainPackage.entity(name: name);
-    // TODO this does delete a value_object because they have same files
     if (entity.existsAny) {
       final barrelFile = domainPackage.barrelFile;
 
@@ -224,6 +219,8 @@ mixin _DomainMixin on _Rapid {
           );
         },
       );
+
+      await dartFormatFixTask();
 
       logger
         ..newLine()
@@ -255,6 +252,8 @@ mixin _DomainMixin on _Rapid {
         },
       );
 
+      await dartFormatFixTask();
+
       logger
         ..newLine()
         ..commandSuccess('Removed Service Interface!');
@@ -263,6 +262,7 @@ mixin _DomainMixin on _Rapid {
     }
   }
 
+  // TODO this does delete a entity because they have same files
   Future<void> domainSubDomainRemoveValueObject({
     required String name,
     required String? subDomainName,
@@ -284,6 +284,8 @@ mixin _DomainMixin on _Rapid {
           );
         },
       );
+
+      await dartFormatFixTask();
 
       logger
         ..newLine()

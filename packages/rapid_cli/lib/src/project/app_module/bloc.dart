@@ -19,20 +19,20 @@ class Bloc extends FileSystemEntityCollection {
 
   final String featureName;
 
-  File get file =>
-      File(p.join(path, 'lib', 'src', 'application', '${name}_bloc.dart'));
+  File get file => File(
+      p.join(path, 'lib', 'src', 'application', '${name.snakeCase}_bloc.dart'));
 
-  File get freezedFile => File(
-      p.join(path, 'lib', 'src', 'application', '${name}_bloc.freezed.dart'));
+  File get freezedFile => File(p.join(path, 'lib', 'src', 'application',
+      '${name.snakeCase}_bloc.freezed.dart'));
 
-  File get eventFile =>
-      File(p.join(path, 'lib', 'src', 'application', '${name}_event.dart'));
+  File get eventFile => File(p.join(
+      path, 'lib', 'src', 'application', '${name.snakeCase}_event.dart'));
 
-  File get stateFile =>
-      File(p.join(path, 'lib', 'src', 'application', '${name}_state.dart'));
+  File get stateFile => File(p.join(
+      path, 'lib', 'src', 'application', '${name.snakeCase}_state.dart'));
 
-  File get testFile => File(
-      p.join(path, 'test', 'src', 'application', '${name}_bloc_test.dart'));
+  File get testFile => File(p.join(
+      path, 'test', 'src', 'application', '${name.snakeCase}_bloc_test.dart'));
 
   @override
   Iterable<FileSystemEntity> get entities => {

@@ -19,11 +19,11 @@ class ServiceImplementation extends FileSystemEntityCollection {
 
   final String? subInfrastructureName;
 
-  File get file => File(p.join(
-      path, 'lib', 'src', '${name}_${serviceInterfaceName}_service.dart'));
+  File get file => File(p.join(path, 'lib', 'src',
+      '${name.snakeCase}_${serviceInterfaceName.snakeCase}_service.dart'));
 
-  File get testFile => File(p.join(
-      path, 'test', 'src' '${name}_${serviceInterfaceName}_service_test.dart'));
+  File get testFile => File(p.join(path, 'test', 'src',
+      '${name.snakeCase}_${serviceInterfaceName.snakeCase}_service_test.dart'));
 
   @override
   Iterable<FileSystemEntity> get entities => {
@@ -38,6 +38,7 @@ class ServiceImplementation extends FileSystemEntityCollection {
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
+        'output_dir': '.', // TODO rm later
         'service_interface_name': serviceInterfaceName,
         'sub_infrastructure_name': subInfrastructureName,
       },

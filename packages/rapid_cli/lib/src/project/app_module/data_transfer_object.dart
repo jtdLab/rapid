@@ -16,16 +16,17 @@ class DataTransferObject extends FileSystemEntityCollection {
 
   final String? subInfrastructureName;
 
-  File get file => File(p.join(path, 'lib', 'src', '${entityName}_dto.dart'));
+  File get file =>
+      File(p.join(path, 'lib', 'src', '${entityName.snakeCase}_dto.dart'));
 
-  File get freezedFile =>
-      File(p.join(path, 'lib', 'src', '${entityName}_dto.freezed.dart'));
+  File get freezedFile => File(
+      p.join(path, 'lib', 'src', '${entityName.snakeCase}_dto.freezed.dart'));
 
   File get gFile =>
-      File(p.join(path, 'lib', 'src', '${entityName}_dto.g.dart'));
+      File(p.join(path, 'lib', 'src', '${entityName.snakeCase}_dto.g.dart'));
 
-  File get testFile =>
-      File(p.join(path, 'test', 'src', '${entityName}_dto_test.dart'));
+  File get testFile => File(
+      p.join(path, 'test', 'src', '${entityName.snakeCase}_dto_test.dart'));
 
   @override
   Iterable<FileSystemEntity> get entities => {
@@ -42,6 +43,7 @@ class DataTransferObject extends FileSystemEntityCollection {
       vars: <String, dynamic>{
         'project_name': projectName,
         'entity_name': entityName,
+        'output_dir': '.', // TODO rm later
         'sub_infrastructure_name': subInfrastructureName,
       },
     );

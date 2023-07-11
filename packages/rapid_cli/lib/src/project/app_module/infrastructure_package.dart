@@ -1,6 +1,7 @@
 part of '../project.dart';
 
-class InfrastructurePackage extends DartPackage {
+class InfrastructurePackage extends DartPackage
+    implements Comparable<InfrastructurePackage> {
   InfrastructurePackage({
     required this.projectName,
     required String path,
@@ -73,5 +74,18 @@ class InfrastructurePackage extends DartPackage {
         'name': name,
       },
     );
+  }
+
+  @override
+  int compareTo(InfrastructurePackage other) {
+    if (name == null) {
+      if (other.name == null) return 0;
+      return 1;
+    } else if (other.name == null) {
+      if (name == null) return 0;
+      return -1;
+    }
+
+    return name!.compareTo(other.name!);
   }
 }

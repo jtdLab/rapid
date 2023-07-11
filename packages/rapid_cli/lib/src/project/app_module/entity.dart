@@ -16,12 +16,13 @@ class Entity extends FileSystemEntityCollection {
 
   final String? subDomainName;
 
-  File get file => File(p.join(path, 'lib', 'src', '$name.dart'));
+  File get file => File(p.join(path, 'lib', 'src', '${name.snakeCase}.dart'));
 
   File get freezedFile =>
-      File(p.join(path, 'lib', 'src', '$name.freezed.dart'));
+      File(p.join(path, 'lib', 'src', '${name.snakeCase}.freezed.dart'));
 
-  File get testFile => File(p.join(path, 'test', 'src', '${name}_test.dart'));
+  File get testFile =>
+      File(p.join(path, 'test', 'src', '${name.snakeCase}_test.dart'));
 
   @override
   Iterable<FileSystemEntity> get entities => {
@@ -37,6 +38,7 @@ class Entity extends FileSystemEntityCollection {
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
+        'output_dir': '.', // TODO rm later
         'sub_domain_name': subDomainName,
       },
     );

@@ -19,17 +19,17 @@ class Cubit extends FileSystemEntityCollection {
 
   final String featureName;
 
-  File get file =>
-      File(p.join(path, 'lib', 'src', 'application', '${name}_cubit.dart'));
+  File get file => File(p.join(
+      path, 'lib', 'src', 'application', '${name.snakeCase}_cubit.dart'));
 
-  File get freezedFile => File(
-      p.join(path, 'lib', 'src', 'application', '${name}_cubit.freezed.dart'));
+  File get freezedFile => File(p.join(path, 'lib', 'src', 'application',
+      '${name.snakeCase}_cubit.freezed.dart'));
 
-  File get stateFile =>
-      File(p.join(path, 'lib', 'src', 'application', '${name}_state.dart'));
+  File get stateFile => File(p.join(
+      path, 'lib', 'src', 'application', '${name.snakeCase}_state.dart'));
 
-  File get testFile => File(
-      p.join(path, 'test', 'src', 'application', '${name}_cubit_test.dart'));
+  File get testFile => File(p.join(
+      path, 'test', 'src', 'application', '${name.snakeCase}_cubit_test.dart'));
 
   @override
   Iterable<FileSystemEntity> get entities => {

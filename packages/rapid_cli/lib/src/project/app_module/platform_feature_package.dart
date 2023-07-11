@@ -1,6 +1,7 @@
 part of '../project.dart';
 
-abstract class PlatformFeaturePackage extends DartPackage {
+abstract class PlatformFeaturePackage extends DartPackage
+    implements Comparable<PlatformFeaturePackage> {
   PlatformFeaturePackage({
     required this.projectName,
     required this.platform,
@@ -25,6 +26,11 @@ abstract class PlatformFeaturePackage extends DartPackage {
   final Bloc Function({required String name}) bloc;
 
   final Cubit Function({required String name}) cubit;
+
+  @override
+  int compareTo(PlatformFeaturePackage other) {
+    return name.compareTo(other.name);
+  }
 }
 
 abstract class PlatformRoutableFeaturePackage extends PlatformFeaturePackage {

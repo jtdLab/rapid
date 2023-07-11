@@ -13,10 +13,10 @@ class ServiceInterface extends FileSystemEntityCollection {
 
   final String name;
 
-  File get file => File(p.join(path, 'lib', 'src', 'i_${name}_service.dart'));
+  File get file => File(p.join(path, 'lib', 'src', 'i_${name.snakeCase}_service.dart'));
 
   File get freezedFile =>
-      File(p.join(path, 'lib', 'src', 'i_${name}_service.freezed.dart'));
+      File(p.join(path, 'lib', 'src', 'i_${name.snakeCase}_service.freezed.dart'));
 
   @override
   Iterable<FileSystemEntity> get entities => {
@@ -31,6 +31,7 @@ class ServiceInterface extends FileSystemEntityCollection {
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
+        'output_dir': '.', // TODO rm later
       },
     );
   }

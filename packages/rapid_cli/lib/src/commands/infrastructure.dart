@@ -22,14 +22,13 @@ mixin _InfrastructureMixin on _Rapid {
           'Creating data transfer object',
           () async {
             await dataTransferObject.generate();
-            // TODO cleaner?
             barrelFile.addExport(
               p.normalize(p.join('src', '${entityName.snakeCase}_dto.dart')),
             );
           },
         );
 
-        await dartFormatFix(package: infrastructurePackage);
+        await dartFormatFixTask();
 
         logger
           ..newLine()
@@ -66,7 +65,6 @@ mixin _InfrastructureMixin on _Rapid {
           'Creating service implementation',
           () async {
             await serviceImplementation.generate();
-            // TODO cleaner?
             barrelFile.addExport(
               p.normalize(
                 p.join(
@@ -78,7 +76,7 @@ mixin _InfrastructureMixin on _Rapid {
           },
         );
 
-        await dartFormatFix(package: infrastructurePackage);
+        await dartFormatFixTask();
 
         // TODO better hint containg related service etc
         logger
@@ -86,7 +84,9 @@ mixin _InfrastructureMixin on _Rapid {
           ..commandSuccess('Added Service Implementation!');
       } else {
         throw ServiceImplementationAlreadyExistsException._(
-            name, serviceInterfaceName);
+          name,
+          serviceInterfaceName,
+        );
       }
     } else {
       throw ServiceInterfaceNotFoundException._(serviceInterfaceName);
@@ -110,11 +110,10 @@ mixin _InfrastructureMixin on _Rapid {
       await task(
         'Deleting data transfer object',
         () async {
-          dataTransferObject.delete();
-          // TODO cleaner?
           barrelFile.removeExport(
             p.normalize(p.join('src', '${entityName.snakeCase}_dto.dart')),
           );
+          dataTransferObject.delete();
         },
       );
 
@@ -145,7 +144,6 @@ mixin _InfrastructureMixin on _Rapid {
       await task(
         'Deleting service implementation',
         () async {
-          serviceImplementation.delete();
           barrelFile.removeExport(
             p.normalize(
               p.join(
@@ -154,6 +152,7 @@ mixin _InfrastructureMixin on _Rapid {
               ),
             ),
           );
+          serviceImplementation.delete();
         },
       );
 
@@ -162,7 +161,9 @@ mixin _InfrastructureMixin on _Rapid {
         ..commandSuccess('Removed Service Implementation!');
     } else {
       throw ServiceImplementationNotFoundException._(
-          name, serviceInterfaceName);
+        name,
+        serviceInterfaceName,
+      );
     }
   }
 }

@@ -1,6 +1,6 @@
 part of '../project.dart';
 
-class DomainPackage extends DartPackage {
+class DomainPackage extends DartPackage implements Comparable<DomainPackage> {
   DomainPackage({
     required this.projectName,
     required String path,
@@ -70,5 +70,18 @@ class DomainPackage extends DartPackage {
         'name': name,
       },
     );
+  }
+
+  @override
+  int compareTo(DomainPackage other) {
+    if (name == null) {
+      if (other.name == null) return 0;
+      return 1;
+    } else if (other.name == null) {
+      if (name == null) return 0;
+      return -1;
+    }
+
+    return name!.compareTo(other.name!);
   }
 }

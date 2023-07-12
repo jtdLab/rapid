@@ -1,7 +1,5 @@
 part of 'runner.dart';
 
-// TODO add and remove navigator has to be refactored
-
 mixin _PlatformMixin on _Rapid {
   Future<void> platformAddFeatureFlow(
     Platform platform, {
@@ -297,6 +295,8 @@ mixin _PlatformMixin on _Rapid {
       navigationPackage: platformDirectory.navigationPackage,
     );
 
+    await dartFormatFixTask();
+
     logger
       ..newLine()
       ..commandSuccess('Added Navigator!');
@@ -553,10 +553,12 @@ mixin _PlatformMixin on _Rapid {
         }
       }
 
-      await _removeNavigatorInterface(
-        featurePackage: featurePackage,
-        navigationPackage: platformDirectory.navigationPackage,
-      );
+      if (featurePackage is PlatformRoutableFeaturePackage) {
+        await _removeNavigatorInterface(
+          featurePackage: featurePackage,
+          navigationPackage: platformDirectory.navigationPackage,
+        );
+      }
 
       featurePackage.deleteSync(recursive: true);
     });
@@ -662,14 +664,14 @@ mixin _PlatformMixin on _Rapid {
 
     logger.newLine();
 
+    // TODO maybe add set-exit-if-error to behave like currently
+    // and a mode where if interface or impl are not existing the command skips those errors
+    // and completes without error
     await _removeNavigatorInterface(
       featurePackage: featurePackage,
       navigationPackage: platformDirectory.navigationPackage,
     );
-
     await _removeNavigatorImplementation(featurePackage: featurePackage);
-
-    await codeGenTask(package: featurePackage);
 
     await dartFormatFixTask();
 
@@ -715,52 +717,85 @@ mixin _PlatformMixin on _Rapid {
       ..commandSuccess('Set Default Language!');
   }
 
-  // TODO
   Future<void> _addNavigator({
     required PlatformRoutableFeaturePackage featurePackage,
     required PlatformNavigationPackage navigationPackage,
   }) async {
-    // TODO check wheter impl and interface are already existing
-    // throw NavigatorAlreadyExistsException._(featureName, platform);
+    // TODO maybe add set-exit-if-error to behave like currently
+    // and a mode where if interface or impl are existing the command skips those errors
+    // and completes without error
+    await _addNavigatorInterface(
+      featurePackage: featurePackage,
+      navigationPackage: navigationPackage,
+    );
+    await _addNavigatorImplementation(featurePackage: featurePackage);
+  }
+
+  Future<void> _addNavigatorInterface({
+    required PlatformRoutableFeaturePackage featurePackage,
+    required PlatformNavigationPackage navigationPackage,
+  }) async {
     final featureName = featurePackage.name;
     final navigatorInterface =
         navigationPackage.navigatorInterface(name: featureName.pascalCase);
     if (!navigatorInterface.existsAny) {
-      final barrelFile = navigationPackage.barrelFile;
-
-      await navigatorInterface.generate();
-
-      barrelFile.addExport('src/i_${featureName.snakeCase}_navigator.dart');
-
-      // TODO check if the impl is already available
-      final navigatorImplementation = featurePackage.navigatorImplementation;
-      await navigatorImplementation.generate();
+      await task('Creating navigator interface', () async {
+        await navigatorInterface.generate();
+        navigationPackage.barrelFile
+            .addExport('src/i_${featureName.snakeCase}_navigator.dart');
+      });
+    } else {
+      throw NavigatorInterfaceAlreadyExistsException._(featurePackage);
     }
   }
 
-  // TODO
+  Future<void> _addNavigatorImplementation({
+    required PlatformRoutableFeaturePackage featurePackage,
+  }) async {
+    final navigatorImplementation = featurePackage.navigatorImplementation;
+    if (!navigatorImplementation.existsAny) {
+      await task(
+        'Creating navigator implementation',
+        () async => navigatorImplementation.generate(),
+      );
+      await codeGenTask(package: featurePackage);
+    } else {
+      throw NavigatorImplementationAlreadyExistsException._(featurePackage);
+    }
+  }
+
   Future<void> _removeNavigatorInterface({
-    required PlatformFeaturePackage featurePackage,
+    required PlatformRoutableFeaturePackage featurePackage,
     required PlatformNavigationPackage navigationPackage,
   }) async {
     final featureName = featurePackage.name;
     final navigatorInterface =
         navigationPackage.navigatorInterface(name: featureName.pascalCase);
     if (navigatorInterface.existsAny) {
-      navigatorInterface.delete();
-      navigationPackage.barrelFile.removeExport(
-        'src/i_${featureName.snakeCase}_navigator.dart',
-      );
+      await task('Deleting navigator interface', () {
+        navigatorInterface.delete();
+        navigationPackage.barrelFile.removeExport(
+          'src/i_${featureName.snakeCase}_navigator.dart',
+        );
+      });
+    } else {
+      throw NavigatorInterfaceNotFoundException._(featurePackage);
     }
   }
 
-  // TODO
   Future<void> _removeNavigatorImplementation({
     required PlatformRoutableFeaturePackage featurePackage,
   }) async {
-    // TODO check if the impl is even available
     final navigatorImplementation = featurePackage.navigatorImplementation;
-    navigatorImplementation.delete();
+    if (navigatorImplementation.existsAny) {
+      await task(
+        'Deleting navigator implementation',
+        () => navigatorImplementation.delete(),
+      );
+      await codeGenTask(package: featurePackage);
+    } else {
+      throw NavigatorImplementationNotFoundException._(featurePackage);
+    }
   }
 }
 
@@ -788,15 +823,25 @@ class FeatureNotFoundException extends RapidException {
   }
 }
 
-class NavigatorNotFoundException extends RapidException {
+class NavigatorInterfaceAlreadyExistsException extends RapidException {
   final PlatformFeaturePackage feature;
-  final Platform platform;
 
-  NavigatorNotFoundException._(this.feature, this.platform);
+  NavigatorInterfaceAlreadyExistsException._(this.feature);
 
   @override
   String toString() {
-    return 'The navigator "I${feature.name.pascalCase}Navigator" does not exist. (${platform.prettyName})';
+    return 'The navigator interface "I${feature.name.pascalCase}Navigator" does already exist. (${feature.platform.prettyName})';
+  }
+}
+
+class NavigatorImplementationAlreadyExistsException extends RapidException {
+  final PlatformFeaturePackage feature;
+
+  NavigatorImplementationAlreadyExistsException._(this.feature);
+
+  @override
+  String toString() {
+    return 'The navigator implementation "${feature.name.pascalCase}Navigator" does already exist. (${feature.platform.prettyName})';
   }
 }
 
@@ -823,15 +868,25 @@ class LanguageAlreadyPresentException extends RapidException {
   }
 }
 
-class NavigatorAlreadyExistsException extends RapidException {
+class NavigatorInterfaceNotFoundException extends RapidException {
   final PlatformFeaturePackage feature;
-  final Platform platform;
 
-  NavigatorAlreadyExistsException._(this.feature, this.platform);
+  NavigatorInterfaceNotFoundException._(this.feature);
 
   @override
   String toString() {
-    return 'The Navigator "I${feature.name.pascalCase}Navigator" does already exist. (${platform.prettyName})';
+    return 'The navigator interface "I${feature.name.pascalCase}Navigator" does not exist. (${feature.platform.prettyName})';
+  }
+}
+
+class NavigatorImplementationNotFoundException extends RapidException {
+  final PlatformFeaturePackage feature;
+
+  NavigatorImplementationNotFoundException._(this.feature);
+
+  @override
+  String toString() {
+    return 'The navigator implementation "${feature.name.pascalCase}Navigator" does not exist. (${feature.platform.prettyName})';
   }
 }
 

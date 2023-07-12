@@ -160,7 +160,7 @@ class PlatformPageFeaturePackage extends PlatformRoutableFeaturePackage {
       projectName: projectName,
       platform: platform,
       path: path,
-      name: name,
+      name: '${selfName}_page',
     );
 
     return PlatformPageFeaturePackage(
@@ -229,11 +229,10 @@ class PlatformFlowFeaturePackage extends PlatformRoutableFeaturePackage {
           featureName: '${selfName}_flow',
         );
     final navigatorImplementation = NavigatorImplementation(
-      projectName: projectName,
-      platform: platform,
-      path: path,
-      name: name,
-    );
+        projectName: projectName,
+        platform: platform,
+        path: path,
+        name: '${selfName}_flow');
 
     return PlatformFlowFeaturePackage(
       projectName: projectName,
@@ -304,7 +303,7 @@ class PlatformTabFlowFeaturePackage extends PlatformRoutableFeaturePackage {
       projectName: projectName,
       platform: platform,
       path: path,
-      name: name,
+      name: '${selfName}_tab_flow',
     );
 
     return PlatformTabFlowFeaturePackage(

@@ -50,8 +50,8 @@ abstract class FileSystemEntityCollection {
   bool get existsAll => entities.every((e) => e.existsSync());
 
   void delete() {
-    for (final entity in entities) {
-      entity.deleteSync();
+    for (final entity in entities.where((e) => e.existsSync())) {
+      entity.deleteSync(recursive: true);
     }
   }
 }
@@ -804,14 +804,18 @@ class DartFile extends File {
     final regExp = RegExp(
       r"export[\s]+\'" +
           export +
-          r"\'([\s]+(:?hide|show)[\s]+[A-Z]+[A-z1-9]*)?;" +
-          r"[\s]{1}",
+          r"\'([\s]+(:?hide|show)[\s]+[A-Z]+[A-z1-9]*)?;",
     );
-    final match = regExp.firstMatch(contents);
-    if (match == null) {
+
+    final matches = regExp.allMatches(contents);
+    if (matches.isEmpty) {
       return;
     }
-    final output = contents.replaceRange(match.start, match.end, '');
+
+    var output = contents;
+    for (final match in matches.toList().reversed) {
+      output = output.replaceRange(match.start, match.end, '');
+    }
 
     writeAsStringSync(output);
   }

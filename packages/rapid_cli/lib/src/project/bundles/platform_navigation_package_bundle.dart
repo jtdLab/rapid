@@ -23,7 +23,7 @@ final platformNavigationPackageBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
-      "path": "lib/{{platform}}_navigation.dart",
+      "path": "lib/{{project_name}}_{{platform}}_navigation.dart",
       "data":
           "Ly8vIFRoZSBOYXZpZ2F0aW9uIG9mIHt7cHJvamVjdF9uYW1lLnRpdGxlQ2FzZSgpfX0gZm9yIHt7I2FuZHJvaWR9fUFuZHJvaWR7ey9hbmRyb2lkfX17eyNpb3N9fWlPU3t7L2lvc319e3sjbGludXh9fUxpbnV4e3svbGludXh9fXt7I21hY29zfX1tYWNPU3t7L21hY29zfX17eyN3ZWJ9fVdlYnt7L3dlYn19e3sjd2luZG93c319V2luZG93c3t7L3dpbmRvd3N9fXt7I21vYmlsZX19TW9iaWxle3svbW9iaWxlfX0uCi8vLwovLy8gVG8gdXNlLCBpbXBvcnQgYHBhY2thZ2U6e3twcm9qZWN0X25hbWV9fV97e3BsYXRmb3JtfX1fbmF2aWdhdGlvbi97e3Byb2plY3RfbmFtZX19X3t7cGxhdGZvcm19fV9uYXZpZ2F0aW9uLmRhcnRgLgpsaWJyYXJ5IHt7cHJvamVjdF9uYW1lfX1fe3twbGF0Zm9ybX19X25hdmlnYXRpb247Cg==",
       "type": "text"

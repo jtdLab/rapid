@@ -16,17 +16,15 @@ class NavigatorImplementation extends FileSystemEntityCollection {
 
   final String name;
 
-  File get file => File(p.join(path, 'lib', 'src', '$name.dart'));
+  File get file =>
+      File(p.join(path, 'lib', 'src', 'presentation', 'navigator.dart'));
 
-  File get freezedFile =>
-      File(p.join(path, 'lib', 'src', '$name.freezed.dart'));
-
-  File get testFile => File(p.join(path, 'test', 'src', '${name}_test.dart'));
+  File get testFile =>
+      File(p.join(path, 'test', 'src', 'presentation', 'navigator_test.dart'));
 
   @override
   Iterable<FileSystemEntity> get entities => {
         file,
-        freezedFile,
         testFile,
       };
 

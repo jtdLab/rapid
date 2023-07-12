@@ -1,3 +1,5 @@
-## 0.1.0
+# 0.0.1-dev.1
 
-- Initial version.
+**Dev Release**
+
+- feat: `ValueObject` and `ValueFailure` base classes

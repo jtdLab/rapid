@@ -22,6 +22,10 @@ Rapid is based on carefully selected packages from the Flutter Community and bri
 
 View the full documentation [here](https://docs.page/jtdLab/rapid).
 
+## Examples
+
+TODO
+
 ## What packages is Rapid based on? 👀
 
 | Task                    |                                                                         Package                                                                          |

@@ -23,7 +23,7 @@ flutter pub global activate -sgit https://github.com/jtdLab/rapid.git --git-path
 ### Creating Project
 
 ```sh
-rapid create demo_app --android --ios
+rapid create my_app --android --ios --windows
 ```
 
 [rapid_create]: https://raw.githubusercontent.com/jtdLab/rapid/dev/docs/assets/vhs/create.gif

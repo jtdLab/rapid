@@ -554,10 +554,12 @@ mixin _PlatformMixin on _Rapid {
       }
 
       if (featurePackage is PlatformRoutableFeaturePackage) {
-        await _removeNavigatorInterface(
-          featurePackage: featurePackage,
-          navigationPackage: platformDirectory.navigationPackage,
-        );
+        if (featurePackage.navigatorImplementation.existsAll) {
+          await _removeNavigatorInterface(
+            featurePackage: featurePackage,
+            navigationPackage: platformDirectory.navigationPackage,
+          );
+        }
       }
 
       featurePackage.deleteSync(recursive: true);

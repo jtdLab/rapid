@@ -117,6 +117,8 @@ mixin _InfrastructureMixin on _Rapid {
         },
       );
 
+      await dartFormatFixTask();
+
       logger
         ..newLine()
         ..commandSuccess('Removed Data Transfer Object!');
@@ -155,6 +157,8 @@ mixin _InfrastructureMixin on _Rapid {
           serviceImplementation.delete();
         },
       );
+
+      await dartFormatFixTask();
 
       logger
         ..newLine()

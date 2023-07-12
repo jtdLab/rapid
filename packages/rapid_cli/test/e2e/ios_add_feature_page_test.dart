@@ -15,15 +15,6 @@ void main() {
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
-
-      test(
-        'ios add feature page --no-localization',
-        performTest(
-          platform: Platform.ios,
-          localization: false,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
     },
   );
 }

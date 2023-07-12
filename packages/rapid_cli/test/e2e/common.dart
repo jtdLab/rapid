@@ -27,6 +27,8 @@ dynamic Function() withTempDir(FutureOr<void> Function(Directory root) fn) {
     } catch (_) {
       rethrow;
     } finally {
+      // TODO this might influence exceptions that dependen on file system
+      // We used to delete dir here but that lead to some tests fail in ci
       Directory.current = cwd;
     }
   };
@@ -512,7 +514,6 @@ final class RapidE2ETester {
 
   /// Source files of a platform localization package to support [languages].
   List<File> languageFiles(
-    String feature,
     Platform platform,
     List<String> languages,
   ) =>

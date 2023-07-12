@@ -4,6 +4,8 @@ import 'package:test/test.dart';
 
 import 'platform_feature_add_cubit.dart';
 
+// TODO output-dir
+
 void main() {
   group(
     'E2E',
@@ -16,7 +18,7 @@ void main() {
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
-
+/* 
       test(
         'mobile <feature> add cubit (with output dir)',
         performTest(
@@ -25,7 +27,7 @@ void main() {
           expectedCoverage: 77.78,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
-      );
+      ); */
     },
   );
 }

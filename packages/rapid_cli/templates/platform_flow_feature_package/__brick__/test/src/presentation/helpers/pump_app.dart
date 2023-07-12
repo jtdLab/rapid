@@ -73,6 +73,8 @@ extension WidgetTesterX on WidgetTester {
   }
 }
 
+const nestedRouteA = _TestRoute(name: 'NestedRouteA');
+
 class _TestRouter extends RootStackRouter {
   final Widget widget;
 

@@ -15,34 +15,6 @@ void main() {
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
-
-      test(
-        'macos add feature flow --no-localization',
-        performTest(
-          platform: Platform.macos,
-          localization: false,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
-
-      test(
-        'macos add feature flow --tab',
-        performTest(
-          platform: Platform.macos,
-          tab: true,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
-
-      test(
-        'macos add feature flow --tab --no-localization',
-        performTest(
-          platform: Platform.macos,
-          tab: true,
-          localization: false,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
     },
   );
 }

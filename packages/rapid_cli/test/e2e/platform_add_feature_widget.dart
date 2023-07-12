@@ -4,7 +4,6 @@ import 'common.dart';
 
 dynamic performTest({
   required Platform platform,
-  bool localization = true,
 }) =>
     withTempDir((root) async {
       // Arrange
@@ -18,7 +17,6 @@ dynamic performTest({
         'feature',
         'widget',
         featureName,
-        if (!localization) '--no-localization', // TODO
       ]);
 
       // Assert

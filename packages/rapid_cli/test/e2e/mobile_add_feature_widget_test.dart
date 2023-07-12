@@ -15,15 +15,6 @@ void main() {
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
-
-      test(
-        'mobile add feature widget --no-localization',
-        performTest(
-          platform: Platform.mobile,
-          localization: false,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
     },
   );
 }

@@ -1,16 +1,15 @@
-// TODO rm
-/* @Tags(['e2e'])
+@Tags(['e2e'])
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
-import 'platform_feature_add_localization.dart';
+import 'platform_add_feature_tab_flow.dart';
 
 void main() {
   group(
     'E2E',
     () {
       test(
-        'web <feature> add localization',
+        'web add feature tab_flow',
         performTest(
           platform: Platform.web,
         ),
@@ -19,4 +18,3 @@ void main() {
     },
   );
 }
- */

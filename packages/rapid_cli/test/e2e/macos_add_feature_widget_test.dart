@@ -15,15 +15,6 @@ void main() {
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
-
-      test(
-        'macos add feature widget --no-localization',
-        performTest(
-          platform: Platform.macos,
-          localization: false,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
     },
   );
 }

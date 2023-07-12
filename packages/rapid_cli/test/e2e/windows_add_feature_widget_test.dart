@@ -15,15 +15,6 @@ void main() {
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
-
-      test(
-        'windows add feature widget --no-localization',
-        performTest(
-          platform: Platform.windows,
-          localization: false,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
     },
   );
 }

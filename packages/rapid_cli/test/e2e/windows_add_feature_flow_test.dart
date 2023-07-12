@@ -15,34 +15,6 @@ void main() {
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
-
-      test(
-        'windows add feature flow --no-localization',
-        performTest(
-          platform: Platform.windows,
-          localization: false,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
-
-      test(
-        'windows add feature flow --tab',
-        performTest(
-          platform: Platform.windows,
-          tab: true,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
-
-      test(
-        'windows add feature flow --tab --no-localization',
-        performTest(
-          platform: Platform.windows,
-          tab: true,
-          localization: false,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
     },
   );
 }

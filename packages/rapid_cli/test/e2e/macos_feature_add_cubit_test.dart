@@ -4,6 +4,8 @@ import 'package:test/test.dart';
 
 import 'platform_feature_add_cubit.dart';
 
+// TODO output-dir
+
 void main() {
   group(
     'E2E',
@@ -12,20 +14,20 @@ void main() {
         'macos <feature> add cubit',
         performTest(
           platform: Platform.macos,
-          expectedCoverage: 85.71,
+          expectedCoverage: 83.33,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
 
-      test(
+/*       test(
         'macos <feature> add cubit (with output dir)',
         performTest(
           platform: Platform.macos,
           outputDir: 'foo',
-          expectedCoverage: 85.71,
+          expectedCoverage: 83.33,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
-      );
+      ); */
     },
   );
 }

@@ -11,10 +11,6 @@ class PlatformAddFeatureFlowCommand extends RapidLeafCommand
     argParser
       ..addSeparator('')
       ..addOption(
-        'features',
-        help: 'The features that have this flow as a parent.',
-      )
-      ..addOption(
         'desc',
         help: 'The description of the new feature.',
       )

@@ -15,34 +15,6 @@ void main() {
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
-
-      test(
-        'android add feature flow --no-localization',
-        performTest(
-          platform: Platform.android,
-          localization: false,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
-
-      test(
-        'android add feature flow --tab',
-        performTest(
-          platform: Platform.android,
-          tab: true,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
-
-      test(
-        'android add feature flow --tab --no-localization',
-        performTest(
-          platform: Platform.android,
-          tab: true,
-          localization: false,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
     },
   );
 }

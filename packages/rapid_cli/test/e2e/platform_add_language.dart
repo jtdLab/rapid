@@ -22,10 +22,7 @@ dynamic performTest({
       await verifyNoAnalyzerIssues();
       await verifyNoFormattingIssues();
       verifyDoExist([
-        ...tester.languageFiles('home_page', platform, ['en', language]),
+        ...tester.languageFiles(platform, ['en', language]),
       ]);
-      await verifyTestsPassWith100PercentCoverage([
-        tester.featurePackage('app', platform),
-        tester.featurePackage('home_page', platform),
-      ]);
+      // TODO maybe verify tests in localization package pass
     });

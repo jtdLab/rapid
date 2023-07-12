@@ -15,34 +15,6 @@ void main() {
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );
-
-      test(
-        'mobile add feature flow --no-localization',
-        performTest(
-          platform: Platform.mobile,
-          localization: false,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
-
-      test(
-        'mobile add feature flow --tab',
-        performTest(
-          platform: Platform.mobile,
-          tab: true,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
-
-      test(
-        'mobile add feature flow --tab --no-localization',
-        performTest(
-          platform: Platform.mobile,
-          tab: true,
-          localization: false,
-        ),
-        timeout: const Timeout(Duration(minutes: 8)),
-      );
     },
   );
 }

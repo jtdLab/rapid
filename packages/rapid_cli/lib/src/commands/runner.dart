@@ -149,55 +149,63 @@ abstract class _Rapid {
 
   Future<void> flutterPubGetTaskGroup({
     required List<DartPackage> packages,
-  }) async =>
-      taskGroup(
-        tasks: packages
-            .map(
-              (package) => (
-                'Running "flutter pub get" in ${package.packageName}',
-                () async => flutterPubGet(package: package)
-              ),
-            )
-            .toList(),
-      );
+  }) async {
+    if (packages.isEmpty) return;
+    await taskGroup(
+      tasks: packages
+          .map(
+            (package) => (
+              'Running "flutter pub get" in ${package.packageName}',
+              () async => flutterPubGet(package: package)
+            ),
+          )
+          .toList(),
+    );
+  }
 
   Future<void> flutterPubAddTask({
     required List<String> dependenciesToAdd,
     required DartPackage package,
-  }) async =>
-      task(
-          'Running "flutter pub add ${dependenciesToAdd.join(' ')}" in ${package.packageName}',
-          () async {
-        try {
-          await flutterPubAdd(
-            package: package,
-            dependenciesToAdd: dependenciesToAdd,
-          );
-        } catch (_) {
-          // TODO: https://github.com/dart-lang/sdk/issues/52895
-          await flutterPubGet(package: package);
-        }
-      });
+  }) async {
+    if (dependenciesToAdd.isEmpty) return;
+    await task(
+        'Running "flutter pub add ${dependenciesToAdd.join(' ')}" in ${package.packageName}',
+        () async {
+      try {
+        await flutterPubAdd(
+          package: package,
+          dependenciesToAdd: dependenciesToAdd,
+        );
+      } catch (_) {
+        // TODO: https://github.com/dart-lang/sdk/issues/52895
+        await flutterPubGet(package: package);
+      }
+    });
+  }
 
   Future<void> flutterPubRemoveTask({
     required List<String> packagesToRemove,
     required DartPackage package,
-  }) async =>
-      task(
-        'Running "flutter pub remove ${packagesToRemove.join(' ')}" in ${package.packageName}',
-        () async => flutterPubRemove(
-          package: package,
-          packagesToRemove: packagesToRemove,
-        ),
-      );
+  }) async {
+    if (packagesToRemove.isEmpty) return;
+    await task(
+      'Running "flutter pub remove ${packagesToRemove.join(' ')}" in ${package.packageName}',
+      () async => flutterPubRemove(
+        package: package,
+        packagesToRemove: packagesToRemove,
+      ),
+    );
+  }
 
   Future<void> melosBootstrapTask({
     required List<DartPackage> scope,
-  }) async =>
-      task(
-        'Running "melos bootstrap --scope="${scope.map((e) => e.packageName).join(' ')}""',
-        () async => _bootstrap(packages: scope),
-      );
+  }) async {
+    if (scope.isEmpty) return;
+    await task(
+      'Running "melos bootstrap --scope="${scope.map((e) => e.packageName).join(' ')}""',
+      () async => _bootstrap(packages: scope),
+    );
+  }
 
   Future<void> dartFormatFixTask() async => task(
         'Running "dart format . --fix" in project',
@@ -209,18 +217,20 @@ abstract class _Rapid {
         () async => _codeGen(package: package),
       );
 
-  Future<void> codeGenTaskGroup({required List<DartPackage> packages}) async =>
-      taskGroup(
-        tasks: packages
-            .map(
-              (package) => (
-                'Running code generation in ${package.packageName}',
-                () async => _codeGen(package: package),
-              ),
-            )
-            .toList(),
-        parallelism: 1, // TODO is this the most performant way
-      );
+  Future<void> codeGenTaskGroup({required List<DartPackage> packages}) async {
+    if (packages.isEmpty) return;
+    await taskGroup(
+      tasks: packages
+          .map(
+            (package) => (
+              'Running code generation in ${package.packageName}',
+              () async => _codeGen(package: package),
+            ),
+          )
+          .toList(),
+      parallelism: 1, // TODO is this the most performant way
+    );
+  }
 
   Future<void> flutterGenl10nTask({required DartPackage package}) async => task(
         'Running "flutter gen-l10n" in ${package.packageName}',

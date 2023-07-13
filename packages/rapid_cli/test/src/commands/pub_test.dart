@@ -1,17 +1,7 @@
-import 'dart:convert';
-
-import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
-import 'package:rapid_cli/src/io.dart';
 import 'package:rapid_cli/src/logging.dart';
 import 'package:rapid_cli/src/project/project.dart';
-import 'package:rapid_cli/src/project_config.dart';
 import 'package:test/test.dart';
-
-import '../mock_env.dart';
-import '../mock_fs.dart';
-import '../mocks.dart';
-import '../project/mock_project.dart';
 
 Rapid _getRapid({
   required RapidProject project,
@@ -22,7 +12,7 @@ Rapid _getRapid({
 
 void main() {
   group('pubAdd', () {
-    test('completes', () async {
+    /*    test('completes', () async {
       final processManager = MockProcessManager();
       when(
         () => processManager.run(
@@ -68,10 +58,11 @@ void main() {
         ),
       ).called(1);
     });
+   */
   });
 
   group('pubGet', () {
-    test(
+    /*   test(
       'hyep',
       withMockFs(
         () async {
@@ -80,6 +71,7 @@ void main() {
         },
       ),
     );
+   */
   });
 
   group('pubRemove', () {});

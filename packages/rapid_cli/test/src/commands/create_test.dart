@@ -1,3 +1,9 @@
+import 'package:test/test.dart';
+
+void main() {
+  group('create', () {});
+}
+
 /*  import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
 import 'package:test/test.dart';

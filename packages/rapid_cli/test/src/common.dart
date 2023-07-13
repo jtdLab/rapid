@@ -2,17 +2,8 @@ import 'dart:async';
 import 'dart:io' hide Platform;
 import 'dart:math';
 
-import 'package:mason/mason.dart';
-import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;
-import 'package:platform/platform.dart' hide Platform;
-import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/project/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
-import 'package:rapid_cli/src/utils.dart';
-
-import 'mock_env.dart';
-import 'mocks.dart';
 
 extension PlatformX on Platform {
   String get prettyName {
@@ -98,45 +89,6 @@ void Function() overridePrint(void Function(List<String>) fn) {
         .fork(specification: spec)
         .run<void>(() => fn(printLogs));
   };
-}
-
-// TODO rm logger
-void Function() withRunner(
-  FutureOr<void> Function(
-    RapidCommandRunner commandRunner,
-    RapidProject project,
-    Logger logger,
-    List<String> printLogs,
-  ) fn, {
-  void Function(RapidProject project)? setupProject,
-}) {
-  return withMockPlatform(
-    overridePrint((printLogs) async {
-      final project = getProject();
-
-      if (setupProject != null) {
-        setupProject(project);
-      }
-
-      final logger = MockLogger();
-      final progress = MockProgress();
-      final progressLogs = <String>[];
-      final commandRunner = RapidCommandRunner(
-        project: project,
-        logger: logger,
-      );
-
-      when(() => progress.complete(any())).thenAnswer((_) {
-        final message = _.positionalArguments.elementAt(0) as String?;
-        if (message != null) progressLogs.add(message);
-      });
-      when(() => logger.progress(any())).thenReturn(progress);
-
-      await fn(commandRunner, project, logger, printLogs);
-    }),
-    platform: FakePlatform.fromPlatform(const LocalPlatform())
-      ..environment[envKeyRapidTerminalWidth] = '80',
-  );
 }
 
 /* 

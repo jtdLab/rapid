@@ -44,7 +44,8 @@ class Rapid extends _Rapid
     RapidProject? project,
     RapidTool? tool,
     required this.logger,
-  }) : _project = project;
+  })  : _project = project,
+        _tool = tool;
 
   @override
   final RapidLogger logger;

@@ -4,10 +4,12 @@ import 'package:mocktail/mocktail.dart';
 import 'package:process/process.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
 import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/logging.dart';
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/project_config.dart';
+import 'package:rapid_cli/src/tool.dart';
 
 // Mocks
 
@@ -62,13 +64,9 @@ class MockStartProcess extends Mock implements _StartProcess {}
 
 class MockProcess extends Mock implements Process {}
 
-class MockLogger extends Mock implements Logger {}
-
 class MockRapidProject extends Mock implements RapidProject {}
 
 class MockRapidProjectConfig extends Mock implements RapidProjectConfig {}
-
-class MockProgress extends Mock implements Progress {}
 
 class MockPubspecYamlFile extends Mock implements PubspecYamlFile {}
 
@@ -144,6 +142,12 @@ MockMasonGenerator getMasonGenerator() {
 class MockAppModule extends Mock implements AppModule {}
 
 class MockProcessManager extends Mock implements ProcessManager {}
+
+class MockRapidLogger extends Mock implements RapidLogger {}
+
+class MockRapidTool extends Mock implements RapidTool {}
+
+class MockCommandGroup extends Mock implements CommandGroup {}
 
 // Fakes
 

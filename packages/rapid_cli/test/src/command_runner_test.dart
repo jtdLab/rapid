@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 
 import 'common.dart';
-import 'mocks.dart';
+import 'utils.dart';
 
 const expectedUsage = [
   'A CLI tool for developing Flutter apps based on Rapid Architecture.\n'
@@ -38,13 +38,11 @@ const expectedUsage = [
 
 void main() {
   group('RapidCommandRunner', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['--help']);
         expect(printLogs, equals(expectedUsage));
 

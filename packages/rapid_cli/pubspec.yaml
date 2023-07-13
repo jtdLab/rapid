@@ -15,7 +15,7 @@ environment:
 dependencies:
   meta: ^1.9.1
   args: ^2.4.1
-  mason: ^0.1.0-dev.49
+  mason: ^0.1.0-dev.50
   path: ^1.8.3
   yaml: ^3.1.2
   yaml_edit: ^2.1.1
@@ -55,3 +55,8 @@ dev_dependencies:
   lints: ^2.1.1
   test: ^1.24.3
   mocktail: ^0.3.0
+  build_runner: ^2.4.0
+  build_verify: ^3.1.0
+  build_version: ^2.1.1
+  
+

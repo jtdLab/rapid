@@ -30,4 +30,5 @@ package.json
 commitlint.config.js
 
 # Dart
+build/
 .dart_tool/

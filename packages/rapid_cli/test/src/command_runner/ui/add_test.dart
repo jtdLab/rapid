@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 
 import '../../common.dart';
-import '../../mocks.dart';
+import '../../utils.dart';
 
 const expectedUsage = [
   'Add components to the platform independent UI part of an existing Rapid project.\n'
@@ -17,13 +17,11 @@ const expectedUsage = [
 
 void main() {
   group('ui add', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['ui', 'add', '--help']);
         expect(printLogs, equals(expectedUsage));
 

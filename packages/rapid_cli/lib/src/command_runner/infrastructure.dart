@@ -1,5 +1,3 @@
-import 'package:rapid_cli/src/utils.dart';
-
 import 'base.dart';
 import 'infrastructure/sub_infrastructure.dart';
 

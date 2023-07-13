@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 
 import '../../../../common.dart';
 import '../../../../mocks.dart';
+import '../../../../utils.dart';
 
 List<String> expectedUsage(String subInfrastructurePackage) => [
       'Remove a data transfer object from the subinfrastructure $subInfrastructurePackage.\n'
@@ -21,44 +22,35 @@ List<String> expectedUsage(String subInfrastructurePackage) => [
 
 void main() {
   group('infrastructure <sub_infrastructure> remove data_transfer_object', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner(
-        (commandRunner, project, __, printLogs) async {
-          await commandRunner.run([
-            'infrastructure',
-            'package_a',
-            'remove',
-            'data_transfer_object',
-            '--help'
-          ]);
-          expect(printLogs, equals(expectedUsage('package_a')));
+      overridePrint((printLogs) async {
+        final infrastructurePackage =
+            MockInfrastructurePackage(name: 'package_a');
+        final project =
+            getProject(infrastructurePackages: [infrastructurePackage]);
+        final commandRunner = getCommandRunner(project: project);
 
-          printLogs.clear();
+        await commandRunner.run([
+          'infrastructure',
+          'package_a',
+          'remove',
+          'data_transfer_object',
+          '--help'
+        ]);
+        expect(printLogs, equals(expectedUsage('package_a')));
 
-          await commandRunner.run([
-            'infrastructure',
-            'package_a',
-            'remove',
-            'data_transfer_object',
-            '-h'
-          ]);
-          expect(printLogs, equals(expectedUsage('package_a')));
-        },
-        setupProject: (project) {
-          final infrastructurePackageA = MockInfrastructurePackage();
-          when(() => infrastructurePackageA.name).thenReturn('package_a');
-          final infrastructureDirectory = MockInfrastructureDirectory();
-          when(() => infrastructureDirectory.infrastructurePackages())
-              .thenReturn([infrastructurePackageA]);
-          when(() => project.infrastructureDirectory)
-              .thenReturn(infrastructureDirectory);
-        },
-      ),
+        printLogs.clear();
+
+        await commandRunner.run([
+          'infrastructure',
+          'package_a',
+          'remove',
+          'data_transfer_object',
+          '-h'
+        ]);
+        expect(printLogs, equals(expectedUsage('package_a')));
+      }),
     );
 
     test('completes', () async {
@@ -67,12 +59,10 @@ void main() {
         () => rapid.infrastructureSubInfrastructureRemoveDataTransferObject(
           subInfrastructureName: any(named: 'subInfrastructureName'),
           entityName: any(named: 'entityName'),
-          dir: any(named: 'dir'),
         ),
       ).thenAnswer((_) async {});
       final argResults = MockArgResults();
       when(() => argResults['entity']).thenReturn('Foo');
-      when(() => argResults['dir']).thenReturn('some');
       final command =
           InfrastructureSubInfrastructureRemoveDataTransferObjectCommand(
               'package_a', null)
@@ -85,7 +75,6 @@ void main() {
         () => rapid.infrastructureSubInfrastructureRemoveDataTransferObject(
           subInfrastructureName: 'package_a',
           entityName: 'Foo',
-          dir: 'some',
         ),
       ).called(1);
     });

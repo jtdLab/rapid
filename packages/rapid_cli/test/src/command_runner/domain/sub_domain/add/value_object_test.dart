@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 
 import '../../../../common.dart';
 import '../../../../mocks.dart';
+import '../../../../utils.dart';
 
 List<String> expectedUsage(String subDomainPackage) => [
       'Add a value object to the subdomain $subDomainPackage.\n'
@@ -23,33 +24,23 @@ List<String> expectedUsage(String subDomainPackage) => [
 
 void main() {
   group('domain <sub_domain> add value_object', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner(
-        (commandRunner, project, __, printLogs) async {
-          await commandRunner
-              .run(['domain', 'package_a', 'add', 'value_object', '--help']);
-          expect(printLogs, equals(expectedUsage('package_a')));
+      overridePrint((printLogs) async {
+        final domainPackage = MockDomainPackage(name: 'package_a');
+        final project = getProject(domainPackages: [domainPackage]);
+        final commandRunner = getCommandRunner(project: project);
 
-          printLogs.clear();
+        await commandRunner
+            .run(['domain', 'package_a', 'add', 'value_object', '--help']);
+        expect(printLogs, equals(expectedUsage('package_a')));
 
-          await commandRunner
-              .run(['domain', 'package_a', 'add', 'value_object', '-h']);
-          expect(printLogs, equals(expectedUsage('package_a')));
-        },
-        setupProject: (project) {
-          final domainPackageA = MockDomainPackage();
-          when(() => domainPackageA.name).thenReturn('package_a');
-          final domainDirectory = MockDomainDirectory();
-          when(() => domainDirectory.domainPackages())
-              .thenReturn([domainPackageA]);
-          when(() => project.domainDirectory).thenReturn(domainDirectory);
-        },
-      ),
+        printLogs.clear();
+
+        await commandRunner
+            .run(['domain', 'package_a', 'add', 'value_object', '-h']);
+        expect(printLogs, equals(expectedUsage('package_a')));
+      }),
     );
 
     test('completes', () async {
@@ -58,13 +49,11 @@ void main() {
         () => rapid.domainSubDomainAddValueObject(
           name: any(named: 'name'),
           subDomainName: any(named: 'subDomainName'),
-          outputDir: any(named: 'outputDir'),
           type: any(named: 'type'),
           generics: any(named: 'generics'),
         ),
       ).thenAnswer((_) async {});
       final argResults = MockArgResults();
-      when(() => argResults['output-dir']).thenReturn('some');
       when(() => argResults['type']).thenReturn('Triple<#A, int, #B>');
       when(() => argResults.rest).thenReturn(['Foo']);
       final command = DomainSubDomainAddValueObjectCommand('package_a', null)
@@ -77,7 +66,6 @@ void main() {
         () => rapid.domainSubDomainAddValueObject(
           name: 'Foo',
           subDomainName: 'package_a',
-          outputDir: 'some',
           type: 'Triple<A, int, B>',
           generics: '<A, B>',
         ),

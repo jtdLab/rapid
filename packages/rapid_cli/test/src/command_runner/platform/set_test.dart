@@ -2,7 +2,7 @@ import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../../common.dart';
-import '../../mocks.dart';
+import '../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
@@ -19,15 +19,13 @@ List<String> expectedUsage(Platform platform) {
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
-
   for (final platform in Platform.values) {
     group('${platform.name} set', () {
       test(
         'help',
-        withRunner((commandRunner, _, __, printLogs) async {
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
           await commandRunner.run([platform.name, 'set', '--help']);
           expect(printLogs, equals(expectedUsage(platform)));
 

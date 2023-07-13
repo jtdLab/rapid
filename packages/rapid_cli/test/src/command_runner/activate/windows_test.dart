@@ -5,6 +5,7 @@ import 'package:test/test.dart';
 
 import '../../common.dart';
 import '../../mocks.dart';
+import '../../utils.dart';
 
 const expectedUsage = [
   'Adds support for Windows to this project.\n'
@@ -27,7 +28,9 @@ void main() {
 
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['activate', 'windows', '--help']);
         expect(printLogs, equals(expectedUsage));
 

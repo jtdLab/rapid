@@ -112,28 +112,7 @@ void Function() withRunner(
 }) {
   return withMockPlatform(
     overridePrint((printLogs) async {
-      final project = MockRapidProject();
-
-      final appModule = MockAppModule();
-
-      final domainDirectory = MockDomainDirectory();
-      when(() => domainDirectory.domainPackages()).thenReturn([]);
-      final infrastructureDirectory = MockInfrastructureDirectory();
-      when(() => infrastructureDirectory.infrastructurePackages())
-          .thenReturn([]);
-      final platformFeaturesDirectory = MockFeaturesDirectory();
-      when(() => platformFeaturesDirectory.featurePackages()).thenReturn([]);
-      final platformDirectory = MockPlatformDirectory();
-      when(() => platformDirectory.featuresDirectory)
-          .thenReturn(platformFeaturesDirectory);
-
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => appModule.infrastructureDirectory)
-          .thenReturn(infrastructureDirectory);
-      when(() => appModule.platformDirectory)
-          .thenReturn(({required Platform platform}) => platformDirectory);
-
-      when(() => project.appModule).thenReturn(appModule);
+      final project = getProject();
 
       if (setupProject != null) {
         setupProject(project);

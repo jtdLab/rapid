@@ -33,7 +33,7 @@ class Widget extends FileSystemEntityCollection {
       target: Directory(path),
       vars: <String, dynamic>{
         'project_name': projectName,
-        'name': name,
+        'name': name.snakeCase, // TODO good ?
         'platform': platform?.name,
       },
     );
@@ -73,7 +73,7 @@ class ThemedWidget extends Widget {
       target: Directory(path),
       vars: <String, dynamic>{
         'project_name': projectName,
-        'name': name,
+        'name': name.snakeCase, // TODO good ?
         'platform': platform?.name,
       },
     );

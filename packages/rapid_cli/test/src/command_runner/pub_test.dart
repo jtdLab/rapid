@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 
 import '../common.dart';
-import '../mocks.dart';
+import '../utils.dart';
 
 const expectedUsage = [
   'Work with packages in a Rapid environment.\n'
@@ -10,7 +10,7 @@ const expectedUsage = [
       '-h, --help    Print this usage information.\n'
       '\n'
       'Available subcommands:\n'
-      '  add      Add packages in a Rapid environment.\n'
+      '  add      Add dependencies to `pubspec.yaml` in a Rapid project.\n'
       '  get      Get packages in a Rapid environment.\n'
       '  remove   Remove packages in a Rapid environment.\n'
       '\n'
@@ -19,13 +19,11 @@ const expectedUsage = [
 
 void main() {
   group('pub', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['pub', '--help']);
         expect(printLogs, equals(expectedUsage));
 

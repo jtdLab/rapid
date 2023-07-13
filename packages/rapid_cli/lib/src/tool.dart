@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/utils.dart';
 
 import 'io.dart';
 import 'project/project.dart';

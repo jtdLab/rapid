@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 
 import '../common.dart';
 import '../mocks.dart';
+import '../utils.dart';
 
 const expectedUsage = [
   'Show information about an existing Rapid project.\n'
@@ -16,13 +17,11 @@ const expectedUsage = [
 
 void main() {
   group('doctor', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['doctor', '--help']);
         expect(printLogs, equals(expectedUsage));
 

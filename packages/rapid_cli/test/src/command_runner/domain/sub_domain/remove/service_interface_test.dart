@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 
 import '../../../../common.dart';
 import '../../../../mocks.dart';
+import '../../../../utils.dart';
 
 List<String> expectedUsage(String subDomainPackage) => [
       'Remove a service interface from the subdomain $subDomainPackage.\n'
@@ -20,33 +21,23 @@ List<String> expectedUsage(String subDomainPackage) => [
 
 void main() {
   group('domain <sub_domain> remove service_interface', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner(
-        (commandRunner, project, __, printLogs) async {
-          await commandRunner.run(
-              ['domain', 'package_a', 'remove', 'service_interface', '--help']);
-          expect(printLogs, equals(expectedUsage('package_a')));
+      overridePrint((printLogs) async {
+        final domainPackage = MockDomainPackage(name: 'package_a');
+        final project = getProject(domainPackages: [domainPackage]);
+        final commandRunner = getCommandRunner(project: project);
 
-          printLogs.clear();
+        await commandRunner.run(
+            ['domain', 'package_a', 'remove', 'service_interface', '--help']);
+        expect(printLogs, equals(expectedUsage('package_a')));
 
-          await commandRunner.run(
-              ['domain', 'package_a', 'remove', 'service_interface', '-h']);
-          expect(printLogs, equals(expectedUsage('package_a')));
-        },
-        setupProject: (project) {
-          final domainPackageA = MockDomainPackage();
-          when(() => domainPackageA.name).thenReturn('package_a');
-          final domainDirectory = MockDomainDirectory();
-          when(() => domainDirectory.domainPackages())
-              .thenReturn([domainPackageA]);
-          when(() => project.domainDirectory).thenReturn(domainDirectory);
-        },
-      ),
+        printLogs.clear();
+
+        await commandRunner
+            .run(['domain', 'package_a', 'remove', 'service_interface', '-h']);
+        expect(printLogs, equals(expectedUsage('package_a')));
+      }),
     );
 
     test('completes', () async {
@@ -55,11 +46,9 @@ void main() {
         () => rapid.domainSubDomainRemoveServiceInterface(
           name: any(named: 'name'),
           subDomainName: any(named: 'subDomainName'),
-          dir: any(named: 'dir'),
         ),
       ).thenAnswer((_) async {});
       final argResults = MockArgResults();
-      when(() => argResults['dir']).thenReturn('some');
       when(() => argResults.rest).thenReturn(['Foo']);
       final command =
           DomainSubDomainRemoveServiceInterfaceCommand('package_a', null)
@@ -72,7 +61,6 @@ void main() {
         () => rapid.domainSubDomainRemoveServiceInterface(
           name: 'Foo',
           subDomainName: 'package_a',
-          dir: 'some',
         ),
       ).called(1);
     });

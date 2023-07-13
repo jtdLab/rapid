@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 
 import '../../../common.dart';
 import '../../../mocks.dart';
+import '../../../utils.dart';
 
 const expectedUsage = [
   'Remove a widget to the platform independent UI part of an existing Rapid project.\n'
@@ -16,13 +17,11 @@ const expectedUsage = [
 
 void main() {
   group('ui remove widget', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['ui', 'remove', 'widget', '--help']);
         expect(printLogs, equals(expectedUsage));
 

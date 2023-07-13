@@ -1,6 +1,5 @@
 import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
 import 'package:rapid_cli/src/project/platform.dart';
-import 'package:rapid_cli/src/utils.dart';
 
 import 'base.dart';
 import 'platform/add.dart';

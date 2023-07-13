@@ -18,9 +18,17 @@ void registerFallbackValues() {
 
 class MockDomainDirectory extends Mock implements DomainDirectory {}
 
-class MockDomainPackage extends Mock implements DomainPackage {}
+class MockDomainPackage extends Mock implements DomainPackage {
+  MockDomainPackage({String? name}) {
+    when(() => this.name).thenReturn(name ?? 'some_domain_package');
+  }
+}
 
-class MockInfrastructurePackage extends Mock implements InfrastructurePackage {}
+class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
+  MockInfrastructurePackage({String? name}) {
+    when(() => this.name).thenReturn(name ?? 'some_infrastructure_package');
+  }
+}
 
 class MockInfrastructureDirectory extends Mock
     implements InfrastructureDirectory {}
@@ -30,7 +38,11 @@ class MockPlatformDirectory extends Mock implements PlatformDirectory {}
 class MockFeaturesDirectory extends Mock implements PlatformFeaturesDirectory {}
 
 class MockPlatformFeaturePackage extends Mock
-    implements PlatformFeaturePackage {}
+    implements PlatformFeaturePackage {
+  MockPlatformFeaturePackage({String? name}) {
+    when(() => this.name).thenReturn(name ?? 'some_feature_package');
+  }
+}
 
 class MockPlatformFeaturesDirectory extends Mock
     implements PlatformFeaturesDirectory {}
@@ -71,10 +83,40 @@ MockPubspecYamlFile getPubspecYamlFile() {
 
 class MockRapid extends Mock implements Rapid {}
 
-MockRapidProject getProject() {
+MockRapidProject getProject({
+  String? name,
+  String? path,
+  List<DomainPackage>? domainPackages,
+  List<InfrastructurePackage>? infrastructurePackages,
+  List<PlatformFeaturePackage>? featurePackages,
+}) {
   final project = MockRapidProject();
-  when(() => project.path).thenReturn('some/path');
-  when(() => project.name).thenReturn('some_name');
+  when(() => project.name).thenReturn(name ?? 'some_name');
+  when(() => project.path).thenReturn(path ?? 'some/path');
+
+  final appModule = MockAppModule();
+
+  final domainDirectory = MockDomainDirectory();
+  when(() => domainDirectory.domainPackages()).thenReturn(domainPackages ?? []);
+
+  final infrastructureDirectory = MockInfrastructureDirectory();
+  when(() => infrastructureDirectory.infrastructurePackages())
+      .thenReturn(infrastructurePackages ?? []);
+
+  final platformFeaturesDirectory = MockFeaturesDirectory();
+  when(() => platformFeaturesDirectory.featurePackages())
+      .thenReturn(featurePackages ?? []);
+  final platformDirectory = MockPlatformDirectory();
+  when(() => platformDirectory.featuresDirectory)
+      .thenReturn(platformFeaturesDirectory);
+
+  when(() => appModule.domainDirectory).thenReturn(domainDirectory);
+  when(() => appModule.infrastructureDirectory)
+      .thenReturn(infrastructureDirectory);
+  when(() => appModule.platformDirectory)
+      .thenReturn(({required Platform platform}) => platformDirectory);
+
+  when(() => project.appModule).thenReturn(appModule);
 
   return project;
 }

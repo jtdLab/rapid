@@ -5,7 +5,6 @@ import 'package:rapid_cli/src/core/dart_package.dart';
 import 'package:test/test.dart';
 
 import '../../common.dart';
-import '../../mocks.dart';
 
 const pubspecWithDependencies = '''
 name: foo_bar

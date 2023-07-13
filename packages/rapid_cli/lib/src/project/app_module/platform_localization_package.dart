@@ -81,4 +81,62 @@ class PlatformLocalizationPackage extends DartPackage {
       },
     );
   }
+
+  Set<Language> supportedLanguages() {
+    return localizationsFile
+        .readListVarOfClass(
+          name: 'supportedLocales',
+          parentClass: '${projectName.pascalCase}Localizations',
+        )
+        .map((e) => e.toLanguageFromDartLocale())
+        .toSet();
+  }
+
+  Language defaultLanguage() {
+    final templateArbFile = l10nFile.read<String>('template-arb-file');
+
+    return Language.fromString(
+      templateArbFile
+          .substring(templateArbFile.indexOf('${projectName}_') +
+              (projectName.length + 1))
+          .split('.')
+          .first,
+    );
+  }
+
+  void setDefaultLanguage(Language language) {
+    final templateArbFile = l10nFile.read<String>('template-arb-file');
+    final newTemplateArbFile = templateArbFile.replaceRange(
+      templateArbFile.indexOf('${projectName}_') + (projectName.length + 1),
+      templateArbFile.lastIndexOf('.arb'),
+      language.toStringWithSeperator(),
+    );
+    l10nFile.set(['template-arb-file'], newTemplateArbFile);
+  }
+
+  void addLanguage(Language language) {
+    final existingLanguages = supportedLanguages();
+
+    if (!existingLanguages.contains(language)) {
+      final languageArbFile = this.languageArbFile(language: language);
+      languageArbFile.createSync(recursive: true);
+      languageArbFile.writeAsStringSync([
+        '{',
+        '  "@@locale": "${language.toStringWithSeperator()}"',
+        '}',
+      ].join('\n'));
+    }
+  }
+
+  void removeLanguage(Language language) {
+    final existingLanguages = supportedLanguages();
+
+    if (existingLanguages.contains(language)) {
+      languageArbFile(language: language).deleteSync(recursive: true);
+      if (!language.hasScriptCode && !language.hasCountryCode) {
+        languageLocalizationsFile(language: language)
+            .deleteSync(recursive: true);
+      }
+    }
+  }
 }

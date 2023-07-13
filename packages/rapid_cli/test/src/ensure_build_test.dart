@@ -4,8 +4,7 @@ import 'package:test/test.dart';
 void main() {
   test(
     'ensure_build',
-    () async => expectBuildClean(
-      packageRelativeDirectory: 'packages/rapid_cli'
-    ),
+    () async =>
+        expectBuildClean(packageRelativeDirectory: 'packages/rapid_cli'),
   );
 }

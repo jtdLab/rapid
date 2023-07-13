@@ -6,6 +6,7 @@ import 'package:test/test.dart';
 
 import '../../../common.dart';
 import '../../../mocks.dart';
+import '../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
@@ -27,7 +28,9 @@ void main() {
     group('${platform.name} add language', () {
       test(
         'help',
-        withRunner((commandRunner, _, __, printLogs) async {
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
           await commandRunner.run([platform.name, 'add', 'language', '--help']);
           expect(printLogs, equals(expectedUsage(platform)));
 

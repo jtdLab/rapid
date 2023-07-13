@@ -3,6 +3,7 @@ import '../util/package_option.dart';
 
 // TODO impl cleaner + e2e test
 // TODO consider adding options of `dart pub add`
+// TODO description synced with other pub commands
 
 /// {@template pub_add_command}
 /// `rapid pub add` command add packages in a Rapid environment.
@@ -24,7 +25,7 @@ class PubAddCommand extends RapidLeafCommand with PackageGetter {
 
   @override
   String get description =>
-      '''Add dependencies to `pubspec.yaml in a Rapid project`.
+      '''Add dependencies to `pubspec.yaml` in a Rapid project.
 
 This command works similiar to `dart pub add` or `flutter pub add` but takes care of
 dependent packages and updates their transitiv dependencies accordingly.

@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 
 import '../../../common.dart';
 import '../../../mocks.dart';
+import '../../../utils.dart';
 
 const expectedUsage = [
   'Add subdomains of the domain part of an existing Rapid project.\n'
@@ -16,13 +17,11 @@ const expectedUsage = [
 
 void main() {
   group('domain add sub_domain', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['domain', 'add', 'sub_domain', '--help']);
         expect(printLogs, equals(expectedUsage));
 

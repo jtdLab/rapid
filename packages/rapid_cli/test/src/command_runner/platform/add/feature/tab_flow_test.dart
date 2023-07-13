@@ -1,22 +1,22 @@
 import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/command_runner/platform/add/feature/flow.dart';
+import 'package:rapid_cli/src/command_runner/platform/add/feature/tab_flow.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../../../../common.dart';
 import '../../../../mocks.dart';
-import '../../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Add a flow feature to the ${platform.prettyName} part of an existing Rapid project.\n'
+    'Add a tab flow feature to the ${platform.prettyName} part of an existing Rapid project.\n'
         '\n'
-        'Usage: rapid ${platform.name} add feature flow <name> [arguments]\n'
-        '-h, --help         Print this usage information.\n'
+        'Usage: rapid ${platform.name} add feature tab_flow <name> [arguments]\n'
+        '-h, --help            Print this usage information.\n'
         '\n'
         '\n'
-        '    --desc         The description of the new feature.\n'
-        '    --navigator    Wheter to generate a navigator for the new feature.\n'
+        '    --sub-features    The features that have this tab flow as a parent.\n'
+        '    --desc            The description of the new feature.\n'
+        '    --navigator       Wheter to generate a navigator for the new feature.\n'
         '\n'
         'Run "rapid help" to see global options.'
   ];
@@ -31,17 +31,15 @@ void main() {
     group('${platform.name} add feature flow', () {
       test(
         'help',
-        overridePrint((printLogs) async {
-          final commandRunner = getCommandRunner();
-
+        withRunner((commandRunner, _, __, printLogs) async {
           await commandRunner
-              .run([platform.name, 'add', 'feature', 'flow', '--help']);
+              .run([platform.name, 'add', 'feature', 'tab_flow', '--help']);
           expect(printLogs, equals(expectedUsage(platform)));
 
           printLogs.clear();
 
           await commandRunner
-              .run([platform.name, 'add', 'feature', 'flow', '-h']);
+              .run([platform.name, 'add', 'feature', 'tab_flow', '-h']);
           expect(printLogs, equals(expectedUsage(platform)));
         }),
       );
@@ -49,29 +47,33 @@ void main() {
       test('completes', () async {
         final rapid = MockRapid();
         when(
-          () => rapid.platformAddFeatureFlow(
+          () => rapid.platformAddFeatureTabFlow(
             any(),
             name: any(named: 'name'),
             description: any(named: 'description'),
             navigator: any(named: 'navigator'),
+            subFeatures: any(named: 'subFeatures'),
           ),
         ).thenAnswer((_) async {});
         final argResults = MockArgResults();
         when(() => argResults['navigator']).thenReturn(true);
         when(() => argResults['desc']).thenReturn('Some description.');
+        when(() => argResults['sub-features'])
+            .thenReturn('package_b, package_c');
         when(() => argResults.rest).thenReturn(['package_a']);
-        final command = PlatformAddFeatureFlowCommand(platform, null)
+        final command = PlatformAddFeatureTabFlowCommand(platform, null)
           ..argResultOverrides = argResults
           ..rapidOverrides = rapid;
 
         await command.run();
 
         verify(
-          () => rapid.platformAddFeatureFlow(
+          () => rapid.platformAddFeatureTabFlow(
             platform,
             name: 'package_a',
             description: 'Some description.',
             navigator: true,
+            subFeatures: {'package_b', 'package_c'},
           ),
         ).called(1);
       });

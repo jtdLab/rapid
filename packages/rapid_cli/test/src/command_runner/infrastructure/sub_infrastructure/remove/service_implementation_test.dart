@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 
 import '../../../../common.dart';
 import '../../../../mocks.dart';
+import '../../../../utils.dart';
 
 List<String> expectedUsage(String subInfrastructurePackage) => [
       'Remove a service implementation from the subinfrastructure $subInfrastructurePackage.\n'
@@ -22,44 +23,35 @@ List<String> expectedUsage(String subInfrastructurePackage) => [
 void main() {
   group('infrastructure <sub_infrastructure> remove service_implementation',
       () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner(
-        (commandRunner, project, __, printLogs) async {
-          await commandRunner.run([
-            'infrastructure',
-            'package_a',
-            'remove',
-            'service_implementation',
-            '--help'
-          ]);
-          expect(printLogs, equals(expectedUsage('package_a')));
+      overridePrint((printLogs) async {
+        final infrastructurePackage =
+            MockInfrastructurePackage(name: 'package_a');
+        final project =
+            getProject(infrastructurePackages: [infrastructurePackage]);
+        final commandRunner = getCommandRunner(project: project);
 
-          printLogs.clear();
+        await commandRunner.run([
+          'infrastructure',
+          'package_a',
+          'remove',
+          'service_implementation',
+          '--help'
+        ]);
+        expect(printLogs, equals(expectedUsage('package_a')));
 
-          await commandRunner.run([
-            'infrastructure',
-            'package_a',
-            'remove',
-            'service_implementation',
-            '-h'
-          ]);
-          expect(printLogs, equals(expectedUsage('package_a')));
-        },
-        setupProject: (project) {
-          final infrastructurePackageA = MockInfrastructurePackage();
-          when(() => infrastructurePackageA.name).thenReturn('package_a');
-          final infrastructureDirectory = MockInfrastructureDirectory();
-          when(() => infrastructureDirectory.infrastructurePackages())
-              .thenReturn([infrastructurePackageA]);
-          when(() => project.infrastructureDirectory)
-              .thenReturn(infrastructureDirectory);
-        },
-      ),
+        printLogs.clear();
+
+        await commandRunner.run([
+          'infrastructure',
+          'package_a',
+          'remove',
+          'service_implementation',
+          '-h'
+        ]);
+        expect(printLogs, equals(expectedUsage('package_a')));
+      }),
     );
 
     test('completes', () async {
@@ -67,14 +59,12 @@ void main() {
       when(
         () => rapid.infrastructureSubInfrastructureRemoveServiceImplementation(
           subInfrastructureName: any(named: 'subInfrastructureName'),
-          serviceName: any(named: 'serviceName'),
-          dir: any(named: 'dir'),
+          serviceInterfaceName: any(named: 'serviceInterfaceName'),
           name: any(named: 'name'),
         ),
       ).thenAnswer((_) async {});
       final argResults = MockArgResults();
       when(() => argResults['service']).thenReturn('Foo');
-      when(() => argResults['dir']).thenReturn('some');
       when(() => argResults.rest).thenReturn(['My']);
       final command =
           InfrastructureSubInfrastructureRemoveServiceImplementationCommand(
@@ -88,8 +78,7 @@ void main() {
         () => rapid.infrastructureSubInfrastructureRemoveServiceImplementation(
           name: 'My',
           subInfrastructureName: 'package_a',
-          serviceName: 'Foo',
-          dir: 'some',
+          serviceInterfaceName: 'Foo',
         ),
       ).called(1);
     });

@@ -88,4 +88,6 @@ class InfrastructurePackage extends DartPackage
 
     return name!.compareTo(other.name!);
   }
+
+  bool get isDefault => name == null;
 }

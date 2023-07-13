@@ -33,4 +33,22 @@ class DomainDirectory extends Directory {
   final String projectName;
 
   final DomainPackage Function({String? name}) domainPackage;
+
+  List<DomainPackage> domainPackages() {
+    return (existsSync()
+        ? listSync().whereType<Directory>().map(
+            (e) {
+              final basename = p.basename(e.path);
+              if (!basename.startsWith('${projectName}_domain_')) {
+                return domainPackage(name: null);
+              }
+
+              final name =
+                  p.basename(e.path).replaceAll('${projectName}_domain_', '');
+              return domainPackage(name: name);
+            },
+          ).toList()
+        : [])
+      ..sort();
+  }
 }

@@ -1,49 +1,46 @@
-import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 
 import '../common.dart';
 import '../mocks.dart';
+import '../utils.dart';
 
-List<String> expectedUsage(List<String> subInfrastructurePackages) => [
+List<String> expectedUsage(
+  List<InfrastructurePackage> infrastructurePackages,
+) =>
+    [
       'Work with the infrastructure part of an existing Rapid project.\n'
           '\n'
           'Usage: rapid infrastructure <subcommand>\n'
           '-h, --help    Print this usage information.\n'
           '\n'
           'Available subcommands:\n'
-          '${subInfrastructurePackages.map((e) => '  $e   Work with the subinfrastructure $e.\n').join()}'
+          '${infrastructurePackages.map((e) => '  ${e.name}   Work with the subinfrastructure ${e.name}.\n').join()}'
           '\n'
           'Run "rapid help" to see global options.'
     ];
 
 void main() {
   group('infrastructure', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner(
-        (commandRunner, project, __, printLogs) async {
+      overridePrint(
+        (printLogs) async {
+          final infrastructurePackages = [
+            MockInfrastructurePackage(name: 'package_a'),
+            MockInfrastructurePackage(name: 'package_b'),
+          ];
+          final project =
+              getProject(infrastructurePackages: infrastructurePackages);
+          final commandRunner = getCommandRunner(project: project);
+
           await commandRunner.run(['infrastructure', '--help']);
-          expect(printLogs, equals(expectedUsage(['package_a', 'package_b'])));
+          expect(printLogs, equals(expectedUsage(infrastructurePackages)));
 
           printLogs.clear();
 
           await commandRunner.run(['infrastructure', '-h']);
-          expect(printLogs, equals(expectedUsage(['package_a', 'package_b'])));
-        },
-        setupProject: (project) {
-          final infrastructurePackageA = MockInfrastructurePackage();
-          when(() => infrastructurePackageA.name).thenReturn('package_a');
-          final infrastructurePackageB = MockInfrastructurePackage();
-          when(() => infrastructurePackageB.name).thenReturn('package_b');
-          final infrastructureDirectory = MockInfrastructureDirectory();
-          when(() => infrastructureDirectory.infrastructurePackages())
-              .thenReturn([infrastructurePackageA, infrastructurePackageB]);
-          when(() => project.infrastructureDirectory)
-              .thenReturn(infrastructureDirectory);
+          expect(printLogs, equals(expectedUsage(infrastructurePackages)));
         },
       ),
     );

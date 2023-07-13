@@ -1,5 +1,3 @@
-import 'package:rapid_cli/src/mason.dart';
-
 import '../../../command_runner/base.dart';
 import '../../util/class_name_rest.dart';
 
@@ -33,6 +31,6 @@ class UiAddWidgetCommand extends RapidLeafCommand with ClassNameGetter {
     final name = super.className;
     final theme = argResults['theme'] ?? _defaultTheme;
 
-    return rapid.uiAddWidget(name: name.snakeCase, theme: theme);
+    return rapid.uiAddWidget(name: name, theme: theme);
   }
 }

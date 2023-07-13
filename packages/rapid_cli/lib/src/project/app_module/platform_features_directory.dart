@@ -81,4 +81,26 @@ class PlatformFeaturesDirectory extends Directory {
     await appFeaturePackage.generate();
     await featurePackage<PlatformPageFeaturePackage>(name: 'home').generate();
   }
+
+  List<PlatformFeaturePackage> featurePackages() {
+    return (existsSync()
+        ? listSync()
+            .whereType<Directory>()
+            .map((dir) => p.basename(dir.path))
+            .where(
+              (basename) =>
+                  basename.endsWith('page') ||
+                  basename.endsWith('flow') ||
+                  basename.endsWith('widget'),
+            )
+            .map(
+              (basename) => featurePackage(
+                name:
+                    basename.replaceAll('${projectName}_${platform.name}_', ''),
+              ),
+            )
+            .toList()
+        : [])
+      ..sort();
+  }
 }

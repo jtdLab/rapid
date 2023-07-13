@@ -1,9 +1,9 @@
-import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../../common.dart';
 import '../../mocks.dart';
+import '../../utils.dart';
 
 List<String> expectedUsage(
   String featurePackage, {
@@ -24,44 +24,29 @@ List<String> expectedUsage(
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
-
   for (final platform in Platform.values) {
     group('${platform.name} <feature>', () {
       test(
         'help',
-        withRunner(
-          (commandRunner, _, __, printLogs) async {
-            await commandRunner.run([platform.name, 'package_a', '--help']);
-            expect(
-              printLogs,
-              equals(expectedUsage('package_a', platform: platform)),
-            );
+        overridePrint((printLogs) async {
+          final featurePackage = MockPlatformFeaturePackage(name: 'package_a');
+          final project = getProject(featurePackages: [featurePackage]);
+          final commandRunner = getCommandRunner(project: project);
 
-            printLogs.clear();
+          await commandRunner.run([platform.name, 'package_a', '--help']);
+          expect(
+            printLogs,
+            equals(expectedUsage('package_a', platform: platform)),
+          );
 
-            await commandRunner.run([platform.name, 'package_a', '-h']);
-            expect(
-              printLogs,
-              equals(expectedUsage('package_a', platform: platform)),
-            );
-          },
-          setupProject: (project) {
-            final featuresDirectory = MockPlatformFeaturesDirectory();
-            final platformDirectory = MockPlatformDirectory();
-            final featurePackageA = MockPlatformFeaturePackage();
-            when(() => featurePackageA.name).thenReturn('package_a');
-            when(() => platformDirectory.featuresDirectory)
-                .thenReturn(featuresDirectory);
-            when(() => featuresDirectory.featurePackages())
-                .thenReturn([featurePackageA]);
-            when(
-              () => project.platformDirectory(platform: any(named: 'platform')),
-            ).thenReturn(platformDirectory);
-          },
-        ),
+          printLogs.clear();
+
+          await commandRunner.run([platform.name, 'package_a', '-h']);
+          expect(
+            printLogs,
+            equals(expectedUsage('package_a', platform: platform)),
+          );
+        }),
       );
     });
   }

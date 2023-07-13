@@ -79,4 +79,89 @@ class RapidProject {
   final AppModule appModule;
 
   final UiModule uiModule;
+
+  bool platformIsActivated(Platform platform) {
+    return appModule
+            .platformDirectory(platform: platform)
+            .rootPackage
+            .existsSync() &&
+        appModule
+            .platformDirectory(platform: platform)
+            .localizationPackage
+            .existsSync() &&
+        appModule
+            .platformDirectory(platform: platform)
+            .navigationPackage
+            .existsSync() &&
+        appModule
+            .platformDirectory(platform: platform)
+            .featuresDirectory
+            .appFeaturePackage
+            .existsSync() &&
+        uiModule.platformUiPackage(platform: platform).existsSync();
+  }
+
+  List<DartPackage> packages() => [
+        rootPackage,
+        appModule.diPackage,
+        appModule.loggingPackage,
+        ...appModule.domainDirectory.domainPackages(),
+        ...appModule.infrastructureDirectory.infrastructurePackages(),
+        uiModule.uiPackage,
+        for (final platform in Platform.values) ...[
+          appModule.platformDirectory(platform: platform).rootPackage,
+          appModule.platformDirectory(platform: platform).localizationPackage,
+          appModule.platformDirectory(platform: platform).navigationPackage,
+          appModule
+              .platformDirectory(platform: platform)
+              .featuresDirectory
+              .appFeaturePackage,
+          ...appModule
+              .platformDirectory(platform: platform)
+              .featuresDirectory
+              .featurePackages(),
+          uiModule.platformUiPackage(platform: platform),
+        ],
+      ].where((e) => e.existsSync()).toList();
+
+  List<PlatformRootPackage> rootPackages() => Platform.values
+      .where((e) => platformIsActivated(e))
+      .map((e) => appModule.platformDirectory(platform: e).rootPackage)
+      .toList();
+
+  DartPackage findByPackageName(String packageName) {
+    return packages().firstWhere((e) => e.packageName == packageName);
+  }
+
+  DartPackage findByCwd() {
+    return packages().firstWhere((e) => e.path == Directory.current.path);
+  }
+
+  /// Returns all packages that depend on [package].
+  ///
+  /// This includes packages that have a transitive dependency on [package].
+  List<DartPackage> dependentPackages(DartPackage package) {
+    return _dependentPackages(packages()
+        .where((e) => e.pubSpecFile.hasDependency(name: package.packageName))
+        .toList());
+  }
+
+  List<DartPackage> _dependentPackages(List<DartPackage> initial) {
+    final dependentPackages = packages()
+        .without(initial)
+        .where(
+          (e) => initial.any(
+            (i) => e.pubSpecFile.hasDependency(name: i.packageName),
+          ),
+        )
+        .toList();
+
+    if (dependentPackages.isEmpty) {
+      return initial;
+    } else {
+      return _dependentPackages(
+        initial + dependentPackages,
+      );
+    }
+  }
 }

@@ -33,4 +33,23 @@ class InfrastructureDirectory extends Directory {
   final String projectName;
 
   final InfrastructurePackage Function({String? name}) infrastructurePackage;
+
+  List<InfrastructurePackage> infrastructurePackages() {
+    return (existsSync()
+        ? listSync().whereType<Directory>().map(
+            (e) {
+              final basename = p.basename(e.path);
+              if (!basename.startsWith('${projectName}_infrastructure_')) {
+                return infrastructurePackage(name: null);
+              }
+
+              final name = p
+                  .basename(e.path)
+                  .replaceAll('${projectName}_infrastructure_', '');
+              return infrastructurePackage(name: name);
+            },
+          ).toList()
+        : [])
+      ..sort();
+  }
 }

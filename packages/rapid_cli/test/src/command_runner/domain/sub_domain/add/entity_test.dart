@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 
 import '../../../../common.dart';
 import '../../../../mocks.dart';
+import '../../../../utils.dart';
 
 List<String> expectedUsage(String subDomainPackage) => [
       'Add an entity to the subdomain $subDomainPackage.\n'
@@ -20,33 +21,22 @@ List<String> expectedUsage(String subDomainPackage) => [
 
 void main() {
   group('domain <sub_domain> add entity', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner(
-        (commandRunner, project, __, printLogs) async {
-          await commandRunner
-              .run(['domain', 'package_a', 'add', 'entity', '--help']);
-          expect(printLogs, equals(expectedUsage('package_a')));
+      overridePrint((printLogs) async {
+        final domainPackage = MockDomainPackage(name: 'package_a');
+        final project = getProject(domainPackages: [domainPackage]);
+        final commandRunner = getCommandRunner(project: project);
 
-          printLogs.clear();
+        await commandRunner
+            .run(['domain', 'package_a', 'add', 'entity', '--help']);
+        expect(printLogs, equals(expectedUsage('package_a')));
 
-          await commandRunner
-              .run(['domain', 'package_a', 'add', 'entity', '-h']);
-          expect(printLogs, equals(expectedUsage('package_a')));
-        },
-        setupProject: (project) {
-          final domainPackageA = MockDomainPackage();
-          when(() => domainPackageA.name).thenReturn('package_a');
-          final domainDirectory = MockDomainDirectory();
-          when(() => domainDirectory.domainPackages())
-              .thenReturn([domainPackageA]);
-          when(() => project.domainDirectory).thenReturn(domainDirectory);
-        },
-      ),
+        printLogs.clear();
+
+        await commandRunner.run(['domain', 'package_a', 'add', 'entity', '-h']);
+        expect(printLogs, equals(expectedUsage('package_a')));
+      }),
     );
 
     test('completes', () async {
@@ -55,11 +45,9 @@ void main() {
         () => rapid.domainSubDomainAddEntity(
           name: any(named: 'name'),
           subDomainName: any(named: 'subDomainName'),
-          outputDir: any(named: 'outputDir'),
         ),
       ).thenAnswer((_) async {});
       final argResults = MockArgResults();
-      when(() => argResults['output-dir']).thenReturn('some');
       when(() => argResults.rest).thenReturn(['Foo']);
       final command = DomainSubDomainAddEntityCommand('package_a', null)
         ..argResultOverrides = argResults
@@ -71,7 +59,6 @@ void main() {
         () => rapid.domainSubDomainAddEntity(
           name: 'Foo',
           subDomainName: 'package_a',
-          outputDir: 'some',
         ),
       ).called(1);
     });

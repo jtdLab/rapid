@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 
 import '../../common.dart';
 import '../../mocks.dart';
+import '../../utils.dart';
 
 const expectedUsage = [
   'Get packages in a Rapid environment.\n'
@@ -17,13 +18,11 @@ const expectedUsage = [
 
 void main() {
   group('pub get', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['pub', 'get', '--help']);
         expect(printLogs, equals(expectedUsage));
 

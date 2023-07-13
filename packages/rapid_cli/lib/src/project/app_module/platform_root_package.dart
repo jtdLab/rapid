@@ -14,6 +14,168 @@ sealed class PlatformRootPackage extends DartPackage {
   DartFile get injectionFile => DartFile(p.join(path, 'lib', 'injection.dart'));
 
   DartFile get routerFile => DartFile(p.join(path, 'lib', 'router.dart'));
+
+  Future<void> registerFeaturePackage(
+    PlatformFeaturePackage featurePackage,
+  ) async {
+    final packageName = featurePackage.packageName;
+    pubSpecFile.setDependency(
+      name: packageName,
+      dependency: HostedReference(VersionConstraint.empty),
+    );
+    _addFeaturePackage(packageName, injectionFile: injectionFile);
+    if (PlatformFeaturePackage is PlatformRoutableFeaturePackage) {
+      _addRouterModule(packageName, routerFile: routerFile);
+    }
+  }
+
+  Future<void> unregisterFeaturePackage(
+    PlatformFeaturePackage featurePackage,
+  ) async {
+    final packageName = featurePackage.packageName;
+    pubSpecFile.removeDependency(name: packageName);
+    _removeFeaturePackage(packageName, injectionFile: injectionFile);
+    if (PlatformFeaturePackage is PlatformRoutableFeaturePackage) {
+      _removeRouterModule(packageName, routerFile: routerFile);
+    }
+  }
+
+  Future<void> registerInfrastructurePackage(
+    InfrastructurePackage infrastructurePackage,
+  ) async {
+    final packageName = infrastructurePackage.packageName;
+    pubSpecFile.setDependency(
+      name: packageName,
+      dependency: HostedReference(VersionConstraint.empty),
+    );
+    _addFeaturePackage(packageName, injectionFile: injectionFile);
+  }
+
+  Future<void> unregisterInfrastructurePackage(
+    InfrastructurePackage infrastructurePackage,
+  ) async {
+    final packageName = infrastructurePackage.packageName;
+    pubSpecFile.removeDependency(name: packageName);
+    _removeFeaturePackage(packageName, injectionFile: injectionFile);
+  }
+
+  void _addFeaturePackage(
+    String packageName, {
+    required DartFile injectionFile,
+  }) {
+    injectionFile.addImport('package:$packageName/$packageName.dart');
+
+    final existingExternalPackageModules =
+        _readExternalPackageModules(injectionFile);
+
+    injectionFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+      property: 'externalPackageModules',
+      annotation: 'InjectableInit',
+      functionName: 'configureDependencies',
+      value: {
+        ...existingExternalPackageModules,
+        '${packageName.pascalCase}PackageModule',
+      }.toList(),
+    );
+  }
+
+  void _removeFeaturePackage(
+    String packageName, {
+    required DartFile injectionFile,
+  }) {
+    final imports =
+        injectionFile.readImports().where((e) => e.contains(packageName));
+    for (final import in imports) {
+      injectionFile.removeImport(import);
+    }
+
+    final existingExternalPackageModules =
+        _readExternalPackageModules(injectionFile);
+
+    injectionFile.setTypeListOfAnnotationParamOfTopLevelFunction(
+      property: 'externalPackageModules',
+      annotation: 'InjectableInit',
+      functionName: 'configureDependencies',
+      value: existingExternalPackageModules
+          .where((e) => !e.contains('${packageName.pascalCase}PackageModule'))
+          .toList(),
+    );
+  }
+
+  List<String> _readExternalPackageModules(DartFile injectionFile) =>
+      injectionFile.readTypeListFromAnnotationParamOfTopLevelFunction(
+        property: 'externalPackageModules',
+        annotation: 'InjectableInit',
+        functionName: 'configureDependencies',
+      );
+
+  void _addRouterModule(
+    String packageName, {
+    required DartFile routerFile,
+  }) {
+    // TODO rm mulitple reads to the file
+    routerFile.addImport('package:$packageName/$packageName.dart');
+
+    final moduleName =
+        '${packageName.replaceAll('${projectName}_${platform.name}_', '').pascalCase}Module';
+
+    final content = routerFile.readAsStringSync();
+    final lines = content.split('\n');
+    final lastImportOrExportIndex =
+        lines.lastIndexWhere((e) => e.startsWith(RegExp('import|export')));
+    lines.insertAll(
+      lastImportOrExportIndex + 1,
+      ['\n', '// TODO: Add routes of $moduleName to the router.'],
+    );
+    routerFile.writeAsStringSync(lines.join('\n'));
+
+    final existingModules = _readModules(routerFile);
+
+    routerFile.setTypeListOfAnnotationParamOfClass(
+      property: 'modules',
+      annotation: 'AutoRouterConfig',
+      className: 'Router',
+      value: {
+        ...existingModules,
+        moduleName,
+      }.toList(),
+    );
+  }
+
+  void _removeRouterModule(
+    String packageName, {
+    required DartFile routerFile,
+  }) {
+    final imports =
+        routerFile.readImports().where((e) => e.contains(packageName));
+    for (final import in imports) {
+      routerFile.removeImport(import);
+    }
+
+    final existingModules = _readModules(routerFile);
+
+    routerFile.setTypeListOfAnnotationParamOfClass(
+      property: 'modules',
+      annotation: 'AutoRouterConfig',
+      className: 'Router',
+      value: existingModules
+          .where(
+            (e) => !e.contains(
+              packageName
+                  .replaceAll('${projectName}_${platform.name}_', '')
+                  .pascalCase,
+            ),
+          )
+          .toList(),
+    );
+  }
+
+  List<String> _readModules(DartFile routerFile) =>
+      routerFile.readTypeListFromAnnotationParamOfClass(
+        property: 'modules',
+        annotation: 'AutoRouterConfig',
+        className: 'Router',
+      );
 }
 
 final class IosRootPackage extends PlatformRootPackage {

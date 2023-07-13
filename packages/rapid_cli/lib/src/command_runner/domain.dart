@@ -1,5 +1,3 @@
-import 'package:rapid_cli/src/utils.dart';
-
 import 'base.dart';
 import 'domain/add.dart';
 import 'domain/remove.dart';

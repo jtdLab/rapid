@@ -5,19 +5,18 @@ import 'package:test/test.dart';
 
 import '../../../../common.dart';
 import '../../../../mocks.dart';
+import '../../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
     'Add a page feature to the ${platform.prettyName} part of an existing Rapid project.\n'
         '\n'
         'Usage: rapid ${platform.name} add feature page <name> [arguments]\n'
-        '-h, --help                 Print this usage information.\n'
+        '-h, --help         Print this usage information.\n'
         '\n'
         '\n'
-        '    --desc                 The description of the new feature.\n'
-        '    --navigator            Whether to generate a navigator for the new feature.\n'
-        '    --[no-]localization    Whether the new feature as localizations.\n'
-        '                           (defaults to on)\n'
+        '    --desc         The description of the new feature.\n'
+        '    --navigator    Whether to generate a navigator for the new feature.\n'
         '\n'
         'Run "rapid help" to see global options.'
   ];
@@ -32,7 +31,9 @@ void main() {
     group('${platform.name} add feature page', () {
       test(
         'help',
-        withRunner((commandRunner, _, __, printLogs) async {
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
           await commandRunner
               .run([platform.name, 'add', 'feature', 'page', '--help']);
           expect(printLogs, equals(expectedUsage(platform)));
@@ -53,11 +54,9 @@ void main() {
             name: any(named: 'name'),
             description: any(named: 'description'),
             navigator: any(named: 'navigator'),
-            localization: any(named: 'localization'),
           ),
         ).thenAnswer((_) async {});
         final argResults = MockArgResults();
-        when(() => argResults['localization']).thenReturn(false);
         when(() => argResults['navigator']).thenReturn(true);
         when(() => argResults['desc']).thenReturn('Some description.');
         when(() => argResults.rest).thenReturn(['package_a']);
@@ -73,7 +72,6 @@ void main() {
             name: 'package_a',
             description: 'Some description.',
             navigator: true,
-            localization: false,
           ),
         ).called(1);
       });

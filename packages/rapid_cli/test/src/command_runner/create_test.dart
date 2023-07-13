@@ -7,6 +7,7 @@ import 'package:test/test.dart';
 import '../common.dart';
 import '../matchers.dart';
 import '../mocks.dart';
+import '../utils.dart';
 
 const expectedUsage = [
   'Create a new Rapid project.\n'
@@ -49,7 +50,9 @@ void main() {
 
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['create', '--help']);
         expect(printLogs, equals(expectedUsage));
 

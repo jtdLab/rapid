@@ -6,6 +6,7 @@ import 'package:test/test.dart';
 
 import '../../../common.dart';
 import '../../../mocks.dart';
+import '../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
@@ -27,17 +28,17 @@ void main() {
     group('${platform.name} set default_language', () {
       test(
         'help',
-        withRunner((commandRunner, _, __, printLogs) async {
-          await commandRunner.run(
-            [platform.name, 'set', 'default_language', '--help'],
-          );
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
+          await commandRunner
+              .run([platform.name, 'set', 'default_language', '--help']);
           expect(printLogs, equals(expectedUsage(platform)));
 
           printLogs.clear();
 
-          await commandRunner.run(
-            [platform.name, 'set', 'default_language', '-h'],
-          );
+          await commandRunner
+              .run([platform.name, 'set', 'default_language', '-h']);
           expect(printLogs, equals(expectedUsage(platform)));
         }),
       );

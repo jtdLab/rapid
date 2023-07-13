@@ -1,10 +1,11 @@
-import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 
 import '../common.dart';
 import '../mocks.dart';
+import '../utils.dart';
 
-List<String> expectedUsage(List<String> subDomainPackages) => [
+List<String> expectedUsage(List<DomainPackage> domainPackages) => [
       'Work with the domain part of an existing Rapid project.\n'
           '\n'
           'Usage: rapid domain <subcommand>\n'
@@ -12,7 +13,7 @@ List<String> expectedUsage(List<String> subDomainPackages) => [
           '\n'
           'Available subcommands:\n'
           '  add         Add subdomains to the domain part of an existing Rapid project.\n'
-          '${subDomainPackages.map((e) => '  $e   Work with the subdomain $e.\n').join()}'
+          '${domainPackages.map((e) => '  ${e.name}   Work with the subdomain ${e.name}.\n').join()}'
           '  remove      Remove subdomains from the domain part of an existing Rapid project.\n'
           '\n'
           'Run "rapid help" to see global options.'
@@ -20,31 +21,24 @@ List<String> expectedUsage(List<String> subDomainPackages) => [
 
 void main() {
   group('domain', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
-
     test(
       'help',
-      withRunner(
-        (commandRunner, project, __, printLogs) async {
+      overridePrint(
+        (printLogs) async {
+          final domainPackages = [
+            MockDomainPackage(name: 'package_a'),
+            MockDomainPackage(name: 'package_b'),
+          ];
+          final project = getProject(domainPackages: domainPackages);
+          final commandRunner = getCommandRunner(project: project);
+
           await commandRunner.run(['domain', '--help']);
-          expect(printLogs, equals(expectedUsage(['package_a', 'package_b'])));
+          expect(printLogs, equals(expectedUsage(domainPackages)));
 
           printLogs.clear();
 
           await commandRunner.run(['domain', '-h']);
-          expect(printLogs, equals(expectedUsage(['package_a', 'package_b'])));
-        },
-        setupProject: (project) {
-          final domainPackageA = MockDomainPackage();
-          when(() => domainPackageA.name).thenReturn('package_a');
-          final domainPackageB = MockDomainPackage();
-          when(() => domainPackageB.name).thenReturn('package_b');
-          final domainDirectory = MockDomainDirectory();
-          when(() => domainDirectory.domainPackages())
-              .thenReturn([domainPackageA, domainPackageB]);
-          when(() => project.domainDirectory).thenReturn(domainDirectory);
+          expect(printLogs, equals(expectedUsage(domainPackages)));
         },
       ),
     );

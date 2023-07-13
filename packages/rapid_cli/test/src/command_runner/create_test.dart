@@ -66,7 +66,8 @@ void main() {
     group('throws UsageException', () {
       test(
         'when project name is missing',
-        withRunner((commandRunner, _, __, printLogs) async {
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
           expect(
             () => commandRunner.run(['create']),
             throwsUsageException(
@@ -79,7 +80,8 @@ void main() {
       group('when project name is invalid', () {
         test(
           '(contains spaces)',
-          withRunner((commandRunner, _, __, printLogs) async {
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
             const projectName = 'my app';
 
             expect(
@@ -94,7 +96,8 @@ void main() {
 
         test(
           '(contains uppercase)',
-          withRunner((commandRunner, _, __, printLogs) async {
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
             const projectName = 'My_app';
 
             expect(
@@ -109,7 +112,8 @@ void main() {
 
         test(
           '(invalid characters present)',
-          withRunner((commandRunner, _, __, printLogs) async {
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
             const projectName = '.-@_my_app_*';
 
             expect(
@@ -125,7 +129,8 @@ void main() {
 
       test(
         'when multiple project names are provided',
-        withRunner((commandRunner, _, __, printLogs) async {
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
           expect(
             () => commandRunner.run(['create', 'foo', 'bar']),
             throwsUsageException(
@@ -137,7 +142,8 @@ void main() {
 
       test(
         'when language is invalid',
-        withRunner((commandRunner, _, __, printLogs) async {
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
           const language = 'xxyyzz';
 
           expect(
@@ -154,7 +160,9 @@ void main() {
 
       group('when org-name is invalid', () {
         void Function() verifyOrgNameIsInvalid(String orgName) =>
-            withRunner((commandRunner, _, __, printLogs) async {
+            overridePrint((printLogs) async {
+              final commandRunner = getCommandRunner();
+
               expect(
                 () => commandRunner.run(
                   ['create', 'my_project', '--org-name', orgName],

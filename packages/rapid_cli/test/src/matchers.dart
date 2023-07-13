@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 Matcher isUsageException({String? message}) {
   var matcher = isA<UsageException>();
 
-  if (message == null) {
+  if (message != null) {
     matcher = matcher.having((e) => e.message, 'message', message);
   }
 

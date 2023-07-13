@@ -191,7 +191,7 @@ void main() {
       });
     });
 
-    test('completes', () async {
+    test('completes (1)', () async {
       final rapid = MockRapid();
       when(
         () => rapid.create(
@@ -209,12 +209,12 @@ void main() {
       when(() => argResults['org-name']).thenReturn('com.foo.bar');
       when(() => argResults['language']).thenReturn('de');
       when(() => argResults['android']).thenReturn(true);
-      when(() => argResults['ios']).thenReturn(false);
+      when(() => argResults['ios']).thenReturn(true);
       when(() => argResults['linux']).thenReturn(true);
-      when(() => argResults['macos']).thenReturn(false);
-      when(() => argResults['mobile']).thenReturn(false);
+      when(() => argResults['macos']).thenReturn(true);
+      when(() => argResults['mobile']).thenReturn(true);
       when(() => argResults['web']).thenReturn(true);
-      when(() => argResults['windows']).thenReturn(false);
+      when(() => argResults['windows']).thenReturn(true);
       when(() => argResults.rest).thenReturn(['my_app']);
       final command = CreateCommand()
         ..argResultOverrides = argResults
@@ -231,9 +231,56 @@ void main() {
           language: Language(languageCode: 'de'),
           platforms: {
             Platform.android,
+            Platform.ios,
             Platform.linux,
+            Platform.macos,
             Platform.web,
+            Platform.windows,
+            Platform.mobile,
           },
+        ),
+      ).called(1);
+    });
+
+    test('completes (2)', () async {
+      final rapid = MockRapid();
+      when(
+        () => rapid.create(
+          projectName: any(named: 'projectName'),
+          outputDir: any(named: 'outputDir'),
+          description: any(named: 'description'),
+          orgName: any(named: 'orgName'),
+          language: any(named: 'language'),
+          platforms: any(named: 'platforms'),
+        ),
+      ).thenAnswer((_) async => 0);
+      final argResults = MockArgResults();
+      when(() => argResults['output-dir']).thenReturn('.');
+      when(() => argResults['desc']).thenReturn('A description.');
+      when(() => argResults['org-name']).thenReturn('com.foo.bar');
+      when(() => argResults['language']).thenReturn('de');
+      when(() => argResults['android']).thenReturn(false);
+      when(() => argResults['ios']).thenReturn(false);
+      when(() => argResults['linux']).thenReturn(false);
+      when(() => argResults['macos']).thenReturn(false);
+      when(() => argResults['mobile']).thenReturn(false);
+      when(() => argResults['web']).thenReturn(false);
+      when(() => argResults['windows']).thenReturn(false);
+      when(() => argResults.rest).thenReturn(['my_app']);
+      final command = CreateCommand()
+        ..argResultOverrides = argResults
+        ..rapidOverrides = rapid;
+
+      await command.run();
+
+      verify(
+        () => rapid.create(
+          projectName: 'my_app',
+          outputDir: '.',
+          description: 'A description.',
+          orgName: 'com.foo.bar',
+          language: Language(languageCode: 'de'),
+          platforms: {},
         ),
       ).called(1);
     });

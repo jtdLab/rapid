@@ -38,8 +38,9 @@ class PlatformAddFeatureFlowCommand extends RapidLeafCommand
   @override
   Future<void> run() {
     final name = super.dartPackageName;
-    final description = argResults['desc'] ??
-        'The ${name.pascalCase} flow feature.'; // TODO share
+    // TODO share?
+    final description =
+        argResults['desc'] ?? 'The ${name.pascalCase} flow feature.';
     final navigator = argResults['navigator'] ?? false; // TODO share?
 
     return rapid.platformAddFeatureFlow(

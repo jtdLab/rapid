@@ -4,7 +4,9 @@ import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../../../../common.dart';
+import '../../../../matchers.dart';
 import '../../../../mocks.dart';
+import '../../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
@@ -31,7 +33,9 @@ void main() {
     group('${platform.name} add feature flow', () {
       test(
         'help',
-        withRunner((commandRunner, _, __, printLogs) async {
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
           await commandRunner
               .run([platform.name, 'add', 'feature', 'tab_flow', '--help']);
           expect(printLogs, equals(expectedUsage(platform)));
@@ -41,6 +45,21 @@ void main() {
           await commandRunner
               .run([platform.name, 'add', 'feature', 'tab_flow', '-h']);
           expect(printLogs, equals(expectedUsage(platform)));
+        }),
+      );
+
+      test(
+        'throws UsageException when sub-features is missing',
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
+          expect(
+            () => commandRunner.run(
+                [platform.name, 'add', 'feature', 'tab_flow', 'package_a']),
+            throwsUsageException(
+              message: 'No option specified for the sub-features.',
+            ),
+          );
         }),
       );
 

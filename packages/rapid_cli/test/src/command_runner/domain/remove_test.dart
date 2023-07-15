@@ -17,12 +17,22 @@ const expectedUsage = [
 ];
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('domain remove', () {
     test(
       'help',
       overridePrint((printLogs) async {
         final domainPackage = FakeDomainPackage(name: 'package_a');
-        final project = getProject(domainPackages: [domainPackage]);
+        final project = MockRapidProject(
+          appModule: MockAppModule(
+            domainDirectory: MockDomainDirectory(
+              domainPackages: [domainPackage],
+            ),
+          ),
+        );
         final commandRunner = getCommandRunner(project: project);
 
         await commandRunner.run(['domain', 'remove', '--help']);

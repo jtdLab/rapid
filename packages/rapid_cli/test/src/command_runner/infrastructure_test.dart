@@ -21,6 +21,10 @@ List<String> expectedUsage(
     ];
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('infrastructure', () {
     test(
       'help',
@@ -30,8 +34,13 @@ void main() {
             FakeInfrastructurePackage(name: 'package_a'),
             FakeInfrastructurePackage(name: 'package_b'),
           ];
-          final project =
-              getProject(infrastructurePackages: infrastructurePackages);
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              infrastructureDirectory: MockInfrastructureDirectory(
+                infrastructurePackages: infrastructurePackages,
+              ),
+            ),
+          );
           final commandRunner = getCommandRunner(project: project);
 
           await commandRunner.run(['infrastructure', '--help']);

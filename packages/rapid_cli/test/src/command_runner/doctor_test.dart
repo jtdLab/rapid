@@ -16,6 +16,10 @@ const expectedUsage = [
 ];
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('doctor', () {
     test(
       'help',

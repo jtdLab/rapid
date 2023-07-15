@@ -18,6 +18,10 @@ const expectedUsage = [
 ];
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('ui add widget', () {
     test(
       'help',

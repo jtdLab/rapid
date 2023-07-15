@@ -19,7 +19,7 @@ void main() {
 
   group('pubAdd', () {
     test('finds package by package name', () async {
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.findByPackageName('example_package'))
           .thenReturn(FakeDartPackage());
       final rapid = getRapid(project: project);
@@ -36,7 +36,7 @@ void main() {
     });
 
     test('finds package by current working directory', () async {
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.findByCwd()).thenReturn(FakeDartPackage());
       final rapid = getRapid(project: project);
 
@@ -53,7 +53,7 @@ void main() {
 
     test('throws PackageNotFoundException when package is not found by name',
         () {
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.findByPackageName('non_existing_package'))
           .thenThrow(Exception());
       final rapid = getRapid(project: project);
@@ -74,7 +74,7 @@ void main() {
     test(
         'throws PackageAtCwdNotFoundException when package is not found at current working directory',
         () {
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.findByCwd()).thenThrow(Exception());
       final rapid = getRapid(project: project);
 
@@ -98,7 +98,7 @@ void main() {
         FakeDartPackage(packageName: 'package_c'),
         FakeDartPackage(packageName: 'package_d'),
       ];
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.dependentPackages(package))
           .thenReturn(dependentPackages);
       when(() => project.findByPackageName('example_package'))
@@ -137,7 +137,7 @@ void main() {
         FakeDartPackage(packageName: 'package_c'),
         FakeDartPackage(packageName: 'package_d'),
       ];
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.dependentPackages(package))
           .thenReturn(dependentPackages);
       when(() => project.findByPackageName('example_package'))
@@ -181,7 +181,7 @@ void main() {
 
   group('pubGet', () {
     test('finds package by package name', () async {
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.findByPackageName('example_package'))
           .thenReturn(FakeDartPackage());
       final rapid = getRapid(project: project);
@@ -197,7 +197,7 @@ void main() {
     });
 
     test('finds package by current working directory', () async {
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.findByCwd()).thenReturn(FakeDartPackage());
       final rapid = getRapid(project: project);
 
@@ -213,7 +213,7 @@ void main() {
 
     test('throws PackageNotFoundException when package is not found by name',
         () {
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.findByPackageName('non_existing_package'))
           .thenThrow(Exception());
       final rapid = getRapid(project: project);
@@ -233,7 +233,7 @@ void main() {
     test(
         'throws PackageAtCwdNotFoundException when package is not found at current working directory',
         () {
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.findByCwd()).thenThrow(Exception());
       final rapid = getRapid(project: project);
 
@@ -272,7 +272,7 @@ void main() {
         FakeDartPackage(packageName: 'package_c'),
         FakeDartPackage(packageName: 'package_d'),
       ];
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.dependentPackages(package))
           .thenReturn(dependentPackages);
       when(() => project.findByPackageName('example_package'))
@@ -318,7 +318,7 @@ void main() {
         FakeDartPackage(packageName: 'package_c'),
         FakeDartPackage(packageName: 'package_d'),
       ];
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.dependentPackages(package))
           .thenReturn(dependentPackages);
       when(() => project.findByPackageName('example_package'))
@@ -342,7 +342,7 @@ void main() {
 
   group('pubRemove', () {
     test('finds package by package name', () async {
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.findByPackageName('example_package'))
           .thenReturn(FakeDartPackage());
       final rapid = getRapid(project: project);
@@ -359,7 +359,7 @@ void main() {
     });
 
     test('finds package by current working directory', () async {
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.findByCwd()).thenReturn(FakeDartPackage());
       final rapid = getRapid(project: project);
 
@@ -376,7 +376,7 @@ void main() {
 
     test('throws PackageNotFoundException when package is not found by name',
         () {
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.findByPackageName('non_existing_package'))
           .thenThrow(Exception());
       final rapid = getRapid(project: project);
@@ -397,7 +397,7 @@ void main() {
     test(
         'throws PackageAtCwdNotFoundException when package is not found at current working directory',
         () {
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.findByCwd()).thenThrow(Exception());
       final rapid = getRapid(project: project);
 
@@ -421,7 +421,7 @@ void main() {
         FakeDartPackage(packageName: 'package_c'),
         FakeDartPackage(packageName: 'package_d'),
       ];
-      final project = getProject();
+      final project = MockRapidProject();
       when(() => project.dependentPackages(package))
           .thenReturn(dependentPackages);
       when(() => project.findByPackageName('example_package'))

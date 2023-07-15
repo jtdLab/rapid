@@ -12,7 +12,7 @@ sealed class PlatformNativeDirectory extends Directory {
   final Platform platform;
 }
 
-final class IosNativeDirectory extends PlatformNativeDirectory {
+class IosNativeDirectory extends PlatformNativeDirectory {
   IosNativeDirectory({
     required super.projectName,
     required super.path,
@@ -52,7 +52,7 @@ final class IosNativeDirectory extends PlatformNativeDirectory {
   }
 }
 
-final class MacosNativeDirectory extends PlatformNativeDirectory {
+class MacosNativeDirectory extends PlatformNativeDirectory {
   MacosNativeDirectory({
     required super.projectName,
     required super.path,
@@ -85,7 +85,7 @@ final class MacosNativeDirectory extends PlatformNativeDirectory {
 }
 
 // TODO better name
-final class NoneIosNativeDirectory extends PlatformNativeDirectory {
+class NoneIosNativeDirectory extends PlatformNativeDirectory {
   NoneIosNativeDirectory({
     required super.projectName,
     required super.platform,

@@ -21,11 +21,11 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('activate ios', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('activate ios', () {
     test(
       'help',
       overridePrint((printLogs) async {

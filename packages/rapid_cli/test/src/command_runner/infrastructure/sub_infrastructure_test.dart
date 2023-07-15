@@ -18,14 +18,23 @@ List<String> expectedUsage(String subInfrastructurePackage) => [
     ];
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('infrastructure <sub_infrastructure>', () {
     test(
       'help',
       overridePrint((printLogs) async {
         final infrastructurePackage =
             FakeInfrastructurePackage(name: 'package_a');
-        final project =
-            getProject(infrastructurePackages: [infrastructurePackage]);
+        final project = MockRapidProject(
+          appModule: MockAppModule(
+            infrastructureDirectory: MockInfrastructureDirectory(
+              infrastructurePackages: [infrastructurePackage],
+            ),
+          ),
+        );
         final commandRunner = getCommandRunner(project: project);
 
         await commandRunner.run(['infrastructure', 'package_a', '--help']);

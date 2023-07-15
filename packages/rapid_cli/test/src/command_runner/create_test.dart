@@ -38,11 +38,11 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('create', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('create', () {
     test('c is a valid alias', () {
       final command = CreateCommand();
       expect(command.aliases, contains('c'));

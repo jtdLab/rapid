@@ -59,6 +59,10 @@ const expectedUsage = [
 ];
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('pub add', () {
     test(
       'help',

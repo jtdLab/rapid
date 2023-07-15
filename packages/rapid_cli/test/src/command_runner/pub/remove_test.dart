@@ -17,6 +17,10 @@ const expectedUsage = [
 ];
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('pub remove', () {
     test(
       'help',

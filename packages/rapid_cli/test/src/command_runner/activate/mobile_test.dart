@@ -23,11 +23,11 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('activate mobile', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('activate mobile', () {
     test(
       'help',
       overridePrint((printLogs) async {

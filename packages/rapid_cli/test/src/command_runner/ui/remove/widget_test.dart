@@ -16,6 +16,10 @@ const expectedUsage = [
 ];
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('ui remove widget', () {
     test(
       'help',

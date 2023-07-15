@@ -1,6 +1,7 @@
 import 'package:test/test.dart';
 
 import '../common.dart';
+import '../mocks.dart';
 import '../utils.dart';
 
 const expectedUsage = [
@@ -22,6 +23,10 @@ const expectedUsage = [
 ];
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('deactivate', () {
     test(
       'help',

@@ -2,6 +2,7 @@ import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../../../common.dart';
+import '../../../mocks.dart';
 import '../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
@@ -19,6 +20,10 @@ List<String> expectedUsage(Platform platform) {
 }
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('ui', () {
     for (final platform in Platform.values) {
       group('${platform.name} remove', () {

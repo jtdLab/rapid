@@ -7,7 +7,7 @@ RapidCommandRunner getCommandRunner({
   MockRapidProject? project,
 }) {
   return RapidCommandRunner(
-    project: project ?? getProject(),
+    project: project ?? MockRapidProject(),
   );
 }
 
@@ -17,7 +17,7 @@ Rapid getRapid({
   MockRapidLogger? logger,
 }) {
   return Rapid(
-    project: project ?? getProject(),
+    project: project ?? MockRapidProject(),
     tool: tool ?? MockRapidTool(),
     logger: logger ?? MockRapidLogger(),
   );

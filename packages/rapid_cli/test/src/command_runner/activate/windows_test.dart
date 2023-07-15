@@ -21,11 +21,11 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('activate windows', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('activate windows', () {
     test(
       'help',
       overridePrint((printLogs) async {

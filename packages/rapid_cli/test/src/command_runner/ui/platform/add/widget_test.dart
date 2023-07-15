@@ -21,6 +21,10 @@ List<String> expectedUsage(Platform platform) {
 }
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('ui', () {
     for (final platform in Platform.values) {
       group('${platform.name} add widget', () {

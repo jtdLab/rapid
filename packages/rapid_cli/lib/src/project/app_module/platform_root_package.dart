@@ -178,7 +178,7 @@ sealed class PlatformRootPackage extends DartPackage {
       );
 }
 
-final class IosRootPackage extends PlatformRootPackage {
+class IosRootPackage extends PlatformRootPackage {
   IosRootPackage({
     required super.projectName,
     required super.path,
@@ -227,7 +227,7 @@ final class IosRootPackage extends PlatformRootPackage {
   }
 }
 
-final class MacosRootPackage extends PlatformRootPackage {
+class MacosRootPackage extends PlatformRootPackage {
   MacosRootPackage({
     required super.projectName,
     required super.path,
@@ -274,7 +274,7 @@ final class MacosRootPackage extends PlatformRootPackage {
 }
 
 // TODO better name
-final class NoneIosRootPackage extends PlatformRootPackage {
+class NoneIosRootPackage extends PlatformRootPackage {
   NoneIosRootPackage({
     required super.projectName,
     required super.platform,
@@ -328,7 +328,7 @@ final class NoneIosRootPackage extends PlatformRootPackage {
   }
 }
 
-final class MobileRootPackage extends PlatformRootPackage {
+class MobileRootPackage extends PlatformRootPackage {
   MobileRootPackage({
     required super.projectName,
     required super.path,

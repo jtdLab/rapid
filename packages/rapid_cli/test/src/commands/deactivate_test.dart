@@ -8,6 +8,10 @@ import '../mocks.dart';
 import '../utils.dart';
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('deactivatePlatform', () {
     for (final platform in Platform.values) {
       test(

@@ -21,11 +21,11 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('activate linux', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('activate linux', () {
     test(
       'help',
       overridePrint((printLogs) async {

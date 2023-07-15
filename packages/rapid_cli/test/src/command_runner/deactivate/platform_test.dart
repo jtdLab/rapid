@@ -19,6 +19,10 @@ List<String> expectedUsage(Platform platform) {
 }
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('activate', () {
     for (final platform in Platform.values) {
       group(platform.name, () {

@@ -8,6 +8,10 @@ import '../mocks.dart';
 import '../utils.dart';
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('end', () {
     test('throws NoActiveGroupException when no group is active', () async {
       final manager = MockProcessManager();

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
 import 'package:rapid_cli/src/project/platform.dart';
@@ -49,6 +50,9 @@ class Rapid extends _Rapid
 
   @override
   final RapidLogger logger;
+
+  RapidProject? _project;
+
   @override
   RapidProject get project {
     if (_project != null) {
@@ -59,9 +63,6 @@ class Rapid extends _Rapid
   }
 
   @override
-  RapidTool get tool => _tool ?? RapidTool(project: project);
-
-  @override
   set project(RapidProject project) {
     if (_project == null) {
       _project = project;
@@ -70,15 +71,31 @@ class Rapid extends _Rapid
     }
   }
 
-  RapidProject? _project;
+  /// Override this to test create command.
+  @visibleForTesting
+  RapidProject Function({required RapidProjectConfig config})?
+      projectBuilderOverrides;
+
+  @override
+  RapidProject Function({required RapidProjectConfig config})
+      get projectBuilder =>
+          projectBuilderOverrides ??
+          ({required RapidProjectConfig config}) =>
+              RapidProject.fromConfig(config);
+
   final RapidTool? _tool;
+
+  @override
+  RapidTool get tool => _tool ?? RapidTool(project: project);
 }
 
 abstract class _Rapid {
   RapidLogger get logger;
-  RapidTool get tool;
   RapidProject get project;
   set project(RapidProject project);
+  RapidProject Function({required RapidProjectConfig config})
+      get projectBuilder;
+  RapidTool get tool;
 
   Future<T> task<T>(
     String description,

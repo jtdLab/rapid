@@ -20,6 +20,10 @@ List<String> expectedUsage(List<DomainPackage> domainPackages) => [
     ];
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('domain', () {
     test(
       'help',
@@ -29,7 +33,13 @@ void main() {
             FakeDomainPackage(name: 'package_a'),
             FakeDomainPackage(name: 'package_b'),
           ];
-          final project = getProject(domainPackages: domainPackages);
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              domainDirectory: MockDomainDirectory(
+                domainPackages: domainPackages,
+              ),
+            ),
+          );
           final commandRunner = getCommandRunner(project: project);
 
           await commandRunner.run(['domain', '--help']);

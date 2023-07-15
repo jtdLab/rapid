@@ -26,6 +26,10 @@ List<String> expectedUsage(
 }
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   for (final platform in Platform.values) {
     group(platform.name, () {
       test(
@@ -36,7 +40,16 @@ void main() {
               FakePlatformFeaturePackage(name: 'package_a'),
               FakePlatformFeaturePackage(name: 'package_b'),
             ];
-            final project = getProject(featurePackages: featurePackages);
+            final project = MockRapidProject(
+              appModule: MockAppModule(
+                platformDirectory: ({required Platform platform}) =>
+                    MockPlatformDirectory(
+                  featuresDirectory: MockPlatformFeaturesDirectory(
+                    featurePackages: featurePackages,
+                  ),
+                ),
+              ),
+            );
             final commandRunner = getCommandRunner(project: project);
 
             await commandRunner.run([platform.name, '--help']);

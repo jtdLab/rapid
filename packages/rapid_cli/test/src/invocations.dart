@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/mason.dart';
 
 import 'mocks.dart';
 
@@ -165,6 +166,23 @@ List<dynamic Function()> flutterPubRemoveTask<T>(
           runInShell: true,
           stderrEncoding: utf8,
           stdoutEncoding: utf8,
+        ),
+  ];
+}
+
+List<dynamic Function()> generateFromBundle<T>(
+  MockProcessManager manager, {
+  required MockMasonGeneratorBuilder generatorBuilder,
+  required MockMasonGenerator generator,
+  required MasonBundle bundle,
+  required Directory target,
+  required Map<String, dynamic> vars,
+}) {
+  return [
+    () => generatorBuilder(bundle),
+    () => generator.generate(
+          DirectoryGeneratorTarget(target),
+          vars: vars,
         ),
   ];
 }

@@ -21,11 +21,11 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('activate macos', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('activate macos', () {
     test(
       'help',
       overridePrint((printLogs) async {

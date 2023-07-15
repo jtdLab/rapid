@@ -24,13 +24,26 @@ List<String> expectedUsage(
 }
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   for (final platform in Platform.values) {
     group('${platform.name} <feature> add', () {
       test(
         'help',
         overridePrint((printLogs) async {
           final featurePackage = FakePlatformFeaturePackage(name: 'package_a');
-          final project = getProject(featurePackages: [featurePackage]);
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              platformDirectory: ({required Platform platform}) =>
+                  MockPlatformDirectory(
+                featuresDirectory: MockPlatformFeaturesDirectory(
+                  featurePackages: [featurePackage],
+                ),
+              ),
+            ),
+          );
           final commandRunner = getCommandRunner(project: project);
 
           await commandRunner

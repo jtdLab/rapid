@@ -21,11 +21,11 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('activate web', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('activate web', () {
     test(
       'help',
       overridePrint((printLogs) async {

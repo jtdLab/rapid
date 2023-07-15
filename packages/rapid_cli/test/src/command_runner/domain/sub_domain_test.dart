@@ -18,12 +18,22 @@ List<String> expectedUsage(String subDomainPackage) => [
     ];
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('domain <sub_domain>', () {
     test(
       'help',
       overridePrint((printLogs) async {
         final domainPackage = FakeDomainPackage(name: 'package_a');
-        final project = getProject(domainPackages: [domainPackage]);
+        final project = MockRapidProject(
+          appModule: MockAppModule(
+            domainDirectory: MockDomainDirectory(
+              domainPackages: [domainPackage],
+            ),
+          ),
+        );
         final commandRunner = getCommandRunner(project: project);
 
         await commandRunner.run(['domain', 'package_a', '--help']);

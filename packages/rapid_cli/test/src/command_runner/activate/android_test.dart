@@ -23,11 +23,11 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('activate android', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('activate android', () {
     test(
       'help',
       overridePrint((printLogs) async {

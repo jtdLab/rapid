@@ -71,7 +71,7 @@ class Rapid extends _Rapid
   }
 
   RapidProject? _project;
-  RapidTool? _tool;
+  final RapidTool? _tool;
 }
 
 abstract class _Rapid {

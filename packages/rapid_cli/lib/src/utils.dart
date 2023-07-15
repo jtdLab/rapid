@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:yaml/yaml.dart';
@@ -35,10 +34,6 @@ void replaceInFile(File file, String from, String replace) {
   final updatedContent = content.replaceAll(from, replace);
   file.writeAsStringSync(updatedContent);
 }
-
-// TODO only used once
-String pubspecYamlPathForDirectory(String directory) =>
-    p.join(directory, 'pubspec.yaml');
 
 int get terminalWidth {
   if (currentPlatform.environment.containsKey(envKeyRapidTerminalWidth)) {

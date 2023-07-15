@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:ansi_styles/ansi_styles.dart';
 import 'package:meta/meta.dart';
+import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/utils.dart';
 import 'package:yaml/yaml.dart';
 
@@ -46,6 +47,7 @@ class RapidProjectConfig {
     );
   }
 
+  // TODO rm?
   RapidProjectConfig.empty()
       : this(
           name: '______rapid______',
@@ -56,8 +58,7 @@ class RapidProjectConfig {
   static Future<RapidProjectConfig> fromProjectRoot(
     Directory projectRoot,
   ) async {
-    final pubspecYamlFile = File(pubspecYamlPathForDirectory(projectRoot.path));
-
+    final pubspecYamlFile = File(p.join(projectRoot.path, 'pubspec.yaml'));
     if (!pubspecYamlFile.existsSync()) {
       throw UnresolvedProject(
         multiLine([

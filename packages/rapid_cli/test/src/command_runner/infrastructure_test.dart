@@ -27,8 +27,8 @@ void main() {
       overridePrint(
         (printLogs) async {
           final infrastructurePackages = [
-            MockInfrastructurePackage(name: 'package_a'),
-            MockInfrastructurePackage(name: 'package_b'),
+            FakeInfrastructurePackage(name: 'package_a'),
+            FakeInfrastructurePackage(name: 'package_b'),
           ];
           final project =
               getProject(infrastructurePackages: infrastructurePackages);

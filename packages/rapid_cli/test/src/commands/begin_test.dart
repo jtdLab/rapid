@@ -6,15 +6,23 @@ import '../mocks.dart';
 import '../utils.dart';
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('begin', () {
     test('throws GroupAlreadyActiveException when group is active', () async {
       final commandGroup = MockCommandGroup();
       when(() => commandGroup.isActive).thenReturn(true);
       final tool = MockRapidTool();
       when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final rapid = getRapid(tool: tool);
+      final logger = MockRapidLogger();
+      final rapid = getRapid(tool: tool, logger: logger);
 
       expect(rapid.begin(), throwsA(isA<GroupAlreadyActiveException>()));
+      verifyNever(() => tool.activateCommandGroup());
+      verifyNever(() => logger.newLine());
+      verifyNever(() => logger.commandSuccess(any()));
     });
 
     test('completes', () async {
@@ -27,9 +35,11 @@ void main() {
 
       await rapid.begin();
 
-      verify(() => tool.activateCommandGroup()).called(1);
-      verify(() => logger.newLine()).called(1);
-      verify(() => logger.commandSuccess('Started Command Group!')).called(1);
+      verifyInOrder([
+        () => tool.activateCommandGroup(),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Started Command Group!')
+      ]);
     });
   });
 }

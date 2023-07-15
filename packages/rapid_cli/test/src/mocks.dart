@@ -1,5 +1,7 @@
+import 'dart:convert';
+
 import 'package:args/args.dart';
-import 'package:mason/mason.dart';
+import 'package:mason/mason.dart' hide Logger, Progress;
 import 'package:mocktail/mocktail.dart';
 import 'package:process/process.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
@@ -16,20 +18,51 @@ import 'package:rapid_cli/src/tool.dart';
 void registerFallbackValues() {
   registerFallbackValue(Platform.android);
   registerFallbackValue(FakeLanguage());
+  registerFallbackValue(FakeDartPackage());
 }
+
+class FakeDartPackage extends Fake implements DartPackage {
+  FakeDartPackage({
+    String? packageName,
+    String? path,
+    PubspecYamlFile? pubSpecFile,
+  }) {
+    this.packageName = packageName ?? 'some_dart_package';
+    this.path = path ?? 'path/to/${this.packageName}';
+    this.pubSpecFile =
+        pubSpecFile ?? MockPubspecYamlFile(); // TODO fake instead
+  }
+
+  @override
+  late final String packageName;
+
+  @override
+  late final String path;
+
+  @override
+  late final PubspecYamlFile pubSpecFile;
+}
+
+class MockDartPackage extends Mock implements DartPackage {}
 
 class MockDomainDirectory extends Mock implements DomainDirectory {}
 
-class MockDomainPackage extends Mock implements DomainPackage {
-  MockDomainPackage({String? name}) {
-    when(() => this.name).thenReturn(name ?? 'some_domain_package');
+class FakeDomainPackage extends Mock implements DomainPackage {
+  FakeDomainPackage({String? name}) {
+    this.name = name ?? 'some_domain_package';
   }
+
+  @override
+  late final String name;
 }
 
-class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
-  MockInfrastructurePackage({String? name}) {
-    when(() => this.name).thenReturn(name ?? 'some_infrastructure_package');
+class FakeInfrastructurePackage extends Mock implements InfrastructurePackage {
+  FakeInfrastructurePackage({String? name}) {
+    this.name = name ?? 'some_infrastructure_package';
   }
+
+  @override
+  late final String name;
 }
 
 class MockInfrastructureDirectory extends Mock
@@ -39,11 +72,14 @@ class MockPlatformDirectory extends Mock implements PlatformDirectory {}
 
 class MockFeaturesDirectory extends Mock implements PlatformFeaturesDirectory {}
 
-class MockPlatformFeaturePackage extends Mock
+class FakePlatformFeaturePackage extends Mock
     implements PlatformFeaturePackage {
-  MockPlatformFeaturePackage({String? name}) {
-    when(() => this.name).thenReturn(name ?? 'some_feature_package');
+  FakePlatformFeaturePackage({String? name}) {
+    this.name = name ?? 'some_feature_package';
   }
+
+  @override
+  late final String name;
 }
 
 class MockPlatformFeaturesDirectory extends Mock
@@ -81,6 +117,7 @@ MockPubspecYamlFile getPubspecYamlFile() {
 
 class MockRapid extends Mock implements Rapid {}
 
+// TODO move this to MockRapidProject constructor
 MockRapidProject getProject({
   String? name,
   String? path,
@@ -88,9 +125,11 @@ MockRapidProject getProject({
   List<InfrastructurePackage>? infrastructurePackages,
   List<PlatformFeaturePackage>? featurePackages,
 }) {
+  registerFallbackValues(); // TODO bad to call here
   final project = MockRapidProject();
   when(() => project.name).thenReturn(name ?? 'some_name');
   when(() => project.path).thenReturn(path ?? 'some/path');
+  when(() => project.dependentPackages(any())).thenReturn([]);
 
   final appModule = MockAppModule();
 
@@ -141,17 +180,39 @@ MockMasonGenerator getMasonGenerator() {
 
 class MockAppModule extends Mock implements AppModule {}
 
-class MockProcessManager extends Mock implements ProcessManager {}
+class MockProcessManager extends Mock implements ProcessManager {
+  MockProcessManager() {
+    when(
+      () => run(
+        any(),
+        workingDirectory: any(named: 'workingDirectory'),
+        runInShell: true,
+        stderrEncoding: utf8,
+        stdoutEncoding: utf8,
+      ),
+    ).thenAnswer(
+      (_) async => ProcessResult(0, 0, 'stdout', 'stderr'),
+    );
+  }
+}
 
-class MockRapidLogger extends Mock implements RapidLogger {}
+class MockRapidLogger extends Mock implements RapidLogger {
+  MockRapidLogger({Progress? progress}) {
+    when(() => this.progress(any())).thenReturn(progress ?? MockProgress());
+  }
+}
+
+class MockProgress extends Mock implements Progress {}
 
 class MockRapidTool extends Mock implements RapidTool {}
 
 class MockCommandGroup extends Mock implements CommandGroup {}
 
-// Fakes
+class MockUiModule extends Mock implements UiModule {}
 
-class FakeLogger extends Fake implements Logger {}
+class MockPlatformUiPackage extends Mock implements PlatformUiPackage {}
+
+// Fakes
 
 class FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}

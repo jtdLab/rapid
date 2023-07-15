@@ -5,32 +5,30 @@ import 'package:process/process.dart';
 import 'package:rapid_cli/src/platform.dart';
 import 'package:rapid_cli/src/process.dart';
 
+import 'mocks.dart';
+
 /// Overrides the current platform in [testBody] with [platform].
-FutureOr<void> Function() withMockPlatform(
+FutureOr<void> withMockPlatform(
   FutureOr<void> Function() testBody, {
   required Platform platform,
 }) {
-  return () async {
-    return runZoned(
-      testBody,
-      zoneValues: {
-        currentPlatformZoneKey: platform,
-      },
-    );
-  };
+  return runZoned(
+    testBody,
+    zoneValues: {
+      currentPlatformZoneKey: platform,
+    },
+  );
 }
 
 /// Overrides the current process manager in [testBody] with [manager].
-FutureOr<void> Function() withMockProcess(
+FutureOr<void> withMockProcessManager(
   FutureOr<void> Function() testBody, {
-  required ProcessManager manager,
+  ProcessManager? manager,
 }) {
-  return () async {
-    return runZoned(
-      testBody,
-      zoneValues: {
-        currentProcessManagerZoneKey: manager,
-      },
-    );
-  };
+  return runZoned(
+    testBody,
+    zoneValues: {
+      currentProcessManagerZoneKey: manager ?? MockProcessManager(),
+    },
+  );
 }

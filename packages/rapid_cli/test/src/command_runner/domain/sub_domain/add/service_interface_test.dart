@@ -24,7 +24,7 @@ void main() {
     test(
       'help',
       overridePrint((printLogs) async {
-        final domainPackage = MockDomainPackage(name: 'package_a');
+        final domainPackage = FakeDomainPackage(name: 'package_a');
         final project = getProject(domainPackages: [domainPackage]);
         final commandRunner = getCommandRunner(project: project);
 

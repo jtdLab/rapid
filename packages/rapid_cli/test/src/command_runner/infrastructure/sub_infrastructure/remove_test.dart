@@ -23,7 +23,7 @@ void main() {
       'help',
       overridePrint((printLogs) async {
         final infrastructurePackage =
-            MockInfrastructurePackage(name: 'package_a');
+            FakeInfrastructurePackage(name: 'package_a');
         final project =
             getProject(infrastructurePackages: [infrastructurePackage]);
         final commandRunner = getCommandRunner(project: project);

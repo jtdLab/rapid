@@ -6,7 +6,7 @@ import '../mocks.dart';
 import '../utils.dart';
 
 List<String> expectedUsage(
-  List<MockPlatformFeaturePackage> featurePackages, {
+  List<FakePlatformFeaturePackage> featurePackages, {
   required Platform platform,
 }) {
   return [
@@ -33,8 +33,8 @@ void main() {
         overridePrint(
           (printLogs) async {
             final featurePackages = [
-              MockPlatformFeaturePackage(name: 'package_a'),
-              MockPlatformFeaturePackage(name: 'package_b'),
+              FakePlatformFeaturePackage(name: 'package_a'),
+              FakePlatformFeaturePackage(name: 'package_b'),
             ];
             final project = getProject(featurePackages: featurePackages);
             final commandRunner = getCommandRunner(project: project);

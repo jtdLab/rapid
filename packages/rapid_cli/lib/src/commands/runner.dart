@@ -80,27 +80,6 @@ abstract class _Rapid {
   RapidProject get project;
   set project(RapidProject project);
 
-  Future<void> _bootstrap({required List<DartPackage> packages}) async {
-    if (tool.loadGroup().isActive) {
-      tool.markAsNeedBootstrap(packages: packages);
-    } else {
-      await melosBootstrap(scope: packages, project: project);
-    }
-  }
-
-  Future<void> _codeGen({required DartPackage package}) async {
-    if (tool.loadGroup().isActive) {
-      tool.markAsNeedCodeGen(package: package);
-    } else {
-      // need "flutter pub get" because else "flutter pub run build_runner build"
-      // fails sometimes
-      await flutterPubGet(package: package); // TODO needed ?
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-        package: package,
-      );
-    }
-  }
-
   Future<T> task<T>(
     String description,
     FutureOr<T> Function() task,
@@ -202,9 +181,10 @@ abstract class _Rapid {
     required List<DartPackage> scope,
   }) async {
     if (scope.isEmpty) return;
+
     await task(
       'Running "melos bootstrap --scope="${scope.map((e) => e.packageName).join(' ')}""',
-      () async => _bootstrap(packages: scope),
+      () async => melosBootstrap(scope: scope, project: project),
     );
   }
 
@@ -215,17 +195,32 @@ abstract class _Rapid {
 
   Future<void> codeGenTask({required DartPackage package}) async => task(
         'Running code generation in ${package.packageName}',
-        () async => _codeGen(package: package),
+        () async {
+          // need "flutter pub get" because else "flutter pub run build_runner build"
+          // fails sometimes
+          await flutterPubGet(package: package); // TODO needed ?
+          await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+            package: package,
+          );
+        },
       );
 
   Future<void> codeGenTaskGroup({required List<DartPackage> packages}) async {
     if (packages.isEmpty) return;
+
     await taskGroup(
       tasks: packages
           .map(
             (package) => (
               'Running code generation in ${package.packageName}',
-              () async => _codeGen(package: package),
+              () async {
+                // need "flutter pub get" because else "flutter pub run build_runner build"
+                // fails sometimes
+                await flutterPubGet(package: package); // TODO needed ?
+                await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                  package: package,
+                );
+              }
             ),
           )
           .toList(),
@@ -237,4 +232,30 @@ abstract class _Rapid {
         'Running "flutter gen-l10n" in ${package.packageName}',
         () async => flutterGenl10n(package: package),
       );
+
+  Future<void> _bootstrap({required List<DartPackage> packages}) async {
+    if (tool.loadGroup().isActive) {
+      tool.markAsNeedBootstrap(packages: packages);
+    } else {
+      await melosBootstrap(scope: packages, project: project);
+    }
+  }
+
+  Future<void> _codeGen({required DartPackage package}) async {
+    if (tool.loadGroup().isActive) {
+      tool.markAsNeedCodeGen(package: package);
+    } else {
+      await codeGenTask(package: package);
+    }
+  }
+
+  Future<void> _codeGenGroup({required List<DartPackage> packages}) async {
+    if (tool.loadGroup().isActive) {
+      for (final package in packages) {
+        tool.markAsNeedCodeGen(package: package);
+      }
+    } else {
+      await codeGenTaskGroup(packages: packages);
+    }
+  }
 }

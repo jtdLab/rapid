@@ -35,7 +35,7 @@ void main() {
       test(
         'help',
         overridePrint((printLogs) async {
-          final featurePackage = MockPlatformFeaturePackage(name: 'package_a');
+          final featurePackage = FakePlatformFeaturePackage(name: 'package_a');
           final project = getProject(featurePackages: [featurePackage]);
           final commandRunner = getCommandRunner(project: project);
 

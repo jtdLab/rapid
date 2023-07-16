@@ -7,6 +7,8 @@ import 'package:rapid_cli/src/process.dart';
 
 import 'mocks.dart';
 
+// TODO needed?
+
 /// Overrides the current platform in [testBody] with [platform].
 FutureOr<void> withMockPlatform(
   FutureOr<void> Function() testBody, {
@@ -25,10 +27,12 @@ FutureOr<void> withMockProcessManager(
   FutureOr<void> Function() testBody, {
   ProcessManager? manager,
 }) {
+  manager ??= MockProcessManager();
+
   return runZoned(
     testBody,
     zoneValues: {
-      currentProcessManagerZoneKey: manager ?? MockProcessManager(),
+      currentProcessManagerZoneKey: manager,
     },
   );
 }

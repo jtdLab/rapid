@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/io.dart';
 import 'package:rapid_cli/src/mason.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 
 import 'mocks.dart';
 
@@ -102,6 +103,41 @@ List<dynamic Function()> flutterPubRunBuildRunnerBuildTaskGroup<T>(
   return invocations;
 }
 
+List<dynamic Function()> flutterPubGetTaskGroup<T>(
+  MockProcessManager manager, {
+  required List<DartPackage> packages,
+}) {
+  final invocations = <dynamic Function()>[];
+  for (final package in packages) {
+    invocations.add(
+      () => manager.run(
+        ['flutter', 'pub', 'get'],
+        workingDirectory: package.path,
+        runInShell: true,
+        stderrEncoding: utf8,
+        stdoutEncoding: utf8,
+      ),
+    );
+  }
+
+  return invocations;
+}
+
+List<dynamic Function()> flutterGenl10nTask<T>(
+  MockProcessManager manager, {
+  required DartPackage package,
+}) {
+  return [
+    () => manager.run(
+          ['flutter', 'gen-l10n'],
+          workingDirectory: package.path,
+          runInShell: true,
+          stderrEncoding: utf8,
+          stdoutEncoding: utf8,
+        ),
+  ];
+}
+
 List<dynamic Function()> dartFormatFixTask<T>(MockProcessManager manager) {
   return [
     () => manager.run(
@@ -119,6 +155,7 @@ List<dynamic Function()> flutterPubAddTask<T>(
   required List<String> dependenciesToAdd,
   required DartPackage package,
 }) {
+  // TODO move path down
   final path = package.path;
   return [
     () => manager.run(
@@ -183,6 +220,30 @@ List<dynamic Function()> generateFromBundle<T>(
     () => generator.generate(
           DirectoryGeneratorTarget(target),
           vars: vars,
+        ),
+  ];
+}
+
+List<dynamic Function()> flutterConfigEnablePlatform<T>(
+  MockProcessManager manager, {
+  required Platform platform,
+}) {
+  return [
+    () => manager.run(
+          [
+            'flutter',
+            'config',
+            if (platform == Platform.android) '--enable-android',
+            if (platform == Platform.ios) '--enable-ios',
+            if (platform == Platform.linux) '--enable-linux-desktop',
+            if (platform == Platform.macos) '--enable-macos-desktop',
+            if (platform == Platform.web) '--enable-web',
+            if (platform == Platform.windows) '--enable-windows-desktop',
+          ],
+          workingDirectory: any(named: 'workingDirectory'),
+          runInShell: true,
+          stderrEncoding: utf8,
+          stdoutEncoding: utf8,
         ),
   ];
 }

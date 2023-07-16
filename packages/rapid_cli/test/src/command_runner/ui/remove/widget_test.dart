@@ -3,6 +3,7 @@ import 'package:rapid_cli/src/command_runner/ui/remove/widget.dart';
 import 'package:test/test.dart';
 
 import '../../../common.dart';
+import '../../../matchers.dart';
 import '../../../mocks.dart';
 import '../../../utils.dart';
 
@@ -35,6 +36,72 @@ void main() {
         expect(printLogs, equals(expectedUsage));
       }),
     );
+
+    group('throws UsageException', () {
+      test(
+        'when name is missing',
+        overridePrint((printLogs) async {
+          final domainPackage = FakeDomainPackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              domainDirectory: MockDomainDirectory(
+                domainPackages: [domainPackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run(['ui', 'remove', 'widget']),
+            throwsUsageException(
+              message: 'No option specified for the name.',
+            ),
+          );
+        }),
+      );
+
+      test(
+        'when multiple names are provided',
+        overridePrint((printLogs) async {
+          final domainPackage = FakeDomainPackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              domainDirectory: MockDomainDirectory(
+                domainPackages: [domainPackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run(['ui', 'remove', 'widget', 'Foo', 'Bar']),
+            throwsUsageException(message: 'Multiple names specified.'),
+          );
+        }),
+      );
+
+      test(
+        'when name is not a valid dart class name',
+        overridePrint((printLogs) async {
+          final domainPackage = FakeDomainPackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              domainDirectory: MockDomainDirectory(
+                domainPackages: [domainPackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run(['ui', 'remove', 'widget', 'foo']),
+            throwsUsageException(
+              message: '"foo" is not a valid dart class name.',
+            ),
+          );
+        }),
+      );
+    });
 
     test('completes', () async {
       final rapid = MockRapid();

@@ -4,6 +4,7 @@ import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../../../../common.dart';
+import '../../../../matchers.dart';
 import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
@@ -61,6 +62,91 @@ void main() {
           );
         }),
       );
+
+      group('throws UsageException', () {
+        test(
+          'when name is missing',
+          overridePrint((printLogs) async {
+            final featurePackage =
+                FakePlatformFeaturePackage(name: 'package_a');
+            final project = MockRapidProject(
+              appModule: MockAppModule(
+                platformDirectory: ({required Platform platform}) =>
+                    MockPlatformDirectory(
+                  featuresDirectory: MockPlatformFeaturesDirectory(
+                    featurePackages: [featurePackage],
+                  ),
+                ),
+              ),
+            );
+            final commandRunner = getCommandRunner(project: project);
+
+            expect(
+              () => commandRunner.run([
+                platform.name,
+                'package_a',
+                'add',
+                'bloc',
+              ]),
+              throwsUsageException(
+                message: 'No option specified for the name.',
+              ),
+            );
+          }),
+        );
+
+        test(
+          'when multiple names are provided',
+          overridePrint((printLogs) async {
+            final featurePackage =
+                FakePlatformFeaturePackage(name: 'package_a');
+            final project = MockRapidProject(
+              appModule: MockAppModule(
+                platformDirectory: ({required Platform platform}) =>
+                    MockPlatformDirectory(
+                  featuresDirectory: MockPlatformFeaturesDirectory(
+                    featurePackages: [featurePackage],
+                  ),
+                ),
+              ),
+            );
+            final commandRunner = getCommandRunner(project: project);
+
+            expect(
+              () => commandRunner.run(
+                  [platform.name, 'package_a', 'add', 'bloc', 'Foo', 'Bar']),
+              throwsUsageException(message: 'Multiple names specified.'),
+            );
+          }),
+        );
+
+        test(
+          'when name is not a valid dart class name',
+          overridePrint((printLogs) async {
+            final featurePackage =
+                FakePlatformFeaturePackage(name: 'package_a');
+            final project = MockRapidProject(
+              appModule: MockAppModule(
+                platformDirectory: ({required Platform platform}) =>
+                    MockPlatformDirectory(
+                  featuresDirectory: MockPlatformFeaturesDirectory(
+                    featurePackages: [featurePackage],
+                  ),
+                ),
+              ),
+            );
+            final commandRunner = getCommandRunner(project: project);
+
+            expect(
+              () => commandRunner
+                  .run([platform.name, 'package_a', 'add', 'bloc', 'foo']),
+              throwsUsageException(
+                message: '"foo" is not a valid dart class name.',
+              ),
+            );
+          }),
+        );
+      });
 
       test('completes', () async {
         final rapid = MockRapid();

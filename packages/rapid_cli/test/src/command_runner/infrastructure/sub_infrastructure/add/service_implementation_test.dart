@@ -3,6 +3,7 @@ import 'package:rapid_cli/src/command_runner/infrastructure/sub_infrastructure/a
 import 'package:test/test.dart';
 
 import '../../../../common.dart';
+import '../../../../matchers.dart';
 import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
@@ -59,6 +60,91 @@ void main() {
         expect(printLogs, equals(expectedUsage('package_a')));
       }),
     );
+
+    group('throws UsageException', () {
+      test(
+        'when name is missing',
+        overridePrint((printLogs) async {
+          final infrastructurePackage =
+              FakeInfrastructurePackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              infrastructureDirectory: MockInfrastructureDirectory(
+                infrastructurePackages: [infrastructurePackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run([
+              'infrastructure',
+              'package_a',
+              'add',
+              'service_implementation',
+            ]),
+            throwsUsageException(message: 'No option specified for the name.'),
+          );
+        }),
+      );
+
+      test(
+        'when multiple names are provided',
+        overridePrint((printLogs) async {
+          final infrastructurePackage =
+              FakeInfrastructurePackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              infrastructureDirectory: MockInfrastructureDirectory(
+                infrastructurePackages: [infrastructurePackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run([
+              'infrastructure',
+              'package_a',
+              'add',
+              'service_implementation',
+              'Foo',
+              'Bar'
+            ]),
+            throwsUsageException(message: 'Multiple names specified.'),
+          );
+        }),
+      );
+
+      test(
+        'when name is not a valid dart class name',
+        overridePrint((printLogs) async {
+          final infrastructurePackage =
+              FakeInfrastructurePackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              infrastructureDirectory: MockInfrastructureDirectory(
+                infrastructurePackages: [infrastructurePackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run([
+              'infrastructure',
+              'package_a',
+              'add',
+              'service_implementation',
+              'foo'
+            ]),
+            throwsUsageException(
+              message: '"foo" is not a valid dart class name.',
+            ),
+          );
+        }),
+      );
+    });
 
     test('completes', () async {
       final rapid = MockRapid();

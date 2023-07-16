@@ -85,7 +85,7 @@ void main() {
               () => commandRunner
                   .run([platform.name, 'add', 'feature', 'page', '+foo+']),
               throwsUsageException(
-                message: '"+foo+" is not a valid package name.\n\n'
+                message: '"+foo+" is not a valid dart package name.\n\n'
                     'See https://dart.dev/tools/pub/pubspec#name for more information.',
               ),
             );

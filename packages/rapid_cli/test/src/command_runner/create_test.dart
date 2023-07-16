@@ -87,7 +87,7 @@ void main() {
             expect(
               () => commandRunner.run(['create', projectName]),
               throwsUsageException(
-                message: '"$projectName" is not a valid package name.\n\n'
+                message: '"$projectName" is not a valid dart package name.\n\n'
                     'See https://dart.dev/tools/pub/pubspec#name for more information.',
               ),
             );
@@ -103,7 +103,7 @@ void main() {
             expect(
               () => commandRunner.run(['create', projectName]),
               throwsUsageException(
-                message: '"$projectName" is not a valid package name.\n\n'
+                message: '"$projectName" is not a valid dart package name.\n\n'
                     'See https://dart.dev/tools/pub/pubspec#name for more information.',
               ),
             );
@@ -119,7 +119,7 @@ void main() {
             expect(
               () => commandRunner.run(['create', projectName]),
               throwsUsageException(
-                message: '"$projectName" is not a valid package name.\n\n'
+                message: '"$projectName" is not a valid dart package name.\n\n'
                     'See https://dart.dev/tools/pub/pubspec#name for more information.',
               ),
             );

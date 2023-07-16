@@ -134,7 +134,7 @@ class CreateCommand extends RapidLeafCommand
     final isValid = isValidPackageName(name);
     if (!isValid) {
       throw UsageException(
-        '"$name" is not a valid package name.\n\n'
+        '"$name" is not a valid dart package name.\n\n'
         'See https://dart.dev/tools/pub/pubspec#name for more information.',
         usage,
       );

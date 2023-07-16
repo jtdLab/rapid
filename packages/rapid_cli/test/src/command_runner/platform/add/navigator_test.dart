@@ -4,6 +4,7 @@ import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../../../common.dart';
+import '../../../matchers.dart';
 import '../../../mocks.dart';
 import '../../../utils.dart';
 
@@ -44,6 +45,38 @@ void main() {
           expect(printLogs, equals(expectedUsage(platform)));
         }),
       );
+
+      group('throws UsageException', () {
+        test(
+          'when feature is missing',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner.run([platform.name, 'add', 'navigator']),
+              throwsUsageException(
+                message: 'No option specified for the feature.',
+              ),
+            );
+          }),
+        );
+
+        test(
+          'when feature is not a valid dart package name',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner.run(
+                  [platform.name, 'add', 'navigator', '--feature', '+foo+']),
+              throwsUsageException(
+                message: '"+foo+" is not a valid dart package name.\n\n'
+                    'See https://dart.dev/tools/pub/pubspec#name for more information.',
+              ),
+            );
+          }),
+        );
+      });
 
       test('completes', () async {
         final rapid = MockRapid();

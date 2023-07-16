@@ -4,8 +4,6 @@ import 'package:rapid_cli/src/project/platform.dart';
 import '../../base.dart';
 import '../../util/feature_option.dart';
 
-// TODO feature as a param sucks
-
 class PlatformAddNavigatorCommand extends RapidLeafCommand with FeatureGetter {
   PlatformAddNavigatorCommand(this.platform, super.project) {
     argParser

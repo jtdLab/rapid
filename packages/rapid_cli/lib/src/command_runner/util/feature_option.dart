@@ -39,7 +39,8 @@ mixin FeatureGetter on RapidLeafCommand {
     final isValid = isValidPackageName(feature);
     if (!isValid) {
       throw UsageException(
-        '"$feature" is not a valid dart package name.',
+        '"$feature" is not a valid dart package name.\n\n'
+        'See https://dart.dev/tools/pub/pubspec#name for more information.',
         usage,
       );
     }

@@ -222,7 +222,9 @@ abstract class _Rapid {
         },
       );
 
-  Future<void> codeGenTaskGroup({required List<DartPackage> packages}) async {
+  Future<void> flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup({
+    required List<DartPackage> packages,
+  }) async {
     if (packages.isEmpty) return;
 
     await taskGroup(
@@ -272,7 +274,8 @@ abstract class _Rapid {
         tool.markAsNeedCodeGen(package: package);
       }
     } else {
-      await codeGenTaskGroup(packages: packages);
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+          packages: packages);
     }
   }
 }

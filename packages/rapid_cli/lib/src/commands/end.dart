@@ -14,7 +14,9 @@ mixin _EndMixin on _Rapid {
     }
 
     if (group.packagesToCodeGen.isNotEmpty) {
-      await codeGenTaskGroup(packages: group.packagesToCodeGen);
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+        packages: group.packagesToCodeGen,
+      );
     }
 
     logger

@@ -39,7 +39,7 @@ mixin _PlatformMixin on _Rapid {
 
     await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
-    await codeGenTaskGroup(
+    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
       packages: [rootPackage, if (navigator) featurePackage],
     );
 
@@ -111,7 +111,7 @@ mixin _PlatformMixin on _Rapid {
 
     await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
-    await codeGenTaskGroup(
+    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
       packages: [rootPackage, if (navigator) featurePackage],
     );
 
@@ -162,7 +162,7 @@ mixin _PlatformMixin on _Rapid {
 
     await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
-    await codeGenTaskGroup(
+    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
       packages: [rootPackage, if (navigator) featurePackage],
     );
 

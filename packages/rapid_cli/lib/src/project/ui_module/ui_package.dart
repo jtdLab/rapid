@@ -29,7 +29,8 @@ class UiPackage extends DartPackage {
 
   final String projectName;
 
-  DartFile get barrelFile => DartFile(p.join(path, 'lib', '$packageName.dart'));
+  DartFile get barrelFile =>
+      DartFile(p.join(path, 'lib', '${projectName}_ui.dart'));
 
   DartFile get themeExtensionsFile =>
       DartFile(p.join(path, 'lib', 'src', 'theme_extensions.dart'));

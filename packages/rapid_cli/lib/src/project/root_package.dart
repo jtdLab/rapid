@@ -10,7 +10,7 @@ class RootPackage extends DartPackage {
     required String projectName,
     required String projectPath,
   }) {
-    final path = p.join(projectPath);
+    final path = projectPath;
 
     return RootPackage(
       projectName: projectName,

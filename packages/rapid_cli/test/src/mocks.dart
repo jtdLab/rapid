@@ -72,9 +72,12 @@ class MockPubspecYamlFile extends Mock implements PubspecYamlFile {
 }
 
 class MockMasonGenerator extends Mock implements MasonGenerator {
-  MockMasonGenerator() {
+  MockMasonGenerator({GeneratorHooks? hooks}) {
+    hooks ??= MockGeneratorHooks();
+
     when(() => id).thenReturn('some id');
     when(() => description).thenReturn('some description');
+    when(() => this.hooks).thenReturn(hooks);
     when(
       () => generate(
         any(),
@@ -87,6 +90,23 @@ class MockMasonGenerator extends Mock implements MasonGenerator {
         const GeneratedFile.created(path: ''),
       ),
     );
+  }
+}
+
+class MockGeneratorHooks extends Mock implements GeneratorHooks {
+  MockGeneratorHooks() {
+    when(
+      () => preGen(
+        vars: any(named: 'vars'),
+        onVarsChanged: any(named: 'onVarsChanged'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => postGen(
+        vars: any(named: 'vars'),
+        workingDirectory: any(named: 'workingDirectory'),
+      ),
+    ).thenAnswer((_) async {});
   }
 }
 
@@ -768,16 +788,21 @@ abstract class _MasonGeneratorBuilder {
   Future<MasonGenerator> call(MasonBundle bundle);
 }
 
-class MockMasonGeneratorBuilder extends Mock
-    implements _MasonGeneratorBuilder {}
+class MockMasonGeneratorBuilder extends Mock implements _MasonGeneratorBuilder {
+  MockMasonGeneratorBuilder({MasonGenerator? generator}) {
+    generator ??= MockMasonGenerator();
+
+    when(() => call(any())).thenAnswer((_) async => generator!);
+  }
+}
 
 class MockRapidLogger extends Mock implements RapidLogger {
   MockRapidLogger({
     Progress? progress,
     ProgressGroup? progressGroup,
   }) {
-    progress ??= progress ?? MockProgress();
-    progressGroup ??= progressGroup ?? MockProgressGroup();
+    progress ??= MockProgress();
+    progressGroup ??= MockProgressGroup();
 
     when(() => this.progress(any())).thenReturn(progress);
     when(() => this.progressGroup(any())).thenReturn(progressGroup);
@@ -788,7 +813,7 @@ class MockProgress extends Mock implements Progress {}
 
 class MockProgressGroup extends Mock implements ProgressGroup {
   MockProgressGroup({GroupableProgress? progress}) {
-    progress ??= progress ?? MockGroupableProgress();
+    progress ??= MockGroupableProgress();
 
     when(() => this.progress(any())).thenReturn(progress);
   }

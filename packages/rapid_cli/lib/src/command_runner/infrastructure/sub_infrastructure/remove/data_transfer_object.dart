@@ -1,5 +1,4 @@
 import '../../../base.dart';
-import '../../../util/dir_option.dart';
 import '../../../util/entity_option.dart';
 
 // TODO maybe introduce super class for dto and service implementation remove
@@ -8,7 +7,7 @@ import '../../../util/entity_option.dart';
 /// `rapid infrastructure sub_infrastructure remove data_transfer_object` command removes data transfer object from the infrastructure part of an existing Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
-    extends RapidLeafCommand with EntityGetter, DirGetter {
+    extends RapidLeafCommand with EntityGetter {
   /// {@macro infrastructure_sub_infrastructure_remove_data_transfer_object_command}
   InfrastructureSubInfrastructureRemoveDataTransferObjectCommand(
     this.subInfrastructureName,
@@ -16,10 +15,7 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
   ) {
     argParser
       ..addSeparator('')
-      ..addEntityOption()
-      ..addDirOption(
-        help: 'The directory relative to <infrastructure_package>/lib/ .',
-      );
+      ..addEntityOption();
   }
 
   final String subInfrastructureName;
@@ -44,7 +40,6 @@ class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
         ? null
         : this.subInfrastructureName;
     final entityName = super.entity;
-    // final dir = super.dir; // TODO rm
 
     return rapid.infrastructureSubInfrastructureRemoveDataTransferObject(
       subInfrastructureName: subInfrastructureName,

@@ -3,21 +3,14 @@ import 'package:rapid_cli/src/project/platform.dart';
 
 import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
-import '../../../util/dir_option.dart';
 
 class PlatformFeatureRemoveCubitCommand extends RapidLeafCommand
-    with ClassNameGetter, DirGetter {
+    with ClassNameGetter {
   PlatformFeatureRemoveCubitCommand(
     this.platform,
     this.featureName,
     super.project,
-  ) {
-    argParser
-      ..addSeparator('')
-      ..addDirOption(
-        help: 'The directory relative to <feature_package>/lib/src .',
-      );
-  }
+  );
 
   final Platform platform;
   final String featureName;
@@ -37,13 +30,11 @@ class PlatformFeatureRemoveCubitCommand extends RapidLeafCommand
   Future<void> run() {
     final name = super.className;
     final featureName = this.featureName;
-    final dir = super.dir;
 
     return rapid.platformFeatureRemoveCubit(
       platform,
       name: name,
       featureName: featureName,
-      dir: dir,
     );
   }
 }

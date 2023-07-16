@@ -13,10 +13,6 @@ List<String> expectedUsage(String subDomainPackage) => [
           'Usage: rapid domain $subDomainPackage remove service_interface <name> [arguments]\n'
           '-h, --help    Print this usage information.\n'
           '\n'
-          '\n'
-          '-d, --dir     The directory relative to <domain_package>/lib/ .\n'
-          '              (defaults to ".")\n'
-          '\n'
           'Run "rapid help" to see global options.'
     ];
 

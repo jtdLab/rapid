@@ -416,7 +416,6 @@ mixin _PlatformMixin on _Rapid {
     Platform platform, {
     required String name,
     required String featureName,
-    required String dir,
   }) async {
     if (!project.platformIsActivated(platform)) {
       throw PlatformNotActivatedException._(platform);
@@ -447,7 +446,7 @@ mixin _PlatformMixin on _Rapid {
       // TODO delete application dir if empty
 
       applicationBarrelFile.removeExport(
-        p.normalize(p.join(dir, '${name.snakeCase}_bloc.dart')),
+        p.normalize(p.join('${name.snakeCase}_bloc.dart')), // TODO rm?
       );
       if (!applicationBarrelFile.containsStatements()) {
         applicationBarrelFile.deleteSync(recursive: true);
@@ -469,7 +468,6 @@ mixin _PlatformMixin on _Rapid {
     Platform platform, {
     required String name,
     required String featureName,
-    required String dir,
   }) async {
     if (!project.platformIsActivated(platform)) {
       throw PlatformNotActivatedException._(platform);
@@ -498,7 +496,7 @@ mixin _PlatformMixin on _Rapid {
 
       final applicationBarrelFile = featurePackage.applicationBarrelFile;
       applicationBarrelFile.removeExport(
-        p.normalize(p.join(dir, '${name.snakeCase}_cubit.dart')),
+        p.normalize(p.join('${name.snakeCase}_cubit.dart')), // TODO why join?
       );
       if (!applicationBarrelFile.containsStatements()) {
         applicationBarrelFile.deleteSync(recursive: true);

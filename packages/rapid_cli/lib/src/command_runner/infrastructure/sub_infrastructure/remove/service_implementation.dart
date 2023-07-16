@@ -1,13 +1,12 @@
 import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
-import '../../../util/dir_option.dart';
 import '../../../util/service_option.dart';
 
 /// {@template infrastructure_sub_infrastructure_remove_service_implementation_command}
 /// `rapid infrastructure sub_infrastructure remove service_implementation` command removes service implementation from the infrastructure part of an existing Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
-    extends RapidLeafCommand with ClassNameGetter, ServiceGetter, DirGetter {
+    extends RapidLeafCommand with ClassNameGetter, ServiceGetter {
   /// {@macro infrastructure_sub_infrastructure_remove_service_implementation_command}
   InfrastructureSubInfrastructureRemoveServiceImplementationCommand(
     this.subInfrastructureName,
@@ -15,10 +14,7 @@ class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
   ) {
     argParser
       ..addSeparator('')
-      ..addServiceOption()
-      ..addDirOption(
-        help: 'The directory relative to <infrastructure_package>/lib/ .',
-      );
+      ..addServiceOption();
   }
 
   final String subInfrastructureName;
@@ -49,7 +45,6 @@ class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
       name: name,
       subInfrastructureName: subInfrastructureName,
       serviceInterfaceName: serviceName, // TODO rename
-      // final dir = super.dir; // TODO rm
     );
   }
 }

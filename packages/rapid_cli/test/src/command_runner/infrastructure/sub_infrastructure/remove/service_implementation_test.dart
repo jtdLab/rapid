@@ -15,8 +15,6 @@ List<String> expectedUsage(String subInfrastructurePackage) => [
           '\n'
           '\n'
           '-s, --service    The name of the service interface the service implementation is related to.\n'
-          '-d, --dir        The directory relative to <infrastructure_package>/lib/ .\n'
-          '                 (defaults to ".")\n'
           '\n'
           'Run "rapid help" to see global options.'
     ];

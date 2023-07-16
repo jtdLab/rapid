@@ -14,8 +14,6 @@ List<String> expectedUsage(String subInfrastructurePackage) => [
           '\n'
           '\n'
           '-e, --entity    The name of the entity the data transfer object is related to.\n'
-          '-d, --dir       The directory relative to <infrastructure_package>/lib/ .\n'
-          '                (defaults to ".")\n'
           '\n'
           'Run "rapid help" to see global options.'
     ];

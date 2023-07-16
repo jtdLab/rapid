@@ -18,10 +18,6 @@ List<String> expectedUsage(
         'Usage: rapid ${platform.name} $featurePackage remove cubit <name> [arguments]\n'
         '-h, --help    Print this usage information.\n'
         '\n'
-        '\n'
-        '-d, --dir     The directory relative to <feature_package>/lib/src .\n'
-        '              (defaults to ".")\n'
-        '\n'
         'Run "rapid help" to see global options.'
   ];
 }
@@ -163,11 +159,9 @@ void main() {
             any(),
             name: any(named: 'name'),
             featureName: any(named: 'featureName'),
-            dir: any(named: 'dir'),
           ),
         ).thenAnswer((_) async {});
         final argResults = MockArgResults();
-        when(() => argResults['dir']).thenReturn('some');
         when(() => argResults.rest).thenReturn(['Foo']);
         final command =
             PlatformFeatureRemoveCubitCommand(platform, 'package_a', null)
@@ -181,7 +175,6 @@ void main() {
             platform,
             name: 'Foo',
             featureName: 'package_a',
-            dir: 'some',
           ),
         ).called(1);
       });

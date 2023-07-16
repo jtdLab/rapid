@@ -107,7 +107,6 @@ FutureOr<void> rapidEntryPoint(
       if (!arguments.willRunCreate) {
         final melos = await runCommand(['melos', '--version']);
         if (melos.exitCode != 0) {
-          // TODO did u corrupt your rapid project root yaml?
           logger.err('Melos not installed.');
           exitCode = 1;
           return;

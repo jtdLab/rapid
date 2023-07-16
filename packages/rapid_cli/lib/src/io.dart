@@ -370,13 +370,17 @@ class YamlFile extends File {
 
   T read<T>(String key) => loadYaml(readAsStringSync())[key] as T;
 
+  /// Sets the field at [path] to [value].
+  ///
+  /// Hint: The [path] must exists. This method can not create not existing paths.
   void set<T>(
-    Iterable<String> path,
+    List<String> path,
     T? value, {
     bool blankIfValueNull = false,
   }) {
     final editor = YamlEditor(readAsStringSync());
     editor.update(path, value);
+
     var output = editor.toString();
     if (value == null && blankIfValueNull) {
       final replacement = editor.edits.first.replacement;
@@ -389,11 +393,9 @@ class YamlFile extends File {
 }
 
 class PubspecYamlFile extends YamlFile {
-  PubspecYamlFile(super.path) : assert(path.endsWith('pubspec.yaml')) {
-    _pubSpec = PubSpec.fromYamlString(readAsStringSync());
-  }
+  PubspecYamlFile(super.path) : assert(path.endsWith('pubspec.yaml'));
 
-  late final PubSpec _pubSpec;
+  PubSpec get _pubSpec => PubSpec.fromYamlString(readAsStringSync());
 
   String get name => assertNotNull(_pubSpec.name);
 
@@ -425,14 +427,16 @@ class PubspecYamlFile extends YamlFile {
 
   void removeDependency({
     required String name,
-    bool dev = false,
   }) {
     final editor = YamlEditor(readAsStringSync());
-    if (dev) {
+
+    try {
       editor.remove(['dev_dependencies', name]);
-    } else {
+    } catch (_) {}
+
+    try {
       editor.remove(['dependencies', name]);
-    }
+    } catch (_) {}
 
     writeAsStringSync(editor.toString());
   }
@@ -461,7 +465,8 @@ class DartFile extends File {
       // start of old imports
       contents.indexOf(_importRegExp),
       // end of old imports
-      contents.indexOf('\n', contents.lastIndexOf(_importRegExp)),
+      // TODO if code is not formatted this might fail
+      contents.indexOf('\n', contents.lastIndexOf(_importRegExp)) + 1,
       // add empty line after last dart and package import
       updatedImports
           .expand(
@@ -506,8 +511,9 @@ class DartFile extends File {
     final output = contents.replaceRange(
       // start of old exports
       startOldImportsIndex,
+      // TODO if code is not formatted this might fail
       // end of old exports
-      contents.indexOf('\n', contents.lastIndexOf(_exportRegExp)),
+      contents.indexOf('\n', contents.lastIndexOf(_exportRegExp)) + 1,
       // add empty line after last dart and package export
       updatedExports
           .expand(
@@ -527,25 +533,28 @@ class DartFile extends File {
 
   /// Returns `true` when this contains any dart statemens.
   bool containsStatements() {
-    final lines = readAsLinesSync();
-    lines.removeWhere(
-      (e) =>
-          e.trim().startsWith('//') ||
-          e.trim().startsWith('/*') ||
-          e.trim().startsWith('*/') ||
-          e.trim().isEmpty,
-    );
+    final content = readAsStringSync();
+
+    final lines = content
+        // remove multi line comments
+        .replaceAll(RegExp(r'\/\*(.|[\r\n])*?\*\/'), '')
+        .split('\n')
+        // remove single line comments
+        .where((e) => !e.trim().startsWith('//'))
+        // remove empty lines
+        .where((e) => e.trim().isNotEmpty);
 
     return lines.isNotEmpty;
   }
 
-  List<String> readImports() {
+  Set<String> readImports() {
     final contents = readAsStringSync();
 
+    // TODO this might fail if the file is not formatted
     final regExp =
         RegExp('import \'([a-z0-9_:./]+)\'( as [a-z]+)?;' r'[\s]{1}');
     final matches = regExp.allMatches(contents);
-    final output = <String>[];
+    final output = <String>{};
     for (final match in matches) {
       output.add(match.group(1)!);
     }
@@ -674,6 +683,7 @@ class DartFile extends File {
   void removeImport(String import) {
     final contents = readAsStringSync();
 
+    // TODO this fails if the file is not formatted
     final regExp = RegExp(
       r"import[\s]+\'" + import + r"\'([\s]+as[\s]+[a-z]+)?;" + r"[\s]{1}",
     );
@@ -681,7 +691,7 @@ class DartFile extends File {
     if (match == null) {
       return;
     }
-    final output = contents.replaceRange(match.start, match.end, '');
+    final output = contents.replaceRange(match.start, match.end + 1, '');
 
     writeAsStringSync(output);
   }
@@ -690,10 +700,12 @@ class DartFile extends File {
   void removeExport(String export) {
     final contents = readAsStringSync();
 
+    // TODO this fails if the file is not formatted
     final regExp = RegExp(
       r"export[\s]+\'" +
           export +
-          r"\'([\s]+(:?hide|show)[\s]+[A-Z]+[A-z1-9]*)?;",
+          r"\'([\s]+(:?hide|show)[\s]+[A-Z]+[A-z1-9]*)?;" +
+          r"[\s]{1}",
     );
 
     final matches = regExp.allMatches(contents);
@@ -703,7 +715,7 @@ class DartFile extends File {
 
     var output = contents;
     for (final match in matches.toList().reversed) {
-      output = output.replaceRange(match.start, match.end, '');
+      output = output.replaceRange(match.start, match.end + 1, '');
     }
 
     writeAsStringSync(output);
@@ -917,13 +929,11 @@ class PlistFile extends File {
 class ArbFile extends File {
   ArbFile(super.path) : assert(path.endsWith('.arb'));
 
-  void setValue<T extends Object?>(Iterable<String> path, T? value) {
-    assert(path.length == 1);
-
+  void setValue<T extends Object?>(String key, T? value) {
     final contents = readAsStringSync();
 
     final json = jsonDecode(contents);
-    json[path.first] = value;
+    json[key] = value;
 
     final output = JsonEncoder.withIndent('  ').convert(json);
     writeAsStringSync(output);

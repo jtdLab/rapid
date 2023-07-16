@@ -306,7 +306,6 @@ mixin _PlatformMixin on _Rapid {
     Platform platform, {
     required String name,
     required String featureName,
-    required String outputDir,
   }) async {
     if (!project.platformIsActivated(platform)) {
       throw PlatformNotActivatedException._(platform);
@@ -338,13 +337,13 @@ mixin _PlatformMixin on _Rapid {
 
         applicationBarrelFile.createSync(recursive: true);
         applicationBarrelFile.addExport(
-          p.normalize(p.join(outputDir, '${name.snakeCase}_bloc.dart')),
+          p.normalize(p.join('${name.snakeCase}_bloc.dart')),
         );
 
         barrelFile.addExport('src/application/application.dart');
       } else {
         applicationBarrelFile.addExport(
-          p.normalize(p.join(outputDir, '${name.snakeCase}_bloc.dart')),
+          p.normalize(p.join('${name.snakeCase}_bloc.dart')),
         );
       }
     });
@@ -362,7 +361,6 @@ mixin _PlatformMixin on _Rapid {
     Platform platform, {
     required String name,
     required String featureName,
-    required String outputDir,
   }) async {
     if (!project.platformIsActivated(platform)) {
       throw PlatformNotActivatedException._(platform);
@@ -394,13 +392,13 @@ mixin _PlatformMixin on _Rapid {
 
         applicationBarrelFile.createSync(recursive: true);
         applicationBarrelFile.addExport(
-          p.normalize(p.join(outputDir, '${name.snakeCase}_cubit.dart')),
+          p.normalize(p.join('${name.snakeCase}_cubit.dart')),
         );
 
         barrelFile.addExport('src/application/application.dart');
       } else {
         applicationBarrelFile.addExport(
-          p.normalize(p.join(outputDir, '${name.snakeCase}_cubit.dart')),
+          p.normalize(p.join('${name.snakeCase}_cubit.dart')),
         );
       }
     });

@@ -10,11 +10,7 @@ List<String> expectedUsage(String subDomainPackage) => [
       'Add an entity to the subdomain $subDomainPackage.\n'
           '\n'
           'Usage: rapid domain $subDomainPackage add entity <name> [arguments]\n'
-          '-h, --help          Print this usage information.\n'
-          '\n'
-          '\n'
-          '-o, --output-dir    The output directory relative to <domain_package>/lib/ .\n'
-          '                    (defaults to ".")\n'
+          '-h, --help    Print this usage information.\n'
           '\n'
           'Run "rapid help" to see global options.'
     ];

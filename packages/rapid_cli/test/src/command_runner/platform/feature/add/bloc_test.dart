@@ -15,11 +15,7 @@ List<String> expectedUsage(
     'Adds a bloc to $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
         '\n'
         'Usage: rapid ${platform.name} $featurePackage add bloc <name> [arguments]\n'
-        '-h, --help          Print this usage information.\n'
-        '\n'
-        '\n'
-        '-o, --output-dir    The output directory relative to <feature_package>/lib/src .\n'
-        '                    (defaults to ".")\n'
+        '-h, --help    Print this usage information.\n'
         '\n'
         'Run "rapid help" to see global options.'
   ];
@@ -73,11 +69,9 @@ void main() {
             any(),
             name: any(named: 'name'),
             featureName: any(named: 'featureName'),
-            outputDir: any(named: 'outputDir'),
           ),
         ).thenAnswer((_) async {});
         final argResults = MockArgResults();
-        when(() => argResults['output-dir']).thenReturn('some');
         when(() => argResults.rest).thenReturn(['Foo']);
         final command =
             PlatformFeatureAddBlocCommand(platform, 'package_a', null)
@@ -91,7 +85,6 @@ void main() {
             platform,
             name: 'Foo',
             featureName: 'package_a',
-            outputDir: 'some',
           ),
         ).called(1);
       });

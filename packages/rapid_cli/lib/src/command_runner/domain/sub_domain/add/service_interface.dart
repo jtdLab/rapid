@@ -1,21 +1,13 @@
 import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
-import '../../../util/output_dir_option.dart';
 
 /// {@template domain_sub_domain_add_service_interface_command}
 /// `rapid domain sub_domain add service_interface` command adds service_interface to the domain part of an existing Rapid project.
 /// {@endtemplate}
 class DomainSubDomainAddServiceInterfaceCommand extends RapidLeafCommand
-    with ClassNameGetter, OutputDirGetter {
+    with ClassNameGetter {
   /// {@macro domain_sub_domain_add_service_interface_command}
-  DomainSubDomainAddServiceInterfaceCommand(this.subDomainName, super.project) {
-    argParser
-      ..addSeparator('')
-      ..addOutputDirOption(
-        help: 'The output directory relative to <domain_package>/lib/ .',
-      );
-  }
-
+  DomainSubDomainAddServiceInterfaceCommand(this.subDomainName, super.project);
   final String subDomainName;
 
   @override
@@ -37,7 +29,6 @@ class DomainSubDomainAddServiceInterfaceCommand extends RapidLeafCommand
     final name = super.className;
     final subDomainName =
         this.subDomainName == 'default' ? null : this.subDomainName;
-    // final outputDir = super.outputDir; TODO rm?
 
     return rapid.domainSubDomainAddServiceInterface(
       name: name,

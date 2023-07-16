@@ -48,6 +48,52 @@ void main() {
         }),
       );
 
+      group('throws UsageException', () {
+        test(
+          'when name is missing',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner
+                  .run([platform.name, 'add', 'feature', 'tab_flow']),
+              throwsUsageException(
+                message: 'No option specified for the name.',
+              ),
+            );
+          }),
+        );
+
+        test(
+          'when multiple names are provided',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner.run(
+                  [platform.name, 'add', 'feature', 'tab_flow', 'Foo', 'Bar']),
+              throwsUsageException(message: 'Multiple names specified.'),
+            );
+          }),
+        );
+
+        test(
+          'when name is not a valid dart package name',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner
+                  .run([platform.name, 'add', 'feature', 'tab_flow', '+foo+']),
+              throwsUsageException(
+                message: '"+foo+" is not a valid package name.\n\n'
+                    'See https://dart.dev/tools/pub/pubspec#name for more information.',
+              ),
+            );
+          }),
+        );
+      });
+
       test(
         'throws UsageException when sub-features is missing',
         overridePrint((printLogs) async {

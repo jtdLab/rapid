@@ -39,12 +39,12 @@ class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
     final subInfrastructureName = this.subInfrastructureName == 'default'
         ? null
         : this.subInfrastructureName;
-    final serviceName = super.service;
+    final service = super.service;
 
     return rapid.infrastructureSubInfrastructureRemoveServiceImplementation(
       name: name,
       subInfrastructureName: subInfrastructureName,
-      serviceInterfaceName: serviceName, // TODO rename
+      serviceInterfaceName: service,
     );
   }
 }

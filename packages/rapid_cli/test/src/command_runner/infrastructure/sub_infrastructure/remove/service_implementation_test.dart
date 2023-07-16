@@ -64,6 +64,66 @@ void main() {
 
     group('throws UsageException', () {
       test(
+        'when service is missing',
+        overridePrint((printLogs) async {
+          final infrastructurePackage =
+              FakeInfrastructurePackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              infrastructureDirectory: MockInfrastructureDirectory(
+                infrastructurePackages: [infrastructurePackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run([
+              'infrastructure',
+              'package_a',
+              'remove',
+              'service_implementation',
+              'Foo'
+            ]),
+            throwsUsageException(
+              message: 'No option specified for the service.',
+            ),
+          );
+        }),
+      );
+
+      test(
+        'when service is not a valid dart class name',
+        overridePrint((printLogs) async {
+          final infrastructurePackage =
+              FakeInfrastructurePackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              infrastructureDirectory: MockInfrastructureDirectory(
+                infrastructurePackages: [infrastructurePackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run([
+              'infrastructure',
+              'package_a',
+              'remove',
+              'service_implementation',
+              'Foo',
+              '--service',
+              'foo'
+            ]),
+            throwsUsageException(
+              message: '"foo" is not a valid dart class name.',
+            ),
+          );
+        }),
+      );
+
+      test(
         'when name is missing',
         overridePrint((printLogs) async {
           final infrastructurePackage =

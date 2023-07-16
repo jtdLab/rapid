@@ -12,6 +12,10 @@ import 'project/project.dart';
 
 export 'package:pubspec/pubspec.dart';
 
+// The regex for a dart package name, i.e. no capital letters.
+// https://dart.dev/guides/language/language-tour#important-concepts
+final dartPackageRegExp = RegExp('[a-z_][a-z0-9_]*');
+
 const globalOptionVersion = 'version';
 const globalOptionVerbose = 'verbose';
 

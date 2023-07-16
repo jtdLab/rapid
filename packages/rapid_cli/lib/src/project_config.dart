@@ -32,10 +32,8 @@ class RapidProjectConfig {
       map: rapidMap,
       path: 'rapid',
     );
-    // TODO share ?
-    final isValidDartPackageNameRegExp =
-        RegExp(r'^[a-z][a-z\d_-]*$', caseSensitive: false);
-    if (!isValidDartPackageNameRegExp.hasMatch(name)) {
+
+    if (!dartPackageRegExp.hasMatch(name)) {
       throw RapidConfigException(
         'The name $name is not a valid dart package name',
       );
@@ -46,13 +44,6 @@ class RapidProjectConfig {
       name: name,
     );
   }
-
-  // TODO rm?
-  RapidProjectConfig.empty()
-      : this(
-          name: '______rapid______',
-          path: Directory.current.path,
-        );
 
   /// Loads the [RapidProjectConfig] for the project at [projectRoot].
   static Future<RapidProjectConfig> fromProjectRoot(
@@ -131,9 +122,6 @@ class RapidProjectConfig {
       );
     }
   }
-
-  bool get isEmpty =>
-      name == '______rapid______' && path == Directory.current.path;
 
   @override
   bool operator ==(Object other) =>

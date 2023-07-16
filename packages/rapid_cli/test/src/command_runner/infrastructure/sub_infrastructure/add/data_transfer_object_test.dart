@@ -3,6 +3,7 @@ import 'package:rapid_cli/src/command_runner/infrastructure/sub_infrastructure/a
 import 'package:test/test.dart';
 
 import '../../../../common.dart';
+import '../../../../matchers.dart';
 import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
@@ -59,6 +60,62 @@ void main() {
         expect(printLogs, equals(expectedUsage('package_a')));
       }),
     );
+
+    group('throws UsageException', () {
+      test(
+        'when entity is missing',
+        overridePrint((printLogs) async {
+          final infrastructurePackage =
+              FakeInfrastructurePackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              infrastructureDirectory: MockInfrastructureDirectory(
+                infrastructurePackages: [infrastructurePackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run(
+                ['infrastructure', 'package_a', 'add', 'data_transfer_object']),
+            throwsUsageException(
+              message: 'No option specified for the entity.',
+            ),
+          );
+        }),
+      );
+
+      test(
+        'when entity is not a valid dart class name',
+        overridePrint((printLogs) async {
+          final infrastructurePackage =
+              FakeInfrastructurePackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              infrastructureDirectory: MockInfrastructureDirectory(
+                infrastructurePackages: [infrastructurePackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run([
+              'infrastructure',
+              'package_a',
+              'add',
+              'data_transfer_object',
+              '--entity',
+              'foo'
+            ]),
+            throwsUsageException(
+              message: '"foo" is not a valid dart class name.',
+            ),
+          );
+        }),
+      );
+    });
 
     test('completes', () async {
       final rapid = MockRapid();

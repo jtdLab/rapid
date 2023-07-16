@@ -350,7 +350,11 @@ abstract mixin class _DelegateLogger implements mason.Logger {
       _logger.progressOptions = progressOptions;
 
   @override
-  void alert(String? message) => _logger.alert(message);
+  void alert(
+    String? message, {
+    String? Function(String?)? style,
+  }) =>
+      _logger.alert(message, style: style);
 
   @override
   List<T> chooseAny<T extends Object?>(
@@ -391,16 +395,28 @@ abstract mixin class _DelegateLogger implements mason.Logger {
   void delayed(String? message) => _logger.delayed(message);
 
   @override
-  void detail(String? message) => _logger.detail(message);
+  void detail(
+    String? message, {
+    String? Function(String?)? style,
+  }) =>
+      _logger.detail(message, style: style);
 
   @override
-  void err(String? message) => _logger.err(message);
+  void err(
+    String? message, {
+    String? Function(String?)? style,
+  }) =>
+      _logger.err(message, style: style);
 
   @override
   void flush([void Function(String? p1)? print]) => _logger.flush(print);
 
   @override
-  void info(String? message) => _logger.info(message);
+  void info(
+    String? message, {
+    String? Function(String?)? style,
+  }) =>
+      _logger.info(message, style: style);
 
   @override
   Progress progress(String message, {mason.ProgressOptions? options}) =>
@@ -415,12 +431,27 @@ abstract mixin class _DelegateLogger implements mason.Logger {
       );
 
   @override
-  void success(String? message) => _logger.success(message);
+  void success(
+    String? message, {
+    String? Function(String?)? style,
+  }) =>
+      _logger.success(message, style: style);
 
   @override
-  void warn(String? message, {String tag = 'WARN'}) =>
-      _logger.warn(message, tag: tag);
+  void warn(
+    String? message, {
+    String tag = 'WARN',
+    String? Function(String?)? style,
+  }) =>
+      _logger.warn(message, tag: tag, style: style);
 
   @override
   void write(String? message) => _logger.write(message);
+
+  @override
+  List<String> promptAny(String? message, {String separator = ','}) =>
+      _logger.promptAny(message, separator: separator);
+
+  @override
+  mason.LogTheme get theme => _logger.theme;
 }

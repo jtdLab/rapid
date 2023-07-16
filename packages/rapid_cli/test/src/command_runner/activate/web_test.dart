@@ -4,6 +4,7 @@ import 'package:rapid_cli/src/project/language.dart';
 import 'package:test/test.dart';
 
 import '../../common.dart';
+import '../../matchers.dart';
 import '../../mocks.dart';
 import '../../utils.dart';
 
@@ -40,6 +41,26 @@ void main() {
         expect(printLogs, equals(expectedUsage));
       }),
     );
+
+    group('throws UsageException', () {
+      test(
+        'when language is invalid',
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+          const language = 'xxyyzz';
+
+          expect(
+            () => commandRunner.run(
+              ['activate', 'web', '--language', language],
+            ),
+            throwsUsageException(
+              message: '"$language" is not a valid language.\n\n'
+                  'See https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry for more information.',
+            ),
+          );
+        }),
+      );
+    });
 
     test('completes', () async {
       final rapid = MockRapid();

@@ -81,6 +81,24 @@ void main() {
 
         test('(less than 2 domains)', verifyOrgNameIsInvalid('badorgname'));
       });
+
+      test(
+        'when language is invalid',
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+          const language = 'xxyyzz';
+
+          expect(
+            () => commandRunner.run(
+              ['activate', 'ios', '--language', language],
+            ),
+            throwsUsageException(
+              message: '"$language" is not a valid language.\n\n'
+                  'See https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry for more information.',
+            ),
+          );
+        }),
+      );
     });
 
     test('completes', () async {

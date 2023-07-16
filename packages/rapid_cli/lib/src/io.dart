@@ -25,23 +25,6 @@ export 'package:pubspec/pubspec.dart'
         ExternalHostedReference,
         SdkReference;
 
-FileSystemEntity _entityFromIO(FileSystemEntity entity) =>
-    entity is io.Directory
-        ? Directory._fromIO(entity)
-        : entity is io.File
-            ? File._fromIO(entity)
-            : entity;
-
-Future<FileSystemEntity> _entityFromIOAsync(
-    Future<FileSystemEntity> entity) async {
-  final result = await entity;
-  return result is io.Directory
-      ? Directory._fromIO(result)
-      : result is io.File
-          ? File._fromIO(result)
-          : result;
-}
-
 abstract class FileSystemEntityCollection {
   Iterable<FileSystemEntity> get entities;
 
@@ -912,8 +895,7 @@ class PlistFile extends File {
 
     if (PropertyListSerialization.propertyListWithString(contents)
         is! Map<String, Object>) {
-      throw Error(); // TODO better error
-      //throw PlistRootIsNotDict();
+      throw PlistFileError.rootIsNotDict(plistFile: this);
     }
 
     return plist as Map<String, Object>;
@@ -924,8 +906,7 @@ class PlistFile extends File {
 
     if (PropertyListSerialization.propertyListWithString(contents)
         is! Map<String, Object>) {
-      throw Error(); // TODO better error
-      //  throw PlistRootIsNotDict();
+      throw PlistFileError.rootIsNotDict(plistFile: this);
     }
 
     final output = PropertyListSerialization.stringWithPropertyList(map);
@@ -947,4 +928,38 @@ class ArbFile extends File {
     final output = JsonEncoder.withIndent('  ').convert(json);
     writeAsStringSync(output);
   }
+}
+
+FileSystemEntity _entityFromIO(FileSystemEntity entity) =>
+    entity is io.Directory
+        ? Directory._fromIO(entity)
+        : entity is io.File
+            ? File._fromIO(entity)
+            : entity;
+
+Future<FileSystemEntity> _entityFromIOAsync(
+    Future<FileSystemEntity> entity) async {
+  final result = await entity;
+  return result is io.Directory
+      ? Directory._fromIO(result)
+      : result is io.File
+          ? File._fromIO(result)
+          : result;
+}
+
+class PlistFileError extends Error {
+  PlistFileError._(this.message);
+
+  factory PlistFileError.rootIsNotDict({
+    required PlistFile plistFile,
+  }) =>
+      PlistFileError._(
+        'Invalid Plist file: Root element in ${plistFile.path} must be a dictionary, '
+        'but a non-dictionary element was found.',
+      );
+
+  final String message;
+
+  @override
+  String toString() => message;
 }

@@ -24,11 +24,9 @@ mixin _EndMixin on _Rapid {
 }
 
 class NoActiveGroupException extends RapidException {
-  NoActiveGroupException._();
-
-  @override
-  String toString() {
-    return 'There is no active group. '
-        'Did you call "rapid begin" before?';
-  }
+  NoActiveGroupException._()
+      : super(
+          'There is no active group. '
+          'Did you call "rapid begin" before?',
+        );
 }

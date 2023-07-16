@@ -75,12 +75,6 @@ mixin _CreateMixin on _ActivateMixin {
 }
 
 class OutputDirNotEmptyException extends RapidException {
-  OutputDirNotEmptyException._(this.outputDir);
-
-  final String outputDir;
-
-  @override
-  String toString() {
-    return 'The output directory "$outputDir" must be empty.';
-  }
+  OutputDirNotEmptyException._(String outputDir)
+      : super('The output directory "$outputDir" must be empty.');
 }

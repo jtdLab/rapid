@@ -15,11 +15,9 @@ mixin _BeginMixin on _Rapid {
 }
 
 class GroupAlreadyActiveException extends RapidException {
-  GroupAlreadyActiveException._();
-
-  @override
-  String toString() {
-    return 'There is already an active group. '
-        'Call "rapid end" to complete it first.';
-  }
+  GroupAlreadyActiveException._()
+      : super(
+          'There is already an active group. '
+          'Call "rapid end" to complete it first.',
+        );
 }

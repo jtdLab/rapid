@@ -38,7 +38,7 @@ T assertKeyIsA<T>({
 }
 
 class RapidConfigException extends RapidException {
-  RapidConfigException(this.message);
+  RapidConfigException(super.message);
 
   RapidConfigException.missingKey({
     Object? key,
@@ -72,8 +72,6 @@ class RapidConfigException extends RapidException {
 
     throw UnimplementedError();
   }
-
-  final String message;
 
   @override
   String toString() => 'pubspec.yaml: $message';

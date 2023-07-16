@@ -173,47 +173,22 @@ mixin _InfrastructureMixin on _Rapid {
 }
 
 class DataTransferObjectAlreadyExistsException extends RapidException {
-  final String name;
-
-  DataTransferObjectAlreadyExistsException._(this.name);
-
-  @override
-  String toString() {
-    return 'Data Transfer Object ${name}Dto already exists.';
-  }
+  DataTransferObjectAlreadyExistsException._(String name)
+      : super('Data Transfer Object ${name}Dto already exists.');
 }
 
 class ServiceImplementationAlreadyExistsException extends RapidException {
-  final String name;
-  final String serviceName;
-
-  ServiceImplementationAlreadyExistsException._(this.name, this.serviceName);
-
-  @override
-  String toString() {
-    return 'Service Implementation $name${serviceName}Service already exists.';
-  }
+  ServiceImplementationAlreadyExistsException._(String name, String serviceName)
+      : super(
+            'Service Implementation $name${serviceName}Service already exists.');
 }
 
 class ServiceImplementationNotFoundException extends RapidException {
-  final String name;
-  final String serviceName;
-
-  ServiceImplementationNotFoundException._(this.name, this.serviceName);
-
-  @override
-  String toString() {
-    return 'Service Implementation $name${serviceName}Service does not exist.';
-  }
+  ServiceImplementationNotFoundException._(String name, String serviceName)
+      : super('Service Implementation $name${serviceName}Service not found.');
 }
 
 class DataTransferObjectNotFoundException extends RapidException {
-  final String name;
-
-  DataTransferObjectNotFoundException._(this.name);
-
-  @override
-  String toString() {
-    return 'DataTransferObject ${name}Dto not found.';
-  }
+  DataTransferObjectNotFoundException._(String name)
+      : super('DataTransferObject ${name}Dto not found.');
 }

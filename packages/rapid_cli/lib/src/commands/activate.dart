@@ -271,12 +271,6 @@ typedef PlatformDirectoryBuilder = Future<PlatformDirectory> Function(
 );
 
 class PlatformAlreadyActivatedException extends RapidException {
-  final Platform platform;
-
-  PlatformAlreadyActivatedException._(this.platform);
-
-  @override
-  String toString() {
-    return 'The platform ${platform.prettyName} is already activated.';
-  }
+  PlatformAlreadyActivatedException._(Platform platform)
+      : super('The platform ${platform.prettyName} is already activated.');
 }

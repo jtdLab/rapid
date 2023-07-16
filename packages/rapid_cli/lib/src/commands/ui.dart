@@ -148,23 +148,10 @@ mixin _UiMixin on _Rapid {
 }
 
 class WidgetAlreadyExistsException extends RapidException {
-  WidgetAlreadyExistsException._(this.name);
-
-  final String name;
-
-  @override
-  String toString() {
-    return 'Widget $name already exists.';
-  }
+  WidgetAlreadyExistsException._(String name)
+      : super('Widget $name already exists.');
 }
 
 class WidgetNotFoundException extends RapidException {
-  WidgetNotFoundException._(this.name);
-
-  final String name;
-
-  @override
-  String toString() {
-    return 'Widget $name not found.';
-  }
+  WidgetNotFoundException._(String name) : super('Widget $name not found.');
 }

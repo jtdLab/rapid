@@ -155,10 +155,5 @@ class RapidProjectConfig {
 
 /// An exception thrown when a Rapid project could not be resolved.
 class UnresolvedProject extends RapidException {
-  UnresolvedProject(this.message);
-
-  final String message;
-
-  @override
-  String toString() => message;
+  UnresolvedProject(super.message);
 }

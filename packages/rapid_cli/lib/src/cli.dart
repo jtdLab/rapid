@@ -15,13 +15,19 @@ Future<void> melosBootstrap({
 }) async {
   // TODO forward updates about bootstrapped packages / failures based on the process streams stdout.
   final result = await runCommand(
-    melosBootstrapCommand(scope.map((e) => e.packageName).toList()),
+    [
+      'melos',
+      'bootstrap',
+      '--scope',
+      scope.map((e) => e.packageName).toList().join(','),
+    ],
     workingDirectory: project.path,
   );
 
   if (result.exitCode != 0) {
-    throw MelosBootstrapException._(
+    throw CliException._(
       'Failed to bootstrap.',
+      directory: project.rootPackage,
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -33,13 +39,14 @@ Future<FlutterPubGetResult> flutterPubGet({
   required DartPackage package,
 }) async {
   final result = await runCommand(
-    flutterPubGetCommand(dryRun: dryRun),
+    ['flutter', 'pub', 'get', if (dryRun) '--dry-run'],
     workingDirectory: package.path,
   );
 
   if (result.exitCode != 0) {
-    throw FlutterPubGetException._(
-      package,
+    throw CliException._(
+      'Failed to install.',
+      directory: package,
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -52,16 +59,22 @@ Future<FlutterPubGetResult> flutterPubGet({
   );
 }
 
+class FlutterPubGetResult {
+  final bool wouldChangeDependencies;
+
+  FlutterPubGetResult({required this.wouldChangeDependencies});
+}
+
 Future<void> flutterGenl10n({required DartPackage package}) async {
   final result = await runCommand(
-    flutterGenl10nCommand(),
+    ['flutter', 'gen-l10n'],
     workingDirectory: package.path,
   );
 
   if (result.exitCode != 0) {
-    throw FlutterGenl10nException._(
-      package,
+    throw CliException._(
       'Failed to generate localizations.',
+      directory: package,
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -70,14 +83,14 @@ Future<void> flutterGenl10n({required DartPackage package}) async {
 
 Future<void> dartFormatFix({required DartPackage package}) async {
   final result = await runCommand(
-    dartFormatFixCommand(),
+    ['dart', 'format', '.', '--fix'],
     workingDirectory: package.path,
   );
 
   if (result.exitCode != 0) {
-    throw DartFormatFixException._(
-      package,
-      'Failed format.',
+    throw CliException._(
+      'Failed to format.',
+      directory: package,
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -88,14 +101,21 @@ Future<void> flutterPubRunBuildRunnerBuildDeleteConflictingOutputs({
   required DartPackage package,
 }) async {
   final result = await runCommand(
-    flutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand(),
+    [
+      'flutter',
+      'pub',
+      'run',
+      'build_runner',
+      'build',
+      '--delete-conflicting-outputs',
+    ],
     workingDirectory: package.path,
   );
 
   if (result.exitCode != 0) {
-    throw FlutterPubRunBuildRunnerBuildException._(
-      package,
+    throw CliException._(
       'Failed to run code generation.',
+      directory: package,
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -107,13 +127,14 @@ Future<void> flutterPubAdd({
   required DartPackage package,
 }) async {
   final result = await runCommand(
-    flutterPubAddCommand(dependenciesToAdd),
+    ['flutter', 'pub', 'add', ...dependenciesToAdd],
     workingDirectory: package.path,
   );
 
   if (result.exitCode != 0) {
-    throw FlutterPubAddException._(
-      package,
+    throw CliException._(
+      'Failed to add dependencies',
+      directory: package,
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -125,14 +146,14 @@ Future<void> flutterPubRemove({
   required DartPackage package,
 }) async {
   final result = await runCommand(
-    flutterPubRemoveCommand(packagesToRemove),
+    ['flutter', 'pub', 'remove', ...packagesToRemove],
     workingDirectory: package.path,
   );
 
   if (result.exitCode != 0) {
-    throw FlutterPubRemoveException._(
-      package,
+    throw CliException._(
       'Failed to remove dependencies.',
+      directory: package,
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -144,45 +165,7 @@ Future<void> flutterConfigEnable({
   required RapidProject project,
 }) async {
   await runCommand(
-    flutterConfigEnableCommand(platform),
-    workingDirectory: project.path,
-  );
-}
-
-List<String> melosBootstrapCommand(List<String> scope) => [
-      'melos',
-      'bootstrap',
-      '--scope',
-      scope.join(','),
-    ];
-
-List<String> flutterPubAddCommand(List<String> dependenciesToAdd) =>
-    ['flutter', 'pub', 'add', ...dependenciesToAdd];
-
-List<String> flutterPubRemoveCommand(List<String> dependenciesToRemove) =>
-    ['flutter', 'pub', 'remove', ...dependenciesToRemove];
-
-List<String> flutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand() => [
-      'flutter',
-      'pub',
-      'run',
-      'build_runner',
-      'build',
-      '--delete-conflicting-outputs',
-    ];
-
-List<String> dartFormatFixCommand() => ['dart', 'format', '.', '--fix'];
-
-List<String> flutterPubGetCommand({bool dryRun = false}) => [
-      'flutter',
-      'pub',
-      'get',
-      if (dryRun) '--dry-run',
-    ];
-
-List<String> flutterGenl10nCommand() => ['flutter', 'gen-l10n'];
-
-List<String> flutterConfigEnableCommand(Platform platform) => [
+    [
       'flutter',
       'config',
       if (platform == Platform.android) '--enable-android',
@@ -191,146 +174,25 @@ List<String> flutterConfigEnableCommand(Platform platform) => [
       if (platform == Platform.macos) '--enable-macos-desktop',
       if (platform == Platform.web) '--enable-web',
       if (platform == Platform.windows) '--enable-windows-desktop',
-    ];
+    ],
+    workingDirectory: project.path,
+  );
+}
 
-// TODO share and update toString() ?
-
-class MelosBootstrapException implements RapidException {
-  MelosBootstrapException._(
-    this.message, {
+class CliException extends RapidException {
+  CliException._(
+    super.message, {
+    required this.directory,
     this.stdout,
     this.stderr,
   });
 
-  final String message;
+  final Directory directory;
   final String? stdout;
   final String? stderr;
 
   @override
   String toString() {
-    return 'MelosBootstrapException: $message.\n' '$stderr';
-  }
-}
-
-class FlutterPubGetResult {
-  final bool wouldChangeDependencies;
-
-  FlutterPubGetResult({required this.wouldChangeDependencies});
-}
-
-class FlutterPubGetException implements RapidException {
-  FlutterPubGetException._(
-    this.package, {
-    this.stdout,
-    this.stderr,
-  });
-
-  final DartPackage package;
-  final String? stdout;
-  final String? stderr;
-
-  @override
-  String toString() {
-    return [
-      'FlutterPubGetException: Failed to install ${package.packageName} at ${package.path}. ',
-      if (stderr != null) stderr,
-    ].join('\n');
-  }
-}
-
-class FlutterGenl10nException implements RapidException {
-  FlutterGenl10nException._(
-    this.package,
-    this.message, {
-    this.stdout,
-    this.stderr,
-  });
-
-  final DartPackage package;
-  final String message;
-  final String? stdout;
-  final String? stderr;
-
-  @override
-  String toString() {
-    return 'FlutterGenl10nException: $message: ${package.packageName} at ${package.path}.';
-  }
-}
-
-class DartFormatFixException implements RapidException {
-  DartFormatFixException._(
-    this.package,
-    this.message, {
-    this.stdout,
-    this.stderr,
-  });
-
-  final DartPackage package;
-  final String message;
-  final String? stdout;
-  final String? stderr;
-
-  @override
-  String toString() {
-    return 'DartFormatFixException: $message: ${package.packageName} at ${package.path}.';
-  }
-}
-
-class FlutterPubRunBuildRunnerBuildException implements RapidException {
-  FlutterPubRunBuildRunnerBuildException._(
-    this.package,
-    this.message, {
-    this.stdout,
-    this.stderr,
-  });
-
-  final DartPackage package;
-  final String message;
-  final String? stdout;
-  final String? stderr;
-
-  @override
-  String toString() {
-    return 'FlutterPubRunBuildRunnerBuildException: $message: ${package.packageName} at ${package.path}.';
-  }
-}
-
-class FlutterPubAddException implements RapidException {
-  FlutterPubAddException._(
-    this.package, {
-    this.stdout,
-    this.stderr,
-  });
-
-  final DartPackage package;
-
-  final String? stdout;
-  final String? stderr;
-
-  @override
-  String toString() {
-    return [
-      'FlutterPubAddException: Failed to add dependencies to ${package.packageName} at ${package.path}.',
-      if (stderr != null) stderr,
-    ].join('\n');
-  }
-}
-
-class FlutterPubRemoveException implements RapidException {
-  FlutterPubRemoveException._(
-    this.package,
-    this.message, {
-    this.stdout,
-    this.stderr,
-  });
-
-  final DartPackage package;
-  final String message;
-  final String? stdout;
-  final String? stderr;
-
-  @override
-  String toString() {
-    return 'FlutterPubRemoveException: $message: ${package.packageName} at ${package.path}.';
+    return '$message - at ${directory.path}.';
   }
 }

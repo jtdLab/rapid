@@ -90,10 +90,10 @@ mixin _DomainMixin on _Rapid {
           ..newLine()
           ..commandSuccess('Removed Sub Domain!');
       } else {
-        throw SubInfrastructureDoesNotExistException._(name);
+        throw SubInfrastructureNotFoundException._(name);
       }
     } else {
-      throw SubDomainDoesNotExistException._(name);
+      throw SubDomainNotFoundException._(name);
     }
   }
 
@@ -297,100 +297,45 @@ mixin _DomainMixin on _Rapid {
 }
 
 class ServiceInterfaceAlreadyExistsException extends RapidException {
-  final String name;
-
-  ServiceInterfaceAlreadyExistsException._(this.name);
-
-  @override
-  String toString() {
-    return 'Service Interface I${name}Service already exists.';
-  }
+  ServiceInterfaceAlreadyExistsException._(String name)
+      : super('Service Interface I${name}Service already exists.');
 }
 
 class SubInfrastructureAlreadyExistsException extends RapidException {
-  final String name;
-
-  SubInfrastructureAlreadyExistsException._(this.name);
-
-  @override
-  String toString() {
-    return 'The subinfrastructure "$name" already exists.';
-  }
+  SubInfrastructureAlreadyExistsException._(String name)
+      : super('The subinfrastructure "$name" already exists.');
 }
 
 class SubDomainAlreadyExistsException extends RapidException {
-  final String name;
-
-  SubDomainAlreadyExistsException._(this.name);
-
-  @override
-  String toString() {
-    return 'The subdomain "$name" already exists.';
-  }
+  SubDomainAlreadyExistsException._(String name)
+      : super('The subdomain "$name" already exists.');
 }
 
-class SubInfrastructureDoesNotExistException extends RapidException {
-  final String name;
-
-  SubInfrastructureDoesNotExistException._(this.name);
-
-  @override
-  String toString() {
-    return 'The subinfrastructure "$name" does not exist.';
-  }
+class SubInfrastructureNotFoundException extends RapidException {
+  SubInfrastructureNotFoundException._(String name)
+      : super('Subinfrastructure "$name" not found.');
 }
 
-class SubDomainDoesNotExistException extends RapidException {
-  final String name;
-
-  SubDomainDoesNotExistException._(this.name);
-
-  @override
-  String toString() {
-    return 'The subdomain "$name" does not exist.';
-  }
+class SubDomainNotFoundException extends RapidException {
+  SubDomainNotFoundException._(String name)
+      : super('Subdomain "$name" not found.');
 }
 
 class EntityOrValueObjectAlreadyExistsException extends RapidException {
-  final String name;
-
-  EntityOrValueObjectAlreadyExistsException._(this.name);
-
-  @override
-  String toString() {
-    return 'Entity or ValueObject $name already exists.';
-  }
+  EntityOrValueObjectAlreadyExistsException._(String name)
+      : super('Entity or ValueObject $name already exists.');
 }
 
 class EntityNotFoundException extends RapidException {
-  final String name;
-
-  EntityNotFoundException._(this.name);
-
-  @override
-  String toString() {
-    return 'Entity $name does not exist.';
-  }
+  EntityNotFoundException._(String name) : super('Entity $name not found.');
 }
 
 class ServiceInterfaceNotFoundException extends RapidException {
-  final String name;
-
-  ServiceInterfaceNotFoundException._(this.name);
-
-  @override
-  String toString() {
-    return 'Service Interface I${name}Service does not exist.';
-  }
+  ServiceInterfaceNotFoundException._(String name)
+      : super('Service Interface I${name}Service not found.');
 }
 
 class ValueObjectNotFoundException extends RapidException {
-  final String name;
-
-  ValueObjectNotFoundException._(this.name);
-
-  @override
-  String toString() {
-    return 'Value Object $name does not exist.';
-  }
+  ValueObjectNotFoundException._(String name)
+      : super('Value Object $name not found.');
 }

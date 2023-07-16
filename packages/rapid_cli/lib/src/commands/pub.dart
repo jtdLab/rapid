@@ -91,23 +91,15 @@ mixin _PubMixin on _Rapid {
 }
 
 class PackageNotFoundException extends RapidException {
-  PackageNotFoundException._(this.packageName);
-
-  final String packageName;
-
-  @override
-  String toString() {
-    return 'Could not find a dart package with $packageName that is part of a Rapid project.';
-  }
+  PackageNotFoundException._(String packageName)
+      : super(
+          'Could not find a dart package with $packageName that is part of a Rapid project.',
+        );
 }
 
 class PackageAtCwdNotFoundException extends RapidException {
-  PackageAtCwdNotFoundException._(this.cwdPath);
-
-  final String cwdPath;
-
-  @override
-  String toString() {
-    return 'Could not find a dart package at $cwdPath that is part of a Rapid project.';
-  }
+  PackageAtCwdNotFoundException._(String cwdPath)
+      : super(
+          'Could not find a dart package at $cwdPath that is part of a Rapid project.',
+        );
 }

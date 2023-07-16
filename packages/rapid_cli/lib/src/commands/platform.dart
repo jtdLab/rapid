@@ -802,189 +802,113 @@ mixin _PlatformMixin on _Rapid {
 }
 
 class FeatureAlreadyExistsException extends RapidException {
-  final PlatformFeaturePackage feature;
-  final Platform platform;
-
-  FeatureAlreadyExistsException._(this.feature, this.platform);
-
-  @override
-  String toString() {
-    return 'Feature ${feature.name} already exists. (${platform.prettyName})';
-  }
+  FeatureAlreadyExistsException._(
+      PlatformFeaturePackage feature, Platform platform)
+      : super(
+          'Feature ${feature.name} already exists. (${platform.prettyName})',
+        );
 }
 
 class FeatureNotFoundException extends RapidException {
-  final PlatformFeaturePackage feature;
-  final Platform platform;
-
-  FeatureNotFoundException._(this.feature, this.platform);
-
-  @override
-  String toString() {
-    return 'Feature ${feature.name} not found. (${platform.prettyName})';
-  }
+  FeatureNotFoundException._(PlatformFeaturePackage feature, Platform platform)
+      : super('Feature ${feature.name} not found. (${platform.prettyName})');
 }
 
 class NavigatorInterfaceAlreadyExistsException extends RapidException {
-  final PlatformFeaturePackage feature;
-
-  NavigatorInterfaceAlreadyExistsException._(this.feature);
-
-  @override
-  String toString() {
-    return 'The navigator interface "I${feature.name.pascalCase}Navigator" does already exist. (${feature.platform.prettyName})';
-  }
+  NavigatorInterfaceAlreadyExistsException._(PlatformFeaturePackage feature)
+      : super(
+          'The navigator interface "I${feature.name.pascalCase}Navigator" does already exist. (${feature.platform.prettyName})',
+        );
 }
 
 class NavigatorImplementationAlreadyExistsException extends RapidException {
-  final PlatformFeaturePackage feature;
-
-  NavigatorImplementationAlreadyExistsException._(this.feature);
-
-  @override
-  String toString() {
-    return 'The navigator implementation "${feature.name.pascalCase}Navigator" does already exist. (${feature.platform.prettyName})';
-  }
+  NavigatorImplementationAlreadyExistsException._(
+      PlatformFeaturePackage feature)
+      : super(
+          'The navigator implementation "${feature.name.pascalCase}Navigator" does already exist. (${feature.platform.prettyName})',
+        );
 }
 
 class FeatureNotRoutableException extends RapidException {
-  final PlatformFeaturePackage feature;
-  final Platform platform;
-
-  FeatureNotRoutableException._(this.feature, this.platform);
-
-  @override
-  String toString() {
-    return 'The feature ${feature.name} is not routable. (${platform.prettyName})';
-  }
+  FeatureNotRoutableException._(
+      PlatformFeaturePackage feature, Platform platform)
+      : super(
+          'The feature ${feature.name} is not routable. (${platform.prettyName})',
+        );
 }
 
 class LanguageAlreadyPresentException extends RapidException {
-  final Language language;
-
-  LanguageAlreadyPresentException._(this.language);
-
-  @override
-  String toString() {
-    return 'The language "$language" is already present.';
-  }
+  LanguageAlreadyPresentException._(Language language)
+      : super('The language "$language" is already present.');
 }
 
 class NavigatorInterfaceNotFoundException extends RapidException {
-  final PlatformFeaturePackage feature;
-
-  NavigatorInterfaceNotFoundException._(this.feature);
-
-  @override
-  String toString() {
-    return 'The navigator interface "I${feature.name.pascalCase}Navigator" does not exist. (${feature.platform.prettyName})';
-  }
+  NavigatorInterfaceNotFoundException._(PlatformFeaturePackage feature)
+      : super(
+          'Navigator interface "I${feature.name.pascalCase}Navigator" not found. (${feature.platform.prettyName})',
+        );
 }
 
 class NavigatorImplementationNotFoundException extends RapidException {
-  final PlatformFeaturePackage feature;
-
-  NavigatorImplementationNotFoundException._(this.feature);
-
-  @override
-  String toString() {
-    return 'The navigator implementation "${feature.name.pascalCase}Navigator" does not exist. (${feature.platform.prettyName})';
-  }
+  NavigatorImplementationNotFoundException._(PlatformFeaturePackage feature)
+      : super(
+          'Navigator implementation "${feature.name.pascalCase}Navigator" not found. (${feature.platform.prettyName})',
+        );
 }
 
 class BlocAlreadyExistsException extends RapidException {
-  final String name;
-  final PlatformFeaturePackage feature;
-  final Platform platform;
-
-  BlocAlreadyExistsException._(this.name, this.feature, this.platform);
-
-  @override
-  String toString() {
-    return 'The ${name}Bloc does already exist in "${feature.name}". (${platform.prettyName})';
-  }
+  BlocAlreadyExistsException._(
+      String name, PlatformFeaturePackage feature, Platform platform)
+      : super(
+          'The ${name}Bloc does already exist in "${feature.name}". (${platform.prettyName})',
+        );
 }
 
 class CubitAlreadyExistsException extends RapidException {
-  final String name;
-  final PlatformFeaturePackage feature;
-  final Platform platform;
-
-  CubitAlreadyExistsException._(this.name, this.feature, this.platform);
-
-  @override
-  String toString() {
-    return 'The ${name}Cubit does already exist in "${feature.name}". (${platform.prettyName})';
-  }
+  CubitAlreadyExistsException._(
+      String name, PlatformFeaturePackage feature, Platform platform)
+      : super(
+          'The ${name}Cubit does already exist in "${feature.name}". (${platform.prettyName})',
+        );
 }
 
 class BlocNotFoundException extends RapidException {
-  final String name;
-  final PlatformFeaturePackage feature;
-  final Platform platform;
-
-  BlocNotFoundException._(this.name, this.feature, this.platform);
-
-  @override
-  String toString() {
-    return 'The ${name}Bloc does not exist in "${feature.name}". (${platform.prettyName})';
-  }
+  BlocNotFoundException._(
+      String name, PlatformFeaturePackage feature, Platform platform)
+      : super(
+          '${name}Bloc not found in "${feature.name}". (${platform.prettyName})',
+        );
 }
 
 class CubitNotFoundException extends RapidException {
-  final String name;
-  final PlatformFeaturePackage feature;
-  final Platform platform;
-
-  CubitNotFoundException._(this.name, this.feature, this.platform);
-
-  @override
-  String toString() {
-    return 'The ${name}Cubit does not exist in "${feature.name}". (${platform.prettyName})';
-  }
+  CubitNotFoundException._(
+      String name, PlatformFeaturePackage feature, Platform platform)
+      : super(
+          '${name}Cubit not found in "${feature.name}". (${platform.prettyName})',
+        );
 }
 
 class LanguageNotFoundException extends RapidException {
-  final Language language;
-
-  LanguageNotFoundException._(this.language);
-
-  @override
-  String toString() {
-    return 'The language "$language" is not present.';
-  }
+  LanguageNotFoundException._(Language language)
+      : super('Language "$language" not found.');
 }
 
 class CantRemoveDefaultLanguageException extends RapidException {
-  final Language language;
-
-  CantRemoveDefaultLanguageException._(this.language);
-
-  @override
-  String toString() {
-    return 'Can not remove language "$language" because it is the default language.';
-  }
+  CantRemoveDefaultLanguageException._(Language language)
+      : super(
+          'Can not remove language "$language" because it is the default language.',
+        );
 }
 
 class LanguageIsAlreadyDefaultLanguageException extends RapidException {
-  final Language language;
-
-  LanguageIsAlreadyDefaultLanguageException._(this.language);
-
-  @override
-  String toString() {
-    return 'The language "$language" already is the default language.';
-  }
+  LanguageIsAlreadyDefaultLanguageException._(Language language)
+      : super('The language "$language" already is the default language.');
 }
 
 class PlatformNotActivatedException extends RapidException {
-  final Platform platform;
-
-  PlatformNotActivatedException._(this.platform);
-
-  @override
-  String toString() {
-    return 'The platform ${platform.prettyName} is not activated. '
-        'Use "rapid activate ${platform.prettyName}" to activate the platform first.';
-  }
+  PlatformNotActivatedException._(Platform platform)
+      : super(
+          'The platform ${platform.prettyName} is not activated. '
+          'Use "rapid activate ${platform.prettyName}" to activate the platform first.',
+        );
 }

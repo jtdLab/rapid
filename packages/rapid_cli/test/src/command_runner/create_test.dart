@@ -164,9 +164,8 @@ void main() {
               final commandRunner = getCommandRunner();
 
               expect(
-                () => commandRunner.run(
-                  ['create', 'my_project', '--org-name', orgName],
-                ),
+                () => commandRunner
+                    .run(['create', 'my_project', '--org-name', orgName]),
                 throwsUsageException(
                   message: '"$orgName" is not a valid org name.\n\n'
                       'A valid org name has at least 2 parts separated by "."\n'

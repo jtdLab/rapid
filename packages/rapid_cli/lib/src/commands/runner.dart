@@ -243,7 +243,7 @@ abstract class _Rapid {
             ),
           )
           .toList(),
-      parallelism: 1, // TODO is this the most performant way
+      parallelism: 1, // TODO is this the most performant way?
     );
   }
 
@@ -251,6 +251,8 @@ abstract class _Rapid {
         'Running "flutter gen-l10n" in ${package.packageName}',
         () async => flutterGenl10n(package: package),
       );
+
+  // TODO: currently command groups dont work
 
   Future<void> _bootstrap({required List<DartPackage> packages}) async {
     if (tool.loadGroup().isActive) {
@@ -275,7 +277,8 @@ abstract class _Rapid {
       }
     } else {
       await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
-          packages: packages);
+        packages: packages,
+      );
     }
   }
 }

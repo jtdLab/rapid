@@ -32,24 +32,10 @@ dependencies:
   ansi_styles: ^0.3.2+1
   platform: ^3.1.0
   cli_util: ^0.4.0
-  file: ^6.1.0
+  file: ^6.1.4
   process: ^4.2.4
   pubspec: ^2.3.0
   pub_semver: ^2.1.4
-
-# dependency_overrides:
-#   mason:
-#     git:
-#       url: https://github.com/jtdLab/mason.git
-#       path: packages/mason
-#   mason_api:
-#     git:
-#       url: https://github.com/jtdLab/mason.git
-#       path: packages/mason_api
-#   mason_logger:
-#     git:
-#       url: https://github.com/jtdLab/mason.git
-#       path: packages/mason_logger
 
 dev_dependencies:
   lints: ^2.1.1

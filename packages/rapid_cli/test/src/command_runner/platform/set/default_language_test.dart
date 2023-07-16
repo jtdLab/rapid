@@ -5,6 +5,7 @@ import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../../../common.dart';
+import '../../../matchers.dart';
 import '../../../mocks.dart';
 import '../../../utils.dart';
 
@@ -42,6 +43,54 @@ void main() {
           expect(printLogs, equals(expectedUsage(platform)));
         }),
       );
+
+      group('throws UsageException', () {
+        test(
+          'when language is missing',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () =>
+                  commandRunner.run([platform.name, 'set', 'default_language']),
+              throwsUsageException(
+                message: 'No option specified for the language.',
+              ),
+            );
+          }),
+        );
+
+        test(
+          'when multiple languages are provided',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner
+                  .run([platform.name, 'set', 'default_language', 'de', 'fr']),
+              throwsUsageException(
+                message: 'Multiple languages specified.',
+              ),
+            );
+          }),
+        );
+
+        test(
+          'when language is invalid',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner
+                  .run([platform.name, 'set', 'default_language', '+en+']),
+              throwsUsageException(
+                message: '"+en+" is not a valid language.\n\n'
+                    'See https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry for more information.',
+              ),
+            );
+          }),
+        );
+      });
 
       test('completes', () async {
         final rapid = MockRapid();

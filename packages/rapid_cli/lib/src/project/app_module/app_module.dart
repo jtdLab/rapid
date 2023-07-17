@@ -15,10 +15,14 @@ class AppModule extends Directory {
     required String projectPath,
   }) {
     final path = p.join(projectPath, 'packages', projectName);
-    final diPackage =
-        DiPackage.resolve(projectName: projectName, projectPath: projectPath);
+    final diPackage = DiPackage.resolve(
+      projectName: projectName,
+      projectPath: projectPath,
+    );
     final domainDirectory = DomainDirectory.resolve(
-        projectName: projectName, projectPath: projectPath);
+      projectName: projectName,
+      projectPath: projectPath,
+    );
     final infrastructureDirectory = InfrastructureDirectory.resolve(
       projectName: projectName,
       projectPath: projectPath,

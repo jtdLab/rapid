@@ -76,10 +76,10 @@ class DomainPackage extends DartPackage implements Comparable<DomainPackage> {
   int compareTo(DomainPackage other) {
     if (name == null) {
       if (other.name == null) return 0;
-      return 1;
+      return -1;
     } else if (other.name == null) {
       if (name == null) return 0;
-      return -1;
+      return 1;
     }
 
     return name!.compareTo(other.name!);

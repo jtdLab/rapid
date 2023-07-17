@@ -5,7 +5,7 @@ class NavigatorImplementation extends FileSystemEntityCollection {
     required this.projectName,
     required this.platform,
     required this.path,
-    required this.name,
+    required this.name, // TODO might be renamed to feature name
   });
 
   final String projectName;

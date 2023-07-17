@@ -23,6 +23,16 @@ void main() {
   });
 
   group('RootPackage', () {
+    test('.resolve', () {
+      final rootPackage = RootPackage.resolve(
+        projectName: 'test_project',
+        projectPath: '/path/to/project',
+      );
+
+      expect(rootPackage.projectName, 'test_project');
+      expect(rootPackage.path, '/path/to/project');
+    });
+
     test(
       'generate',
       withMockFs(() async {

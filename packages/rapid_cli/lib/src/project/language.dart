@@ -43,8 +43,9 @@ class Language implements Comparable<Language> {
   bool get hasCountryCode => countryCode != null;
 
   String toStringWithSeperator([String seperator = '_']) {
-    final scriptCodeSegment = scriptCode != null ? '_$scriptCode' : '';
-    final countryCodeSegment = countryCode != null ? '_$countryCode' : '';
+    final scriptCodeSegment = scriptCode != null ? '$seperator$scriptCode' : '';
+    final countryCodeSegment =
+        countryCode != null ? '$seperator$countryCode' : '';
     return '$languageCode$scriptCodeSegment$countryCodeSegment';
   }
 

@@ -28,6 +28,37 @@ void main() {
   });
 
   group('PlatformUiPackage', () {
+    test('.resolve', () {
+      final platformUiPackage = PlatformUiPackage.resolve(
+        projectName: 'test_project',
+        projectPath: '/path/to/project',
+        platform: Platform.linux,
+      );
+
+      expect(platformUiPackage.projectName, 'test_project');
+      expect(
+        platformUiPackage.path,
+        '/path/to/project/packages/test_project_ui/test_project_ui_linux',
+      );
+      expect(platformUiPackage.platform, Platform.linux);
+      final widget = platformUiPackage.widget(name: 'CoolButton');
+      expect(widget.projectName, 'test_project');
+      expect(widget.name, 'CoolButton');
+      expect(
+        widget.path,
+        '/path/to/project/packages/test_project_ui/test_project_ui_linux',
+      );
+      expect(widget.platform, Platform.linux);
+      final themedWidget = platformUiPackage.themedWidget(name: 'CoolButton');
+      expect(themedWidget.projectName, 'test_project');
+      expect(themedWidget.name, 'CoolButton');
+      expect(
+        themedWidget.path,
+        '/path/to/project/packages/test_project_ui/test_project_ui_linux',
+      );
+      expect(themedWidget.platform, Platform.linux);
+    });
+
     test(
       'generate',
       withMockFs(() async {

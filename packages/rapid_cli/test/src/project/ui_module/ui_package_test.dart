@@ -25,6 +25,33 @@ void main() {
   });
 
   group('UiPackage', () {
+    test('.resolve', () {
+      final uiPackage = UiPackage.resolve(
+        projectName: 'test_project',
+        projectPath: '/path/to/project',
+      );
+
+      expect(uiPackage.projectName, 'test_project');
+      expect(
+        uiPackage.path,
+        '/path/to/project/packages/test_project_ui/test_project_ui',
+      );
+      final widget = uiPackage.widget(name: 'CoolButton');
+      expect(widget.projectName, 'test_project');
+      expect(widget.name, 'CoolButton');
+      expect(
+        widget.path,
+        '/path/to/project/packages/test_project_ui/test_project_ui',
+      );
+      final themedWidget = uiPackage.themedWidget(name: 'CoolButton');
+      expect(themedWidget.projectName, 'test_project');
+      expect(themedWidget.name, 'CoolButton');
+      expect(
+        themedWidget.path,
+        '/path/to/project/packages/test_project_ui/test_project_ui',
+      );
+    });
+
     test('barrelFile', () {
       final uiPackage = _getUiPackage(
         projectName: 'test_project',

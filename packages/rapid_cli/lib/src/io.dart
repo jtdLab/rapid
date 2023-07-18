@@ -42,7 +42,11 @@ abstract class FileSystemEntityCollection {
 class Directory implements io.Directory {
   Directory(String path) : _directory = io.Directory(p.normalize(path));
 
-  static Directory current = Directory._fromIO(io.Directory.current);
+  static Directory get current => Directory._fromIO(io.Directory.current);
+
+  static set current(path) {
+    io.Directory.current = path;
+  }
 
   Directory._fromIO(io.Directory directory) : _directory = directory;
 

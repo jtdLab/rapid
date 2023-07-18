@@ -28,15 +28,24 @@ class MockBloc extends Mock implements Bloc {}
 
 class MockCubit extends Mock implements Cubit {}
 
-class MockDartPackage extends Mock implements DartPackage {}
+class MockDartPackage extends Mock implements DartPackage {
+  MockDartPackage({
+    String? packageName,
+    PubspecYamlFile? pubSpec,
+  }) {
+    packageName ??= 'package_name';
+    pubSpec ??= MockPubspecYamlFile();
+
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => pubSpecFile).thenReturn(pubSpec);
+  }
+}
 
 class MockDartFile extends Mock implements DartFile {}
 
 class MockArbFile extends Mock implements ArbFile {}
 
 class MockYamlFile extends Mock implements YamlFile {}
-
-class MockFeaturesDirectory extends Mock implements PlatformFeaturesDirectory {}
 
 class MockFile extends Mock implements File {
   MockFile({bool? existsSync}) {
@@ -72,6 +81,7 @@ class MockRapidProjectConfig extends Mock implements RapidProjectConfig {}
 class MockPubspecYamlFile extends Mock implements PubspecYamlFile {
   MockPubspecYamlFile() {
     when(() => name).thenReturn('pubspec.yaml');
+    when(() => hasDependency(name: any(named: 'name'))).thenReturn(false);
   }
 }
 
@@ -158,13 +168,19 @@ class MockRootPackage extends Mock implements RootPackage {
   MockRootPackage({
     String? packageName,
     String? path,
+    bool? existsSync,
+    PubspecYamlFile? pubSpec,
   }) {
     packageName ??= 'macos_root_package';
     path ??= 'macos_root_package_path';
+    existsSync ??= false;
+    pubSpec ??= MockPubspecYamlFile();
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
+    when(() => this.existsSync()).thenReturn(existsSync);
     when(() => generate()).thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
   }
 }
 
@@ -199,13 +215,16 @@ class MockDiPackage extends Mock implements DiPackage {
   MockDiPackage({
     String? packageName,
     String? path,
+    PubspecYamlFile? pubSpec,
   }) {
     packageName ??= 'di_package';
     path ??= 'di_package_path';
+    pubSpec ??= MockPubspecYamlFile();
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
     when(() => generate()).thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
   }
 }
 
@@ -234,6 +253,7 @@ class MockDomainPackage extends Mock implements DomainPackage {
     ServiceInterface Function({required String name})? serviceInterface,
     ValueObject Function({required String name})? valueObject,
     DartFile? barrelFile,
+    PubspecYamlFile? pubSpec,
   }) {
     packageName ??= 'domain_package';
     path ??= 'domain_package_path';
@@ -241,6 +261,7 @@ class MockDomainPackage extends Mock implements DomainPackage {
     serviceInterface ??= ({required String name}) => MockServiceInterface();
     valueObject ??= ({required String name}) => MockValueObject();
     barrelFile ??= MockDartFile();
+    pubSpec ??= MockPubspecYamlFile();
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
@@ -250,6 +271,7 @@ class MockDomainPackage extends Mock implements DomainPackage {
     when(() => this.valueObject).thenReturn(valueObject);
     when(() => this.barrelFile).thenReturn(barrelFile);
     when(() => generate()).thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
   }
 }
 
@@ -320,6 +342,7 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
       required String name,
       required String serviceInterfaceName,
     })? serviceImplementation,
+    PubspecYamlFile? pubSpec,
   }) {
     packageName ??= 'domain_package';
     path ??= 'infrastructure_package_path';
@@ -328,6 +351,7 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
     serviceImplementation ??= (
             {required String name, required String serviceInterfaceName}) =>
         MockServiceImplementation();
+    pubSpec ??= MockPubspecYamlFile();
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
@@ -336,6 +360,7 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
     when(() => this.serviceImplementation).thenReturn(serviceImplementation);
     // when(() => this.barrelFile).thenReturn(MockDartFile()); // TODO needed ?
     when(() => generate()).thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
   }
 }
 
@@ -365,13 +390,16 @@ class MockLoggingPackage extends Mock implements LoggingPackage {
   MockLoggingPackage({
     String? packageName,
     String? path,
+    PubspecYamlFile? pubSpec,
   }) {
     packageName ??= 'logging_package';
     path ??= 'logging_package_path';
+    pubSpec ??= MockPubspecYamlFile();
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
     when(() => generate()).thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
   }
 }
 
@@ -384,19 +412,16 @@ class MockPlatformDirectory extends Mock implements PlatformDirectory {
     PlatformFeaturesDirectory? featuresDirectory,
   }) {
     path ??= 'platform_directory_path';
+    rootPackage ??= MockNoneIosRootPackage();
     localizationPackage ??= MockPlatformLocalizationPackage();
     navigationPackage ??= MockPlatformNavigationPackage();
     featuresDirectory ??= MockPlatformFeaturesDirectory();
 
+    when(() => this.rootPackage).thenReturn(rootPackage);
     when(() => this.path).thenReturn(path);
     when(() => this.localizationPackage).thenReturn(localizationPackage);
     when(() => this.navigationPackage).thenReturn(navigationPackage);
     when(() => this.featuresDirectory).thenReturn(featuresDirectory);
-
-    // TODO fix
-    if (rootPackage != null) {
-      when(() => this.rootPackage).thenReturn(rootPackage);
-    }
   }
 }
 
@@ -405,14 +430,17 @@ class MockIosRootPackage extends Mock implements IosRootPackage {
     String? packageName,
     String? path,
     IosNativeDirectory? nativeDirectory,
+    bool? existsSync,
   }) {
     packageName ??= 'ios_root_package';
     path ??= 'ios_root_path';
     nativeDirectory ??= MockIosNativeDirectory();
+    existsSync ??= false;
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
     when(() => this.nativeDirectory).thenReturn(nativeDirectory);
+    when(() => this.existsSync()).thenReturn(existsSync);
     when(
       () => generate(
         orgName: any(named: 'orgName'),
@@ -470,14 +498,17 @@ class MockNoneIosRootPackage extends Mock implements NoneIosRootPackage {
     String? packageName,
     String? path,
     NoneIosNativeDirectory? nativeDirectory,
+    bool? existsSync,
   }) {
     packageName ??= 'none_ios_root_package';
     path ??= 'none_ios_root_path';
     nativeDirectory ??= MockNoneIosNativeDirectory();
+    existsSync ??= false;
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
     when(() => this.nativeDirectory).thenReturn(nativeDirectory);
+    when(() => this.existsSync()).thenReturn(existsSync);
     when(
       () => generate(
         description: any(named: 'description'),
@@ -502,16 +533,19 @@ class MockMobileRootPackage extends Mock implements MobileRootPackage {
     String? path,
     NoneIosNativeDirectory? androidNativeDirectory,
     IosNativeDirectory? iosNativeDirectory,
+    bool? existsSync,
   }) {
     packageName ??= 'mobile_root_package';
     path ??= 'mobile_root_path';
     androidNativeDirectory ??= MockNoneIosNativeDirectory();
     iosNativeDirectory ??= MockIosNativeDirectory();
+    existsSync ??= false;
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
     when(() => this.androidNativeDirectory).thenReturn(androidNativeDirectory);
     when(() => this.iosNativeDirectory).thenReturn(iosNativeDirectory);
+    when(() => this.existsSync()).thenReturn(existsSync);
     when(
       () => generate(
         orgName: any(named: 'orgName'),
@@ -533,6 +567,7 @@ class MockPlatformLocalizationPackage extends Mock
     YamlFile? l10nFile,
     Set<Language>? supportedLanguages,
     Language? defaultLanguage,
+    bool? existsSync,
   }) {
     packageName ??= 'platform_localization_package';
     path ??= 'platform_localization_path';
@@ -543,6 +578,7 @@ class MockPlatformLocalizationPackage extends Mock
     l10nFile ??= MockYamlFile();
     supportedLanguages ??= {Language(languageCode: 'en')};
     defaultLanguage ??= Language(languageCode: 'en');
+    existsSync ??= false;
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
@@ -551,6 +587,7 @@ class MockPlatformLocalizationPackage extends Mock
         .thenReturn(languageLocalizationsFile);
     when(() => this.localizationsFile).thenReturn(localizationsFile);
     when(() => this.l10nFile).thenReturn(l10nFile);
+    when(() => this.existsSync()).thenReturn(existsSync);
     when(() => generate(defaultLanguage: any(named: 'defaultLanguage')))
         .thenAnswer((_) async {});
     when(() => this.supportedLanguages()).thenReturn(supportedLanguages);
@@ -565,16 +602,19 @@ class MockPlatformNavigationPackage extends Mock
     String? path,
     NavigatorInterface Function({required String name})? navigatorInterface,
     DartFile? barrelFile,
+    bool? existsSync,
   }) {
     packageName ??= 'platform_navigation_package';
     path ??= 'platform_navigation_path';
     navigatorInterface ??= ({required String name}) => MockNavigatorInterface();
     barrelFile ??= MockDartFile();
+    existsSync ??= false;
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
     when(() => this.navigatorInterface).thenReturn(navigatorInterface);
     when(() => this.barrelFile).thenReturn(barrelFile);
+    when(() => this.existsSync()).thenReturn(existsSync);
     when(() => generate()).thenAnswer((_) async {});
   }
 }
@@ -628,12 +668,15 @@ class MockPlatformAppFeaturePackage extends Mock
   MockPlatformAppFeaturePackage({
     String? packageName,
     String? path,
+    bool? existsSync,
   }) {
     packageName ??= 'platform_app_feature_package';
     path ??= 'platform_app_feature_path';
+    existsSync ??= false;
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
+    when(() => this.existsSync()).thenReturn(existsSync);
     when(() => generate()).thenAnswer((_) async {});
   }
 }
@@ -643,12 +686,15 @@ class MockPlatformPageFeaturePackage extends Mock
   MockPlatformPageFeaturePackage({
     String? packageName,
     String? path,
+    bool? existsSync,
   }) {
     packageName ??= 'platform_page_feature_package';
     path ??= 'platform_page_feature_path';
+    existsSync ??= false;
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
+    when(() => this.existsSync()).thenReturn(existsSync);
     when(() => generate()).thenAnswer((_) async {});
   }
 }
@@ -726,17 +772,20 @@ class MockUiPackage extends Mock implements UiPackage {
     String? path,
     Widget Function({required String name})? widget,
     ThemedWidget Function({required String name})? themedWidget,
+    PubspecYamlFile? pubSpec,
   }) {
     packageName ??= 'ui_package';
     path ??= 'ui_package_path';
     widget ??= ({required String name}) => MockWidget();
     themedWidget ??= ({required String name}) => MockThemedWidget();
+    pubSpec ??= MockPubspecYamlFile();
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
     when(() => this.widget).thenReturn(widget);
     when(() => this.themedWidget).thenReturn(themedWidget);
     when(() => generate()).thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
   }
 }
 
@@ -746,16 +795,19 @@ class MockPlatformUiPackage extends Mock implements PlatformUiPackage {
     String? path,
     Widget Function({required String name})? widget,
     ThemedWidget Function({required String name})? themedWidget,
+    bool? existsSync,
   }) {
     packageName ??= 'platform_ui_package';
     path ??= 'platform_ui_package_path';
     widget ??= ({required String name}) => MockWidget();
     themedWidget ??= ({required String name}) => MockThemedWidget();
+    existsSync ??= false;
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
     when(() => this.widget).thenReturn(widget);
     when(() => this.themedWidget).thenReturn(themedWidget);
+    when(() => this.existsSync()).thenReturn(existsSync);
     when(() => generate()).thenAnswer((_) async {});
   }
 }

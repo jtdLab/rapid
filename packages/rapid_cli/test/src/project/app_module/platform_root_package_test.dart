@@ -1,4 +1,7 @@
-import 'package:rapid_cli/src/project/platform.dart';
+void main() {
+  
+}
+/* import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 
 IosRootPackage _getIosRootPackage({
@@ -79,3 +82,4 @@ void main() {
   // TODO
   final hund = Hund();
 }
+ */

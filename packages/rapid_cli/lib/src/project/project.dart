@@ -108,7 +108,9 @@ class RapidProject {
         ...appModule.domainDirectory.domainPackages(),
         ...appModule.infrastructureDirectory.infrastructurePackages(),
         uiModule.uiPackage,
-        for (final platform in Platform.values) ...[
+        // TODO good?
+        for (final platform
+            in Platform.values.where((e) => platformIsActivated(e))) ...[
           appModule.platformDirectory(platform: platform).rootPackage,
           appModule.platformDirectory(platform: platform).localizationPackage,
           appModule.platformDirectory(platform: platform).navigationPackage,
@@ -122,7 +124,7 @@ class RapidProject {
               .featurePackages(),
           uiModule.platformUiPackage(platform: platform),
         ],
-      ].where((e) => e.existsSync()).toList();
+      ];
 
   List<PlatformRootPackage> rootPackages() => Platform.values
       .where((e) => platformIsActivated(e))

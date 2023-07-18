@@ -56,7 +56,7 @@ class PlatformFeaturesDirectory extends Directory {
           name: name.replaceAll('_widget', ''),
         ) as T;
       } else {
-        throw FeaturePackageParseError._(name);
+        throw FeaturePackageParseError._('${projectName}_$name');
       }
     }
 
@@ -112,5 +112,5 @@ class FeaturePackageParseError extends Error {
   final String name;
 
   @override
-  String toString() => 'Could not resolve feature package from $name.';
+  String toString() => 'Could not resolve feature package $name.';
 }

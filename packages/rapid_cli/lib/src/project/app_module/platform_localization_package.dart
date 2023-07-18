@@ -35,7 +35,7 @@ class PlatformLocalizationPackage extends DartPackage {
             path,
             'lib',
             'src',
-            '${projectName.snakeCase}_localizations_${language.toStringWithSeperator()}.dart',
+            '${projectName.snakeCase}_localizations_${language.languageCode}.dart',
           ),
         );
 

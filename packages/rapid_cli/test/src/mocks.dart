@@ -24,6 +24,10 @@ void registerFallbackValues() {
   registerFallbackValue(FakeRapidProjectConfig());
 }
 
+class MockBloc extends Mock implements Bloc {}
+
+class MockCubit extends Mock implements Cubit {}
+
 class MockDartPackage extends Mock implements DartPackage {}
 
 class MockDartFile extends Mock implements DartFile {}

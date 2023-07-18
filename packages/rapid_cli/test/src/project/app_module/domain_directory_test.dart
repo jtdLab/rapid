@@ -39,8 +39,7 @@ void main() {
     });
 
     group('domainPackages', () {
-      test('parse and returns the existing infrastructure packages',
-          withMockFs(() {
+      test('parse and returns the existing domain packages', withMockFs(() {
         Directory('path/to/domain_directory/test_project_domain')
             .createSync(recursive: true);
         Directory('path/to/domain_directory/test_project_domain_cool')

@@ -331,7 +331,7 @@ class PlatformTabFlowFeaturePackage extends PlatformRoutableFeaturePackage {
         'platform': platform.name,
         'subRoutes': subFeatures
             .mapIndexed((i, e) => {'name': e.pascalCase, 'isFirst': i == 0})
-            .toList(), // TODO needed?
+            .toList(), // TODO needed at all? needed to upper case?
       },
     );
   }

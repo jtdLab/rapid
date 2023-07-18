@@ -1,9 +1,11 @@
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/io.dart';
 import 'package:rapid_cli/src/mason.dart';
 import 'package:rapid_cli/src/project/bundles/bundles.dart';
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
 
 import '../../mock_fs.dart';
@@ -13,13 +15,17 @@ PlatformLocalizationPackage _getPlatformLocalizationPackage({
   String? projectName,
   String? path,
   Platform? platform,
+  ArbFile Function({required Language language})? languageArbFile,
+  DartFile Function({required Language language})? languageLocalizationsFile,
 }) {
   return PlatformLocalizationPackage(
     projectName: projectName ?? 'projectName',
     path: path ?? 'path',
     platform: platform ?? Platform.android,
-    languageArbFile: ({required Language language}) => MockArbFile(),
-    languageLocalizationsFile: ({required Language language}) => MockDartFile(),
+    languageArbFile:
+        languageArbFile ?? ({required Language language}) => MockArbFile(),
+    languageLocalizationsFile: languageLocalizationsFile ??
+        ({required Language language}) => MockDartFile(),
   );
 }
 
@@ -57,7 +63,7 @@ void main() {
       );
       expect(
         languageLocalizationsFile.path,
-        '/path/to/project/packages/test_project/test_project_windows/test_project_windows_localization/lib/src/test_project_localizations_en_US.dart',
+        '/path/to/project/packages/test_project/test_project_windows/test_project_windows_localization/lib/src/test_project_localizations_en.dart',
       );
     });
 
@@ -129,139 +135,193 @@ void main() {
       ),
     );
 
-// TODO
-/*
-    test('supportedLanguages', () {
-      final platformLocalizationPackage = _getPlatformLocalizationPackage(
-        path: '/path/to/localization_package',
-      );
+    test(
+      'supportedLanguages',
+      withMockFs(() {
+        File(
+            '/path/to/localization_package/lib/src/test_project_localizations.dart')
+          ..createSync(recursive: true)
+          ..writeAsStringSync(
+            multiLine([
+              'class TestProjectLocalizations {',
+              '  final supportedLocales = [',
+              '    Locale(\'en\', \'US\'),',
+              '    Locale(\'es\', \'ES\'),',
+              '  ];',
+              '}'
+            ]),
+          );
+        final platformLocalizationPackage = _getPlatformLocalizationPackage(
+          projectName: 'test_project',
+          path: '/path/to/localization_package',
+        );
 
-      final mockLocalizationsFile = MockDartFile();
-      when(
-        () => mockLocalizationsFile.readListVarOfClass(
-          name: any(named: 'name'),
-          parentClass: any(named: 'parentClass'),
-        ),
-      ).thenReturn([
-        'Locale(\'en\', \'US\')',
-        'Locale(\'es\', \'ES\')',
-      ]);
+        final supportedLanguages =
+            platformLocalizationPackage.supportedLanguages();
 
-      platformLocalizationPackage.localizationsFile = mockLocalizationsFile;
+        expect(supportedLanguages, hasLength(2));
+        expect(
+          supportedLanguages,
+          containsAll([
+            Language(languageCode: 'en', countryCode: 'US'),
+            Language(languageCode: 'es', countryCode: 'ES'),
+          ]),
+        );
+      }),
+    );
 
-      final supportedLanguages =
-          platformLocalizationPackage.supportedLanguages();
+    test(
+      'defaultLanguage',
+      withMockFs(() {
+        File('/path/to/localization_package/l10n.yaml')
+          ..createSync(recursive: true)
+          ..writeAsStringSync('template-arb-file: test_project_en_US');
+        final platformLocalizationPackage = _getPlatformLocalizationPackage(
+          projectName: 'test_project',
+          path: '/path/to/localization_package',
+        );
 
-      expect(supportedLanguages, hasLength(2));
-      expect(
-        supportedLanguages,
-        containsAll([
+        final defaultLanguage = platformLocalizationPackage.defaultLanguage();
+
+        expect(
+          defaultLanguage,
           Language(languageCode: 'en', countryCode: 'US'),
+        );
+      }),
+    );
+
+    test(
+      'setDefaultLanguage',
+      withMockFs(() {
+        final file = File('/path/to/localization_package/l10n.yaml')
+          ..createSync(recursive: true)
+          ..writeAsStringSync('template-arb-file: test_project_en_US.arb');
+        final platformLocalizationPackage = _getPlatformLocalizationPackage(
+          projectName: 'test_project',
+          path: '/path/to/localization_package',
+        );
+
+        platformLocalizationPackage.setDefaultLanguage(
           Language(languageCode: 'es', countryCode: 'ES'),
-        ]),
+        );
+
+        expect(
+          file.readAsStringSync(),
+          'template-arb-file: test_project_es_ES.arb',
+        );
+      }),
+    );
+
+    test(
+      'addLanguage',
+      withMockFs(() {
+        File(
+            '/path/to/localization_package/lib/src/test_project_localizations.dart')
+          ..createSync(recursive: true)
+          ..writeAsStringSync(
+            multiLine([
+              'class TestProjectLocalizations {',
+              '  final supportedLocales = [',
+              '    Locale(\'en\', \'US\'),',
+              '  ];',
+              '}'
+            ]),
+          );
+        final arbFile = ArbFile(
+          '/path/to/localization_package/lib/src/arb/test_project_localizations_fr-FR.arb',
+        );
+        final platformLocalizationPackage = _getPlatformLocalizationPackage(
+          projectName: 'test_project',
+          path: '/path/to/localization_package',
+          languageArbFile: ({required language}) => arbFile,
+        );
+
+        platformLocalizationPackage.addLanguage(
+          Language(languageCode: 'fr', countryCode: 'FR'),
+        );
+
+        expect(arbFile.existsSync(), true);
+        expect(
+          arbFile.readAsStringSync(),
+          multiLine([
+            '{',
+            '  "@@locale": "fr_FR"',
+            '}',
+          ]),
+        );
+      }),
+    );
+
+    group('removeLanguage', () {
+      test(
+        'removes arb file',
+        withMockFs(() {
+          File(
+              '/path/to/localization_package/lib/src/test_project_localizations.dart')
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              multiLine([
+                'class TestProjectLocalizations {',
+                '  final supportedLocales = [',
+                '    Locale(\'en\', \'US\'),',
+                '  ];',
+                '}'
+              ]),
+            );
+          final arbFile = ArbFile(
+            '/path/to/localization_package/lib/src/arb/test_project_localizations_fr-FR.arb',
+          )..createSync(recursive: true);
+          final platformLocalizationPackage = _getPlatformLocalizationPackage(
+            projectName: 'test_project',
+            path: '/path/to/localization_package',
+            languageArbFile: ({required language}) => arbFile,
+          );
+
+          platformLocalizationPackage.removeLanguage(
+            Language(languageCode: 'en', countryCode: 'US'),
+          );
+
+          expect(arbFile.existsSync(), false);
+        }),
+      );
+
+      test(
+        'removes language localizations file when language has only language code',
+        withMockFs(() {
+          File(
+              '/path/to/localization_package/lib/src/test_project_localizations.dart')
+            ..createSync(recursive: true)
+            ..writeAsStringSync(
+              multiLine([
+                'class TestProjectLocalizations {',
+                '  final supportedLocales = [',
+                '    Locale(\'en\'),',
+                '    Locale(\'fr\'),',
+                '  ];',
+                '}'
+              ]),
+            );
+          final arbFile = ArbFile(
+            '/path/to/localization_package/lib/src/arb/test_project_localizations_fr.arb',
+          )..createSync(recursive: true);
+          final languageLocalizationsFile = DartFile(
+            '/path/to/localization_package/lib/src/test_project_localizations_fr.dart',
+          )..createSync(recursive: true);
+          final platformLocalizationPackage = _getPlatformLocalizationPackage(
+            projectName: 'test_project',
+            path: '/path/to/localization_package',
+            languageArbFile: ({required language}) => arbFile,
+            languageLocalizationsFile: ({required language}) =>
+                languageLocalizationsFile,
+          );
+
+          platformLocalizationPackage
+              .removeLanguage(Language(languageCode: 'fr'));
+
+          expect(arbFile.existsSync(), false);
+          expect(languageLocalizationsFile.existsSync(), false);
+        }),
       );
     });
-
-    test('defaultLanguage', () {
-      final platformLocalizationPackage = _getPlatformLocalizationPackage(
-        path: '/path/to/localization_package',
-      );
-
-      final mockL10nFile = MockYamlFile();
-      when(() => mockL10nFile.read<String>(any())).thenReturn(
-        'template-arb-file: lib/src/arbs/test_project_en-US.arb',
-      );
-
-      platformLocalizationPackage.l10nFile = mockL10nFile;
-
-      final defaultLanguage = platformLocalizationPackage.defaultLanguage();
-
-      expect(defaultLanguage, Language(languageCode: 'en', countryCode: 'US'));
-    });
-
-    test('setDefaultLanguage', () {
-      final platformLocalizationPackage = _getPlatformLocalizationPackage(
-        path: '/path/to/localization_package',
-      );
-
-      final mockL10nFile = MockYamlFile();
-      when(() => mockL10nFile.read<String>('template-arb-file'))
-          .thenReturn('lib/src/arbs/test_project_en-US.arb');
-
-      platformLocalizationPackage.l10nFile = mockL10nFile;
-
-      platformLocalizationPackage.setDefaultLanguage(
-        Language(languageCode: 'es', countryCode: 'ES'),
-      );
-
-      verify(
-        () => mockL10nFile.set(
-          ['template-arb-file'],
-          'lib/src/arbs/test_project_es-ES.arb',
-        ),
-      );
-    });
-
-    test('addLanguage', () {
-      final platformLocalizationPackage = _getPlatformLocalizationPackage(
-        path: '/path/to/localization_package',
-      );
-
-      final mockLanguageArbFile = MockArbFile();
-      final mockLanguageArbFileBuilder = MockArbFileBuilder(
-        arbFile: mockLanguageArbFile,
-      );
-      arbFileOverrides = mockLanguageArbFileBuilder;
-
-      final language = Language(languageCode: 'fr', countryCode: 'FR');
-      final expectedArbFilePath =
-          '/path/to/localization_package/lib/src/arb/test_project_localizations_fr-FR.arb';
-
-      platformLocalizationPackage.addLanguage(language);
-
-      verifyInOrder([
-        () => mockLanguageArbFileBuilder(expectedArbFilePath),
-        () => mockLanguageArbFile.createSync(recursive: true),
-        () => mockLanguageArbFile.writeAsStringSync(
-              '{\n'
-              '  "@@locale": "fr_FR"\n'
-              '}',
-            ),
-      ]);
-    });
-
-    test('removeLanguage', () {
-      final platformLocalizationPackage = _getPlatformLocalizationPackage(
-        path: '/path/to/localization_package',
-      );
-
-      final mockSupportedLanguages = MockSet<Language>();
-      when(() => mockSupportedLanguages.contains(any())).thenReturn(true);
-
-      final mockLanguageArbFile = MockArbFile();
-      final mockLanguageLocalizationsFile = MockDartFile();
-      when(() => mockLanguageArbFile.deleteSync(
-          recursive: any(named: 'recursive'))).thenReturn(true);
-      when(() => mockLanguageLocalizationsFile.deleteSync(
-            recursive: any(named: 'recursive'),
-          )).thenReturn(true);
-
-      platformLocalizationPackage.languageArbFile =
-          ({required Language language}) => mockLanguageArbFile;
-      platformLocalizationPackage.languageLocalizationsFile =
-          ({required Language language}) => mockLanguageLocalizationsFile;
-      platformLocalizationPackage.supportedLanguages = mockSupportedLanguages;
-
-      final language = Language(languageCode: 'fr', countryCode: 'FR');
-
-      platformLocalizationPackage.removeLanguage(language);
-
-      verifyInOrder([
-        () => mockSupportedLanguages.contains(language),
-        () => mockLanguageArbFile.deleteSync(recursive: true),
-        () => mockLanguageLocalizationsFile.deleteSync(recursive: true),
-      ]);
-    });
-*/
   });
 }

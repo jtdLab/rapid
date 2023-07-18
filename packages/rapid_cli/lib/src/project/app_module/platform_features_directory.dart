@@ -48,14 +48,15 @@ class PlatformFeaturesDirectory extends Directory {
           platform: platform,
           name: name.replaceAll('_flow', ''),
         ) as T;
-      } else {
-        // TODO using else is wrong throw error in else and add else if clause for widget
+      } else if (name.endsWith('widget')) {
         return PlatformWidgetFeaturePackage.resolve(
           projectName: projectName,
           projectPath: projectPath,
           platform: platform,
           name: name.replaceAll('_widget', ''),
         ) as T;
+      } else {
+        throw FeaturePackageParseError._(name);
       }
     }
 
@@ -103,4 +104,13 @@ class PlatformFeaturesDirectory extends Directory {
         : [])
       ..sort();
   }
+}
+
+class FeaturePackageParseError extends Error {
+  FeaturePackageParseError._(this.name);
+
+  final String name;
+
+  @override
+  String toString() => 'Could not resolve feature package from $name.';
 }

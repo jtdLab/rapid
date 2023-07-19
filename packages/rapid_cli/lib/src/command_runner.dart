@@ -13,7 +13,6 @@ import 'command_runner/activate.dart';
 import 'command_runner/begin.dart';
 import 'command_runner/create.dart';
 import 'command_runner/deactivate.dart';
-import 'command_runner/doctor.dart';
 import 'command_runner/domain.dart';
 import 'command_runner/end.dart';
 import 'command_runner/infrastructure.dart';
@@ -57,7 +56,6 @@ class RapidCommandRunner extends CommandRunner<void> {
     addCommand(BeginCommand(project));
     addCommand(CreateCommand());
     addCommand(DeactivateCommand(project));
-    addCommand(DoctorCommand(project));
     addCommand(DomainCommand(project));
     addCommand(EndCommand(project));
     addCommand(InfrastructureCommand(project));

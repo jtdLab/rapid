@@ -20,7 +20,6 @@ part 'activate.dart';
 part 'begin.dart';
 part 'create.dart';
 part 'deactivate.dart';
-part 'doctor.dart';
 part 'domain.dart';
 part 'end.dart';
 part 'infrastructure.dart';
@@ -34,7 +33,6 @@ class Rapid extends _Rapid
         _BeginMixin,
         _CreateMixin,
         _DeactivateMixin,
-        _DoctorMixin,
         _DomainMixin,
         _EndMixin,
         _InfrastructureMixin,

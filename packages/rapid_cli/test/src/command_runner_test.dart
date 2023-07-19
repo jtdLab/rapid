@@ -20,7 +20,6 @@ const expectedUsage = [
       '  begin            Starts a group of Rapid command executions.\n'
       '  create           Create a new Rapid project.\n'
       '  deactivate       Remove support for a platform from an existing Rapid project.\n'
-      '  doctor           Show information about an existing Rapid project.\n'
       '  domain           Work with the domain part of an existing Rapid project.\n'
       '  end              Ends a group of Rapid command executions.\n'
       '  infrastructure   Work with the infrastructure part of an existing Rapid\n'

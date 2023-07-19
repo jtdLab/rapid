@@ -24,7 +24,7 @@ sealed class PlatformRootPackage extends DartPackage {
       dependency: HostedReference(VersionConstraint.empty),
     );
     _addFeaturePackage(packageName, injectionFile: injectionFile);
-    if (PlatformFeaturePackage is PlatformRoutableFeaturePackage) {
+    if (featurePackage is PlatformRoutableFeaturePackage) {
       _addRouterModule(packageName, routerFile: routerFile);
     }
   }
@@ -35,7 +35,7 @@ sealed class PlatformRootPackage extends DartPackage {
     final packageName = featurePackage.packageName;
     pubSpecFile.removeDependency(name: packageName);
     _removeFeaturePackage(packageName, injectionFile: injectionFile);
-    if (PlatformFeaturePackage is PlatformRoutableFeaturePackage) {
+    if (featurePackage is PlatformRoutableFeaturePackage) {
       _removeRouterModule(packageName, routerFile: routerFile);
     }
   }
@@ -83,9 +83,11 @@ sealed class PlatformRootPackage extends DartPackage {
     String packageName, {
     required DartFile injectionFile,
   }) {
-    final imports =
-        injectionFile.readImports().where((e) => e.contains(packageName));
+    final imports = injectionFile
+        .readImports()
+        .where((e) => e.contains(packageName)); // TODO good?
     for (final import in imports) {
+      print(import);
       injectionFile.removeImport(import);
     }
 

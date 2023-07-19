@@ -522,7 +522,10 @@ class MockNoneIosNativeDirectory extends Mock
     implements NoneIosNativeDirectory {
   MockNoneIosNativeDirectory() {
     when(
-      () => generate(orgName: any(named: 'orgName')),
+      () => generate(
+        orgName: any(named: 'orgName'),
+        description: any(named: 'description'),
+      ),
     ).thenAnswer((_) async {});
   }
 }

@@ -465,9 +465,16 @@ class DartFile extends File {
     ];
     updatedImports.sort(_compareImports);
 
+    final startOldImportsIndex = contents.indexOf(_importRegExp);
+    if (startOldImportsIndex == -1) {
+      // no existing imports -> just prepend new import to file
+      writeAsStringSync('import \'$import\';\n$contents');
+      return;
+    }
+
     final output = contents.replaceRange(
       // start of old imports
-      contents.indexOf(_importRegExp),
+      startOldImportsIndex,
       // end of old imports
       // TODO if code is not formatted this might fail
       contents.indexOf('\n', contents.lastIndexOf(_importRegExp)) + 1,
@@ -505,16 +512,16 @@ class DartFile extends File {
     final updatedExports = [...existingExports, 'export \'$export\';'];
     updatedExports.sort(_compareExports);
 
-    final startOldImportsIndex = contents.indexOf(_exportRegExp);
-    if (startOldImportsIndex == -1) {
-      // no existing exports -> just append new export to file
-      writeAsStringSync('$contents\nexport \'$export\';');
+    final startOldExportsIndex = contents.indexOf(_exportRegExp);
+    if (startOldExportsIndex == -1) {
+      // no existing exports -> just prepend new export to file
+      writeAsStringSync('export \'$export\';\n$contents');
       return;
     }
 
     final output = contents.replaceRange(
       // start of old exports
-      startOldImportsIndex,
+      startOldExportsIndex,
       // TODO if code is not formatted this might fail
       // end of old exports
       contents.indexOf('\n', contents.lastIndexOf(_exportRegExp)) + 1,

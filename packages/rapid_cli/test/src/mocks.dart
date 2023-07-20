@@ -353,6 +353,7 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
     })? serviceImplementation,
     bool? isDefault,
     PubspecYamlFile? pubSpec,
+    DartFile? barrelFile,
   }) {
     packageName ??= 'domain_package';
     path ??= 'infrastructure_package_path';
@@ -363,6 +364,7 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
         MockServiceImplementation();
     isDefault ??= false;
     pubSpec ??= MockPubspecYamlFile();
+    barrelFile ??= MockDartFile();
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
@@ -373,6 +375,7 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
     // when(() => this.barrelFile).thenReturn(MockDartFile()); // TODO needed ?
     when(() => generate()).thenAnswer((_) async {});
     when(() => pubSpecFile).thenReturn(pubSpec);
+    when(() => this.barrelFile).thenReturn(barrelFile);
   }
 }
 

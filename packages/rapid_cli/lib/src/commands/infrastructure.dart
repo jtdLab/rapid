@@ -23,7 +23,7 @@ mixin _InfrastructureMixin on _Rapid {
           () async {
             await dataTransferObject.generate();
             barrelFile.addExport(
-              p.normalize(p.join('src', '${entityName.snakeCase}_dto.dart')),
+              p.join('src', '${entityName.snakeCase}_dto.dart'),
             );
           },
         );
@@ -34,7 +34,7 @@ mixin _InfrastructureMixin on _Rapid {
           ..newLine()
           ..commandSuccess('Added Data Transfer Object!');
       } else {
-        DataTransferObjectAlreadyExistsException._(entityName);
+        throw DataTransferObjectAlreadyExistsException._(entityName);
       }
     } else {
       throw EntityNotFoundException._(entityName);
@@ -66,11 +66,9 @@ mixin _InfrastructureMixin on _Rapid {
           () async {
             await serviceImplementation.generate();
             barrelFile.addExport(
-              p.normalize(
-                p.join(
-                  'src',
-                  '${name.snakeCase}_${serviceInterfaceName.snakeCase}_service.dart',
-                ),
+              p.join(
+                'src',
+                '${name.snakeCase}_${serviceInterfaceName.snakeCase}_service.dart',
               ),
             );
           },
@@ -111,7 +109,7 @@ mixin _InfrastructureMixin on _Rapid {
         'Deleting data transfer object',
         () async {
           barrelFile.removeExport(
-            p.normalize(p.join('src', '${entityName.snakeCase}_dto.dart')),
+            p.join('src', '${entityName.snakeCase}_dto.dart'),
           );
           dataTransferObject.delete();
         },
@@ -147,11 +145,9 @@ mixin _InfrastructureMixin on _Rapid {
         'Deleting service implementation',
         () async {
           barrelFile.removeExport(
-            p.normalize(
-              p.join(
-                'src',
-                '${name.snakeCase}_${serviceInterfaceName.snakeCase}_service.dart',
-              ),
+            p.join(
+              'src',
+              '${name.snakeCase}_${serviceInterfaceName.snakeCase}_service.dart',
             ),
           );
           serviceImplementation.delete();

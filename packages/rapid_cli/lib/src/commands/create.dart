@@ -57,12 +57,52 @@ mixin _CreateMixin on _ActivateMixin {
     logger.newLine();
 
     for (final platform in platforms) {
-      await __activatePlatform(
-        platform,
-        orgName: orgName,
-        description: description,
-        language: language,
-      );
+      switch (platform) {
+        case Platform.android:
+          await _activateAndroid(
+            description: description,
+            orgName: orgName,
+            language: language,
+            cleanUp: false,
+          );
+        case Platform.ios:
+          await _activateIos(
+            orgName: orgName,
+            language: language,
+            cleanUp: false,
+          );
+        case Platform.linux:
+          await _activateLinux(
+            orgName: orgName,
+            language: language,
+            cleanUp: false,
+          );
+        case Platform.macos:
+          await _activateMacos(
+            orgName: orgName,
+            language: language,
+            cleanUp: false,
+          );
+        case Platform.web:
+          await _activateWeb(
+            description: description,
+            language: language,
+            cleanUp: false,
+          );
+        case Platform.windows:
+          await _activateWindows(
+            orgName: orgName,
+            language: language,
+            cleanUp: false,
+          );
+        case Platform.mobile:
+          await _activateMobile(
+            description: description,
+            orgName: orgName,
+            language: language,
+            cleanUp: false,
+          );
+      }
     }
 
     await dartFormatFixTask();

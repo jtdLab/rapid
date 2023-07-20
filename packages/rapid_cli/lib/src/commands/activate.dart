@@ -5,9 +5,8 @@ mixin _ActivateMixin on _Rapid {
     required String description,
     required String orgName,
     required Language language,
-  }) async =>
-      _activatePlatform(
-        Platform.android,
+  }) =>
+      _activateAndroid(
         description: description,
         orgName: orgName,
         language: language,
@@ -16,70 +15,267 @@ mixin _ActivateMixin on _Rapid {
   Future<void> activateIos({
     required String orgName,
     required Language language,
-  }) async =>
-      _activatePlatform(
-        Platform.ios,
-        orgName: orgName,
-        language: language,
-      );
+  }) =>
+      _activateIos(orgName: orgName, language: language);
 
   Future<void> activateLinux({
     required String orgName,
     required Language language,
   }) async =>
-      _activatePlatform(
-        Platform.linux,
-        orgName: orgName,
-        language: language,
-      );
+      _activateLinux(orgName: orgName, language: language);
 
   Future<void> activateMacos({
     required String orgName,
     required Language language,
-  }) async =>
-      _activatePlatform(
-        Platform.macos,
-        orgName: orgName,
-        language: language,
-      );
+  }) =>
+      _activateMacos(orgName: orgName, language: language);
 
   Future<void> activateWeb({
     required String description,
     required Language language,
-  }) async =>
-      _activatePlatform(
-        Platform.web,
-        description: description,
-        language: language,
-      );
+  }) =>
+      _activateWeb(description: description, language: language);
 
   Future<void> activateWindows({
     required String orgName,
     required Language language,
-  }) async =>
-      _activatePlatform(
-        Platform.windows,
-        orgName: orgName,
-        language: language,
-      );
+  }) =>
+      _activateWindows(orgName: orgName, language: language);
 
   Future<void> activateMobile({
     required String description,
     required String orgName,
     required Language language,
-  }) async =>
-      _activatePlatform(
-        Platform.mobile,
+  }) =>
+      _activateMobile(
         description: description,
         orgName: orgName,
         language: language,
       );
 
-  Future<void> _activatePlatform(
-    Platform platform, {
-    String? description,
-    String? orgName,
+  Future<void> _activateAndroid({
+    required String description,
+    required String orgName,
     required Language language,
+    bool cleanUp = true,
+  }) async {
+    final platform = Platform.android;
+    await _wrapActivatePlatform(
+      platform,
+      cleanUp: cleanUp,
+      activatePlatform: () async {
+        final rootPackage = project.appModule
+            .platformDirectory(platform: platform)
+            .rootPackage as NoneIosRootPackage;
+        await _activatePlatform(
+          platform,
+          language: language,
+          generateRootPackage: () => rootPackage.generate(
+            orgName: orgName,
+            description: description,
+          ),
+          flutterConfigEnablePlatformTasks: [
+            // TODO use task and do same for other platforms
+            () => _flutterConfigEnablePlatformTask(platform: platform)
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _activateIos({
+    required String orgName,
+    required Language language,
+    bool cleanUp = true,
+  }) async {
+    final platform = Platform.ios;
+    await _wrapActivatePlatform(
+      platform,
+      cleanUp: cleanUp,
+      activatePlatform: () async {
+        final rootPackage = project.appModule
+            .platformDirectory(platform: platform)
+            .rootPackage as IosRootPackage;
+        await _activatePlatform(
+          platform,
+          language: language,
+          generateRootPackage: () => rootPackage.generate(
+            orgName: orgName,
+            language: language,
+          ),
+          flutterConfigEnablePlatformTasks: [
+            () => _flutterConfigEnablePlatformTask(platform: platform),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _activateLinux({
+    required String orgName,
+    required Language language,
+    bool cleanUp = true,
+  }) async {
+    final platform = Platform.linux;
+    await _wrapActivatePlatform(
+      platform,
+      cleanUp: cleanUp,
+      activatePlatform: () async {
+        final rootPackage = project.appModule
+            .platformDirectory(platform: platform)
+            .rootPackage as NoneIosRootPackage;
+        await _activatePlatform(
+          platform,
+          language: language,
+          generateRootPackage: () => rootPackage.generate(
+            orgName: orgName,
+          ),
+          flutterConfigEnablePlatformTasks: [
+            () => _flutterConfigEnablePlatformTask(platform: platform),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _activateMacos({
+    required String orgName,
+    required Language language,
+    bool cleanUp = true,
+  }) async {
+    final platform = Platform.macos;
+    return _wrapActivatePlatform(
+      platform,
+      cleanUp: cleanUp,
+      activatePlatform: () async {
+        final rootPackage = project.appModule
+            .platformDirectory(platform: platform)
+            .rootPackage as MacosRootPackage;
+        await _activatePlatform(
+          platform,
+          language: language,
+          generateRootPackage: () => rootPackage.generate(orgName: orgName),
+          flutterConfigEnablePlatformTasks: [
+            () => _flutterConfigEnablePlatformTask(platform: platform),
+          ],
+        );
+
+        // TODO: Required due to https://github.com/jtdLab/rapid/issues/96
+        // Sets the `osx` version inside the `Podfile` of the `macos` app
+        // to `10.15.7.7`. This is required because rapid projects use a
+        // [macos_ui](https://pub.dev/packages/macos_ui) version from the dev channel.
+        final podFile = rootPackage.nativeDirectory.podFile;
+        if (podFile.existsSync()) {
+          replaceInFile(
+            podFile,
+            'platform :osx, \'10.14\'',
+            'platform :osx, \'10.15.7.7\'',
+          );
+        } else {
+          // Required because on ci (maybe other systems too) the Podfile is not generated by flutter tooling.
+          podFile
+            ..createSync(recursive: true)
+            ..writeAsStringSync(_podFileContent);
+        }
+      },
+    );
+  }
+
+  Future<void> _activateWeb({
+    required String description,
+    required Language language,
+    bool cleanUp = true,
+  }) async {
+    final platform = Platform.web;
+    return _wrapActivatePlatform(
+      platform,
+      cleanUp: cleanUp,
+      activatePlatform: () async {
+        final rootPackage = project.appModule
+            .platformDirectory(platform: platform)
+            .rootPackage as NoneIosRootPackage;
+        await _activatePlatform(
+          platform,
+          language: language,
+          generateRootPackage: () => rootPackage.generate(
+            description: description,
+          ),
+          flutterConfigEnablePlatformTasks: [
+            () => _flutterConfigEnablePlatformTask(platform: platform),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _activateWindows({
+    required String orgName,
+    required Language language,
+    bool cleanUp = true,
+  }) async {
+    final platform = Platform.windows;
+    return _wrapActivatePlatform(
+      platform,
+      cleanUp: cleanUp,
+      activatePlatform: () async {
+        final rootPackage = project.appModule
+            .platformDirectory(platform: platform)
+            .rootPackage as NoneIosRootPackage;
+        await _activatePlatform(
+          platform,
+          language: language,
+          generateRootPackage: () => rootPackage.generate(
+            orgName: orgName,
+          ),
+          flutterConfigEnablePlatformTasks: [
+            () => _flutterConfigEnablePlatformTask(platform: platform),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _activateMobile({
+    required String description,
+    required String orgName,
+    required Language language,
+    bool cleanUp = true,
+  }) async {
+    final platform = Platform.mobile;
+    return _wrapActivatePlatform(
+      platform,
+      cleanUp: cleanUp,
+      activatePlatform: () async {
+        final rootPackage = project.appModule
+            .platformDirectory(platform: platform)
+            .rootPackage as MobileRootPackage;
+        await _activatePlatform(
+          platform,
+          language: language,
+          generateRootPackage: () => rootPackage.generate(
+            orgName: orgName,
+            description: description,
+            language: language,
+          ),
+          flutterConfigEnablePlatformTasks: [
+            () => _flutterConfigEnablePlatformTask(platform: Platform.android),
+            () => _flutterConfigEnablePlatformTask(platform: Platform.ios),
+          ],
+        );
+      },
+    );
+  }
+
+  /// Checks wheter [platform] can be activated.
+  /// If true executes [activatePlatform].
+  /// Afterwards if [cleanup] runs cleanup and logs sucess.
+  ///
+  /// [cleanup] beeing false indicates the platform activate
+  ///  was issued from the create command.
+  Future<void> _wrapActivatePlatform(
+    Platform platform, {
+    required bool cleanUp,
+    required Future<void> Function() activatePlatform,
   }) async {
     if (project.platformIsActivated(platform)) {
       throw PlatformAlreadyActivatedException._(platform);
@@ -87,12 +283,7 @@ mixin _ActivateMixin on _Rapid {
 
     logger.newLine();
 
-    await __activatePlatform(
-      platform,
-      description: description,
-      orgName: orgName,
-      language: language,
-    );
+    await activatePlatform();
 
     await dartFormatFixTask();
 
@@ -101,12 +292,11 @@ mixin _ActivateMixin on _Rapid {
       ..commandSuccess('Activated ${platform.prettyName}!');
   }
 
-  // TODO: consider adding __activateAndroid, __activateIos ... methods to match params
-  Future<void> __activatePlatform(
+  Future<void> _activatePlatform(
     Platform platform, {
-    String? description,
-    String? orgName,
     required Language language,
+    required Future<void> Function() generateRootPackage,
+    required List<Future<void> Function()> flutterConfigEnablePlatformTasks,
   }) async {
     final platformDirectory =
         project.appModule.platformDirectory(platform: platform);
@@ -133,30 +323,7 @@ mixin _ActivateMixin on _Rapid {
             await homePageFeaturePackage.generate();
             await localizationPackage.generate(defaultLanguage: language);
             await navigationPackage.generate();
-
-            // TODO the ! is not good practice
-            switch (platform) {
-              case Platform.ios:
-                await (rootPackage as IosRootPackage).generate(
-                  orgName: orgName!,
-                  language: language,
-                );
-              case Platform.macos:
-                await (rootPackage as MacosRootPackage).generate(
-                  orgName: orgName!,
-                );
-              case Platform.mobile:
-                await (rootPackage as MobileRootPackage).generate(
-                  orgName: orgName!,
-                  description: description!,
-                  language: language,
-                );
-              default:
-                await (rootPackage as NoneIosRootPackage).generate(
-                  orgName: orgName,
-                  description: description,
-                );
-            }
+            await generateRootPackage();
             await platformUiPackage.generate();
           },
         ),
@@ -190,33 +357,42 @@ mixin _ActivateMixin on _Rapid {
 
     await flutterGenl10nTask(package: localizationPackage);
 
-    // TODO use tasks
-    switch (platform) {
-      case Platform.mobile:
-        await flutterConfigEnable(platform: Platform.android, project: project);
-        await flutterConfigEnable(platform: Platform.ios, project: project);
-      default:
-        await flutterConfigEnable(platform: platform, project: project);
+    for (final flutterConfigEnablePlatform
+        in flutterConfigEnablePlatformTasks) {
+      await flutterConfigEnablePlatform();
     }
 
     logger.newLine();
+  }
 
-    // TODO: Required due to https://github.com/jtdLab/rapid/issues/96
-    if (platform == Platform.macos) {
-      // Sets the `osx` version inside the `Podfile` of the `macos` app
-      // to `10.15.7.7`. This is required because rapid projects use a
-      // [macos_ui](https://pub.dev/packages/macos_ui) version from the dev channel.
-      final podFile = (rootPackage as MacosRootPackage).nativeDirectory.podFile;
-      if (podFile.existsSync()) {
-        replaceInFile(
-          podFile,
-          'platform :osx, \'10.14\'',
-          'platform :osx, \'10.15.7.7\'',
-        );
-      } else {
-        podFile.createSync(recursive: true);
-        // Required because on ci (maybe other systems too) the Podfile is not generated by flutter tooling.
-        podFile.writeAsStringSync('''
+  Future<void> _flutterConfigEnablePlatformTask({
+    required Platform platform,
+  }) async {
+    final commandString = switch (platform) {
+      Platform.android => '--enable-android',
+      Platform.ios => '--enable-ios',
+      Platform.linux => '--enable-linux-desktop',
+      Platform.macos => '--enable-macos-desktop',
+      Platform.web => '--enable-web',
+      _ => '--enable-windows-desktop',
+    };
+    return task(
+      'Running "$commandString" in project',
+      () async => flutterConfigEnable(platform: platform, project: project),
+    );
+  }
+}
+
+typedef PlatformDirectoryBuilder = Future<PlatformDirectory> Function(
+  RapidProject project,
+);
+
+class PlatformAlreadyActivatedException extends RapidException {
+  PlatformAlreadyActivatedException._(Platform platform)
+      : super('The platform ${platform.prettyName} is already activated.');
+}
+
+const _podFileContent = '''
 platform :osx, '10.15.7.7'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
@@ -260,17 +436,4 @@ post_install do |installer|
     flutter_additional_macos_build_settings(target)
   end
 end
-''');
-      }
-    }
-  }
-}
-
-typedef PlatformDirectoryBuilder = Future<PlatformDirectory> Function(
-  RapidProject project,
-);
-
-class PlatformAlreadyActivatedException extends RapidException {
-  PlatformAlreadyActivatedException._(Platform platform)
-      : super('The platform ${platform.prettyName} is already activated.');
-}
+''';

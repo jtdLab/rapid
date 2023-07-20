@@ -13,6 +13,8 @@ import '../mock_env.dart';
 import '../mock_fs.dart';
 import '../mocks.dart';
 
+// TODO test loggs better and verify nothing ran on exception
+
 Rapid _getRapid({
   RapidProject Function({required RapidProjectConfig config})? projectBuilder,
   MockRapidTool? tool,
@@ -49,6 +51,7 @@ void main() {
           ),
           throwsA(isA<OutputDirNotEmptyException>()),
         );
+        // TODO
 /*         verifyNever(() => tool.loadGroup());
         verifyNever(() => tool.activateCommandGroup());
         verifyNever(() => logger.commandSuccess(any())); */
@@ -501,7 +504,6 @@ void main() {
               ),
           () => navigationPackage.generate(),
           () => platformRootPackage.generate(
-                description: 'Some desc.',
                 orgName: 'test.example',
               ),
           () => platformUiPackage.generate(),
@@ -761,7 +763,6 @@ void main() {
           () => navigationPackage.generate(),
           () => platformRootPackage.generate(
                 description: 'Some desc.',
-                orgName: 'test.example',
               ),
           () => platformUiPackage.generate(),
           ...flutterPubGetTaskGroup(
@@ -890,7 +891,6 @@ void main() {
               ),
           () => navigationPackage.generate(),
           () => platformRootPackage.generate(
-                description: 'Some desc.',
                 orgName: 'test.example',
               ),
           () => platformUiPackage.generate(),

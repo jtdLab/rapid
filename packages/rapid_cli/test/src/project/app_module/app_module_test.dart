@@ -2,28 +2,6 @@ import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 
-import '../../mocks.dart';
-
-AppModule _getAppModule({
-  String? path,
-  DiPackage? diPackage,
-  DomainDirectory? domainDirectory,
-  InfrastructureDirectory? infrastructureDirectory,
-  LoggingPackage? loggingPackage,
-  PlatformDirectory Function({required Platform platform})? platformDirectory,
-}) {
-  return AppModule(
-    path: path ?? 'path',
-    diPackage: diPackage ?? MockDiPackage(),
-    domainDirectory: domainDirectory ?? MockDomainDirectory(),
-    infrastructureDirectory:
-        infrastructureDirectory ?? MockInfrastructureDirectory(),
-    loggingPackage: loggingPackage ?? MockLoggingPackage(),
-    platformDirectory: platformDirectory ??
-        (({required Platform platform}) => MockPlatformDirectory()),
-  );
-}
-
 void main() {
   group('AppModule', () {
     test('.resolve', () {

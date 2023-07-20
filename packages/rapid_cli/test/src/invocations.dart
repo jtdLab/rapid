@@ -54,7 +54,6 @@ List<dynamic Function()> flutterPubRunBuildRunnerBuildTask<T>(
   MockProcessManager manager, {
   DartPackage? package,
 }) {
-  final path = package?.path;
   return [
     () => manager.run(
           [
@@ -65,7 +64,7 @@ List<dynamic Function()> flutterPubRunBuildRunnerBuildTask<T>(
             'build',
             '--delete-conflicting-outputs',
           ],
-          workingDirectory: path ?? any(named: 'workingDirectory'),
+          workingDirectory: package?.path ?? any(named: 'workingDirectory'),
           runInShell: true,
           stderrEncoding: utf8,
           stdoutEncoding: utf8,

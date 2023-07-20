@@ -164,16 +164,19 @@ Future<void> flutterConfigEnable({
   required Platform platform,
   required RapidProject project,
 }) async {
+  assert(platform != Platform.mobile);
   await runCommand(
     [
       'flutter',
       'config',
-      if (platform == Platform.android) '--enable-android',
-      if (platform == Platform.ios) '--enable-ios',
-      if (platform == Platform.linux) '--enable-linux-desktop',
-      if (platform == Platform.macos) '--enable-macos-desktop',
-      if (platform == Platform.web) '--enable-web',
-      if (platform == Platform.windows) '--enable-windows-desktop',
+      switch (platform) {
+        Platform.android => '--enable-android',
+        Platform.ios => '--enable-ios',
+        Platform.linux => '--enable-linux-desktop',
+        Platform.macos => '--enable-macos-desktop',
+        Platform.web => '--enable-web',
+        _ => '--enable-windows-desktop',
+      }
     ],
     workingDirectory: project.path,
   );

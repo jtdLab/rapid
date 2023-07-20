@@ -22,6 +22,7 @@ void registerFallbackValues() {
   registerFallbackValue(FakeGeneratorTarget());
   registerFallbackValue(FakeMasonBundle());
   registerFallbackValue(FakeRapidProjectConfig());
+  registerFallbackValue(FakeInfrastructurePackage());
 }
 
 class MockBloc extends Mock implements Bloc {}
@@ -342,6 +343,7 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
       required String name,
       required String serviceInterfaceName,
     })? serviceImplementation,
+    bool? isDefault,
     PubspecYamlFile? pubSpec,
   }) {
     packageName ??= 'domain_package';
@@ -351,6 +353,7 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
     serviceImplementation ??= (
             {required String name, required String serviceInterfaceName}) =>
         MockServiceImplementation();
+    isDefault ??= false;
     pubSpec ??= MockPubspecYamlFile();
 
     when(() => this.packageName).thenReturn(packageName);
@@ -358,6 +361,7 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
     when(() => this.name).thenReturn(name);
     when(() => this.dataTransferObject).thenReturn(dataTransferObject);
     when(() => this.serviceImplementation).thenReturn(serviceImplementation);
+    when(() => this.isDefault).thenReturn(isDefault);
     // when(() => this.barrelFile).thenReturn(MockDartFile()); // TODO needed ?
     when(() => generate()).thenAnswer((_) async {});
     when(() => pubSpecFile).thenReturn(pubSpec);
@@ -474,6 +478,7 @@ class MockMacosRootPackage extends Mock implements MacosRootPackage {
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
     when(() => this.nativeDirectory).thenReturn(nativeDirectory);
+    when(() => registerInfrastructurePackage(any())).thenAnswer((_) async {});
     when(
       () => generate(orgName: any(named: 'orgName')),
     ).thenAnswer((_) async {});

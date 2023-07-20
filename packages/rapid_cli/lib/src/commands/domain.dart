@@ -116,9 +116,7 @@ mixin _DomainMixin on _Rapid {
         'Creating entity',
         () async {
           await entity.generate();
-          barrelFile.addExport(
-            p.normalize(p.join('src', '${name.snakeCase}.dart')),
-          );
+          barrelFile.addExport(p.join('src', '${name.snakeCase}.dart'));
         },
       );
 
@@ -149,7 +147,7 @@ mixin _DomainMixin on _Rapid {
         () async {
           await serviceInterface.generate();
           barrelFile.addExport(
-            p.normalize(p.join('src', 'i_${name.snakeCase}_service.dart')),
+            p.join('src', 'i_${name.snakeCase}_service.dart'),
           );
         },
       );
@@ -182,9 +180,7 @@ mixin _DomainMixin on _Rapid {
         'Creating value object',
         () async {
           await valueObject.generate(type: type, generics: generics);
-          barrelFile.addExport(
-            p.normalize(p.join('src', '${name.snakeCase}.dart')),
-          );
+          barrelFile.addExport(p.join('src', '${name.snakeCase}.dart'));
         },
       );
 
@@ -217,9 +213,7 @@ mixin _DomainMixin on _Rapid {
         'Deleting entity',
         () async {
           entity.delete();
-          barrelFile.removeExport(
-            p.normalize(p.join('src', '${name.snakeCase}.dart')),
-          );
+          barrelFile.removeExport(p.join('src', '${name.snakeCase}.dart'));
         },
       );
 
@@ -250,7 +244,7 @@ mixin _DomainMixin on _Rapid {
         () async {
           serviceInterface.delete();
           barrelFile.removeExport(
-            p.normalize(p.join('src', 'i_${name.snakeCase}_service.dart')),
+            p.join('src', 'i_${name.snakeCase}_service.dart'),
           );
         },
       );
@@ -282,9 +276,7 @@ mixin _DomainMixin on _Rapid {
         'Deleting value object files',
         () async {
           valueObject.delete();
-          barrelFile.removeExport(
-            p.normalize(p.join('src', '${name.snakeCase}.dart')),
-          );
+          barrelFile.removeExport(p.join('src', '${name.snakeCase}.dart'));
         },
       );
 

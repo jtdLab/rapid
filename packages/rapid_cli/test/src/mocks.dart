@@ -528,6 +528,8 @@ class MockNoneIosRootPackage extends Mock implements NoneIosRootPackage {
         orgName: any(named: 'orgName'),
       ),
     ).thenAnswer((_) async {});
+    when(() => registerInfrastructurePackage(any())).thenAnswer((_) async {});
+    when(() => unregisterInfrastructurePackage(any())).thenAnswer((_) async {});
   }
 }
 

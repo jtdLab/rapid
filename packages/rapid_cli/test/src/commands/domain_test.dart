@@ -1,557 +1,611 @@
-void main() {
-  // TODO impl
-}
-
-/* import 'package:mocktail/mocktail.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
 import 'package:test/test.dart';
 
+import '../invocations.dart';
+import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('domainAddSubDomain', () {
-    test('throws SubDomainAlreadyExistsException when subdomain already exists',
-        () async {
-      final tool = MockRapidTool();
+    test('adds subdomain', () async {
+      final manager = MockProcessManager();
+      final domainPackage = MockDomainPackage();
+      when(() => domainPackage.existsSync()).thenReturn(false);
+      final infrastructurePackage = MockInfrastructurePackage();
+      when(() => infrastructurePackage.existsSync()).thenReturn(false);
+      final rootPackage1 = MockNoneIosRootPackage();
+      final rootPackage2 = MockNoneIosRootPackage();
+      final rootPackages = [rootPackage1, rootPackage2];
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+          infrastructureDirectory: MockInfrastructureDirectory(
+            infrastructurePackage: ({name}) => infrastructurePackage,
+          ),
+        ),
+        rootPackages: rootPackages,
+      );
       final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
+      final rapid = getRapid(project: project, logger: logger);
+
+      await withMockProcessManager(
+        () async => rapid.domainAddSubDomain(name: 'foo_bar'),
+        manager: manager,
+      );
+
+      verifyInOrder([
+        () => logger.newLine(),
+        () => domainPackage.generate(),
+        () => infrastructurePackage.generate(),
+        () => rootPackage1.registerInfrastructurePackage(infrastructurePackage),
+        () => rootPackage2.registerInfrastructurePackage(infrastructurePackage),
+        () => melosBootstrapTask(
+              manager,
+              scope: [
+                domainPackage,
+                infrastructurePackage,
+                ...rootPackages,
+              ],
+            ),
+        () => flutterPubRunBuildRunnerBuildTaskGroup(
+              manager,
+              packages: rootPackages,
+            ),
+        () => dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Added Sub Domain!')
+      ]);
+    });
+
+    test(
+        'throws SubDomainAlreadyExistsException when domain package already exists',
+        () async {
+      final domainPackage = MockDomainPackage();
       when(() => domainPackage.existsSync()).thenReturn(true);
-      final rapid = getRapid(tool: tool);
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
+      final rapid = getRapid(project: project);
 
       expect(
-        () => rapid.domainAddSubDomain(name: 'SubDomain'),
+        () => rapid.domainAddSubDomain(name: 'foo_bar'),
         throwsA(isA<SubDomainAlreadyExistsException>()),
       );
     });
 
     test(
-        'throws SubInfrastructureAlreadyExistsException when subinfrastructure already exists',
+        'throws SubInfrastructureAlreadyExistsException when infrastructure package already exists',
         () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final infrastructureDirectory = MockRapidDirectory();
-      final infrastructurePackage = MockRapidPackage();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => appModule.infrastructureDirectory)
-          .thenReturn(infrastructureDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => infrastructureDirectory.infrastructurePackage(
-          name: any(named: 'name'))).thenReturn(infrastructurePackage);
+      final domainPackage = MockDomainPackage();
       when(() => domainPackage.existsSync()).thenReturn(false);
+      final infrastructurePackage = MockInfrastructurePackage();
       when(() => infrastructurePackage.existsSync()).thenReturn(true);
-      final rapid = getRapid(tool: tool);
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+          infrastructureDirectory: MockInfrastructureDirectory(
+            infrastructurePackage: ({name}) => infrastructurePackage,
+          ),
+        ),
+      );
+      final rapid = getRapid(project: project);
 
       expect(
-        () => rapid.domainAddSubDomain(name: 'SubDomain'),
+        () => rapid.domainAddSubDomain(name: 'foo_bar'),
         throwsA(isA<SubInfrastructureAlreadyExistsException>()),
       );
-    });
-
-    test('creates subdomain and completes', () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final infrastructureDirectory = MockRapidDirectory();
-      final infrastructurePackage = MockRapidPackage();
-      final rootPackage = MockRapidPackage();
-      final barrelFile = MockRapidFile();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => appModule.infrastructureDirectory)
-          .thenReturn(infrastructureDirectory);
-      when(() => project.rootPackages()).thenReturn([rootPackage]);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => infrastructureDirectory.infrastructurePackage(
-          name: any(named: 'name'))).thenReturn(infrastructurePackage);
-      when(() => domainPackage.existsSync()).thenReturn(false);
-      when(() => infrastructurePackage.existsSync()).thenReturn(false);
-      when(() => domainPackage.barrelFile).thenReturn(barrelFile);
-      final rapid = getRapid(tool: tool);
-
-      await rapid.domainAddSubDomain(name: 'SubDomain');
-
-      verify(() => domainPackage.generate()).called(1);
-      verify(() => infrastructurePackage.generate()).called(1);
-      verify(() =>
-              rootPackage.registerInfrastructurePackage(infrastructurePackage))
-          .called(1);
-      // Verify other expectations
     });
   });
 
   group('domainRemoveSubDomain', () {
-    test('throws SubDomainDoesNotExistException when subdomain does not exist',
-        () async {
-      final tool = MockRapidTool();
+    test('removes subdomain', () async {
+      final manager = MockProcessManager();
+      final domainPackage = MockDomainPackage();
+      when(() => domainPackage.existsSync()).thenReturn(true);
+      final infrastructurePackage = MockInfrastructurePackage();
+      when(() => infrastructurePackage.existsSync()).thenReturn(true);
+      final rootPackage1 = MockNoneIosRootPackage();
+      final rootPackage2 = MockNoneIosRootPackage();
+      final rootPackages = [rootPackage1, rootPackage2];
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+          infrastructureDirectory: MockInfrastructureDirectory(
+            infrastructurePackage: ({name}) => infrastructurePackage,
+          ),
+        ),
+        rootPackages: rootPackages,
+      );
       final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
+      final rapid = getRapid(project: project, logger: logger);
+
+      await withMockProcessManager(
+        () async => rapid.domainRemoveSubDomain(name: 'foo_bar'),
+        manager: manager,
+      );
+
+      verifyInOrder([
+        () => logger.newLine(),
+        () => domainPackage.deleteSync(recursive: true),
+        () =>
+            rootPackage1.unregisterInfrastructurePackage(infrastructurePackage),
+        () =>
+            rootPackage2.unregisterInfrastructurePackage(infrastructurePackage),
+        () => infrastructurePackage.deleteSync(recursive: true),
+        () => melosBootstrapTask(manager, scope: rootPackages),
+        () => flutterPubRunBuildRunnerBuildTaskGroup(
+              manager,
+              packages: rootPackages,
+            ),
+        () => dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Removed Sub Domain!')
+      ]);
+    });
+
+    test('throws SubDomainNotFoundException when domain package does not exist',
+        () async {
+      final domainPackage = MockDomainPackage();
       when(() => domainPackage.existsSync()).thenReturn(false);
-      final rapid = getRapid(tool: tool);
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
+      final rapid = getRapid(project: project);
 
       expect(
-        () => rapid.domainRemoveSubDomain(name: 'SubDomain'),
-        throwsA(isA<SubDomainDoesNotExistException>()),
+        () => rapid.domainRemoveSubDomain(name: 'foo_bar'),
+        throwsA(isA<SubDomainNotFoundException>()),
       );
     });
 
     test(
-        'throws SubInfrastructureDoesNotExistException when subinfrastructure does not exist',
+        'throws SubInfrastructureNotFoundException when infrastructure package does not exist',
         () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final infrastructureDirectory = MockRapidDirectory();
-      final infrastructurePackage = MockRapidPackage();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => appModule.infrastructureDirectory)
-          .thenReturn(infrastructureDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => infrastructureDirectory.infrastructurePackage(
-          name: any(named: 'name'))).thenReturn(infrastructurePackage);
+      final domainPackage = MockDomainPackage();
       when(() => domainPackage.existsSync()).thenReturn(true);
+      final infrastructurePackage = MockInfrastructurePackage();
       when(() => infrastructurePackage.existsSync()).thenReturn(false);
-      final rapid = getRapid(tool: tool);
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+          infrastructureDirectory: MockInfrastructureDirectory(
+            infrastructurePackage: ({name}) => infrastructurePackage,
+          ),
+        ),
+      );
+      final rapid = getRapid(project: project);
 
       expect(
-        () => rapid.domainRemoveSubDomain(name: 'SubDomain'),
-        throwsA(isA<SubInfrastructureDoesNotExistException>()),
+        () => rapid.domainRemoveSubDomain(name: 'foo_bar'),
+        throwsA(isA<SubInfrastructureNotFoundException>()),
       );
-    });
-
-    test('removes subdomain and completes', () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final infrastructureDirectory = MockRapidDirectory();
-      final infrastructurePackage = MockRapidPackage();
-      final rootPackage = MockRapidPackage();
-      final barrelFile = MockRapidFile();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => appModule.infrastructureDirectory)
-          .thenReturn(infrastructureDirectory);
-      when(() => project.rootPackages()).thenReturn([rootPackage]);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => infrastructureDirectory.infrastructurePackage(
-          name: any(named: 'name'))).thenReturn(infrastructurePackage);
-      when(() => domainPackage.existsSync()).thenReturn(true);
-      when(() => infrastructurePackage.existsSync()).thenReturn(true);
-      when(() => domainPackage.barrelFile).thenReturn(barrelFile);
-      final rapid = getRapid(tool: tool);
-
-      await rapid.domainRemoveSubDomain(name: 'SubDomain');
-
-      verify(() => domainPackage.deleteSync(recursive: true)).called(1);
-      verify(() => rootPackage
-          .unregisterInfrastructurePackage(infrastructurePackage)).called(1);
-      verify(() => infrastructurePackage.deleteSync(recursive: true)).called(1);
-      // Verify other expectations
     });
   });
 
   group('domainSubDomainAddEntity', () {
+    test('adds entity to subdomain', () async {
+      final manager = MockProcessManager();
+      final entity = MockEntity();
+      when(() => entity.existsAny).thenReturn(false);
+      final barrelFile = MockDartFile();
+      final domainPackage = MockDomainPackage(
+        entity: ({required name}) => entity,
+      );
+      when(() => domainPackage.barrelFile).thenReturn(barrelFile);
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
+      final logger = MockRapidLogger();
+      final rapid = getRapid(project: project, logger: logger);
+
+      await withMockProcessManager(
+        () async => rapid.domainSubDomainAddEntity(
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        ),
+        manager: manager,
+      );
+
+      verifyInOrder([
+        () => logger.newLine(),
+        () => entity.generate(),
+        () => barrelFile.addExport('src/cool.dart'),
+        () => dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Added Entity!')
+      ]);
+    });
+
     test(
         'throws EntityOrValueObjectAlreadyExistsException when entity already exists',
         () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final entity = MockRapidEntity();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => domainPackage.entity(name: any(named: 'name')))
-          .thenReturn(entity);
+      final entity = MockEntity();
       when(() => entity.existsAny).thenReturn(true);
-      final rapid = getRapid(tool: tool);
+      final domainPackage = MockDomainPackage(
+        entity: ({required name}) => entity,
+      );
+
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.domainSubDomainAddEntity(
-            name: 'Entity', subDomainName: 'SubDomain'),
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        ),
         throwsA(isA<EntityOrValueObjectAlreadyExistsException>()),
       );
-    });
-
-    test('adds entity and completes', () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final entity = MockRapidEntity();
-      final barrelFile = MockRapidFile();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => domainPackage.entity(name: any(named: 'name')))
-          .thenReturn(entity);
-      when(() => entity.existsAny).thenReturn(false);
-      when(() => domainPackage.barrelFile).thenReturn(barrelFile);
-      final rapid = getRapid(tool: tool);
-
-      await rapid.domainSubDomainAddEntity(
-          name: 'Entity', subDomainName: 'SubDomain');
-
-      verify(() => entity.generate()).called(1);
-      verify(() => barrelFile.addExport(any())).called(1);
-      // Verify other expectations
     });
   });
 
   group('domainSubDomainAddServiceInterface', () {
+    test('adds service interface to subdomain', () async {
+      final manager = MockProcessManager();
+      final serviceInterface = MockServiceInterface();
+      when(() => serviceInterface.existsAny).thenReturn(false);
+      final barrelFile = MockDartFile();
+      final domainPackage = MockDomainPackage(
+        serviceInterface: ({required name}) => serviceInterface,
+        barrelFile: barrelFile,
+      );
+
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
+      final logger = MockRapidLogger();
+      final rapid = getRapid(project: project, logger: logger);
+
+      await withMockProcessManager(
+        () async => rapid.domainSubDomainAddServiceInterface(
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        ),
+        manager: manager,
+      );
+
+      verifyInOrder([
+        () => logger.newLine(),
+        () => serviceInterface.generate(),
+        () => barrelFile.addExport('src/i_cool_service.dart'),
+        () => dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Added Service Interface!')
+      ]);
+    });
+
     test(
         'throws ServiceInterfaceAlreadyExistsException when service interface already exists',
         () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final serviceInterface = MockRapidServiceInterface();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => domainPackage.serviceInterface(name: any(named: 'name')))
-          .thenReturn(serviceInterface);
+      final serviceInterface = MockServiceInterface();
       when(() => serviceInterface.existsAny).thenReturn(true);
-      final rapid = getRapid(tool: tool);
+      final domainPackage = MockDomainPackage(
+        serviceInterface: ({required name}) => serviceInterface,
+      );
+
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.domainSubDomainAddServiceInterface(
-            name: 'Service', subDomainName: 'SubDomain'),
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        ),
         throwsA(isA<ServiceInterfaceAlreadyExistsException>()),
       );
-    });
-
-    test('adds service interface and completes', () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final serviceInterface = MockRapidServiceInterface();
-      final barrelFile = MockRapidFile();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => domainPackage.serviceInterface(name: any(named: 'name')))
-          .thenReturn(serviceInterface);
-      when(() => serviceInterface.existsAny).thenReturn(false);
-      when(() => domainPackage.barrelFile).thenReturn(barrelFile);
-      final rapid = getRapid(tool: tool);
-
-      await rapid.domainSubDomainAddServiceInterface(
-          name: 'Service', subDomainName: 'SubDomain');
-
-      verify(() => serviceInterface.generate()).called(1);
-      verify(() => barrelFile.addExport(any())).called(1);
-      // Verify other expectations
     });
   });
 
   group('domainSubDomainAddValueObject', () {
+    test('adds value object to subdomain', () async {
+      final manager = MockProcessManager();
+      final valueObject = MockValueObject();
+      when(() => valueObject.existsAny).thenReturn(false);
+      final barrelFile = MockDartFile();
+      final domainPackage = MockDomainPackage(
+        valueObject: ({required name}) => valueObject,
+        barrelFile: barrelFile,
+      );
+
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
+      final logger = MockRapidLogger();
+      final rapid = getRapid(project: project, logger: logger);
+
+      await withMockProcessManager(
+        () async => rapid.domainSubDomainAddValueObject(
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+          type: 'String',
+          generics: '<T>',
+        ),
+        manager: manager,
+      );
+
+      verifyInOrder([
+        () => logger.newLine(),
+        () => valueObject.generate(type: 'String', generics: '<T>'),
+        () => barrelFile.addExport('src/cool.dart'),
+        () =>
+            flutterPubRunBuildRunnerBuildTask(manager, package: domainPackage),
+        () => dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Added Value Object!')
+      ]);
+    });
+
     test(
         'throws EntityOrValueObjectAlreadyExistsException when value object already exists',
         () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final valueObject = MockRapidValueObject();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => domainPackage.valueObject(name: any(named: 'name')))
-          .thenReturn(valueObject);
+      final valueObject = MockValueObject();
       when(() => valueObject.existsAny).thenReturn(true);
-      final rapid = getRapid(tool: tool);
+      final domainPackage = MockDomainPackage(
+        valueObject: ({required name}) => valueObject,
+      );
+
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.domainSubDomainAddValueObject(
-            name: 'ValueObject',
-            subDomainName: 'SubDomain',
-            type: 'String',
-            generics: '<T>'),
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+          type: 'String',
+          generics: '<T>',
+        ),
         throwsA(isA<EntityOrValueObjectAlreadyExistsException>()),
       );
-    });
-
-    test('adds value object and completes', () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final valueObject = MockRapidValueObject();
-      final barrelFile = MockRapidFile();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => domainPackage.valueObject(name: any(named: 'name')))
-          .thenReturn(valueObject);
-      when(() => valueObject.existsAny).thenReturn(false);
-      when(() => domainPackage.barrelFile).thenReturn(barrelFile);
-      final rapid = getRapid(tool: tool);
-
-      await rapid.domainSubDomainAddValueObject(
-          name: 'ValueObject',
-          subDomainName: 'SubDomain',
-          type: 'String',
-          generics: '<T>');
-
-      verify(() => valueObject.generate(
-          type: any(named: 'type'),
-          generics: any(named: 'generics'))).called(1);
-      verify(() => barrelFile.addExport(any())).called(1);
-      // Verify other expectations
     });
   });
 
   group('domainSubDomainRemoveEntity', () {
-    test('throws EntityNotFoundException when entity does not exist', () async {
-      final tool = MockRapidTool();
+    test('removes entity from subdomain', () async {
+      final manager = MockProcessManager();
+      final entity = MockEntity();
+      when(() => entity.existsAny).thenReturn(true);
+      final barrelFile = MockDartFile();
+      final domainPackage = MockDomainPackage(
+        entity: ({required name}) => entity,
+        barrelFile: barrelFile,
+      );
+
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
       final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final entity = MockRapidEntity();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => domainPackage.entity(name: any(named: 'name')))
-          .thenReturn(entity);
+      final rapid = getRapid(project: project, logger: logger);
+
+      await withMockProcessManager(
+        () async => rapid.domainSubDomainRemoveEntity(
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        ),
+        manager: manager,
+      );
+
+      verifyInOrder([
+        () => logger.newLine(),
+        () => entity.delete(),
+        () => barrelFile.removeExport('src/cool.dart'),
+        () => dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Removed Entity!')
+      ]);
+    });
+
+    test('throws EntityNotFoundException when entity does not exist', () async {
+      final entity = MockEntity();
       when(() => entity.existsAny).thenReturn(false);
-      final rapid = getRapid(tool: tool);
+      final domainPackage = MockDomainPackage(
+        entity: ({required name}) => entity,
+      );
+
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.domainSubDomainRemoveEntity(
-            name: 'Entity', subDomainName: 'SubDomain'),
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        ),
         throwsA(isA<EntityNotFoundException>()),
       );
-    });
-
-    test('removes entity and completes', () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final entity = MockRapidEntity();
-      final barrelFile = MockRapidFile();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => domainPackage.entity(name: any(named: 'name')))
-          .thenReturn(entity);
-      when(() => entity.existsAny).thenReturn(true);
-      when(() => domainPackage.barrelFile).thenReturn(barrelFile);
-      final rapid = getRapid(tool: tool);
-
-      await rapid.domainSubDomainRemoveEntity(
-          name: 'Entity', subDomainName: 'SubDomain');
-
-      verify(() => entity.delete()).called(1);
-      verify(() => barrelFile.removeExport(any())).called(1);
-      // Verify other expectations
     });
   });
 
   group('domainSubDomainRemoveServiceInterface', () {
+    test('removes service interface from subdomain', () async {
+      final manager = MockProcessManager();
+
+      final serviceInterface = MockServiceInterface();
+      when(() => serviceInterface.existsAny).thenReturn(true);
+      final barrelFile = MockDartFile();
+      final domainPackage = MockDomainPackage(
+        serviceInterface: ({required name}) => serviceInterface,
+        barrelFile: barrelFile,
+      );
+
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
+      final logger = MockRapidLogger();
+      final rapid = getRapid(project: project, logger: logger);
+
+      await withMockProcessManager(
+        () async => rapid.domainSubDomainRemoveServiceInterface(
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        ),
+        manager: manager,
+      );
+
+      verifyInOrder([
+        () => logger.newLine(),
+        () => serviceInterface.delete(),
+        () => barrelFile.removeExport('src/i_cool_service.dart'),
+        () => dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Removed Service Interface!')
+      ]);
+    });
+
     test(
         'throws ServiceInterfaceNotFoundException when service interface does not exist',
         () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final serviceInterface = MockRapidServiceInterface();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => domainPackage.serviceInterface(name: any(named: 'name')))
-          .thenReturn(serviceInterface);
+      final serviceInterface = MockServiceInterface();
+
       when(() => serviceInterface.existsAny).thenReturn(false);
-      final rapid = getRapid(tool: tool);
+      final domainPackage = MockDomainPackage(
+          serviceInterface: ({required name}) => serviceInterface);
+
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.domainSubDomainRemoveServiceInterface(
-            name: 'Service', subDomainName: 'SubDomain'),
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        ),
         throwsA(isA<ServiceInterfaceNotFoundException>()),
       );
-    });
-
-    test('removes service interface and completes', () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final serviceInterface = MockRapidServiceInterface();
-      final barrelFile = MockRapidFile();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => domainPackage.serviceInterface(name: any(named: 'name')))
-          .thenReturn(serviceInterface);
-      when(() => serviceInterface.existsAny).thenReturn(true);
-      when(() => domainPackage.barrelFile).thenReturn(barrelFile);
-      final rapid = getRapid(tool: tool);
-
-      await rapid.domainSubDomainRemoveServiceInterface(
-          name: 'Service', subDomainName: 'SubDomain');
-
-      verify(() => serviceInterface.delete()).called(1);
-      verify(() => barrelFile.removeExport(any())).called(1);
-      // Verify other expectations
     });
   });
 
   group('domainSubDomainRemoveValueObject', () {
+    test('removes value object from subdomain', () async {
+      final manager = MockProcessManager();
+      final valueObject = MockValueObject();
+      when(() => valueObject.existsAny).thenReturn(true);
+      final barrelFile = MockDartFile();
+      final domainPackage = MockDomainPackage(
+        valueObject: ({required name}) => valueObject,
+        barrelFile: barrelFile,
+      );
+
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
+      final logger = MockRapidLogger();
+      final rapid = getRapid(project: project, logger: logger);
+
+      await withMockProcessManager(
+        () async => rapid.domainSubDomainRemoveValueObject(
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        ),
+        manager: manager,
+      );
+
+      verifyInOrder([
+        () => logger.newLine(),
+        () => valueObject.delete(),
+        () => barrelFile.removeExport('src/cool.dart'),
+        () => dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Removed Value Object!')
+      ]);
+    });
+
     test('throws ValueObjectNotFoundException when value object does not exist',
         () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final valueObject = MockRapidValueObject();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => domainPackage.valueObject(name: any(named: 'name')))
-          .thenReturn(valueObject);
+      final valueObject = MockValueObject();
       when(() => valueObject.existsAny).thenReturn(false);
-      final rapid = getRapid(tool: tool);
+      final domainPackage = MockDomainPackage(
+        valueObject: ({required name}) => valueObject,
+      );
+
+      final project = MockRapidProject(
+        appModule: MockAppModule(
+          domainDirectory: MockDomainDirectory(
+            domainPackage: ({name}) => domainPackage,
+          ),
+        ),
+      );
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.domainSubDomainRemoveValueObject(
-            name: 'ValueObject', subDomainName: 'SubDomain'),
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        ),
         throwsA(isA<ValueObjectNotFoundException>()),
       );
     });
-
-    test('removes value object and completes', () async {
-      final tool = MockRapidTool();
-      final logger = MockRapidLogger();
-      final project = MockRapidProject();
-      final appModule = MockRapidModule();
-      final domainDirectory = MockRapidDirectory();
-      final domainPackage = MockRapidPackage();
-      final valueObject = MockRapidValueObject();
-      final barrelFile = MockRapidFile();
-      when(() => tool.logger).thenReturn(logger);
-      when(() => tool.project).thenReturn(project);
-      when(() => project.appModule).thenReturn(appModule);
-      when(() => appModule.domainDirectory).thenReturn(domainDirectory);
-      when(() => domainDirectory.domainPackage(name: any(named: 'name')))
-          .thenReturn(domainPackage);
-      when(() => domainPackage.valueObject(name: any(named: 'name')))
-          .thenReturn(valueObject);
-      when(() => valueObject.existsAny).thenReturn(true);
-      when(() => domainPackage.barrelFile).thenReturn(barrelFile);
-      final rapid = getRapid(tool: tool);
-
-      await rapid.domainSubDomainRemoveValueObject(
-          name: 'ValueObject', subDomainName: 'SubDomain');
-
-      verify(() => valueObject.delete()).called(1);
-      verify(() => barrelFile.removeExport(any())).called(1);
-      // Verify other expectations
-    });
   });
 }
- */

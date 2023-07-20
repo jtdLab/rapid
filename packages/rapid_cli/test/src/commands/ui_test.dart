@@ -1,191 +1,541 @@
-void main() {
-  // TODO impl
-}
-
-/* import 'package:mocktail/mocktail.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
+import 'package:rapid_cli/src/project/platform.dart';
+import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
 
+import '../invocations.dart';
+import '../mock_env.dart';
+import '../mocks.dart';
+import '../utils.dart';
+
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('uiAddWidget', () {
-    test('creates widget and adds export to barrel file', () async {
-      // Arrange
-      final uiPackage = MockUiPackage();
+    test('creates widget', () async {
+      final manager = MockProcessManager();
       final widget = MockWidget();
-      final barrelFile = MockBarrelFile();
-      when(() => rapid.project.uiModule.uiPackage).thenReturn(uiPackage);
-      when(() => uiPackage.themedWidget(name: any(named: 'name')))
-          .thenReturn(widget);
-      when(() => uiPackage.widget(name: any(named: 'name'))).thenReturn(widget);
-      when(() => uiPackage.barrelFile).thenReturn(barrelFile);
       when(() => widget.existsAny).thenReturn(false);
+      final barrelFile = MockDartFile();
+      final uiPackage = MockUiPackage(
+        widget: ({required name}) => widget,
+        barrelFile: barrelFile,
+      );
+      final project = MockRapidProject(
+        name: 'test_project',
+        uiModule: MockUiModule(uiPackage: uiPackage),
+      );
+      final logger = MockRapidLogger();
+      final rapid = getRapid(project: project, logger: logger);
 
-      // Act
-      await rapid.uiAddWidget(name: 'widget_name', theme: true);
+      await withMockProcessManager(
+        () async => rapid.uiAddWidget(name: 'CoolButton', theme: false),
+        manager: manager,
+      );
 
-      // Assert
-      verify(() => logger.newLine()).called(1);
-      verify(() => widget.generate()).called(1);
-      verify(() => barrelFile.addExport('src/widget_name.dart')).called(1);
-      verify(() => logger.newLine()).called(1);
-      verify(() => logger.commandSuccess('Added Widget!')).called(1);
+      verifyInOrder([
+        () => logger.newLine(),
+        () => uiPackage.widget(name: 'CoolButton'),
+        () => widget.generate(),
+        () => barrelFile.addExport('src/cool_button.dart'),
+        () => logger.newLine(),
+        ...dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Added Widget!')
+      ]);
+    });
+
+    test('creates themed widget', () async {
+      final manager = MockProcessManager();
+      final themedWidget = MockThemedWidget();
+      when(() => themedWidget.existsAny).thenReturn(false);
+      final barrelFile = MockDartFile();
+      final themeExtensionFile = MockDartFile();
+      when(() =>
+              themeExtensionFile.readTopLevelListVar(name: 'lightExtensions'))
+          .thenReturn(['TestProjectNiceButtonTheme.light']);
+      when(() => themeExtensionFile.readTopLevelListVar(name: 'darkExtensions'))
+          .thenReturn(['TestProjectNiceButtonTheme.dark']);
+      final uiPackage = MockUiPackage(
+        themedWidget: ({required name}) => themedWidget,
+        barrelFile: barrelFile,
+        themeExtensionsFile: themeExtensionFile,
+      );
+      final project = MockRapidProject(
+        name: 'test_project',
+        uiModule: MockUiModule(uiPackage: uiPackage),
+      );
+      final logger = MockRapidLogger();
+      final rapid = getRapid(project: project, logger: logger);
+
+      await withMockProcessManager(
+        () async => rapid.uiAddWidget(name: 'CoolButton', theme: true),
+        manager: manager,
+      );
+
+      verifyInOrder([
+        () => logger.newLine(),
+        () => uiPackage.themedWidget(name: 'CoolButton'),
+        () => themedWidget.generate(),
+        () => barrelFile.addExport('src/cool_button.dart'),
+        () => logger.newLine(),
+        () => themeExtensionFile.setTopLevelListVar(
+              name: 'lightExtensions',
+              value: [
+                'TestProjectCoolButtonTheme.light',
+                'TestProjectNiceButtonTheme.light',
+              ],
+            ),
+        () => themeExtensionFile.setTopLevelListVar(
+              name: 'darkExtensions',
+              value: [
+                'TestProjectCoolButtonTheme.dark',
+                'TestProjectNiceButtonTheme.dark',
+              ],
+            ),
+        () => barrelFile.addExport('src/cool_button_theme.dart'),
+        () => logger.newLine(),
+        ...dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Added Widget!')
+      ]);
     });
 
     test('throws WidgetAlreadyExistsException when widget already exists',
         () async {
-      // Arrange
-      final uiPackage = MockUiPackage();
       final widget = MockWidget();
-      when(() => rapid.project.uiModule.uiPackage).thenReturn(uiPackage);
-      when(() => uiPackage.themedWidget(name: any(named: 'name')))
-          .thenReturn(widget);
-      when(() => uiPackage.widget(name: any(named: 'name'))).thenReturn(widget);
       when(() => widget.existsAny).thenReturn(true);
-
-      // Act & Assert
-      expect(
-        () => rapid.uiAddWidget(name: 'widget_name', theme: false),
-        throwsA(isA<WidgetAlreadyExistsException>()),
+      final entities = [
+        MockDartFile(path: 'foo/bar.dart', existsSync: true),
+        MockDartFile(path: 'baz/bam.dart', existsSync: true),
+      ];
+      when(() => widget.entities).thenReturn(entities);
+      final barrelFile = MockDartFile();
+      final uiPackage = MockUiPackage(
+        widget: ({required name}) => widget,
+        barrelFile: barrelFile,
       );
-    });
-  });
+      final project = MockRapidProject(
+        uiModule: MockUiModule(uiPackage: uiPackage),
+      );
+      final rapid = getRapid(project: project);
 
-  group('uiRemoveWidget', () {
-    test('deletes widget and removes export from barrel file', () async {
-      // Arrange
-      final uiPackage = MockUiPackage();
-      final widget = MockWidget();
-      final barrelFile = MockBarrelFile();
-      when(() => rapid.project.uiModule.uiPackage).thenReturn(uiPackage);
-      when(() => uiPackage.themedWidget(name: any(named: 'name')))
-          .thenReturn(widget);
-      when(() => uiPackage.widget(name: any(named: 'name'))).thenReturn(widget);
-      when(() => uiPackage.barrelFile).thenReturn(barrelFile);
-      when(() => widget.existsAny).thenReturn(true);
-
-      // Act
-      await rapid.uiRemoveWidget(name: 'widget_name');
-
-      // Assert
-      verify(() => logger.newLine()).called(1);
-      verify(() => widget.delete()).called(1);
-      verify(() => barrelFile.removeExport('src/widget_name.dart')).called(1);
-      verify(() => logger.newLine()).called(1);
-      verify(() => logger.commandSuccess('Removed Widget!')).called(1);
-    });
-
-    test('throws WidgetNotFoundException when widget does not exist', () async {
-      // Arrange
-      final uiPackage = MockUiPackage();
-      final widget = MockWidget();
-      when(() => rapid.project.uiModule.uiPackage).thenReturn(uiPackage);
-      when(() => uiPackage.themedWidget(name: any(named: 'name')))
-          .thenReturn(widget);
-      when(() => uiPackage.widget(name: any(named: 'name'))).thenReturn(widget);
-      when(() => widget.existsAny).thenReturn(false);
-
-      // Act & Assert
       expect(
-        () => rapid.uiRemoveWidget(name: 'widget_name'),
-        throwsA(isA<WidgetNotFoundException>()),
+        () => rapid.uiAddWidget(name: 'CoolButton', theme: false),
+        throwsA(
+          isA<WidgetAlreadyExistsException>().having(
+            (e) => e.toString(),
+            'toString',
+            multiLine([
+              'Some files of Widget CoolButton already exist.',
+              'Existing file(s):',
+              '',
+              'foo/bar.dart',
+              'baz/bam.dart',
+            ]),
+          ),
+        ),
       );
     });
   });
 
   group('uiPlatformAddWidget', () {
-    test('creates widget and adds export to barrel file', () async {
-      // Arrange
-      final uiPackage = MockUiPackage();
+    test('creates widget', () async {
+      final manager = MockProcessManager();
       final widget = MockWidget();
-      final barrelFile = MockBarrelFile();
-      when(() => rapid.project.uiModule.uiPackage).thenReturn(uiPackage);
-      when(() => uiPackage.themedWidget(name: any(named: 'name')))
-          .thenReturn(widget);
-      when(() => uiPackage.widget(name: any(named: 'name'))).thenReturn(widget);
-      when(() => uiPackage.barrelFile).thenReturn(barrelFile);
       when(() => widget.existsAny).thenReturn(false);
+      final barrelFile = MockDartFile();
+      final platformUiPackage = MockPlatformUiPackage(
+        widget: ({required name}) => widget,
+        barrelFile: barrelFile,
+      );
+      final project = MockRapidProject(
+        name: 'test_project',
+        uiModule: MockUiModule(
+          platformUiPackage: ({required platform}) => platformUiPackage,
+        ),
+      );
+      final logger = MockRapidLogger();
+      final rapid = getRapid(project: project, logger: logger);
 
-      // Act
-      await rapid.uiPlatformAddWidget(
-        Platform.android,
-        name: 'widget_name',
-        theme: true,
+      await withMockProcessManager(
+        () async => rapid.uiPlatformAddWidget(
+          Platform.android,
+          name: 'CoolButton',
+          theme: false,
+        ),
+        manager: manager,
       );
 
-      // Assert
-      verify(() => logger.newLine()).called(1);
-      verify(() => uiPackage.themedWidget(name: 'widget_name')).called(1);
-      verify(() => uiPackage.widget(name: 'widget_name')).called(0);
-      verify(() => widget.generate()).called(1);
-      verify(() => barrelFile.addExport('src/widget_name.dart')).called(1);
-      verify(() => logger.newLine()).called(1);
-      verify(() => logger.commandSuccess('Added Widget!')).called(1);
+      verifyInOrder([
+        () => logger.newLine(),
+        () => platformUiPackage.widget(name: 'CoolButton'),
+        () => widget.generate(),
+        () => barrelFile.addExport('src/cool_button.dart'),
+        () => logger.newLine(),
+        ...dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Added Widget!')
+      ]);
+    });
+
+    test('creates themed widget', () async {
+      final manager = MockProcessManager();
+      final themedWidget = MockThemedWidget();
+      when(() => themedWidget.existsAny).thenReturn(false);
+      final barrelFile = MockDartFile();
+      final themeExtensionFile = MockDartFile();
+      when(() =>
+              themeExtensionFile.readTopLevelListVar(name: 'lightExtensions'))
+          .thenReturn(['TestProjectNiceButtonTheme.light']);
+      when(() => themeExtensionFile.readTopLevelListVar(name: 'darkExtensions'))
+          .thenReturn(['TestProjectNiceButtonTheme.dark']);
+      final platformUiPackage = MockPlatformUiPackage(
+        themedWidget: ({required name}) => themedWidget,
+        barrelFile: barrelFile,
+        themeExtensionsFile: themeExtensionFile,
+      );
+      final project = MockRapidProject(
+        name: 'test_project',
+        uiModule: MockUiModule(
+          platformUiPackage: ({required platform}) => platformUiPackage,
+        ),
+      );
+      final logger = MockRapidLogger();
+      final rapid = getRapid(project: project, logger: logger);
+
+      await withMockProcessManager(
+        () async => rapid.uiPlatformAddWidget(
+          Platform.android,
+          name: 'CoolButton',
+          theme: true,
+        ),
+        manager: manager,
+      );
+
+      verifyInOrder([
+        () => logger.newLine(),
+        () => platformUiPackage.themedWidget(name: 'CoolButton'),
+        () => themedWidget.generate(),
+        () => barrelFile.addExport('src/cool_button.dart'),
+        () => logger.newLine(),
+        () => themeExtensionFile.setTopLevelListVar(
+              name: 'lightExtensions',
+              value: [
+                'TestProjectCoolButtonTheme.light',
+                'TestProjectNiceButtonTheme.light',
+              ],
+            ),
+        () => themeExtensionFile.setTopLevelListVar(
+              name: 'darkExtensions',
+              value: [
+                'TestProjectCoolButtonTheme.dark',
+                'TestProjectNiceButtonTheme.dark',
+              ],
+            ),
+        () => barrelFile.addExport('src/cool_button_theme.dart'),
+        () => logger.newLine(),
+        ...dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Added Widget!')
+      ]);
     });
 
     test('throws WidgetAlreadyExistsException when widget already exists',
         () async {
-      // Arrange
-      final uiPackage = MockUiPackage();
       final widget = MockWidget();
-      when(() => rapid.project.uiModule.uiPackage).thenReturn(uiPackage);
-      when(() => uiPackage.themedWidget(name: any(named: 'name')))
-          .thenReturn(widget);
-      when(() => uiPackage.widget(name: any(named: 'name'))).thenReturn(widget);
       when(() => widget.existsAny).thenReturn(true);
+      final entities = [
+        MockDartFile(path: 'foo/bar.dart', existsSync: true),
+        MockDartFile(path: 'baz/bam.dart', existsSync: true),
+      ];
+      when(() => widget.entities).thenReturn(entities);
+      final barrelFile = MockDartFile();
+      final platformUiPackage = MockPlatformUiPackage(
+        widget: ({required name}) => widget,
+        barrelFile: barrelFile,
+      );
+      final project = MockRapidProject(
+        uiModule: MockUiModule(
+          platformUiPackage: ({required platform}) => platformUiPackage,
+        ),
+      );
+      final rapid = getRapid(project: project);
 
-      // Act & Assert
       expect(
-        () => rapid.uiPlatformAddWidget(name: 'widget_name', theme: false),
-        throwsA(isA<WidgetAlreadyExistsException>()),
+        () => rapid.uiPlatformAddWidget(
+          Platform.android,
+          name: 'CoolButton',
+          theme: false,
+        ),
+        throwsA(
+          isA<WidgetAlreadyExistsException>().having(
+            (e) => e.toString(),
+            'toString',
+            multiLine([
+              'Some files of Widget CoolButton already exist.',
+              'Existing file(s):',
+              '',
+              'foo/bar.dart',
+              'baz/bam.dart',
+            ]),
+          ),
+        ),
+      );
+    });
+  });
+
+  group('uiRemoveWidget', () {
+    test('deletes widget', () async {
+      final manager = MockProcessManager();
+      final theme = MockTheme();
+      when(() => theme.existsAny).thenReturn(false);
+      final themedWidget = MockThemedWidget(theme: theme);
+      when(() => themedWidget.existsAny).thenReturn(false);
+      final widget = MockWidget();
+      when(() => widget.existsAny).thenReturn(true);
+      final barrelFile = MockDartFile();
+      final uiPackage = MockUiPackage(
+        themedWidget: ({required name}) => themedWidget,
+        widget: ({required name}) => widget,
+        barrelFile: barrelFile,
+      );
+      final project = MockRapidProject(
+        uiModule: MockUiModule(uiPackage: uiPackage),
+      );
+      final logger = MockRapidLogger();
+      final rapid = getRapid(project: project, logger: logger);
+
+      await withMockProcessManager(
+        () async => rapid.uiRemoveWidget(name: 'CoolButton'),
+        manager: manager,
+      );
+
+      verifyInOrder([
+        () => logger.newLine(),
+        () => uiPackage.widget(name: 'CoolButton'),
+        () => widget.delete(),
+        () => barrelFile.removeExport('src/cool_button.dart'),
+        () => dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Removed Widget!')
+      ]);
+    });
+
+    test('deletes themed widget', () async {
+      final manager = MockProcessManager();
+      final theme = MockTheme();
+      when(() => theme.existsAny).thenReturn(true);
+      final themedWidget = MockThemedWidget(theme: theme);
+      when(() => themedWidget.existsAny).thenReturn(true);
+      final barrelFile = MockDartFile();
+      final themeExtensionFile = MockDartFile();
+      when(() =>
+              themeExtensionFile.readTopLevelListVar(name: 'lightExtensions'))
+          .thenReturn([
+        'TestProjectCoolButtonTheme.light',
+        'TestProjectNiceButtonTheme.light',
+      ]);
+      when(() => themeExtensionFile.readTopLevelListVar(name: 'darkExtensions'))
+          .thenReturn([
+        'TestProjectCoolButtonTheme.dark',
+        'TestProjectNiceButtonTheme.dark',
+      ]);
+      when(() => barrelFile.existsSync()).thenReturn(true);
+      final uiPackage = MockUiPackage(
+        themedWidget: ({required name}) => themedWidget,
+        barrelFile: barrelFile,
+        themeExtensionsFile: themeExtensionFile,
+      );
+      final project = MockRapidProject(
+        name: 'test_project',
+        uiModule: MockUiModule(uiPackage: uiPackage),
+      );
+      final logger = MockRapidLogger();
+      final rapid = getRapid(project: project, logger: logger);
+
+      await withMockProcessManager(
+        () async => rapid.uiRemoveWidget(name: 'CoolButton'),
+        manager: manager,
+      );
+
+      verifyInOrder([
+        () => logger.newLine(),
+        () => uiPackage.themedWidget(name: 'CoolButton'),
+        () => themedWidget.delete(),
+        () => barrelFile.removeExport('src/cool_button.dart'),
+        () => themeExtensionFile.setTopLevelListVar(
+              name: 'lightExtensions',
+              value: [
+                'TestProjectNiceButtonTheme.light',
+              ],
+            ),
+        () => themeExtensionFile.setTopLevelListVar(
+              name: 'darkExtensions',
+              value: [
+                'TestProjectNiceButtonTheme.dark',
+              ],
+            ),
+        () => barrelFile.removeExport('src/cool_button_theme.dart'),
+        () => dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Removed Widget!')
+      ]);
+    });
+
+    test('throws WidgetNotFoundException when widget not found', () async {
+      final theme = MockTheme();
+      when(() => theme.existsAny).thenReturn(false);
+      final themedWidget = MockThemedWidget(theme: theme);
+      when(() => themedWidget.existsAny).thenReturn(false);
+      final widget = MockWidget();
+      when(() => widget.existsAny).thenReturn(false);
+      final uiPackage = MockUiPackage(
+        themedWidget: ({required name}) => themedWidget,
+        widget: ({required name}) => widget,
+      );
+      final project = MockRapidProject(
+        uiModule: MockUiModule(uiPackage: uiPackage),
+      );
+      final rapid = getRapid(project: project);
+
+      expect(
+        () => rapid.uiRemoveWidget(name: 'CoolButton'),
+        throwsA(isA<WidgetNotFoundException>()),
       );
     });
   });
 
   group('uiPlatformRemoveWidget', () {
-    test('deletes widget and removes export from barrel file', () async {
-      // Arrange
-      final uiPackage = MockUiPackage();
+    test('deletes widget', () async {
+      final manager = MockProcessManager();
+      final theme = MockTheme();
+      when(() => theme.existsAny).thenReturn(false);
+      final themedWidget = MockThemedWidget(theme: theme);
+      when(() => themedWidget.existsAny).thenReturn(false);
       final widget = MockWidget();
-      final barrelFile = MockBarrelFile();
-      when(() => rapid.project.uiModule.uiPackage).thenReturn(uiPackage);
-      when(() => uiPackage.themedWidget(name: any(named: 'name')))
-          .thenReturn(widget);
-      when(() => uiPackage.widget(name: any(named: 'name'))).thenReturn(widget);
-      when(() => uiPackage.barrelFile).thenReturn(barrelFile);
       when(() => widget.existsAny).thenReturn(true);
+      final barrelFile = MockDartFile();
+      final platformUiPackage = MockPlatformUiPackage(
+        themedWidget: ({required name}) => themedWidget,
+        widget: ({required name}) => widget,
+        barrelFile: barrelFile,
+      );
+      final project = MockRapidProject(
+        uiModule: MockUiModule(
+          platformUiPackage: ({required platform}) => platformUiPackage,
+        ),
+      );
+      final logger = MockRapidLogger();
+      final rapid = getRapid(project: project, logger: logger);
 
-      // Act
-      await rapid.uiPlatformRemoveWidget(
-        Platform.ios,
-        name: 'widget_name',
+      await withMockProcessManager(
+        () async =>
+            rapid.uiPlatformRemoveWidget(Platform.android, name: 'CoolButton'),
+        manager: manager,
       );
 
-      // Assert
-      verify(() => logger.newLine()).called(1);
-      verify(() => uiPackage.themedWidget(name: 'widget_name')).called(1);
-      verify(() => uiPackage.widget(name: 'widget_name')).called(0);
-      verify(() => widget.delete()).called(1);
-      verify(() => barrelFile.removeExport('src/widget_name.dart')).called(1);
-      verify(() => logger.newLine()).called(1);
-      verify(() => logger.commandSuccess('Removed Widget!')).called(1);
+      verifyInOrder([
+        () => logger.newLine(),
+        () => platformUiPackage.widget(name: 'CoolButton'),
+        () => widget.delete(),
+        () => barrelFile.removeExport('src/cool_button.dart'),
+        () => dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Removed Widget!')
+      ]);
     });
 
-    test('throws WidgetNotFoundException when widget does not exist', () async {
-      // Arrange
-      final uiPackage = MockUiPackage();
-      final widget = MockWidget();
-      when(() => rapid.project.uiModule.uiPackage).thenReturn(uiPackage);
-      when(() => uiPackage.themedWidget(name: any(named: 'name')))
-          .thenReturn(widget);
-      when(() => uiPackage.widget(name: any(named: 'name'))).thenReturn(widget);
-      when(() => widget.existsAny).thenReturn(false);
+    test('deletes themed widget', () async {
+      final manager = MockProcessManager();
+      final theme = MockTheme();
+      when(() => theme.existsAny).thenReturn(true);
+      final themedWidget = MockThemedWidget(theme: theme);
+      when(() => themedWidget.existsAny).thenReturn(true);
+      final barrelFile = MockDartFile();
+      final themeExtensionFile = MockDartFile();
+      when(() =>
+              themeExtensionFile.readTopLevelListVar(name: 'lightExtensions'))
+          .thenReturn([
+        'TestProjectCoolButtonTheme.light',
+        'TestProjectNiceButtonTheme.light',
+      ]);
+      when(() => themeExtensionFile.readTopLevelListVar(name: 'darkExtensions'))
+          .thenReturn([
+        'TestProjectCoolButtonTheme.dark',
+        'TestProjectNiceButtonTheme.dark',
+      ]);
+      when(() => barrelFile.existsSync()).thenReturn(true);
+      final platformUiPackage = MockPlatformUiPackage(
+        themedWidget: ({required name}) => themedWidget,
+        barrelFile: barrelFile,
+        themeExtensionsFile: themeExtensionFile,
+      );
+      final project = MockRapidProject(
+        name: 'test_project',
+        uiModule: MockUiModule(
+          platformUiPackage: ({required platform}) => platformUiPackage,
+        ),
+      );
+      final logger = MockRapidLogger();
+      final rapid = getRapid(project: project, logger: logger);
 
-      // Act & Assert
+      await withMockProcessManager(
+        () async =>
+            rapid.uiPlatformRemoveWidget(Platform.android, name: 'CoolButton'),
+        manager: manager,
+      );
+
+      verifyInOrder([
+        () => logger.newLine(),
+        () => platformUiPackage.themedWidget(name: 'CoolButton'),
+        () => themedWidget.delete(),
+        () => barrelFile.removeExport('src/cool_button.dart'),
+        () => themeExtensionFile.setTopLevelListVar(
+              name: 'lightExtensions',
+              value: [
+                'TestProjectNiceButtonTheme.light',
+              ],
+            ),
+        () => themeExtensionFile.setTopLevelListVar(
+              name: 'darkExtensions',
+              value: [
+                'TestProjectNiceButtonTheme.dark',
+              ],
+            ),
+        () => barrelFile.removeExport('src/cool_button_theme.dart'),
+        () => dartFormatFixTask(manager),
+        () => logger.newLine(),
+        () => logger.commandSuccess('Removed Widget!')
+      ]);
+    });
+
+    test('throws WidgetNotFoundException when widget not found', () async {
+      final theme = MockTheme();
+      when(() => theme.existsAny).thenReturn(false);
+      final themedWidget = MockThemedWidget(theme: theme);
+      when(() => themedWidget.existsAny).thenReturn(false);
+      final widget = MockWidget();
+      when(() => widget.existsAny).thenReturn(false);
+      final platformUiPackage = MockPlatformUiPackage(
+        themedWidget: ({required name}) => themedWidget,
+        widget: ({required name}) => widget,
+      );
+      final project = MockRapidProject(
+        uiModule: MockUiModule(
+          platformUiPackage: ({required platform}) => platformUiPackage,
+        ),
+      );
+      final rapid = getRapid(project: project);
+
       expect(
-        () => rapid.uiPlatformRemoveWidget(name: 'widget_name'),
+        () =>
+            rapid.uiPlatformRemoveWidget(Platform.android, name: 'CoolButton'),
         throwsA(isA<WidgetNotFoundException>()),
       );
     });
   });
 }
- */

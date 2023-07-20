@@ -48,22 +48,13 @@ class ThemedWidget extends Widget {
     required super.path,
   });
 
-  File get themeFile =>
-      File(p.join(path, 'lib', 'src', '${name.snakeCase}_theme.dart'));
-
-  File get themeTailorFile =>
-      File(p.join(path, 'lib', 'src', '${name.snakeCase}_theme.tailor.dart'));
-
-  File get themeTestFile =>
-      File(p.join(path, 'test', 'src', '${name.snakeCase}_theme_test.dart'));
+  Theme get theme => Theme(widgetName: name, path: path);
 
   @override
   Iterable<FileSystemEntity> get entities => {
-        themeFile,
-        themeTailorFile,
         file,
         testFile,
-        themeTestFile,
+        ...theme.entities,
       };
 
   @override
@@ -78,4 +69,31 @@ class ThemedWidget extends Widget {
       },
     );
   }
+}
+
+class Theme extends FileSystemEntityCollection {
+  Theme({
+    required this.widgetName,
+    required this.path,
+  });
+
+  final String widgetName;
+
+  final String path;
+
+  File get file =>
+      File(p.join(path, 'lib', 'src', '${widgetName.snakeCase}_theme.dart'));
+
+  File get tailorFile => File(
+      p.join(path, 'lib', 'src', '${widgetName.snakeCase}_theme.tailor.dart'));
+
+  File get testFile => File(
+      p.join(path, 'test', 'src', '${widgetName.snakeCase}_theme_test.dart'));
+
+  @override
+  Iterable<FileSystemEntity> get entities => {
+        file,
+        tailorFile,
+        testFile,
+      };
 }

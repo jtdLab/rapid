@@ -34,7 +34,6 @@ mixin _UiMixin on _Rapid {
       null => project.uiModule.uiPackage,
       _ => project.uiModule.platformUiPackage(platform: platform),
     };
-
     final widget = switch (theme) {
       true => uiPackage.themedWidget(name: name),
       false => uiPackage.widget(name: name),
@@ -43,15 +42,18 @@ mixin _UiMixin on _Rapid {
       final barrelFile = uiPackage.barrelFile;
 
       await task('Creating widget', () async {
-        // TODO maybe 2 sub tasks with create widget and create theme
         await widget.generate();
         barrelFile.addExport('src/${name.snakeCase}.dart');
-        // ### TODO
+      });
 
-        if (widget is ThemedWidget) {
+      logger.newLine();
+
+      if (widget is ThemedWidget) {
+        await task('Creating theme', () {
           final themeExtensionsFile = uiPackage.themeExtensionsFile;
-          final projectName = uiPackage.projectName;
-          final themes = ['light', 'dark']; // TODO read from file
+          final projectName = project.name;
+          // TODO read from theme tailor config file
+          final themes = ['light', 'dark'];
           for (final theme in themes) {
             final extension =
                 '${projectName.pascalCase}${name.pascalCase}Theme.$theme';
@@ -71,18 +73,24 @@ mixin _UiMixin on _Rapid {
           }
 
           barrelFile.addExport('src/${name.snakeCase}_theme.dart');
-        }
+        });
+      }
 
-        await dartFormatFix(package: uiPackage);
-      });
+      logger.newLine();
+
+      await dartFormatFixTask();
 
       logger
         ..newLine()
         ..commandSuccess('Added Widget!');
     } else {
-      // TODO: maybe add info which files exists
-
-      throw WidgetAlreadyExistsException._(name);
+      throw WidgetAlreadyExistsException._(
+        name: name,
+        existingEntities: widget.entities
+            .whereType<File>()
+            .where((e) => e.existsSync())
+            .toList(),
+      );
     }
   }
 
@@ -96,24 +104,24 @@ mixin _UiMixin on _Rapid {
       null => project.uiModule.uiPackage,
       _ => project.uiModule.platformUiPackage(platform: platform),
     };
-    final widget = uiPackage.themedWidget(name: name).existsAll
+    final widget = uiPackage.themedWidget(name: name).theme.existsAny
         ? uiPackage.themedWidget(name: name)
         : uiPackage.widget(name: name);
     if (widget.existsAny) {
       final barrelFile = uiPackage.barrelFile;
 
       await task('Deleting widget', () async {
-        // TODO maybe 2 sub tasks with delete widget and delete theme
         widget.delete();
         barrelFile.removeExport('src/${name.snakeCase}.dart');
+      });
 
-        // TODO ####
-        if (widget is ThemedWidget) {
+      if (widget is ThemedWidget) {
+        await task('Deleting theme', () {
           final themeExtensionsFile = uiPackage.themeExtensionsFile;
-          final projectName = uiPackage.projectName;
+          final projectName = project.name;
 
-          final themes = ['light', 'dark']; // TODO read from file
-
+          // TODO read from theme tailor config file
+          final themes = ['light', 'dark'];
           for (final theme in themes) {
             final extension =
                 '${projectName.pascalCase}${name.pascalCase}Theme.$theme';
@@ -129,14 +137,11 @@ mixin _UiMixin on _Rapid {
             }
           }
 
-          // ####
-
           barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
+        });
+      }
 
-          // TODO simplify dartformat fix to make it run on whole project
-          await dartFormatFix(package: project.rootPackage);
-        }
-      });
+      await dartFormatFixTask();
 
       logger
         ..newLine()
@@ -148,8 +153,21 @@ mixin _UiMixin on _Rapid {
 }
 
 class WidgetAlreadyExistsException extends RapidException {
-  WidgetAlreadyExistsException._(String name)
-      : super('Widget $name already exists.');
+  WidgetAlreadyExistsException._({
+    required String name,
+    required List<File> existingEntities,
+  }) : super(
+          multiLine(
+            [
+              'Some files of Widget $name already exist.',
+              'Existing file(s):',
+              '',
+              for (final existingEntity in existingEntities) ...[
+                existingEntity.path,
+              ],
+            ],
+          ),
+        );
 }
 
 class WidgetNotFoundException extends RapidException {

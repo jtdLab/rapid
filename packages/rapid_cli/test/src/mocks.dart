@@ -42,7 +42,15 @@ class MockDartPackage extends Mock implements DartPackage {
   }
 }
 
-class MockDartFile extends Mock implements DartFile {}
+class MockDartFile extends Mock implements DartFile {
+  MockDartFile({String? path, bool? existsSync}) {
+    path ??= 'path';
+    existsSync ??= false;
+
+    when(() => this.path).thenReturn(path);
+    when(() => this.existsSync()).thenReturn(existsSync);
+  }
+}
 
 class MockArbFile extends Mock implements ArbFile {}
 
@@ -781,12 +789,16 @@ class MockUiPackage extends Mock implements UiPackage {
     Widget Function({required String name})? widget,
     ThemedWidget Function({required String name})? themedWidget,
     PubspecYamlFile? pubSpec,
+    DartFile? barrelFile,
+    DartFile? themeExtensionsFile,
   }) {
     packageName ??= 'ui_package';
     path ??= 'ui_package_path';
     widget ??= ({required String name}) => MockWidget();
     themedWidget ??= ({required String name}) => MockThemedWidget();
     pubSpec ??= MockPubspecYamlFile();
+    barrelFile ??= MockDartFile();
+    themeExtensionsFile ??= MockDartFile();
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
@@ -794,6 +806,8 @@ class MockUiPackage extends Mock implements UiPackage {
     when(() => this.themedWidget).thenReturn(themedWidget);
     when(() => generate()).thenAnswer((_) async {});
     when(() => pubSpecFile).thenReturn(pubSpec);
+    when(() => this.barrelFile).thenReturn(barrelFile);
+    when(() => this.themeExtensionsFile).thenReturn(themeExtensionsFile);
   }
 }
 
@@ -803,18 +817,24 @@ class MockPlatformUiPackage extends Mock implements PlatformUiPackage {
     String? path,
     Widget Function({required String name})? widget,
     ThemedWidget Function({required String name})? themedWidget,
+    DartFile? barrelFile,
+    DartFile? themeExtensionsFile,
     bool? existsSync,
   }) {
     packageName ??= 'platform_ui_package';
     path ??= 'platform_ui_package_path';
     widget ??= ({required String name}) => MockWidget();
     themedWidget ??= ({required String name}) => MockThemedWidget();
+    barrelFile ??= MockDartFile();
+    themeExtensionsFile ??= MockDartFile();
     existsSync ??= false;
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
     when(() => this.widget).thenReturn(widget);
     when(() => this.themedWidget).thenReturn(themedWidget);
+    when(() => this.barrelFile).thenReturn(barrelFile);
+    when(() => this.themeExtensionsFile).thenReturn(themeExtensionsFile);
     when(() => this.existsSync()).thenReturn(existsSync);
     when(() => generate()).thenAnswer((_) async {});
   }
@@ -827,10 +847,15 @@ class MockWidget extends Mock implements Widget {
 }
 
 class MockThemedWidget extends Mock implements ThemedWidget {
-  MockThemedWidget() {
+  MockThemedWidget({Theme? theme}) {
+    theme ??= MockTheme();
+
     when(() => generate()).thenAnswer((_) async {});
+    when(() => this.theme).thenReturn(theme);
   }
 }
+
+class MockTheme extends Mock implements Theme {}
 
 class MockProcessManager extends Mock implements ProcessManager {
   MockProcessManager() {

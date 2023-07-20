@@ -37,6 +37,16 @@ ThemedWidget _getThemedWidget({
   );
 }
 
+Theme _getTheme({
+  String? widgetName,
+  String? path,
+}) {
+  return Theme(
+    widgetName: widgetName ?? 'Cool',
+    path: path ?? 'path',
+  );
+}
+
 void main() {
   setUpAll(() {
     registerFallbackValues();
@@ -106,42 +116,6 @@ void main() {
   });
 
   group('ThemedWidget', () {
-    test('themeFile', () {
-      final themedWidget = _getThemedWidget(
-        path: '/path/to/ui_package',
-        name: 'MyThemedWidget',
-      );
-
-      expect(
-        themedWidget.themeFile.path,
-        '/path/to/ui_package/lib/src/my_themed_widget_theme.dart',
-      );
-    });
-
-    test('themeTailorFile', () {
-      final themedWidget = _getThemedWidget(
-        path: '/path/to/ui_package',
-        name: 'MyThemedWidget',
-      );
-
-      expect(
-        themedWidget.themeTailorFile.path,
-        '/path/to/ui_package/lib/src/my_themed_widget_theme.tailor.dart',
-      );
-    });
-
-    test('themeTestFile', () {
-      final themedWidget = _getThemedWidget(
-        path: '/path/to/ui_package',
-        name: 'MyThemedWidget',
-      );
-
-      expect(
-        themedWidget.themeTestFile.path,
-        '/path/to/ui_package/test/src/my_themed_widget_theme_test.dart',
-      );
-    });
-
     test('entities', () {
       final themedWidget = _getThemedWidget();
 
@@ -150,9 +124,9 @@ void main() {
         entityEquals([
           themedWidget.file,
           themedWidget.testFile,
-          themedWidget.themeFile,
-          themedWidget.themeTailorFile,
-          themedWidget.themeTestFile,
+          themedWidget.theme.file,
+          themedWidget.theme.tailorFile,
+          themedWidget.theme.testFile,
         ]),
       );
     });
@@ -193,5 +167,43 @@ void main() {
         ]);
       }),
     );
+  });
+
+  group('Theme', () {
+    test('themeFile', () {
+      final theme = _getTheme(
+        widgetName: 'MyThemedWidget',
+        path: '/path/to/ui_package',
+      );
+
+      expect(
+        theme.file.path,
+        '/path/to/ui_package/lib/src/my_themed_widget_theme.dart',
+      );
+    });
+
+    test('themeTailorFile', () {
+      final theme = _getTheme(
+        widgetName: 'MyThemedWidget',
+        path: '/path/to/ui_package',
+      );
+
+      expect(
+        theme.tailorFile.path,
+        '/path/to/ui_package/lib/src/my_themed_widget_theme.tailor.dart',
+      );
+    });
+
+    test('themeTestFile', () {
+      final theme = _getTheme(
+        widgetName: 'MyThemedWidget',
+        path: '/path/to/ui_package',
+      );
+
+      expect(
+        theme.testFile.path,
+        '/path/to/ui_package/test/src/my_themed_widget_theme_test.dart',
+      );
+    });
   });
 }

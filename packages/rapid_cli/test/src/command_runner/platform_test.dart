@@ -1,12 +1,12 @@
-import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../common.dart';
 import '../mocks.dart';
+import '../utils.dart';
 
 List<String> expectedUsage(
-  List<String> featurePackages, {
+  List<FakePlatformFeaturePackage> featurePackages, {
   required Platform platform,
 }) {
   return [
@@ -17,7 +17,7 @@ List<String> expectedUsage(
         '\n'
         'Available subcommands:\n'
         '  add         Add features or languages to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '${featurePackages.map((e) => '  $e   Work with $e of the ${platform.prettyName} part of an existing Rapid project.\n').join()}'
+        '${featurePackages.map((e) => '  ${e.name}   Work with ${e.name} of the ${platform.prettyName} part of an existing Rapid project.\n').join()}'
         '  remove      Removes features or languages from the ${platform.prettyName} part of an existing Rapid project.\n'
         '  set         Set properties of features from the ${platform.prettyName} part of an existing Rapid project.\n'
         '\n'
@@ -34,14 +34,28 @@ void main() {
     group(platform.name, () {
       test(
         'help',
-        withRunner(
-          (commandRunner, _, __, printLogs) async {
+        overridePrint(
+          (printLogs) async {
+            final featurePackages = [
+              FakePlatformFeaturePackage(name: 'package_a'),
+              FakePlatformFeaturePackage(name: 'package_b'),
+            ];
+            final project = MockRapidProject(
+              appModule: MockAppModule(
+                platformDirectory: ({required Platform platform}) =>
+                    MockPlatformDirectory(
+                  featuresDirectory: MockPlatformFeaturesDirectory(
+                    featurePackages: featurePackages,
+                  ),
+                ),
+              ),
+            );
+            final commandRunner = getCommandRunner(project: project);
+
             await commandRunner.run([platform.name, '--help']);
             expect(
               printLogs,
-              equals(
-                expectedUsage(['package_a', 'package_b'], platform: platform),
-              ),
+              equals(expectedUsage(featurePackages, platform: platform)),
             );
 
             printLogs.clear();
@@ -49,25 +63,8 @@ void main() {
             await commandRunner.run([platform.name, '-h']);
             expect(
               printLogs,
-              equals(
-                expectedUsage(['package_a', 'package_b'], platform: platform),
-              ),
+              equals(expectedUsage(featurePackages, platform: platform)),
             );
-          },
-          setupProject: (project) {
-            final featuresDirectory = MockPlatformFeaturesDirectory();
-            final platformDirectory = MockPlatformDirectory();
-            final featurePackageA = MockPlatformFeaturePackage();
-            when(() => featurePackageA.name).thenReturn('package_a');
-            final featurePackageB = MockPlatformFeaturePackage();
-            when(() => featurePackageB.name).thenReturn('package_b');
-            when(() => platformDirectory.featuresDirectory)
-                .thenReturn(featuresDirectory);
-            when(() => featuresDirectory.featurePackages())
-                .thenReturn([featurePackageA, featurePackageB]);
-            when(
-              () => project.platformDirectory(platform: any(named: 'platform')),
-            ).thenReturn(platformDirectory);
           },
         ),
       );

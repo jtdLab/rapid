@@ -94,3 +94,19 @@ scripts:
       git merge --ff-only origin/dev && \
       git push origin main
     description: Merge dev branch into main branch (This must be run from main branch)
+
+  test:coverage:
+    exec: flutter test test/src --coverage
+    description: Run `flutter test test/src --coverage` in a package.
+    packageFilters:
+      dirExists:
+        - test/src
+
+  coverage:html:
+    exec: genhtml coverage/lcov.info -o coverage/html
+    description: |
+      Generate a html-coverage report for a package.
+       - Requires `lcov` (can be installed via `brew install lcov` on macOS).
+    packageFilters:
+      fileExists:
+        - coverage/lcov.info

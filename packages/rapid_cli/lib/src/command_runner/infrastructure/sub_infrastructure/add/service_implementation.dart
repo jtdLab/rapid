@@ -1,14 +1,12 @@
 import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
-import '../../../util/output_dir_option.dart';
 import '../../../util/service_option.dart';
 
 /// {@template infrastructure_sub_infrastructure_add_service_implementation_command}
 /// `rapid infrastructure sub_infrastructure add service_implementation` command adds service_implementation to the infrastructure part of an existing Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureAddServiceImplementationCommand
-    extends RapidLeafCommand
-    with ClassNameGetter, ServiceGetter, OutputDirGetter {
+    extends RapidLeafCommand with ClassNameGetter, ServiceGetter {
   /// {@macro infrastructure_sub_infrastructure_add_service_implementation_command}
   InfrastructureSubInfrastructureAddServiceImplementationCommand(
     this.subInfrastructureName,
@@ -16,11 +14,7 @@ class InfrastructureSubInfrastructureAddServiceImplementationCommand
   ) {
     argParser
       ..addSeparator('')
-      ..addServiceOption()
-      ..addOutputDirOption(
-        help:
-            'The output directory relative to <infrastructure_package>/lib/src .',
-      );
+      ..addServiceOption();
   }
 
   final String subInfrastructureName;
@@ -45,14 +39,12 @@ class InfrastructureSubInfrastructureAddServiceImplementationCommand
     final subInfrastructureName = this.subInfrastructureName == 'default'
         ? null
         : this.subInfrastructureName;
-    final serviceName = super.service;
-    final outputDir = super.outputDir;
+    final service = super.service;
 
     return rapid.infrastructureSubInfrastructureAddServiceImplementation(
       name: name,
       subInfrastructureName: subInfrastructureName,
-      serviceName: serviceName,
-      outputDir: outputDir,
+      serviceInterfaceName: service,
     );
   }
 }

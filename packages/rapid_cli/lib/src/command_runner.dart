@@ -5,7 +5,7 @@ import 'package:args/command_runner.dart';
 import 'package:cli_launcher/cli_launcher.dart';
 import 'package:mason/mason.dart' hide packageVersion;
 import 'package:pub_updater/pub_updater.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/utils.dart';
 
@@ -13,7 +13,6 @@ import 'command_runner/activate.dart';
 import 'command_runner/begin.dart';
 import 'command_runner/create.dart';
 import 'command_runner/deactivate.dart';
-import 'command_runner/doctor.dart';
 import 'command_runner/domain.dart';
 import 'command_runner/end.dart';
 import 'command_runner/infrastructure.dart';
@@ -57,7 +56,6 @@ class RapidCommandRunner extends CommandRunner<void> {
     addCommand(BeginCommand(project));
     addCommand(CreateCommand());
     addCommand(DeactivateCommand(project));
-    addCommand(DoctorCommand(project));
     addCommand(DomainCommand(project));
     addCommand(EndCommand(project));
     addCommand(InfrastructureCommand(project));
@@ -107,7 +105,6 @@ FutureOr<void> rapidEntryPoint(
       if (!arguments.willRunCreate) {
         final melos = await runCommand(['melos', '--version']);
         if (melos.exitCode != 0) {
-          // TODO did u corrupt your rapid project root yaml?
           logger.err('Melos not installed.');
           exitCode = 1;
           return;
@@ -121,10 +118,10 @@ FutureOr<void> rapidEntryPoint(
 
     await RapidCommandRunner(project: project, logger: logger).run(arguments);
   } on RapidException catch (err) {
-    stderr.writeln(err.toString());
+    logger.err(err.toString());
     exitCode = 1;
   } on UsageException catch (err) {
-    stderr.writeln(err.toString());
+    logger.err(err.toString());
     exitCode = 1;
   } catch (err) {
     exitCode = 1;
@@ -185,7 +182,7 @@ Future<RapidProject?> resolveProject(
     config = await RapidProjectConfig.fromProjectRoot(projectRoot);
   }
 
-  return RapidProject(config: config);
+  return RapidProject.fromConfig(config);
 }
 
 extension on List<String> {

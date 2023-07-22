@@ -11,7 +11,7 @@ class DomainCommand extends RapidBranchCommand {
   DomainCommand(super.project) {
     addSubcommand(DomainAddCommand(project));
     addSubcommand(DomainRemoveCommand(project));
-    final domainPackages = project?.domainDirectory.domainPackages();
+    final domainPackages = project?.appModule.domainDirectory.domainPackages();
     for (final domainPackage in domainPackages ?? []) {
       addSubcommand(
         DomainSubdomainCommand(domainPackage.name ?? 'default', project),

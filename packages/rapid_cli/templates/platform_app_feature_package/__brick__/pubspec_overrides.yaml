@@ -1,4 +1,4 @@
-{{#android}}# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_ui,{{project_name}}_ui_android
+# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_ui,{{project_name}}_ui_{{platform}},{{project_name}}_{{platform}}_localization
 dependency_overrides:
   {{project_name}}_di:
     path: ../../../{{project_name}}_di
@@ -6,66 +6,7 @@ dependency_overrides:
     path: ../../../{{project_name}}_domain/{{project_name}}_domain
   {{project_name}}_ui:
     path: ../../../../{{project_name}}_ui/{{project_name}}_ui
-  {{project_name}}_ui_android:
-    path: ../../../../{{project_name}}_ui/{{project_name}}_ui_android
-{{/android}}{{#ios}}# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_ui,{{project_name}}_ui_ios
-dependency_overrides:
-  {{project_name}}_di:
-    path: ../../../{{project_name}}_di
-  {{project_name}}_domain:
-    path: ../../../{{project_name}}_domain/{{project_name}}_domain
-  {{project_name}}_ui:
-    path: ../../../../{{project_name}}_ui/{{project_name}}_ui
-  {{project_name}}_ui_ios:
-    path: ../../../../{{project_name}}_ui/{{project_name}}_ui_ios
-{{/ios}}{{#linux}}# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_ui,{{project_name}}_ui_linux
-dependency_overrides:
-  {{project_name}}_di:
-    path: ../../../{{project_name}}_di
-  {{project_name}}_domain:
-    path: ../../../{{project_name}}_domain/{{project_name}}_domain
-  {{project_name}}_ui:
-    path: ../../../../{{project_name}}_ui/{{project_name}}_ui
-  {{project_name}}_ui_linux:
-    path: ../../../../{{project_name}}_ui/{{project_name}}_ui_linux
-{{/linux}}{{#macos}}# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_ui,{{project_name}}_ui_macos
-dependency_overrides:
-  {{project_name}}_di:
-    path: ../../../{{project_name}}_di
-  {{project_name}}_domain:
-    path: ../../../{{project_name}}_domain/{{project_name}}_domain
-  {{project_name}}_ui:
-    path: ../../../../{{project_name}}_ui/{{project_name}}_ui
-  {{project_name}}_ui_macos:
-    path: ../../../../{{project_name}}_ui/{{project_name}}_ui_macos
-{{/macos}}{{#web}}# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_ui,{{project_name}}_ui_web
-dependency_overrides:
-  {{project_name}}_di:
-    path: ../../../{{project_name}}_di
-  {{project_name}}_domain:
-    path: ../../../{{project_name}}_domain/{{project_name}}_domain
-  {{project_name}}_ui:
-    path: ../../../../{{project_name}}_ui/{{project_name}}_ui
-  {{project_name}}_ui_web:
-    path: ../../../../{{project_name}}_ui/{{project_name}}_ui_web
-{{/web}}{{#windows}}# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_ui,{{project_name}}_ui_windows
-dependency_overrides:
-  {{project_name}}_di:
-    path: ../../../{{project_name}}_di
-  {{project_name}}_domain:
-    path: ../../../{{project_name}}_domain/{{project_name}}_domain
-  {{project_name}}_ui:
-    path: ../../../../{{project_name}}_ui/{{project_name}}_ui
-  {{project_name}}_ui_windows:
-    path: ../../../../{{project_name}}_ui/{{project_name}}_ui_windows
-{{/windows}}{{#mobile}}# melos_managed_dependency_overrides: {{project_name}}_di,{{project_name}}_domain,{{project_name}}_ui,{{project_name}}_ui_mobile
-dependency_overrides:
-  {{project_name}}_di:
-    path: ../../../{{project_name}}_di
-  {{project_name}}_domain:
-    path: ../../../{{project_name}}_domain/{{project_name}}_domain
-  {{project_name}}_ui:
-    path: ../../../../{{project_name}}_ui/{{project_name}}_ui
-  {{project_name}}_ui_mobile:
-    path: ../../../../{{project_name}}_ui/{{project_name}}_ui_mobile
-{{/mobile}}
+  {{project_name}}_ui_{{platform}}:
+    path: ../../../../{{project_name}}_ui/{{project_name}}_ui_{{platform}}
+  {{project_name}}_{{platform}}_localization:
+    path: ../../{{project_name}}_{{platform}}_localization

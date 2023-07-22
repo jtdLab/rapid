@@ -3,6 +3,8 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
+// TODO output-dir
+
 void main() {
   group(
     'E2E',
@@ -68,14 +70,14 @@ void main() {
         timeout: const Timeout(Duration(minutes: 8)),
       );
 
-      test(
+/*       test(
         'infrastructure default add data_transfer_object (with output dir)',
         performTest(
           subInfrastructure: 'default',
           outputDir: 'foo',
         ),
         timeout: const Timeout(Duration(minutes: 8)),
-      );
+      ); */
 
       test(
         'infrastructure <sub_infrastructure> add data_transfer_object',
@@ -85,14 +87,14 @@ void main() {
         timeout: const Timeout(Duration(minutes: 8)),
       );
 
-      test(
+/*       test(
         'infrastructure <sub_infrastructure> add data_transfer_object (with output dir)',
         performTest(
           subInfrastructure: 'foo_bar',
           outputDir: 'foo',
         ),
         timeout: const Timeout(Duration(minutes: 8)),
-      );
+      ); */
     },
   );
 }

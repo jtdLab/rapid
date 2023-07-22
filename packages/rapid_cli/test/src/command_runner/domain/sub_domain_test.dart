@@ -1,8 +1,8 @@
-import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import '../../common.dart';
 import '../../mocks.dart';
+import '../../utils.dart';
 
 List<String> expectedUsage(String subDomainPackage) => [
       'Work with the subdomain $subDomainPackage.\n'
@@ -18,32 +18,32 @@ List<String> expectedUsage(String subDomainPackage) => [
     ];
 
 void main() {
-  group('domain <sub_domain>', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('domain <sub_domain>', () {
     test(
       'help',
-      withRunner(
-        (commandRunner, project, __, printLogs) async {
-          await commandRunner.run(['domain', 'package_a', '--help']);
-          expect(printLogs, equals(expectedUsage('package_a')));
+      overridePrint((printLogs) async {
+        final domainPackage = FakeDomainPackage(name: 'package_a');
+        final project = MockRapidProject(
+          appModule: MockAppModule(
+            domainDirectory: MockDomainDirectory(
+              domainPackages: [domainPackage],
+            ),
+          ),
+        );
+        final commandRunner = getCommandRunner(project: project);
 
-          printLogs.clear();
+        await commandRunner.run(['domain', 'package_a', '--help']);
+        expect(printLogs, equals(expectedUsage('package_a')));
 
-          await commandRunner.run(['domain', 'package_a', '-h']);
-          expect(printLogs, equals(expectedUsage('package_a')));
-        },
-        setupProject: (project) {
-          final domainPackageA = MockDomainPackage();
-          when(() => domainPackageA.name).thenReturn('package_a');
-          final domainDirectory = MockDomainDirectory();
-          when(() => domainDirectory.domainPackages())
-              .thenReturn([domainPackageA]);
-          when(() => project.domainDirectory).thenReturn(domainDirectory);
-        },
-      ),
+        printLogs.clear();
+
+        await commandRunner.run(['domain', 'package_a', '-h']);
+        expect(printLogs, equals(expectedUsage('package_a')));
+      }),
     );
   });
 }

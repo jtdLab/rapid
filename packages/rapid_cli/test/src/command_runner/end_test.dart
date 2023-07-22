@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 
 import '../common.dart';
 import '../mocks.dart';
+import '../utils.dart';
 
 const expectedUsage = [
   'Ends a group of Rapid command executions.\n'
@@ -15,14 +16,16 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('end', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('end', () {
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['end', '--help']);
         expect(printLogs, equals(expectedUsage));
 

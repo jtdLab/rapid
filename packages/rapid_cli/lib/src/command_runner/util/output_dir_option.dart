@@ -3,6 +3,8 @@ import 'package:meta/meta.dart';
 
 import '../base.dart';
 
+// TODO only used in create currently
+
 /// The default output directory.
 final _defaultOutputDir = '.';
 

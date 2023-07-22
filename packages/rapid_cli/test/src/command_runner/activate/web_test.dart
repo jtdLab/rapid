@@ -1,9 +1,12 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner/activate/web.dart';
+import 'package:rapid_cli/src/project/language.dart';
 import 'package:test/test.dart';
 
 import '../../common.dart';
+import '../../matchers.dart';
 import '../../mocks.dart';
+import '../../utils.dart';
 
 const expectedUsage = [
   'Adds support for Web to this project.\n'
@@ -19,14 +22,16 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('activate web', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('activate web', () {
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['activate', 'web', '--help']);
         expect(printLogs, equals(expectedUsage));
 
@@ -36,6 +41,26 @@ void main() {
         expect(printLogs, equals(expectedUsage));
       }),
     );
+
+    group('throws UsageException', () {
+      test(
+        'when language is invalid',
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+          const language = 'xxyyzz';
+
+          expect(
+            () => commandRunner.run(
+              ['activate', 'web', '--language', language],
+            ),
+            throwsUsageException(
+              message: '"$language" is not a valid language.\n\n'
+                  'See https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry for more information.',
+            ),
+          );
+        }),
+      );
+    });
 
     test('completes', () async {
       final rapid = MockRapid();
@@ -57,7 +82,7 @@ void main() {
       verify(
         () => rapid.activateWeb(
           description: 'A description.',
-          language: 'de',
+          language: Language(languageCode: 'de'),
         ),
       ).called(1);
     });

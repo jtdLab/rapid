@@ -1,10 +1,12 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner/platform/remove/navigator.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../../../common.dart';
+import '../../../matchers.dart';
 import '../../../mocks.dart';
+import '../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
@@ -30,7 +32,9 @@ void main() {
     group('${platform.name} remove navigator', () {
       test(
         'help',
-        withRunner((commandRunner, _, __, printLogs) async {
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
           await commandRunner
               .run([platform.name, 'remove', 'navigator', '--help']);
           expect(printLogs, equals(expectedUsage(platform)));
@@ -41,6 +45,38 @@ void main() {
           expect(printLogs, equals(expectedUsage(platform)));
         }),
       );
+
+      group('throws UsageException', () {
+        test(
+          'when feature is missing',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner.run([platform.name, 'remove', 'navigator']),
+              throwsUsageException(
+                message: 'No option specified for the feature.',
+              ),
+            );
+          }),
+        );
+
+        test(
+          'when feature is not a valid dart package name',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner.run(
+                  [platform.name, 'remove', 'navigator', '--feature', '+foo+']),
+              throwsUsageException(
+                message: '"+foo+" is not a valid dart package name.\n\n'
+                    'See https://dart.dev/tools/pub/pubspec#name for more information.',
+              ),
+            );
+          }),
+        );
+      });
 
       test('completes', () async {
         final rapid = MockRapid();

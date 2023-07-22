@@ -3,7 +3,9 @@ import 'package:rapid_cli/src/command_runner/domain/add/sub_domain.dart';
 import 'package:test/test.dart';
 
 import '../../../common.dart';
+import '../../../matchers.dart';
 import '../../../mocks.dart';
+import '../../../utils.dart';
 
 const expectedUsage = [
   'Add subdomains of the domain part of an existing Rapid project.\n'
@@ -15,14 +17,16 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('domain add sub_domain', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('domain add sub_domain', () {
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['domain', 'add', 'sub_domain', '--help']);
         expect(printLogs, equals(expectedUsage));
 
@@ -32,6 +36,50 @@ void main() {
         expect(printLogs, equals(expectedUsage));
       }),
     );
+
+    group('throws UsageException', () {
+      test(
+        'when name is missing',
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
+          expect(
+            () => commandRunner.run(['domain', 'add', 'sub_domain']),
+            throwsUsageException(
+              message: 'No option specified for the name.',
+            ),
+          );
+        }),
+      );
+
+      test(
+        'when multiple names are provided',
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
+          expect(
+            () => commandRunner
+                .run(['domain', 'add', 'sub_domain', 'Foo', 'Bar']),
+            throwsUsageException(message: 'Multiple names specified.'),
+          );
+        }),
+      );
+
+      test(
+        'when name is not a valid dart package name',
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
+          expect(
+            () => commandRunner.run(['domain', 'add', 'sub_domain', '+foo+']),
+            throwsUsageException(
+              message: '"+foo+" is not a valid dart package name.\n\n'
+                  'See https://dart.dev/tools/pub/pubspec#name for more information.',
+            ),
+          );
+        }),
+      );
+    });
 
     test('completes', () async {
       final rapid = MockRapid();

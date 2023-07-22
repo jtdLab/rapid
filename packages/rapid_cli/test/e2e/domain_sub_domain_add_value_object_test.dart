@@ -3,6 +3,8 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
+// TODO output-dir
+
 void main() {
   group(
     'E2E',
@@ -55,14 +57,14 @@ void main() {
         timeout: const Timeout(Duration(minutes: 4)),
       );
 
-      test(
+/*       test(
         'domain default add value_object (with output dir)',
         performTest(
           subDomain: 'default',
           outputDir: 'foo',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
-      );
+      ); */
 
       test(
         'domain <sub_domain> add value_object',
@@ -72,14 +74,14 @@ void main() {
         timeout: const Timeout(Duration(minutes: 4)),
       );
 
-      test(
+/*       test(
         'domain <sub_domain> add value_object (with output dir)',
         performTest(
           subDomain: 'foo_bar',
           outputDir: 'foo',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
-      );
+      ); */
     },
   );
 }

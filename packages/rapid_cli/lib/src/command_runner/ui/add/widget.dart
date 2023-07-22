@@ -1,12 +1,20 @@
 import '../../../command_runner/base.dart';
 import '../../util/class_name_rest.dart';
 
+const _defaultTheme = true;
+
 /// {@template ui_add_widget_command}
 /// `rapid ui add widget` command adds a widget to the platform independent UI part of an existing Rapid project.
 /// {@endtemplate}
 class UiAddWidgetCommand extends RapidLeafCommand with ClassNameGetter {
   /// {@macro ui_add_widget_command}
-  UiAddWidgetCommand(super.project);
+  UiAddWidgetCommand(super.project) {
+    argParser.addFlag(
+      'theme',
+      help: 'Wheter the new widget has its own theme.',
+      defaultsTo: _defaultTheme,
+    );
+  }
 
   @override
   String get name => 'widget';
@@ -21,7 +29,8 @@ class UiAddWidgetCommand extends RapidLeafCommand with ClassNameGetter {
   @override
   Future<void> run() {
     final name = super.className;
+    final theme = argResults['theme'] ?? _defaultTheme;
 
-    return rapid.uiAddWidget(name: name);
+    return rapid.uiAddWidget(name: name, theme: theme);
   }
 }

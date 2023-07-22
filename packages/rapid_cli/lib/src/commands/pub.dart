@@ -1,154 +1,105 @@
 part of 'runner.dart';
 
-// TODO: throw exception on error
-
 mixin _PubMixin on _Rapid {
   Future<void> pubAdd({
     required String? packageName,
     required List<String> packages,
   }) async {
-    logger
-      ..command('rapid pub add')
-      ..newLine();
+    logger.newLine();
 
-    final package = _resolvePackage(packageName);
+    final package = _findCurrentPackage(packageName);
 
-    final localPackagesToAdd = packages
-        .where((e) => !e.trim().startsWith('dev') && e.trim().endsWith(':'))
-        .toList();
-    final localDevPackagesToAdd = packages
-        .where((e) => e.trim().startsWith('dev') && e.trim().endsWith(':'))
-        .toList();
-    final publicPackagesToAdd = packages
-        .where((e) => !e.trim().startsWith('dev') && !e.trim().endsWith(':'))
-        .toList();
-    final publicDevPackagesToAdd = packages
-        .where((e) => e.trim().startsWith('dev') && !e.trim().endsWith(':'))
-        .toList();
-
-    if (publicPackagesToAdd.isNotEmpty) {
-      await flutterPubAdd(
-        package,
-        dependenciesToAdd: publicPackagesToAdd,
-      );
-    }
-    if (publicDevPackagesToAdd.isNotEmpty) {
-      await flutterPubAdd(
-        package,
-        dependenciesToAdd: publicDevPackagesToAdd,
+    // These packages can be handles by `dart pub add` directly
+    final packagesWithNonEmptyConstraint =
+        packages.map((e) => e.trim()).where((e) => !e.endsWith(':')).toList();
+    if (packagesWithNonEmptyConstraint.isNotEmpty) {
+      await flutterPubAddTask(
+        package: package,
+        dependenciesToAdd: packagesWithNonEmptyConstraint,
       );
     }
 
-    for (final localPackage in localPackagesToAdd) {
-      final name = localPackage.trim().split(':').first;
-      package.pubspecFile.setDependency(name);
-    }
-    for (final localDevPackage in localDevPackagesToAdd) {
-      final name = localDevPackage.trim().split(':')[1];
-      package.pubspecFile.setDependency(name, dev: true);
+    // These packages must be handled manually
+    final packagesWithEmptyConstraint =
+        packages.map((e) => e.trim()).where((e) => e.endsWith(':')).toList();
+    for (final packageWithEmptyConstraint in packagesWithEmptyConstraint) {
+      final dev = packageWithEmptyConstraint.startsWith('dev');
+      package.pubSpecFile.setDependency(
+        name: dev
+            ? packageWithEmptyConstraint.split(':')[1]
+            : packageWithEmptyConstraint.split(':').first,
+        dependency: HostedReference(VersionConstraint.empty),
+        dev: dev,
+      );
     }
 
-    final dependingPackages = project.packages
-        .where((e) => e.pubspecFile.hasDependency(package.packageName()));
-
-    await bootstrap(
-      packages: [
-        package,
-        ...dependingPackages,
-      ],
-    );
+    await melosBootstrapTask(scope: project.dependentPackages(package));
 
     logger
       ..newLine()
-      ..success('Success $checkLabel');
+      ..commandSuccess('Added Dependencies!');
   }
 
   Future<void> pubGet({
     required String? packageName,
   }) async {
-    logger
-      ..command('rapid pub get')
-      ..newLine();
+    logger.newLine();
 
-    final package = _resolvePackage(packageName);
+    final package = _findCurrentPackage(packageName);
 
-    List<DartPackage> packagesToBootstrap(List<DartPackage> initial) {
-      final remaining = project.packages
-        ..removeWhere((e) =>
-            initial.map((e) => e.packageName()).contains(e.packageName()));
-
-      final newPkgs = remaining
-          .where(
-            (rem) => initial.any(
-              (i) => rem.pubspecFile.hasDependency(i.packageName()),
-            ),
-          )
-          .toList();
-
-      if (newPkgs.isEmpty) {
-        return initial;
-      } else {
-        return packagesToBootstrap(
-          initial + newPkgs,
-        );
-      }
-    }
-
-    final result = await flutterPubGetDryRun(package);
+    final result = await flutterPubGet(package: package, dryRun: true);
     if (result.wouldChangeDependencies) {
-      await bootstrap(
-        packages: packagesToBootstrap(
-          project.packages
-              .where((e) => e.pubspecFile.hasDependency(package.packageName()))
-              .toList(),
-        ),
-      );
+      await melosBootstrapTask(scope: project.dependentPackages(package));
+      logger.newLine();
     }
 
-    logger
-      ..newLine()
-      ..success('Success $checkLabel');
+    logger.commandSuccess('Got Dependencies!');
   }
 
   Future<void> pubRemove({
     required String? packageName,
     required List<String> packages,
   }) async {
-    logger
-      ..command('rapid pub remove')
-      ..newLine();
+    logger.newLine();
 
-    final package = _resolvePackage(packageName);
+    final package = _findCurrentPackage(packageName);
 
-    await flutterPubRemove(package, packagesToRemove: packages);
+    await flutterPubRemoveTask(package: package, packagesToRemove: packages);
 
-    final dependingPackages = project.packages
-        .where((e) => e.pubspecFile.hasDependency(package.packageName()));
-
-    await bootstrap(
-      packages: [
-        package,
-        ...dependingPackages,
-      ],
-    );
+    await melosBootstrapTask(scope: project.dependentPackages(package));
 
     logger
       ..newLine()
-      ..success('Success $checkLabel');
+      ..commandSuccess('Removed Dependencies!');
   }
 
-  DartPackage _resolvePackage(String? packageName) {
-    try {
-      if (packageName != null) {
-        return project.packages
-            .firstWhere((e) => e.packageName() == packageName);
-      } else {
-        return project.packages
-            .firstWhere((e) => e.path == Directory.current.path);
+  DartPackage _findCurrentPackage(String? packageName) {
+    if (packageName != null) {
+      try {
+        return project.findByPackageName(packageName);
+      } catch (_) {
+        throw PackageNotFoundException._(packageName);
       }
-    } catch (_) {
-      // TODO
-      throw Error();
+    } else {
+      try {
+        return project.findByCwd();
+      } catch (_) {
+        throw PackageAtCwdNotFoundException._(Directory.current.path);
+      }
     }
   }
+}
+
+class PackageNotFoundException extends RapidException {
+  PackageNotFoundException._(String packageName)
+      : super(
+          'Could not find a dart package with $packageName that is part of a Rapid project.',
+        );
+}
+
+class PackageAtCwdNotFoundException extends RapidException {
+  PackageAtCwdNotFoundException._(String cwdPath)
+      : super(
+          'Could not find a dart package at $cwdPath that is part of a Rapid project.',
+        );
 }

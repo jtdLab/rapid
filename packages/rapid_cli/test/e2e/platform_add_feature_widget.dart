@@ -1,10 +1,9 @@
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 
 import 'common.dart';
 
 dynamic performTest({
   required Platform platform,
-  bool localization = true,
 }) =>
     withTempDir((root) async {
       // Arrange
@@ -18,20 +17,13 @@ dynamic performTest({
         'feature',
         'widget',
         featureName,
-        if (!localization) '--no-localization',
       ]);
 
       // Assert
       await verifyNoAnalyzerIssues();
       await verifyNoFormattingIssues();
       final feature = tester.featurePackage('${featureName}_widget', platform);
-      final l10nDir = tester.l10nDirectory('${featureName}_widget', platform);
-      verifyDoExist([
-        feature,
-        if (localization) l10nDir,
-      ]);
-      if (!localization) {
-        verifyDoNotExist([l10nDir]);
-      }
+      verifyDoExist([feature]);
+
       await verifyTestsPassWith100PercentCoverage([feature]);
     });

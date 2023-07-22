@@ -3,6 +3,8 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
+// TODO dir
+
 void main() {
   group(
     'E2E',
@@ -82,14 +84,14 @@ void main() {
         timeout: const Timeout(Duration(minutes: 4)),
       );
 
-      test(
+/*       test(
         'infrastructure default remove service_implementation (with dir)',
         performTest(
           subInfrastructure: 'default',
           dir: 'foo',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
-      );
+      ); */
 
       test(
         'infrastructure <sub_infrastructure> remove service_implementation',
@@ -99,14 +101,14 @@ void main() {
         timeout: const Timeout(Duration(minutes: 4)),
       );
 
-      test(
+/*       test(
         'infrastructure <sub_infrastructure> remove service_implementation (with dir)',
         performTest(
           subInfrastructure: 'foo_bar',
           dir: 'foo',
         ),
         timeout: const Timeout(Duration(minutes: 4)),
-      );
+      ); */
     },
   );
 }

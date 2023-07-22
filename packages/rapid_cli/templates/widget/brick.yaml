@@ -1,5 +1,5 @@
 name: widget
-description: A brick generating a widget of a platform ui package of a Rapid project.
+description: A brick generating a widget of a ui package of a Rapid project.
 
 version: 0.1.0
 
@@ -18,24 +18,5 @@ vars:
     type: string
   name:
     type: string
-  android:
-    type: boolean
-    description: Wheter is Android widget
-  ios:
-    type: boolean
-    description: Wheter is iOS widget
-  web:
-    type: boolean
-    description: Wheter is Web widget
-  linux:
-    type: boolean
-    description: Wheter is Linux widget
-  macos:
-    type: boolean
-    description: Wheter is macOS widget
-  windows:
-    type: boolean
-    description: Wheter is Windows widget
-  mobile:
-    type: boolean
-    description: Wheter is Mobile widget
+  platform:
+    type: string

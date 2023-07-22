@@ -2,6 +2,7 @@ import 'package:test/test.dart';
 
 import '../common.dart';
 import '../mocks.dart';
+import '../utils.dart';
 
 const expectedUsage = [
   'Remove support for a platform from an existing Rapid project.\n'
@@ -22,14 +23,16 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('deactivate', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('deactivate', () {
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['deactivate', '--help']);
         expect(printLogs, equals(expectedUsage));
 

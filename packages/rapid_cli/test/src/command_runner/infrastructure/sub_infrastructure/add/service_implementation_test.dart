@@ -3,77 +3,220 @@ import 'package:rapid_cli/src/command_runner/infrastructure/sub_infrastructure/a
 import 'package:test/test.dart';
 
 import '../../../../common.dart';
+import '../../../../matchers.dart';
 import '../../../../mocks.dart';
+import '../../../../utils.dart';
 
 List<String> expectedUsage(String subInfrastructurePackage) => [
       'Add a service implementation to the subinfrastructure $subInfrastructurePackage.\n'
           '\n'
           'Usage: rapid infrastructure $subInfrastructurePackage add service_implementation <name> [arguments]\n'
-          '-h, --help          Print this usage information.\n'
+          '-h, --help       Print this usage information.\n'
           '\n'
           '\n'
-          '-s, --service       The name of the service interface the service implementation is related to.\n'
-          '-o, --output-dir    The output directory relative to <infrastructure_package>/lib/src .\n'
-          '                    (defaults to ".")\n'
+          '-s, --service    The name of the service interface the service implementation is related to.\n'
           '\n'
           'Run "rapid help" to see global options.'
     ];
 
 void main() {
-  group('infrastructure <sub_infrastructure> add service_implementation', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('infrastructure <sub_infrastructure> add service_implementation', () {
     test(
       'help',
-      withRunner(
-        (commandRunner, project, __, printLogs) async {
-          await commandRunner.run([
-            'infrastructure',
-            'package_a',
-            'add',
-            'service_implementation',
-            '--help'
-          ]);
-          expect(printLogs, equals(expectedUsage('package_a')));
+      overridePrint((printLogs) async {
+        final infrastructurePackage =
+            FakeInfrastructurePackage(name: 'package_a');
+        final project = MockRapidProject(
+          appModule: MockAppModule(
+            infrastructureDirectory: MockInfrastructureDirectory(
+              infrastructurePackages: [infrastructurePackage],
+            ),
+          ),
+        );
+        final commandRunner = getCommandRunner(project: project);
 
-          printLogs.clear();
+        await commandRunner.run([
+          'infrastructure',
+          'package_a',
+          'add',
+          'service_implementation',
+          '--help'
+        ]);
+        expect(printLogs, equals(expectedUsage('package_a')));
 
-          await commandRunner.run([
-            'infrastructure',
-            'package_a',
-            'add',
-            'service_implementation',
-            '-h'
-          ]);
-          expect(printLogs, equals(expectedUsage('package_a')));
-        },
-        setupProject: (project) {
-          final infrastructurePackageA = MockInfrastructurePackage();
-          when(() => infrastructurePackageA.name).thenReturn('package_a');
-          final infrastructureDirectory = MockInfrastructureDirectory();
-          when(() => infrastructureDirectory.infrastructurePackages())
-              .thenReturn([infrastructurePackageA]);
-          when(() => project.infrastructureDirectory)
-              .thenReturn(infrastructureDirectory);
-        },
-      ),
+        printLogs.clear();
+
+        await commandRunner.run([
+          'infrastructure',
+          'package_a',
+          'add',
+          'service_implementation',
+          '-h'
+        ]);
+        expect(printLogs, equals(expectedUsage('package_a')));
+      }),
     );
+
+    group('throws UsageException', () {
+      test(
+        'when service is missing',
+        overridePrint((printLogs) async {
+          final infrastructurePackage =
+              FakeInfrastructurePackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              infrastructureDirectory: MockInfrastructureDirectory(
+                infrastructurePackages: [infrastructurePackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run([
+              'infrastructure',
+              'package_a',
+              'add',
+              'service_implementation',
+              'Foo'
+            ]),
+            throwsUsageException(
+              message: 'No option specified for the service.',
+            ),
+          );
+        }),
+      );
+
+      test(
+        'when service is not a valid dart class name',
+        overridePrint((printLogs) async {
+          final infrastructurePackage =
+              FakeInfrastructurePackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              infrastructureDirectory: MockInfrastructureDirectory(
+                infrastructurePackages: [infrastructurePackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run([
+              'infrastructure',
+              'package_a',
+              'add',
+              'service_implementation',
+              'Foo',
+              '--service',
+              'foo'
+            ]),
+            throwsUsageException(
+              message: '"foo" is not a valid dart class name.',
+            ),
+          );
+        }),
+      );
+
+      test(
+        'when name is missing',
+        overridePrint((printLogs) async {
+          final infrastructurePackage =
+              FakeInfrastructurePackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              infrastructureDirectory: MockInfrastructureDirectory(
+                infrastructurePackages: [infrastructurePackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run([
+              'infrastructure',
+              'package_a',
+              'add',
+              'service_implementation',
+            ]),
+            throwsUsageException(message: 'No option specified for the name.'),
+          );
+        }),
+      );
+
+      test(
+        'when multiple names are provided',
+        overridePrint((printLogs) async {
+          final infrastructurePackage =
+              FakeInfrastructurePackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              infrastructureDirectory: MockInfrastructureDirectory(
+                infrastructurePackages: [infrastructurePackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run([
+              'infrastructure',
+              'package_a',
+              'add',
+              'service_implementation',
+              'Foo',
+              'Bar'
+            ]),
+            throwsUsageException(message: 'Multiple names specified.'),
+          );
+        }),
+      );
+
+      test(
+        'when name is not a valid dart class name',
+        overridePrint((printLogs) async {
+          final infrastructurePackage =
+              FakeInfrastructurePackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              infrastructureDirectory: MockInfrastructureDirectory(
+                infrastructurePackages: [infrastructurePackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner.run([
+              'infrastructure',
+              'package_a',
+              'add',
+              'service_implementation',
+              'foo'
+            ]),
+            throwsUsageException(
+              message: '"foo" is not a valid dart class name.',
+            ),
+          );
+        }),
+      );
+    });
 
     test('completes', () async {
       final rapid = MockRapid();
       when(
         () => rapid.infrastructureSubInfrastructureAddServiceImplementation(
           subInfrastructureName: any(named: 'subInfrastructureName'),
-          serviceName: any(named: 'serviceName'),
-          outputDir: any(named: 'outputDir'),
+          serviceInterfaceName: any(named: 'serviceInterfaceName'),
           name: any(named: 'name'),
         ),
       ).thenAnswer((_) async {});
       final argResults = MockArgResults();
       when(() => argResults['service']).thenReturn('Foo');
-      when(() => argResults['output-dir']).thenReturn('some');
       when(() => argResults.rest).thenReturn(['My']);
       final command =
           InfrastructureSubInfrastructureAddServiceImplementationCommand(
@@ -87,8 +230,7 @@ void main() {
         () => rapid.infrastructureSubInfrastructureAddServiceImplementation(
           name: 'My',
           subInfrastructureName: 'package_a',
-          serviceName: 'Foo',
-          outputDir: 'some',
+          serviceInterfaceName: 'Foo',
         ),
       ).called(1);
     });

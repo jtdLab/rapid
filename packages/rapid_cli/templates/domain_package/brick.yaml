@@ -4,7 +4,7 @@ description: A brick generating the domain package of a Rapid project.
 version: 0.1.0
 
 environment:
-  mason: ">=0.1.0-dev.47 <0.1.0"
+  mason: ">=0.1.0-dev <0.1.0"
 
 # Variables specify dynamic values that your brick depends on.
 # Zero or more variables can be specified for a given brick.
@@ -18,10 +18,5 @@ environment:
 vars:
   project_name:
     type: string
-    description: The project name
-  has_name:
-    type: boolean
-    description: Wheter name is not null
   name:
     type: string
-    description: The package name

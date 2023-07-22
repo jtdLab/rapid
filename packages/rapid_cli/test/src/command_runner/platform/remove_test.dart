@@ -1,8 +1,9 @@
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../../common.dart';
 import '../../mocks.dart';
+import '../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
@@ -29,7 +30,9 @@ void main() {
     group('${platform.name} remove', () {
       test(
         'help',
-        withRunner((commandRunner, _, __, printLogs) async {
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
           await commandRunner.run([platform.name, 'remove', '--help']);
           expect(printLogs, equals(expectedUsage(platform)));
 

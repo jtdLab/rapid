@@ -1,22 +1,22 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner/platform/add/feature/widget.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../../../../common.dart';
+import '../../../../matchers.dart';
 import '../../../../mocks.dart';
+import '../../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
     'Add a widget feature to the ${platform.prettyName} part of an existing Rapid project.\n'
         '\n'
         'Usage: rapid ${platform.name} add feature widget <name> [arguments]\n'
-        '-h, --help                 Print this usage information.\n'
+        '-h, --help    Print this usage information.\n'
         '\n'
         '\n'
-        '    --desc                 The description of the new feature.\n'
-        '    --[no-]localization    Whether the new feature has localizations.\n'
-        '                           (defaults to on)\n'
+        '    --desc    The description of the new feature.\n'
         '\n'
         'Run "rapid help" to see global options.'
   ];
@@ -31,7 +31,9 @@ void main() {
     group('${platform.name} add feature widget', () {
       test(
         'help',
-        withRunner((commandRunner, _, __, printLogs) async {
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
           await commandRunner
               .run([platform.name, 'add', 'feature', 'widget', '--help']);
           expect(printLogs, equals(expectedUsage(platform)));
@@ -44,6 +46,52 @@ void main() {
         }),
       );
 
+      group('throws UsageException', () {
+        test(
+          'when name is missing',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner
+                  .run([platform.name, 'add', 'feature', 'widget']),
+              throwsUsageException(
+                message: 'No option specified for the name.',
+              ),
+            );
+          }),
+        );
+
+        test(
+          'when multiple names are provided',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner.run(
+                  [platform.name, 'add', 'feature', 'widget', 'Foo', 'Bar']),
+              throwsUsageException(message: 'Multiple names specified.'),
+            );
+          }),
+        );
+
+        test(
+          'when name is not a valid dart package name',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner
+                  .run([platform.name, 'add', 'feature', 'widget', '+foo+']),
+              throwsUsageException(
+                message: '"+foo+" is not a valid dart package name.\n\n'
+                    'See https://dart.dev/tools/pub/pubspec#name for more information.',
+              ),
+            );
+          }),
+        );
+      });
+
       test('completes', () async {
         final rapid = MockRapid();
         when(
@@ -51,11 +99,9 @@ void main() {
             any(),
             name: any(named: 'name'),
             description: any(named: 'description'),
-            localization: any(named: 'localization'),
           ),
         ).thenAnswer((_) async {});
         final argResults = MockArgResults();
-        when(() => argResults['localization']).thenReturn(false);
         when(() => argResults['desc']).thenReturn('Some description.');
         when(() => argResults.rest).thenReturn(['package_a']);
         final command = PlatformAddFeatureWidgetCommand(platform, null)
@@ -69,7 +115,6 @@ void main() {
             platform,
             name: 'package_a',
             description: 'Some description.',
-            localization: false,
           ),
         ).called(1);
       });

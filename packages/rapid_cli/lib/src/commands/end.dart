@@ -2,40 +2,33 @@ part of 'runner.dart';
 
 mixin _EndMixin on _Rapid {
   Future<void> end() async {
-    logger.command('rapid end');
-
     if (!tool.loadGroup().isActive) {
-      _logAndThrow(RapidEndException._noActiveGroup());
+      throw NoActiveGroupException._();
     }
 
     tool.deactivateCommandGroup();
 
     final group = tool.loadGroup();
-
     if (group.packagesToBootstrap.isNotEmpty) {
-      await bootstrap(packages: group.packagesToBootstrap);
-    }
-    if (group.packagesToCodeGen.isNotEmpty) {
-      await codeGen(packages: group.packagesToCodeGen);
+      await melosBootstrapTask(scope: group.packagesToBootstrap);
     }
 
-    logger.newLine();
-    logger.success('Success $checkLabel');
+    if (group.packagesToCodeGen.isNotEmpty) {
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+        packages: group.packagesToCodeGen,
+      );
+    }
+
+    logger
+      ..newLine()
+      ..commandSuccess('Completed Command Group!');
   }
 }
 
-class RapidEndException extends RapidException {
-  RapidEndException._(super.message);
-
-  factory RapidEndException._noActiveGroup() {
-    return RapidEndException._(
-      'There is no active group. '
-      'Did you call "rapid begin" before?',
-    );
-  }
-
-  @override
-  String toString() {
-    return 'RapidEndException: $message';
-  }
+class NoActiveGroupException extends RapidException {
+  NoActiveGroupException._()
+      : super(
+          'There is no active group. '
+          'Did you call "rapid begin" before?',
+        );
 }

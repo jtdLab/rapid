@@ -1,10 +1,13 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner/platform/add/language.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/language.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../../../common.dart';
+import '../../../matchers.dart';
 import '../../../mocks.dart';
+import '../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
@@ -26,7 +29,9 @@ void main() {
     group('${platform.name} add language', () {
       test(
         'help',
-        withRunner((commandRunner, _, __, printLogs) async {
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
           await commandRunner.run([platform.name, 'add', 'language', '--help']);
           expect(printLogs, equals(expectedUsage(platform)));
 
@@ -36,6 +41,53 @@ void main() {
           expect(printLogs, equals(expectedUsage(platform)));
         }),
       );
+
+      group('throws UsageException', () {
+        test(
+          'when language is missing',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner.run([platform.name, 'add', 'language']),
+              throwsUsageException(
+                message: 'No option specified for the language.',
+              ),
+            );
+          }),
+        );
+
+        test(
+          'when multiple languages are provided',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () => commandRunner
+                  .run([platform.name, 'add', 'language', 'de', 'fr']),
+              throwsUsageException(
+                message: 'Multiple languages specified.',
+              ),
+            );
+          }),
+        );
+
+        test(
+          'when language is invalid',
+          overridePrint((printLogs) async {
+            final commandRunner = getCommandRunner();
+
+            expect(
+              () =>
+                  commandRunner.run([platform.name, 'add', 'language', '+en+']),
+              throwsUsageException(
+                message: '"+en+" is not a valid language.\n\n'
+                    'See https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry for more information.',
+              ),
+            );
+          }),
+        );
+      });
 
       test('completes', () async {
         final rapid = MockRapid();
@@ -54,7 +106,10 @@ void main() {
         await command.run();
 
         verify(
-          () => rapid.platformAddLanguage(platform, language: 'de'),
+          () => rapid.platformAddLanguage(
+            platform,
+            language: Language(languageCode: 'de'),
+          ),
         ).called(1);
       });
     });

@@ -1,3 +1,3 @@
-# entity
+# widget
 
 TODO

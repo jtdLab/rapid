@@ -2,6 +2,7 @@ import 'package:test/test.dart';
 
 import '../../common.dart';
 import '../../mocks.dart';
+import '../../utils.dart';
 
 const expectedUsage = [
   'Remove subdomains from the domain part of an existing Rapid project.\n'
@@ -16,14 +17,24 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('domain remove', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('domain remove', () {
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final domainPackage = FakeDomainPackage(name: 'package_a');
+        final project = MockRapidProject(
+          appModule: MockAppModule(
+            domainDirectory: MockDomainDirectory(
+              domainPackages: [domainPackage],
+            ),
+          ),
+        );
+        final commandRunner = getCommandRunner(project: project);
+
         await commandRunner.run(['domain', 'remove', '--help']);
         expect(printLogs, equals(expectedUsage));
 

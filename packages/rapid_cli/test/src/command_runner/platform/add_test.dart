@@ -1,8 +1,9 @@
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import '../../common.dart';
 import '../../mocks.dart';
+import '../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
@@ -12,7 +13,7 @@ List<String> expectedUsage(Platform platform) {
         '-h, --help    Print this usage information.\n'
         '\n'
         'Available subcommands:\n'
-        '  feature     Add a feature to the ${platform.prettyName} part of an existing Rapid project.\n'
+        '  feature     Add features to the ${platform.prettyName} part of an existing Rapid project.\n'
         '  language    Add a language to the ${platform.prettyName} part of an existing Rapid project.\n'
         '  navigator   Add a navigator to the ${platform.prettyName} part of an existing Rapid project.\n'
         '\n'
@@ -29,7 +30,9 @@ void main() {
     group('${platform.name} add', () {
       test(
         'help',
-        withRunner((commandRunner, _, __, printLogs) async {
+        overridePrint((printLogs) async {
+          final commandRunner = getCommandRunner();
+
           await commandRunner.run([platform.name, 'add', '--help']);
           expect(printLogs, equals(expectedUsage(platform)));
 

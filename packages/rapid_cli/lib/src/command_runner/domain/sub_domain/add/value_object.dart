@@ -1,6 +1,5 @@
 import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
-import '../../../util/output_dir_option.dart';
 
 // TODO fix the template needs super class from rapid
 
@@ -11,14 +10,11 @@ const _defaultType = 'String';
 /// `rapid domain sub_domain add value_object` command adds value object to the domain part of an existing Rapid project.
 /// {@endtemplate}
 class DomainSubDomainAddValueObjectCommand extends RapidLeafCommand
-    with ClassNameGetter, OutputDirGetter {
+    with ClassNameGetter {
   /// {@macro domain_sub_domain_add_value_object_command}
   DomainSubDomainAddValueObjectCommand(this.subDomainName, super.project) {
     argParser
       ..addSeparator('')
-      ..addOutputDirOption(
-        help: 'The output directory relative to <domain_package>/lib/ .',
-      )
       ..addOption(
         'type',
         help: 'The type that gets wrapped by this value object.\n'
@@ -48,14 +44,12 @@ class DomainSubDomainAddValueObjectCommand extends RapidLeafCommand
     final name = super.className;
     final subDomainName =
         this.subDomainName == 'default' ? null : this.subDomainName;
-    final outputDir = super.outputDir;
     final type = _type;
     final generics = _generics;
 
     return rapid.domainSubDomainAddValueObject(
       name: name,
       subDomainName: subDomainName,
-      outputDir: outputDir,
       type: type,
       generics: generics,
     );

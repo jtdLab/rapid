@@ -1,198 +1,123 @@
 part of 'runner.dart';
 
 mixin _PlatformMixin on _Rapid {
-  Future<void> platformAddFeatureCustom(
-    Platform platform, {
-    required String name,
-    required String description,
-    required bool routing,
-    required bool navigator,
-    required bool localization,
-  }) async {
-    if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
-    }
-
-    logger
-      ..command('rapid ${platform.name} add feature custom')
-      ..newLine();
-
-    final platformDirectory = project.platformDirectory(platform: platform);
-    final featurePackage = platformDirectory.featuresDirectory
-        .featurePackage<PlatformCustomFeaturePackage>(name: name);
-    if (!featurePackage.exists()) {
-      final rootPackage = platformDirectory.rootPackage;
-
-      await featurePackage.create(
-        description: description,
-        routing: routing,
-        localization: localization,
-        // TODO take default lang from featurs or from roots supported langs?
-        defaultLanguage: rootPackage.defaultLanguage(),
-        languages: rootPackage.supportedLanguages(),
-      );
-
-      await rootPackage.registerFeaturePackage(
-        featurePackage,
-        routing: routing,
-        localization: localization,
-      );
-
-      if (navigator) {
-        // TODO share ?
-        final featureName = featurePackage.name;
-        final navigationPackage = platformDirectory.navigationPackage;
-        final navigator =
-            navigationPackage.navigator(name: featureName.pascalCase);
-        if (!navigator.existsAny()) {
-          final barrelFile = navigationPackage.barrelFile;
-
-          await navigator.create();
-
-          barrelFile.addExport(
-            'src/i_${featureName.snakeCase}_navigator.dart',
-          );
-
-          // TODO check if the impl is already available
-          final navigatorImplementation =
-              featurePackage.navigatorImplementation;
-          await navigatorImplementation.create();
-        }
-      }
-
-      await bootstrap(packages: [rootPackage, featurePackage]);
-
-      await codeGen(packages: [
-        rootPackage,
-        if (navigator) featurePackage,
-      ]);
-
-      if (localization) {
-        await flutterGenl10n([featurePackage]);
-      }
-
-      await dartFormatFix(project);
-
-      // TODO add link doc to navigation and routing approach
-      logger.newLine();
-      logger.success('Success $checkLabel');
-    } else {
-      _logAndThrow(
-        RapidPlatformException._featureAlreadyExists(name, platform: platform),
-      );
-    }
-  }
-
   Future<void> platformAddFeatureFlow(
     Platform platform, {
     required String name,
-    required bool tab,
     required String description,
     required bool navigator,
-    required bool localization,
-    required Set<String>? features,
   }) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
+      throw PlatformNotActivatedException._(platform);
     }
 
-    logger
-      ..command('rapid ${platform.name} add feature flow')
-      ..newLine();
-
-    final platformDirectory = project.platformDirectory(platform: platform);
+    final platformDirectory =
+        project.appModule.platformDirectory(platform: platform);
     final featurePackage = platformDirectory.featuresDirectory
         .featurePackage<PlatformFlowFeaturePackage>(name: '${name}_flow');
-    if (!featurePackage.exists()) {
-      final List<PlatformFeaturePackage> featurePackages = [];
-      if (tab) {
-        for (final feature in features!) {
-          if (platformDirectory.featuresDirectory
-              .featurePackages()
-              .any((e) => feature == e.packageName() || feature == e.name)) {
-            featurePackages.add(
-              platformDirectory.featuresDirectory.featurePackages().firstWhere(
-                  (e) => feature == e.packageName() || feature == e.name),
-            );
-          } else {
-            _logAndThrow(
-              RapidPlatformException._featureNotFound(
-                feature,
-                platform: platform,
-              ),
-            );
-          }
-        }
-      }
 
-      final rootPackage = platformDirectory.rootPackage;
+    if (featurePackage.existsSync()) {
+      throw FeatureAlreadyExistsException._(featurePackage, platform);
+    }
 
-      await featurePackage.create(
-        tab: tab,
-        description: description,
-        localization: localization,
-        // TODO take default lang from featurs or from roots supported langs?
-        defaultLanguage: rootPackage.defaultLanguage(),
-        languages: rootPackage.supportedLanguages(),
-        features: tab ? featurePackages.toSet() : null,
-      );
+    final rootPackage = platformDirectory.rootPackage;
 
-      await rootPackage.registerFeaturePackage(
-        featurePackage,
-        routing: true,
-        localization: localization,
-      );
+    logger.newLine();
+
+    await task('Creating feature', () async {
+      await featurePackage.generate(description: description);
+
+      await rootPackage.registerFeaturePackage(featurePackage);
 
       if (navigator) {
-        // TODO share ?
-        final featureName = featurePackage.name;
-        final navigationPackage = platformDirectory.navigationPackage;
-        final navigator =
-            navigationPackage.navigator(name: featureName.pascalCase);
-        if (!navigator.existsAny()) {
-          final barrelFile = navigationPackage.barrelFile;
-
-          await navigator.create();
-
-          barrelFile.addExport(
-            'src/i_${featureName.snakeCase}_navigator.dart',
-          );
-
-          // TODO check if the impl is already available
-          final navigatorImplementation =
-              featurePackage.navigatorImplementation;
-          await navigatorImplementation.create();
-        }
+        await _addNavigator(
+          featurePackage: featurePackage,
+          navigationPackage: platformDirectory.navigationPackage,
+        );
       }
+    });
 
-      await bootstrap(packages: [rootPackage, featurePackage]);
+    await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
-      await codeGen(packages: [
-        rootPackage,
-        if (navigator) featurePackage,
-      ]);
+    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+      packages: [rootPackage, if (navigator) featurePackage],
+    );
 
-      if (localization) {
-        await flutterGenl10n([featurePackage]);
-      }
+    await dartFormatFixTask();
 
-      await dartFormatFix(project);
+    // TODO add link doc to navigation and routing approach
+    logger
+      ..newLine()
+      ..commandSuccess('Added Flow Feature!');
+  }
 
-      // TODO add link doc to navigation and routing approach
-      logger.newLine();
-      logger.success('Success $checkLabel');
-    } else {
-      _logAndThrow(
-        RapidPlatformException._featureAlreadyExists(
-          '${name}_flow',
-          platform: platform,
-        ),
+  Future<void> platformAddFeatureTabFlow(
+    Platform platform, {
+    required String name,
+    required String description,
+    required bool navigator,
+    required Set<String> subFeatures,
+  }) async {
+    if (!project.platformIsActivated(platform)) {
+      throw PlatformNotActivatedException._(platform);
+    }
+
+    final platformDirectory =
+        project.appModule.platformDirectory(platform: platform);
+    final featurePackage = platformDirectory.featuresDirectory
+        .featurePackage<PlatformTabFlowFeaturePackage>(
+      name: '${name}_tab_flow',
+    );
+
+    if (featurePackage.existsSync()) {
+      throw FeatureAlreadyExistsException._(featurePackage, platform);
+    }
+
+    final rootPackage = platformDirectory.rootPackage;
+    final featurePackages =
+        platformDirectory.featuresDirectory.featurePackages();
+
+    final notExistingSubFeaturePackages = subFeatures.where(
+      (subFeature) =>
+          !featurePackages.any((feature) => feature.name == subFeature),
+    );
+    if (notExistingSubFeaturePackages.isNotEmpty) {
+      throw SubFeaturesNotFoundException._(
+        notExistingSubFeaturePackages,
+        platform,
       );
     }
+
+    logger.newLine();
+
+    await task('Creating feature', () async {
+      await featurePackage.generate(
+        description: description,
+        subFeatures: subFeatures,
+      );
+
+      await rootPackage.registerFeaturePackage(featurePackage);
+
+      if (navigator) {
+        await _addNavigator(
+          featurePackage: featurePackage,
+          navigationPackage: platformDirectory.navigationPackage,
+        );
+      }
+    });
+
+    await melosBootstrapTask(scope: [rootPackage, featurePackage]);
+
+    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+      packages: [rootPackage, if (navigator) featurePackage],
+    );
+
+    await dartFormatFixTask();
+
+    // TODO add link doc to navigation and routing approach
+    logger
+      ..newLine()
+      ..commandSuccess('Added Tab Flow Feature!');
   }
 
   Future<void> platformAddFeaturePage(
@@ -200,209 +125,143 @@ mixin _PlatformMixin on _Rapid {
     required String name,
     required String description,
     required bool navigator,
-    required bool localization,
   }) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
+      throw PlatformNotActivatedException._(platform);
     }
 
-    logger
-      ..command('rapid ${platform.name} add feature page')
-      ..newLine();
-
-    final platformDirectory = project.platformDirectory(platform: platform);
+    final platformDirectory =
+        project.appModule.platformDirectory(platform: platform);
     final featurePackage = platformDirectory.featuresDirectory
         .featurePackage<PlatformPageFeaturePackage>(name: '${name}_page');
-    if (!featurePackage.exists()) {
-      final rootPackage = platformDirectory.rootPackage;
 
-      await featurePackage.create(
-        description: description,
-        localization: localization,
-        // TODO take default lang from featurs or from roots supported langs?
-        defaultLanguage: rootPackage.defaultLanguage(),
-        languages: rootPackage.supportedLanguages(),
-      );
-
-      await rootPackage.registerFeaturePackage(
-        featurePackage,
-        routing: true,
-        localization: localization,
-      );
-
-      if (navigator) {
-        // TODO share ?
-        final featureName = featurePackage.name;
-        final navigationPackage = platformDirectory.navigationPackage;
-        final navigator =
-            navigationPackage.navigator(name: featureName.pascalCase);
-        if (!navigator.existsAny()) {
-          final barrelFile = navigationPackage.barrelFile;
-
-          await navigator.create();
-
-          barrelFile.addExport(
-            'src/i_${featureName.snakeCase}_navigator.dart',
-          );
-
-          // TODO check if the impl is already available
-          final navigatorImplementation =
-              featurePackage.navigatorImplementation;
-          await navigatorImplementation.create();
-        }
-      }
-
-      await bootstrap(packages: [rootPackage, featurePackage]);
-
-      await codeGen(packages: [
-        rootPackage,
-        if (navigator) featurePackage,
-      ]);
-
-      if (localization) {
-        await flutterGenl10n([featurePackage]);
-      }
-
-      await dartFormatFix(project);
-
-      // TODO add link doc to navigation and routing approach
-      logger.newLine();
-      logger.success('Success $checkLabel');
-    } else {
-      _logAndThrow(
-        RapidPlatformException._featureAlreadyExists(
-          '${name}_page',
-          platform: platform,
-        ),
-      );
+    if (featurePackage.existsSync()) {
+      throw FeatureAlreadyExistsException._(featurePackage, platform);
     }
+
+    final rootPackage = platformDirectory.rootPackage;
+
+    logger.newLine();
+
+    await task(
+      'Creating feature files',
+      () async {
+        await featurePackage.generate(description: description);
+        await rootPackage.registerFeaturePackage(featurePackage);
+        if (navigator) {
+          await _addNavigator(
+            featurePackage: featurePackage,
+            navigationPackage: platformDirectory.navigationPackage,
+          );
+        }
+      },
+    );
+
+    await melosBootstrapTask(scope: [rootPackage, featurePackage]);
+
+    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+      packages: [rootPackage, if (navigator) featurePackage],
+    );
+
+    await dartFormatFixTask();
+
+    // TODO add link doc to navigation and routing approach
+    logger
+      ..newLine()
+      ..commandSuccess('Added Page Feature!');
   }
 
   Future<void> platformAddFeatureWidget(
     Platform platform, {
     required String name,
     required String description,
-    required bool localization,
   }) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
+      throw PlatformNotActivatedException._(platform);
     }
 
-    logger
-      ..command('rapid ${platform.name} add feature widget')
-      ..newLine();
-
-    final platformDirectory = project.platformDirectory(platform: platform);
+    final platformDirectory =
+        project.appModule.platformDirectory(platform: platform);
     final featurePackage = platformDirectory.featuresDirectory
         .featurePackage<PlatformWidgetFeaturePackage>(name: '${name}_widget');
-    if (!featurePackage.exists()) {
-      final rootPackage = platformDirectory.rootPackage;
 
-      await featurePackage.create(
-        description: description,
-        localization: localization,
-        // TODO take default lang from featurs or from roots supported langs?
-        defaultLanguage: rootPackage.defaultLanguage(),
-        languages: rootPackage.supportedLanguages(),
-      );
-
-      await rootPackage.registerFeaturePackage(
-        featurePackage,
-        routing: false,
-        localization: localization,
-      );
-
-      await bootstrap(packages: [rootPackage, featurePackage]);
-
-      await codeGen(packages: [
-        rootPackage,
-      ]);
-
-      if (localization) {
-        await flutterGenl10n([featurePackage]);
-      }
-
-      await dartFormatFix(project);
-
-      // TODO add link doc to navigation and routing approach
-      logger.newLine();
-      logger.success('Success $checkLabel');
-    } else {
-      _logAndThrow(
-        RapidPlatformException._featureAlreadyExists(
-          '${name}_widget',
-          platform: platform,
-        ),
-      );
+    if (featurePackage.existsSync()) {
+      throw FeatureAlreadyExistsException._(featurePackage, platform);
     }
+
+    final rootPackage = platformDirectory.rootPackage;
+
+    logger.newLine();
+
+    await task('Generating feature files', () async {
+      await featurePackage.generate(description: description);
+      await rootPackage.registerFeaturePackage(featurePackage);
+    });
+
+    await melosBootstrapTask(scope: [rootPackage, featurePackage]);
+
+    await codeGenTask(package: rootPackage);
+
+    await dartFormatFixTask();
+
+    // TODO add link doc to navigation and routing approach
+    logger
+      ..newLine()
+      ..commandSuccess('Added Widget Feature!');
   }
 
   Future<void> platformAddLanguage(
     Platform platform, {
-    required String language,
+    required Language language,
   }) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
+      throw PlatformNotActivatedException._(platform);
     }
 
-    logger
-      ..command('rapid ${platform.name} add language')
-      ..newLine();
+    final platformDirectory =
+        project.appModule.platformDirectory(platform: platform);
+    final localizationPackage = platformDirectory.localizationPackage;
 
-    final platformDirectory = project.platformDirectory(platform: platform);
-    final featurePackagesWithLanguages = platformDirectory.featuresDirectory
-        .featurePackages()
-        .where((e) => e.hasLanguages)
-        .toList();
-    if (featurePackagesWithLanguages.isEmpty) {
-      _logAndThrow(
-        RapidPlatformException._noFeaturesWithLocalizationFound(platform),
-      );
+    if (localizationPackage.supportedLanguages().contains(language)) {
+      throw LanguageAlreadyPresentException._(language);
     }
 
-    if (!featurePackagesWithLanguages.supportSameLanguages()) {
-      _logAndThrow(
-        RapidPlatformException._projectCorrupted(
-          'Because not all features support the same languages.',
-          platform: platform,
-        ),
-      );
-    }
+    logger.newLine();
 
-    if (!featurePackagesWithLanguages.haveSameDefaultLanguage()) {
-      _logAndThrow(
-        RapidPlatformException._projectCorrupted(
-          'Because not all features have the same default language.',
-          platform: platform,
-        ),
-      );
-    }
+    await task('Adding language', () {
+      final rootPackage = platformDirectory.rootPackage;
+      switch (rootPackage) {
+        case IosRootPackage():
+          rootPackage.addLanguage(language);
+        case MobileRootPackage():
+          rootPackage.addLanguage(language);
+        default:
+      }
+      localizationPackage.addLanguage(language);
 
-    if (featurePackagesWithLanguages.supportLanguage(language)) {
-      _logAndThrow(
-        RapidPlatformException._languageAlreadyPresent(language),
-      );
-    }
+      // TODO move down ? check if already there? cleaner
+      if (language.hasScriptCode || language.hasCountryCode) {
+        switch (rootPackage) {
+          case IosRootPackage():
+            rootPackage.addLanguage(language);
+          case MobileRootPackage():
+            rootPackage.addLanguage(language);
+          default:
+        }
+        localizationPackage.addLanguage(
+          Language(languageCode: language.languageCode),
+        );
+      }
+    });
 
-    await platformDirectory.rootPackage.addLanguage(language);
+    await flutterGenl10nTask(package: localizationPackage);
 
-    for (final featurePackage in featurePackagesWithLanguages) {
-      await featurePackage.addLanguage(language);
-    }
-
-    await flutterGenl10n(featurePackagesWithLanguages);
-
-    await dartFormatFix(project);
+    await dartFormatFixTask();
 
     // TODO add hint how to work with localization
-    logger.newLine();
-    logger.success('Success $checkLabel');
+    logger
+      ..newLine()
+      ..commandSuccess('Added Language!');
   }
 
   Future<void> platformAddNavigator(
@@ -410,379 +269,231 @@ mixin _PlatformMixin on _Rapid {
     required String featureName,
   }) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
+      throw PlatformNotActivatedException._(platform);
     }
+
+    final platformDirectory =
+        project.appModule.platformDirectory(platform: platform);
+    final featurePackage =
+        platformDirectory.featuresDirectory.featurePackage(name: featureName);
+
+    if (featurePackage is! PlatformRoutableFeaturePackage) {
+      throw FeatureNotRoutableException._(featurePackage, platform);
+    }
+
+    if (!featurePackage.existsSync()) {
+      throw FeatureNotFoundException._(featurePackage, platform);
+    }
+
+    logger.newLine();
+
+    await _addNavigator(
+      featurePackage: featurePackage,
+      navigationPackage: platformDirectory.navigationPackage,
+    );
+
+    await dartFormatFixTask();
 
     logger
-      ..command('rapid ${platform.name} add navigator')
-      ..newLine();
-
-    final platformDirectory = project.platformDirectory(platform: platform);
-    late final PlatformRoutableFeaturePackage featurePackage;
-    try {
-      featurePackage = platformDirectory.featuresDirectory
-          .featurePackage<PlatformRoutableFeaturePackage>(name: featureName);
-    } catch (_) {
-      _logAndThrow(
-        RapidPlatformException._featureNotRoutable(
-          featureName,
-          platform: platform,
-        ),
-      );
-    }
-    if (featurePackage.exists()) {
-      final navigationPackage = platformDirectory.navigationPackage;
-      final navigator =
-          navigationPackage.navigator(name: featureName.pascalCase);
-
-      if (!navigator.existsAny()) {
-        final barrelFile = navigationPackage.barrelFile;
-
-        await navigator.create();
-
-        barrelFile.addExport(
-          'src/i_${featureName.snakeCase}_navigator.dart',
-        );
-
-        // TODO check if the impl is already available
-        final navigatorImplementation = featurePackage.navigatorImplementation;
-        await navigatorImplementation.create();
-
-        await codeGen(packages: [featurePackage]);
-
-        await dartFormatFix(project);
-
-        logger.newLine();
-        logger.success('Success $checkLabel');
-      } else {
-        _logAndThrow(
-          RapidPlatformException._navigatorAlreadyExists(
-            featureName,
-            platform: platform,
-          ),
-        );
-      }
-    } else {
-      _logAndThrow(
-        RapidPlatformException._featureNotFound(
-          featureName,
-          platform: platform,
-        ),
-      );
-    }
+      ..newLine()
+      ..commandSuccess('Added Navigator!');
   }
 
   Future<void> platformFeatureAddBloc(
     Platform platform, {
     required String name,
     required String featureName,
-    required String outputDir,
   }) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
+      throw PlatformNotActivatedException._(platform);
     }
 
-    logger
-      ..command('rapid ${platform.name} $featureName add bloc')
-      ..newLine();
-
-    final platformDirectory = project.platformDirectory(platform: platform);
+    final platformDirectory =
+        project.appModule.platformDirectory(platform: platform);
     final featurePackage =
         platformDirectory.featuresDirectory.featurePackage(name: featureName);
-    if (featurePackage.exists()) {
-      final bloc = featurePackage.bloc(name: name, dir: outputDir);
-      if (!bloc.existsAny()) {
-        await bloc.create();
 
-        final applicationBarrelFile = featurePackage.applicationBarrelFile;
-        if (!applicationBarrelFile.exists()) {
-          final barrelFile = featurePackage.barrelFile;
-
-          await applicationBarrelFile.create();
-
-          applicationBarrelFile.addExport(
-            p.normalize(
-              p.join(outputDir, '${name.snakeCase}_bloc.dart'),
-            ),
-          );
-
-          barrelFile.addExport('src/application/application.dart');
-        } else {
-          applicationBarrelFile.addExport(
-            p.normalize(
-              p.join(outputDir, '${name.snakeCase}_bloc.dart'),
-            ),
-          );
-        }
-
-        await codeGen(packages: [featurePackage]);
-
-        logger.newLine();
-        logger.success('Success $checkLabel');
-      } else {
-        _logAndThrow(
-          // TODO use output dir
-          RapidPlatformException._blocAlreadyExists(
-            name,
-            featureName,
-            platform: platform,
-          ),
-        );
-      }
-    } else {
-      _logAndThrow(
-        RapidPlatformException._featureNotFound(
-          featureName,
-          platform: platform,
-        ),
-      );
+    if (!featurePackage.existsSync()) {
+      throw FeatureNotFoundException._(featurePackage, platform);
     }
+
+    final bloc = featurePackage.bloc(name: name);
+
+    if (bloc.existsAny) {
+      throw BlocAlreadyExistsException._(name, featurePackage, platform);
+    }
+
+    logger.newLine();
+
+    await task('Creating bloc', () async {
+      await bloc.generate();
+
+      final applicationBarrelFile = featurePackage.applicationBarrelFile;
+      if (!applicationBarrelFile.existsSync()) {
+        applicationBarrelFile.createSync(recursive: true);
+        applicationBarrelFile.addExport('${name.snakeCase}_bloc.dart');
+
+        final barrelFile = featurePackage.barrelFile;
+        barrelFile.addExport('src/application/application.dart');
+      } else {
+        applicationBarrelFile.addExport('${name.snakeCase}_bloc.dart');
+      }
+    });
+
+    await codeGenTask(package: featurePackage);
+
+    await dartFormatFixTask();
+
+    logger
+      ..newLine()
+      ..commandSuccess('Added Bloc!');
   }
 
   Future<void> platformFeatureAddCubit(
     Platform platform, {
     required String name,
     required String featureName,
-    required String outputDir,
   }) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
+      throw PlatformNotActivatedException._(platform);
     }
 
-    logger
-      ..command('rapid ${platform.name} $featureName add cubit')
-      ..newLine();
-
-    final platformDirectory = project.platformDirectory(platform: platform);
-
+    final platformDirectory =
+        project.appModule.platformDirectory(platform: platform);
     final featurePackage =
         platformDirectory.featuresDirectory.featurePackage(name: featureName);
-    if (featurePackage.exists()) {
-      final cubit = featurePackage.cubit(name: name, dir: outputDir);
-      if (!cubit.existsAny()) {
-        await cubit.create();
 
-        final applicationBarrelFile = featurePackage.applicationBarrelFile;
-        if (!applicationBarrelFile.exists()) {
-          final barrelFile = featurePackage.barrelFile;
+    if (!featurePackage.existsSync()) {
+      throw FeatureNotFoundException._(featurePackage, platform);
+    }
 
-          await applicationBarrelFile.create();
-          applicationBarrelFile.addExport(
-            p.normalize(p.join(outputDir, '${name.snakeCase}_cubit.dart')),
-          );
+    final cubit = featurePackage.cubit(name: name);
 
-          barrelFile.addExport('src/application/application.dart');
-        } else {
-          applicationBarrelFile.addExport(
-            p.normalize(
-              p.join(outputDir, '${name.snakeCase}_cubit.dart'),
-            ),
-          );
-        }
+    if (cubit.existsAny) {
+      throw CubitAlreadyExistsException._(name, featurePackage, platform);
+    }
 
-        await codeGen(packages: [featurePackage]);
+    logger.newLine();
 
-        logger.newLine();
-        logger.success('Success $checkLabel');
+    await task('Creating cubit', () async {
+      await cubit.generate();
+
+      final applicationBarrelFile = featurePackage.applicationBarrelFile;
+      if (!applicationBarrelFile.existsSync()) {
+        applicationBarrelFile.createSync(recursive: true);
+        applicationBarrelFile.addExport('${name.snakeCase}_cubit.dart');
+
+        final barrelFile = featurePackage.barrelFile;
+        barrelFile.addExport('src/application/application.dart');
       } else {
-        _logAndThrow(
-          // TODO use output dir
-          RapidPlatformException._cubitAlreadyExists(
-            name,
-            featureName,
-            platform: platform,
-          ),
-        );
+        applicationBarrelFile.addExport('${name.snakeCase}_cubit.dart');
       }
-    } else {
-      _logAndThrow(
-        RapidPlatformException._featureNotFound(
-          featureName,
-          platform: platform,
-        ),
-      );
-    }
-  }
+    });
 
-  Future<void> platformFeatureAddLocalization(
-    Platform platform, {
-    required String featureName,
-  }) async {
-    if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
-    }
+    await codeGenTask(package: featurePackage);
+
+    await dartFormatFixTask();
 
     logger
-      ..command('rapid ${platform.name} $featureName add localization')
-      ..newLine();
-
-    final platformDirectory = project.platformDirectory(platform: platform);
-
-    final featurePackage =
-        platformDirectory.featuresDirectory.featurePackage(name: featureName);
-    if (featurePackage.exists()) {
-      if (!featurePackage.hasLanguages) {
-        final rootPackage = platformDirectory.rootPackage;
-        await featurePackage.addLocalizations(
-          rootPackage.defaultLanguage(),
-          rootPackage.supportedLanguages(),
-        );
-
-        rootPackage.localizationsDelegatesFile
-            .addLocalizationsDelegate(featurePackage);
-
-        await flutterGenl10n([featurePackage]);
-        await dartFormatFix(project);
-
-        // TODO: add hint for how to modify tests when localizations are added
-
-        logger.newLine();
-        logger.success('Success $checkLabel');
-      } else {
-        _logAndThrow(
-          RapidPlatformException._localizationAlreadyExists(
-            featureName,
-            platform: platform,
-          ),
-        );
-      }
-    } else {
-      _logAndThrow(
-        RapidPlatformException._featureNotFound(
-          featureName,
-          platform: platform,
-        ),
-      );
-    }
+      ..newLine()
+      ..commandSuccess('Added Cubit!');
   }
 
   Future<void> platformFeatureRemoveBloc(
     Platform platform, {
     required String name,
     required String featureName,
-    required String dir,
   }) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
+      throw PlatformNotActivatedException._(platform);
     }
 
-    logger
-      ..command('rapid ${platform.name} $featureName remove bloc')
-      ..newLine();
-
-    final platformDirectory = project.platformDirectory(platform: platform);
+    final platformDirectory =
+        project.appModule.platformDirectory(platform: platform);
     final featurePackage =
         platformDirectory.featuresDirectory.featurePackage(name: featureName);
-    if (featurePackage.exists()) {
-      final bloc = featurePackage.bloc(name: name, dir: dir);
-      if (bloc.existsAny()) {
-        final applicationBarrelFile = featurePackage.applicationBarrelFile;
 
-        bloc.delete();
-
-        // TODO delete application dir if empty
-
-        applicationBarrelFile.removeExport(
-          p.normalize(
-            p.join(dir, '${name.snakeCase}_bloc.dart'),
-          ),
-        );
-        if (applicationBarrelFile.read().trim().isEmpty) {
-          applicationBarrelFile.delete();
-          final barrelFile = featurePackage.barrelFile;
-          barrelFile.removeExport('src/application/application.dart');
-        }
-
-        await codeGen(packages: [featurePackage]);
-
-        logger.newLine();
-        logger.success('Success $checkLabel');
-      } else {
-        _logAndThrow(
-          RapidPlatformException._blocNotFound(
-            name,
-            featureName,
-            platform: platform,
-          ),
-        );
-      }
-    } else {
-      _logAndThrow(
-        RapidPlatformException._featureNotFound(
-          featureName,
-          platform: platform,
-        ),
-      );
+    if (!featurePackage.existsSync()) {
+      throw FeatureNotFoundException._(featurePackage, platform);
     }
+
+    final bloc = featurePackage.bloc(name: name);
+
+    if (!bloc.existsAny) {
+      throw BlocNotFoundException._(name, featurePackage, platform);
+    }
+
+    logger.newLine();
+
+    await task('Removing bloc', () async {
+      bloc.delete();
+
+      // TODO delete application dir if empty
+
+      final applicationBarrelFile = featurePackage.applicationBarrelFile;
+      applicationBarrelFile.removeExport('${name.snakeCase}_bloc.dart');
+      if (!applicationBarrelFile.containsStatements()) {
+        applicationBarrelFile.deleteSync(recursive: true);
+        final barrelFile = featurePackage.barrelFile;
+        barrelFile.removeExport('src/application/application.dart');
+      }
+    });
+
+    await codeGenTask(package: featurePackage);
+
+    await dartFormatFixTask();
+
+    logger
+      ..newLine()
+      ..commandSuccess('Removed Bloc!');
   }
 
   Future<void> platformFeatureRemoveCubit(
     Platform platform, {
     required String name,
     required String featureName,
-    required String dir,
   }) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
+      throw PlatformNotActivatedException._(platform);
     }
 
-    logger
-      ..command('rapid ${platform.name} $featureName remove cubit')
-      ..newLine();
-
-    final platformDirectory = project.platformDirectory(platform: platform);
+    final platformDirectory =
+        project.appModule.platformDirectory(platform: platform);
     final featurePackage =
         platformDirectory.featuresDirectory.featurePackage(name: featureName);
-    if (featurePackage.exists()) {
-      final cubit = featurePackage.cubit(name: name, dir: dir);
-      if (cubit.existsAny()) {
-        final applicationBarrelFile = featurePackage.applicationBarrelFile;
 
-        cubit.delete();
-        // TODO delete application dir if empty
-
-        applicationBarrelFile.removeExport(
-          p.normalize(p.join(dir, '${name.snakeCase}_cubit.dart')),
-        );
-        if (applicationBarrelFile.read().trim().isEmpty) {
-          applicationBarrelFile.delete();
-          final barrelFile = featurePackage.barrelFile;
-          barrelFile.removeExport('src/application/application.dart');
-        }
-
-        await codeGen(packages: [featurePackage]);
-
-        logger.newLine();
-        logger.success('Success $checkLabel');
-      } else {
-        _logAndThrow(
-          RapidPlatformException._cubitNotFound(
-            name,
-            featureName,
-            platform: platform,
-          ),
-        );
-      }
-    } else {
-      _logAndThrow(
-        RapidPlatformException._featureNotFound(
-          featureName,
-          platform: platform,
-        ),
-      );
+    if (!featurePackage.existsSync()) {
+      throw FeatureNotFoundException._(featurePackage, platform);
     }
+
+    final cubit = featurePackage.cubit(name: name);
+
+    if (!cubit.existsAny) {
+      throw CubitNotFoundException._(name, featurePackage, platform);
+    }
+
+    logger.newLine();
+
+    await task('Removing cubit', () async {
+      cubit.delete();
+      // TODO delete application dir if empty
+
+      final applicationBarrelFile = featurePackage.applicationBarrelFile;
+      applicationBarrelFile.removeExport('${name.snakeCase}_cubit.dart');
+      if (!applicationBarrelFile.containsStatements()) {
+        applicationBarrelFile.deleteSync(recursive: true);
+        final barrelFile = featurePackage.barrelFile;
+        barrelFile.removeExport('src/application/application.dart');
+      }
+    });
+
+    await codeGenTask(package: featurePackage);
+
+    await dartFormatFixTask();
+
+    logger
+      ..newLine()
+      ..commandSuccess('Removed Cubit!');
   }
 
   Future<void> platformRemoveFeature(
@@ -790,135 +501,122 @@ mixin _PlatformMixin on _Rapid {
     required String name,
   }) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
+      throw PlatformNotActivatedException._(platform);
     }
 
-    logger
-      ..command('rapid ${platform.name} remove feature')
-      ..newLine();
-
-    final platformDirectory = project.platformDirectory(platform: platform);
+    final platformDirectory =
+        project.appModule.platformDirectory(platform: platform);
     final featuresDirectory = platformDirectory.featuresDirectory;
     final featurePackage = featuresDirectory.featurePackage(name: name);
-    if (featurePackage.exists()) {
-      final rootPackage = platformDirectory.rootPackage;
+
+    if (!featurePackage.existsSync()) {
+      throw FeatureNotFoundException._(featurePackage, platform);
+    }
+
+    final rootPackage = platformDirectory.rootPackage;
+    final remainingFeaturePackages = featuresDirectory.featurePackages()
+      ..remove(featurePackage);
+
+    logger.newLine();
+
+    await task('Deleting feature files', () async {
       await rootPackage.unregisterFeaturePackage(featurePackage);
 
-      final remainingFeaturePackages = featuresDirectory.featurePackages()
-        ..remove(featurePackage);
-
       for (final remainingFeaturePackage in remainingFeaturePackages) {
-        final pubspecFile = remainingFeaturePackage.pubspecFile;
-        pubspecFile.removeDependency(featurePackage.packageName());
+        if (remainingFeaturePackage.pubSpecFile
+            .hasDependency(name: featurePackage.packageName)) {
+          remainingFeaturePackage.pubSpecFile.removeDependency(
+            name: featurePackage.packageName,
+          );
+        }
       }
 
-      featurePackage.delete();
-
-      // TODO share ?
-      final featureName = featurePackage.name;
-      final navigationPackage = platformDirectory.navigationPackage;
-      final navigator =
-          navigationPackage.navigator(name: featureName.pascalCase);
-      if (navigator.existsAny()) {
-        navigator.delete();
-        navigationPackage.barrelFile.removeExport(
-          'src/i_${featureName.snakeCase}_navigator.dart',
+      if (featurePackage is PlatformRoutableFeaturePackage) {
+        await _removeNavigatorInterface(
+          featurePackage: featurePackage,
+          navigationPackage: platformDirectory.navigationPackage,
         );
       }
 
-      await bootstrap(
-        packages: [
-          ...remainingFeaturePackages,
-          rootPackage,
-        ],
-      );
+      featurePackage.deleteSync(recursive: true);
+    });
 
-      await codeGen(packages: [rootPackage]);
+    await melosBootstrapTask(
+      scope: [
+        ...remainingFeaturePackages,
+        rootPackage,
+      ],
+    );
 
-      logger.newLine();
-      logger.success('Success $checkLabel');
-    } else {
-      _logAndThrow(
-        RapidPlatformException._featureNotFound(
-          name,
-          platform: platform,
-        ),
-      );
-    }
+    await codeGenTask(package: rootPackage);
+
+    await dartFormatFixTask();
+
+    logger
+      ..newLine()
+      ..commandSuccess('Removed Feature!');
   }
 
   Future<void> platformRemoveLanguage(
     Platform platform, {
-    required String language,
+    required Language language,
   }) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
+      throw PlatformNotActivatedException._(platform);
     }
 
-    logger
-      ..command('rapid ${platform.name} remove language')
-      ..newLine();
+    final platformDirectory =
+        project.appModule.platformDirectory(platform: platform);
+    final localizationPackage = platformDirectory.localizationPackage;
+    final supportedLanguages = localizationPackage.supportedLanguages();
 
-    final platformDirectory = project.platformDirectory(platform: platform);
-    final featurePackagesWithLanguages = platformDirectory.featuresDirectory
-        .featurePackages()
-        .where((e) => e.hasLanguages)
-        .toList();
-    if (featurePackagesWithLanguages.isEmpty) {
-      _logAndThrow(
-        RapidPlatformException._noFeaturesWithLocalizationFound(platform),
-      );
-    }
-
-    if (!featurePackagesWithLanguages.supportSameLanguages()) {
-      _logAndThrow(
-        RapidPlatformException._projectCorrupted(
-          'Because not all features support the same languages.',
-          platform: platform,
-        ),
-      );
-    }
-
-    if (!featurePackagesWithLanguages.haveSameDefaultLanguage()) {
-      _logAndThrow(
-        RapidPlatformException._projectCorrupted(
-          'Because not all features have the same default language.',
-          platform: platform,
-        ),
-      );
-    }
-
-    if (!featurePackagesWithLanguages.supportLanguage(language)) {
+    if (!supportedLanguages.contains(language)) {
       // TODO better hint
-      _logAndThrow(
-        RapidPlatformException._languageNotFound(language),
-      );
+      throw LanguageNotFoundException._(language);
     }
 
-    if (featurePackagesWithLanguages.first.defaultLanguage() == language) {
+    if (localizationPackage.defaultLanguage() == language) {
       // TODO add hint how to change default language
-      _logAndThrow(
-        RapidPlatformException._cantRemoveDefaultLanguage(language),
-      );
+      throw CantRemoveDefaultLanguageException._(language);
     }
-
-    final rootPackage = platformDirectory.rootPackage;
-    await rootPackage.removeLanguage(language);
-
-    for (final featurePackage in featurePackagesWithLanguages) {
-      await featurePackage.removeLanguage(language);
-    }
-
-    await flutterGenl10n(featurePackagesWithLanguages);
-
-    await dartFormatFix(project);
 
     logger.newLine();
-    logger.success('Success $checkLabel');
+
+    await task('Removing language', () {
+      final rootPackage = platformDirectory.rootPackage;
+      switch (rootPackage) {
+        case IosRootPackage():
+          rootPackage.removeLanguage(language);
+        case MobileRootPackage():
+          rootPackage.removeLanguage(language);
+        default:
+      }
+      localizationPackage.removeLanguage(language);
+
+      // TODO move down ? cleaner
+      if (!language.hasScriptCode && !language.hasCountryCode) {
+        for (final language in supportedLanguages.where((e) =>
+            e.languageCode == language.languageCode &&
+            (e.hasScriptCode || e.hasCountryCode))) {
+          switch (rootPackage) {
+            case IosRootPackage():
+              rootPackage.removeLanguage(language);
+            case MobileRootPackage():
+              rootPackage.removeLanguage(language);
+            default:
+          }
+          localizationPackage.removeLanguage(language);
+        }
+      }
+    });
+
+    await flutterGenl10nTask(package: localizationPackage);
+
+    await dartFormatFixTask();
+
+    logger
+      ..newLine()
+      ..commandSuccess('Removed Language!');
   }
 
   Future<void> platformRemoveNavigator(
@@ -926,290 +624,240 @@ mixin _PlatformMixin on _Rapid {
     required String featureName,
   }) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
+      throw PlatformNotActivatedException._(platform);
     }
+
+    final platformDirectory =
+        project.appModule.platformDirectory(platform: platform);
+    final featurePackage =
+        platformDirectory.featuresDirectory.featurePackage(name: featureName);
+
+    if (featurePackage is! PlatformRoutableFeaturePackage) {
+      throw FeatureNotRoutableException._(featurePackage, platform);
+    }
+
+    if (!featurePackage.existsSync()) {
+      throw FeatureNotFoundException._(featurePackage, platform);
+    }
+
+    logger.newLine();
+
+    await _removeNavigatorInterface(
+      featurePackage: featurePackage,
+      navigationPackage: platformDirectory.navigationPackage,
+    );
+    await _removeNavigatorImplementation(featurePackage: featurePackage);
+
+    await dartFormatFixTask();
 
     logger
-      ..command('rapid ${platform.name} remove navigator')
-      ..newLine();
-
-    final platformDirectory = project.platformDirectory(platform: platform);
-    late final PlatformRoutableFeaturePackage featurePackage;
-    try {
-      featurePackage = platformDirectory.featuresDirectory
-          .featurePackage<PlatformRoutableFeaturePackage>(name: featureName);
-    } catch (_) {
-      _logAndThrow(
-        RapidPlatformException._featureNotRoutable(
-          featureName,
-          platform: platform,
-        ),
-      );
-    }
-    if (featurePackage.exists()) {
-      final navigationPackage = platformDirectory.navigationPackage;
-      final navigator =
-          navigationPackage.navigator(name: featureName.pascalCase);
-
-      if (navigator.existsAny()) {
-        navigator.delete();
-        navigationPackage.barrelFile.removeExport(
-          'src/i_${featureName.snakeCase}_navigator.dart',
-        );
-
-        // TODO check if the impl is already available
-        final navigatorImplementation = featurePackage.navigatorImplementation;
-        navigatorImplementation.delete();
-
-        await codeGen(packages: [featurePackage]);
-
-        await dartFormatFix(project);
-
-        logger.newLine();
-        logger.success('Success $checkLabel');
-      } else {
-        _logAndThrow(
-          RapidPlatformException._navigatorNotFound(
-            featureName,
-            platform: platform,
-          ),
-        );
-      }
-    } else {
-      _logAndThrow(
-        RapidPlatformException._featureNotFound(
-          featureName,
-          platform: platform,
-        ),
-      );
-    }
+      ..newLine()
+      ..commandSuccess('Removed Navigator!');
   }
 
   Future<void> platformSetDefaultLanguage(
     Platform platform, {
-    required String language,
+    required Language language,
   }) async {
     if (!project.platformIsActivated(platform)) {
-      _logAndThrow(
-        RapidPlatformException._platformNotActivated(platform),
-      );
+      throw PlatformNotActivatedException._(platform);
     }
 
-    logger
-      ..command('rapid ${platform.name} set default_language')
-      ..newLine();
-
-    final platformDirectory = project.platformDirectory(platform: platform);
-    final featurePackagesWithLanguages = platformDirectory.featuresDirectory
-        .featurePackages()
-        .where((e) => e.hasLanguages)
-        .toList();
-
-    if (featurePackagesWithLanguages.isEmpty) {
-      _logAndThrow(
-        RapidPlatformException._noFeaturesWithLocalizationFound(platform),
-      );
+    final localizationPackage = project.appModule
+        .platformDirectory(platform: platform)
+        .localizationPackage;
+    if (!localizationPackage.supportedLanguages().contains(language)) {
+      throw LanguageNotFoundException._(language);
     }
 
-    if (!featurePackagesWithLanguages.supportSameLanguages()) {
-      _logAndThrow(
-        RapidPlatformException._projectCorrupted(
-          'Because not all features support the same languages.',
-          platform: platform,
-        ),
-      );
+    if (localizationPackage.defaultLanguage() == language) {
+      throw LanguageIsAlreadyDefaultLanguageException._(language);
     }
 
-    if (!featurePackagesWithLanguages.haveSameDefaultLanguage()) {
-      _logAndThrow(
-        RapidPlatformException._projectCorrupted(
-          'Because not all features have the same default language.',
-          platform: platform,
-        ),
-      );
-    }
+    logger.newLine();
 
-    if (!featurePackagesWithLanguages.supportLanguage(language)) {
-      _logAndThrow(
-        RapidPlatformException._languageNotFound(language),
-      );
-    }
+    await task(
+      'Setting default language',
+      () => localizationPackage.setDefaultLanguage(language),
+    );
 
-    if (featurePackagesWithLanguages.first.defaultLanguage() == language) {
-      _logAndThrow(
-        RapidPlatformException._languageIsAlreadyDefaultLanguage(language),
-      );
-    }
+    await flutterGenl10nTask(package: localizationPackage);
 
-    for (final featurePackage in featurePackagesWithLanguages) {
-      await featurePackage.setDefaultLanguage(language);
-    }
-
-    await flutterGenl10n(featurePackagesWithLanguages);
-
-    await dartFormatFix(project);
+    await dartFormatFixTask();
 
     // TODO add hint how to work with localization
-    logger.newLine();
-    logger.success('Success $checkLabel');
+
+    logger
+      ..newLine()
+      ..commandSuccess('Set Default Language!');
+  }
+
+  Future<void> _addNavigator({
+    required PlatformRoutableFeaturePackage featurePackage,
+    required PlatformNavigationPackage navigationPackage,
+  }) async {
+    await _addNavigatorInterface(
+      featurePackage: featurePackage,
+      navigationPackage: navigationPackage,
+    );
+    await _addNavigatorImplementation(featurePackage: featurePackage);
+  }
+
+  Future<void> _addNavigatorInterface({
+    required PlatformRoutableFeaturePackage featurePackage,
+    required PlatformNavigationPackage navigationPackage,
+  }) async {
+    final featureName = featurePackage.name;
+    final navigatorInterface =
+        navigationPackage.navigatorInterface(name: featureName.pascalCase);
+    if (!navigatorInterface.existsAny) {
+      await task('Creating navigator interface', () async {
+        await navigatorInterface.generate();
+        navigationPackage.barrelFile
+            .addExport('src/i_${featureName.snakeCase}_navigator.dart');
+      });
+    }
+  }
+
+  Future<void> _addNavigatorImplementation({
+    required PlatformRoutableFeaturePackage featurePackage,
+  }) async {
+    final navigatorImplementation = featurePackage.navigatorImplementation;
+    if (!navigatorImplementation.existsAny) {
+      await task(
+        'Creating navigator implementation',
+        () async => navigatorImplementation.generate(),
+      );
+      await codeGenTask(package: featurePackage);
+    }
+  }
+
+  Future<void> _removeNavigatorInterface({
+    required PlatformRoutableFeaturePackage featurePackage,
+    required PlatformNavigationPackage navigationPackage,
+  }) async {
+    final featureName = featurePackage.name;
+    final navigatorInterface =
+        navigationPackage.navigatorInterface(name: featureName.pascalCase);
+    if (navigatorInterface.existsAny) {
+      await task('Deleting navigator interface', () {
+        navigatorInterface.delete();
+        navigationPackage.barrelFile.removeExport(
+          'src/i_${featureName.snakeCase}_navigator.dart',
+        );
+      });
+    }
+  }
+
+  Future<void> _removeNavigatorImplementation({
+    required PlatformRoutableFeaturePackage featurePackage,
+  }) async {
+    final navigatorImplementation = featurePackage.navigatorImplementation;
+    if (navigatorImplementation.existsAny) {
+      await task(
+        'Deleting navigator implementation',
+        () => navigatorImplementation.delete(),
+      );
+      await codeGenTask(package: featurePackage);
+    }
   }
 }
 
-class RapidPlatformException extends RapidException {
-  RapidPlatformException._(super.message);
+class FeatureAlreadyExistsException extends RapidException {
+  FeatureAlreadyExistsException._(
+      PlatformFeaturePackage feature, Platform platform)
+      : super(
+          'Feature ${feature.name} already exists. (${platform.prettyName})',
+        );
+}
 
-  factory RapidPlatformException._featureAlreadyExists(
-    String name, {
-    required Platform platform,
-  }) {
-    return RapidPlatformException._(
-      'Feature $name already exists. (${platform.prettyName})',
-    );
-  }
+class FeatureNotFoundException extends RapidException {
+  FeatureNotFoundException._(PlatformFeaturePackage feature, Platform platform)
+      : super('Feature ${feature.name} not found. (${platform.prettyName})');
+}
 
-  factory RapidPlatformException._featureNotFound(
-    String name, {
-    required Platform platform,
-  }) {
-    return RapidPlatformException._(
-      'Feature $name not found. (${platform.prettyName})',
-    );
-  }
-
-  factory RapidPlatformException._navigatorNotFound(
-    String featureName, {
-    required Platform platform,
-  }) {
-    return RapidPlatformException._(
-      'The navigator "I${featureName.pascalCase}Navigator" does not exist. (${platform.prettyName})',
-    );
-  }
-
-  factory RapidPlatformException._featureNotRoutable(
-    String featureName, {
-    required Platform platform,
-  }) {
-    return RapidPlatformException._(
-      'The feature $featureName is not routable. (${platform.prettyName})',
-    );
-  }
-
-  factory RapidPlatformException._projectCorrupted(
-    String reason, {
-    required Platform platform,
-  }) {
-    return RapidPlatformException._(
-      'ProjectCorrputedException: The ${platform.prettyName} part of your project is corrupted.\n'
-      '$reason\n\n'
-      'Run "rapid doctor" to see which features are affected.',
-    );
-  }
-
-  factory RapidPlatformException._noFeaturesWithLocalizationFound(
-      Platform platform) {
-    return RapidPlatformException._(
-      'No ${platform.prettyName} features with localizations found!\n'
-      'Run "rapid ${platform.name} add feature" to add your first ${platform.prettyName} feature.',
-    );
-  }
-
-  factory RapidPlatformException._languageAlreadyPresent(String language) {
-    return RapidPlatformException._(
-      'The language "$language" is already present.',
-    );
-  }
-
-  factory RapidPlatformException._navigatorAlreadyExists(
-    String featureName, {
-    required Platform platform,
-  }) {
-    return RapidPlatformException._(
-      'The Navigator "I${featureName.pascalCase}Navigator" does already exist. (${platform.prettyName})',
-    );
-  }
-
-  factory RapidPlatformException._blocAlreadyExists(
-    String name,
-    String featureName, {
-    required Platform platform,
-  }) {
-    return RapidPlatformException._(
-      'The ${name}Bloc does already exist in "$featureName". (${platform.prettyName})',
-    );
-  }
-
-  factory RapidPlatformException._cubitAlreadyExists(
-    String name,
-    String featureName, {
-    required Platform platform,
-  }) {
-    return RapidPlatformException._(
-      'The ${name}Cubit does already exist in "$featureName". (${platform.prettyName})',
-    );
-  }
-
-  factory RapidPlatformException._localizationAlreadyExists(
-    String featureName, {
-    required Platform platform,
-  }) {
-    return RapidPlatformException._(
-      'The localizations do already exist in "$featureName". (${platform.prettyName})',
-    );
-  }
-
-  factory RapidPlatformException._blocNotFound(
-    String name,
-    String featureName, {
-    required Platform platform,
-  }) {
-    return RapidPlatformException._(
-      'The ${name}Bloc does not exist in "$featureName". (${platform.prettyName})',
-    );
-  }
-
-  factory RapidPlatformException._cubitNotFound(
-    String name,
-    String featureName, {
-    required Platform platform,
-  }) {
-    return RapidPlatformException._(
-      'The ${name}Cubit does not exist in "$featureName". (${platform.prettyName})',
-    );
-  }
-
-  factory RapidPlatformException._languageNotFound(String language) {
-    return RapidPlatformException._(
-      'The language "$language" is not present.',
-    );
-  }
-
-  factory RapidPlatformException._cantRemoveDefaultLanguage(String language) {
-    return RapidPlatformException._(
-      'Can not remove language "$language" because it is the default language.',
-    );
-  }
-
-  factory RapidPlatformException._languageIsAlreadyDefaultLanguage(
-    String language,
-  ) {
-    return RapidPlatformException._(
-      'The language "$language" already is the default language.',
-    );
-  }
-
-  factory RapidPlatformException._platformNotActivated(
+class SubFeaturesNotFoundException extends RapidException {
+  SubFeaturesNotFoundException._(
+    Iterable<String> subFeatures,
     Platform platform,
-  ) {
-    return RapidPlatformException._(
-      'The platform ${platform.prettyName} is not activated. '
-      'Use "rapid activate ${platform.prettyName}" to activate the platform first.',
-    );
-  }
+  ) : super(
+          multiLine([
+            'Sub-features not found. (${platform.prettyName})',
+            '',
+            'The following features were missing:',
+            for (final subFeature in subFeatures) ...[
+              subFeature,
+            ],
+          ]),
+        );
+}
 
-  @override
-  String toString() {
-    return 'RapidPlatformException: $message';
-  }
+class FeatureNotRoutableException extends RapidException {
+  FeatureNotRoutableException._(
+      PlatformFeaturePackage feature, Platform platform)
+      : super(
+          'The feature ${feature.name} is not routable. (${platform.prettyName})',
+        );
+}
+
+class LanguageAlreadyPresentException extends RapidException {
+  LanguageAlreadyPresentException._(Language language)
+      : super('The language "$language" is already present.');
+}
+
+class BlocAlreadyExistsException extends RapidException {
+  BlocAlreadyExistsException._(
+      String name, PlatformFeaturePackage feature, Platform platform)
+      : super(
+          'The ${name}Bloc does already exist in "${feature.name}". (${platform.prettyName})',
+        );
+}
+
+class CubitAlreadyExistsException extends RapidException {
+  CubitAlreadyExistsException._(
+      String name, PlatformFeaturePackage feature, Platform platform)
+      : super(
+          'The ${name}Cubit does already exist in "${feature.name}". (${platform.prettyName})',
+        );
+}
+
+class BlocNotFoundException extends RapidException {
+  BlocNotFoundException._(
+      String name, PlatformFeaturePackage feature, Platform platform)
+      : super(
+          '${name}Bloc not found in "${feature.name}". (${platform.prettyName})',
+        );
+}
+
+class CubitNotFoundException extends RapidException {
+  CubitNotFoundException._(
+      String name, PlatformFeaturePackage feature, Platform platform)
+      : super(
+          '${name}Cubit not found in "${feature.name}". (${platform.prettyName})',
+        );
+}
+
+class LanguageNotFoundException extends RapidException {
+  LanguageNotFoundException._(Language language)
+      : super('Language "$language" not found.');
+}
+
+class CantRemoveDefaultLanguageException extends RapidException {
+  CantRemoveDefaultLanguageException._(Language language)
+      : super(
+          'Can not remove language "$language" because it is the default language.',
+        );
+}
+
+class LanguageIsAlreadyDefaultLanguageException extends RapidException {
+  LanguageIsAlreadyDefaultLanguageException._(Language language)
+      : super('The language "$language" already is the default language.');
+}
+
+class PlatformNotActivatedException extends RapidException {
+  PlatformNotActivatedException._(Platform platform)
+      : super(
+          'The platform ${platform.prettyName} is not activated. '
+          'Use "rapid activate ${platform.prettyName}" to activate the platform first.',
+        );
 }

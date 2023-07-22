@@ -1,6 +1,6 @@
 import 'package:args/command_runner.dart';
-import 'package:rapid_cli/src/core/directory.dart';
 
+import '../project/platform.dart';
 import 'base.dart';
 import 'util/language_option.dart';
 import 'util/org_name_option.dart';
@@ -86,7 +86,7 @@ class CreateCommand extends RapidLeafCommand
   @override
   Future<void> run() {
     final projectName = _validateProjectNameArg(argResults.rest);
-    final outputDir = Directory(path: super.outputDir).absolute.path;
+    final outputDir = super.outputDir;
     final description = argResults['desc'] ?? _defaultDescription;
     final orgName = super.orgName;
     final language = super.language;
@@ -99,19 +99,20 @@ class CreateCommand extends RapidLeafCommand
     final mobile = argResults['mobile'] ?? false;
 
     return rapid.create(
-      projectName: projectName,
-      outputDir: outputDir,
-      description: description,
-      orgName: orgName,
-      language: language,
-      android: android,
-      ios: ios,
-      linux: linux,
-      macos: macos,
-      web: web,
-      windows: windows,
-      mobile: mobile,
-    );
+        projectName: projectName,
+        outputDir: outputDir,
+        description: description,
+        orgName: orgName,
+        language: language,
+        platforms: {
+          if (android) Platform.android,
+          if (ios) Platform.ios,
+          if (linux) Platform.linux,
+          if (macos) Platform.macos,
+          if (web) Platform.web,
+          if (windows) Platform.windows,
+          if (mobile) Platform.mobile,
+        });
   }
 
   /// Validates whether [args] contains ONLY a valid project name.
@@ -133,7 +134,7 @@ class CreateCommand extends RapidLeafCommand
     final isValid = isValidPackageName(name);
     if (!isValid) {
       throw UsageException(
-        '"$name" is not a valid package name.\n\n'
+        '"$name" is not a valid dart package name.\n\n'
         'See https://dart.dev/tools/pub/pubspec#name for more information.',
         usage,
       );

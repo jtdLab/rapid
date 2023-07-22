@@ -1,123 +1,120 @@
 part of 'runner.dart';
 
-mixin _CreateMixin on _Rapid {
+mixin _CreateMixin on _ActivateMixin {
   Future<void> create({
     required String projectName,
     required String outputDir,
     required String description,
     required String orgName,
-    required String language,
-    required bool android,
-    required bool ios,
-    required bool linux,
-    required bool macos,
-    required bool mobile,
-    required bool web,
-    required bool windows,
+    required Language language,
+    required Set<Platform> platforms,
   }) async {
-    project = RapidProject(
+    outputDir = Directory(outputDir).absolute.path;
+    if (dirExists(outputDir) && !dirIsEmpty(outputDir)) {
+      throw OutputDirNotEmptyException._(outputDir);
+    }
+
+    project = projectBuilder(
       config: RapidProjectConfig(
         path: outputDir,
         name: projectName,
       ),
     );
 
-    if (project.exists() && !project.isEmpty) {
-      _logAndThrow(
-        RapidCreateException._outputDirNotEmpty(outputDir),
-      );
-    }
+    logger.newLine();
 
-    logger
-      ..command('rapid create')
-      ..newLine();
-
-    await task(
-      'Generating project files',
-      () async => project.create(
-        projectName: projectName,
-        description: description,
-        orgName: orgName,
-        language: language,
-        platforms: {
-          if (android) Platform.android,
-          if (ios) Platform.ios,
-          if (linux) Platform.linux,
-          if (macos) Platform.macos,
-          if (web) Platform.web,
-          if (windows) Platform.windows,
-          if (mobile) Platform.mobile,
-        },
-      ),
+    await taskGroup(
+      description: '$paket ${taskGroupTitleStyle('Creating project')}',
+      tasks: [
+        (
+          'Generating platform-independent packages',
+          () async {
+            await project.rootPackage.generate();
+            await project.appModule.diPackage.generate();
+            await project.appModule.domainDirectory.domainPackage().generate();
+            await project.appModule.infrastructureDirectory
+                .infrastructurePackage()
+                .generate();
+            await project.appModule.loggingPackage.generate();
+            await project.uiModule.uiPackage.generate();
+          }
+        ),
+      ],
+      parallelism: 1,
     );
 
-    // TODO show a hint if more than 2 platforms are selcted
-    // Multiple platforms: This can take some time!
-
-    await flutterPubGet([
-      project,
-      ...project.packages,
-    ]);
-
-    await flutterGenl10n(
-      project.featurePackages.where((e) => e.hasLanguages).toList(),
+    await flutterPubGetTaskGroup(
+      packages: [
+        project.rootPackage,
+        project.appModule.diPackage,
+        project.appModule.domainDirectory.domainPackage(),
+        project.appModule.infrastructureDirectory.infrastructurePackage(),
+        project.appModule.loggingPackage,
+        project.uiModule.uiPackage,
+      ],
     );
 
-    await dartFormatFix(project);
+    logger.newLine();
 
-    if (android || mobile) {
-      await flutterConfigEnableAndroid(project);
-    }
-    if (ios || mobile) {
-      await flutterConfigEnableIos(project);
-    }
-    if (linux) {
-      await flutterConfigEnableLinux(project);
-    }
-    if (macos) {
-      await flutterConfigEnableMacos(project);
-    }
-    if (web) {
-      await flutterConfigEnableWeb(project);
-    }
-    if (windows) {
-      await flutterConfigEnableWindows(project);
-    }
-
-    // TODO: https://github.com/jtdLab/rapid/issues/96
-    if (macos) {
-      final rootPackage =
-          project.platformDirectory(platform: Platform.macos).rootPackage;
-      final podFile = File(p.join(rootPackage.path, 'macos', 'Podfile'));
-      if (!podFile.existsSync()) {
-        podFile.createSync(recursive: true);
+    for (final platform in platforms) {
+      switch (platform) {
+        case Platform.android:
+          await _activateAndroid(
+            description: description,
+            orgName: orgName,
+            language: language,
+            cleanUp: false,
+          );
+        case Platform.ios:
+          await _activateIos(
+            orgName: orgName,
+            language: language,
+            cleanUp: false,
+          );
+        case Platform.linux:
+          await _activateLinux(
+            orgName: orgName,
+            language: language,
+            cleanUp: false,
+          );
+        case Platform.macos:
+          await _activateMacos(
+            orgName: orgName,
+            language: language,
+            cleanUp: false,
+          );
+        case Platform.web:
+          await _activateWeb(
+            description: description,
+            language: language,
+            cleanUp: false,
+          );
+        case Platform.windows:
+          await _activateWindows(
+            orgName: orgName,
+            language: language,
+            cleanUp: false,
+          );
+        case Platform.mobile:
+          await _activateMobile(
+            description: description,
+            orgName: orgName,
+            language: language,
+            cleanUp: false,
+          );
       }
-      podFile.writeAsStringSync(
-        podFile.readAsStringSync().replaceAll(
-              'platform :osx, \'10.14\'',
-              'platform :osx, \'10.15.7.7\'',
-            ),
-      );
     }
+
+    await dartFormatFixTask();
 
     // TODO log better summary + refs to doc
     logger
       ..newLine()
-      ..success('Success $checkLabel');
+      ..commandSuccess('Created Project!');
   }
 }
 
-class RapidCreateException extends RapidException {
-  RapidCreateException._(super.message);
-
-  factory RapidCreateException._outputDirNotEmpty(String outputDir) {
-    return RapidCreateException._(
-      'The output directory "$outputDir" must be empty.',
-    );
-  }
-
-  @override
-  String toString() {
-    return 'RapidCreateException: $message';
-  }
+class OutputDirNotEmptyException extends RapidException {
+  OutputDirNotEmptyException._(String outputDir)
+      : super('The output directory "$outputDir" must be empty.');
 }

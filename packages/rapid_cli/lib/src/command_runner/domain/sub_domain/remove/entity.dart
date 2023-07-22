@@ -1,6 +1,5 @@
 import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
-import '../../../util/dir_option.dart';
 
 // TODO maybe introduce super class for entity, service interface and value object remove
 
@@ -8,15 +7,9 @@ import '../../../util/dir_option.dart';
 /// `rapid domain sub_domain remove entity` command removes entity from the domain part of an existing Rapid project.
 /// {@endtemplate}
 class DomainSubDomainRemoveEntityCommand extends RapidLeafCommand
-    with ClassNameGetter, DirGetter {
+    with ClassNameGetter {
   /// {@macro domain_sub_domain_remove_entity_command}
-  DomainSubDomainRemoveEntityCommand(this.subDomainName, super.project) {
-    argParser
-      ..addSeparator('')
-      ..addDirOption(
-        help: 'The directory relative to <domain_package>/lib/ .',
-      );
-  }
+  DomainSubDomainRemoveEntityCommand(this.subDomainName, super.project);
 
   final String subDomainName;
 
@@ -36,12 +29,10 @@ class DomainSubDomainRemoveEntityCommand extends RapidLeafCommand
     final name = super.className;
     final subDomainName =
         this.subDomainName == 'default' ? null : this.subDomainName;
-    final dir = super.dir;
 
     return rapid.domainSubDomainRemoveEntity(
       name: name,
       subDomainName: subDomainName,
-      dir: dir,
     );
   }
 }

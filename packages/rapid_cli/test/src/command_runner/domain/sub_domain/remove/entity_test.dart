@@ -3,7 +3,9 @@ import 'package:rapid_cli/src/command_runner/domain/sub_domain/remove/entity.dar
 import 'package:test/test.dart';
 
 import '../../../../common.dart';
+import '../../../../matchers.dart';
 import '../../../../mocks.dart';
+import '../../../../utils.dart';
 
 List<String> expectedUsage(String subDomainPackage) => [
       'Remove an entity from the subdomain $subDomainPackage.\n'
@@ -11,43 +13,106 @@ List<String> expectedUsage(String subDomainPackage) => [
           'Usage: rapid domain $subDomainPackage remove entity <name> [arguments]\n'
           '-h, --help    Print this usage information.\n'
           '\n'
-          '\n'
-          '-d, --dir     The directory relative to <domain_package>/lib/ .\n'
-          '              (defaults to ".")\n'
-          '\n'
           'Run "rapid help" to see global options.'
     ];
 
 void main() {
-  group('domain <sub_domain> remove entity', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('domain <sub_domain> remove entity', () {
     test(
       'help',
-      withRunner(
-        (commandRunner, project, __, printLogs) async {
-          await commandRunner
-              .run(['domain', 'package_a', 'remove', 'entity', '--help']);
-          expect(printLogs, equals(expectedUsage('package_a')));
+      overridePrint((printLogs) async {
+        final domainPackage = FakeDomainPackage(name: 'package_a');
+        final project = MockRapidProject(
+          appModule: MockAppModule(
+            domainDirectory: MockDomainDirectory(
+              domainPackages: [domainPackage],
+            ),
+          ),
+        );
+        final commandRunner = getCommandRunner(project: project);
 
-          printLogs.clear();
+        await commandRunner
+            .run(['domain', 'package_a', 'remove', 'entity', '--help']);
+        expect(printLogs, equals(expectedUsage('package_a')));
 
-          await commandRunner
-              .run(['domain', 'package_a', 'remove', 'entity', '-h']);
-          expect(printLogs, equals(expectedUsage('package_a')));
-        },
-        setupProject: (project) {
-          final domainPackageA = MockDomainPackage();
-          when(() => domainPackageA.name).thenReturn('package_a');
-          final domainDirectory = MockDomainDirectory();
-          when(() => domainDirectory.domainPackages())
-              .thenReturn([domainPackageA]);
-          when(() => project.domainDirectory).thenReturn(domainDirectory);
-        },
-      ),
+        printLogs.clear();
+
+        await commandRunner
+            .run(['domain', 'package_a', 'remove', 'entity', '-h']);
+        expect(printLogs, equals(expectedUsage('package_a')));
+      }),
     );
+
+    group('throws UsageException', () {
+      test(
+        'when name is missing',
+        overridePrint((printLogs) async {
+          final domainPackage = FakeDomainPackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              domainDirectory: MockDomainDirectory(
+                domainPackages: [domainPackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () =>
+                commandRunner.run(['domain', 'package_a', 'remove', 'entity']),
+            throwsUsageException(message: 'No option specified for the name.'),
+          );
+        }),
+      );
+
+      test(
+        'when multiple names are provided',
+        overridePrint((printLogs) async {
+          final domainPackage = FakeDomainPackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              domainDirectory: MockDomainDirectory(
+                domainPackages: [domainPackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner
+                .run(['domain', 'package_a', 'remove', 'entity', 'Foo', 'Bar']),
+            throwsUsageException(message: 'Multiple names specified.'),
+          );
+        }),
+      );
+
+      test(
+        'when name is not a valid dart class name',
+        overridePrint((printLogs) async {
+          final domainPackage = FakeDomainPackage(name: 'package_a');
+          final project = MockRapidProject(
+            appModule: MockAppModule(
+              domainDirectory: MockDomainDirectory(
+                domainPackages: [domainPackage],
+              ),
+            ),
+          );
+          final commandRunner = getCommandRunner(project: project);
+
+          expect(
+            () => commandRunner
+                .run(['domain', 'package_a', 'remove', 'entity', 'foo']),
+            throwsUsageException(
+              message: '"foo" is not a valid dart class name.',
+            ),
+          );
+        }),
+      );
+    });
 
     test('completes', () async {
       final rapid = MockRapid();
@@ -55,11 +120,9 @@ void main() {
         () => rapid.domainSubDomainRemoveEntity(
           name: any(named: 'name'),
           subDomainName: any(named: 'subDomainName'),
-          dir: any(named: 'dir'),
         ),
       ).thenAnswer((_) async {});
       final argResults = MockArgResults();
-      when(() => argResults['dir']).thenReturn('some');
       when(() => argResults.rest).thenReturn(['Foo']);
       final command = DomainSubDomainRemoveEntityCommand('package_a', null)
         ..argResultOverrides = argResults
@@ -71,7 +134,6 @@ void main() {
         () => rapid.domainSubDomainRemoveEntity(
           name: 'Foo',
           subDomainName: 'package_a',
-          dir: 'some',
         ),
       ).called(1);
     });

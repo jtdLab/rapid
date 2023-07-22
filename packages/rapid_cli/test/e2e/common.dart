@@ -5,7 +5,7 @@ import 'package:io/io.dart' show copyPath;
 import 'package:mason/mason.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/command_runner.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 /// Runs [fn] in a temporary directory.
@@ -27,8 +27,9 @@ dynamic Function() withTempDir(FutureOr<void> Function(Directory root) fn) {
     } catch (_) {
       rethrow;
     } finally {
+      // TODO this might influence exceptions that dependen on file system
+      // We used to delete dir here but that lead to some tests fail in ci
       Directory.current = cwd;
-      dir.deleteSync(recursive: true);
     }
   };
 }
@@ -151,6 +152,15 @@ final class RapidE2ETester {
         ),
       );
 
+  Directory platformLocalizationPackage(Platform platform) => Directory(
+        p.join(
+          'packages',
+          projectName,
+          '${projectName}_${platform.name}',
+          '${projectName}_${platform.name}_localization',
+        ),
+      );
+
   Directory platformNavigationPackage(Platform platform) => Directory(
         p.join(
           'packages',
@@ -193,6 +203,7 @@ final class RapidE2ETester {
       ];
 
   List<Directory> platformDependentPackagesWithoutTests(Platform platform) => [
+        platformLocalizationPackage(platform),
         platformNavigationPackage(platform),
       ];
 
@@ -501,38 +512,8 @@ final class RapidE2ETester {
         ),
       ];
 
-  Directory l10nDirectory(
-    String feature,
-    Platform platform,
-  ) =>
-      Directory(
-        p.join(
-          featurePackage(feature, platform).path,
-          'lib',
-          'src',
-          'presentation',
-          'l10n',
-        ),
-      );
-
-  File l10nBarrelFile(
-    String feature,
-    Platform platform,
-  ) =>
-      File(
-        p.join(
-          featurePackage(feature, platform).path,
-          'lib',
-          'src',
-          'presentation',
-          'l10n',
-          'l10n.dart',
-        ),
-      );
-
-  /// Source files a feature requires to support [languages].
+  /// Source files of a platform localization package to support [languages].
   List<File> languageFiles(
-    String feature,
     Platform platform,
     List<String> languages,
   ) =>
@@ -540,27 +521,25 @@ final class RapidE2ETester {
         for (final language in languages) ...[
           File(
             p.join(
-              featurePackage(feature, platform).path,
+              platformLocalizationPackage(platform).path,
               'lib',
               'src',
-              'presentation',
-              'l10n',
               'arb',
-              '${feature}_$language.arb',
+              '${projectName}_$language.arb',
             ),
           ),
           File(
             p.join(
-              featurePackage(feature, platform).path,
+              platformLocalizationPackage(platform).path,
               'lib',
               'src',
-              'presentation',
-              'l10n',
-              '${feature}_localizations_$language.dart',
+              '${projectName}_localizations_$language.dart',
             ),
           ),
         ],
       ];
+
+  File get dotRapidToolGroupFile => File(p.join('.rapid_tool', 'group.json'));
 }
 
 extension IterableX<E extends FileSystemEntity> on Iterable<E> {
@@ -786,8 +765,6 @@ Future<TestResult> _runFlutterOrDartTest({
       workingDirectory: cwd,
       runInShell: true,
     );
-
-    print(coverageResult.stdout);
 
     // 100.00 when empty lcov
     totalCoverage = double.tryParse(

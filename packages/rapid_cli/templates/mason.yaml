@@ -17,12 +17,20 @@ bricks:
     path: infrastructure_package
   logging_package:
     path: logging_package
+  navigator_implementation:
+    path: navigator_implementation
+  navigator_interface:
+    path: navigator_interface
   platform_app_feature_package:
     path: platform_app_feature_package
-  platform_feature_package:
-    path: platform_feature_package
+  platform_flow_feature_package:
+    path: platform_flow_feature_package
+  platform_localization_package:
+    path: platform_localization_package
   platform_navigation_package:
     path: platform_navigation_package
+  platform_page_feature_package:
+    path: platform_page_feature_package
   platform_root_package:
     path: platform_root_package
   android_native_directory:
@@ -37,14 +45,20 @@ bricks:
     path: platform_root_package/web_native_directory
   windows_native_directory:
     path: platform_root_package/windows_native_directory
+  platform_tab_flow_feature_package:
+    path: platform_tab_flow_feature_package
   platform_ui_package:
     path: platform_ui_package
-  project:
-    path: project
+  platform_widget_feature_package:
+    path: platform_widget_feature_package
+  root_package:
+    path: root_package
   service_implementation:
     path: service_implementation
   service_interface:
     path: service_interface
+  themed_widget:
+    path: themed_widget
   ui_package:
     path: ui_package
   value_object:

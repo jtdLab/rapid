@@ -1,2 +1,4 @@
 .mason/
 mason-lock.json
+pubspec.lock
+!pubspec_overrides.yaml

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:ansi_styles/ansi_styles.dart';
 import 'package:meta/meta.dart';
+import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/utils.dart';
 import 'package:yaml/yaml.dart';
 
@@ -31,10 +32,8 @@ class RapidProjectConfig {
       map: rapidMap,
       path: 'rapid',
     );
-    // TODO share ?
-    final isValidDartPackageNameRegExp =
-        RegExp(r'^[a-z][a-z\d_-]*$', caseSensitive: false);
-    if (!isValidDartPackageNameRegExp.hasMatch(name)) {
+
+    if (!dartPackageRegExp.hasMatch(name)) {
       throw RapidConfigException(
         'The name $name is not a valid dart package name',
       );
@@ -46,18 +45,11 @@ class RapidProjectConfig {
     );
   }
 
-  RapidProjectConfig.empty()
-      : this(
-          name: '______rapid______',
-          path: Directory.current.path,
-        );
-
   /// Loads the [RapidProjectConfig] for the project at [projectRoot].
   static Future<RapidProjectConfig> fromProjectRoot(
     Directory projectRoot,
   ) async {
-    final pubspecYamlFile = File(pubspecYamlPathForDirectory(projectRoot.path));
-
+    final pubspecYamlFile = File(p.join(projectRoot.path, 'pubspec.yaml'));
     if (!pubspecYamlFile.existsSync()) {
       throw UnresolvedProject(
         multiLine([
@@ -131,9 +123,6 @@ class RapidProjectConfig {
     }
   }
 
-  bool get isEmpty =>
-      name == '______rapid______' && path == Directory.current.path;
-
   @override
   bool operator ==(Object other) =>
       other is RapidProjectConfig &&
@@ -155,7 +144,4 @@ class RapidProjectConfig {
 /// An exception thrown when a Rapid project could not be resolved.
 class UnresolvedProject extends RapidException {
   UnresolvedProject(super.message);
-
-  @override
-  String toString() => message;
 }

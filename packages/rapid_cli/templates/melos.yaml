@@ -1,0 +1,67 @@
+name: templates
+
+packages:
+  - hooks
+  - "*/hooks"
+  - "platform_root_package/*/hooks"
+
+command:
+  bootstrap:
+    # https://github.com/dart-lang/pub/issues/3404)
+    runPubGetInParallel: false
+  clean:
+    hooks:
+      post: melos exec -c 3 -- "flutter clean"
+
+ide:
+  intellij: false
+
+scripts:
+  analyze:
+    run: flutter analyze
+    description: Analyze all packages.
+
+  format:
+    run: dart format . --fix
+    description: Format all packages.
+
+  bundle:
+    run: |
+      echo $BRICK
+      mason bundle $BRICK . -t dart -o .mason/bundles
+
+  bundle:all:
+    run: |
+      BRICK=arb_file melos bundle &&
+      BRICK=bloc melos bundle &&
+      BRICK=cubit melos bundle &&
+      BRICK=data_transfer_object melos bundle &&
+      BRICK=di_package melos bundle &&
+      BRICK=domain_package melos bundle &&
+      BRICK=entity melos bundle &&
+      BRICK=infrastructure_package melos bundle &&
+      BRICK=logging_package melos bundle &&
+      BRICK=navigator_implementation melos bundle &&
+      BRICK=navigator_interface melos bundle &&
+      BRICK=platform_app_feature_package melos bundle &&
+      BRICK=platform_flow_feature_package melos bundle &&
+      BRICK=platform_localization_package melos bundle &&
+      BRICK=platform_navigation_package melos bundle &&
+      BRICK=platform_page_feature_package melos bundle &&
+      BRICK=platform_root_package melos bundle &&
+      BRICK=platform_root_package/android_native_directory melos bundle &&
+      BRICK=platform_root_package/ios_native_directory melos bundle &&
+      BRICK=platform_root_package/linux_native_directory melos bundle &&
+      BRICK=platform_root_package/macos_native_directory melos bundle &&
+      BRICK=platform_root_package/web_native_directory melos bundle &&
+      BRICK=platform_root_package/windows_native_directory melos bundle &&
+      BRICK=platform_tab_flow_feature_package melos bundle &&
+      BRICK=platform_ui_package melos bundle &&
+      BRICK=platform_widget_feature_package melos bundle &&
+      BRICK=root_package melos bundle &&
+      BRICK=service_implementation melos bundle &&
+      BRICK=service_interface melos bundle &&
+      BRICK=themed_widget melos bundle &&
+      BRICK=ui_package melos bundle &&
+      BRICK=value_object melos bundle &&
+      BRICK=widget melos bundle

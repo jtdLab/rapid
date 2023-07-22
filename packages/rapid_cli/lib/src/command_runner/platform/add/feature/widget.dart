@@ -1,11 +1,9 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner/util/dart_package_name_rest.dart';
 import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 
 import '../../../base.dart';
-
-const _defaultLocalization = true;
 
 class PlatformAddFeatureWidgetCommand extends RapidLeafCommand
     with DartPackageNameGetter {
@@ -15,11 +13,6 @@ class PlatformAddFeatureWidgetCommand extends RapidLeafCommand
       ..addOption(
         'desc',
         help: 'The description of the new feature.',
-      )
-      ..addFlag(
-        'localization',
-        help: 'Whether the new feature has localizations.',
-        defaultsTo: _defaultLocalization,
       );
     // TODO maybe add a option to specify features that want a dependency before melos bs runs
   }
@@ -42,13 +35,11 @@ class PlatformAddFeatureWidgetCommand extends RapidLeafCommand
     final name = super.dartPackageName;
     final description =
         argResults['desc'] ?? 'The ${name.pascalCase} widget feature.';
-    final localization = argResults['localization'] ?? _defaultLocalization;
 
     return rapid.platformAddFeatureWidget(
       platform,
       name: name,
       description: description,
-      localization: localization,
     );
   }
 }

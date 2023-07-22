@@ -1,6 +1,5 @@
 import '../../../base.dart';
 import '../../../util/entity_option.dart';
-import '../../../util/output_dir_option.dart';
 
 // TODO in test template without output dir a path gets a unneccessary dot
 
@@ -8,7 +7,7 @@ import '../../../util/output_dir_option.dart';
 /// `rapid infrastructure sub_infrastructure add data_transfer_object` command adds data_transfer_object to the infrastructure part of an existing Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureAddDataTransferObjectCommand
-    extends RapidLeafCommand with EntityGetter, OutputDirGetter {
+    extends RapidLeafCommand with EntityGetter {
   /// {@macro infrastructure_sub_infrastructure_add_data_transfer_object_command}
   InfrastructureSubInfrastructureAddDataTransferObjectCommand(
     this.subInfrastructureName,
@@ -16,11 +15,7 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
   ) {
     argParser
       ..addSeparator('')
-      ..addEntityOption()
-      ..addOutputDirOption(
-        help:
-            'The output directory relative to <infrastructure_package>/lib/src .',
-      );
+      ..addEntityOption();
   }
 
   final String subInfrastructureName;
@@ -45,12 +40,10 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
         ? null
         : this.subInfrastructureName;
     final entityName = super.entity;
-    final outputDir = super.outputDir;
 
     return rapid.infrastructureSubInfrastructureAddDataTransferObject(
       subInfrastructureName: subInfrastructureName,
       entityName: entityName,
-      outputDir: outputDir,
     );
   }
 }

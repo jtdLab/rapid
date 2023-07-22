@@ -1,3 +1,5 @@
+import 'package:rapid_cli/src/project/language.dart';
+
 /// Allowed languages extracted from:
 ///
 ///  https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
@@ -8249,4 +8251,5 @@ const _validLanguages = [
 /// For more information see:
 ///
 ///  https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
-bool isValidLanguage(String language) => _validLanguages.contains(language);
+bool isValidLanguage(Language language) =>
+    _validLanguages.contains(language.languageCode);

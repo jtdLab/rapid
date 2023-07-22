@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:meta/meta.dart';
+import 'package:rapid_cli/src/project/language.dart';
 
 import '../base.dart';
 import 'validate_language.dart';
@@ -27,13 +28,14 @@ mixin LanguageGetter on RapidLeafCommand {
   ///
   /// Returns [_defaultLanguage] when no language specified.
   @protected
-  String get language =>
+  Language get language =>
       _validateLanguage(argResults['language'] ?? _defaultLanguage);
 
-  /// Validates whether [language] is valid language.
+  /// Validates whether [raw] is valid language.
   ///
-  /// Returns [language] when valid.
-  String _validateLanguage(String language) {
+  /// Returns parsed language when valid.
+  Language _validateLanguage(String raw) {
+    final language = Language.fromString(raw);
     final isValid = isValidLanguage(language);
 
     if (!isValid) {

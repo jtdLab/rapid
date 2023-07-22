@@ -3,16 +3,11 @@ import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name.snakeCase()}}_ui/src/{{name.snakeCase()}}.dart';
-import 'package:{{project_name.snakeCase()}}_ui/src/{{name.snakeCase()}}_theme.dart';
 
 import 'helpers/helpers.dart';
 
-{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}({
-  {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme,
-}) {
-  return {{project_name.pascalCase()}}{{name.pascalCase()}}(
-    theme: theme,
-  );
+{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}() {
+  return const {{project_name.pascalCase()}}{{name.pascalCase()}}();
 }
 
 void main() {
@@ -25,34 +20,14 @@ void main() {
             const BoxConstraints(minWidth: 250, maxHeight: 500),
         children: [
           GoldenTestScenario(
-            name: 'light - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.light,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'light - without theme',
+            name: 'light',
             child: appWrapper(
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
             ),
           ),
           GoldenTestScenario(
-            name: 'dark - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.dark,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'dark - without theme',
+            name: 'dark',
             child: appWrapper(
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
@@ -68,16 +43,11 @@ import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name.snakeCase()}}_ui_android/src/{{name.snakeCase()}}.dart';
-import 'package:{{project_name.snakeCase()}}_ui_android/src/{{name.snakeCase()}}_theme.dart';
 
 import 'helpers/helpers.dart';
 
-{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}({
-  {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme,
-}) {
-  return {{project_name.pascalCase()}}{{name.pascalCase()}}(
-    theme: theme,
-  );
+{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}() {
+  return const {{project_name.pascalCase()}}{{name.pascalCase()}}();
 }
 
 void main() {
@@ -90,34 +60,14 @@ void main() {
             const BoxConstraints(minWidth: 250, maxHeight: 500),
         children: [
           GoldenTestScenario(
-            name: 'light - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.light,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'light - without theme',
+            name: 'light',
             child: appWrapper(
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
             ),
           ),
           GoldenTestScenario(
-            name: 'dark - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.dark,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'dark - without theme',
+            name: 'dark',
             child: appWrapper(
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
@@ -131,16 +81,11 @@ void main() {
 }{{/android}}{{#ios}}import 'package:alchemist/alchemist.dart';import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name.snakeCase()}}_ui_ios/src/{{name.snakeCase()}}.dart';
-import 'package:{{project_name.snakeCase()}}_ui_ios/src/{{name.snakeCase()}}_theme.dart';
 
 import 'helpers/helpers.dart';
 
-{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}({
-  {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme,
-}) {
-  return {{project_name.pascalCase()}}{{name.pascalCase()}}(
-    theme: theme,
-  );
+{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}() {
+  return const {{project_name.pascalCase()}}{{name.pascalCase()}}();
 }
 
 void main() {
@@ -153,34 +98,14 @@ void main() {
             const BoxConstraints(minWidth: 250, maxHeight: 500),
         children: [
           GoldenTestScenario(
-            name: 'light - with theme',
-            child: appWrapper(
-              brightness: Brightness.dark,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'light - without theme',
+            name: 'light',
             child: appWrapper(
               brightness: Brightness.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
             ),
           ),
           GoldenTestScenario(
-            name: 'dark - with theme',
-            child: appWrapper(
-              brightness: Brightness.dark,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'dark - without theme',
+            name: 'dark',
             child: appWrapper(
               brightness: Brightness.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
@@ -196,16 +121,11 @@ import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name.snakeCase()}}_ui_linux/src/{{name.snakeCase()}}.dart';
-import 'package:{{project_name.snakeCase()}}_ui_linux/src/{{name.snakeCase()}}_theme.dart';
 
 import 'helpers/helpers.dart';
 
-{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}({
-  {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme,
-}) {
-  return {{project_name.pascalCase()}}{{name.pascalCase()}}(
-    theme: theme,
-  );
+{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}() {
+  return const {{project_name.pascalCase()}}{{name.pascalCase()}}();
 }
 
 void main() {
@@ -218,34 +138,14 @@ void main() {
             const BoxConstraints(minWidth: 250, maxHeight: 500),
         children: [
           GoldenTestScenario(
-            name: 'light - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.light,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'light - without theme',
+            name: 'light',
             child: appWrapper(
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
             ),
           ),
           GoldenTestScenario(
-            name: 'dark - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.dark,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'dark - without theme',
+            name: 'dark',
             child: appWrapper(
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
@@ -261,16 +161,11 @@ import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name.snakeCase()}}_ui_macos/src/{{name.snakeCase()}}.dart';
-import 'package:{{project_name.snakeCase()}}_ui_macos/src/{{name.snakeCase()}}_theme.dart';
 
 import 'helpers/helpers.dart';
 
-{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}({
-  {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme,
-}) {
-  return {{project_name.pascalCase()}}{{name.pascalCase()}}(
-    theme: theme,
-  );
+{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}() {
+  return const {{project_name.pascalCase()}}{{name.pascalCase()}}();
 }
 
 void main() {
@@ -283,34 +178,14 @@ void main() {
             const BoxConstraints(minWidth: 250, maxHeight: 500),
         children: [
           GoldenTestScenario(
-            name: 'light - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.light,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'light - without theme',
+            name: 'light',
             child: appWrapper(
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
             ),
           ),
           GoldenTestScenario(
-            name: 'dark - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.dark,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'dark - without theme',
+            name: 'dark',
             child: appWrapper(
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
@@ -326,16 +201,11 @@ import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name.snakeCase()}}_ui_web/src/{{name.snakeCase()}}.dart';
-import 'package:{{project_name.snakeCase()}}_ui_web/src/{{name.snakeCase()}}_theme.dart';
 
 import 'helpers/helpers.dart';
 
-{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}({
-  {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme,
-}) {
-  return {{project_name.pascalCase()}}{{name.pascalCase()}}(
-    theme: theme,
-  );
+{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}() {
+  return const {{project_name.pascalCase()}}{{name.pascalCase()}}();
 }
 
 void main() {
@@ -348,34 +218,14 @@ void main() {
             const BoxConstraints(minWidth: 250, maxHeight: 500),
         children: [
           GoldenTestScenario(
-            name: 'light - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.light,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'light - without theme',
+            name: 'light',
             child: appWrapper(
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
             ),
           ),
           GoldenTestScenario(
-            name: 'dark - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.dark,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'dark - without theme',
+            name: 'dark',
             child: appWrapper(
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
@@ -389,16 +239,11 @@ void main() {
 }{{/web}}{{#windows}}import 'package:alchemist/alchemist.dart';import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name.snakeCase()}}_ui_windows/src/{{name.snakeCase()}}.dart';
-import 'package:{{project_name.snakeCase()}}_ui_windows/src/{{name.snakeCase()}}_theme.dart';
 
 import 'helpers/helpers.dart';
 
-{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}({
-  {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme,
-}) {
-  return {{project_name.pascalCase()}}{{name.pascalCase()}}(
-    theme: theme,
-  );
+{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}() {
+  return const {{project_name.pascalCase()}}{{name.pascalCase()}}();
 }
 
 void main() {
@@ -411,34 +256,14 @@ void main() {
             const BoxConstraints(minWidth: 250, maxHeight: 500),
         children: [
           GoldenTestScenario(
-            name: 'light - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.light,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'light - without theme',
+            name: 'light',
             child: appWrapper(
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
             ),
           ),
           GoldenTestScenario(
-            name: 'dark - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.dark,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'dark - without theme',
+            name: 'dark',
             child: appWrapper(
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
@@ -452,16 +277,11 @@ void main() {
 }{{/windows}}{{#mobile}}import 'package:alchemist/alchemist.dart';import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name.snakeCase()}}_ui_mobile/src/{{name.snakeCase()}}.dart';
-import 'package:{{project_name.snakeCase()}}_ui_mobile/src/{{name.snakeCase()}}_theme.dart';
 
 import 'helpers/helpers.dart';
 
-{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}({
-  {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme,
-}) {
-  return {{project_name.pascalCase()}}{{name.pascalCase()}}(
-    theme: theme,
-  );
+{{project_name.pascalCase()}}{{name.pascalCase()}} _get{{project_name.pascalCase()}}{{name.pascalCase()}}() {
+  return const {{project_name.pascalCase()}}{{name.pascalCase()}}();
 }
 
 void main() {
@@ -474,34 +294,14 @@ void main() {
             const BoxConstraints(minWidth: 250, maxHeight: 500),
         children: [
           GoldenTestScenario(
-            name: 'light - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.light,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'light - without theme',
+            name: 'light',
             child: appWrapper(
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),
             ),
           ),
           GoldenTestScenario(
-            name: 'dark - with theme',
-            child: appWrapper(
-              themeMode: ThemeMode.dark,
-              widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
-                theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
-              ),
-            ),
-          ),
-          GoldenTestScenario(
-            name: 'dark - without theme',
+            name: 'dark',
             child: appWrapper(
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(),

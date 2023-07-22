@@ -4,5 +4,5 @@ abstract class RapidException implements Exception {
   final String message;
 
   @override
-  String toString();
+  String toString() => message;
 }

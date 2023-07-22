@@ -1,45 +1,77 @@
-import 'dart:io' hide Platform;
+import 'dart:convert';
 
 import 'package:args/args.dart';
-import 'package:mason/mason.dart';
+import 'package:mason/mason.dart' hide Logger, Progress;
 import 'package:mocktail/mocktail.dart';
+import 'package:process/process.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
-import 'package:rapid_cli/src/core/dart_package.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/domain_directory/domain_directory.dart';
-import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package.dart';
-import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_directory.dart';
-import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_features_directory.dart';
+import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/logging.dart';
+import 'package:rapid_cli/src/project/language.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/project_config.dart';
+import 'package:rapid_cli/src/tool.dart';
 
 // Mocks
 
 void registerFallbackValues() {
   registerFallbackValue(Platform.android);
+  registerFallbackValue(FakeLanguage());
+  registerFallbackValue(FakeDartPackage());
+  registerFallbackValue(FakeGeneratorTarget());
+  registerFallbackValue(FakeMasonBundle());
+  registerFallbackValue(FakeRapidProjectConfig());
+  registerFallbackValue(FakeInfrastructurePackage());
+  registerFallbackValue(FakePlatformFeaturePackage());
 }
 
-class MockDomainDirectory extends Mock implements DomainDirectory {}
+class MockBloc extends Mock implements Bloc {
+  MockBloc() {
+    when(() => generate()).thenAnswer((_) async {});
+  }
+}
 
-class MockDomainPackage extends Mock implements DomainPackage {}
+class MockCubit extends Mock implements Cubit {
+  MockCubit() {
+    when(() => generate()).thenAnswer((_) async {});
+  }
+}
 
-class MockInfrastructurePackage extends Mock implements InfrastructurePackage {}
+class MockDartPackage extends Mock implements DartPackage {
+  MockDartPackage({
+    String? packageName,
+    PubspecYamlFile? pubSpec,
+  }) {
+    packageName ??= 'package_name';
+    pubSpec ??= MockPubspecYamlFile();
 
-class MockInfrastructureDirectory extends Mock
-    implements InfrastructureDirectory {}
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => pubSpecFile).thenReturn(pubSpec);
+  }
+}
 
-class MockPlatformDirectory extends Mock implements PlatformDirectory {}
+class MockDartFile extends Mock implements DartFile {
+  MockDartFile({String? path, bool? existsSync}) {
+    path ??= 'path';
+    existsSync ??= false;
 
-class MockFeaturesDirectory extends Mock implements PlatformFeaturesDirectory {}
+    when(() => this.path).thenReturn(path);
+    when(() => this.existsSync()).thenReturn(existsSync);
+  }
+}
 
-class MockPlatformFeaturePackage extends Mock
-    implements PlatformFeaturePackage {}
+class MockArbFile extends Mock implements ArbFile {}
 
-class MockPlatformFeaturesDirectory extends Mock
-    implements PlatformFeaturesDirectory {}
+class MockYamlFile extends Mock implements YamlFile {}
+
+class MockFile extends Mock implements File {
+  MockFile({bool? existsSync}) {
+    existsSync ??= false;
+
+    when(() => this.existsSync()).thenReturn(existsSync);
+  }
+}
 
 class MockArgResults extends Mock implements ArgResults {}
 
@@ -56,374 +88,955 @@ class MockStartProcess extends Mock implements _StartProcess {}
 
 class MockProcess extends Mock implements Process {}
 
-class MockLogger extends Mock implements Logger {}
+abstract class _RapidProjectBuilder {
+  RapidProject call({required RapidProjectConfig config});
+}
 
-class MockRapidProject extends Mock implements RapidProject {}
+class MockRapidProjectBuilder extends Mock implements _RapidProjectBuilder {}
 
 class MockRapidProjectConfig extends Mock implements RapidProjectConfig {}
 
-class MockProgress extends Mock implements Progress {}
+class MockPubspecYamlFile extends Mock implements PubspecYamlFile {
+  MockPubspecYamlFile() {
+    when(() => name).thenReturn('pubspec.yaml');
+    when(() => hasDependency(name: any(named: 'name'))).thenReturn(false);
+  }
+}
 
-class MockPubspecFile extends Mock implements PubspecFile {}
+class MockMasonGenerator extends Mock implements MasonGenerator {
+  MockMasonGenerator({GeneratorHooks? hooks}) {
+    hooks ??= MockGeneratorHooks();
 
-class MockMasonGenerator extends Mock implements MasonGenerator {}
+    when(() => id).thenReturn('some id');
+    when(() => description).thenReturn('some description');
+    when(() => this.hooks).thenReturn(hooks);
+    when(
+      () => generate(
+        any(),
+        vars: any(named: 'vars'),
+        logger: any(named: 'logger'),
+      ),
+    ).thenAnswer(
+      (_) async => List.filled(
+        2,
+        const GeneratedFile.created(path: ''),
+      ),
+    );
+  }
+}
 
-MockPubspecFile getPubspecFile() {
-  final pubspecFile = MockPubspecFile();
-  when(() => pubspecFile.readName()).thenReturn('some_name');
-
-  return pubspecFile;
+class MockGeneratorHooks extends Mock implements GeneratorHooks {
+  MockGeneratorHooks() {
+    when(
+      () => preGen(
+        vars: any(named: 'vars'),
+        onVarsChanged: any(named: 'onVarsChanged'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => postGen(
+        vars: any(named: 'vars'),
+        workingDirectory: any(named: 'workingDirectory'),
+      ),
+    ).thenAnswer((_) async {});
+  }
 }
 
 class MockRapid extends Mock implements Rapid {}
 
-MockRapidProject getProject() {
-  final project = MockRapidProject();
-  when(() => project.path).thenReturn('some/path');
-  when(() => project.name).thenReturn('some_name');
-
-  return project;
-}
-
-MockMasonGenerator getMasonGenerator() {
-  final generator = MockMasonGenerator();
-  when(() => generator.id).thenReturn('some id');
-  when(() => generator.description).thenReturn('some description');
-  when(
-    () => generator.generate(
-      any(),
-      vars: any(named: 'vars'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer(
-    (_) async => List.filled(
-      2,
-      const GeneratedFile.created(path: ''),
-    ),
-  );
-
-  return generator;
-}
-
-// Fakes
-
-class FakeLogger extends Fake implements Logger {}
-
-class FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
-
-class FakeProcess {
-  Future<Process> start(
-    String command,
-    List<String> args, {
-    bool runInShell = false,
-    String? workingDirectory,
+class MockRapidProject extends Mock implements RapidProject {
+  MockRapidProject({
+    String? name,
+    String? path,
+    RootPackage? rootPackage,
+    AppModule? appModule,
+    UiModule? uiModule,
+    List<DartPackage>? packages,
+    List<PlatformRootPackage>? rootPackages,
+    DartPackage? findByPackageName,
+    DartPackage? findByCwd,
+    List<DartPackage>? dependentPackages,
   }) {
-    throw UnimplementedError();
-  }
+    name ??= 'test_project';
+    path ??= 'project_path';
+    rootPackage ??= MockRootPackage();
+    appModule ??= MockAppModule();
+    uiModule ??= MockUiModule();
+    packages ??= [];
+    rootPackages ??= [];
+    findByPackageName ??= MockDartPackage();
+    findByCwd ??= MockDartPackage();
+    dependentPackages ??= [];
 
-  Future<ProcessResult> run(
-    String command,
-    List<String> args, {
-    bool runInShell = false,
-    String? workingDirectory,
-  }) {
-    throw UnimplementedError();
+    when(() => this.name).thenReturn(name);
+    when(() => this.path).thenReturn(path);
+    when(() => this.rootPackage).thenReturn(rootPackage);
+    when(() => this.appModule).thenReturn(appModule);
+    when(() => this.uiModule).thenReturn(uiModule);
+    when(() => platformIsActivated(any())).thenReturn(false);
+    when(() => this.packages()).thenReturn(packages);
+    when(() => this.rootPackages()).thenReturn(rootPackages);
+    when(() => this.findByPackageName(any())).thenReturn(findByPackageName);
+    when(() => this.findByCwd()).thenReturn(findByCwd);
+    when(() => this.dependentPackages(any())).thenReturn(dependentPackages);
   }
 }
 
-/* import 'dart:io';
+class MockRootPackage extends Mock implements RootPackage {
+  MockRootPackage({
+    String? packageName,
+    String? path,
+    bool? existsSync,
+    PubspecYamlFile? pubSpec,
+  }) {
+    packageName ??= 'macos_root_package';
+    path ??= 'macos_root_package_path';
+    existsSync ??= false;
+    pubSpec ??= MockPubspecYamlFile();
 
-import 'package:args/args.dart';
-import 'package:mason/mason.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/core/dart_package.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/project/di_package/di_package.dart';
-import 'package:rapid_cli/src/project/domain_directory/domain_package/domain_package.dart';
-import 'package:rapid_cli/src/project/infrastructure_directory/infrastructure_package/infrastructure_package.dart';
-import 'package:rapid_cli/src/project/logging_package/logging_package.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
-import 'package:rapid_cli/src/project/platform_ui_package/platform_ui_package.dart';
-import 'package:rapid_cli/src/project/project.dart';
-import 'package:rapid_cli/src/project/ui_package/ui_package.dart';
-
-// TODO sort alphabetically
-
-// Mocks
-
-abstract class _StartProcess {
-  Future<Process> call(
-    String command,
-    List<String> args, {
-    bool runInShell = false,
-    String? workingDirectory,
-  });
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => this.existsSync()).thenReturn(existsSync);
+    when(() => generate()).thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
+  }
 }
 
-class MockStartProcess extends Mock implements _StartProcess {}
+class MockAppModule extends Mock implements AppModule {
+  MockAppModule({
+    String? path,
+    DiPackage? diPackage,
+    DomainDirectory? domainDirectory,
+    InfrastructureDirectory? infrastructureDirectory,
+    LoggingPackage? loggingPackage,
+    PlatformDirectory Function({required Platform platform})? platformDirectory,
+  }) {
+    path ??= 'app_module_path';
+    diPackage ??= MockDiPackage();
+    domainDirectory ??= MockDomainDirectory();
+    infrastructureDirectory ??= MockInfrastructureDirectory();
+    loggingPackage ??= MockLoggingPackage();
+    platformDirectory ??=
+        ({required Platform platform}) => MockPlatformDirectory();
 
-class MockProcess extends Mock implements Process {}
-
-class MockLogger extends Mock implements Logger {}
-
-class MockProgress extends Mock implements Progress {}
-
-abstract class _FlutterConfigEnablePlatformCommand {
-  Future<void> call({required Logger logger});
+    when(() => this.path).thenReturn(path);
+    when(() => this.diPackage).thenReturn(diPackage);
+    when(() => this.domainDirectory).thenReturn(domainDirectory);
+    when(() => this.infrastructureDirectory)
+        .thenReturn(infrastructureDirectory);
+    when(() => this.loggingPackage).thenReturn(loggingPackage);
+    when(() => this.platformDirectory).thenReturn(platformDirectory);
+  }
 }
 
-class MockFlutterConfigEnablePlatformCommand extends Mock
-    implements _FlutterConfigEnablePlatformCommand {}
+class MockDiPackage extends Mock implements DiPackage {
+  MockDiPackage({
+    String? packageName,
+    String? path,
+    PubspecYamlFile? pubSpec,
+  }) {
+    packageName ??= 'di_package';
+    path ??= 'di_package_path';
+    pubSpec ??= MockPubspecYamlFile();
 
-class MockRapidProject extends Mock implements RapidProject {}
-
-class MockArgResults extends Mock implements ArgResults {}
-
-abstract class _FlutterInstalledCommand {
-  Future<bool> call({required Logger logger});
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => generate()).thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
+  }
 }
 
-class MockFlutterInstalledCommand extends Mock
-    implements _FlutterInstalledCommand {}
+class MockDomainDirectory extends Mock implements DomainDirectory {
+  MockDomainDirectory({
+    String? path,
+    DomainPackage Function({String? name})? domainPackage,
+    List<DomainPackage>? domainPackages,
+  }) {
+    path ??= 'domain_directory_path';
+    domainPackage ??= ({String? name}) => MockDomainPackage();
+    domainPackages ??= [];
 
-abstract class _MelosInstalledCommand {
-  Future<bool> call({required Logger logger});
+    when(() => this.path).thenReturn(path);
+    when(() => this.domainPackage).thenReturn(domainPackage);
+    when(() => this.domainPackages()).thenReturn(domainPackages);
+  }
 }
 
-class MockMelosInstalledCommand extends Mock
-    implements _MelosInstalledCommand {}
+class MockDomainPackage extends Mock implements DomainPackage {
+  MockDomainPackage({
+    String? packageName,
+    String? path,
+    String? name,
+    Entity Function({required String name})? entity,
+    ServiceInterface Function({required String name})? serviceInterface,
+    ValueObject Function({required String name})? valueObject,
+    DartFile? barrelFile,
+    PubspecYamlFile? pubSpec,
+  }) {
+    packageName ??= 'domain_package';
+    path ??= 'domain_package_path';
+    entity ??= ({required String name}) => MockEntity();
+    serviceInterface ??= ({required String name}) => MockServiceInterface();
+    valueObject ??= ({required String name}) => MockValueObject();
+    barrelFile ??= MockDartFile();
+    pubSpec ??= MockPubspecYamlFile();
 
-abstract class _ProjectBuilder {
-  Project call({String path});
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => this.name).thenReturn(name);
+    when(() => this.entity).thenReturn(entity);
+    when(() => this.serviceInterface).thenReturn(serviceInterface);
+    when(() => this.valueObject).thenReturn(valueObject);
+    when(() => this.barrelFile).thenReturn(barrelFile);
+    when(() => generate()).thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
+  }
 }
 
-class MockProjectBuilder extends Mock implements _ProjectBuilder {}
+class MockEntity extends Mock implements Entity {
+  MockEntity({
+    String? name,
+  }) {
+    name ??= 'Foo';
 
-abstract class _PlatformDirectoryBuilder {
-  PlatformDirectory call({required Platform platform});
+    when(() => this.name).thenReturn(name);
+    when(() => generate()).thenAnswer((_) async {});
+  }
 }
 
-class MockPlatformDirectoryBuilder extends Mock
-    implements _PlatformDirectoryBuilder {}
+class MockServiceInterface extends Mock implements ServiceInterface {
+  MockServiceInterface({
+    String? name,
+  }) {
+    name ??= 'Foo';
 
-class MockPlatformDirectory extends Mock implements PlatformDirectory {}
-
-class MockPlatformCustomFeaturePackage extends Mock
-    implements PlatformCustomFeaturePackage {}
-
-class MockPlatformRoutingFeaturePackage extends Mock
-    implements PlatformRoutingFeaturePackage {}
-
-class MockPubspecFile extends Mock implements PubspecFile {}
-
-class MockInjectionFile extends Mock implements InjectionFile {}
-
-class MockMasonGenerator extends Mock implements MasonGenerator {}
-
-class MockDiPackage extends Mock implements DiPackage {}
-
-abstract class _PlatformNativeDirectoryBuilder {
-  PlatformNativeDirectory call({required Platform platform});
+    when(() => this.name).thenReturn(name);
+    when(() => generate()).thenAnswer((_) async {});
+  }
 }
 
-class MockPlatformNativeDirectoryBuilder extends Mock
-    implements _PlatformNativeDirectoryBuilder {}
+class MockValueObject extends Mock implements ValueObject {
+  MockValueObject({
+    String? name,
+  }) {
+    name ??= 'Foo';
+
+    when(() => this.name).thenReturn(name);
+    when(
+      () => generate(
+        type: any(named: 'type'),
+        generics: any(named: 'generics'),
+      ),
+    ).thenAnswer((_) async {});
+  }
+}
+
+class MockInfrastructureDirectory extends Mock
+    implements InfrastructureDirectory {
+  MockInfrastructureDirectory({
+    String? path,
+    InfrastructurePackage Function({String? name})? infrastructurePackage,
+    List<InfrastructurePackage>? infrastructurePackages,
+  }) {
+    path ??= 'infrastructure_directory_path';
+    infrastructurePackage ??= ({String? name}) => MockInfrastructurePackage();
+    infrastructurePackages ??= [];
+
+    when(() => this.path).thenReturn(path);
+    when(() => this.infrastructurePackage).thenReturn(infrastructurePackage);
+    when(() => this.infrastructurePackages())
+        .thenReturn(infrastructurePackages);
+  }
+}
+
+class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
+  MockInfrastructurePackage({
+    String? packageName,
+    String? path,
+    String? name,
+    DataTransferObject Function({required String entityName})?
+        dataTransferObject,
+    ServiceImplementation Function({
+      required String name,
+      required String serviceInterfaceName,
+    })? serviceImplementation,
+    bool? isDefault,
+    PubspecYamlFile? pubSpec,
+    DartFile? barrelFile,
+  }) {
+    packageName ??= 'domain_package';
+    path ??= 'infrastructure_package_path';
+    dataTransferObject ??=
+        ({required String entityName}) => MockDataTransferObject();
+    serviceImplementation ??= (
+            {required String name, required String serviceInterfaceName}) =>
+        MockServiceImplementation();
+    isDefault ??= false;
+    pubSpec ??= MockPubspecYamlFile();
+    barrelFile ??= MockDartFile();
+
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => this.name).thenReturn(name);
+    when(() => this.dataTransferObject).thenReturn(dataTransferObject);
+    when(() => this.serviceImplementation).thenReturn(serviceImplementation);
+    when(() => this.isDefault).thenReturn(isDefault);
+    // when(() => this.barrelFile).thenReturn(MockDartFile()); // TODO needed ?
+    when(() => generate()).thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
+    when(() => this.barrelFile).thenReturn(barrelFile);
+  }
+}
+
+class MockDataTransferObject extends Mock implements DataTransferObject {
+  MockDataTransferObject({
+    String? entityName,
+  }) {
+    entityName ??= 'Foo';
+
+    when(() => this.entityName).thenReturn(entityName);
+    when(() => generate()).thenAnswer((_) async {});
+  }
+}
+
+class MockServiceImplementation extends Mock implements ServiceImplementation {
+  MockServiceImplementation({
+    String? serviceInterfaceName,
+  }) {
+    serviceInterfaceName ??= 'Foo';
+
+    when(() => this.serviceInterfaceName).thenReturn(serviceInterfaceName);
+    when(() => generate()).thenAnswer((_) async {});
+  }
+}
+
+class MockLoggingPackage extends Mock implements LoggingPackage {
+  MockLoggingPackage({
+    String? packageName,
+    String? path,
+    PubspecYamlFile? pubSpec,
+  }) {
+    packageName ??= 'logging_package';
+    path ??= 'logging_package_path';
+    pubSpec ??= MockPubspecYamlFile();
+
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => generate()).thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
+  }
+}
+
+class MockPlatformDirectory extends Mock implements PlatformDirectory {
+  MockPlatformDirectory({
+    String? path,
+    PlatformRootPackage? rootPackage,
+    PlatformLocalizationPackage? localizationPackage,
+    PlatformNavigationPackage? navigationPackage,
+    PlatformFeaturesDirectory? featuresDirectory,
+  }) {
+    path ??= 'platform_directory_path';
+    rootPackage ??= MockNoneIosRootPackage();
+    localizationPackage ??= MockPlatformLocalizationPackage();
+    navigationPackage ??= MockPlatformNavigationPackage();
+    featuresDirectory ??= MockPlatformFeaturesDirectory();
+
+    when(() => this.rootPackage).thenReturn(rootPackage);
+    when(() => this.path).thenReturn(path);
+    when(() => this.localizationPackage).thenReturn(localizationPackage);
+    when(() => this.navigationPackage).thenReturn(navigationPackage);
+    when(() => this.featuresDirectory).thenReturn(featuresDirectory);
+  }
+}
+
+class MockIosRootPackage extends Mock implements IosRootPackage {
+  MockIosRootPackage({
+    String? packageName,
+    String? path,
+    IosNativeDirectory? nativeDirectory,
+    bool? existsSync,
+  }) {
+    packageName ??= 'ios_root_package';
+    path ??= 'ios_root_path';
+    nativeDirectory ??= MockIosNativeDirectory();
+    existsSync ??= false;
+
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => this.nativeDirectory).thenReturn(nativeDirectory);
+    when(() => this.existsSync()).thenReturn(existsSync);
+    when(
+      () => generate(
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+  }
+}
+
+class MockIosNativeDirectory extends Mock implements IosNativeDirectory {
+  MockIosNativeDirectory() {
+    when(
+      () => generate(
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+  }
+}
+
+class MockMacosRootPackage extends Mock implements MacosRootPackage {
+  MockMacosRootPackage({
+    String? packageName,
+    String? path,
+    MacosNativeDirectory? nativeDirectory,
+  }) {
+    packageName ??= 'macos_root_package';
+    path ??= 'macos_root_path';
+    nativeDirectory ??= MockMacosNativeDirectory();
+
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => this.nativeDirectory).thenReturn(nativeDirectory);
+    when(() => registerInfrastructurePackage(any())).thenAnswer((_) async {});
+    when(
+      () => generate(orgName: any(named: 'orgName')),
+    ).thenAnswer((_) async {});
+  }
+}
+
+class MockMacosNativeDirectory extends Mock implements MacosNativeDirectory {
+  MockMacosNativeDirectory({
+    File? podFile,
+  }) {
+    podFile ??= MockFile();
+
+    when(() => this.podFile).thenReturn(podFile);
+    when(
+      () => generate(orgName: any(named: 'orgName')),
+    ).thenAnswer((_) async {});
+  }
+}
+
+class MockNoneIosRootPackage extends Mock implements NoneIosRootPackage {
+  MockNoneIosRootPackage({
+    String? packageName,
+    String? path,
+    NoneIosNativeDirectory? nativeDirectory,
+    bool? existsSync,
+  }) {
+    packageName ??= 'none_ios_root_package';
+    path ??= 'none_ios_root_path';
+    nativeDirectory ??= MockNoneIosNativeDirectory();
+    existsSync ??= false;
+
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => this.nativeDirectory).thenReturn(nativeDirectory);
+    when(() => this.existsSync()).thenReturn(existsSync);
+    when(
+      () => generate(
+        description: any(named: 'description'),
+        orgName: any(named: 'orgName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => registerFeaturePackage(any())).thenAnswer((_) async {});
+    when(() => registerInfrastructurePackage(any())).thenAnswer((_) async {});
+    when(() => unregisterFeaturePackage(any())).thenAnswer((_) async {});
+    when(() => unregisterInfrastructurePackage(any())).thenAnswer((_) async {});
+  }
+}
+
+class MockNoneIosNativeDirectory extends Mock
+    implements NoneIosNativeDirectory {
+  MockNoneIosNativeDirectory() {
+    when(
+      () => generate(
+        orgName: any(named: 'orgName'),
+        description: any(named: 'description'),
+      ),
+    ).thenAnswer((_) async {});
+  }
+}
+
+class MockMobileRootPackage extends Mock implements MobileRootPackage {
+  MockMobileRootPackage({
+    String? packageName,
+    String? path,
+    NoneIosNativeDirectory? androidNativeDirectory,
+    IosNativeDirectory? iosNativeDirectory,
+    bool? existsSync,
+  }) {
+    packageName ??= 'mobile_root_package';
+    path ??= 'mobile_root_path';
+    androidNativeDirectory ??= MockNoneIosNativeDirectory();
+    iosNativeDirectory ??= MockIosNativeDirectory();
+    existsSync ??= false;
+
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => this.androidNativeDirectory).thenReturn(androidNativeDirectory);
+    when(() => this.iosNativeDirectory).thenReturn(iosNativeDirectory);
+    when(() => this.existsSync()).thenReturn(existsSync);
+    when(
+      () => generate(
+        orgName: any(named: 'orgName'),
+        description: any(named: 'description'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+  }
+}
+
+class MockPlatformLocalizationPackage extends Mock
+    implements PlatformLocalizationPackage {
+  MockPlatformLocalizationPackage({
+    String? packageName,
+    String? path,
+    ArbFile Function({required Language language})? languageArbFile,
+    DartFile Function({required Language language})? languageLocalizationsFile,
+    DartFile? localizationsFile,
+    YamlFile? l10nFile,
+    Set<Language>? supportedLanguages,
+    Language? defaultLanguage,
+    bool? existsSync,
+  }) {
+    packageName ??= 'platform_localization_package';
+    path ??= 'platform_localization_path';
+    languageArbFile ??= ({required Language language}) => MockArbFile();
+    languageLocalizationsFile ??=
+        ({required Language language}) => MockDartFile();
+    localizationsFile ??= MockDartFile();
+    l10nFile ??= MockYamlFile();
+    supportedLanguages ??= {Language(languageCode: 'en')};
+    defaultLanguage ??= Language(languageCode: 'en');
+    existsSync ??= false;
+
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => this.languageArbFile).thenReturn(languageArbFile);
+    when(() => this.languageLocalizationsFile)
+        .thenReturn(languageLocalizationsFile);
+    when(() => this.localizationsFile).thenReturn(localizationsFile);
+    when(() => this.l10nFile).thenReturn(l10nFile);
+    when(() => this.existsSync()).thenReturn(existsSync);
+    when(() => generate(defaultLanguage: any(named: 'defaultLanguage')))
+        .thenAnswer((_) async {});
+    when(() => this.supportedLanguages()).thenReturn(supportedLanguages);
+    when(() => this.defaultLanguage()).thenReturn(defaultLanguage);
+  }
+}
+
+class MockPlatformNavigationPackage extends Mock
+    implements PlatformNavigationPackage {
+  MockPlatformNavigationPackage({
+    String? packageName,
+    String? path,
+    NavigatorInterface Function({required String name})? navigatorInterface,
+    DartFile? barrelFile,
+    bool? existsSync,
+  }) {
+    packageName ??= 'platform_navigation_package';
+    path ??= 'platform_navigation_path';
+    navigatorInterface ??= ({required String name}) => MockNavigatorInterface();
+    barrelFile ??= MockDartFile();
+    existsSync ??= false;
+
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => this.navigatorInterface).thenReturn(navigatorInterface);
+    when(() => this.barrelFile).thenReturn(barrelFile);
+    when(() => this.existsSync()).thenReturn(existsSync);
+    when(() => generate()).thenAnswer((_) async {});
+  }
+}
+
+class MockNavigatorInterface extends Mock implements NavigatorInterface {
+  MockNavigatorInterface({
+    String? name,
+  }) {
+    name ??= 'Foo'; // TODO upper case good?
+
+    when(() => this.name).thenReturn(name);
+    when(() => generate()).thenAnswer((_) async {});
+  }
+}
+
+class MockPlatformFeaturesDirectory extends Mock
+    implements PlatformFeaturesDirectory {
+  MockPlatformFeaturesDirectory({
+    PlatformAppFeaturePackage? appFeaturePackage,
+    T Function<T extends PlatformFeaturePackage>({required String name})?
+        featurePackage,
+    List<PlatformFeaturePackage>? featurePackages,
+  }) {
+    T defaultFeaturePackage<T extends PlatformFeaturePackage>({
+      required String name,
+    }) {
+      if (name.endsWith('page')) {
+        return MockPlatformPageFeaturePackage() as T;
+      } else if (name.endsWith('tab_flow')) {
+        return MockPlatformTabFlowFeaturePackage() as T;
+      } else if (name.endsWith('flow')) {
+        return MockPlatformFlowFeaturePackage() as T;
+      } else {
+        return MockPlatformWidgetFeaturePackage() as T;
+      }
+    }
+
+    appFeaturePackage ??= MockPlatformAppFeaturePackage();
+    featurePackage ??= defaultFeaturePackage;
+    featurePackages ??= [];
+
+    when(() => this.appFeaturePackage).thenReturn(appFeaturePackage);
+    when(() => this.featurePackage).thenReturn(featurePackage);
+    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.featurePackages()).thenReturn(featurePackages);
+  }
+}
 
 class MockPlatformAppFeaturePackage extends Mock
-    implements PlatformAppFeaturePackage {}
+    implements PlatformAppFeaturePackage {
+  MockPlatformAppFeaturePackage({
+    String? packageName,
+    String? path,
+    bool? existsSync,
+  }) {
+    packageName ??= 'platform_app_feature_package';
+    path ??= 'platform_app_feature_path';
+    existsSync ??= false;
 
-class MockPlatformNativeDirectory extends Mock
-    implements PlatformNativeDirectory {}
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => this.existsSync()).thenReturn(existsSync);
+    when(() => generate()).thenAnswer((_) async {});
+  }
+}
 
-class MockMainFile extends Mock implements MainFile {}
+class MockPlatformPageFeaturePackage extends Mock
+    implements PlatformPageFeaturePackage {
+  MockPlatformPageFeaturePackage({
+    String? name,
+    String? packageName,
+    String? path,
+    bool? existsSync,
+    NavigatorImplementation? navigatorImplementation,
+  }) {
+    name ??= 'name';
+    packageName ??= 'platform_page_feature_package';
+    path ??= 'platform_page_feature_path';
+    navigatorImplementation ??= MockNavigatorImplementation();
+    existsSync ??= false;
 
-class MockAppPackage extends Mock implements AppPackage {}
+    when(() => this.name).thenReturn(name);
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => this.navigatorImplementation)
+        .thenReturn(navigatorImplementation);
+    when(() => this.existsSync()).thenReturn(existsSync);
+    when(() => generate(description: any(named: 'description')))
+        .thenAnswer((_) async {});
+  }
+}
 
-abstract class _GeneratorBuilder {
+class MockPlatformTabFlowFeaturePackage extends Mock
+    implements PlatformTabFlowFeaturePackage {
+  MockPlatformTabFlowFeaturePackage({
+    String? name,
+    String? packageName,
+    String? path,
+    NavigatorImplementation? navigatorImplementation,
+  }) {
+    name ??= 'name';
+    packageName ??= 'platform_tab_flow_feature_package';
+    path ??= 'platform_tab_flow_feature_path';
+    navigatorImplementation ??= MockNavigatorImplementation();
+
+    when(() => this.name).thenReturn(name);
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(
+      () => generate(
+        description: any(named: 'description'),
+        subFeatures: any(named: 'subFeatures'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => this.navigatorImplementation)
+        .thenReturn(navigatorImplementation);
+  }
+}
+
+class MockPlatformFlowFeaturePackage extends Mock
+    implements PlatformFlowFeaturePackage {
+  MockPlatformFlowFeaturePackage({
+    String? name,
+    String? packageName,
+    String? path,
+    NavigatorImplementation? navigatorImplementation,
+  }) {
+    name ??= 'name';
+    packageName ??= 'platform_flow_feature_package';
+    path ??= 'platform_flow_feature_path';
+    navigatorImplementation ??= MockNavigatorImplementation();
+
+    when(() => this.name).thenReturn(name);
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => generate(description: any(named: 'description')))
+        .thenAnswer((_) async {});
+    when(() => this.navigatorImplementation)
+        .thenReturn(navigatorImplementation);
+  }
+}
+
+class MockPlatformWidgetFeaturePackage extends Mock
+    implements PlatformWidgetFeaturePackage {
+  MockPlatformWidgetFeaturePackage({
+    String? name,
+    String? packageName,
+    String? path,
+    PubspecYamlFile? pubSpec,
+    DartFile? barrelFile,
+    DartFile? applicationBarrelFile,
+  }) {
+    name ??= 'name';
+    packageName ??= 'platform_widget_feature_package';
+    path ??= 'platform_widget_feature_path';
+    pubSpec ??= MockPubspecYamlFile();
+    barrelFile ??= MockDartFile();
+    applicationBarrelFile ??= MockDartFile();
+
+    when(() => this.name).thenReturn(name);
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => generate(description: any(named: 'description')))
+        .thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
+    when(() => this.barrelFile).thenReturn(barrelFile);
+    when(() => this.applicationBarrelFile).thenReturn(applicationBarrelFile);
+  }
+}
+
+class MockNavigatorImplementation extends Mock
+    implements NavigatorImplementation {
+  MockNavigatorImplementation({
+    String? name,
+  }) {
+    name ??= 'Foo'; // TODO upper case good?
+
+    when(() => this.name).thenReturn(name);
+    when(() => generate()).thenAnswer((_) async {});
+  }
+}
+
+class MockUiModule extends Mock implements UiModule {
+  MockUiModule({
+    String? path,
+    UiPackage? uiPackage,
+    PlatformUiPackage Function({required Platform platform})? platformUiPackage,
+  }) {
+    path ??= 'ui_module_path';
+    uiPackage ??= MockUiPackage();
+    platformUiPackage ??=
+        ({required Platform platform}) => MockPlatformUiPackage();
+
+    when(() => this.path).thenReturn(path);
+    when(() => this.uiPackage).thenReturn(uiPackage);
+    when(() => this.platformUiPackage).thenReturn(platformUiPackage);
+  }
+}
+
+class MockUiPackage extends Mock implements UiPackage {
+  MockUiPackage({
+    String? packageName,
+    String? path,
+    Widget Function({required String name})? widget,
+    ThemedWidget Function({required String name})? themedWidget,
+    PubspecYamlFile? pubSpec,
+    DartFile? barrelFile,
+    DartFile? themeExtensionsFile,
+  }) {
+    packageName ??= 'ui_package';
+    path ??= 'ui_package_path';
+    widget ??= ({required String name}) => MockWidget();
+    themedWidget ??= ({required String name}) => MockThemedWidget();
+    pubSpec ??= MockPubspecYamlFile();
+    barrelFile ??= MockDartFile();
+    themeExtensionsFile ??= MockDartFile();
+
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => this.widget).thenReturn(widget);
+    when(() => this.themedWidget).thenReturn(themedWidget);
+    when(() => generate()).thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
+    when(() => this.barrelFile).thenReturn(barrelFile);
+    when(() => this.themeExtensionsFile).thenReturn(themeExtensionsFile);
+  }
+}
+
+class MockPlatformUiPackage extends Mock implements PlatformUiPackage {
+  MockPlatformUiPackage({
+    String? packageName,
+    String? path,
+    Widget Function({required String name})? widget,
+    ThemedWidget Function({required String name})? themedWidget,
+    DartFile? barrelFile,
+    DartFile? themeExtensionsFile,
+    bool? existsSync,
+  }) {
+    packageName ??= 'platform_ui_package';
+    path ??= 'platform_ui_package_path';
+    widget ??= ({required String name}) => MockWidget();
+    themedWidget ??= ({required String name}) => MockThemedWidget();
+    barrelFile ??= MockDartFile();
+    themeExtensionsFile ??= MockDartFile();
+    existsSync ??= false;
+
+    when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
+    when(() => this.widget).thenReturn(widget);
+    when(() => this.themedWidget).thenReturn(themedWidget);
+    when(() => this.barrelFile).thenReturn(barrelFile);
+    when(() => this.themeExtensionsFile).thenReturn(themeExtensionsFile);
+    when(() => this.existsSync()).thenReturn(existsSync);
+    when(() => generate()).thenAnswer((_) async {});
+  }
+}
+
+class MockWidget extends Mock implements Widget {
+  MockWidget() {
+    when(() => generate()).thenAnswer((_) async {});
+  }
+}
+
+class MockThemedWidget extends Mock implements ThemedWidget {
+  MockThemedWidget({Theme? theme}) {
+    theme ??= MockTheme();
+
+    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.theme).thenReturn(theme);
+  }
+}
+
+class MockTheme extends Mock implements Theme {}
+
+class MockProcessManager extends Mock implements ProcessManager {
+  MockProcessManager() {
+    when(
+      () => run(
+        any(),
+        workingDirectory: any(named: 'workingDirectory'),
+        runInShell: true,
+        stderrEncoding: utf8,
+        stdoutEncoding: utf8,
+      ),
+    ).thenAnswer(
+      (_) async => ProcessResult(0, 0, 'stdout', 'stderr'),
+    );
+  }
+}
+
+abstract class _MasonGeneratorBuilder {
   Future<MasonGenerator> call(MasonBundle bundle);
 }
 
-class MockGeneratorBuilder extends Mock implements _GeneratorBuilder {}
+class MockMasonGeneratorBuilder extends Mock implements _MasonGeneratorBuilder {
+  MockMasonGeneratorBuilder({MasonGenerator? generator}) {
+    generator ??= MockMasonGenerator();
 
-abstract class _FlutterGenl10nCommand {
-  Future<void> call({
-    required String cwd,
-    required Logger logger,
-  });
+    when(() => call(any())).thenAnswer((_) async => generator!);
+  }
 }
 
-class MockFlutterGenL10nCommand extends Mock
-    implements _FlutterGenl10nCommand {}
+class MockRapidLogger extends Mock implements RapidLogger {
+  MockRapidLogger({
+    Progress? progress,
+    ProgressGroup? progressGroup,
+  }) {
+    progress ??= MockProgress();
+    progressGroup ??= MockProgressGroup();
 
-abstract class _LanguageLocalizationsFileBuilder {
-  LanguageLocalizationsFile call({required String language});
+    when(() => this.progress(any())).thenReturn(progress);
+    when(() => this.progressGroup(any())).thenReturn(progressGroup);
+  }
 }
 
-class MockLanguageLocalizationsFileBuilder extends Mock
-    implements _LanguageLocalizationsFileBuilder {}
+class MockProgress extends Mock implements Progress {}
 
-class MockLocalizationsDelegatesFile extends Mock
-    implements LocalizationsDelegatesFile {}
+class MockProgressGroup extends Mock implements ProgressGroup {
+  MockProgressGroup({GroupableProgress? progress}) {
+    progress ??= MockGroupableProgress();
 
-class MockL10nFile extends Mock implements L10nFile {}
-
-class MockArbDirectory extends Mock implements ArbDirectory {}
-
-class MockLanguageLocalizationsFile extends Mock
-    implements LanguageLocalizationsFile {}
-
-class MockPlatformFeaturePackage extends Mock
-    implements PlatformFeaturePackage {}
-
-class MockLanguageArbFile extends Mock implements LanguageArbFile {}
-
-class MockMelosFile extends Mock implements MelosFile {}
-
-class MockPlatformUiPackage extends Mock implements PlatformUiPackage {}
-
-abstract class _DartFormatFixCommand {
-  Future<void> call({
-    String cwd,
-    required Logger logger,
-  });
+    when(() => this.progress(any())).thenReturn(progress);
+  }
 }
 
-class MockDartFormatFixCommand extends Mock implements _DartFormatFixCommand {}
+class MockGroupableProgress extends Mock implements GroupableProgress {}
 
-class MockDomainPackage extends Mock implements DomainPackage {}
+class MockRapidTool extends Mock implements RapidTool {}
 
-class MockEntity extends Mock implements Entity {}
-
-abstract class _EntityBuilder {
-  Entity call({
-    required String name,
-    required String dir,
-    required DomainPackage domainPackage,
-  });
-}
-
-class MockEntityBuilder extends Mock implements _EntityBuilder {}
-
-class MockServiceInterface extends Mock implements ServiceInterface {}
-
-abstract class _ServiceInterfaceBuilder {
-  ServiceInterface call({
-    required String name,
-    required String dir,
-    required DomainPackage domainPackage,
-  });
-}
-
-class MockServiceInterfaceBuilder extends Mock
-    implements _ServiceInterfaceBuilder {}
-
-class MockServiceImplementation extends Mock implements ServiceImplementation {}
-
-abstract class _ServiceImplementationBuilder {
-  ServiceImplementation call({
-    required String name,
-    required String serviceName,
-    required String dir,
-    required InfrastructurePackage infrastructurePackage,
-  });
-}
-
-class MockServiceImplementationBuilder extends Mock
-    implements _ServiceImplementationBuilder {}
-
-class MockValueObject extends Mock implements ValueObject {}
-
-abstract class _ValueObjectBuilder {
-  ValueObject call({
-    required String name,
-    required String dir,
-    required DomainPackage domainPackage,
-  });
-}
-
-class MockValueObjectBuilder extends Mock implements _ValueObjectBuilder {}
-
-class MockInfrastructurePackage extends Mock implements InfrastructurePackage {}
-
-class MockInfoPlistFile extends Mock implements InfoPlistFile {}
-
-class MockThemeExtensionsFile extends Mock implements ThemeExtensionsFile {}
-
-abstract class _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {
-  Future<void> call({
-    String cwd,
-    required Logger logger,
-  });
-}
-
-class MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-    extends Mock
-    implements _FlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand {}
-
-abstract class _MelosBootstrapCommand {
-  Future<void> call({
-    String cwd,
-    required Logger logger,
-    List<String>? scope,
-  });
-}
-
-class MockMelosBootstrapCommand extends Mock
-    implements _MelosBootstrapCommand {}
-
-abstract class _FlutterPubGet {
-  Future<void> call({
-    String cwd,
-    required Logger logger,
-  });
-}
-
-class MockFlutterPubGetCommand extends Mock implements _FlutterPubGet {}
-
-class MockLoggingPackage extends Mock implements LoggingPackage {}
-
-class MockUiPackage extends Mock implements UiPackage {}
-
-abstract class _PlatformUiPackageBuilder {
-  PlatformUiPackage call({required Platform platform});
-}
-
-class MockPlatformUiPackageBuilder extends Mock
-    implements _PlatformUiPackageBuilder {}
-
-class MockDataTransferObject extends Mock implements DataTransferObject {}
-
-abstract class _DataTransferObjectBuilder {
-  DataTransferObject call({
-    required String entityName,
-    required String dir,
-    required InfrastructurePackage infrastructurePackage,
-  });
-}
-
-class MockDataTransferObjectBuilder extends Mock
-    implements _DataTransferObjectBuilder {}
-
-class MockWidget extends Mock implements Widget {}
-
-abstract class _WidgetBuilder {
-  Widget call({
-    required String name,
-    required String dir,
-    required PlatformUiPackage platformUiPackage,
-  });
-}
-
-class MockWidgetBuilder extends Mock implements _WidgetBuilder {}
-
-class MockBloc extends Mock implements Bloc {}
-
-class MockCubit extends Mock implements Cubit {}
-
-class MockIosNativeDirectory extends Mock implements IosNativeDirectory {}
+class MockCommandGroup extends Mock implements CommandGroup {}
 
 // Fakes
+
+class FakeDartPackage extends Fake implements DartPackage {
+  FakeDartPackage({
+    String? packageName,
+    String? path,
+    PubspecYamlFile? pubSpecFile,
+  }) {
+    this.packageName = packageName ?? 'some_dart_package';
+    this.path = path ?? 'path/to/${this.packageName}';
+    this.pubSpecFile = pubSpecFile ?? FakePubspecYamlFile();
+  }
+
+  @override
+  late final String packageName;
+
+  @override
+  late final String path;
+
+  @override
+  late final PubspecYamlFile pubSpecFile;
+}
+
+class FakeDirectoryGeneratorTarget extends Fake
+    implements DirectoryGeneratorTarget {}
+
+class FakeDomainPackage extends Mock implements DomainPackage {
+  FakeDomainPackage({String? name}) {
+    this.name = name ?? 'some_domain_package';
+  }
+
+  @override
+  late final String name;
+}
+
+class FakeGeneratorTarget extends Fake implements GeneratorTarget {}
+
+class FakeInfrastructurePackage extends Mock implements InfrastructurePackage {
+  FakeInfrastructurePackage({String? name}) {
+    this.name = name ?? 'some_infrastructure_package';
+  }
+
+  @override
+  late final String name;
+}
+
+class FakeLanguage extends Fake implements Language {}
+
+class FakeMasonBundle extends Fake implements MasonBundle {}
+
+class FakePlatformFeaturePackage extends Mock
+    implements PlatformFeaturePackage {
+  FakePlatformFeaturePackage({String? name}) {
+    this.name = name ?? 'some_feature_package';
+  }
+
+  @override
+  late final String name;
+}
 
 class FakeProcess {
   Future<Process> start(
@@ -445,658 +1058,15 @@ class FakeProcess {
   }
 }
 
-class FakeDirectoryGeneratorTarget extends Fake
-    implements DirectoryGeneratorTarget {}
+class FakePubspecYamlFile extends Fake implements PubspecYamlFile {}
 
-class FakeMasonBundle extends Fake implements MasonBundle {}
+class FakeRapidProjectConfig extends Fake implements RapidProjectConfig {}
 
-class FakeLogger extends Fake implements Logger {}
+class FakeRootPackage extends Fake implements RootPackage {
+  FakeRootPackage({String? path}) {
+    this.path = path ?? 'path/to/root_package';
+  }
 
-class FakePlatformCustomFeaturePackage extends Fake
-    implements PlatformCustomFeaturePackage {}
-
-// Common Mock Setups
-
-MockProject getProject() {
-  final project = MockProject();
-  when(() => project.path).thenReturn('some/path');
-  when(() => project.name()).thenReturn('some_name');
-
-  return project;
+  @override
+  late final String path;
 }
-
-MockMasonGenerator getMasonGenerator() {
-  final generator = MockMasonGenerator();
-  when(() => generator.id).thenReturn('some id');
-  when(() => generator.description).thenReturn('some description');
-  when(
-    () => generator.generate(
-      any(),
-      vars: any(named: 'vars'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer(
-    (_) async => List.filled(
-      2,
-      const GeneratedFile.created(path: ''),
-    ),
-  );
-
-  return generator;
-}
-
-MockGeneratorBuilder getGeneratorBuilder() {
-  final generatorBuilder = MockGeneratorBuilder();
-  when(() => generatorBuilder(any())).thenAnswer(
-    (_) async => getMasonGenerator(),
-  );
-
-  return generatorBuilder;
-}
-
-MockDartFormatFixCommand getDartFormatFix() {
-  final dartFormatFix = MockDartFormatFixCommand();
-  when(
-    () => dartFormatFix(
-      cwd: any(named: 'cwd'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-
-  return dartFormatFix;
-}
-
-MockAppPackage getAppPackage() {
-  final appPackage = MockAppPackage();
-  when(() => appPackage.path).thenReturn('some/path');
-  when(() => appPackage.exists()).thenReturn(true);
-  final project = getProject();
-  when(() => appPackage.project).thenReturn(project);
-  when(
-    () => appPackage.create(
-      description: any(named: 'description'),
-      orgName: any(named: 'orgName'),
-      language: any(named: 'language'),
-      android: any(named: 'android'),
-      ios: any(named: 'ios'),
-      linux: any(named: 'linux'),
-      macos: any(named: 'macos'),
-      web: any(named: 'web'),
-      windows: any(named: 'windows'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-  when(
-    () => appPackage.addPlatform(
-      any(),
-      description: any(named: 'description'),
-      orgName: any(named: 'orgName'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-  when(
-    () => appPackage.removePlatform(
-      any(),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-
-  return appPackage;
-}
-
-MockPubspecFile getPubspecFile() {
-  final pubspecFile = MockPubspecFile();
-  when(() => pubspecFile.readName()).thenReturn('some_name');
-
-  return pubspecFile;
-}
-
-MockInjectionFile getInjectionFile() {
-  final injectionFile = MockInjectionFile();
-
-  return injectionFile;
-}
-
-MockDiPackage getDiPackage() {
-  final diPackage = MockDiPackage();
-  when(() => diPackage.path).thenReturn('some/path');
-  when(() => diPackage.exists()).thenReturn(true);
-  when(
-    () => diPackage.create(
-      android: any(named: 'android'),
-      ios: any(named: 'ios'),
-      linux: any(named: 'linux'),
-      macos: any(named: 'macos'),
-      web: any(named: 'web'),
-      windows: any(named: 'windows'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-  when(
-    () => diPackage.registerCustomFeaturePackage(
-      any(),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-  when(
-    () => diPackage.unregisterCustomFeaturePackages(
-      any(),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-
-  return diPackage;
-}
-
-MockPlatformCustomFeaturePackage getPlatformCustomFeaturePackage() {
-  final platformCustomFeaturePackage = MockPlatformCustomFeaturePackage();
-  when(() => platformCustomFeaturePackage.path).thenReturn('some/path');
-  when(() => platformCustomFeaturePackage.name).thenReturn('some_feature_name');
-  when(() => platformCustomFeaturePackage.packageName())
-      .thenReturn('some_feature_package_name');
-  when(
-    () => platformCustomFeaturePackage.create(
-      description: any(named: 'description'),
-      defaultLanguage: any(named: 'defaultLanguage'),
-      languages: any(named: 'languages'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-  when(
-    () => platformCustomFeaturePackage.addLanguage(
-      language: any(named: 'language'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-  when(
-    () => platformCustomFeaturePackage.removeLanguage(
-      language: any(named: 'language'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-  when(
-    () => platformCustomFeaturePackage.setDefaultLanguage(
-      any(),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-
-  return platformCustomFeaturePackage;
-}
-
-MockPlatformRoutingFeaturePackage getPlatformRoutingFeaturePackage() {
-  final platformRoutingFeaturePackage = MockPlatformRoutingFeaturePackage();
-  when(() => platformRoutingFeaturePackage.path)
-      .thenReturn('routing_feature/path');
-  when(() => platformRoutingFeaturePackage.name)
-      .thenReturn('routing_feature_name');
-  when(() => platformRoutingFeaturePackage.packageName())
-      .thenReturn('routing_feature_package_name');
-  when(
-    () => platformRoutingFeaturePackage.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-  when(
-    () => platformRoutingFeaturePackage.registerCustomFeaturePackage(
-      any(),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-  when(
-    () => platformRoutingFeaturePackage.unregisterCustomFeaturePackage(
-      any(),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-
-  return platformRoutingFeaturePackage;
-}
-
-MockPlatformUiPackage getPlatformUiPackage() {
-  final platformUiPackage = MockPlatformUiPackage();
-  when(() => platformUiPackage.path).thenReturn('some/path');
-  when(() => platformUiPackage.exists()).thenReturn(true);
-  when(
-    () => platformUiPackage.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return platformUiPackage;
-}
-
-MockPlatformUiPackageBuilder getPlatformUiPackageBuilder() {
-  final platformUiPackageBuilder = MockPlatformUiPackageBuilder();
-  final platformUiPackage = getPlatformUiPackage();
-  when(
-    () => platformUiPackageBuilder(platform: any(named: 'platform')),
-  ).thenReturn(platformUiPackage);
-
-  return platformUiPackageBuilder;
-}
-
-MockPlatformNativeDirectory getPlatformNativeDirectory() {
-  final platformNativeDirectory = MockPlatformNativeDirectory();
-  when(
-    () => platformNativeDirectory.create(
-      description: any(named: 'description'),
-      orgName: any(named: 'orgName'),
-      language: any(named: 'language'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-
-  return platformNativeDirectory;
-}
-
-MockPlatformNativeDirectoryBuilder getPlatfromNativeDirectoryBuilder() {
-  final platformNativeDirectoryBuilder = MockPlatformNativeDirectoryBuilder();
-  final platformNativeDirectory = getPlatformNativeDirectory();
-  when(
-    () => platformNativeDirectoryBuilder(platform: any(named: 'platform')),
-  ).thenReturn(platformNativeDirectory);
-
-  return platformNativeDirectoryBuilder;
-}
-
-MockPlatformDirectory getPlatformDirectory() {
-  final platformDirectory = MockPlatformDirectory();
-  when(() => platformDirectory.exists()).thenReturn(true);
-
-  return platformDirectory;
-}
-
-MockBloc getBloc() {
-  final bloc = MockBloc();
-  when(
-    () => bloc.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return bloc;
-}
-
-MockCubit getCubit() {
-  final cubit = MockCubit();
-  when(
-    () => cubit.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return cubit;
-}
-
-MockWidget getWidget() {
-  final widget = MockWidget();
-  when(
-    () => widget.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return widget;
-}
-
-MockWidgetBuilder getWidgetBuilder(Widget widget) {
-  final widgetBuilder = MockWidgetBuilder();
-  when(
-    () => widgetBuilder(
-      name: any(named: 'name'),
-      dir: any(named: 'dir'),
-      platformUiPackage: any(named: 'platformUiPackage'),
-    ),
-  ).thenReturn(widget);
-
-  return widgetBuilder;
-}
-
-MockPlatformDirectoryBuilder getPlatfromDirectoryBuilder() {
-  final platformDirectoryBuilder = MockPlatformDirectoryBuilder();
-  final platformDirectory = getPlatformDirectory();
-  when(
-    () => platformDirectoryBuilder(platform: any(named: 'platform')),
-  ).thenReturn(platformDirectory);
-
-  return platformDirectoryBuilder;
-}
-
-MockMainFile getMainFile() {
-  final mainFile = MockMainFile();
-
-  return mainFile;
-}
-
-MockPlatformAppFeaturePackage getPlatformAppFeaturePackage() {
-  final appFeaturePackage = MockPlatformAppFeaturePackage();
-  when(() => appFeaturePackage.path).thenReturn('some/path');
-  when(
-    () => appFeaturePackage.create(
-      defaultLanguage: any(named: 'defaultLanguage'),
-      languages: any(named: 'languages'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-  when(
-    () => appFeaturePackage.registerCustomFeaturePackage(
-      any(),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-  when(
-    () => appFeaturePackage.unregisterCustomFeaturePackage(
-      any(),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-  when(
-    () => appFeaturePackage.addLanguage(
-      language: any(named: 'language'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-  when(
-    () => appFeaturePackage.removeLanguage(
-      language: any(named: 'language'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-  when(
-    () => appFeaturePackage.setDefaultLanguage(
-      any(),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-
-  return appFeaturePackage;
-}
-
-MockLocalizationsDelegatesFile getLocalizationsDelegatesFile() {
-  final localizationsDelegatesFile = MockLocalizationsDelegatesFile();
-
-  return localizationsDelegatesFile;
-}
-
-MockL10nFile getL10nFile() {
-  final l10nFile = MockL10nFile();
-
-  return l10nFile;
-}
-
-MockFlutterGenL10nCommand getFlutterGenl10n() {
-  final flutterGenL10n = MockFlutterGenL10nCommand();
-  when(
-    () => flutterGenL10n(cwd: any(named: 'cwd'), logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return flutterGenL10n;
-}
-
-MockArbDirectory getArbDirectory() {
-  final arbDirectory = MockArbDirectory();
-  when(() => arbDirectory.path).thenReturn('some/path');
-  final platformFeaturePackage = getPlatformCustomFeaturePackage();
-  when(() => arbDirectory.platformCustomizableFeaturePackage)
-      .thenReturn(platformFeaturePackage);
-  final languageArbFile = getLanguageArbFile();
-  when(
-    () => arbDirectory.languageArbFile(
-      language: any(named: 'language'),
-    ),
-  ).thenReturn(languageArbFile);
-
-  return arbDirectory;
-}
-
-MockLanguageLocalizationsFile getLanguageLocalizationsFile() {
-  final languageLocalizationsFile = MockLanguageLocalizationsFile();
-
-  return languageLocalizationsFile;
-}
-
-MockLanguageArbFile getLanguageArbFile() {
-  final arbLanguageFile = MockLanguageArbFile();
-  when(() => arbLanguageFile.exists()).thenReturn(true);
-  when(() => arbLanguageFile.create(logger: any(named: 'logger')))
-      .thenAnswer((_) async {});
-
-  return arbLanguageFile;
-}
-
-MockDomainPackage getDomainPackage() {
-  final domainPackage = MockDomainPackage();
-  when(() => domainPackage.path).thenReturn('some/path');
-  when(() => domainPackage.exists()).thenReturn(true);
-  when(
-    () => domainPackage.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return domainPackage;
-}
-
-MockEntity getEntity() {
-  final entity = MockEntity();
-  when(
-    () => entity.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return entity;
-}
-
-MockEntityBuilder getEntityBuilder(Entity entity) {
-  final entityBuilder = MockEntityBuilder();
-  when(
-    () => entityBuilder(
-      name: any(named: 'name'),
-      dir: any(named: 'dir'),
-      domainPackage: any(named: 'domainPackage'),
-    ),
-  ).thenReturn(entity);
-
-  return entityBuilder;
-}
-
-MockServiceInterface getServiceInterface() {
-  final serviceInterface = MockServiceInterface();
-  when(
-    () => serviceInterface.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return serviceInterface;
-}
-
-MockServiceInterfaceBuilder getServiceInterfaceBuilder(
-  ServiceInterface serviceInterface,
-) {
-  final serviceInterfaceBuilder = MockServiceInterfaceBuilder();
-  when(
-    () => serviceInterfaceBuilder(
-      name: any(named: 'name'),
-      dir: any(named: 'dir'),
-      domainPackage: any(named: 'domainPackage'),
-    ),
-  ).thenReturn(serviceInterface);
-
-  return serviceInterfaceBuilder;
-}
-
-MockServiceImplementation getServiceImplementation() {
-  final serviceImplementation = MockServiceImplementation();
-  when(
-    () => serviceImplementation.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return serviceImplementation;
-}
-
-MockServiceImplementationBuilder getServiceImplementationBuilder(
-  ServiceImplementation serviceImplementation,
-) {
-  final serviceImplementationBuilder = MockServiceImplementationBuilder();
-  when(
-    () => serviceImplementationBuilder(
-      name: any(named: 'name'),
-      serviceName: any(named: 'serviceName'),
-      dir: any(named: 'dir'),
-      infrastructurePackage: any(named: 'infrastructurePackage'),
-    ),
-  ).thenReturn(serviceImplementation);
-
-  return serviceImplementationBuilder;
-}
-
-MockValueObject getValueObject() {
-  final valueObject = MockValueObject();
-  when(
-    () => valueObject.create(
-      type: any(named: 'type'),
-      generics: any(named: 'generics'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-
-  return valueObject;
-}
-
-MockValueObjectBuilder getValueObjectBuilder(ValueObject valueObject) {
-  final valueObjectBuilder = MockValueObjectBuilder();
-  when(
-    () => valueObjectBuilder(
-      name: any(named: 'name'),
-      dir: any(named: 'dir'),
-      domainPackage: any(named: 'domainPackage'),
-    ),
-  ).thenReturn(valueObject);
-
-  return valueObjectBuilder;
-}
-
-MockInfrastructurePackage getInfrastructurePackage() {
-  final infrastructurePackage = MockInfrastructurePackage();
-  when(() => infrastructurePackage.path).thenReturn('some/path');
-  when(() => infrastructurePackage.exists()).thenReturn(true);
-  when(
-    () => infrastructurePackage.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return infrastructurePackage;
-}
-
-MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand
-    getFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs() {
-  final flutterPubRunBuildRunnerBuildDeleteConflictingOutputs =
-      MockFlutterPubRunBuildRunnerBuildDeleteConflictingOutputsCommand();
-
-  when(
-    () => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-      cwd: any(named: 'cwd'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-
-  return flutterPubRunBuildRunnerBuildDeleteConflictingOutputs;
-}
-
-MockMelosBootstrapCommand getMelosBootstrap() {
-  final melosBootstrap = MockMelosBootstrapCommand();
-  when(
-    () => melosBootstrap(
-      cwd: any(named: 'cwd'),
-      logger: any(named: 'logger'),
-      scope: any(named: 'scope'),
-    ),
-  ).thenAnswer((_) async {});
-
-  return melosBootstrap;
-}
-
-MockFlutterPubGetCommand getFlutterPubGet() {
-  final flutterPubGet = MockFlutterPubGetCommand();
-  when(
-    () => flutterPubGet(
-      cwd: any(named: 'cwd'),
-      logger: any(named: 'logger'),
-    ),
-  ).thenAnswer((_) async {});
-
-  return flutterPubGet;
-}
-
-MockMelosFile getMelosFile() {
-  final melosFile = MockMelosFile();
-  when(() => melosFile.path).thenReturn('some/path');
-  when(() => melosFile.readName()).thenReturn('some_name');
-  when(() => melosFile.exists()).thenReturn(true);
-
-  return melosFile;
-}
-
-MockLoggingPackage getLoggingPackage() {
-  final loggingPackage = MockLoggingPackage();
-  when(() => loggingPackage.path).thenReturn('some/path');
-  when(
-    () => loggingPackage.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return loggingPackage;
-}
-
-MockUiPackage getUiPackage() {
-  final uiPackage = MockUiPackage();
-  when(() => uiPackage.path).thenReturn('some/path');
-  when(() => uiPackage.exists()).thenReturn(true);
-  when(
-    () => uiPackage.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return uiPackage;
-}
-
-MockPlatformDirectoryBuilder getPlatformDirectoryBuilder() {
-  final platformDirectoryBuilder = MockPlatformDirectoryBuilder();
-  final platfromDirectory = getPlatformDirectory();
-  when(
-    () => platformDirectoryBuilder(platform: any(named: 'platform')),
-  ).thenReturn(platfromDirectory);
-
-  return platformDirectoryBuilder;
-}
-
-MockDataTransferObject getDataTransferObject() {
-  final dataTransferObject = MockDataTransferObject();
-  when(
-    () => dataTransferObject.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return dataTransferObject;
-}
-
-MockDataTransferObjectBuilder getDataTransferObjectBuilder(
-  DataTransferObject dataTransferObject,
-) {
-  final dataTransferObjectBuilder = MockDataTransferObjectBuilder();
-  when(
-    () => dataTransferObjectBuilder(
-      entityName: any(named: 'entityName'),
-      dir: any(named: 'dir'),
-      infrastructurePackage: any(named: 'infrastructurePackage'),
-    ),
-  ).thenReturn(dataTransferObject);
-
-  return dataTransferObjectBuilder;
-}
-
-MockIosNativeDirectory getIosNativeDirectory() {
-  final iosNativeDirectory = MockIosNativeDirectory();
-  when(() => iosNativeDirectory.path).thenReturn('some/path');
-  when(
-    () => iosNativeDirectory.create(logger: any(named: 'logger')),
-  ).thenAnswer((_) async {});
-
-  return iosNativeDirectory;
-}
-
-MockInfoPlistFile getInfoPlistFile() {
-  final infoPlistFile = MockInfoPlistFile();
-
-  return infoPlistFile;
-}
-
-MockThemeExtensionsFile getThemeExtensionsFile() {
-  final themeExtensionsFile = MockThemeExtensionsFile();
-
-  return themeExtensionsFile;
-}
- */

@@ -1,27 +1,25 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
-import 'package:mason/mason.dart' show StringCaseExtensions;
+import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/command_runner/util/platform_feature_packages_x.dart';
 import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
-import 'package:rapid_cli/src/core/dart_package.dart';
-import 'package:rapid_cli/src/core/platform.dart';
-import 'package:rapid_cli/src/exception.dart';
-import 'package:rapid_cli/src/logging.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_directory.dart';
-import 'package:rapid_cli/src/project/platform_directory/platform_features_directory/platform_feature_package/platform_feature_package.dart';
-import 'package:rapid_cli/src/project/project.dart';
-import 'package:rapid_cli/src/project_config.dart';
-import 'package:rapid_cli/src/tool.dart';
-import 'package:rapid_cli/src/utils.dart';
+import 'package:rapid_cli/src/project/platform.dart';
+
+import '../cli.dart';
+import '../exception.dart';
+import '../io.dart';
+import '../logging.dart';
+import '../mason.dart';
+import '../project/language.dart';
+import '../project/project.dart';
+import '../project_config.dart';
+import '../tool.dart';
+import '../utils.dart';
 
 part 'activate.dart';
 part 'begin.dart';
 part 'create.dart';
 part 'deactivate.dart';
-part 'doctor.dart';
 part 'domain.dart';
 part 'end.dart';
 part 'infrastructure.dart';
@@ -35,7 +33,6 @@ class Rapid extends _Rapid
         _BeginMixin,
         _CreateMixin,
         _DeactivateMixin,
-        _DoctorMixin,
         _DomainMixin,
         _EndMixin,
         _InfrastructureMixin,
@@ -46,10 +43,14 @@ class Rapid extends _Rapid
     RapidProject? project,
     RapidTool? tool,
     required this.logger,
-  }) : _project = project;
+  })  : _project = project,
+        _tool = tool;
 
   @override
   final RapidLogger logger;
+
+  RapidProject? _project;
+
   @override
   RapidProject get project {
     if (_project != null) {
@@ -60,9 +61,6 @@ class Rapid extends _Rapid
   }
 
   @override
-  RapidTool get tool => _tool ?? RapidTool(project: project);
-
-  @override
   set project(RapidProject project) {
     if (_project == null) {
       _project = project;
@@ -71,292 +69,214 @@ class Rapid extends _Rapid
     }
   }
 
-  RapidProject? _project;
-  RapidTool? _tool;
+  /// Override this to test create command.
+  @visibleForTesting
+  RapidProject Function({required RapidProjectConfig config})?
+      projectBuilderOverrides;
+
+  @override
+  RapidProject Function({required RapidProjectConfig config})
+      get projectBuilder =>
+          projectBuilderOverrides ??
+          ({required RapidProjectConfig config}) =>
+              RapidProject.fromConfig(config);
+
+  final RapidTool? _tool;
+
+  @override
+  RapidTool get tool => _tool ?? RapidTool(project: project);
 }
 
 abstract class _Rapid {
   RapidLogger get logger;
-  RapidTool get tool;
   RapidProject get project;
   set project(RapidProject project);
+  RapidProject Function({required RapidProjectConfig config})
+      get projectBuilder;
+  RapidTool get tool;
 
-  FutureOr<T> task<T>(
+  Future<T> task<T>(
     String description,
-    FutureOr<T> Function() task, {
-    bool showTiming = true,
-  }) async {
-    final generateProgress = logger.progress(description);
-    final result = await task();
-    generateProgress.finish(showTiming: showTiming);
-    return result;
-  }
-
-  Future<void> bootstrap({
-    required List<DartPackage> packages,
-  }) async {
-    if (tool.loadGroup().isActive) {
-      tool.markAsNeedBootstrap(packages);
-    } else {
-      final command = [
-        'melos',
-        'bootstrap',
-        '--scope',
-        packages.map((e) => e.packageName()).join(','),
-      ];
-      await task(
-        'Running "${command.join(' ')}"',
-        () async => _startCommandInPackage(
-          command,
-          package: project,
-        ),
-      );
-    }
-  }
-
-  Future<void> codeGen({
-    required List<DartPackage> packages,
-  }) async {
-    if (tool.loadGroup().isActive) {
-      tool.markAsNeedCodeGen(packages);
-    } else {
-      await flutterPubGet(packages);
-      await flutterPubRubBuildRunnerBuildDeleteConflictingOutputs(packages);
-    }
-  }
-
-  Future<void> flutterPubGet(List<DartPackage> packages) async {
-    return _commandTask(
-      ['flutter', 'pub', 'get'],
-      packages: packages,
-    );
-  }
-
-  Future<void> flutterPubAdd(
-    DartPackage package, {
-    required List<String> dependenciesToAdd,
-  }) async {
-    await _runCommandInPackage(
-      ['flutter', 'pub', 'add', ...dependenciesToAdd],
-      package: package,
-    );
-  }
-
-  Future<void> flutterPubRemove(
-    DartPackage package, {
-    required List<String> packagesToRemove,
-  }) async {
-    await _runCommandInPackage(
-      [
-        'flutter',
-        'pub',
-        'remove',
-        ...packagesToRemove,
-      ],
-      package: package,
-    );
-  }
-
-  Future<FlutterPubGetDryRunResult> flutterPubGetDryRun(
-    DartPackage package,
+    FutureOr<T> Function() task,
   ) async {
-    final result = await _runCommandInPackage(
-      ['flutter', 'pub', 'get', '--dry-run'],
-      package: package,
-    );
-
-    return FlutterPubGetDryRunResult(
-      !(result.stdout as String).contains('No dependencies would change.'),
-    );
-  }
-
-  Future<void> flutterGenl10n(List<PlatformFeaturePackage> packages) async {
-    return _commandTask(
-      ['flutter', 'gen-l10n'],
-      packages: packages,
-      parallelism: 1,
-    );
-  }
-
-  Future<void> dartFormatFix(DartPackage package) async {
-    return _commandTask(
-      ['dart', 'format', '.', '--fix'],
-      packages: [package],
-      parallelism: 1,
-    );
-  }
-
-  Future<void> flutterConfigEnableAndroid(RapidProject project) async {
-    return _commandTask(
-      ['flutter', 'config', '--enable-android'],
-      packages: [project],
-      parallelism: 1,
-    );
-  }
-
-  Future<void> flutterConfigEnableIos(RapidProject project) async {
-    return _commandTask(
-      ['flutter', 'config', '--enable-ios'],
-      packages: [project],
-      parallelism: 1,
-    );
-  }
-
-  Future<void> flutterConfigEnableLinux(RapidProject project) async {
-    return _commandTask(
-      ['flutter', 'config', '--enable-linux-desktop'],
-      packages: [project],
-      parallelism: 1,
-    );
-  }
-
-  Future<void> flutterConfigEnableMacos(RapidProject project) async {
-    return _commandTask(
-      ['flutter', 'config', '--enable-macos-desktop'],
-      packages: [project],
-      parallelism: 1,
-    );
-  }
-
-  Future<void> flutterConfigEnableWeb(RapidProject project) async {
-    return _commandTask(
-      ['flutter', 'config', '--enable-web'],
-      packages: [project],
-      parallelism: 1,
-    );
-  }
-
-  Future<void> flutterConfigEnableWindows(RapidProject project) async {
-    return _commandTask(
-      ['flutter', 'config', '--enable-windows-desktop'],
-      packages: [project],
-      parallelism: 1,
-    );
-  }
-
-  Future<void> flutterPubRubBuildRunnerBuildDeleteConflictingOutputs(
-    List<DartPackage> packages,
-  ) async {
-    return _commandTask(
-      [
-        'flutter',
-        'pub',
-        'run',
-        'build_runner',
-        'build',
-        '--delete-conflicting-outputs'
-      ],
-      packages: packages,
-    );
-  }
-
-  Future<void> _commandTask(
-    List<String> cmd, {
-    required List<DartPackage> packages,
-    int? parallelism,
-  }) async {
-    if (packages.isEmpty) return;
-    await task(
-      'Running "${cmd.join(' ')}"',
-      () async {
-        await Stream.fromIterable(packages).parallel(
-          (package) async {
-            try {
-              await _startCommandInPackage(cmd, package: package);
-
-              logger
-                  .child(package.packageName(), prefix: '$checkLabel ')
-                  .child(p.relative(package.path, from: project.path));
-            } on RapidRunCommandException catch (e) {
-              logger
-                  .child(package.packageName(), prefix: '$xMarkLabel ')
-                  .child(p.relative(package.path, from: project.path));
-
-              logger.stdout(e.stdout);
-              logger.stderr(e.stderr);
-              logger.newLine();
-
-              rethrow;
-            }
-          },
-          parallelism: parallelism,
-        ).drain<void>();
-        logger.newLine();
-      },
-    );
-  }
-
-  Future<void> _startCommandInPackage(
-    List<String> cmd, {
-    required DartPackage package,
-  }) async {
-    final stdout = <String>[];
-    final stderr = <String>[];
-    final process = await startCommand(cmd, workingDirectory: package.path);
-    process.stdout
-        .transform(utf8.decoder)
-        .transform(LineSplitter())
-        .listen((msg) {
-      stdout.add(msg);
-      logger.trace(msg);
-    });
-    process.stderr
-        .transform(utf8.decoder)
-        .transform(LineSplitter())
-        .listen((msg) {
-      stderr.add(msg);
-      logger.trace(msg);
-    });
-    final exitCode = await process.exitCode;
-
-    if (exitCode != 0) {
-      throw RapidRunCommandException(
-        package,
-        cmd,
-        stdout: stdout.join('\n'),
-        stderr: stderr.join('\n'),
-      );
-    }
-  }
-
-  Future<ProcessResult> _runCommandInPackage(
-    List<String> cmd, {
-    required DartPackage package,
-  }) =>
-      runCommand(cmd, workingDirectory: package.path);
-
-  void _logAndThrow<E extends RapidException>(E exception) {
+    final progress = logger.progress(description);
     try {
-      throw exception;
-    } on E catch (e) {
-      logger.error(e.message);
+      final result = await task();
+      progress.complete();
+      return result;
+    } catch (e) {
+      progress.fail();
       rethrow;
     }
   }
-}
 
-// TODO better name
-class RapidRunCommandException {
-  final DartPackage package;
-  final List<String> command;
-  final String stdout;
-  final String stderr;
-
-  RapidRunCommandException(
-    this.package,
-    this.command, {
-    required this.stdout,
-    required this.stderr,
-  });
-
-  @override
-  String toString() {
-    return 'RapidRunCommandException: Failed to run "${command.join(' ')}" in ${package.packageName()}.';
+  // parallelism = 1 indicates sequentiell execution
+  Future<void> taskGroup({
+    String? description,
+    required List<(String description, FutureOr<void> Function() task)> tasks,
+    int? parallelism,
+  }) async {
+    if (parallelism == 1) {
+      if (description != null) {
+        logger.log(description);
+      }
+      for (final task in tasks) {
+        await this.task(task.$1, task.$2);
+      }
+    } else {
+      final group = logger.progressGroup(description);
+      await Stream.fromIterable(tasks).parallel(
+        (t) async {
+          final progress = group.progress(t.$1);
+          try {
+            final result = await t.$2();
+            progress.complete();
+            return result;
+          } catch (e) {
+            progress.fail();
+            rethrow;
+          }
+        },
+        parallelism: parallelism,
+      ).drain<void>();
+    }
   }
-}
 
-final class FlutterPubGetDryRunResult {
-  final bool wouldChangeDependencies;
+  Future<void> flutterPubGetTaskGroup({
+    required List<DartPackage> packages,
+  }) async {
+    if (packages.isEmpty) return;
+    await taskGroup(
+      tasks: packages
+          .map(
+            (package) => (
+              'Running "flutter pub get" in ${package.packageName}',
+              () async => flutterPubGet(package: package)
+            ),
+          )
+          .toList(),
+    );
+  }
 
-  FlutterPubGetDryRunResult(this.wouldChangeDependencies);
+  Future<void> flutterPubAddTask({
+    required List<String> dependenciesToAdd,
+    required DartPackage package,
+  }) async {
+    if (dependenciesToAdd.isEmpty) return;
+    await task(
+        'Running "flutter pub add ${dependenciesToAdd.join(' ')}" in ${package.packageName}',
+        () async {
+      try {
+        await flutterPubAdd(
+          package: package,
+          dependenciesToAdd: dependenciesToAdd,
+        );
+      } catch (_) {
+        // TODO: https://github.com/dart-lang/sdk/issues/52895
+        await flutterPubGet(package: package);
+      }
+    });
+  }
+
+  Future<void> flutterPubRemoveTask({
+    required List<String> packagesToRemove,
+    required DartPackage package,
+  }) async {
+    if (packagesToRemove.isEmpty) return;
+    await task(
+      'Running "flutter pub remove ${packagesToRemove.join(' ')}" in ${package.packageName}',
+      () async => flutterPubRemove(
+        package: package,
+        packagesToRemove: packagesToRemove,
+      ),
+    );
+  }
+
+  Future<void> melosBootstrapTask({
+    required List<DartPackage> scope,
+  }) async {
+    if (scope.isEmpty) return;
+
+    await task(
+      'Running "melos bootstrap --scope="${scope.map((e) => e.packageName).join(' ')}""',
+      () async => melosBootstrap(scope: scope, project: project),
+    );
+  }
+
+  Future<void> dartFormatFixTask() async => task(
+        'Running "dart format . --fix" in project',
+        () async => dartFormatFix(package: project.rootPackage),
+      );
+
+  Future<void> codeGenTask({required DartPackage package}) async => task(
+        'Running code generation in ${package.packageName}',
+        () async {
+          // need "flutter pub get" because else "flutter pub run build_runner build"
+          // fails sometimes
+          await flutterPubGet(package: package); // TODO needed ?
+          await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+            package: package,
+          );
+        },
+      );
+
+  Future<void> flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup({
+    required List<DartPackage> packages,
+  }) async {
+    if (packages.isEmpty) return;
+
+    await taskGroup(
+      tasks: packages
+          .map(
+            (package) => (
+              'Running code generation in ${package.packageName}',
+              () async {
+                // need "flutter pub get" because else "flutter pub run build_runner build"
+                // fails sometimes
+                await flutterPubGet(package: package); // TODO needed ?
+                await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                  package: package,
+                );
+              }
+            ),
+          )
+          .toList(),
+      parallelism: 1, // TODO is this the most performant way?
+    );
+  }
+
+  Future<void> flutterGenl10nTask({required DartPackage package}) async => task(
+        'Running "flutter gen-l10n" in ${package.packageName}',
+        () async => flutterGenl10n(package: package),
+      );
+
+  // TODO: currently command groups dont work
+
+  Future<void> _bootstrap({required List<DartPackage> packages}) async {
+    if (tool.loadGroup().isActive) {
+      tool.markAsNeedBootstrap(packages: packages);
+    } else {
+      await melosBootstrap(scope: packages, project: project);
+    }
+  }
+
+  Future<void> _codeGen({required DartPackage package}) async {
+    if (tool.loadGroup().isActive) {
+      tool.markAsNeedCodeGen(package: package);
+    } else {
+      await codeGenTask(package: package);
+    }
+  }
+
+  Future<void> _codeGenGroup({required List<DartPackage> packages}) async {
+    if (tool.loadGroup().isActive) {
+      for (final package in packages) {
+        tool.markAsNeedCodeGen(package: package);
+      }
+    } else {
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+        packages: packages,
+      );
+    }
+  }
 }

@@ -1,0 +1,23 @@
+name: themed_widget
+description: A brick generating a themed widget of a ui package of a Rapid project.
+
+version: 0.1.0
+
+environment:
+  mason: ">=0.1.0-dev <0.1.0"
+
+# Variables specify dynamic values that your brick depends on.
+# Zero or more variables can be specified for a given brick.
+# Each variable has:
+#  * a type (string, number, or boolean)
+#  * an optional short description
+#  * an optional default value
+#  * an optional prompt phrase used when asking for the variable.
+vars:
+  project_name:
+    type: string
+  name:
+    type: string
+  platform:
+    type: string
+

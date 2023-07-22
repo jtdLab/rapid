@@ -4,6 +4,7 @@ import 'package:test/test.dart';
 
 import '../../common.dart';
 import '../../mocks.dart';
+import '../../utils.dart';
 
 const expectedUsage = [
   'Remove packages in a Rapid environment.\n'
@@ -16,14 +17,16 @@ const expectedUsage = [
 ];
 
 void main() {
-  group('pub remove', () {
-    setUpAll(() {
-      registerFallbackValues();
-    });
+  setUpAll(() {
+    registerFallbackValues();
+  });
 
+  group('pub remove', () {
     test(
       'help',
-      withRunner((commandRunner, _, __, printLogs) async {
+      overridePrint((printLogs) async {
+        final commandRunner = getCommandRunner();
+
         await commandRunner.run(['pub', 'remove', '--help']);
         expect(printLogs, equals(expectedUsage));
 

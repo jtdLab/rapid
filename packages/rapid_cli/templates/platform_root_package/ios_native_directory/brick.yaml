@@ -4,7 +4,7 @@ description: A brick generating the ios native directory of a Rapid project.
 version: 0.1.0
 
 environment:
-  mason: ">=0.1.0-dev.47 <0.1.0"
+  mason: ">=0.1.0-dev <0.1.0"
 
 # Variables specify dynamic values that your brick depends on.
 # Zero or more variables can be specified for a given brick.
@@ -18,10 +18,11 @@ environment:
 vars:
   project_name:
     type: string
-    description: The project name
   org_name:
     type: string
-    description: The organization name
-  language:
+  language_code:
     type: string
-    description: The default language of project
+  script_code:
+    type: string
+  country_code:
+    type: string

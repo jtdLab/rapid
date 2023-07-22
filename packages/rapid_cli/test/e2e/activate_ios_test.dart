@@ -1,5 +1,5 @@
 @Tags(['e2e'])
-import 'package:rapid_cli/src/core/platform.dart';
+import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
 import 'activate_platform.dart';
@@ -12,6 +12,15 @@ void main() {
         'activate ios',
         performTest(
           platform: Platform.ios,
+        ),
+        timeout: const Timeout(Duration(minutes: 8)),
+      );
+
+      test(
+        'activate ios (with language)',
+        performTest(
+          platform: Platform.ios,
+          language: 'zh_Hant_HK',
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );

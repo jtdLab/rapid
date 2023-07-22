@@ -23,11 +23,20 @@ void registerFallbackValues() {
   registerFallbackValue(FakeMasonBundle());
   registerFallbackValue(FakeRapidProjectConfig());
   registerFallbackValue(FakeInfrastructurePackage());
+  registerFallbackValue(FakePlatformFeaturePackage());
 }
 
-class MockBloc extends Mock implements Bloc {}
+class MockBloc extends Mock implements Bloc {
+  MockBloc() {
+    when(() => generate()).thenAnswer((_) async {});
+  }
+}
 
-class MockCubit extends Mock implements Cubit {}
+class MockCubit extends Mock implements Cubit {
+  MockCubit() {
+    when(() => generate()).thenAnswer((_) async {});
+  }
+}
 
 class MockDartPackage extends Mock implements DartPackage {
   MockDartPackage({
@@ -531,7 +540,9 @@ class MockNoneIosRootPackage extends Mock implements NoneIosRootPackage {
         orgName: any(named: 'orgName'),
       ),
     ).thenAnswer((_) async {});
+    when(() => registerFeaturePackage(any())).thenAnswer((_) async {});
     when(() => registerInfrastructurePackage(any())).thenAnswer((_) async {});
+    when(() => unregisterFeaturePackage(any())).thenAnswer((_) async {});
     when(() => unregisterInfrastructurePackage(any())).thenAnswer((_) async {});
   }
 }
@@ -705,56 +716,104 @@ class MockPlatformAppFeaturePackage extends Mock
 class MockPlatformPageFeaturePackage extends Mock
     implements PlatformPageFeaturePackage {
   MockPlatformPageFeaturePackage({
+    String? name,
     String? packageName,
     String? path,
     bool? existsSync,
+    NavigatorImplementation? navigatorImplementation,
   }) {
+    name ??= 'name';
     packageName ??= 'platform_page_feature_package';
     path ??= 'platform_page_feature_path';
+    navigatorImplementation ??= MockNavigatorImplementation();
     existsSync ??= false;
 
+    when(() => this.name).thenReturn(name);
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
+    when(() => this.navigatorImplementation)
+        .thenReturn(navigatorImplementation);
     when(() => this.existsSync()).thenReturn(existsSync);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => generate(description: any(named: 'description')))
+        .thenAnswer((_) async {});
   }
 }
 
 class MockPlatformTabFlowFeaturePackage extends Mock
     implements PlatformTabFlowFeaturePackage {
   MockPlatformTabFlowFeaturePackage({
+    String? name,
     String? packageName,
+    String? path,
+    NavigatorImplementation? navigatorImplementation,
   }) {
+    name ??= 'name';
     packageName ??= 'platform_tab_flow_feature_package';
+    path ??= 'platform_tab_flow_feature_path';
+    navigatorImplementation ??= MockNavigatorImplementation();
+
+    when(() => this.name).thenReturn(name);
     when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
     when(
       () => generate(
         description: any(named: 'description'),
         subFeatures: any(named: 'subFeatures'),
       ),
     ).thenAnswer((_) async {});
+    when(() => this.navigatorImplementation)
+        .thenReturn(navigatorImplementation);
   }
 }
 
 class MockPlatformFlowFeaturePackage extends Mock
     implements PlatformFlowFeaturePackage {
   MockPlatformFlowFeaturePackage({
+    String? name,
     String? packageName,
+    String? path,
+    NavigatorImplementation? navigatorImplementation,
   }) {
+    name ??= 'name';
     packageName ??= 'platform_flow_feature_package';
+    path ??= 'platform_flow_feature_path';
+    navigatorImplementation ??= MockNavigatorImplementation();
+
+    when(() => this.name).thenReturn(name);
     when(() => this.packageName).thenReturn(packageName);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.path).thenReturn(path);
+    when(() => generate(description: any(named: 'description')))
+        .thenAnswer((_) async {});
+    when(() => this.navigatorImplementation)
+        .thenReturn(navigatorImplementation);
   }
 }
 
 class MockPlatformWidgetFeaturePackage extends Mock
     implements PlatformWidgetFeaturePackage {
   MockPlatformWidgetFeaturePackage({
+    String? name,
     String? packageName,
+    String? path,
+    PubspecYamlFile? pubSpec,
+    DartFile? barrelFile,
+    DartFile? applicationBarrelFile,
   }) {
+    name ??= 'name';
     packageName ??= 'platform_widget_feature_package';
+    path ??= 'platform_widget_feature_path';
+    pubSpec ??= MockPubspecYamlFile();
+    barrelFile ??= MockDartFile();
+    applicationBarrelFile ??= MockDartFile();
+
+    when(() => this.name).thenReturn(name);
     when(() => this.packageName).thenReturn(packageName);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.path).thenReturn(path);
+    when(() => generate(description: any(named: 'description')))
+        .thenAnswer((_) async {});
+    when(() => pubSpecFile).thenReturn(pubSpec);
+    when(() => this.barrelFile).thenReturn(barrelFile);
+    when(() => this.applicationBarrelFile).thenReturn(applicationBarrelFile);
   }
 }
 

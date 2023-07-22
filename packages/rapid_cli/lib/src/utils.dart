@@ -8,7 +8,6 @@ import 'io.dart';
 import 'io.dart' as io;
 import 'platform.dart';
 import 'process.dart';
-import 'project/project.dart';
 
 export 'package:pubspec/pubspec.dart';
 
@@ -149,30 +148,6 @@ extension LanguageUtils on Language {
   bool get needsFallback => hasScriptCode || hasCountryCode;
 
   Language fallback() => Language(languageCode: languageCode);
-}
-
-extension IosRootPackageUtils on IosRootPackage {
-  void addLanguage(Language language) {
-    // TODO edit plist
-    nativeDirectory;
-  }
-
-  void removeLanguage(Language language) {
-    // TODO edit plist
-    nativeDirectory;
-  }
-}
-
-extension MobileRootPackageUtils on MobileRootPackage {
-  void addLanguage(Language language) {
-    // TODO edit plist
-    iosNativeDirectory;
-  }
-
-  void removeLanguage(Language language) {
-    // TODO edit plist
-    iosNativeDirectory;
-  }
 }
 
 ///  class InfoPlistFileImpl extends PlistFileImpl implements InfoPlistFile {

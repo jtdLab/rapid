@@ -227,6 +227,16 @@ class IosRootPackage extends PlatformRootPackage {
     );
     await nativeDirectory.generate(orgName: orgName, language: language);
   }
+
+  void addLanguage(Language language) {
+    // TODO edit plist
+    nativeDirectory;
+  }
+
+  void removeLanguage(Language language) {
+    // TODO edit plist
+    nativeDirectory;
+  }
 }
 
 class MacosRootPackage extends PlatformRootPackage {
@@ -390,5 +400,15 @@ class MobileRootPackage extends PlatformRootPackage {
       description: description,
     );
     await iosNativeDirectory.generate(orgName: orgName, language: language);
+  }
+
+  void addLanguage(Language language) {
+    // TODO edit plist
+    iosNativeDirectory;
+  }
+
+  void removeLanguage(Language language) {
+    // TODO edit plist
+    iosNativeDirectory;
   }
 }

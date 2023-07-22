@@ -74,24 +74,21 @@ mixin _PlatformMixin on _Rapid {
     }
 
     final rootPackage = platformDirectory.rootPackage;
+    final featurePackages =
+        platformDirectory.featuresDirectory.featurePackages();
+
+    final notExistingSubFeaturePackages = subFeatures.where(
+      (subFeature) =>
+          !featurePackages.any((feature) => feature.name == subFeature),
+    );
+    if (notExistingSubFeaturePackages.isNotEmpty) {
+      throw SubFeaturesNotFoundException._(
+        notExistingSubFeaturePackages,
+        platform,
+      );
+    }
 
     logger.newLine();
-
-    /*  // TODO rewrite resolve featurePackages from features in one line
-      // Is it evene needed to convert them to actual feature packages
-      final Set<PlatformFeaturePackage> subFeaturePackages = {};
-
-      final existingFeaturePackages =
-          platformDirectory.featuresDirectory.featurePackages();
-      for (final subFeature in subFeatures) {
-        final matchingPackage = existingFeaturePackages.firstWhere(
-          (e) => subFeature == e.packageName || subFeature == e.name,
-          // TODO maybe sub feature not found
-          orElse: () => throw FeatureNotFoundException._(subFeature, platform),
-        );
-
-        subFeaturePackages.add(matchingPackage);
-      } */
 
     await task('Creating feature', () async {
       await featurePackage.generate(
@@ -333,18 +330,13 @@ mixin _PlatformMixin on _Rapid {
 
       final applicationBarrelFile = featurePackage.applicationBarrelFile;
       if (!applicationBarrelFile.existsSync()) {
-        final barrelFile = featurePackage.barrelFile;
-
         applicationBarrelFile.createSync(recursive: true);
-        applicationBarrelFile.addExport(
-          p.normalize(p.join('${name.snakeCase}_bloc.dart')),
-        );
+        applicationBarrelFile.addExport('${name.snakeCase}_bloc.dart');
 
+        final barrelFile = featurePackage.barrelFile;
         barrelFile.addExport('src/application/application.dart');
       } else {
-        applicationBarrelFile.addExport(
-          p.normalize(p.join('${name.snakeCase}_bloc.dart')),
-        );
+        applicationBarrelFile.addExport('${name.snakeCase}_bloc.dart');
       }
     });
 
@@ -388,18 +380,13 @@ mixin _PlatformMixin on _Rapid {
 
       final applicationBarrelFile = featurePackage.applicationBarrelFile;
       if (!applicationBarrelFile.existsSync()) {
-        final barrelFile = featurePackage.barrelFile;
-
         applicationBarrelFile.createSync(recursive: true);
-        applicationBarrelFile.addExport(
-          p.normalize(p.join('${name.snakeCase}_cubit.dart')),
-        );
+        applicationBarrelFile.addExport('${name.snakeCase}_cubit.dart');
 
+        final barrelFile = featurePackage.barrelFile;
         barrelFile.addExport('src/application/application.dart');
       } else {
-        applicationBarrelFile.addExport(
-          p.normalize(p.join('${name.snakeCase}_cubit.dart')),
-        );
+        applicationBarrelFile.addExport('${name.snakeCase}_cubit.dart');
       }
     });
 
@@ -439,15 +426,12 @@ mixin _PlatformMixin on _Rapid {
     logger.newLine();
 
     await task('Removing bloc', () async {
-      final applicationBarrelFile = featurePackage.applicationBarrelFile;
-
       bloc.delete();
 
       // TODO delete application dir if empty
 
-      applicationBarrelFile.removeExport(
-        p.normalize(p.join('${name.snakeCase}_bloc.dart')), // TODO rm?
-      );
+      final applicationBarrelFile = featurePackage.applicationBarrelFile;
+      applicationBarrelFile.removeExport('${name.snakeCase}_bloc.dart');
       if (!applicationBarrelFile.containsStatements()) {
         applicationBarrelFile.deleteSync(recursive: true);
         final barrelFile = featurePackage.barrelFile;
@@ -495,9 +479,7 @@ mixin _PlatformMixin on _Rapid {
       // TODO delete application dir if empty
 
       final applicationBarrelFile = featurePackage.applicationBarrelFile;
-      applicationBarrelFile.removeExport(
-        p.normalize(p.join('${name.snakeCase}_cubit.dart')), // TODO why join?
-      );
+      applicationBarrelFile.removeExport('${name.snakeCase}_cubit.dart');
       if (!applicationBarrelFile.containsStatements()) {
         applicationBarrelFile.deleteSync(recursive: true);
         final barrelFile = featurePackage.barrelFile;
@@ -550,12 +532,10 @@ mixin _PlatformMixin on _Rapid {
       }
 
       if (featurePackage is PlatformRoutableFeaturePackage) {
-        if (featurePackage.navigatorImplementation.existsAll) {
-          await _removeNavigatorInterface(
-            featurePackage: featurePackage,
-            navigationPackage: platformDirectory.navigationPackage,
-          );
-        }
+        await _removeNavigatorInterface(
+          featurePackage: featurePackage,
+          navigationPackage: platformDirectory.navigationPackage,
+        );
       }
 
       featurePackage.deleteSync(recursive: true);
@@ -662,9 +642,6 @@ mixin _PlatformMixin on _Rapid {
 
     logger.newLine();
 
-    // TODO maybe add set-exit-if-error to behave like currently
-    // and a mode where if interface or impl are not existing the command skips those errors
-    // and completes without error
     await _removeNavigatorInterface(
       featurePackage: featurePackage,
       navigationPackage: platformDirectory.navigationPackage,
@@ -719,9 +696,6 @@ mixin _PlatformMixin on _Rapid {
     required PlatformRoutableFeaturePackage featurePackage,
     required PlatformNavigationPackage navigationPackage,
   }) async {
-    // TODO maybe add set-exit-if-error to behave like currently
-    // and a mode where if interface or impl are existing the command skips those errors
-    // and completes without error
     await _addNavigatorInterface(
       featurePackage: featurePackage,
       navigationPackage: navigationPackage,
@@ -742,8 +716,6 @@ mixin _PlatformMixin on _Rapid {
         navigationPackage.barrelFile
             .addExport('src/i_${featureName.snakeCase}_navigator.dart');
       });
-    } else {
-      throw NavigatorInterfaceAlreadyExistsException._(featurePackage);
     }
   }
 
@@ -757,8 +729,6 @@ mixin _PlatformMixin on _Rapid {
         () async => navigatorImplementation.generate(),
       );
       await codeGenTask(package: featurePackage);
-    } else {
-      throw NavigatorImplementationAlreadyExistsException._(featurePackage);
     }
   }
 
@@ -776,8 +746,6 @@ mixin _PlatformMixin on _Rapid {
           'src/i_${featureName.snakeCase}_navigator.dart',
         );
       });
-    } else {
-      throw NavigatorInterfaceNotFoundException._(featurePackage);
     }
   }
 
@@ -791,8 +759,6 @@ mixin _PlatformMixin on _Rapid {
         () => navigatorImplementation.delete(),
       );
       await codeGenTask(package: featurePackage);
-    } else {
-      throw NavigatorImplementationNotFoundException._(featurePackage);
     }
   }
 }
@@ -810,18 +776,19 @@ class FeatureNotFoundException extends RapidException {
       : super('Feature ${feature.name} not found. (${platform.prettyName})');
 }
 
-class NavigatorInterfaceAlreadyExistsException extends RapidException {
-  NavigatorInterfaceAlreadyExistsException._(PlatformFeaturePackage feature)
-      : super(
-          'The navigator interface "I${feature.name.pascalCase}Navigator" does already exist. (${feature.platform.prettyName})',
-        );
-}
-
-class NavigatorImplementationAlreadyExistsException extends RapidException {
-  NavigatorImplementationAlreadyExistsException._(
-      PlatformFeaturePackage feature)
-      : super(
-          'The navigator implementation "${feature.name.pascalCase}Navigator" does already exist. (${feature.platform.prettyName})',
+class SubFeaturesNotFoundException extends RapidException {
+  SubFeaturesNotFoundException._(
+    Iterable<String> subFeatures,
+    Platform platform,
+  ) : super(
+          multiLine([
+            'Sub-features not found. (${platform.prettyName})',
+            '',
+            'The following features were missing:',
+            for (final subFeature in subFeatures) ...[
+              subFeature,
+            ],
+          ]),
         );
 }
 
@@ -836,20 +803,6 @@ class FeatureNotRoutableException extends RapidException {
 class LanguageAlreadyPresentException extends RapidException {
   LanguageAlreadyPresentException._(Language language)
       : super('The language "$language" is already present.');
-}
-
-class NavigatorInterfaceNotFoundException extends RapidException {
-  NavigatorInterfaceNotFoundException._(PlatformFeaturePackage feature)
-      : super(
-          'Navigator interface "I${feature.name.pascalCase}Navigator" not found. (${feature.platform.prettyName})',
-        );
-}
-
-class NavigatorImplementationNotFoundException extends RapidException {
-  NavigatorImplementationNotFoundException._(PlatformFeaturePackage feature)
-      : super(
-          'Navigator implementation "${feature.name.pascalCase}Navigator" not found. (${feature.platform.prettyName})',
-        );
 }
 
 class BlocAlreadyExistsException extends RapidException {

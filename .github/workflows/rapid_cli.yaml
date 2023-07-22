@@ -13,7 +13,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 0 # TODO needed?
+          fetch-depth: 0
 
       - name: Lint commit messages
         uses: wagoid/commitlint-github-action@v5
@@ -32,7 +32,7 @@ jobs:
       - name: Format
         run: dart format lib test tool --set-exit-if-changed
 
-      # TODO uncomment
+      # TODO uncomment if project is clean
       # - name: Analyze
       #   run: flutter analyze .
       
@@ -42,12 +42,11 @@ jobs:
         #   flutter pub global activate coverage 1.2.0
         #   flutter pub run test -j 1 --coverage=coverage --test-randomize-ordering-seed random && dart pub global run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib
 
-      # TODO uncomment
-      # - name: Ensure 100% Code Coverage
-      #   uses: VeryGoodOpenSource/very_good_coverage@v2
-      #   with:
-      #     min_coverage: 100
-      #     path: packages/rapid_cli/coverage/lcov.info
+      - name: Ensure 100% Code Coverage
+        uses: VeryGoodOpenSource/very_good_coverage@v2
+        with:
+          min_coverage: 80 # TODO set to 100 if unit test are complete
+          path: packages/rapid_cli/coverage/lcov.info
 
   pana:
     defaults:

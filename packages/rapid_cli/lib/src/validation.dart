@@ -1,6 +1,6 @@
 import 'exception.dart';
 
-// TODO not clean as its only used to validate pubspec.yaml name
+// TODO not very clean as its only used to validate pubspec.yaml name
 T assertNotNull<T>(T? value) {
   if (value == null) {
     throw ValidationException._('Value cannot be null');

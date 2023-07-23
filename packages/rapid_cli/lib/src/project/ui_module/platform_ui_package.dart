@@ -37,6 +37,10 @@ class PlatformUiPackage extends UiPackage {
   final Platform platform;
 
   @override
+  DartFile get barrelFile =>
+      DartFile(p.join(path, 'lib', '${projectName}_ui_${platform.name}.dart'));
+
+  @override
   Future<void> generate() async {
     await mason.generate(
       bundle: platformUiPackageBundle,

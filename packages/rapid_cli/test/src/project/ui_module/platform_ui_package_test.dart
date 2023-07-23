@@ -59,6 +59,19 @@ void main() {
       expect(themedWidget.platform, Platform.linux);
     });
 
+    test('barrelFile', () {
+      final uiPackage = _getPlatformUiPackage(
+        projectName: 'test_project',
+        path: '/path/to/ui_package',
+        platform: Platform.macos,
+      );
+
+      expect(
+        uiPackage.barrelFile.path,
+        '/path/to/ui_package/lib/test_project_ui_macos.dart',
+      );
+    });
+
     test(
       'generate',
       withMockFs(() async {

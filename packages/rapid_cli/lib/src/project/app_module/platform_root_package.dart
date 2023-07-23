@@ -87,7 +87,6 @@ sealed class PlatformRootPackage extends DartPackage {
         .readImports()
         .where((e) => e.contains(packageName)); // TODO good?
     for (final import in imports) {
-      print(import);
       injectionFile.removeImport(import);
     }
 

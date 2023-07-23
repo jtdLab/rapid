@@ -134,6 +134,8 @@ void main() {
                 ..createSync(recursive: true)
                 ..writeAsStringSync(
                   multiLine([
+                    'import \'package:auto_route/auto_route.dart\';',
+                    '',
                     '@InjectableInit(',
                     '  externalPackageModules: [],',
                     ')',
@@ -165,14 +167,17 @@ void main() {
           expect(
             injectionFile.readAsStringSync(),
             multiLine([
+              'import \'package:auto_route/auto_route.dart\';',
               'import \'package:test_widget/test_widget.dart\';',
+              '',
               '@InjectableInit(',
               '  externalPackageModules: [TestWidgetPackageModule,],',
               ')',
               'Future<void> configureDependencies(String environment, String platform) async =>',
               '    await getIt.init(',
               '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
-              '    );'
+              '    );',
+              '',
             ]),
           );
         }),
@@ -197,6 +202,8 @@ void main() {
                 ..createSync(recursive: true)
                 ..writeAsStringSync(
                   multiLine([
+                    'import \'package:injectable/injectable.dart\';',
+                    '',
                     '@InjectableInit(',
                     '  externalPackageModules: [],',
                     ')',
@@ -210,6 +217,8 @@ void main() {
             ..createSync(recursive: true)
             ..writeAsStringSync(
               multiLine([
+                'import \'package:auto_route/auto_route.dart\';',
+                '',
                 '@AutoRouterConfig(',
                 '  replaceInRouteName: null,',
                 '  modules: [],',
@@ -218,6 +227,7 @@ void main() {
                 '  @override',
                 '  List<AutoRoute> get routes => [];',
                 '}',
+                '',
               ]),
             );
           final iosRootPackage = _getIosRootPackage(
@@ -242,23 +252,28 @@ void main() {
           expect(
             injectionFile.readAsStringSync(),
             multiLine([
+              'import \'package:injectable/injectable.dart\';',
               'import \'package:test_page/test_page.dart\';',
+              '',
               '@InjectableInit(',
               '  externalPackageModules: [TestPagePackageModule,],',
               ')',
               'Future<void> configureDependencies(String environment, String platform) async =>',
               '    await getIt.init(',
               '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
-              '    );'
+              '    );',
+              '',
             ]),
           );
           expect(
             routerFile.readAsStringSync(),
             multiLine([
+              'import \'package:auto_route/auto_route.dart\';',
               'import \'package:test_page/test_page.dart\';',
               '',
               '',
               '// TODO: Add routes of TestPageModule to the router.',
+              '',
               '@AutoRouterConfig(',
               '  replaceInRouteName: null,',
               '  modules: [TestPageModule,],',
@@ -267,6 +282,7 @@ void main() {
               '  @override',
               '  List<AutoRoute> get routes => [];',
               '}',
+              '',
             ]),
           );
         }),
@@ -332,7 +348,8 @@ void main() {
               'Future<void> configureDependencies(String environment, String platform) async =>',
               '    await getIt.init(',
               '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
-              '    );'
+              '    );',
+              '',
             ]),
           );
         }),
@@ -412,7 +429,8 @@ void main() {
               'Future<void> configureDependencies(String environment, String platform) async =>',
               '    await getIt.init(',
               '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
-              '    );'
+              '    );',
+              '',
             ]),
           );
           expect(
@@ -426,6 +444,7 @@ void main() {
               '  @override',
               '  List<AutoRoute> get routes => [];',
               '}',
+              '',
             ]),
           );
         }),
@@ -452,13 +471,15 @@ void main() {
                 ..createSync(recursive: true)
                 ..writeAsStringSync(
                   multiLine([
+                    'import \'package:injectable/injectable.dart\';',
+                    '',
                     '@InjectableInit(',
                     '  externalPackageModules: [],',
                     ')',
                     'Future<void> configureDependencies(String environment, String platform) async =>',
                     '    await getIt.init(',
                     '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
-                    '    );'
+                    '    );',
                   ]),
                 );
           final iosRootPackage = _getIosRootPackage(
@@ -485,13 +506,16 @@ void main() {
             injectionFile.readAsStringSync(),
             multiLine([
               'import \'package:foo/foo.dart\';',
+              'import \'package:injectable/injectable.dart\';',
+              '',
               '@InjectableInit(',
               '  externalPackageModules: [FooPackageModule,],',
               ')',
               'Future<void> configureDependencies(String environment, String platform) async =>',
               '    await getIt.init(',
               '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
-              '    );'
+              '    );',
+              '',
             ]),
           );
         }),
@@ -558,7 +582,8 @@ void main() {
               'Future<void> configureDependencies(String environment, String platform) async =>',
               '    await getIt.init(',
               '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
-              '    );'
+              '    );',
+              '',
             ]),
           );
         }),

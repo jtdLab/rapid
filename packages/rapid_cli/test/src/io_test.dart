@@ -506,6 +506,7 @@ void main() {
               'import \'package:flutter/material.dart\';',
               '',
               '// some code',
+              '',
             ]),
           );
         }),
@@ -537,6 +538,7 @@ void main() {
               'import \'package:flutter/material.dart\';',
               '',
               '// some code',
+              '',
             ]),
           );
         }),
@@ -571,6 +573,80 @@ void main() {
               'import \'package:bbb/bbb.dart\';',
               '',
               '// some code',
+              '',
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'sorts imports and exports',
+        withMockFs(() {
+          final file = File('example.dart')
+            ..writeAsStringSync(
+              multiLine([
+                'export \'dart:io\';',
+                '',
+                'export \'package:aaa/aaa.dart\';',
+                'import \'dart:io\';',
+                'import \'dart:async\';',
+                'export \'dart:async\';',
+                '',
+                '// some code',
+              ]),
+            );
+          final dartFile = DartFile('example.dart');
+
+          dartFile.addImport('package:bbb/bbb.dart');
+
+          final content = file.readAsStringSync();
+          expect(
+            content,
+            multiLine([
+              'import \'dart:async\';',
+              'import \'dart:io\';',
+              '',
+              'import \'package:bbb/bbb.dart\';',
+              '',
+              'export \'dart:async\';',
+              'export \'dart:io\';',
+              '',
+              'export \'package:aaa/aaa.dart\';',
+              '',
+              '// some code',
+              '',
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'inserts import after library directive if no export exists yet',
+        withMockFs(() {
+          final file = File('example.dart')
+            ..writeAsStringSync(
+              multiLine([
+                '// Docs',
+                'library foo_bar;',
+                '',
+                '// some code',
+              ]),
+            );
+          final dartFile = DartFile('example.dart');
+
+          dartFile.addImport('package:aaa/aaa.dart');
+
+          final content = file.readAsStringSync();
+          expect(
+            content,
+            multiLine([
+              '// Docs',
+              'library foo_bar;',
+              '',
+              'import \'package:aaa/aaa.dart\';',
+              '',
+              '// some code',
+              '',
             ]),
           );
         }),
@@ -602,6 +678,7 @@ void main() {
               'export \'package:flutter/material.dart\';',
               '',
               '// some code',
+              '',
             ]),
           );
         }),
@@ -633,6 +710,7 @@ void main() {
               'export \'package:flutter/material.dart\';',
               '',
               '// some code',
+              '',
             ]),
           );
         }),
@@ -667,6 +745,79 @@ void main() {
               'export \'package:bbb/bbb.dart\';',
               '',
               '// some code',
+              '',
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'sorts exports and imports',
+        withMockFs(() {
+          final file = File('example.dart')
+            ..writeAsStringSync(
+              multiLine([
+                'export \'dart:io\';',
+                'export \'dart:async\';',
+                '',
+                'export \'package:aaa/aaa.dart\';',
+                'import \'dart:io\';',
+                'import \'dart:async\';',
+                '',
+                '// some code',
+              ]),
+            );
+          final dartFile = DartFile('example.dart');
+
+          dartFile.addExport('package:bbb/bbb.dart');
+
+          final content = file.readAsStringSync();
+          expect(
+            content,
+            multiLine([
+              'import \'dart:async\';',
+              'import \'dart:io\';',
+              '',
+              'export \'dart:async\';',
+              'export \'dart:io\';',
+              '',
+              'export \'package:aaa/aaa.dart\';',
+              'export \'package:bbb/bbb.dart\';',
+              '',
+              '// some code',
+              '',
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'inserts export after library directive if no export exists yet',
+        withMockFs(() {
+          final file = File('example.dart')
+            ..writeAsStringSync(
+              multiLine([
+                '// Docs',
+                'library foo_bar;',
+                '',
+                '// some code',
+              ]),
+            );
+          final dartFile = DartFile('example.dart');
+
+          dartFile.addExport('package:aaa/aaa.dart');
+
+          final content = file.readAsStringSync();
+          expect(
+            content,
+            multiLine([
+              '// Docs',
+              'library foo_bar;',
+              '',
+              'export \'package:aaa/aaa.dart\';',
+              '',
+              '// some code',
+              '',
             ]),
           );
         }),
@@ -782,6 +933,32 @@ void main() {
               'import \'dart:io\';',
               'import \'package:flutter/material.dart\';',
               'import \'my_custom_package.dart\';',
+              ''
+            ]),
+          );
+          final dartFile = DartFile('example.dart');
+
+          final imports = dartFile.readImports();
+
+          expect(
+            imports,
+            {
+              'dart:io',
+              'package:flutter/material.dart',
+              'my_custom_package.dart',
+            },
+          );
+        }),
+      );
+
+      test(
+        'should return a set of imports from the file (unformatted)',
+        withMockFs(() {
+          File('example.dart').writeAsStringSync(
+            multiLine([
+              'import \'dart:io\';',
+              '',
+              'import \'package:flutter/material.dart\';import \'my_custom_package.dart\';',
               ''
             ]),
           );

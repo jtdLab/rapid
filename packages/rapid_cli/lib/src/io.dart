@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io' hide Directory, File;
 import 'dart:io' as io;
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:dart_style/dart_style.dart';
 import 'package:path/path.dart' as p;
 import 'package:propertylistserialization/propertylistserialization.dart';
 import 'package:pubspec/pubspec.dart';
@@ -446,99 +448,113 @@ class PubspecYamlFile extends YamlFile {
   }
 }
 
+extension on int {
+  int replaceWhenNegative(int replacement) {
+    if (this < 0) {
+      return replacement;
+    } else {
+      return this;
+    }
+  }
+}
+
 class DartFile extends File {
   DartFile(super.path) : assert(path.endsWith('.dart'));
 
-  void addImport(String import, {String? alias}) {
-    final contents = readAsStringSync();
+  final DartFormatter _formatter = DartFormatter();
 
-    final existingImports =
-        contents.split('\n').where((line) => _importRegExp.hasMatch(line));
-    if (existingImports
-        .contains('import \'$import\'${alias != null ? ' as $alias' : ''};')) {
-      return;
-    }
+  void addImport(String import) => _addImportOrExport('import \'$import\';');
 
-    final updatedImports = [
-      ...existingImports,
-      'import \'$import\'${alias != null ? ' as $alias' : ''};'
+  void addExport(String export) => _addImportOrExport('export \'$export\';');
+
+  void _addImportOrExport(String importOrExport) {
+    final contents = _formatter.format(readAsStringSync());
+    final lines = contents.split('\n');
+
+    final libraryDirectiveIndex =
+        lines.indexWhere((line) => _libraryRegExp.hasMatch(line));
+
+    final firstExportLineIndex = lines
+        .indexWhere(
+          (line) => _exportRegExp.hasMatch(line),
+        )
+        .replaceWhenNegative(
+            libraryDirectiveIndex == -1 ? 0 : libraryDirectiveIndex + 1);
+    final firstImportLineIndex = lines
+        .indexWhere(
+          (line) => _importRegExp.hasMatch(line),
+        )
+        .replaceWhenNegative(
+            libraryDirectiveIndex == -1 ? 0 : libraryDirectiveIndex + 1);
+    final lastExportLineIndex = lines
+        .lastIndexWhere(
+          (line) => _exportRegExp.hasMatch(line),
+        )
+        .replaceWhenNegative(
+            libraryDirectiveIndex == -1 ? 0 : libraryDirectiveIndex + 1);
+    final lastImportLineIndex = lines
+        .lastIndexWhere(
+          (line) => _importRegExp.hasMatch(line),
+        )
+        .replaceWhenNegative(
+            libraryDirectiveIndex == -1 ? 0 : libraryDirectiveIndex + 1);
+
+    // All lines between the first import/export and the last import/export
+    final firstExportOrImportLineIndex =
+        min(firstExportLineIndex, firstImportLineIndex);
+    final lastExportOrImportLineIndex =
+        max(lastExportLineIndex, lastImportLineIndex);
+    var importExportLines = lines
+        .getRange(firstExportOrImportLineIndex, lastExportOrImportLineIndex + 1)
+        .where((line) =>
+            _importRegExp.hasMatch(line) || _exportRegExp.hasMatch(line))
+        .toList();
+
+    // Add new import/export
+    importExportLines.add(importOrExport);
+
+    // Sort exports and imports
+    importExportLines.sort(_compareExports);
+    importExportLines.sort(_compareImports);
+
+    // Make imports appear before exports
+    // Separate dart and package imports/exports
+    final dartImportLines = importExportLines
+        .where((line) => line.startsWith('import \'dart:'))
+        .toSet();
+    final packageImportLines = importExportLines
+        .where((line) => line.startsWith('import \'package:'))
+        .toSet();
+    final dartExportLines = importExportLines
+        .where((line) => line.startsWith('export \'dart:'))
+        .toSet();
+    final packageExportLines = importExportLines
+        .where((line) => line.startsWith('export \'package:'))
+        .toSet();
+    importExportLines = [
+      ...dartImportLines,
+      if (dartImportLines.isNotEmpty && packageImportLines.isNotEmpty) '',
+      ...packageImportLines,
+      if ((dartImportLines.isNotEmpty || packageImportLines.isNotEmpty) &&
+          (dartExportLines.isNotEmpty || packageExportLines.isNotEmpty))
+        '',
+      ...dartExportLines,
+      if (dartExportLines.isNotEmpty && packageExportLines.isNotEmpty) '',
+      ...packageExportLines,
+      if (dartImportLines.isNotEmpty ||
+          packageImportLines.isNotEmpty ||
+          dartExportLines.isNotEmpty ||
+          packageExportLines.isNotEmpty)
+        ''
     ];
-    updatedImports.sort(_compareImports);
 
-    final startOldImportsIndex = contents.indexOf(_importRegExp);
-    if (startOldImportsIndex == -1) {
-      // no existing imports -> just prepend new import to file
-      writeAsStringSync('import \'$import\';\n$contents');
-      return;
-    }
-
-    final output = contents.replaceRange(
-      // start of old imports
-      startOldImportsIndex,
-      // end of old imports
-      // TODO if code is not formatted this might fail
-      contents.indexOf('\n', contents.lastIndexOf(_importRegExp)) + 1,
-      // add empty line after last dart and package import
-      updatedImports
-          .expand(
-            (e) => updatedImports.indexOf(e) ==
-                        updatedImports.lastIndexWhere(
-                            (e) => e.startsWith('import \'dart:')) ||
-                    updatedImports.indexOf(e) ==
-                        updatedImports.lastIndexWhere(
-                            (e) => e.startsWith('import \'package:'))
-                ? [e, '']
-                : [e],
-          )
-          .join('\n'),
+    lines.replaceRange(
+      firstExportOrImportLineIndex,
+      lastExportOrImportLineIndex + 1,
+      importExportLines,
     );
-    writeAsStringSync(output);
-  }
 
-  void addExport(String export) {
-    final contents = readAsStringSync();
-
-    if (contents.isEmpty) {
-      writeAsStringSync('export \'$export\';');
-      return;
-    }
-
-    final existingExports =
-        contents.split('\n').where((line) => _exportRegExp.hasMatch(line));
-    if (existingExports.contains('export \'$export\';')) {
-      return;
-    }
-
-    final updatedExports = [...existingExports, 'export \'$export\';'];
-    updatedExports.sort(_compareExports);
-
-    final startOldExportsIndex = contents.indexOf(_exportRegExp);
-    if (startOldExportsIndex == -1) {
-      // no existing exports -> just prepend new export to file
-      writeAsStringSync('export \'$export\';\n$contents');
-      return;
-    }
-
-    final output = contents.replaceRange(
-      // start of old exports
-      startOldExportsIndex,
-      // TODO if code is not formatted this might fail
-      // end of old exports
-      contents.indexOf('\n', contents.lastIndexOf(_exportRegExp)) + 1,
-      // add empty line after last dart and package export
-      updatedExports
-          .expand(
-            (e) => updatedExports.indexOf(e) ==
-                        updatedExports.lastIndexWhere(
-                            (e) => e.startsWith('export \'dart:')) ||
-                    updatedExports.indexOf(e) ==
-                        updatedExports.lastIndexWhere(
-                            (e) => e.startsWith('export \'package:'))
-                ? [e, '']
-                : [e],
-          )
-          .join('\n'),
-    );
+    final output = _formatter.format(lines.join('\n'));
     writeAsStringSync(output);
   }
 
@@ -559,15 +575,15 @@ class DartFile extends File {
   }
 
   Set<String> readImports() {
-    final contents = readAsStringSync();
+    final content = _formatter.format(readAsStringSync());
+    final lines = content.split('\n');
 
-    // TODO this might fail if the file is not formatted
-    final regExp =
-        RegExp('import \'([a-z0-9_:./]+)\'( as [a-z]+)?;' r'[\s]{1}');
-    final matches = regExp.allMatches(contents);
     final output = <String>{};
-    for (final match in matches) {
-      output.add(match.group(1)!);
+    for (final line in lines) {
+      final match = _importRegExp.firstMatch(line);
+      if (match != null) {
+        output.add(match.group(1)!);
+      }
     }
 
     return output;
@@ -692,7 +708,7 @@ class DartFile extends File {
   }
 
   void removeImport(String import) {
-    final contents = readAsStringSync();
+    final contents = _formatter.format(readAsStringSync());
 
     // TODO this fails if the file is not formatted
     final regExp = RegExp(
@@ -707,9 +723,8 @@ class DartFile extends File {
     writeAsStringSync(output);
   }
 
-  // TODO the export should be better abstracted maybe using code builder or smth
   void removeExport(String export) {
-    final contents = readAsStringSync();
+    final contents = _formatter.format(readAsStringSync());
 
     // TODO this fails if the file is not formatted
     final regExp = RegExp(
@@ -906,6 +921,7 @@ class DartFile extends File {
   final _importRegExp = RegExp('import \'([a-z_/.:]+)\'( as [a-z]+)?;');
   final _exportRegExp =
       RegExp('export \'([a-z_/.:]+)\'( (:?hide|show) [A-Z]+[A-z1-9]*;)?');
+  final _libraryRegExp = RegExp(r'library[\s]+[A-z][A-z_]*;');
 }
 
 class PlistFile extends File {

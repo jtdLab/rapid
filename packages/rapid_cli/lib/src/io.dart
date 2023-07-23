@@ -463,11 +463,18 @@ class DartFile extends File {
 
   final DartFormatter _formatter = DartFormatter();
 
-  void addImport(String import) => _addImportOrExport('import \'$import\';');
+  void addImport(String import) => _modifyImportsOrExports(
+        (importsAndExports) => [...importsAndExports, 'import \'$import\';'],
+      );
 
-  void addExport(String export) => _addImportOrExport('export \'$export\';');
+  void addExport(String export) => _modifyImportsOrExports(
+        (importsAndExports) => [...importsAndExports, 'export \'$export\';'],
+      );
 
-  void _addImportOrExport(String importOrExport) {
+  void _modifyImportsOrExports(
+    List<String> Function(List<String> importsAndExports)
+        updateImportsAndExports,
+  ) {
     final contents = _formatter.format(readAsStringSync());
     final lines = contents.split('\n');
 
@@ -511,7 +518,7 @@ class DartFile extends File {
         .toList();
 
     // Add new import/export
-    importExportLines.add(importOrExport);
+    importExportLines = updateImportsAndExports(importExportLines);
 
     // Sort exports and imports
     importExportLines.sort(_compareExports);
@@ -545,29 +552,17 @@ class DartFile extends File {
         .toSet();
     importExportLines = [
       ...dartImportLines,
-      if (dartImportLines.isNotEmpty && packageImportLines.isNotEmpty) '',
+      if (dartImportLines.isNotEmpty) '',
       ...packageImportLines,
-      if (packageImportLines.isNotEmpty && localImportLines.isNotEmpty) '',
+      if (packageImportLines.isNotEmpty) '',
       ...localImportLines,
-      if ((dartImportLines.isNotEmpty ||
-              packageImportLines.isNotEmpty ||
-              localImportLines.isNotEmpty) &&
-          (dartExportLines.isNotEmpty ||
-              packageExportLines.isNotEmpty ||
-              localExportLines.isNotEmpty))
-        '',
+      if (localImportLines.isNotEmpty) '',
       ...dartExportLines,
-      if (dartExportLines.isNotEmpty && packageExportLines.isNotEmpty) '',
+      if (dartExportLines.isNotEmpty) '',
       ...packageExportLines,
-      if (packageExportLines.isNotEmpty && localExportLines.isNotEmpty) '',
+      if (packageExportLines.isNotEmpty) '',
       ...localExportLines,
-      if (dartImportLines.isNotEmpty ||
-          packageImportLines.isNotEmpty ||
-          localImportLines.isNotEmpty ||
-          dartExportLines.isNotEmpty ||
-          packageExportLines.isNotEmpty ||
-          localExportLines.isNotEmpty)
-        ''
+      if (localExportLines.isNotEmpty) '',
     ];
 
     lines.replaceRange(
@@ -730,43 +725,25 @@ class DartFile extends File {
   }
 
   void removeImport(String import) {
-    final contents = _formatter.format(readAsStringSync());
-
-    // TODO this fails if the file is not formatted
     final regExp = RegExp(
-      r"import[\s]+\'" + import + r"\'([\s]+as[\s]+[a-z]+)?;" + r"[\s]{1}",
+      r"import[\s]+\'" + import + r"\'([\s]+as[\s]+[a-z]+)?;",
     );
-    final match = regExp.firstMatch(contents);
-    if (match == null) {
-      return;
-    }
-    final output = contents.replaceRange(match.start, match.end + 1, '');
-
-    writeAsStringSync(output);
+    _modifyImportsOrExports(
+      (importsAndExports) =>
+          importsAndExports.where((e) => !regExp.hasMatch(e)).toList(),
+    );
   }
 
   void removeExport(String export) {
-    final contents = _formatter.format(readAsStringSync());
-
-    // TODO this fails if the file is not formatted
     final regExp = RegExp(
       r"export[\s]+\'" +
           export +
-          r"\'([\s]+(:?hide|show)[\s]+[A-Z]+[A-z1-9]*)?;" +
-          r"[\s]{1}",
+          r"\'([\s]+(:?hide|show)[\s]+[A-Z]+[A-z1-9]*)?;",
     );
-
-    final matches = regExp.allMatches(contents);
-    if (matches.isEmpty) {
-      return;
-    }
-
-    var output = contents;
-    for (final match in matches.toList().reversed) {
-      output = output.replaceRange(match.start, match.end + 1, '');
-    }
-
-    writeAsStringSync(output);
+    _modifyImportsOrExports(
+      (importsAndExports) =>
+          importsAndExports.where((e) => !regExp.hasMatch(e)).toList(),
+    );
   }
 
   void setTopLevelListVar({required String name, required List<String> value}) {

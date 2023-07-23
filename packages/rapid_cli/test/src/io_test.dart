@@ -1168,6 +1168,7 @@ void main() {
             ..writeAsStringSync(
               multiLine([
                 'import \'dart:io\';',
+                '',
               ]),
             );
           final dartFile = DartFile('example.dart');
@@ -1179,6 +1180,88 @@ void main() {
             content,
             multiLine([
               'import \'dart:io\';',
+              '',
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'sorts imports',
+        withMockFs(() {
+          final file = File('example.dart')
+            ..writeAsStringSync(
+              multiLine([
+                'import \'dart:io\';',
+                'import \'dart:async\';',
+                '',
+                'import \'package:bbb/bbb.dart\';',
+                'import \'package:aaa/aaa.dart\';',
+                '',
+                'import \'injection.config.dart\';',
+                'import \'a.dart\';',
+                '',
+                '// some code',
+              ]),
+            );
+          final dartFile = DartFile('example.dart');
+
+          dartFile.removeImport('package:bbb/bbb.dart');
+
+          final content = file.readAsStringSync();
+          expect(
+            content,
+            multiLine([
+              'import \'dart:async\';',
+              'import \'dart:io\';',
+              '',
+              'import \'package:aaa/aaa.dart\';',
+              '',
+              'import \'a.dart\';',
+              'import \'injection.config.dart\';',
+              '',
+              '// some code',
+              '',
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'sorts imports and exports',
+        withMockFs(() {
+          final file = File('example.dart')
+            ..writeAsStringSync(
+              multiLine([
+                'export \'dart:io\';',
+                '',
+                'export \'package:aaa/aaa.dart\';',
+                'import \'dart:io\';',
+                'import \'dart:async\';',
+                'export \'dart:async\';',
+                '',
+                'import \'package:bbb/bbb.dart\';',
+                '// some code',
+              ]),
+            );
+          final dartFile = DartFile('example.dart');
+
+          dartFile.removeImport('package:bbb/bbb.dart');
+
+          final content = file.readAsStringSync();
+          expect(
+            content,
+            multiLine([
+              'import \'dart:async\';',
+              'import \'dart:io\';',
+              '',
+              'export \'dart:async\';',
+              'export \'dart:io\';',
+              '',
+              'export \'package:aaa/aaa.dart\';',
+              '',
+              '// some code',
+              '',
             ]),
           );
         }),
@@ -1196,7 +1279,6 @@ void main() {
                 '',
                 'export \'my_custom_package.dart\';',
                 'export \'some_other_package.dart\';',
-                '',
               ]),
             );
           final dartFile = DartFile('example.dart');
@@ -1234,6 +1316,87 @@ void main() {
             content,
             multiLine([
               'export \'my_custom_package.dart\';',
+              '',
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'sorts exports',
+        withMockFs(() {
+          final file = File('example.dart')
+            ..writeAsStringSync(
+              multiLine([
+                'export \'dart:io\';',
+                'export \'dart:async\';',
+                '',
+                'export \'package:aaa/aaa.dart\';',
+                '',
+                'export \'injection.config.dart\';',
+                'export \'a.dart\';',
+                '',
+                'export \'package:bbb/bbb.dart\';',
+                '// some code',
+              ]),
+            );
+          final dartFile = DartFile('example.dart');
+
+          dartFile.removeExport('package:bbb/bbb.dart');
+
+          final content = file.readAsStringSync();
+          expect(
+            content,
+            multiLine([
+              'export \'dart:async\';',
+              'export \'dart:io\';',
+              '',
+              'export \'package:aaa/aaa.dart\';',
+              '',
+              'export \'a.dart\';',
+              'export \'injection.config.dart\';',
+              '',
+              '// some code',
+              '',
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'sorts exports and imports',
+        withMockFs(() {
+          final file = File('example.dart')
+            ..writeAsStringSync(
+              multiLine([
+                'export \'dart:io\';',
+                'export \'dart:async\';',
+                '',
+                'export \'package:bbb/bbb.dart\';',
+                'export \'package:aaa/aaa.dart\';',
+                'import \'dart:io\';',
+                'import \'dart:async\';',
+                '',
+                '// some code',
+              ]),
+            );
+          final dartFile = DartFile('example.dart');
+
+          dartFile.removeExport('package:bbb/bbb.dart');
+
+          final content = file.readAsStringSync();
+          expect(
+            content,
+            multiLine([
+              'import \'dart:async\';',
+              'import \'dart:io\';',
+              '',
+              'export \'dart:async\';',
+              'export \'dart:io\';',
+              '',
+              'export \'package:aaa/aaa.dart\';',
+              '',
+              '// some code',
               '',
             ]),
           );

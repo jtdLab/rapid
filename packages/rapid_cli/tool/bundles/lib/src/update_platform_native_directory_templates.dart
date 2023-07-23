@@ -66,7 +66,7 @@ void _applyPlaceholders({
     (_descriptionPlaceholder, '{{description}}'),
     (_orgNamePlaceholder, '{{org_name}}'),
     (_projectNamePlaceholder, '{{project_name}}'),
-    // TODO maybe more cases ?
+    (_projectNamePlaceholder.pathCase, '{{project_name.pathCase()}}'),
     (_projectNamePlaceholder.titleCase, '{{project_name.titleCase()}}'),
     (_projectNamePlaceholder.pascalCase, '{{project_name.pascalCase()}}'),
     (_projectNamePlaceholder.camelCase, '{{project_name.camelCase()}}')

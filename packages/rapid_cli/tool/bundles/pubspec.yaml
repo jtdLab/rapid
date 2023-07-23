@@ -7,10 +7,10 @@ environment:
 
 dependencies:
   path: ^1.8.3
-  http: ^0.13.6
-  html: ^0.15.3
+  http: ^1.1.0
+  html: ^0.15.4
   io: ^1.0.4
   recase: ^4.1.0
 
 dev_dependencies:
-  lints: ^2.1.0
+  lints: ^2.1.1

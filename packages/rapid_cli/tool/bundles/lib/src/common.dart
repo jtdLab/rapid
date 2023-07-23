@@ -33,7 +33,7 @@ final packages = [
   PackageDependency('json_annotation', '4.8.1'),
   PackageDependency('json_serializable', '6.7.0'),
   PackageDependency('lints', '2.1.0'),
-  PackageDependency('macos_ui', '1.12.2'),
+  PackageDependency('macos_ui', '2.0.0'),
   PackageDependency('melos', '3.1.1'),
   PackageDependency('meta', '1.9.1'),
   PackageDependency('mocktail', '0.3.0'),

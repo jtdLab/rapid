@@ -506,12 +506,7 @@ class MockMacosRootPackage extends Mock implements MacosRootPackage {
 }
 
 class MockMacosNativeDirectory extends Mock implements MacosNativeDirectory {
-  MockMacosNativeDirectory({
-    File? podFile,
-  }) {
-    podFile ??= MockFile();
-
-    when(() => this.podFile).thenReturn(podFile);
+  MockMacosNativeDirectory() {
     when(
       () => generate(orgName: any(named: 'orgName')),
     ).thenAnswer((_) async {});

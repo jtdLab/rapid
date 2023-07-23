@@ -164,18 +164,6 @@ void main() {
         ]);
       }),
     );
-
-    test('podFile', () {
-      final macosNativeDirectory = _getMacosNativeDirectory(
-        projectName: 'test_project',
-        path: '/path/to/macos_native_directory',
-      );
-
-      expect(
-        macosNativeDirectory.podFile.path,
-        '/path/to/macos_native_directory/Podfile',
-      );
-    });
   });
 
   group('NoneIosNativeDirectory', () {

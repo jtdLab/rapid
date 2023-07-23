@@ -80,8 +80,6 @@ class MacosNativeDirectory extends PlatformNativeDirectory {
       },
     );
   }
-
-  File get podFile => File(p.join(path, 'Podfile'));
 }
 
 // TODO better name

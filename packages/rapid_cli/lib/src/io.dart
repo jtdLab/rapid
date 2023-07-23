@@ -525,26 +525,48 @@ class DartFile extends File {
     final packageImportLines = importExportLines
         .where((line) => line.startsWith('import \'package:'))
         .toSet();
+    final localImportLines = importExportLines
+        .where((line) =>
+            !line.startsWith('import \'dart:') &&
+            !line.startsWith('import \'package:') &&
+            line.startsWith('import \''))
+        .toSet();
     final dartExportLines = importExportLines
         .where((line) => line.startsWith('export \'dart:'))
         .toSet();
     final packageExportLines = importExportLines
         .where((line) => line.startsWith('export \'package:'))
         .toSet();
+    final localExportLines = importExportLines
+        .where((line) =>
+            !line.startsWith('export \'dart:') &&
+            !line.startsWith('export \'package:') &&
+            line.startsWith('export \''))
+        .toSet();
     importExportLines = [
       ...dartImportLines,
       if (dartImportLines.isNotEmpty && packageImportLines.isNotEmpty) '',
       ...packageImportLines,
-      if ((dartImportLines.isNotEmpty || packageImportLines.isNotEmpty) &&
-          (dartExportLines.isNotEmpty || packageExportLines.isNotEmpty))
+      if (packageImportLines.isNotEmpty && localImportLines.isNotEmpty) '',
+      ...localImportLines,
+      if ((dartImportLines.isNotEmpty ||
+              packageImportLines.isNotEmpty ||
+              localImportLines.isNotEmpty) &&
+          (dartExportLines.isNotEmpty ||
+              packageExportLines.isNotEmpty ||
+              localExportLines.isNotEmpty))
         '',
       ...dartExportLines,
       if (dartExportLines.isNotEmpty && packageExportLines.isNotEmpty) '',
       ...packageExportLines,
+      if (packageExportLines.isNotEmpty && localExportLines.isNotEmpty) '',
+      ...localExportLines,
       if (dartImportLines.isNotEmpty ||
           packageImportLines.isNotEmpty ||
+          localImportLines.isNotEmpty ||
           dartExportLines.isNotEmpty ||
-          packageExportLines.isNotEmpty)
+          packageExportLines.isNotEmpty ||
+          localExportLines.isNotEmpty)
         ''
     ];
 

@@ -87,8 +87,8 @@ void _applyPlaceholders({
   lines.insert(4, '''
 	<key>CFBundleLocalizations</key>
     <array>
-        <string>{{language}}</string>
-    </array>''');
+{{#languages}}        <string>{{language_code}}{{#has_script_code}}-{{script_code}}{{/has_script_code}}{{#has_country_code}}-{{country_code}}{{/has_country_code}}</string>
+{{/languages}}    </array>''');
   infoPlistFile.writeAsStringSync(lines.join('\n'));
 
   // android/app/src/main/kotlin

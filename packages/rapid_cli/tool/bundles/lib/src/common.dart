@@ -12,8 +12,8 @@ const dart = DartDependency('3.0.0', '4.0.0');
 const flutter = FlutterDependency('3.10.0');
 final packages = [
   PackageDependency('alchemist', '0.6.1'),
-  PackageDependency('auto_route', '7.2.0'),
-  PackageDependency('auto_route_generator', '7.1.1'),
+  PackageDependency('auto_route', '7.7.1'),
+  PackageDependency('auto_route_generator', '7.2.0'),
   PackageDependency('bloc_concurrency', '0.2.2'),
   PackageDependency('bloc_test', '9.1.3'),
   PackageDependency('bloc', '8.1.2'),
@@ -34,7 +34,7 @@ final packages = [
   PackageDependency('json_serializable', '6.7.0'),
   PackageDependency('lints', '2.1.0'),
   PackageDependency('macos_ui', '1.12.2'),
-  PackageDependency('melos', '3.1.0'),
+  PackageDependency('melos', '3.1.1'),
   PackageDependency('meta', '1.9.1'),
   PackageDependency('mocktail', '0.3.0'),
   PackageDependency('test', '1.24.3'),

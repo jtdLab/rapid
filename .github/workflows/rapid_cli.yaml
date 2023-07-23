@@ -38,9 +38,6 @@ jobs:
       
       - name: Run Tests
         run: flutter test test/src -j 1 --no-pub --test-randomize-ordering-seed random --coverage
-        # run: |
-        #   flutter pub global activate coverage 1.2.0
-        #   flutter pub run test -j 1 --coverage=coverage --test-randomize-ordering-seed random && dart pub global run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.dart_tool/package_config.json --report-on=lib
 
       - name: Ensure 100% Code Coverage
         uses: VeryGoodOpenSource/very_good_coverage@v2
@@ -56,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3.1.0
+      - uses: actions/checkout@v3
 
       - uses: subosito/flutter-action@v2
 

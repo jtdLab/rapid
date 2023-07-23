@@ -46,7 +46,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.5
+  build_runner: ^2.4.6
   injectable_generator: ^2.1.6
   auto_route_generator: ^7.2.0
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -54,7 +54,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -114,7 +114,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.5
+  build_runner: ^2.4.6
   injectable_generator: ^2.1.6
   auto_route_generator: ^7.2.0
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -122,7 +122,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -177,7 +177,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.5
+  build_runner: ^2.4.6
   injectable_generator: ^2.1.6
   auto_route_generator: ^7.2.0
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -185,7 +185,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -245,7 +245,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.5
+  build_runner: ^2.4.6
   injectable_generator: ^2.1.6
   auto_route_generator: ^7.2.0
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -253,7 +253,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -310,7 +310,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.5
+  build_runner: ^2.4.6
   injectable_generator: ^2.1.6
   auto_route_generator: ^7.2.0
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -318,7 +318,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -377,7 +377,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.5
+  build_runner: ^2.4.6
   injectable_generator: ^2.1.6
   auto_route_generator: ^7.2.0
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -385,7 +385,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -444,7 +444,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
   mocktail: ^0.3.0
-  build_runner: ^2.4.5
+  build_runner: ^2.4.6
   injectable_generator: ^2.1.6
   auto_route_generator: ^7.2.0
   # The "flutter_lints" package below contains a set of recommended lints to
@@ -452,7 +452,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

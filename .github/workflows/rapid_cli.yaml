@@ -3,6 +3,9 @@ name: rapid_cli
 on:
   push:
 
+env:
+  FLUTTER_VERSION: 3.10.0
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -21,13 +24,16 @@ jobs:
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
           cache: true
-
-      - name: Setup Melos
-        run: flutter pub global activate melos
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
 
       - name: Install Dependencies
         run: flutter pub get
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
 
       - name: Format
         run: dart format lib test tool --set-exit-if-changed
@@ -35,8 +41,8 @@ jobs:
       # TODO uncomment if project is clean
       # - name: Analyze
       #   run: flutter analyze .
-      
-      - name: Run Tests
+
+      - name: Run Unit Tests
         run: flutter test test/src -j 1 --no-pub --test-randomize-ordering-seed random --coverage
 
       - name: Ensure 100% Code Coverage
@@ -55,12 +61,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: subosito/flutter-action@v2
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
 
       - name: Install Dependencies
-        run: |
-          flutter packages get
-          flutter pub global activate pana
+        run: flutter pub get
+
+      - name: Setup Pana
+        run: flutter pub global activate pana
 
       - name: Verify Pub Score
         run: |

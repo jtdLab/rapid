@@ -56,9 +56,6 @@ void main() {
                 outputDir: dir,
               ),
             });
-            verifyDoNotHaveTests({
-              tester.domainPackage(subDomain),
-            });
           });
 
       test(

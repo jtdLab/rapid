@@ -196,6 +196,12 @@ class CliException extends RapidException {
 
   @override
   String toString() {
-    return '$message - at ${directory.path}.';
+    return multiLine([
+      '$message - at ${directory.path}.',
+      if (stderr != null) ...[
+        '',
+        stderr!,
+      ]
+    ]);
   }
 }

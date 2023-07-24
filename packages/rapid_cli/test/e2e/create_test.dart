@@ -45,11 +45,10 @@ void main() {
                 ...featurePackages,
               ]);
               verifyDoNotHaveTests([
-                ...tester.platformIndependentPackagesWithoutTests,
-                ...tester.platformDependentPackagesWithoutTests(platform)
+                ...tester.platformDependentPackagesWithoutTests(platform),
               ]);
               await verifyTestsPassWith100PercentCoverage([
-                ...tester.platformIndependentPackagesWithTests,
+                ...tester.platformIndependentPackages,
                 ...tester.platformDependentPackagesWithTests(platform),
                 ...featurePackages,
               ]);

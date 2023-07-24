@@ -181,20 +181,12 @@ final class RapidE2ETester {
         ),
       );
 
-  List<Directory> get platformIndependentPackagesWithTests => [
+  List<Directory> get platformIndependentPackages => [
         diPackage,
         loggingPackage,
         uiPackage,
-      ];
-
-  List<Directory> get platformIndependentPackagesWithoutTests => [
         domainPackage(),
         infrastructurePackage(),
-      ];
-
-  List<Directory> get platformIndependentPackages => [
-        ...platformIndependentPackagesWithTests,
-        ...platformIndependentPackagesWithoutTests,
       ];
 
   List<Directory> platformDependentPackagesWithTests(Platform platform) => [

@@ -72,8 +72,6 @@ void main() {
                 outputDir: outputDir,
               ),
             });
-            verifyDoNotHaveTests(
-                [tester.infrastructurePackage(subInfrastructure)]);
           });
 
       test(

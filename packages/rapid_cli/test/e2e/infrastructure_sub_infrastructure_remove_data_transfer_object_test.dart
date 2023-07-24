@@ -67,8 +67,6 @@ void main() {
                 outputDir: dir,
               ),
             });
-            verifyDoNotHaveTests(
-                [tester.infrastructurePackage(subInfrastructure)]);
           });
 
       test(

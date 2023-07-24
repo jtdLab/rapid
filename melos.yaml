@@ -98,7 +98,7 @@ scripts:
   git:reset:dev:
     run: |
       git reset --hard origin/main && \
-      git push origin dev
+      git push --force origin dev
     description: Reset dev to main branch. (This must be run from dev branch)
 
 

@@ -2,6 +2,8 @@ name: rapid_cli
 
 on:
   push:
+    paths:
+      - packages/rapid_cli/**
 
 env:
   FLUTTER_VERSION: 3.10.0

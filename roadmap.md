@@ -9,6 +9,7 @@ This document covers the planned development of our project, outlining the upcom
 Feature A: Description of feature A.
 Feature B: Description of feature B.
 Feature C: Description of feature C.
+
 We have also addressed various bug fixes and performance improvements based on user feedback and internal testing. Our aim is to provide a stable foundation for the upcoming developments. -->
 
 ### Upcoming Features

@@ -773,8 +773,8 @@ Future<TestResult> _runFlutterOrDartTest({
   _printSummary(result);
 
   final regExp = RegExp(r'-([0-9]+): Some tests failed');
-  final match = regExp.firstMatch(stderr) ?? regExp.firstMatch(stdout)!;
-  return TestResult(int.parse(match.group(1)!), totalCoverage);
+  final match = regExp.firstMatch(stderr) ?? regExp.firstMatch(stdout);
+  return TestResult(int.parse(match?.group(1) ?? '0'), totalCoverage);
 }
 
 /// Runs integration tests at [pathToTests] from [cwd]  using the required mechanism described at https://docs.flutter.dev/testing/integration-tests

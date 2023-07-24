@@ -2,13 +2,9 @@ name: example
 
 on:
   push:
-    branches:
-      - main
     paths:
       - example/**
-  pull_request:
-    paths:
-      - example/**
+
 
 env:
   DI_PATH: example/packages/example/example_di

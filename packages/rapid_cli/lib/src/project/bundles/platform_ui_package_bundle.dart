@@ -25,7 +25,7 @@ final platformUiPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "dart_test.yaml",
       "data":
-          "dGFnczoKICBidWlsZF92ZXJpZnk6CiAgICBza2lwOiAiQnVpbGQgdmVyaWZ5IHRlc3Qgc2hvdWxkIGJlIHJ1biBpbiBwYXJhbGxlbCB3aXRoIG90aGVyIHVuaXQgdGVzdHMiCg==",
+          "dGFnczoKICBidWlsZF92ZXJpZnk6CiAgICBza2lwOiAiQnVpbGQgdmVyaWZ5IHRlc3Qgc2hvdWxkIGJlIHJ1biBpbiBwYXJhbGxlbCB3aXRoIG90aGVyIHVuaXQgdGVzdHMiCiAgZ29sZGVuOgogICAgc2tpcDogZmFsc2U=",
       "type": "text"
     },
     {

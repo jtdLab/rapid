@@ -6,6 +6,7 @@ on:
       - example/**
 
 env:
+  FLUTTER_VERSION: 3.10.0
   DI_PATH: example/packages/example/example_di
   DOMAIN_PATH: example/packages/example/example_domain
   INFRASTRUCTURE_PATH: example/packages/example/example_infrastructure
@@ -50,7 +51,10 @@ jobs:
       - uses: subosito/flutter-action@v2
         if: ${{ steps.changes.outputs.android == 'true' && steps.check_files.outputs.files_exist == 'true' }}
         with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
           cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
       - run: flutter pub get
         if: ${{ steps.changes.outputs.android == 'true' && steps.check_files.outputs.files_exist == 'true' }}
       - run: flutter build apk -t ${{ env.ANDROID_PATH }}/example_android/lib/main_development.dart --release --verbose
@@ -90,8 +94,11 @@ jobs:
       - uses: subosito/flutter-action@v2
         if: ${{ steps.changes.outputs.ios == 'true' && steps.check_files.outputs.files_exist == 'true' }}
         with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
           cache: true
-          architecture: x64
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
+          architecture: x64 # TODO check if its default x64
       - run: flutter pub get
         if: ${{ steps.changes.outputs.ios == 'true' && steps.check_files.outputs.files_exist == 'true' }}
       - run: flutter build ios -t ${{ env.IOS_PATH }}/example_ios/lib/main_development.dart --release --no-codesign --verbose
@@ -129,7 +136,10 @@ jobs:
       - uses: subosito/flutter-action@v2
         if: ${{ steps.changes.outputs.linux == 'true' && steps.check_files.outputs.files_exist == 'true' }}
         with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
           cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
       - run: |
           sudo apt-get update -y
           sudo apt-get install -y ninja-build libgtk-3-dev
@@ -171,8 +181,11 @@ jobs:
       - uses: subosito/flutter-action@v2
         if: ${{ steps.changes.outputs.macos == 'true' && steps.check_files.outputs.files_exist == 'true' }}
         with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
           cache: true
-          architecture: x64
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
+          architecture: x64 # TODO check if its default x64
       - run: flutter config --enable-macos-desktop
         if: ${{ steps.changes.outputs.macos == 'true' && steps.check_files.outputs.files_exist == 'true' }}
       - run: flutter build macos -t ${{ env.MACOS_PATH }}/example_macos/lib/main_development.dart --release --verbose
@@ -210,7 +223,10 @@ jobs:
       - uses: subosito/flutter-action@v2
         if: ${{ steps.changes.outputs.web == 'true' && steps.check_files.outputs.files_exist == 'true' }}
         with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
           cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
       - run: flutter pub get
         if: ${{ steps.changes.outputs.web == 'true' && steps.check_files.outputs.files_exist == 'true' }}
       - run: flutter build web -t ${{ env.WEB_PATH }}/example_web/lib/main_development.dart --verbose
@@ -251,7 +267,10 @@ jobs:
       - uses: subosito/flutter-action@v2
         if: ${{ steps.changes.outputs.windows == 'true' && steps.check_files.outputs.files_exist == 'true' }}
         with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
           cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
       - run: flutter config --enable-windows-desktop
         if: ${{ steps.changes.outputs.windows == 'true' && steps.check_files.outputs.files_exist == 'true' }}
       - run: flutter build windows -t ${{ env.WINDOWS_PATH }}/example_windows/lib/main_development.dart --release --verbose

@@ -208,6 +208,7 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
 
       - name: Install Flutter dependencies
         run: flutter pub get

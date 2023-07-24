@@ -23,6 +23,7 @@ jobs:
           flutter-version: ${{ env.FLUTTER_VERSION }}
           channel: stable
           cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
 
       - name: Setup Melos
         run: flutter pub global activate melos
@@ -33,13 +34,13 @@ jobs:
       - name: Setup Rapid CLI
         run: melos dev:activate
 
-      - name: Cache fixtures
+      - name: Cache Fixtures
         uses: actions/cache@v3
         with:
           path: ${{ env.FIXTURES_PATH }}
           key: fixtures-${{ github.run_id }}
 
-      - name: Generate fixtures
+      - name: Generate Fixtures
         run: bash tool/fixtures.sh
 
   e2e:
@@ -192,7 +193,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get cached fixtures
+      - name: Get Cached Fixtures
         uses: actions/cache/restore@v3
         with:
           path: ${{ env.FIXTURES_PATH }}
@@ -205,14 +206,15 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
       - name: Setup Melos
         run: flutter pub global activate melos
 
+        # TODO is all of this required
       - name: Setup Coverage Utils
         run: flutter pub global activate coverage && flutter pub global activate test_cov_console && flutter pub global activate remove_from_coverage
-
-      - name: Install Flutter dependencies
-        run: flutter pub get
 
       - name: Run E2E Tests
         run: dart test ${{ matrix.test }} -j 1 --run-skipped -t e2e

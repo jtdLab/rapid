@@ -1,6 +1,4 @@
 bricks:
-  arb_file:
-    path: arb_file
   bloc:
     path: bloc
   cubit:

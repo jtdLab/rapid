@@ -16,10 +16,10 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   alchemist: ^0.6.1
-  build_runner: ^2.4.5
+  build_runner: ^2.4.6
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.2
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file

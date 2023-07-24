@@ -50,7 +50,6 @@ Future<void> checkForUpdates({
   await _checkForPackageUpdates(packages);
 }
 
-// TODO dont use print
 Future<void> _checkForSdkUpdates(
   String name, {
   required String currentVersion,

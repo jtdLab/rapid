@@ -18,6 +18,7 @@ final packages = [
   PackageDependency('bloc_test', '9.1.3'),
   PackageDependency('bloc', '8.1.2'),
   PackageDependency('build_runner', '2.4.6'),
+  PackageDependency('build_verify', '3.1.0'),
   PackageDependency('cupertino_icons', '1.0.5'),
   PackageDependency('dartz', '0.10.1'),
   PackageDependency('faker', '2.1.0'),

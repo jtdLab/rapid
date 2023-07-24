@@ -23,6 +23,12 @@ final domainPackageBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     },
     {
+      "path": "dart_test.yaml",
+      "data":
+          "dGFnczoKICBidWlsZF92ZXJpZnk6CiAgICBza2lwOiAiQnVpbGQgdmVyaWZ5IHRlc3Qgc2hvdWxkIGJlIHJ1biBpbiBwYXJhbGxlbCB3aXRoIG90aGVyIHVuaXQgdGVzdHMiCg==",
+      "type": "text"
+    },
+    {
       "path":
           "lib/{{project_name}}_domain{{#has_name}}_{{name}}{{/has_name}}.dart",
       "data":
@@ -32,13 +38,19 @@ final domainPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZToge3twcm9qZWN0X25hbWV9fV9kb21haW57eyNoYXNfbmFtZX19X3t7bmFtZX19e3svaGFzX25hbWV9fQpkZXNjcmlwdGlvbjogVE9ETwp2ZXJzaW9uOiAwLjAuMQpwdWJsaXNoX3RvOiBub25lCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICByYXBpZF9kb21haW46CiAgICBnaXQ6CiAgICAgIHVybDogaHR0cHM6Ly9naXRodWIuY29tL2p0ZExhYi9yYXBpZC5naXQKICAgICAgcGF0aDogcGFja2FnZXMvcmFwaWQvcmFwaWRfZG9tYWluCiAgZGFydHo6IF4wLjEwLjEKICBmYWtlcjogXjIuMS4wCiAgZnJlZXplZF9hbm5vdGF0aW9uOiBeMi40LjEKCmRldl9kZXBlbmRlbmNpZXM6CiAgbGludHM6IF4yLjEuMQogIHRlc3Q6IF4xLjI0LjQKICBidWlsZF9ydW5uZXI6IF4yLjQuNgogIGZyZWV6ZWQ6IF4yLjQuMQo=",
+          "bmFtZToge3twcm9qZWN0X25hbWV9fV9kb21haW57eyNoYXNfbmFtZX19X3t7bmFtZX19e3svaGFzX25hbWV9fQpkZXNjcmlwdGlvbjogVE9ETwp2ZXJzaW9uOiAwLjAuMQpwdWJsaXNoX3RvOiBub25lCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICByYXBpZF9kb21haW46CiAgICBnaXQ6CiAgICAgIHVybDogaHR0cHM6Ly9naXRodWIuY29tL2p0ZExhYi9yYXBpZC5naXQKICAgICAgcGF0aDogcGFja2FnZXMvcmFwaWQvcmFwaWRfZG9tYWluCiAgZGFydHo6IF4wLjEwLjEKICBmYWtlcjogXjIuMS4wCiAgZnJlZXplZF9hbm5vdGF0aW9uOiBeMi40LjEKCmRldl9kZXBlbmRlbmNpZXM6CiAgbGludHM6IF4yLjEuMQogIHRlc3Q6IF4xLjI0LjQKICBidWlsZF9ydW5uZXI6IF4yLjQuNgogIGZyZWV6ZWQ6IF4yLjQuMQogIGJ1aWxkX3ZlcmlmeTogXjMuMS4wCg==",
       "type": "text"
     },
     {
       "path": "README.md",
       "data":
           "PCEtLSAKVGhpcyBSRUFETUUgZGVzY3JpYmVzIHRoZSBwYWNrYWdlLiBJZiB5b3UgcHVibGlzaCB0aGlzIHBhY2thZ2UgdG8gcHViLmRldiwKdGhpcyBSRUFETUUncyBjb250ZW50cyBhcHBlYXIgb24gdGhlIGxhbmRpbmcgcGFnZSBmb3IgeW91ciBwYWNrYWdlLgoKRm9yIGluZm9ybWF0aW9uIGFib3V0IGhvdyB0byB3cml0ZSBhIGdvb2QgcGFja2FnZSBSRUFETUUsIHNlZSB0aGUgZ3VpZGUgZm9yClt3cml0aW5nIHBhY2thZ2UgcGFnZXNdKGh0dHBzOi8vZGFydC5kZXYvZ3VpZGVzL2xpYnJhcmllcy93cml0aW5nLXBhY2thZ2UtcGFnZXMpLiAKCkZvciBnZW5lcmFsIGluZm9ybWF0aW9uIGFib3V0IGRldmVsb3BpbmcgcGFja2FnZXMsIHNlZSB0aGUgRGFydCBndWlkZSBmb3IKW2NyZWF0aW5nIHBhY2thZ2VzXShodHRwczovL2RhcnQuZGV2L2d1aWRlcy9saWJyYXJpZXMvY3JlYXRlLWxpYnJhcnktcGFja2FnZXMpCmFuZCB0aGUgRmx1dHRlciBndWlkZSBmb3IKW2RldmVsb3BpbmcgcGFja2FnZXMgYW5kIHBsdWdpbnNdKGh0dHBzOi8vZmx1dHRlci5kZXYvZGV2ZWxvcGluZy1wYWNrYWdlcykuIAotLT4KClRPRE86IFB1dCBhIHNob3J0IGRlc2NyaXB0aW9uIG9mIHRoZSBwYWNrYWdlIGhlcmUgdGhhdCBoZWxwcyBwb3RlbnRpYWwgdXNlcnMKa25vdyB3aGV0aGVyIHRoaXMgcGFja2FnZSBtaWdodCBiZSB1c2VmdWwgZm9yIHRoZW0uCgojIyBGZWF0dXJlcwoKVE9ETzogTGlzdCB3aGF0IHlvdXIgcGFja2FnZSBjYW4gZG8uIE1heWJlIGluY2x1ZGUgaW1hZ2VzLCBnaWZzLCBvciB2aWRlb3MuCgojIyBHZXR0aW5nIHN0YXJ0ZWQKClRPRE86IExpc3QgcHJlcmVxdWlzaXRlcyBhbmQgcHJvdmlkZSBvciBwb2ludCB0byBpbmZvcm1hdGlvbiBvbiBob3cgdG8Kc3RhcnQgdXNpbmcgdGhlIHBhY2thZ2UuCgojIyBVc2FnZQoKVE9ETzogSW5jbHVkZSBzaG9ydCBhbmQgdXNlZnVsIGV4YW1wbGVzIGZvciBwYWNrYWdlIHVzZXJzLiBBZGQgbG9uZ2VyIGV4YW1wbGVzCnRvIGAvZXhhbXBsZWAgZm9sZGVyLiAKCmBgYGRhcnQKY29uc3QgbGlrZSA9ICdzYW1wbGUnOwpgYGAKCiMjIEFkZGl0aW9uYWwgaW5mb3JtYXRpb24KClRPRE86IFRlbGwgdXNlcnMgbW9yZSBhYm91dCB0aGUgcGFja2FnZTogd2hlcmUgdG8gZmluZCBtb3JlIGluZm9ybWF0aW9uLCBob3cgdG8gCmNvbnRyaWJ1dGUgdG8gdGhlIHBhY2thZ2UsIGhvdyB0byBmaWxlIGlzc3Vlcywgd2hhdCByZXNwb25zZSB0aGV5IGNhbiBleHBlY3QgCmZyb20gdGhlIHBhY2thZ2UgYXV0aG9ycywgYW5kIG1vcmUuCg==",
+      "type": "text"
+    },
+    {
+      "path": "test/ensure_build_test.dart",
+      "data":
+          "aW1wb3J0ICdwYWNrYWdlOmJ1aWxkX3ZlcmlmeS9idWlsZF92ZXJpZnkuZGFydCc7CmltcG9ydCAncGFja2FnZTp0ZXN0L3Rlc3QuZGFydCc7Cgp2b2lkIG1haW4oKSB7CiAgdGVzdCgKICAgICdlbnN1cmVfYnVpbGQnLAogICAgKCkgYXN5bmMgPT4gZXhwZWN0QnVpbGRDbGVhbigKICAgICAgcGFja2FnZVJlbGF0aXZlRGlyZWN0b3J5OgogICAgICAgICAgJ3BhY2thZ2VzL3t7cHJvamVjdF9uYW1lfX0ve3twcm9qZWN0X25hbWV9fV9kb21haW4ve3twcm9qZWN0X25hbWV9fV9kb21haW4nLAogICAgKSwKICAgIHRpbWVvdXQ6IGNvbnN0IFRpbWVvdXQuZmFjdG9yKDQpLAogICAgdGFnczogWydidWlsZF92ZXJpZnknXSwKICApOwp9Cg==",
       "type": "text"
     }
   ],

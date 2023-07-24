@@ -24,16 +24,23 @@ scripts:
     run: dart format . --fix
     description: Format all packages.
 
-  gen-code:
+  build_runner:
     exec: flutter pub run build_runner build --delete-conflicting-outputs
-    description: Run code generation in a package.
+    description: Run `build_runner` in a package.
     packageFilters:
       dependsOn:
         - build_runner
 
-  gen-code:watch:
+  build_runner:watch:
     exec: flutter pub run build_runner watch --delete-conflicting-outputs
-    description: Run code generation in a package. (Watch mode)
+    description: Run `build_runner` in a package. (Watch mode)
+    packageFilters:
+      dependsOn:
+        - build_runner
+
+  build_runner:clean:
+    exec: flutter pub run build_runner clean
+    description: Clean `build_runner` outputs of a package.
     packageFilters:
       dependsOn:
         - build_runner

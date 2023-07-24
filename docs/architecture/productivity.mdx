@@ -11,8 +11,9 @@ Available scripts:
 | ------------------- | ---------------------------------------------------- |
 | analyze             | Analyze all packages.                                |
 | format              | Format all packages.                                 |
-| gen-code            | Run code generation in a package.                    |
-| gen-code:watch      | Run code generation in a package. (Watch mode)       |
+| build_runner        | Run `build_runner` in a package.                     |
+| build_runner:watch  | Run `build_runner` in a package. (Watch mode)        |
+| build_runner:clean  | Clean `build_runner` outputs in a package.           |
 | gen-l10n            | (Re)-generate localizations of a package.            |
 | run:dev             | Run app in debug mode. (development)                 |
 | run:test            | Run app in debug mode. (test)                        |
@@ -30,8 +31,8 @@ Available scripts:
 | coverage:html       | Generate a html-coverage report for a package.       |
 
 <Warning>
-  Some of these scripts have prerequisites to run successfully. Please see
-  the `melos.yaml` file in the project root for more information.
+  Some of these scripts have prerequisites to run successfully. Please see the
+  `melos.yaml` file in the project root for more information.
 </Warning>
 
 ## Code Generation

@@ -23,6 +23,7 @@ dev_dependencies:
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.2
+  build_verify: ^3.1.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file
@@ -98,6 +99,7 @@ dev_dependencies:
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.2
+  build_verify: ^3.1.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file
@@ -171,6 +173,7 @@ dev_dependencies:
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.2
+  build_verify: ^3.1.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file
@@ -247,6 +250,7 @@ dev_dependencies:
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.2
+  build_verify: ^3.1.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file
@@ -318,6 +322,7 @@ dev_dependencies:
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.2
+  build_verify: ^3.1.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file
@@ -393,6 +398,7 @@ dev_dependencies:
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.2
+  build_verify: ^3.1.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file
@@ -467,6 +473,7 @@ dev_dependencies:
   theme_tailor: ^2.0.0
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.2
+  build_verify: ^3.1.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file

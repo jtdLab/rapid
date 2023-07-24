@@ -95,6 +95,13 @@ scripts:
       git push origin main
     description: Merge dev branch into main branch (This must be run from main branch)
 
+  git:reset:dev:
+    run: |
+      git reset --hard origin/main && \
+      git push origin dev
+    description: Reset dev to main branch. (This must be run from dev branch)
+
+
   test:coverage:
     exec: flutter test test/src --coverage
     description: Run `flutter test test/src --coverage` in a package.

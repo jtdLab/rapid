@@ -471,6 +471,10 @@ class MockIosRootPackage extends Mock implements IosRootPackage {
         language: any(named: 'language'),
       ),
     ).thenAnswer((_) async {});
+    when(() => registerFeaturePackage(any())).thenAnswer((_) async {});
+    when(() => registerInfrastructurePackage(any())).thenAnswer((_) async {});
+    when(() => unregisterFeaturePackage(any())).thenAnswer((_) async {});
+    when(() => unregisterInfrastructurePackage(any())).thenAnswer((_) async {});
   }
 }
 

@@ -85,7 +85,8 @@ mixin _DomainMixin on _Rapid {
         await melosBootstrapTask(scope: rootPackages);
 
         await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
-            packages: rootPackages);
+          packages: rootPackages,
+        );
 
         await dartFormatFixTask();
 
@@ -184,7 +185,9 @@ mixin _DomainMixin on _Rapid {
         },
       );
 
-      await codeGenTask(package: domainPackage);
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        package: domainPackage,
+      );
 
       await dartFormatFixTask();
 

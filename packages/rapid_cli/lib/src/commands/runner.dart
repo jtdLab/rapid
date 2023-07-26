@@ -110,7 +110,7 @@ abstract class _Rapid {
     }
   }
 
-  // parallelism = 1 indicates sequentiell execution
+  /// parallelism = 1 indicates sequentiell execution
   Future<void> taskGroup({
     String? description,
     required List<(String description, FutureOr<void> Function() task)> tasks,
@@ -142,21 +142,10 @@ abstract class _Rapid {
     }
   }
 
-  Future<void> flutterPubGetTaskGroup({
-    required List<DartPackage> packages,
-  }) async {
-    if (packages.isEmpty) return;
-    await taskGroup(
-      tasks: packages
-          .map(
-            (package) => (
-              'Running "flutter pub get" in ${package.packageName}',
-              () async => flutterPubGet(package: package)
-            ),
-          )
-          .toList(),
-    );
-  }
+  Future<void> dartFormatFixTask() async => task(
+        'Running "dart format . --fix" in project',
+        () async => dartFormatFix(package: project.rootPackage),
+      );
 
   Future<void> flutterPubAddTask({
     required List<String> dependenciesToAdd,
@@ -178,6 +167,27 @@ abstract class _Rapid {
     });
   }
 
+  Future<void> flutterGenl10nTask({required DartPackage package}) async => task(
+        'Running "flutter gen-l10n" in ${package.packageName}',
+        () async => flutterGenl10n(package: package),
+      );
+
+  Future<void> flutterPubGetTaskGroup({
+    required List<DartPackage> packages,
+  }) async {
+    if (packages.isEmpty) return;
+    await taskGroup(
+      tasks: packages
+          .map(
+            (package) => (
+              'Running "flutter pub get" in ${package.packageName}',
+              () async => flutterPubGet(package: package)
+            ),
+          )
+          .toList(),
+    );
+  }
+
   Future<void> flutterPubRemoveTask({
     required List<String> packagesToRemove,
     required DartPackage package,
@@ -192,90 +202,61 @@ abstract class _Rapid {
     );
   }
 
-  Future<void> melosBootstrapTask({
-    required List<DartPackage> scope,
+  Future<void> flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask({
+    required DartPackage package,
   }) async {
-    if (scope.isEmpty) return;
-
-    await task(
-      'Running "melos bootstrap --scope="${scope.map((e) => e.packageName).join(' ')}""',
-      () async => melosBootstrap(scope: scope, project: project),
-    );
-  }
-
-  Future<void> dartFormatFixTask() async => task(
-        'Running "dart format . --fix" in project',
-        () async => dartFormatFix(package: project.rootPackage),
-      );
-
-  Future<void> codeGenTask({required DartPackage package}) async => task(
+    if (tool.loadGroup().isActive) {
+      tool.markAsNeedCodeGen(package: package);
+    } else {
+      await task(
         'Running code generation in ${package.packageName}',
         () async {
-          // need "flutter pub get" because else "flutter pub run build_runner build"
-          // fails sometimes
-          await flutterPubGet(package: package); // TODO needed ?
           await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
             package: package,
           );
         },
       );
+    }
+  }
 
   Future<void> flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup({
     required List<DartPackage> packages,
   }) async {
     if (packages.isEmpty) return;
 
-    await taskGroup(
-      tasks: packages
-          .map(
-            (package) => (
-              'Running code generation in ${package.packageName}',
-              () async {
-                // need "flutter pub get" because else "flutter pub run build_runner build"
-                // fails sometimes
-                await flutterPubGet(package: package); // TODO needed ?
-                await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
-                  package: package,
-                );
-              }
-            ),
-          )
-          .toList(),
-      parallelism: 1, // TODO is this the most performant way?
-    );
-  }
-
-  Future<void> flutterGenl10nTask({required DartPackage package}) async => task(
-        'Running "flutter gen-l10n" in ${package.packageName}',
-        () async => flutterGenl10n(package: package),
-      );
-
-  // TODO: currently command groups dont work
-
-  Future<void> _bootstrap({required List<DartPackage> packages}) async {
-    if (tool.loadGroup().isActive) {
-      tool.markAsNeedBootstrap(packages: packages);
-    } else {
-      await melosBootstrap(scope: packages, project: project);
-    }
-  }
-
-  Future<void> _codeGen({required DartPackage package}) async {
-    if (tool.loadGroup().isActive) {
-      tool.markAsNeedCodeGen(package: package);
-    } else {
-      await codeGenTask(package: package);
-    }
-  }
-
-  Future<void> _codeGenGroup({required List<DartPackage> packages}) async {
     if (tool.loadGroup().isActive) {
       for (final package in packages) {
         tool.markAsNeedCodeGen(package: package);
       }
     } else {
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
-        packages: packages,
+      await taskGroup(
+        tasks: packages
+            .map(
+              (package) => (
+                'Running code generation in ${package.packageName}',
+                () async {
+                  await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                    package: package,
+                  );
+                }
+              ),
+            )
+            .toList(),
+      );
+    }
+  }
+
+  Future<void> melosBootstrapTask({
+    required List<DartPackage> scope,
+  }) async {
+    if (scope.isEmpty) return;
+
+    if (tool.loadGroup().isActive) {
+      tool.markAsNeedBootstrap(packages: scope);
+    } else {
+      await task(
+        'Running "melos bootstrap --scope="${scope.map((e) => e.packageName).join(',')}""',
+        () async => melosBootstrap(scope: scope, project: project),
       );
     }
   }

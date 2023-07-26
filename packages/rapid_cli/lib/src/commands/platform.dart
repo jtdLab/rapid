@@ -200,7 +200,9 @@ mixin _PlatformMixin on _Rapid {
 
     await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
-    await codeGenTask(package: rootPackage);
+    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+      package: rootPackage,
+    );
 
     await dartFormatFixTask();
 
@@ -340,7 +342,8 @@ mixin _PlatformMixin on _Rapid {
       }
     });
 
-    await codeGenTask(package: featurePackage);
+    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        package: featurePackage);
 
     await dartFormatFixTask();
 
@@ -390,7 +393,8 @@ mixin _PlatformMixin on _Rapid {
       }
     });
 
-    await codeGenTask(package: featurePackage);
+    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        package: featurePackage);
 
     await dartFormatFixTask();
 
@@ -439,7 +443,8 @@ mixin _PlatformMixin on _Rapid {
       }
     });
 
-    await codeGenTask(package: featurePackage);
+    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        package: featurePackage);
 
     await dartFormatFixTask();
 
@@ -487,7 +492,8 @@ mixin _PlatformMixin on _Rapid {
       }
     });
 
-    await codeGenTask(package: featurePackage);
+    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        package: featurePackage);
 
     await dartFormatFixTask();
 
@@ -548,7 +554,8 @@ mixin _PlatformMixin on _Rapid {
       ],
     );
 
-    await codeGenTask(package: rootPackage);
+    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        package: rootPackage);
 
     await dartFormatFixTask();
 
@@ -728,7 +735,8 @@ mixin _PlatformMixin on _Rapid {
         'Creating navigator implementation',
         () async => navigatorImplementation.generate(),
       );
-      await codeGenTask(package: featurePackage);
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+          package: featurePackage);
     }
   }
 
@@ -758,7 +766,8 @@ mixin _PlatformMixin on _Rapid {
         'Deleting navigator implementation',
         () => navigatorImplementation.delete(),
       );
-      await codeGenTask(package: featurePackage);
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+          package: featurePackage);
     }
   }
 }

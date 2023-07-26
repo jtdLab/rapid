@@ -10,6 +10,8 @@ import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
+// TODO verify never for melos bs and code gen + in command group cases are missing
+
 void main() {
   setUpAll(() {
     registerFallbackValues();
@@ -40,8 +42,26 @@ void main() {
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
       final logger = MockRapidLogger();
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: [platformRootPackage, platformFeaturePackage],
+        logger: logger,
+      );
+      final codeGenTaskGroupInvocations =
+          setupFlutterPubRunBuildRunnerBuildTaskGroup(
+        manager,
+        packages: [
+          platformRootPackage,
+        ],
+        logger: logger,
+      );
       final rapid = getRapid(
         project: project,
+        tool: tool,
         logger: logger,
       );
 
@@ -60,16 +80,8 @@ void main() {
         () => platformFeaturePackage.generate(description: 'Cool flow.'),
         () =>
             platformRootPackage.registerFeaturePackage(platformFeaturePackage),
-        () => melosBootstrapTask(
-              manager,
-              scope: [platformRootPackage, platformFeaturePackage],
-            ),
-        () => flutterPubRunBuildRunnerBuildTaskGroup(
-              manager,
-              packages: [
-                platformRootPackage,
-              ],
-            ),
+        ...melosBootstrapTaskInvocations,
+        ...codeGenTaskGroupInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Added Flow Feature!'),
@@ -110,8 +122,32 @@ void main() {
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
       final logger = MockRapidLogger();
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: [platformRootPackage, platformFeaturePackage],
+        logger: logger,
+      );
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: platformFeaturePackage,
+        logger: logger,
+      );
+      final codeGenTaskGroupInvocations =
+          setupFlutterPubRunBuildRunnerBuildTaskGroup(
+        manager,
+        packages: [
+          platformRootPackage,
+          platformFeaturePackage,
+        ],
+        logger: logger,
+      );
       final rapid = getRapid(
         project: project,
+        tool: tool,
         logger: logger,
       );
 
@@ -133,18 +169,9 @@ void main() {
         () => navigatorInterface.generate(),
         () => navigationBarrelFile.addExport('src/i_cool_flow_navigator.dart'),
         () => navigatorImplementation.generate(),
-        ...flutterPubRunBuildRunnerBuildTask(
-          manager,
-          package: platformFeaturePackage,
-        ),
-        () => melosBootstrapTask(
-              manager,
-              scope: [platformRootPackage, platformFeaturePackage],
-            ),
-        () => flutterPubRunBuildRunnerBuildTaskGroup(
-              manager,
-              packages: [platformRootPackage, platformFeaturePackage],
-            ),
+        ...codeGenTaskInvocations,
+        ...melosBootstrapTaskInvocations,
+        ...codeGenTaskGroupInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Added Flow Feature!'),
@@ -228,10 +255,29 @@ void main() {
           ),
         ),
       );
+
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: [platformRootPackage, platformFeaturePackage],
+        logger: logger,
+      );
+      final codeGenTaskGroupInvocations =
+          setupFlutterPubRunBuildRunnerBuildTaskGroup(
+        manager,
+        packages: [
+          platformRootPackage,
+        ],
+        logger: logger,
+      );
       final rapid = getRapid(
         project: project,
+        tool: tool,
         logger: logger,
       );
 
@@ -254,16 +300,8 @@ void main() {
             ),
         () =>
             platformRootPackage.registerFeaturePackage(platformFeaturePackage),
-        () => melosBootstrapTask(
-              manager,
-              scope: [platformRootPackage, platformFeaturePackage],
-            ),
-        () => flutterPubRunBuildRunnerBuildTaskGroup(
-              manager,
-              packages: [
-                platformRootPackage,
-              ],
-            ),
+        ...melosBootstrapTaskInvocations,
+        ...codeGenTaskGroupInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Added Tab Flow Feature!'),
@@ -306,9 +344,33 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: platformFeaturePackage,
+        logger: logger,
+      );
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: [platformRootPackage, platformFeaturePackage],
+        logger: logger,
+      );
+      final codeGenTaskGroupInvocations =
+          setupFlutterPubRunBuildRunnerBuildTaskGroup(
+        manager,
+        packages: [
+          platformRootPackage,
+          platformFeaturePackage,
+        ],
+        logger: logger,
+      );
       final rapid = getRapid(
         project: project,
+        tool: tool,
         logger: logger,
       );
 
@@ -335,18 +397,9 @@ void main() {
         () => navigationBarrelFile
             .addExport('src/i_cool_tab_flow_navigator.dart'),
         () => navigatorImplementation.generate(),
-        ...flutterPubRunBuildRunnerBuildTask(
-          manager,
-          package: platformFeaturePackage,
-        ),
-        () => melosBootstrapTask(
-              manager,
-              scope: [platformRootPackage, platformFeaturePackage],
-            ),
-        () => flutterPubRunBuildRunnerBuildTaskGroup(
-              manager,
-              packages: [platformRootPackage, platformFeaturePackage],
-            ),
+        ...codeGenTaskInvocations,
+        ...melosBootstrapTaskInvocations,
+        ...codeGenTaskGroupInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Added Tab Flow Feature!'),
@@ -473,9 +526,27 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: [platformRootPackage, platformFeaturePackage],
+        logger: logger,
+      );
+      final codeGenTaskGroupInvocations =
+          setupFlutterPubRunBuildRunnerBuildTaskGroup(
+        manager,
+        packages: [
+          platformRootPackage,
+        ],
+        logger: logger,
+      );
       final rapid = getRapid(
         project: project,
+        tool: tool,
         logger: logger,
       );
 
@@ -494,16 +565,8 @@ void main() {
         () => platformFeaturePackage.generate(description: 'Cool page.'),
         () =>
             platformRootPackage.registerFeaturePackage(platformFeaturePackage),
-        () => melosBootstrapTask(
-              manager,
-              scope: [platformRootPackage, platformFeaturePackage],
-            ),
-        () => flutterPubRunBuildRunnerBuildTaskGroup(
-              manager,
-              packages: [
-                platformRootPackage,
-              ],
-            ),
+        ...melosBootstrapTaskInvocations,
+        ...codeGenTaskGroupInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Added Page Feature!'),
@@ -543,9 +606,31 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: [platformRootPackage, platformFeaturePackage],
+        logger: logger,
+      );
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: platformFeaturePackage,
+        logger: logger,
+      );
+      // TODO duplicated in feature package
+      final codeGenTaskGroupInvocations =
+          setupFlutterPubRunBuildRunnerBuildTaskGroup(
+        manager,
+        packages: [platformRootPackage, platformFeaturePackage],
+        logger: logger,
+      );
       final rapid = getRapid(
         project: project,
+        tool: tool,
         logger: logger,
       );
 
@@ -567,19 +652,9 @@ void main() {
         () => navigatorInterface.generate(),
         () => navigationBarrelFile.addExport('src/i_cool_page_navigator.dart'),
         () => navigatorImplementation.generate(),
-        ...flutterPubRunBuildRunnerBuildTask(
-          manager,
-          package: platformFeaturePackage,
-        ),
-        () => melosBootstrapTask(
-              manager,
-              scope: [platformRootPackage, platformFeaturePackage],
-            ),
-        // TODO duplicated in feature package
-        () => flutterPubRunBuildRunnerBuildTaskGroup(
-              manager,
-              packages: [platformRootPackage, platformFeaturePackage],
-            ),
+        ...codeGenTaskInvocations,
+        ...melosBootstrapTaskInvocations,
+        ...codeGenTaskGroupInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Added Page Feature!'),
@@ -662,9 +737,24 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: [platformRootPackage, platformFeaturePackage],
+        logger: logger,
+      );
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: platformRootPackage,
+        logger: logger,
+      );
       final rapid = getRapid(
         project: project,
+        tool: tool,
         logger: logger,
       );
 
@@ -682,16 +772,8 @@ void main() {
         () => platformFeaturePackage.generate(description: 'Cool widget.'),
         () =>
             platformRootPackage.registerFeaturePackage(platformFeaturePackage),
-        () => melosBootstrapTask(
-              manager,
-              scope: [platformRootPackage, platformFeaturePackage],
-            ),
-        () => flutterPubRunBuildRunnerBuildTaskGroup(
-              manager,
-              packages: [
-                platformRootPackage,
-              ],
-            ),
+        ...melosBootstrapTaskInvocations,
+        ...codeGenTaskInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Added Widget Feature!'),
@@ -944,8 +1026,21 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: platformFeaturePackage,
+        logger: logger,
+      );
+      final rapid = getRapid(
+        project: project,
+        tool: tool,
+        logger: logger,
+      );
 
       await withMockProcessManager(
         () async => rapid.platformAddNavigator(
@@ -960,10 +1055,7 @@ void main() {
         () => navigatorInterface.generate(),
         () => navigationBarrelFile.addExport('src/i_cool_page_navigator.dart'),
         () => navigatorImplementation.generate(),
-        ...flutterPubRunBuildRunnerBuildTask(
-          manager,
-          package: platformFeaturePackage,
-        ),
+        ...codeGenTaskInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Added Navigator!')
@@ -1069,8 +1161,21 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: featurePackage,
+        logger: logger,
+      );
+      final rapid = getRapid(
+        project: project,
+        tool: tool,
+        logger: logger,
+      );
 
       await withMockProcessManager(
         () async => rapid.platformFeatureAddBloc(
@@ -1085,10 +1190,7 @@ void main() {
         () => logger.newLine(),
         () => bloc.generate(),
         () => applicationBarrelFile.addExport('cool_bloc.dart'),
-        () => flutterPubRunBuildRunnerBuildTask(
-              manager,
-              package: featurePackage,
-            ),
+        ...codeGenTaskInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Added Bloc!')
@@ -1121,8 +1223,21 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: featurePackage,
+        logger: logger,
+      );
+      final rapid = getRapid(
+        project: project,
+        tool: tool,
+        logger: logger,
+      );
 
       await withMockProcessManager(
         () async => rapid.platformFeatureAddBloc(
@@ -1139,10 +1254,7 @@ void main() {
         () => applicationBarrelFile.createSync(recursive: true),
         () => applicationBarrelFile.addExport('cool_bloc.dart'),
         () => featureBarrelFile.addExport('src/application/application.dart'),
-        () => flutterPubRunBuildRunnerBuildTask(
-              manager,
-              package: featurePackage,
-            ),
+        ...codeGenTaskInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Added Bloc!')
@@ -1254,8 +1366,21 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: featurePackage,
+        logger: logger,
+      );
+      final rapid = getRapid(
+        project: project,
+        tool: tool,
+        logger: logger,
+      );
 
       await withMockProcessManager(
         () async => rapid.platformFeatureAddCubit(
@@ -1270,10 +1395,7 @@ void main() {
         () => logger.newLine(),
         () => cubit.generate(),
         () => applicationBarrelFile.addExport('cool_cubit.dart'),
-        () => flutterPubRunBuildRunnerBuildTask(
-              manager,
-              package: featurePackage,
-            ),
+        ...codeGenTaskInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Added Cubit!')
@@ -1306,8 +1428,21 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: featurePackage,
+        logger: logger,
+      );
+      final rapid = getRapid(
+        project: project,
+        tool: tool,
+        logger: logger,
+      );
 
       await withMockProcessManager(
         () async => rapid.platformFeatureAddCubit(
@@ -1324,10 +1459,7 @@ void main() {
         () => applicationBarrelFile.createSync(recursive: true),
         () => applicationBarrelFile.addExport('cool_cubit.dart'),
         () => featureBarrelFile.addExport('src/application/application.dart'),
-        () => flutterPubRunBuildRunnerBuildTask(
-              manager,
-              package: featurePackage,
-            ),
+        ...codeGenTaskInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Added Cubit!')
@@ -1440,8 +1572,21 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: featurePackage,
+        logger: logger,
+      );
+      final rapid = getRapid(
+        project: project,
+        tool: tool,
+        logger: logger,
+      );
 
       await withMockProcessManager(
         () async => rapid.platformFeatureRemoveBloc(
@@ -1456,10 +1601,7 @@ void main() {
         () => logger.newLine(),
         () => bloc.delete(),
         () => applicationBarrelFile.removeExport('cool_bloc.dart'),
-        () => flutterPubRunBuildRunnerBuildTask(
-              manager,
-              package: featurePackage,
-            ),
+        ...codeGenTaskInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Removed Bloc!')
@@ -1494,8 +1636,21 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: featurePackage,
+        logger: logger,
+      );
+      final rapid = getRapid(
+        project: project,
+        tool: tool,
+        logger: logger,
+      );
 
       await withMockProcessManager(
         () async => rapid.platformFeatureRemoveBloc(
@@ -1513,10 +1668,7 @@ void main() {
         () => applicationBarrelFile.deleteSync(recursive: true),
         () =>
             featureBarrelFile.removeExport('src/application/application.dart'),
-        () => flutterPubRunBuildRunnerBuildTask(
-              manager,
-              package: featurePackage,
-            ),
+        ...codeGenTaskInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Removed Bloc!')
@@ -1629,8 +1781,21 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: featurePackage,
+        logger: logger,
+      );
+      final rapid = getRapid(
+        project: project,
+        tool: tool,
+        logger: logger,
+      );
 
       await withMockProcessManager(
         () async => rapid.platformFeatureRemoveCubit(
@@ -1645,10 +1810,7 @@ void main() {
         () => logger.newLine(),
         () => cubit.delete(),
         () => applicationBarrelFile.removeExport('cool_cubit.dart'),
-        () => flutterPubRunBuildRunnerBuildTask(
-              manager,
-              package: featurePackage,
-            ),
+        ...codeGenTaskInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Removed Cubit!')
@@ -1683,8 +1845,21 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: featurePackage,
+        logger: logger,
+      );
+      final rapid = getRapid(
+        project: project,
+        tool: tool,
+        logger: logger,
+      );
 
       await withMockProcessManager(
         () async => rapid.platformFeatureRemoveCubit(
@@ -1702,10 +1877,7 @@ void main() {
         () => applicationBarrelFile.deleteSync(recursive: true),
         () =>
             featureBarrelFile.removeExport('src/application/application.dart'),
-        () => flutterPubRunBuildRunnerBuildTask(
-              manager,
-              package: featurePackage,
-            ),
+        ...codeGenTaskInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Removed Cubit!')
@@ -1832,9 +2004,24 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: [remainingFeaturePackage, platformRootPackage],
+        logger: logger,
+      );
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: platformRootPackage,
+        logger: logger,
+      );
       final rapid = getRapid(
         project: project,
+        tool: tool,
         logger: logger,
       );
 
@@ -1853,14 +2040,8 @@ void main() {
         () => remainingFeaturePubspecFile.removeDependency(
               name: 'test_project_cool_widget',
             ),
-        () => melosBootstrapTask(
-              manager,
-              scope: [remainingFeaturePackage, platformRootPackage],
-            ),
-        () => flutterPubRunBuildRunnerBuildTask(
-              manager,
-              package: platformRootPackage,
-            ),
+        ...melosBootstrapTaskInvocations,
+        ...codeGenTaskInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Removed Feature!'),
@@ -1912,9 +2093,24 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: [remainingFeaturePackage, platformRootPackage],
+        logger: logger,
+      );
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: platformRootPackage,
+        logger: logger,
+      );
       final rapid = getRapid(
         project: project,
+        tool: tool,
         logger: logger,
       );
 
@@ -1936,14 +2132,8 @@ void main() {
         () => navigatorInterface.delete(),
         () =>
             navigationBarrelFile.removeExport('src/i_cool_page_navigator.dart'),
-        () => melosBootstrapTask(
-              manager,
-              scope: [remainingFeaturePackage, platformRootPackage],
-            ),
-        () => flutterPubRunBuildRunnerBuildTask(
-              manager,
-              package: platformRootPackage,
-            ),
+        ...melosBootstrapTaskInvocations,
+        ...codeGenTaskInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Removed Feature!'),
@@ -2223,8 +2413,21 @@ void main() {
         ),
       );
       when(() => project.platformIsActivated(any())).thenReturn(true);
+      final commandGroup = MockCommandGroup();
+      when(() => commandGroup.isActive).thenReturn(false);
+      final tool = MockRapidTool();
+      when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
+      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+        manager,
+        package: platformFeaturePackage,
+        logger: logger,
+      );
+      final rapid = getRapid(
+        project: project,
+        tool: tool,
+        logger: logger,
+      );
 
       await withMockProcessManager(
         () async => rapid.platformRemoveNavigator(
@@ -2240,10 +2443,7 @@ void main() {
         () =>
             navigationBarrelFile.removeExport('src/i_cool_page_navigator.dart'),
         () => navigatorImplementation.delete(),
-        ...flutterPubRunBuildRunnerBuildTask(
-          manager,
-          package: platformFeaturePackage,
-        ),
+        ...codeGenTaskInvocations,
         () => dartFormatFixTask(manager),
         () => logger.newLine(),
         () => logger.commandSuccess('Removed Navigator!')

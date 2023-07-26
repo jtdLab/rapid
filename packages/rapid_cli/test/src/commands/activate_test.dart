@@ -422,8 +422,9 @@ void main() {
         final manager = MockProcessManager();
         final nonDefaultInfrastructurePackage =
             MockInfrastructurePackage(isDefault: false);
-        final platformRootPackage = MockMacosRootPackage();
-
+        final platformRootPackage = MockMacosRootPackage(
+          packageName: 'macos_root_package_name',
+        );
         final project = MockRapidProject(
           appModule: MockAppModule(
             infrastructureDirectory: MockInfrastructureDirectory(
@@ -438,8 +439,24 @@ void main() {
           ),
         );
         final logger = MockRapidLogger();
+        final group = MockCommandGroup();
+        when(() => group.isActive).thenReturn(false);
+        final tool = MockRapidTool();
+        when(() => tool.loadGroup()).thenReturn(group);
+        final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+          manager,
+          package: platformRootPackage,
+          logger: logger,
+        );
+        final codeGenTaskInCommandGroupInvocations =
+            setupFlutterPubRunBuildRunnerBuildTaskInCommandGroup(
+          manager,
+          package: platformRootPackage,
+          tool: tool,
+        );
         final rapid = getRapid(
           project: project,
+          tool: tool,
           logger: logger,
         );
 
@@ -454,11 +471,68 @@ void main() {
         verifyInOrder([
           () => platformRootPackage
               .registerInfrastructurePackage(nonDefaultInfrastructurePackage),
-          ...flutterPubRunBuildRunnerBuildTask(
-            manager,
-            package: platformRootPackage,
-          ),
+          ...codeGenTaskInvocations,
         ]);
+        verifyNeverMulti(codeGenTaskInCommandGroupInvocations);
+      },
+    );
+
+    test(
+      'handles existing non default infrastructure packages (inside command group)',
+      () async {
+        final manager = MockProcessManager();
+        final nonDefaultInfrastructurePackage =
+            MockInfrastructurePackage(isDefault: false);
+        final platformRootPackage = MockMacosRootPackage();
+        final project = MockRapidProject(
+          appModule: MockAppModule(
+            infrastructureDirectory: MockInfrastructureDirectory(
+              infrastructurePackages: [
+                MockInfrastructurePackage(isDefault: true),
+                nonDefaultInfrastructurePackage,
+              ],
+            ),
+            platformDirectory: ({required platform}) => MockPlatformDirectory(
+              rootPackage: platformRootPackage,
+            ),
+          ),
+        );
+        final logger = MockRapidLogger();
+        final group = MockCommandGroup();
+        when(() => group.isActive).thenReturn(true);
+        final tool = MockRapidTool();
+        when(() => tool.loadGroup()).thenReturn(group);
+        final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
+          manager,
+          package: platformRootPackage,
+          logger: logger,
+        );
+        final codeGenTaskInCommandGroupInvocations =
+            setupFlutterPubRunBuildRunnerBuildTaskInCommandGroup(
+          manager,
+          package: platformRootPackage,
+          tool: tool,
+        );
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await withMockProcessManager(
+          () async => rapid.activateMacos(
+            orgName: 'test.example',
+            language: Language(languageCode: 'fr'),
+          ),
+          manager: manager,
+        );
+
+        verifyInOrder([
+          () => platformRootPackage
+              .registerInfrastructurePackage(nonDefaultInfrastructurePackage),
+          ...codeGenTaskInCommandGroupInvocations,
+        ]);
+        verifyNeverMulti(codeGenTaskInvocations);
       },
     );
   });

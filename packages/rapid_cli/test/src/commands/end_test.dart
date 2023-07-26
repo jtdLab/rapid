@@ -20,6 +20,17 @@ void main() {
       final tool = MockRapidTool();
       when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: [],
+        logger: logger,
+      );
+      final codeGenTaskGroupInvocations =
+          setupFlutterPubRunBuildRunnerBuildTaskGroup(
+        manager,
+        packages: [],
+        logger: logger,
+      );
       final rapid = getRapid(tool: tool, logger: logger);
 
       expect(
@@ -29,8 +40,8 @@ void main() {
         ),
         throwsA(isA<NoActiveGroupException>()),
       );
-      verifyNeverMulti(melosBootstrapTask(manager, scope: []));
-      verifyNeverMulti(flutterPubRunBuildRunnerBuildTask(manager));
+      verifyNeverMulti(melosBootstrapTaskInvocations);
+      verifyNeverMulti(codeGenTaskGroupInvocations);
       verifyNever(() => logger.newLine());
       verifyNever(() => logger.commandSuccess(any()));
     });
@@ -45,6 +56,17 @@ void main() {
       final tool = MockRapidTool();
       when(() => tool.loadGroup()).thenReturn(commandGroup);
       final logger = MockRapidLogger();
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: [],
+        logger: logger,
+      );
+      final codeGenTaskGroupInvocations =
+          setupFlutterPubRunBuildRunnerBuildTaskGroup(
+        manager,
+        packages: [],
+        logger: logger,
+      );
       final rapid = getRapid(tool: tool, logger: logger);
 
       await withMockProcessManager(
@@ -57,10 +79,8 @@ void main() {
         () => logger.newLine(),
         () => logger.commandSuccess('Completed Command Group!'),
       ]);
-      verifyNeverMulti(melosBootstrapTask(manager, scope: []));
-      verifyNeverMulti(
-        flutterPubRunBuildRunnerBuildTaskGroup(manager, packages: []),
-      );
+      verifyNeverMulti(melosBootstrapTaskInvocations);
+      verifyNeverMulti(codeGenTaskGroupInvocations);
     });
 
     test('completes with packages to bootstrap and no packages to codegen',
@@ -77,8 +97,25 @@ void main() {
       when(() => commandGroup.packagesToCodeGen).thenReturn([]);
       final tool = MockRapidTool();
       when(() => tool.loadGroup()).thenReturn(commandGroup);
+      when(() => tool.deactivateCommandGroup()).thenAnswer((_) {
+        when(() => commandGroup.isActive).thenReturn(false);
+      });
       final logger = MockRapidLogger();
-      final rapid = getRapid(tool: tool, logger: logger);
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: packagesToBootstrap,
+        logger: logger,
+      );
+      final codeGenTaskGroupInvocations =
+          setupFlutterPubRunBuildRunnerBuildTaskGroup(
+        manager,
+        packages: [],
+        logger: logger,
+      );
+      final rapid = getRapid(
+        tool: tool,
+        logger: logger,
+      );
 
       await withMockProcessManager(
         () async => rapid.end(),
@@ -87,13 +124,11 @@ void main() {
 
       verifyInOrder([
         () => tool.deactivateCommandGroup(),
-        ...melosBootstrapTask(manager, scope: packagesToBootstrap),
+        ...melosBootstrapTaskInvocations,
         () => logger.newLine(),
         () => logger.commandSuccess('Completed Command Group!'),
       ]);
-      verifyNeverMulti(
-        flutterPubRunBuildRunnerBuildTaskGroup(manager, packages: []),
-      );
+      verifyNeverMulti(codeGenTaskGroupInvocations);
     });
 
     test('completes with no packages to bootstrap and packages to codegen',
@@ -109,7 +144,21 @@ void main() {
       when(() => commandGroup.packagesToCodeGen).thenReturn(packagesToCodeGen);
       final tool = MockRapidTool();
       when(() => tool.loadGroup()).thenReturn(commandGroup);
+      when(() => tool.deactivateCommandGroup()).thenAnswer((_) {
+        when(() => commandGroup.isActive).thenReturn(false);
+      });
       final logger = MockRapidLogger();
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: [],
+        logger: logger,
+      );
+      final codeGenTaskGroupInvocations =
+          setupFlutterPubRunBuildRunnerBuildTaskGroup(
+        manager,
+        packages: packagesToCodeGen,
+        logger: logger,
+      );
       final rapid = getRapid(tool: tool, logger: logger);
 
       await withMockProcessManager(
@@ -119,14 +168,11 @@ void main() {
 
       verifyInOrder([
         () => tool.deactivateCommandGroup(),
-        ...flutterPubRunBuildRunnerBuildTaskGroup(
-          manager,
-          packages: packagesToCodeGen,
-        ),
+        ...codeGenTaskGroupInvocations,
         () => logger.newLine(),
         () => logger.commandSuccess('Completed Command Group!'),
       ]);
-      verifyNeverMulti(melosBootstrapTask(manager, scope: []));
+      verifyNeverMulti(melosBootstrapTaskInvocations);
     });
 
     test('completes with packages to bootstrap and packages to codegen',
@@ -147,8 +193,25 @@ void main() {
       when(() => commandGroup.packagesToCodeGen).thenReturn(packagesToCodeGen);
       final tool = MockRapidTool();
       when(() => tool.loadGroup()).thenReturn(commandGroup);
+      when(() => tool.deactivateCommandGroup()).thenAnswer((_) {
+        when(() => commandGroup.isActive).thenReturn(false);
+      });
       final logger = MockRapidLogger();
-      final rapid = getRapid(tool: tool, logger: logger);
+      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
+        manager,
+        scope: packagesToBootstrap,
+        logger: logger,
+      );
+      final codeGenTaskGroupInvocations =
+          setupFlutterPubRunBuildRunnerBuildTaskGroup(
+        manager,
+        packages: packagesToCodeGen,
+        logger: logger,
+      );
+      final rapid = getRapid(
+        tool: tool,
+        logger: logger,
+      );
 
       await withMockProcessManager(
         () async => rapid.end(),
@@ -157,11 +220,8 @@ void main() {
 
       verifyInOrder([
         () => tool.deactivateCommandGroup(),
-        ...melosBootstrapTask(manager, scope: packagesToBootstrap),
-        ...flutterPubRunBuildRunnerBuildTaskGroup(
-          manager,
-          packages: packagesToCodeGen,
-        ),
+        ...melosBootstrapTaskInvocations,
+        ...codeGenTaskGroupInvocations,
         () => logger.newLine(),
         () => logger.commandSuccess('Completed Command Group!'),
       ]);

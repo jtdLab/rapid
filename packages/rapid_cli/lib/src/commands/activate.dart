@@ -338,7 +338,9 @@ mixin _ActivateMixin on _Rapid {
     );
 
     if (infrastructureContainsNonDefaultPackage) {
-      await codeGenTask(package: rootPackage);
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        package: rootPackage,
+      );
     }
 
     await flutterGenl10nTask(package: localizationPackage);

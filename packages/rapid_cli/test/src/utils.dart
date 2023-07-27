@@ -13,7 +13,7 @@ import 'package:rapid_cli/src/tool.dart';
 import 'mocks.dart';
 
 RapidCommandRunner getCommandRunner({
-  MockRapidProject? project,
+  RapidProject? project,
 }) {
   return RapidCommandRunner(
     project: project ?? MockRapidProject(),
@@ -57,6 +57,45 @@ LoggerSetup setupLogger() {
     groupableProgress: groupableProgress,
     progressGroup: progressGroup,
     logger: logger,
+  );
+}
+
+RapidProject setupProjectWithPlatformFeaturePackage(String name) {
+  return MockRapidProject(
+    appModule: MockAppModule(
+      platformDirectory: ({required Platform platform}) =>
+          MockPlatformDirectory(
+        featuresDirectory: MockPlatformFeaturesDirectory(
+          featurePackages: [
+            FakePlatformFeaturePackage(name: name),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+RapidProject setupProjectWithDomainPackage(String name) {
+  return MockRapidProject(
+    appModule: MockAppModule(
+      domainDirectory: MockDomainDirectory(
+        domainPackages: [
+          FakeDomainPackage(name: name),
+        ],
+      ),
+    ),
+  );
+}
+
+RapidProject setupProjectWithInfrastructurePackage(String name) {
+  return MockRapidProject(
+    appModule: MockAppModule(
+      infrastructureDirectory: MockInfrastructureDirectory(
+        infrastructurePackages: [
+          FakeInfrastructurePackage(name: name),
+        ],
+      ),
+    ),
   );
 }
 

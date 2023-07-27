@@ -7,8 +7,6 @@ import '../../../../matchers.dart';
 import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
-// TODO consider sharing project setup
-
 List<String> expectedUsage(String subInfrastructurePackage) => [
       'Add a data transfer object to the subinfrastructure $subInfrastructurePackage.\n'
           '\n'
@@ -30,15 +28,7 @@ void main() {
     test(
       'help',
       overridePrint((printLogs) async {
-        final project = MockRapidProject(
-          appModule: MockAppModule(
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackages: [
-                FakeInfrastructurePackage(name: 'package_a'),
-              ],
-            ),
-          ),
-        );
+        final project = setupProjectWithInfrastructurePackage('package_a');
         final commandRunner = getCommandRunner(project: project);
 
         await commandRunner.run([
@@ -67,15 +57,7 @@ void main() {
       test(
         'when entity is missing',
         overridePrint((printLogs) async {
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [
-                  FakeInfrastructurePackage(name: 'package_a'),
-                ],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(
@@ -91,15 +73,7 @@ void main() {
       test(
         'when entity is not a valid dart class name',
         overridePrint((printLogs) async {
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [
-                  FakeInfrastructurePackage(name: 'package_a'),
-                ],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(

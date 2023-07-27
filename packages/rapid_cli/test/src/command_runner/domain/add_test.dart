@@ -25,15 +25,7 @@ void main() {
     test(
       'help',
       overridePrint((printLogs) async {
-        final project = MockRapidProject(
-          appModule: MockAppModule(
-            domainDirectory: MockDomainDirectory(
-              domainPackages: [
-                FakeDomainPackage(name: 'package_a'),
-              ],
-            ),
-          ),
-        );
+        final project = setupProjectWithDomainPackage('package_a');
         final commandRunner = getCommandRunner(project: project);
 
         await commandRunner.run(['domain', 'add', '--help']);

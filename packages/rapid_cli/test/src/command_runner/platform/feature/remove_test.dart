@@ -33,18 +33,7 @@ void main() {
       test(
         'help',
         overridePrint((printLogs) async {
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              platformDirectory: ({required Platform platform}) =>
-                  MockPlatformDirectory(
-                featuresDirectory: MockPlatformFeaturesDirectory(
-                  featurePackages: [
-                    FakePlatformFeaturePackage(name: 'package_a'),
-                  ],
-                ),
-              ),
-            ),
-          );
+          final project = setupProjectWithPlatformFeaturePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           await commandRunner

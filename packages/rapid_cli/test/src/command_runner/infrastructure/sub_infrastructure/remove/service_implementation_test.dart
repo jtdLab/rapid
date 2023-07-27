@@ -29,15 +29,7 @@ void main() {
     test(
       'help',
       overridePrint((printLogs) async {
-        final project = MockRapidProject(
-          appModule: MockAppModule(
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackages: [
-                FakeInfrastructurePackage(name: 'package_a'),
-              ],
-            ),
-          ),
-        );
+        final project = setupProjectWithInfrastructurePackage('package_a');
         final commandRunner = getCommandRunner(project: project);
 
         await commandRunner.run([
@@ -66,15 +58,7 @@ void main() {
       test(
         'when service is missing',
         overridePrint((printLogs) async {
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [
-                  FakeInfrastructurePackage(name: 'package_a'),
-                ],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(
@@ -95,15 +79,7 @@ void main() {
       test(
         'when service is not a valid dart class name',
         overridePrint((printLogs) async {
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [
-                  FakeInfrastructurePackage(name: 'package_a'),
-                ],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(
@@ -126,15 +102,7 @@ void main() {
       test(
         'when name is missing',
         overridePrint((printLogs) async {
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [
-                  FakeInfrastructurePackage(name: 'package_a'),
-                ],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(
@@ -152,15 +120,7 @@ void main() {
       test(
         'when multiple names are provided',
         overridePrint((printLogs) async {
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [
-                  FakeInfrastructurePackage(name: 'package_a'),
-                ],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(
@@ -180,15 +140,7 @@ void main() {
       test(
         'when name is not a valid dart class name',
         overridePrint((printLogs) async {
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [
-                  FakeInfrastructurePackage(name: 'package_a'),
-                ],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(

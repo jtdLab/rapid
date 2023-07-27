@@ -5,8 +5,6 @@ import '../../common.dart';
 import '../../mocks.dart';
 import '../../utils.dart';
 
-// TODO consider sharing project setup
-
 List<String> expectedUsage(
   String featurePackage, {
   required Platform platform,
@@ -35,18 +33,7 @@ void main() {
       test(
         'help',
         overridePrint((printLogs) async {
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              platformDirectory: ({required Platform platform}) =>
-                  MockPlatformDirectory(
-                featuresDirectory: MockPlatformFeaturesDirectory(
-                  featurePackages: [
-                    FakePlatformFeaturePackage(name: 'package_a'),
-                  ],
-                ),
-              ),
-            ),
-          );
+          final project = setupProjectWithPlatformFeaturePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           await commandRunner.run([platform.name, 'package_a', '--help']);

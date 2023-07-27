@@ -3,8 +3,11 @@ import 'dart:convert';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
+import 'package:rapid_cli/src/logging.dart';
 import 'package:rapid_cli/src/process.dart';
 import 'package:rapid_cli/src/project/platform.dart';
+import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src/tool.dart';
 
 import 'mocks.dart';
 
@@ -17,14 +20,36 @@ RapidCommandRunner getCommandRunner({
 }
 
 Rapid getRapid({
-  MockRapidProject? project,
-  MockRapidTool? tool,
-  MockRapidLogger? logger,
+  RapidProject? project,
+  RapidTool? tool,
+  RapidLogger? logger,
 }) {
   return Rapid(
     project: project ?? MockRapidProject(),
     tool: tool ?? MockRapidTool(),
     logger: logger ?? MockRapidLogger(),
+  );
+}
+
+typedef LoggerSetup = ({
+  Progress progress,
+  GroupableProgress groupableProgress,
+  ProgressGroup progressGroup,
+  RapidLogger logger
+});
+
+LoggerSetup setupLogger() {
+  final progress = MockProgress();
+  final groupableProgress = MockGroupableProgress();
+  final progressGroup = MockProgressGroup(progress: groupableProgress);
+  final logger =
+      MockRapidLogger(progress: progress, progressGroup: progressGroup);
+
+  return (
+    progress: progress,
+    groupableProgress: groupableProgress,
+    progressGroup: progressGroup,
+    logger: logger,
   );
 }
 

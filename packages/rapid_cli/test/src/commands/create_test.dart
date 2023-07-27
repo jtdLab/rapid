@@ -18,33 +18,9 @@ import '../mock_fs.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
-Rapid _getRapid({
-  RapidProject Function({required RapidProjectConfig config})? projectBuilder,
-  RapidTool? tool,
-  RapidLogger? logger,
-}) {
-  return Rapid(
-    tool: tool ?? MockRapidTool(),
-    logger: logger ?? MockRapidLogger(),
-  )..projectBuilderOverrides = projectBuilder;
-}
+// TODO maybe share some with activate tests
 
-(
-  Progress progress,
-  GroupableProgress groupableProgress,
-  ProgressGroup progressGroup,
-  RapidLogger logger
-) setupLogger() {
-  final progress = MockProgress();
-  final groupableProgress = MockGroupableProgress();
-  final progressGroup = MockProgressGroup(progress: groupableProgress);
-  final logger =
-      MockRapidLogger(progress: progress, progressGroup: progressGroup);
-
-  return (progress, groupableProgress, progressGroup, logger);
-}
-
-(
+typedef _ProjectSetup<T extends PlatformRootPackage> = ({
   RootPackage rootPackage,
   DiPackage diPackage,
   DomainPackage defaultDomainPackage,
@@ -52,7 +28,25 @@ Rapid _getRapid({
   LoggingPackage loggingPackage,
   UiPackage uiPackage,
   RapidProject project,
-) setupProject() {
+});
+
+typedef _ProjectWithPlatformSetup<T extends PlatformRootPackage> = ({
+  RootPackage rootPackage,
+  DiPackage diPackage,
+  DomainPackage defaultDomainPackage,
+  InfrastructurePackage defaultInfrastructurePackage,
+  LoggingPackage loggingPackage,
+  UiPackage uiPackage,
+  T platformRootPackage,
+  PlatformLocalizationPackage platformLocalizationPackage,
+  PlatformNavigationPackage platformNavigationPackage,
+  PlatformAppFeaturePackage platformAppFeaturePackage,
+  PlatformPageFeaturePackage platformHomePageFeaturePackage,
+  PlatformUiPackage platformUiPackage,
+  RapidProject project,
+});
+
+_ProjectSetup _setupProject() {
   final rootPackage = MockRootPackage(
     packageName: 'root_package',
     path: 'root_package_path',
@@ -77,7 +71,6 @@ Rapid _getRapid({
     packageName: 'ui_package',
     path: 'ui_package_path',
   );
-
   final project = MockRapidProject(
     rootPackage: rootPackage,
     appModule: MockAppModule(
@@ -96,40 +89,27 @@ Rapid _getRapid({
   );
 
   return (
-    rootPackage,
-    diPackage,
-    defaultDomainPackage,
-    defaultInfrastructurePackage,
-    loggingPackage,
-    uiPackage,
-    project,
+    rootPackage: rootPackage,
+    diPackage: diPackage,
+    defaultDomainPackage: defaultDomainPackage,
+    defaultInfrastructurePackage: defaultInfrastructurePackage,
+    loggingPackage: loggingPackage,
+    uiPackage: uiPackage,
+    project: project,
   );
 }
 
-(
-  RootPackage rootPackage,
-  DiPackage diPackage,
-  DomainPackage defaultDomainPackage,
-  InfrastructurePackage defaultInfrastructurePackage,
-  LoggingPackage loggingPackage,
-  UiPackage uiPackage,
-  T platformRootPackage,
-  PlatformLocalizationPackage platformLocalizationPackage,
-  PlatformNavigationPackage platformNavigationPackage,
-  PlatformAppFeaturePackage platformAppFeaturePackage,
-  PlatformPageFeaturePackage platformHomePageFeaturePackage,
-  PlatformUiPackage platformUiPackage,
-  RapidProject project,
-) setupProjectWithPlatform<T extends PlatformRootPackage>() {
+_ProjectWithPlatformSetup
+    _setupProjectWithPlatform<T extends PlatformRootPackage>() {
   final (
-    rootPackage,
-    diPackage,
-    defaultDomainPackage,
-    defaultInfrastructurePackage,
-    loggingPackage,
-    uiPackage,
-    _,
-  ) = setupProject();
+    rootPackage: rootPackage,
+    diPackage: diPackage,
+    defaultDomainPackage: defaultDomainPackage,
+    defaultInfrastructurePackage: defaultInfrastructurePackage,
+    loggingPackage: loggingPackage,
+    uiPackage: uiPackage,
+    project: _,
+  ) = _setupProject();
   final T platformRootPackage = switch (T) {
     IosRootPackage => MockIosRootPackage(
         packageName: 'platform_root_package',
@@ -148,7 +128,6 @@ Rapid _getRapid({
         path: 'platform_root_package_path',
       ),
   } as T;
-
   final platformLocalizationPackage = MockPlatformLocalizationPackage(
     packageName: 'platform_localization_package',
     path: 'platform_localization_package_path',
@@ -201,44 +180,62 @@ Rapid _getRapid({
   );
 
   return (
-    rootPackage,
-    diPackage,
-    defaultDomainPackage,
-    defaultInfrastructurePackage,
-    loggingPackage,
-    uiPackage,
-    platformRootPackage,
-    platformLocalizationPackage,
-    platformNavigationPackage,
-    platformAppFeaturePackage,
-    platformHomePageFeaturePackage,
-    platformUiPackage,
-    project,
+    rootPackage: rootPackage,
+    diPackage: diPackage,
+    defaultDomainPackage: defaultDomainPackage,
+    defaultInfrastructurePackage: defaultInfrastructurePackage,
+    loggingPackage: loggingPackage,
+    uiPackage: uiPackage,
+    platformRootPackage: platformRootPackage,
+    platformLocalizationPackage: platformLocalizationPackage,
+    platformNavigationPackage: platformNavigationPackage,
+    platformAppFeaturePackage: platformAppFeaturePackage,
+    platformHomePageFeaturePackage: platformHomePageFeaturePackage,
+    platformUiPackage: platformUiPackage,
+    project: project,
   );
 }
 
-void verifyCreateProjectAndActivatePlatform(
+Rapid _getRapid({
+  RapidProject Function({required RapidProjectConfig config})? projectBuilder,
+  RapidTool? tool,
+  RapidLogger? logger,
+}) {
+  return Rapid(
+    tool: tool ?? MockRapidTool(),
+    logger: logger ?? MockRapidLogger(),
+  )..projectBuilderOverrides = projectBuilder;
+}
+
+void _verifyCreateProjectAndActivatePlatform<T extends PlatformRootPackage>(
   Platform platform, {
   required ProcessManager manager,
-  required RootPackage rootPackage,
-  required DiPackage diPackage,
-  required DomainPackage defaultDomainPackage,
-  required InfrastructurePackage defaultInfrastructurePackage,
-  required LoggingPackage loggingPackage,
-  required UiPackage uiPackage,
-  required PlatformRootPackage platformRootPackage,
-  required PlatformLocalizationPackage platformLocalizationPackage,
-  required PlatformNavigationPackage platformNavigationPackage,
-  required PlatformAppFeaturePackage platformAppFeaturePackage,
-  required PlatformPageFeaturePackage platformHomePageFeaturePackage,
-  required PlatformUiPackage platformUiPackage,
-  required RapidProject project,
+  required _ProjectWithPlatformSetup<T> projectSetup,
   required MockRapidProjectBuilder projectBuilder,
-  required Progress progress,
-  required GroupableProgress groupableProgress,
-  required ProgressGroup progressGroup,
-  required RapidLogger logger,
+  required LoggerSetup loggerSetup,
 }) {
+  final (
+    rootPackage: rootPackage,
+    diPackage: diPackage,
+    defaultDomainPackage: defaultDomainPackage,
+    defaultInfrastructurePackage: defaultInfrastructurePackage,
+    loggingPackage: loggingPackage,
+    uiPackage: uiPackage,
+    platformRootPackage: platformRootPackage,
+    platformLocalizationPackage: platformLocalizationPackage,
+    platformNavigationPackage: platformNavigationPackage,
+    platformAppFeaturePackage: platformAppFeaturePackage,
+    platformHomePageFeaturePackage: platformHomePageFeaturePackage,
+    platformUiPackage: platformUiPackage,
+    project: _,
+  ) = projectSetup;
+  final (
+    progress: progress,
+    groupableProgress: groupableProgress,
+    progressGroup: progressGroup,
+    logger: logger,
+  ) = loggerSetup;
+
   verifyInOrder([
     () => projectBuilder(
           config: RapidProjectConfig(
@@ -447,16 +444,21 @@ void main() {
       'creates project and activates no platforms',
       withMockEnv((manager) async {
         final (
-          rootPackage,
-          diPackage,
-          defaultDomainPackage,
-          defaultInfrastructurePackage,
-          loggingPackage,
-          uiPackage,
-          project,
-        ) = setupProject();
+          rootPackage: rootPackage,
+          diPackage: diPackage,
+          defaultDomainPackage: defaultDomainPackage,
+          defaultInfrastructurePackage: defaultInfrastructurePackage,
+          loggingPackage: loggingPackage,
+          uiPackage: uiPackage,
+          project: project,
+        ) = _setupProject();
         final projectBuilder = MockRapidProjectBuilder(project: project);
-        final (_, groupableProgress, progressGroup, logger) = setupLogger();
+        final (
+          progress: _,
+          groupableProgress: groupableProgress,
+          progressGroup: progressGroup,
+          logger: logger
+        ) = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
           logger: logger,
@@ -527,27 +529,13 @@ void main() {
     test(
       'creates project and activates Android',
       withMockEnv((manager) async {
-        final (
-          rootPackage,
-          diPackage,
-          defaultDomainPackage,
-          defaultInfrastructurePackage,
-          loggingPackage,
-          uiPackage,
-          platformRootPackage,
-          platformLocalizationPackage,
-          platformNavigationPackage,
-          platformAppFeaturePackage,
-          platformHomePageFeaturePackage,
-          platformUiPackage,
-          project,
-        ) = setupProjectWithPlatform<NoneIosRootPackage>();
-        final projectBuilder = MockRapidProjectBuilder(project: project);
-        final (progress, groupableProgress, progressGroup, logger) =
-            setupLogger();
+        final projectSetup = _setupProjectWithPlatform<NoneIosRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
         await rapid.create(
@@ -559,27 +547,12 @@ void main() {
           platforms: {Platform.android},
         );
 
-        verifyCreateProjectAndActivatePlatform(
+        _verifyCreateProjectAndActivatePlatform(
           Platform.android,
           manager: manager,
-          rootPackage: rootPackage,
-          diPackage: diPackage,
-          defaultDomainPackage: defaultDomainPackage,
-          defaultInfrastructurePackage: defaultInfrastructurePackage,
-          loggingPackage: loggingPackage,
-          uiPackage: uiPackage,
-          platformRootPackage: platformRootPackage,
-          platformLocalizationPackage: platformLocalizationPackage,
-          platformNavigationPackage: platformNavigationPackage,
-          platformAppFeaturePackage: platformAppFeaturePackage,
-          platformHomePageFeaturePackage: platformHomePageFeaturePackage,
-          platformUiPackage: platformUiPackage,
-          project: project,
+          projectSetup: projectSetup,
           projectBuilder: projectBuilder,
-          progress: progress,
-          groupableProgress: groupableProgress,
-          progressGroup: progressGroup,
-          logger: logger,
+          loggerSetup: loggerSetup,
         );
       }),
     );
@@ -587,27 +560,13 @@ void main() {
     test(
       'creates project and activates iOS',
       withMockEnv((manager) async {
-        final (
-          rootPackage,
-          diPackage,
-          defaultDomainPackage,
-          defaultInfrastructurePackage,
-          loggingPackage,
-          uiPackage,
-          platformRootPackage,
-          platformLocalizationPackage,
-          platformNavigationPackage,
-          platformAppFeaturePackage,
-          platformHomePageFeaturePackage,
-          platformUiPackage,
-          project,
-        ) = setupProjectWithPlatform<IosRootPackage>();
-        final projectBuilder = MockRapidProjectBuilder(project: project);
-        final (progress, groupableProgress, progressGroup, logger) =
-            setupLogger();
+        final projectSetup = _setupProjectWithPlatform<IosRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
         await rapid.create(
@@ -619,27 +578,12 @@ void main() {
           platforms: {Platform.ios},
         );
 
-        verifyCreateProjectAndActivatePlatform(
+        _verifyCreateProjectAndActivatePlatform(
           Platform.ios,
           manager: manager,
-          rootPackage: rootPackage,
-          diPackage: diPackage,
-          defaultDomainPackage: defaultDomainPackage,
-          defaultInfrastructurePackage: defaultInfrastructurePackage,
-          loggingPackage: loggingPackage,
-          uiPackage: uiPackage,
-          platformRootPackage: platformRootPackage,
-          platformLocalizationPackage: platformLocalizationPackage,
-          platformNavigationPackage: platformNavigationPackage,
-          platformAppFeaturePackage: platformAppFeaturePackage,
-          platformHomePageFeaturePackage: platformHomePageFeaturePackage,
-          platformUiPackage: platformUiPackage,
-          project: project,
+          projectSetup: projectSetup,
           projectBuilder: projectBuilder,
-          progress: progress,
-          groupableProgress: groupableProgress,
-          progressGroup: progressGroup,
-          logger: logger,
+          loggerSetup: loggerSetup,
         );
       }),
     );
@@ -647,27 +591,13 @@ void main() {
     test(
       'creates project and activates Linux',
       withMockEnv((manager) async {
-        final (
-          rootPackage,
-          diPackage,
-          defaultDomainPackage,
-          defaultInfrastructurePackage,
-          loggingPackage,
-          uiPackage,
-          platformRootPackage,
-          platformLocalizationPackage,
-          platformNavigationPackage,
-          platformAppFeaturePackage,
-          platformHomePageFeaturePackage,
-          platformUiPackage,
-          project,
-        ) = setupProjectWithPlatform<NoneIosRootPackage>();
-        final projectBuilder = MockRapidProjectBuilder(project: project);
-        final (progress, groupableProgress, progressGroup, logger) =
-            setupLogger();
+        final projectSetup = _setupProjectWithPlatform<NoneIosRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
         await rapid.create(
@@ -679,27 +609,12 @@ void main() {
           platforms: {Platform.linux},
         );
 
-        verifyCreateProjectAndActivatePlatform(
+        _verifyCreateProjectAndActivatePlatform(
           Platform.linux,
           manager: manager,
-          rootPackage: rootPackage,
-          diPackage: diPackage,
-          defaultDomainPackage: defaultDomainPackage,
-          defaultInfrastructurePackage: defaultInfrastructurePackage,
-          loggingPackage: loggingPackage,
-          uiPackage: uiPackage,
-          platformRootPackage: platformRootPackage,
-          platformLocalizationPackage: platformLocalizationPackage,
-          platformNavigationPackage: platformNavigationPackage,
-          platformAppFeaturePackage: platformAppFeaturePackage,
-          platformHomePageFeaturePackage: platformHomePageFeaturePackage,
-          platformUiPackage: platformUiPackage,
-          project: project,
+          projectSetup: projectSetup,
           projectBuilder: projectBuilder,
-          progress: progress,
-          groupableProgress: groupableProgress,
-          progressGroup: progressGroup,
-          logger: logger,
+          loggerSetup: loggerSetup,
         );
       }),
     );
@@ -707,27 +622,13 @@ void main() {
     test(
       'creates project and activates macOS',
       withMockEnv((manager) async {
-        final (
-          rootPackage,
-          diPackage,
-          defaultDomainPackage,
-          defaultInfrastructurePackage,
-          loggingPackage,
-          uiPackage,
-          platformRootPackage,
-          platformLocalizationPackage,
-          platformNavigationPackage,
-          platformAppFeaturePackage,
-          platformHomePageFeaturePackage,
-          platformUiPackage,
-          project,
-        ) = setupProjectWithPlatform<MacosRootPackage>();
-        final projectBuilder = MockRapidProjectBuilder(project: project);
-        final (progress, groupableProgress, progressGroup, logger) =
-            setupLogger();
+        final projectSetup = _setupProjectWithPlatform<MacosRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
         await rapid.create(
@@ -739,27 +640,12 @@ void main() {
           platforms: {Platform.macos},
         );
 
-        verifyCreateProjectAndActivatePlatform(
+        _verifyCreateProjectAndActivatePlatform(
           Platform.macos,
           manager: manager,
-          rootPackage: rootPackage,
-          diPackage: diPackage,
-          defaultDomainPackage: defaultDomainPackage,
-          defaultInfrastructurePackage: defaultInfrastructurePackage,
-          loggingPackage: loggingPackage,
-          uiPackage: uiPackage,
-          platformRootPackage: platformRootPackage,
-          platformLocalizationPackage: platformLocalizationPackage,
-          platformNavigationPackage: platformNavigationPackage,
-          platformAppFeaturePackage: platformAppFeaturePackage,
-          platformHomePageFeaturePackage: platformHomePageFeaturePackage,
-          platformUiPackage: platformUiPackage,
-          project: project,
+          projectSetup: projectSetup,
           projectBuilder: projectBuilder,
-          progress: progress,
-          groupableProgress: groupableProgress,
-          progressGroup: progressGroup,
-          logger: logger,
+          loggerSetup: loggerSetup,
         );
       }),
     );
@@ -767,27 +653,13 @@ void main() {
     test(
       'creates project and activates Web',
       withMockEnv((manager) async {
-        final (
-          rootPackage,
-          diPackage,
-          defaultDomainPackage,
-          defaultInfrastructurePackage,
-          loggingPackage,
-          uiPackage,
-          platformRootPackage,
-          platformLocalizationPackage,
-          platformNavigationPackage,
-          platformAppFeaturePackage,
-          platformHomePageFeaturePackage,
-          platformUiPackage,
-          project,
-        ) = setupProjectWithPlatform<NoneIosRootPackage>();
-        final projectBuilder = MockRapidProjectBuilder(project: project);
-        final (progress, groupableProgress, progressGroup, logger) =
-            setupLogger();
+        final projectSetup = _setupProjectWithPlatform<NoneIosRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
         await rapid.create(
@@ -799,27 +671,12 @@ void main() {
           platforms: {Platform.web},
         );
 
-        verifyCreateProjectAndActivatePlatform(
+        _verifyCreateProjectAndActivatePlatform(
           Platform.web,
           manager: manager,
-          rootPackage: rootPackage,
-          diPackage: diPackage,
-          defaultDomainPackage: defaultDomainPackage,
-          defaultInfrastructurePackage: defaultInfrastructurePackage,
-          loggingPackage: loggingPackage,
-          uiPackage: uiPackage,
-          platformRootPackage: platformRootPackage,
-          platformLocalizationPackage: platformLocalizationPackage,
-          platformNavigationPackage: platformNavigationPackage,
-          platformAppFeaturePackage: platformAppFeaturePackage,
-          platformHomePageFeaturePackage: platformHomePageFeaturePackage,
-          platformUiPackage: platformUiPackage,
-          project: project,
+          projectSetup: projectSetup,
           projectBuilder: projectBuilder,
-          progress: progress,
-          groupableProgress: groupableProgress,
-          progressGroup: progressGroup,
-          logger: logger,
+          loggerSetup: loggerSetup,
         );
       }),
     );
@@ -827,27 +684,13 @@ void main() {
     test(
       'creates project and activates Windows',
       withMockEnv((manager) async {
-        final (
-          rootPackage,
-          diPackage,
-          defaultDomainPackage,
-          defaultInfrastructurePackage,
-          loggingPackage,
-          uiPackage,
-          platformRootPackage,
-          platformLocalizationPackage,
-          platformNavigationPackage,
-          platformAppFeaturePackage,
-          platformHomePageFeaturePackage,
-          platformUiPackage,
-          project,
-        ) = setupProjectWithPlatform<NoneIosRootPackage>();
-        final projectBuilder = MockRapidProjectBuilder(project: project);
-        final (progress, groupableProgress, progressGroup, logger) =
-            setupLogger();
+        final projectSetup = _setupProjectWithPlatform<NoneIosRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
         await rapid.create(
@@ -859,27 +702,12 @@ void main() {
           platforms: {Platform.windows},
         );
 
-        verifyCreateProjectAndActivatePlatform(
+        _verifyCreateProjectAndActivatePlatform(
           Platform.windows,
           manager: manager,
-          rootPackage: rootPackage,
-          diPackage: diPackage,
-          defaultDomainPackage: defaultDomainPackage,
-          defaultInfrastructurePackage: defaultInfrastructurePackage,
-          loggingPackage: loggingPackage,
-          uiPackage: uiPackage,
-          platformRootPackage: platformRootPackage,
-          platformLocalizationPackage: platformLocalizationPackage,
-          platformNavigationPackage: platformNavigationPackage,
-          platformAppFeaturePackage: platformAppFeaturePackage,
-          platformHomePageFeaturePackage: platformHomePageFeaturePackage,
-          platformUiPackage: platformUiPackage,
-          project: project,
+          projectSetup: projectSetup,
           projectBuilder: projectBuilder,
-          progress: progress,
-          groupableProgress: groupableProgress,
-          progressGroup: progressGroup,
-          logger: logger,
+          loggerSetup: loggerSetup,
         );
       }),
     );
@@ -887,27 +715,13 @@ void main() {
     test(
       'creates project and activates Mobile',
       withMockEnv((manager) async {
-        final (
-          rootPackage,
-          diPackage,
-          defaultDomainPackage,
-          defaultInfrastructurePackage,
-          loggingPackage,
-          uiPackage,
-          platformRootPackage,
-          platformLocalizationPackage,
-          platformNavigationPackage,
-          platformAppFeaturePackage,
-          platformHomePageFeaturePackage,
-          platformUiPackage,
-          project,
-        ) = setupProjectWithPlatform<MobileRootPackage>();
-        final projectBuilder = MockRapidProjectBuilder(project: project);
-        final (progress, groupableProgress, progressGroup, logger) =
-            setupLogger();
+        final projectSetup = _setupProjectWithPlatform<MobileRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
         await rapid.create(
@@ -919,27 +733,12 @@ void main() {
           platforms: {Platform.mobile},
         );
 
-        verifyCreateProjectAndActivatePlatform(
+        _verifyCreateProjectAndActivatePlatform(
           Platform.mobile,
           manager: manager,
-          rootPackage: rootPackage,
-          diPackage: diPackage,
-          defaultDomainPackage: defaultDomainPackage,
-          defaultInfrastructurePackage: defaultInfrastructurePackage,
-          loggingPackage: loggingPackage,
-          uiPackage: uiPackage,
-          platformRootPackage: platformRootPackage,
-          platformLocalizationPackage: platformLocalizationPackage,
-          platformNavigationPackage: platformNavigationPackage,
-          platformAppFeaturePackage: platformAppFeaturePackage,
-          platformHomePageFeaturePackage: platformHomePageFeaturePackage,
-          platformUiPackage: platformUiPackage,
-          project: project,
+          projectSetup: projectSetup,
           projectBuilder: projectBuilder,
-          progress: progress,
-          groupableProgress: groupableProgress,
-          progressGroup: progressGroup,
-          logger: logger,
+          loggerSetup: loggerSetup,
         );
       }),
     );

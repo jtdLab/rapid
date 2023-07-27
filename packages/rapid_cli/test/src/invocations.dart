@@ -4,6 +4,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/io.dart';
 import 'package:rapid_cli/src/logging.dart';
 import 'package:rapid_cli/src/mason.dart';
+import 'package:rapid_cli/src/process.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/tool.dart';
 import 'package:test/test.dart';
@@ -11,6 +12,7 @@ import 'package:test/test.dart';
 import 'mocks.dart';
 
 // TODO add logging verification to tasks
+// TODO is allowing empty packages right in the task invocations?
 
 /// Same as [verifyNever] but takes multiple invocations.
 ///
@@ -36,7 +38,7 @@ List<VerificationResult> Function<T>(
 }
 
 List<dynamic Function()> setupFlutterPubRunBuildRunnerBuildTask(
-  MockProcessManager manager, {
+  ProcessManager manager, {
   required DartPackage package,
   required RapidLogger logger,
 }) {
@@ -66,7 +68,7 @@ List<dynamic Function()> setupFlutterPubRunBuildRunnerBuildTask(
 }
 
 List<dynamic Function()> setupFlutterPubRunBuildRunnerBuildTaskInCommandGroup(
-  MockProcessManager manager, {
+  ProcessManager manager, {
   required DartPackage package,
   required RapidTool tool,
 }) {
@@ -76,18 +78,18 @@ List<dynamic Function()> setupFlutterPubRunBuildRunnerBuildTaskInCommandGroup(
 }
 
 List<dynamic Function()> setupFlutterPubRunBuildRunnerBuildTaskGroup(
-  MockProcessManager manager, {
+  ProcessManager manager, {
   required List<DartPackage> packages,
   required RapidLogger logger,
 }) {
   if (packages.isEmpty) {
-    final progressGroup = MockProgressGroup();
-    when(() => logger.progressGroup(null)).thenReturn(progressGroup);
+    final group = MockProgressGroup();
+    when(() => logger.progressGroup(null)).thenReturn(group);
     final progress = MockGroupableProgress();
-    when(() => progressGroup.progress(any())).thenReturn(progress);
+    when(() => group.progress(any())).thenReturn(progress);
     return [
       () => logger.progressGroup(null),
-      () => progressGroup.progress(any()),
+      () => group.progress(any()),
       () => manager.run(
             [
               'flutter',
@@ -107,18 +109,18 @@ List<dynamic Function()> setupFlutterPubRunBuildRunnerBuildTaskGroup(
   }
 
   final invocations = <dynamic Function()>[];
-  final progressGroup = MockProgressGroup();
-  when(() => logger.progressGroup(null)).thenReturn(progressGroup);
+  final group = MockProgressGroup();
+  when(() => logger.progressGroup(null)).thenReturn(group);
 
   invocations.add(() => logger.progressGroup(null));
 
   for (final package in packages) {
     final description = 'Running code generation in ${package.packageName}';
     final progress = MockGroupableProgress();
-    when(() => progressGroup.progress(description)).thenReturn(progress);
+    when(() => group.progress(description)).thenReturn(progress);
     final path = package.path;
 
-    invocations.add(() => progressGroup.progress(description));
+    invocations.add(() => group.progress(description));
     invocations.add(
       () => manager.run(
         [
@@ -143,7 +145,7 @@ List<dynamic Function()> setupFlutterPubRunBuildRunnerBuildTaskGroup(
 
 List<dynamic Function()>
     setupFlutterPubRunBuildRunnerBuildTaskGroupInCommandGroup(
-  MockProcessManager manager, {
+  ProcessManager manager, {
   required List<DartPackage> packages,
   required RapidTool tool,
 }) {
@@ -160,9 +162,9 @@ List<dynamic Function()>
   ];
 }
 
-// TODO handle working dir could be checked that its project root
+// TODO working dir could be checked that its project root
 List<dynamic Function()> setupMelosBootstrapTask(
-  MockProcessManager manager, {
+  ProcessManager manager, {
   required List<DartPackage> scope,
   required RapidLogger logger,
 }) {
@@ -204,7 +206,7 @@ List<dynamic Function()> setupMelosBootstrapTask(
 }
 
 List<dynamic Function()> setupMelosBootstrapTaskInCommandGroup(
-  MockProcessManager manager, {
+  ProcessManager manager, {
   required List<DartPackage> scope,
   required RapidTool tool,
 }) {
@@ -213,28 +215,78 @@ List<dynamic Function()> setupMelosBootstrapTaskInCommandGroup(
   ];
 }
 
-List<dynamic Function()> flutterPubGetTaskGroup(
-  MockProcessManager manager, {
+List<dynamic Function()> setupFlutterPubGetTaskGroup(
+  ProcessManager manager, {
   required List<DartPackage> packages,
+  required RapidLogger logger,
+}) {
+  if (packages.isEmpty) {
+    final group = MockProgressGroup();
+    when(() => logger.progressGroup(null)).thenReturn(group);
+    final progress = MockGroupableProgress();
+    when(() => group.progress(any())).thenReturn(progress);
+    return [
+      () => logger.progressGroup(null),
+      () => group.progress(any()),
+      () => manager.run(
+            ['flutter', 'pub', 'get'],
+            workingDirectory: any(named: 'workingDirectory'),
+            runInShell: true,
+            stderrEncoding: utf8,
+            stdoutEncoding: utf8,
+          ),
+      () => progress.complete()
+    ];
+  }
+
+  return taskGroup(
+    manager,
+    tasks: packages
+        .map(
+          (package) => (
+            'Running "flutter pub get" in ${package.packageName}',
+            [
+              () => manager.run(
+                    ['flutter', 'pub', 'get'],
+                    workingDirectory: package.path,
+                    runInShell: true,
+                    stderrEncoding: utf8,
+                    stdoutEncoding: utf8,
+                  ),
+            ]
+          ),
+        )
+        .toList(),
+    logger: logger,
+  );
+}
+
+List<dynamic Function()> taskGroup(
+  ProcessManager manager, {
+  required List<(String, List<dynamic Function()>)> tasks,
+  required RapidLogger logger,
 }) {
   final invocations = <dynamic Function()>[];
-  for (final package in packages) {
-    invocations.add(
-      () => manager.run(
-        ['flutter', 'pub', 'get'],
-        workingDirectory: package.path,
-        runInShell: true,
-        stderrEncoding: utf8,
-        stdoutEncoding: utf8,
-      ),
-    );
+  final group = MockProgressGroup();
+  when(() => logger.progressGroup(null)).thenReturn(group);
+
+  invocations.add(() => logger.progressGroup(null));
+
+  for (final task in tasks) {
+    final description = task.$1;
+    final progress = MockGroupableProgress();
+    when(() => group.progress(description)).thenReturn(progress);
+
+    invocations.add(() => group.progress(description));
+    invocations.addAll(task.$2);
+    invocations.add(() => progress.complete());
   }
 
   return invocations;
 }
 
 List<dynamic Function()> flutterGenl10nTask(
-  MockProcessManager manager, {
+  ProcessManager manager, {
   required DartPackage package,
 }) {
   return [
@@ -248,7 +300,7 @@ List<dynamic Function()> flutterGenl10nTask(
   ];
 }
 
-List<dynamic Function()> dartFormatFixTask(MockProcessManager manager) {
+List<dynamic Function()> dartFormatFixTask(ProcessManager manager) {
   return [
     () => manager.run(
           ['dart', 'format', '.', '--fix'],
@@ -261,7 +313,7 @@ List<dynamic Function()> dartFormatFixTask(MockProcessManager manager) {
 }
 
 List<dynamic Function()> flutterPubAddTask(
-  MockProcessManager manager, {
+  ProcessManager manager, {
   required List<String> dependenciesToAdd,
   required DartPackage package,
 }) {
@@ -279,7 +331,7 @@ List<dynamic Function()> flutterPubAddTask(
 }
 
 List<dynamic Function()> flutterPubGet(
-  MockProcessManager manager, {
+  ProcessManager manager, {
   required DartPackage package,
   bool dryRun = false,
 }) {
@@ -301,7 +353,7 @@ List<dynamic Function()> flutterPubGet(
 }
 
 List<dynamic Function()> flutterPubRemoveTask(
-  MockProcessManager manager, {
+  ProcessManager manager, {
   required List<String> packagesToRemove,
   required DartPackage package,
 }) {
@@ -318,7 +370,7 @@ List<dynamic Function()> flutterPubRemoveTask(
 }
 
 List<dynamic Function()> generateFromBundle(
-  MockProcessManager manager, {
+  ProcessManager manager, {
   required MockMasonGeneratorBuilder generatorBuilder,
   required MockMasonGenerator generator,
   required MasonBundle bundle,
@@ -335,7 +387,7 @@ List<dynamic Function()> generateFromBundle(
 }
 
 List<dynamic Function()> flutterConfigEnablePlatform(
-  MockProcessManager manager, {
+  ProcessManager manager, {
   required Platform platform,
 }) {
   return [

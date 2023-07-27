@@ -270,6 +270,8 @@ mixin _ActivateMixin on _Rapid {
     await activatePlatform();
 
     if (!calledFromCreate) {
+      logger.newLine();
+
       await dartFormatFixTask();
 
       logger
@@ -349,23 +351,21 @@ mixin _ActivateMixin on _Rapid {
         in flutterConfigEnablePlatformTasks) {
       await flutterConfigEnablePlatform();
     }
-
-    logger.newLine();
   }
 
   Future<void> _flutterConfigEnablePlatformTask({
     required Platform platform,
   }) async {
     final commandString = switch (platform) {
-      Platform.android => '--enable-android',
-      Platform.ios => '--enable-ios',
-      Platform.linux => '--enable-linux-desktop',
-      Platform.macos => '--enable-macos-desktop',
-      Platform.web => '--enable-web',
-      _ => '--enable-windows-desktop',
+      Platform.android => 'flutter config --enable-android',
+      Platform.ios => 'flutter config --enable-ios',
+      Platform.linux => 'flutter config --enable-linux-desktop',
+      Platform.macos => 'flutter config --enable-macos-desktop',
+      Platform.web => 'flutter config --enable-web',
+      _ => 'flutter config --enable-windows-desktop',
     };
     return task(
-      'Running "$commandString" in project',
+      'Running "$commandString"',
       () async => flutterConfigEnable(platform: platform, project: project),
     );
   }

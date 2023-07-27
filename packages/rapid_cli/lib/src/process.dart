@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:meta/meta.dart';
 import 'package:process/process.dart';
 
+export 'package:process/process.dart';
+
 @visibleForTesting
 const currentProcessManagerZoneKey = #currentProcessManager;
 

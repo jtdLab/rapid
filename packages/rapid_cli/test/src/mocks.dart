@@ -92,7 +92,13 @@ abstract class _RapidProjectBuilder {
   RapidProject call({required RapidProjectConfig config});
 }
 
-class MockRapidProjectBuilder extends Mock implements _RapidProjectBuilder {}
+class MockRapidProjectBuilder extends Mock implements _RapidProjectBuilder {
+  MockRapidProjectBuilder({RapidProject? project}) {
+    project ??= MockRapidProject();
+
+    when(() => this(config: any(named: 'config'))).thenReturn(project);
+  }
+}
 
 class MockRapidProjectConfig extends Mock implements RapidProjectConfig {}
 
@@ -189,8 +195,8 @@ class MockRootPackage extends Mock implements RootPackage {
     bool? existsSync,
     PubspecYamlFile? pubSpec,
   }) {
-    packageName ??= 'macos_root_package';
-    path ??= 'macos_root_package_path';
+    packageName ??= 'root_package';
+    path ??= 'root_package_path';
     existsSync ??= false;
     pubSpec ??= MockPubspecYamlFile();
 
@@ -364,7 +370,7 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
     PubspecYamlFile? pubSpec,
     DartFile? barrelFile,
   }) {
-    packageName ??= 'domain_package';
+    packageName ??= 'infrastructure_package';
     path ??= 'infrastructure_package_path';
     dataTransferObject ??=
         ({required String entityName}) => MockDataTransferObject();
@@ -525,7 +531,7 @@ class MockNoneIosRootPackage extends Mock implements NoneIosRootPackage {
     bool? existsSync,
   }) {
     packageName ??= 'none_ios_root_package';
-    path ??= 'none_ios_root_path';
+    path ??= 'none_ios_root_package_path';
     nativeDirectory ??= MockNoneIosNativeDirectory();
     existsSync ??= false;
 
@@ -601,7 +607,7 @@ class MockPlatformLocalizationPackage extends Mock
     bool? existsSync,
   }) {
     packageName ??= 'platform_localization_package';
-    path ??= 'platform_localization_path';
+    path ??= 'platform_localization_package_path';
     languageArbFile ??= ({required Language language}) => MockArbFile();
     languageLocalizationsFile ??=
         ({required Language language}) => MockDartFile();
@@ -636,7 +642,7 @@ class MockPlatformNavigationPackage extends Mock
     bool? existsSync,
   }) {
     packageName ??= 'platform_navigation_package';
-    path ??= 'platform_navigation_path';
+    path ??= 'platform_navigation_package_path';
     navigatorInterface ??= ({required String name}) => MockNavigatorInterface();
     barrelFile ??= MockDartFile();
     existsSync ??= false;
@@ -702,7 +708,7 @@ class MockPlatformAppFeaturePackage extends Mock
     bool? existsSync,
   }) {
     packageName ??= 'platform_app_feature_package';
-    path ??= 'platform_app_feature_path';
+    path ??= 'platform_app_feature_package_path';
     existsSync ??= false;
 
     when(() => this.packageName).thenReturn(packageName);
@@ -723,7 +729,7 @@ class MockPlatformPageFeaturePackage extends Mock
   }) {
     name ??= 'name';
     packageName ??= 'platform_page_feature_package';
-    path ??= 'platform_page_feature_path';
+    path ??= 'platform_page_feature_package_path';
     navigatorImplementation ??= MockNavigatorImplementation();
     existsSync ??= false;
 
@@ -1069,3 +1075,106 @@ class FakeRootPackage extends Fake implements RootPackage {
   @override
   late final String path;
 }
+
+///
+/// class FakeRootPackage extends Fake implements RootPackage {
+///   FakeRootPackage({
+///     String? packageName,
+///     String? path,
+///   })  : packageName = packageName ?? 'root_package_name',
+///         path = path ?? 'root_package_path';
+///
+///   @override
+///   final String packageName;
+///
+///   @override
+///   final String path;
+///
+///   @override
+///   Future<void> generate() async {}
+/// }
+///
+/// class FakeDiPackage extends Fake implements DiPackage {
+///   FakeDiPackage({
+///     String? packageName,
+///     String? path,
+///   })  : packageName = packageName ?? 'di_package_name',
+///         path = path ?? 'di_package_path';
+///
+///   @override
+///   final String packageName;
+///
+///   @override
+///   final String path;
+///
+///   @override
+///   Future<void> generate() async {}
+/// }
+///
+/// class FakeDomainPackage extends Fake implements DomainPackage {
+///   FakeDomainPackage({
+///     String? packageName,
+///     String? path,
+///   })  : packageName = packageName ?? 'domain_package_name',
+///         path = path ?? 'domain_package_path';
+///
+///   @override
+///   final String packageName;
+///
+///   @override
+///   final String path;
+///
+///   @override
+///   Future<void> generate() async {}
+/// }
+///
+/// class FakeInfrastructurePackage extends Fake implements InfrastructurePackage {
+///   FakeInfrastructurePackage({
+///     String? packageName,
+///     String? path,
+///   })  : packageName = packageName ?? 'infrastructure_package_name',
+///         path = path ?? 'infrastructure_package_path';
+///
+///   @override
+///   final String packageName;
+///
+///   @override
+///   final String path;
+///
+///   @override
+///   Future<void> generate() async {}
+/// }
+///
+/// class FakeLoggingPackage extends Fake implements LoggingPackage {
+///   FakeLoggingPackage({
+///     String? packageName,
+///     String? path,
+///   })  : packageName = packageName ?? 'logging_package_name',
+///         path = path ?? 'logging_package_path';
+///
+///   @override
+///   final String packageName;
+///
+///   @override
+///   final String path;
+///
+///   @override
+///   Future<void> generate() async {}
+/// }
+///
+/// class FakeUiPackage extends Fake implements UiPackage {
+///   FakeUiPackage({
+///     String? packageName,
+///     String? path,
+///   })  : packageName = packageName ?? 'ui_package_name',
+///         path = path ?? 'ui_package_path';
+///
+///   @override
+///   final String packageName;
+///
+///   @override
+///   final String path;
+///
+///   @override
+///   Future<void> generate() async {}
+/// }

@@ -105,6 +105,8 @@ mixin _CreateMixin on _ActivateMixin {
       }
     }
 
+    logger.newLine();
+
     await dartFormatFixTask();
 
     // TODO log better summary + refs to doc

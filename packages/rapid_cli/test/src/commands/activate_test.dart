@@ -76,6 +76,18 @@ void main() {
           ),
         );
         final logger = MockRapidLogger();
+        final flutterPubGetTaskGroupInvocations = setupFlutterPubGetTaskGroup(
+          manager,
+          packages: [
+            appFeaturePackage,
+            homePageFeaturePackage,
+            localizationPackage,
+            navigationPackage,
+            platformRootPackage,
+            platformUiPackage,
+          ],
+          logger: logger,
+        );
         final rapid = getRapid(
           project: project,
           logger: logger,
@@ -103,17 +115,7 @@ void main() {
                 orgName: 'test.example',
               ),
           () => platformUiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
+          ...flutterPubGetTaskGroupInvocations,
           ...flutterGenl10nTask(manager, package: localizationPackage),
           ...flutterConfigEnablePlatform(manager, platform: Platform.android),
           () => logger.newLine(),
@@ -180,6 +182,18 @@ void main() {
           ),
         );
         final logger = MockRapidLogger();
+        final flutterPubGetTaskGroupInvocations = setupFlutterPubGetTaskGroup(
+          manager,
+          packages: [
+            appFeaturePackage,
+            homePageFeaturePackage,
+            localizationPackage,
+            navigationPackage,
+            platformRootPackage,
+            platformUiPackage,
+          ],
+          logger: logger,
+        );
         final rapid = getRapid(
           project: project,
           logger: logger,
@@ -206,17 +220,7 @@ void main() {
                 language: Language(languageCode: 'fr'),
               ),
           () => platformUiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
+          ...flutterPubGetTaskGroupInvocations,
           ...flutterGenl10nTask(manager, package: localizationPackage),
           ...flutterConfigEnablePlatform(manager, platform: Platform.ios),
           () => logger.newLine(),
@@ -284,6 +288,18 @@ void main() {
           ),
         );
         final logger = MockRapidLogger();
+        final flutterPubGetTaskGroupInvocations = setupFlutterPubGetTaskGroup(
+          manager,
+          packages: [
+            appFeaturePackage,
+            homePageFeaturePackage,
+            localizationPackage,
+            navigationPackage,
+            platformRootPackage,
+            platformUiPackage,
+          ],
+          logger: logger,
+        );
         final rapid = getRapid(
           project: project,
           logger: logger,
@@ -301,17 +317,7 @@ void main() {
           () => platformRootPackage.generate(
                 orgName: 'test.example',
               ),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
+          ...flutterPubGetTaskGroupInvocations,
           ...flutterConfigEnablePlatform(manager, platform: Platform.linux),
           () => logger.newLine(),
           ...dartFormatFixTask(manager),
@@ -378,6 +384,18 @@ void main() {
           ),
         );
         final logger = MockRapidLogger();
+        final flutterPubGetTaskGroupInvocations = setupFlutterPubGetTaskGroup(
+          manager,
+          packages: [
+            appFeaturePackage,
+            homePageFeaturePackage,
+            localizationPackage,
+            navigationPackage,
+            platformRootPackage,
+            platformUiPackage,
+          ],
+          logger: logger,
+        );
         final rapid = getRapid(
           project: project,
           logger: logger,
@@ -395,17 +413,7 @@ void main() {
           () => platformRootPackage.generate(
                 orgName: 'test.example',
               ),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
+          ...flutterPubGetTaskGroupInvocations,
           ...flutterGenl10nTask(manager, package: localizationPackage),
           ...flutterConfigEnablePlatform(manager, platform: Platform.macos),
           () => logger.newLine(),
@@ -592,6 +600,18 @@ void main() {
           ),
         );
         final logger = MockRapidLogger();
+        final flutterPubGetTaskGroupInvocations = setupFlutterPubGetTaskGroup(
+          manager,
+          packages: [
+            appFeaturePackage,
+            homePageFeaturePackage,
+            localizationPackage,
+            navigationPackage,
+            platformRootPackage,
+            platformUiPackage,
+          ],
+          logger: logger,
+        );
         final rapid = getRapid(
           project: project,
           logger: logger,
@@ -609,17 +629,7 @@ void main() {
           () => platformRootPackage.generate(
                 description: 'Some desc.',
               ),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
+          ...flutterPubGetTaskGroupInvocations,
           ...flutterGenl10nTask(manager, package: localizationPackage),
           ...flutterConfigEnablePlatform(manager, platform: Platform.web),
           () => logger.newLine(),
@@ -687,6 +697,18 @@ void main() {
           ),
         );
         final logger = MockRapidLogger();
+        final flutterPubGetTaskGroupInvocations = setupFlutterPubGetTaskGroup(
+          manager,
+          packages: [
+            appFeaturePackage,
+            homePageFeaturePackage,
+            localizationPackage,
+            navigationPackage,
+            platformRootPackage,
+            platformUiPackage,
+          ],
+          logger: logger,
+        );
         final rapid = getRapid(
           project: project,
           logger: logger,
@@ -704,17 +726,7 @@ void main() {
           () => platformRootPackage.generate(
                 orgName: 'test.example',
               ),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
+          ...flutterPubGetTaskGroupInvocations,
           ...flutterGenl10nTask(manager, package: localizationPackage),
           ...flutterConfigEnablePlatform(manager, platform: Platform.windows),
           () => logger.newLine(),
@@ -783,6 +795,18 @@ void main() {
           ),
         );
         final logger = MockRapidLogger();
+        final flutterPubGetTaskGroupInvocations = setupFlutterPubGetTaskGroup(
+          manager,
+          packages: [
+            appFeaturePackage,
+            homePageFeaturePackage,
+            localizationPackage,
+            navigationPackage,
+            platformRootPackage,
+            platformUiPackage,
+          ],
+          logger: logger,
+        );
         final rapid = getRapid(
           project: project,
           logger: logger,
@@ -803,17 +827,7 @@ void main() {
                 description: 'Some desc.',
                 language: Language(languageCode: 'fr'),
               ),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
+          ...flutterPubGetTaskGroupInvocations,
           ...flutterGenl10nTask(manager, package: localizationPackage),
           ...flutterConfigEnablePlatform(manager, platform: Platform.android),
           ...flutterConfigEnablePlatform(manager, platform: Platform.ios),

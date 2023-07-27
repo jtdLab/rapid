@@ -64,12 +64,6 @@ void main() {
 
     test('completes', () async {
       final rapid = MockRapid();
-      when(
-        () => rapid.activateWeb(
-          description: any(named: 'description'),
-          language: any(named: 'language'),
-        ),
-      ).thenAnswer((_) async {});
       final argResults = MockArgResults();
       when(() => argResults['desc']).thenReturn('A description.');
       when(() => argResults['language']).thenReturn('de');

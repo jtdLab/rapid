@@ -33,13 +33,14 @@ void main() {
       test(
         'help',
         overridePrint((printLogs) async {
-          final featurePackage = FakePlatformFeaturePackage(name: 'package_a');
           final project = MockRapidProject(
             appModule: MockAppModule(
               platformDirectory: ({required Platform platform}) =>
                   MockPlatformDirectory(
                 featuresDirectory: MockPlatformFeaturesDirectory(
-                  featurePackages: [featurePackage],
+                  featurePackages: [
+                    FakePlatformFeaturePackage(name: 'package_a'),
+                  ],
                 ),
               ),
             ),

@@ -94,13 +94,6 @@ void main() {
 
       test('completes', () async {
         final rapid = MockRapid();
-        when(
-          () => rapid.platformAddFeatureWidget(
-            any(),
-            name: any(named: 'name'),
-            description: any(named: 'description'),
-          ),
-        ).thenAnswer((_) async {});
         final argResults = MockArgResults();
         when(() => argResults['desc']).thenReturn('Some description.');
         when(() => argResults.rest).thenReturn(['package_a']);

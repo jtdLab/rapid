@@ -5,8 +5,11 @@ import '../common.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
+// TODO consider not using a for loop instead share a method with test logic and give each
+// platform its own test invocation
+
 List<String> expectedUsage(
-  List<FakePlatformFeaturePackage> featurePackages, {
+  List<String> featurePackages, {
   required Platform platform,
 }) {
   return [
@@ -17,7 +20,7 @@ List<String> expectedUsage(
         '\n'
         'Available subcommands:\n'
         '  add         Add features or languages to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '${featurePackages.map((e) => '  ${e.name}   Work with ${e.name} of the ${platform.prettyName} part of an existing Rapid project.\n').join()}'
+        '${featurePackages.map((featurePackage) => '  $featurePackage   Work with $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n').join()}'
         '  remove      Removes features or languages from the ${platform.prettyName} part of an existing Rapid project.\n'
         '  set         Set properties of features from the ${platform.prettyName} part of an existing Rapid project.\n'
         '\n'
@@ -36,16 +39,15 @@ void main() {
         'help',
         overridePrint(
           (printLogs) async {
-            final featurePackages = [
-              FakePlatformFeaturePackage(name: 'package_a'),
-              FakePlatformFeaturePackage(name: 'package_b'),
-            ];
             final project = MockRapidProject(
               appModule: MockAppModule(
                 platformDirectory: ({required Platform platform}) =>
                     MockPlatformDirectory(
                   featuresDirectory: MockPlatformFeaturesDirectory(
-                    featurePackages: featurePackages,
+                    featurePackages: [
+                      FakePlatformFeaturePackage(name: 'package_a'),
+                      FakePlatformFeaturePackage(name: 'package_b'),
+                    ],
                   ),
                 ),
               ),
@@ -55,7 +57,9 @@ void main() {
             await commandRunner.run([platform.name, '--help']);
             expect(
               printLogs,
-              equals(expectedUsage(featurePackages, platform: platform)),
+              equals(
+                expectedUsage(['package_a', 'package_b'], platform: platform),
+              ),
             );
 
             printLogs.clear();
@@ -63,7 +67,9 @@ void main() {
             await commandRunner.run([platform.name, '-h']);
             expect(
               printLogs,
-              equals(expectedUsage(featurePackages, platform: platform)),
+              equals(
+                expectedUsage(['package_a', 'package_b'], platform: platform),
+              ),
             );
           },
         ),

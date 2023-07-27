@@ -91,12 +91,6 @@ void main() {
 
       test('completes', () async {
         final rapid = MockRapid();
-        when(
-          () => rapid.platformAddLanguage(
-            any(),
-            language: any(named: 'language'),
-          ),
-        ).thenAnswer((_) async {});
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['de']);
         final command = PlatformAddLanguageCommand(platform, null)

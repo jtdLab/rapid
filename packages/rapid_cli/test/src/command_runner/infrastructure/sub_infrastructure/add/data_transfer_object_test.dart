@@ -7,6 +7,8 @@ import '../../../../matchers.dart';
 import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
+// TODO consider sharing project setup
+
 List<String> expectedUsage(String subInfrastructurePackage) => [
       'Add a data transfer object to the subinfrastructure $subInfrastructurePackage.\n'
           '\n'
@@ -28,12 +30,12 @@ void main() {
     test(
       'help',
       overridePrint((printLogs) async {
-        final infrastructurePackage =
-            FakeInfrastructurePackage(name: 'package_a');
         final project = MockRapidProject(
           appModule: MockAppModule(
             infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackages: [infrastructurePackage],
+              infrastructurePackages: [
+                FakeInfrastructurePackage(name: 'package_a'),
+              ],
             ),
           ),
         );
@@ -65,12 +67,12 @@ void main() {
       test(
         'when entity is missing',
         overridePrint((printLogs) async {
-          final infrastructurePackage =
-              FakeInfrastructurePackage(name: 'package_a');
           final project = MockRapidProject(
             appModule: MockAppModule(
               infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [infrastructurePackage],
+                infrastructurePackages: [
+                  FakeInfrastructurePackage(name: 'package_a'),
+                ],
               ),
             ),
           );
@@ -89,12 +91,12 @@ void main() {
       test(
         'when entity is not a valid dart class name',
         overridePrint((printLogs) async {
-          final infrastructurePackage =
-              FakeInfrastructurePackage(name: 'package_a');
           final project = MockRapidProject(
             appModule: MockAppModule(
               infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [infrastructurePackage],
+                infrastructurePackages: [
+                  FakeInfrastructurePackage(name: 'package_a'),
+                ],
               ),
             ),
           );
@@ -119,12 +121,6 @@ void main() {
 
     test('completes', () async {
       final rapid = MockRapid();
-      when(
-        () => rapid.infrastructureSubInfrastructureAddDataTransferObject(
-          subInfrastructureName: any(named: 'subInfrastructureName'),
-          entityName: any(named: 'entityName'),
-        ),
-      ).thenAnswer((_) async {});
       final argResults = MockArgResults();
       when(() => argResults['entity']).thenReturn('Foo');
       final command =

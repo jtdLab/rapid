@@ -9,6 +9,8 @@ import '../matchers.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
+// TODO consider sharing test logic for flags with other commands
+
 const expectedUsage = [
   'Create a new Rapid project.\n'
       '\n'
@@ -198,18 +200,41 @@ void main() {
       });
     });
 
-    test('completes (1)', () async {
+    test('completes (no platforms)', () async {
       final rapid = MockRapid();
-      when(
+      final argResults = MockArgResults();
+      when(() => argResults['output-dir']).thenReturn('.');
+      when(() => argResults['desc']).thenReturn('A description.');
+      when(() => argResults['org-name']).thenReturn('com.foo.bar');
+      when(() => argResults['language']).thenReturn('de');
+      when(() => argResults['android']).thenReturn(false);
+      when(() => argResults['ios']).thenReturn(false);
+      when(() => argResults['linux']).thenReturn(false);
+      when(() => argResults['macos']).thenReturn(false);
+      when(() => argResults['mobile']).thenReturn(false);
+      when(() => argResults['web']).thenReturn(false);
+      when(() => argResults['windows']).thenReturn(false);
+      when(() => argResults.rest).thenReturn(['my_app']);
+      final command = CreateCommand()
+        ..argResultOverrides = argResults
+        ..rapidOverrides = rapid;
+
+      await command.run();
+
+      verify(
         () => rapid.create(
-          projectName: any(named: 'projectName'),
-          outputDir: any(named: 'outputDir'),
-          description: any(named: 'description'),
-          orgName: any(named: 'orgName'),
-          language: any(named: 'language'),
-          platforms: any(named: 'platforms'),
+          projectName: 'my_app',
+          outputDir: '.',
+          description: 'A description.',
+          orgName: 'com.foo.bar',
+          language: Language(languageCode: 'de'),
+          platforms: {},
         ),
-      ).thenAnswer((_) async => 0);
+      ).called(1);
+    });
+
+    test('completes (multiple platforms)', () async {
+      final rapid = MockRapid();
       final argResults = MockArgResults();
       when(() => argResults['output-dir']).thenReturn('.');
       when(() => argResults['desc']).thenReturn('A description.');
@@ -245,49 +270,6 @@ void main() {
             Platform.windows,
             Platform.mobile,
           },
-        ),
-      ).called(1);
-    });
-
-    test('completes (2)', () async {
-      final rapid = MockRapid();
-      when(
-        () => rapid.create(
-          projectName: any(named: 'projectName'),
-          outputDir: any(named: 'outputDir'),
-          description: any(named: 'description'),
-          orgName: any(named: 'orgName'),
-          language: any(named: 'language'),
-          platforms: any(named: 'platforms'),
-        ),
-      ).thenAnswer((_) async => 0);
-      final argResults = MockArgResults();
-      when(() => argResults['output-dir']).thenReturn('.');
-      when(() => argResults['desc']).thenReturn('A description.');
-      when(() => argResults['org-name']).thenReturn('com.foo.bar');
-      when(() => argResults['language']).thenReturn('de');
-      when(() => argResults['android']).thenReturn(false);
-      when(() => argResults['ios']).thenReturn(false);
-      when(() => argResults['linux']).thenReturn(false);
-      when(() => argResults['macos']).thenReturn(false);
-      when(() => argResults['mobile']).thenReturn(false);
-      when(() => argResults['web']).thenReturn(false);
-      when(() => argResults['windows']).thenReturn(false);
-      when(() => argResults.rest).thenReturn(['my_app']);
-      final command = CreateCommand()
-        ..argResultOverrides = argResults
-        ..rapidOverrides = rapid;
-
-      await command.run();
-
-      verify(
-        () => rapid.create(
-          projectName: 'my_app',
-          outputDir: '.',
-          description: 'A description.',
-          orgName: 'com.foo.bar',
-          language: Language(languageCode: 'de'),
-          platforms: {},
         ),
       ).called(1);
     });

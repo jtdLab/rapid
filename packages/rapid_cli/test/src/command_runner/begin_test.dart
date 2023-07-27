@@ -38,7 +38,6 @@ void main() {
 
     test('completes', () async {
       final rapid = MockRapid();
-      when(() => rapid.begin()).thenAnswer((_) async {});
       final command = BeginCommand(null)..rapidOverrides = rapid;
 
       await command.run();

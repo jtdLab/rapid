@@ -111,15 +111,6 @@ void main() {
 
       test('completes', () async {
         final rapid = MockRapid();
-        when(
-          () => rapid.platformAddFeatureTabFlow(
-            any(),
-            name: any(named: 'name'),
-            description: any(named: 'description'),
-            navigator: any(named: 'navigator'),
-            subFeatures: any(named: 'subFeatures'),
-          ),
-        ).thenAnswer((_) async {});
         final argResults = MockArgResults();
         when(() => argResults['navigator']).thenReturn(true);
         when(() => argResults['desc']).thenReturn('Some description.');

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner.dart';
@@ -29,6 +30,12 @@ Rapid getRapid({
     tool: tool ?? MockRapidTool(),
     logger: logger ?? MockRapidLogger(),
   );
+}
+
+Platform randomPlatform() {
+  final enumValues = Platform.values;
+  int randomIndex = Random().nextInt(enumValues.length);
+  return enumValues[randomIndex];
 }
 
 typedef LoggerSetup = ({

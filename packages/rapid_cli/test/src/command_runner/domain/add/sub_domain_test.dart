@@ -83,9 +83,6 @@ void main() {
 
     test('completes', () async {
       final rapid = MockRapid();
-      when(
-        () => rapid.domainAddSubDomain(name: any(named: 'name')),
-      ).thenAnswer((_) async {});
       final argResults = MockArgResults();
       when(() => argResults.rest).thenReturn(['foo_bar']);
       final command = DomainAddSubDomainCommand(null)

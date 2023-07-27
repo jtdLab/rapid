@@ -30,11 +30,12 @@ void main() {
     test(
       'help',
       overridePrint((printLogs) async {
-        final domainPackage = FakeDomainPackage(name: 'package_a');
         final project = MockRapidProject(
           appModule: MockAppModule(
             domainDirectory: MockDomainDirectory(
-              domainPackages: [domainPackage],
+              domainPackages: [
+                FakeDomainPackage(name: 'package_a'),
+              ],
             ),
           ),
         );
@@ -56,11 +57,12 @@ void main() {
       test(
         'when name is missing',
         overridePrint((printLogs) async {
-          final domainPackage = FakeDomainPackage(name: 'package_a');
           final project = MockRapidProject(
             appModule: MockAppModule(
               domainDirectory: MockDomainDirectory(
-                domainPackages: [domainPackage],
+                domainPackages: [
+                  FakeDomainPackage(name: 'package_a'),
+                ],
               ),
             ),
           );
@@ -79,11 +81,12 @@ void main() {
       test(
         'when multiple names are provided',
         overridePrint((printLogs) async {
-          final domainPackage = FakeDomainPackage(name: 'package_a');
           final project = MockRapidProject(
             appModule: MockAppModule(
               domainDirectory: MockDomainDirectory(
-                domainPackages: [domainPackage],
+                domainPackages: [
+                  FakeDomainPackage(name: 'package_a'),
+                ],
               ),
             ),
           );
@@ -102,11 +105,12 @@ void main() {
       test(
         'when name is not a valid dart class name',
         overridePrint((printLogs) async {
-          final domainPackage = FakeDomainPackage(name: 'package_a');
           final project = MockRapidProject(
             appModule: MockAppModule(
               domainDirectory: MockDomainDirectory(
-                domainPackages: [domainPackage],
+                domainPackages: [
+                  FakeDomainPackage(name: 'package_a'),
+                ],
               ),
             ),
           );
@@ -125,14 +129,6 @@ void main() {
 
     test('completes', () async {
       final rapid = MockRapid();
-      when(
-        () => rapid.domainSubDomainAddValueObject(
-          name: any(named: 'name'),
-          subDomainName: any(named: 'subDomainName'),
-          type: any(named: 'type'),
-          generics: any(named: 'generics'),
-        ),
-      ).thenAnswer((_) async {});
       final argResults = MockArgResults();
       when(() => argResults['type']).thenReturn('Triple<#A, int, #B>');
       when(() => argResults.rest).thenReturn(['Foo']);

@@ -25,11 +25,12 @@ void main() {
     test(
       'help',
       overridePrint((printLogs) async {
-        final domainPackage = FakeDomainPackage(name: 'package_a');
         final project = MockRapidProject(
           appModule: MockAppModule(
             domainDirectory: MockDomainDirectory(
-              domainPackages: [domainPackage],
+              domainPackages: [
+                FakeDomainPackage(name: 'package_a'),
+              ],
             ),
           ),
         );

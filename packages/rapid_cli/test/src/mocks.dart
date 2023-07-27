@@ -148,7 +148,272 @@ class MockGeneratorHooks extends Mock implements GeneratorHooks {
   }
 }
 
-class MockRapid extends Mock implements Rapid {}
+class MockRapid extends Mock implements Rapid {
+  MockRapid() {
+    when(
+      () => activateAndroid(
+        description: any(named: 'description'),
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => activateIos(
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => activateLinux(
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => activateMacos(
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => activateMobile(
+        description: any(named: 'description'),
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => activateWeb(
+        description: any(named: 'description'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => activateWindows(
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => begin()).thenAnswer((_) async {});
+    when(
+      () => create(
+        projectName: any(named: 'projectName'),
+        outputDir: any(named: 'outputDir'),
+        description: any(named: 'description'),
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+        platforms: any(named: 'platforms'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => deactivatePlatform(any())).thenAnswer((_) async {});
+    when(
+      () => domainAddSubDomain(name: any(named: 'name')),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainRemoveSubDomain(name: any(named: 'name')),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainSubDomainAddEntity(
+        name: any(named: 'name'),
+        subDomainName: any(named: 'subDomainName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainSubDomainAddServiceInterface(
+        name: any(named: 'name'),
+        subDomainName: any(named: 'subDomainName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainSubDomainAddValueObject(
+        name: any(named: 'name'),
+        subDomainName: any(named: 'subDomainName'),
+        type: any(named: 'type'),
+        generics: any(named: 'generics'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainSubDomainRemoveEntity(
+        name: any(named: 'name'),
+        subDomainName: any(named: 'subDomainName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainSubDomainRemoveServiceInterface(
+        name: any(named: 'name'),
+        subDomainName: any(named: 'subDomainName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainSubDomainRemoveValueObject(
+        name: any(named: 'name'),
+        subDomainName: any(named: 'subDomainName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => end()).thenAnswer((_) async {});
+    when(
+      () => infrastructureSubInfrastructureAddDataTransferObject(
+        subInfrastructureName: any(named: 'subInfrastructureName'),
+        entityName: any(named: 'entityName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => infrastructureSubInfrastructureAddServiceImplementation(
+        subInfrastructureName: any(named: 'subInfrastructureName'),
+        serviceInterfaceName: any(named: 'serviceInterfaceName'),
+        name: any(named: 'name'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => infrastructureSubInfrastructureRemoveDataTransferObject(
+        subInfrastructureName: any(named: 'subInfrastructureName'),
+        entityName: any(named: 'entityName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => infrastructureSubInfrastructureRemoveServiceImplementation(
+        subInfrastructureName: any(named: 'subInfrastructureName'),
+        serviceInterfaceName: any(named: 'serviceInterfaceName'),
+        name: any(named: 'name'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformAddFeatureFlow(
+        any(),
+        name: any(named: 'name'),
+        description: any(named: 'description'),
+        navigator: any(named: 'navigator'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformAddFeaturePage(
+        any(),
+        name: any(named: 'name'),
+        description: any(named: 'description'),
+        navigator: any(named: 'navigator'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformAddFeatureTabFlow(
+        any(),
+        name: any(named: 'name'),
+        description: any(named: 'description'),
+        navigator: any(named: 'navigator'),
+        subFeatures: any(named: 'subFeatures'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformAddFeatureWidget(
+        any(),
+        name: any(named: 'name'),
+        description: any(named: 'description'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformAddLanguage(
+        any(),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformAddNavigator(
+        any(),
+        featureName: any(named: 'featureName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformFeatureAddBloc(
+        any(),
+        name: any(named: 'name'),
+        featureName: any(named: 'featureName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformFeatureAddCubit(
+        any(),
+        name: any(named: 'name'),
+        featureName: any(named: 'featureName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformFeatureRemoveBloc(
+        any(),
+        name: any(named: 'name'),
+        featureName: any(named: 'featureName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformFeatureRemoveCubit(
+        any(),
+        name: any(named: 'name'),
+        featureName: any(named: 'featureName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformSetDefaultLanguage(
+        any(),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformRemoveFeature(
+        any(),
+        name: any(named: 'name'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformRemoveLanguage(
+        any(),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformRemoveNavigator(
+        any(),
+        featureName: any(named: 'featureName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => pubAdd(
+        packageName: any(named: 'packageName'),
+        packages: any(named: 'packages'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => pubGet(
+        packageName: any(named: 'packageName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => pubRemove(
+        packageName: any(named: 'packageName'),
+        packages: any(named: 'packages'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => uiAddWidget(
+        name: any(named: 'name'),
+        theme: any(named: 'theme'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => uiPlatformAddWidget(
+        any(),
+        name: any(named: 'name'),
+        theme: any(named: 'theme'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => uiPlatformRemoveWidget(
+        any(),
+        name: any(named: 'name'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => uiRemoveWidget(name: any(named: 'name')),
+    ).thenAnswer((_) async {});
+  }
+}
 
 class MockRapidProject extends Mock implements RapidProject {
   MockRapidProject({

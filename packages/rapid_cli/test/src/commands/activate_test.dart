@@ -66,6 +66,7 @@ _ProjectSetup<T> _setupProjectWithPlatform<T extends PlatformRootPackage>() {
     path: 'platform_ui_package_path',
   );
   final project = MockRapidProject(
+    path: 'project_path',
     appModule: MockAppModule(
       platformDirectory: ({required platform}) => MockPlatformDirectory(
         rootPackage: platformRootPackage,
@@ -241,7 +242,7 @@ void _verifyActivatePlatform<T extends PlatformRootPackage>(
     },
     () => logger.newLine(),
     () => logger.progress('Running "dart format . --fix" in project'),
-    () => manager.runDartFormatFix(workingDirectory: 'root_package_path'),
+    () => manager.runDartFormatFix(workingDirectory: 'project_path'),
     () => progress.complete(),
     () => logger.newLine(),
     () => logger.commandSuccess('Activated ${platform.prettyName}!'),

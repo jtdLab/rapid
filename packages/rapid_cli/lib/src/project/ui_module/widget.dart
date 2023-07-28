@@ -1,5 +1,7 @@
 part of '../project.dart';
 
+// TODO rethink abstraction of themed widget
+
 class Widget extends FileSystemEntityCollection {
   Widget({
     required this.projectName,

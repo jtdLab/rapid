@@ -44,12 +44,8 @@ mixin _UiMixin on _Rapid {
       await task('Creating widget', () async {
         await widget.generate();
         barrelFile.addExport('src/${name.snakeCase}.dart');
-      });
 
-      logger.newLine();
-
-      if (widget is ThemedWidget) {
-        await task('Creating theme', () {
+        if (widget is ThemedWidget) {
           final themeExtensionsFile = uiPackage.themeExtensionsFile;
           final projectName = project.name;
           // TODO read from theme tailor config file
@@ -73,8 +69,8 @@ mixin _UiMixin on _Rapid {
           }
 
           barrelFile.addExport('src/${name.snakeCase}_theme.dart');
-        });
-      }
+        }
+      });
 
       logger.newLine();
 
@@ -113,10 +109,8 @@ mixin _UiMixin on _Rapid {
       await task('Deleting widget', () async {
         widget.delete();
         barrelFile.removeExport('src/${name.snakeCase}.dart');
-      });
 
-      if (widget is ThemedWidget) {
-        await task('Deleting theme', () {
+        if (widget is ThemedWidget) {
           final themeExtensionsFile = uiPackage.themeExtensionsFile;
           final projectName = project.name;
 
@@ -138,8 +132,10 @@ mixin _UiMixin on _Rapid {
           }
 
           barrelFile.removeExport('src/${name.snakeCase}_theme.dart');
-        });
-      }
+        }
+      });
+
+      logger.newLine();
 
       await dartFormatFixTask();
 

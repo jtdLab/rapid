@@ -45,6 +45,8 @@ typedef LoggerSetup = ({
   RapidLogger logger
 });
 
+typedef LoggerWithoutGroupSetup = ({Progress progress, RapidLogger logger});
+
 LoggerSetup setupLogger() {
   final progress = MockProgress();
   final groupableProgress = MockGroupableProgress();
@@ -56,6 +58,17 @@ LoggerSetup setupLogger() {
     progress: progress,
     groupableProgress: groupableProgress,
     progressGroup: progressGroup,
+    logger: logger,
+  );
+}
+
+LoggerWithoutGroupSetup setupLoggerWithoutGroup() {
+  final progress = MockProgress();
+
+  final logger = MockRapidLogger(progress: progress);
+
+  return (
+    progress: progress,
     logger: logger,
   );
 }
@@ -114,9 +127,10 @@ extension ProcessManagerX on ProcessManager {
 
   dynamic runFlutterPubGet({
     required String workingDirectory,
+    bool dryRun = false,
   }) =>
       _runProcess(
-        ['flutter', 'pub', 'get'],
+        ['flutter', 'pub', 'get', if (dryRun) '--dry-run'],
         workingDirectory: workingDirectory,
       );
 
@@ -148,5 +162,47 @@ extension ProcessManagerX on ProcessManager {
           if (platform == Platform.windows) '--enable-windows-desktop',
         ],
         workingDirectory: any(named: 'workingDirectory'),
+      );
+
+  dynamic runFlutterPubAdd(
+    List<String> dependenciesToAdd, {
+    required String workingDirectory,
+  }) =>
+      _runProcess(
+        ['flutter', 'pub', 'add', ...dependenciesToAdd],
+        workingDirectory: workingDirectory,
+      );
+
+  dynamic runFlutterPubRemove(
+    List<String> dependenciesToRemove, {
+    required String workingDirectory,
+  }) =>
+      _runProcess(
+        ['flutter', 'pub', 'remove', ...dependenciesToRemove],
+        workingDirectory: workingDirectory,
+      );
+
+  dynamic runMelosBootstrap(
+    List<String> scope, {
+    required String workingDirectory,
+  }) =>
+      _runProcess(
+        ['melos', 'bootstrap', '--scope', scope.join(',')],
+        workingDirectory: workingDirectory,
+      );
+
+  dynamic runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs({
+    required String workingDirectory,
+  }) =>
+      _runProcess(
+        [
+          'flutter',
+          'pub',
+          'run',
+          'build_runner',
+          'build',
+          '--delete-conflicting-outputs',
+        ],
+        workingDirectory: workingDirectory,
       );
 }

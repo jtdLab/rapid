@@ -1,69 +1,42 @@
-import 'dart:convert';
-
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
 import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src/tool.dart';
 import 'package:test/test.dart';
 
-import '../invocations.dart';
 import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
-// TODO maybe test package resolving better (more neat)
-
 void main() {
+  late RapidProject project;
+  late CommandGroup commandGroup;
+  late RapidTool tool;
+
   setUpAll(() {
     registerFallbackValues();
   });
 
+  setUp(() {
+    project = MockRapidProject();
+    commandGroup = MockCommandGroup();
+    when(() => commandGroup.isActive).thenReturn(false);
+    tool = MockRapidTool();
+    when(() => tool.loadGroup()).thenReturn(commandGroup);
+  });
+
   group('pubAdd', () {
-    test('finds package by package name', () async {
-      final project = MockRapidProject();
-      when(() => project.findByPackageName('example_package'))
-          .thenReturn(FakeDartPackage());
-      final rapid = getRapid(project: project);
-
-      await withMockProcessManager(
-        () async => rapid.pubAdd(
-          packageName: 'example_package',
-          packages: ['package_a', 'package_b'],
-        ),
-      );
-
-      verify(() => project.findByPackageName('example_package')).called(1);
-      verifyNever(() => project.findByCwd());
-    });
-
-    test('finds package by current working directory', () async {
-      final project = MockRapidProject();
-      when(() => project.findByCwd()).thenReturn(FakeDartPackage());
-      final rapid = getRapid(project: project);
-
-      await withMockProcessManager(
-        () async => rapid.pubAdd(
-          packageName: null,
-          packages: ['package_a', 'package_b'],
-        ),
-      );
-
-      verifyNever(() => project.findByPackageName(any()));
-      verify(() => project.findByCwd()).called(1);
-    });
-
     test('throws PackageNotFoundException when package is not found by name',
         () {
-      final project = MockRapidProject();
       when(() => project.findByPackageName('non_existing_package'))
           .thenThrow(Exception());
       final rapid = getRapid(project: project);
 
       expect(
-        () async => withMockProcessManager(
-          () async => rapid.pubAdd(
-            packageName: 'non_existing_package',
-            packages: ['package_a', 'package_b'],
-          ),
+        () async => rapid.pubAdd(
+          packageName: 'non_existing_package',
+          packages: ['package_a', 'package_b'],
         ),
         throwsA(isA<PackageNotFoundException>()),
       );
@@ -72,667 +45,846 @@ void main() {
     });
 
     test(
-        'throws PackageAtCwdNotFoundException when package is not found at current working directory',
-        () {
-      final project = MockRapidProject();
-      when(() => project.findByCwd()).thenThrow(Exception());
-      final rapid = getRapid(project: project);
+      'throws PackageAtCwdNotFoundException when package is not found at current working directory',
+      () {
+        when(() => project.findByCwd()).thenThrow(Exception());
+        final rapid = getRapid(project: project);
 
-      expect(
-        () async => withMockProcessManager(
+        expect(
           () async => rapid.pubAdd(
             packageName: null,
             packages: ['package_a', 'package_b'],
           ),
-        ),
-        throwsA(isA<PackageAtCwdNotFoundException>()),
+          throwsA(isA<PackageAtCwdNotFoundException>()),
+        );
+        verify(() => project.findByCwd()).called(1);
+        verifyNever(() => project.findByPackageName(any()));
+      },
+    );
+
+    group('given found package by name', () {
+      late DartPackage package;
+
+      setUp(() {
+        package = MockDartPackage(
+          packageName: 'example_package',
+          path: 'example_package_path',
+        );
+        when(() => project.findByPackageName('example_package'))
+            .thenReturn(package);
+      });
+
+      test(
+        'adds dependencies using flutter pub add',
+        withMockEnv((manager) async {
+          final (progress: progress, logger: logger) =
+              setupLoggerWithoutGroup();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubAdd(
+            packageName: 'example_package',
+            packages: ['package_a', 'package_b'],
+          );
+
+          verifyInOrder([
+            () => logger.newLine(),
+            () => logger.progress(
+                'Running "flutter pub add package_a package_b" in example_package'),
+            () => manager.runFlutterPubAdd(
+                  ['package_a', 'package_b'],
+                  workingDirectory: 'example_package_path',
+                ),
+            () => progress.complete(),
+            () => logger.newLine(),
+            () => logger.commandSuccess('Added Dependencies!'),
+          ]);
+          verifyNoMoreInteractions(manager);
+          verifyNoMoreInteractions(logger);
+          verifyNoMoreInteractions(progress);
+        }),
       );
-      verify(() => project.findByCwd()).called(1);
-      verifyNever(() => project.findByPackageName(any()));
+
+      test(
+        'rebootstraps dependent packages',
+        withMockEnv((manager) async {
+          final dependentPackages = [
+            FakeDartPackage(packageName: 'package_c'),
+            FakeDartPackage(packageName: 'package_d'),
+          ];
+          when(() => project.dependentPackages(package))
+              .thenReturn(dependentPackages);
+          final (progress: progress, logger: logger) =
+              setupLoggerWithoutGroup();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubAdd(
+            packageName: 'example_package',
+            packages: ['package_a', 'package_b'],
+          );
+
+          verifyInOrder([
+            () => logger.progress(
+                'Running "melos bootstrap --scope package_c,package_d"'),
+            () => manager.runMelosBootstrap(
+                  ['package_c', 'package_d'],
+                  workingDirectory: 'project_path',
+                ),
+            () => progress.complete(),
+          ]);
+        }),
+      );
+
+      test(
+        'handles packages with empty constraints manually',
+        withMockEnv((manager) async {
+          final packagePubSpecFile = MockPubspecYamlFile();
+          when(() => package.pubSpecFile).thenReturn(packagePubSpecFile);
+          final logger = MockRapidLogger();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubAdd(
+            packageName: 'example_package',
+            packages: ['package_a:', 'dev:package_b:'],
+          );
+
+          verifyInOrder([
+            () => logger.newLine(),
+            () => packagePubSpecFile.setDependency(
+                  name: 'package_a',
+                  dependency: HostedReference(VersionConstraint.empty),
+                  dev: false,
+                ),
+            () => packagePubSpecFile.setDependency(
+                  name: 'package_b',
+                  dependency: HostedReference(VersionConstraint.empty),
+                  dev: true,
+                ),
+          ]);
+          verifyNever(
+            () => logger.progress(
+              'Running "flutter pub add package_a package_b" in example_package',
+            ),
+          );
+          verifyNever(
+            () => manager.runFlutterPubAdd(
+              ['package_a', 'package_b'],
+              workingDirectory: 'example_package_path',
+            ),
+          );
+        }),
+      );
+
+      group('and command group is active', () {
+        setUp(() {
+          when(() => commandGroup.isActive).thenReturn(true);
+        });
+
+        test(
+          'marks dependent packages as need bootstrap',
+          withMockEnv((manager) async {
+            final dependentPackages = [
+              FakeDartPackage(packageName: 'package_c'),
+              FakeDartPackage(packageName: 'package_d'),
+            ];
+            when(() => project.dependentPackages(package))
+                .thenReturn(dependentPackages);
+            final logger = MockRapidLogger();
+            final rapid =
+                getRapid(project: project, tool: tool, logger: logger);
+
+            await rapid.pubAdd(
+              packageName: 'example_package',
+              packages: ['package_a', 'package_b'],
+            );
+
+            verifyInOrder([
+              () => tool.markAsNeedBootstrap(packages: dependentPackages),
+            ]);
+          }),
+        );
+      });
     });
 
-    test('adds dependencies using flutter pub add', () async {
-      final manager = MockProcessManager();
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final package = FakeDartPackage(packageName: 'example_package');
-      final dependentPackages = [
-        FakeDartPackage(packageName: 'package_c'),
-        FakeDartPackage(packageName: 'package_d'),
-      ];
-      final project = MockRapidProject();
-      when(() => project.dependentPackages(package))
-          .thenReturn(dependentPackages);
-      when(() => project.findByPackageName('example_package'))
-          .thenReturn(package);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: dependentPackages,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
+    group('given found package by current working directory', () {
+      late DartPackage package;
 
-      await withMockProcessManager(
-        () async => rapid.pubAdd(
+      setUp(() {
+        package = MockDartPackage(
           packageName: 'example_package',
-          packages: ['package_a', 'package_b'],
-        ),
-        manager: manager,
-      );
-      verifyInOrder([
-        () => logger.newLine(),
-        ...flutterPubAddTask(
-          manager,
-          package: package,
-          dependenciesToAdd: ['package_a', 'package_b'],
-        ),
-        ...melosBootstrapTaskInvocations,
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Dependencies!'),
-      ]);
-    });
+          path: 'example_package_path',
+        );
+        when(() => project.findByCwd()).thenReturn(package);
+      });
 
-    test('adds dependencies using flutter pub add (inside command group)',
-        () async {
-      final manager = MockProcessManager();
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(true);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final package = FakeDartPackage(packageName: 'example_package');
-      final dependentPackages = [
-        FakeDartPackage(packageName: 'package_c'),
-        FakeDartPackage(packageName: 'package_d'),
-      ];
-      final project = MockRapidProject();
-      when(() => project.dependentPackages(package))
-          .thenReturn(dependentPackages);
-      when(() => project.findByPackageName('example_package'))
-          .thenReturn(package);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInCommandGroupInvocations =
-          setupMelosBootstrapTaskInCommandGroup(
-        manager,
-        scope: dependentPackages,
-        tool: tool,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
+      test(
+        'adds dependencies using flutter pub add',
+        withMockEnv((manager) async {
+          final (progress: progress, logger: logger) =
+              setupLoggerWithoutGroup();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubAdd(
+            packageName: null,
+            packages: ['package_a', 'package_b'],
+          );
+
+          verifyInOrder([
+            () => logger.newLine(),
+            () => logger.progress(
+                'Running "flutter pub add package_a package_b" in example_package'),
+            () => manager.runFlutterPubAdd(
+                  ['package_a', 'package_b'],
+                  workingDirectory: 'example_package_path',
+                ),
+            () => progress.complete(),
+            () => logger.newLine(),
+            () => logger.commandSuccess('Added Dependencies!'),
+          ]);
+          verifyNoMoreInteractions(manager);
+          verifyNoMoreInteractions(logger);
+          verifyNoMoreInteractions(progress);
+        }),
       );
 
-      await withMockProcessManager(
-        () async => rapid.pubAdd(
-          packageName: 'example_package',
-          packages: ['package_a', 'package_b'],
-        ),
-        manager: manager,
-      );
-      verifyInOrder([
-        () => logger.newLine(),
-        ...flutterPubAddTask(
-          manager,
-          package: package,
-          dependenciesToAdd: ['package_a', 'package_b'],
-        ),
-        ...melosBootstrapTaskInCommandGroupInvocations,
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Dependencies!'),
-      ]);
-    });
+      test(
+        'rebootstraps dependent packages',
+        withMockEnv((manager) async {
+          final dependentPackages = [
+            FakeDartPackage(packageName: 'package_c'),
+            FakeDartPackage(packageName: 'package_d'),
+          ];
+          when(() => project.dependentPackages(package))
+              .thenReturn(dependentPackages);
+          final (progress: progress, logger: logger) =
+              setupLoggerWithoutGroup();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
 
-    test('handles packages with empty constraints manually', () async {
-      final manager = MockProcessManager();
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final pubSpecFile = MockPubspecYamlFile();
-      final package = FakeDartPackage(
-        packageName: 'example_package',
-        pubSpecFile: pubSpecFile,
-      );
-      final dependentPackages = [
-        FakeDartPackage(packageName: 'package_c'),
-        FakeDartPackage(packageName: 'package_d'),
-      ];
-      final project = MockRapidProject();
-      when(() => project.dependentPackages(package))
-          .thenReturn(dependentPackages);
-      when(() => project.findByPackageName('example_package'))
-          .thenReturn(package);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: dependentPackages,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
+          await rapid.pubAdd(
+            packageName: null,
+            packages: ['package_a', 'package_b'],
+          );
+
+          verifyInOrder([
+            () => logger.progress(
+                'Running "melos bootstrap --scope package_c,package_d"'),
+            () => manager.runMelosBootstrap(
+                  ['package_c', 'package_d'],
+                  workingDirectory: 'project_path',
+                ),
+            () => progress.complete(),
+          ]);
+        }),
       );
 
-      await withMockProcessManager(
-        () async => rapid.pubAdd(
-          packageName: 'example_package',
-          packages: ['package_a:', 'dev:package_b:'],
-        ),
-        manager: manager,
-      );
+      test(
+        'handles packages with empty constraints manually',
+        withMockEnv((manager) async {
+          final packagePubSpecFile = MockPubspecYamlFile();
+          when(() => package.pubSpecFile).thenReturn(packagePubSpecFile);
+          final logger = MockRapidLogger();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
 
-      verifyInOrder([
-        () => logger.newLine(),
-        () => pubSpecFile.setDependency(
-              name: 'package_a',
-              dependency: HostedReference(VersionConstraint.empty),
-              dev: false,
+          await rapid.pubAdd(
+            packageName: null,
+            packages: ['package_a:', 'dev:package_b:'],
+          );
+
+          verifyInOrder([
+            () => logger.newLine(),
+            () => packagePubSpecFile.setDependency(
+                  name: 'package_a',
+                  dependency: HostedReference(VersionConstraint.empty),
+                  dev: false,
+                ),
+            () => packagePubSpecFile.setDependency(
+                  name: 'package_b',
+                  dependency: HostedReference(VersionConstraint.empty),
+                  dev: true,
+                ),
+          ]);
+          verifyNever(
+            () => logger.progress(
+              'Running "flutter pub add package_a package_b" in example_package',
             ),
-        () => pubSpecFile.setDependency(
-              name: 'package_b',
-              dependency: HostedReference(VersionConstraint.empty),
-              dev: true,
+          );
+          verifyNever(
+            () => manager.runFlutterPubAdd(
+              ['package_a', 'package_b'],
+              workingDirectory: 'example_package_path',
             ),
-        ...melosBootstrapTaskInvocations,
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Dependencies!'),
-      ]);
-      verifyNeverMulti(
-        flutterPubAddTask(
-          manager,
-          package: package,
-          dependenciesToAdd: ['package_a', 'dev:package_b'],
-        ),
-      );
-    });
-
-    test(
-        'handles packages with empty constraints manually (inside command group)',
-        () async {
-      final manager = MockProcessManager();
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(true);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final pubSpecFile = MockPubspecYamlFile();
-      final package = FakeDartPackage(
-        packageName: 'example_package',
-        pubSpecFile: pubSpecFile,
-      );
-      final dependentPackages = [
-        FakeDartPackage(packageName: 'package_c'),
-        FakeDartPackage(packageName: 'package_d'),
-      ];
-      final project = MockRapidProject();
-      when(() => project.dependentPackages(package))
-          .thenReturn(dependentPackages);
-      when(() => project.findByPackageName('example_package'))
-          .thenReturn(package);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInCommandGroupInvocations =
-          setupMelosBootstrapTaskInCommandGroup(
-        manager,
-        scope: dependentPackages,
-        tool: tool,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
+          );
+        }),
       );
 
-      await withMockProcessManager(
-        () async => rapid.pubAdd(
-          packageName: 'example_package',
-          packages: ['package_a:', 'dev:package_b:'],
-        ),
-        manager: manager,
-      );
+      group('and command group is active', () {
+        setUp(() {
+          when(() => commandGroup.isActive).thenReturn(true);
+        });
 
-      verifyInOrder([
-        () => logger.newLine(),
-        () => pubSpecFile.setDependency(
-              name: 'package_a',
-              dependency: HostedReference(VersionConstraint.empty),
-              dev: false,
-            ),
-        () => pubSpecFile.setDependency(
-              name: 'package_b',
-              dependency: HostedReference(VersionConstraint.empty),
-              dev: true,
-            ),
-        ...melosBootstrapTaskInCommandGroupInvocations,
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Dependencies!'),
-      ]);
-      verifyNeverMulti(
-        flutterPubAddTask(
-          manager,
-          package: package,
-          dependenciesToAdd: ['package_a', 'dev:package_b'],
-        ),
-      );
+        test(
+          'marks dependent packages as need bootstrap',
+          withMockEnv((manager) async {
+            final dependentPackages = [
+              FakeDartPackage(packageName: 'package_c'),
+              FakeDartPackage(packageName: 'package_d'),
+            ];
+            when(() => project.dependentPackages(package))
+                .thenReturn(dependentPackages);
+            final logger = MockRapidLogger();
+            final rapid =
+                getRapid(project: project, tool: tool, logger: logger);
+
+            await rapid.pubAdd(
+              packageName: null,
+              packages: ['package_a', 'package_b'],
+            );
+
+            verifyInOrder([
+              () => tool.markAsNeedBootstrap(packages: dependentPackages),
+            ]);
+          }),
+        );
+      });
     });
   });
 
   group('pubGet', () {
-    test('finds package by package name', () async {
-      final project = MockRapidProject();
-      when(() => project.findByPackageName('example_package'))
-          .thenReturn(FakeDartPackage());
-      final rapid = getRapid(project: project);
+    test(
+      'throws PackageNotFoundException when package is not found by name',
+      () {
+        when(() => project.findByPackageName('non_existing_package'))
+            .thenThrow(Exception());
+        final rapid = getRapid(project: project);
 
-      await withMockProcessManager(
-        () async => rapid.pubGet(
-          packageName: 'example_package',
-        ),
-      );
-
-      verify(() => project.findByPackageName('example_package')).called(1);
-      verifyNever(() => project.findByCwd());
-    });
-
-    test('finds package by current working directory', () async {
-      final project = MockRapidProject();
-      when(() => project.findByCwd()).thenReturn(FakeDartPackage());
-      final rapid = getRapid(project: project);
-
-      await withMockProcessManager(
-        () async => rapid.pubGet(
-          packageName: null,
-        ),
-      );
-
-      verifyNever(() => project.findByPackageName(any()));
-      verify(() => project.findByCwd()).called(1);
-    });
-
-    test('throws PackageNotFoundException when package is not found by name',
-        () {
-      final project = MockRapidProject();
-      when(() => project.findByPackageName('non_existing_package'))
-          .thenThrow(Exception());
-      final rapid = getRapid(project: project);
-
-      expect(
-        () async => withMockProcessManager(
+        expect(
           () async => rapid.pubGet(
             packageName: 'non_existing_package',
           ),
-        ),
-        throwsA(isA<PackageNotFoundException>()),
-      );
-      verify(() => project.findByPackageName('non_existing_package')).called(1);
-      verifyNever(() => project.findByCwd());
-    });
+          throwsA(isA<PackageNotFoundException>()),
+        );
+        verify(() => project.findByPackageName('non_existing_package'))
+            .called(1);
+        verifyNever(() => project.findByCwd());
+      },
+    );
 
     test(
-        'throws PackageAtCwdNotFoundException when package is not found at current working directory',
-        () {
-      final project = MockRapidProject();
-      when(() => project.findByCwd()).thenThrow(Exception());
-      final rapid = getRapid(project: project);
+      'throws PackageAtCwdNotFoundException when package is not found at current working directory',
+      () {
+        when(() => project.findByCwd()).thenThrow(Exception());
+        final rapid = getRapid(project: project);
 
-      expect(
-        () async => withMockProcessManager(
+        expect(
           () async => rapid.pubGet(
             packageName: null,
           ),
-        ),
-        throwsA(isA<PackageAtCwdNotFoundException>()),
+          throwsA(isA<PackageAtCwdNotFoundException>()),
+        );
+        verify(() => project.findByCwd()).called(1);
+        verifyNever(() => project.findByPackageName(any()));
+      },
+    );
+
+    group('given found package by name', () {
+      late DartPackage package;
+
+      setUp(() {
+        package = MockDartPackage(
+          packageName: 'example_package',
+          path: 'example_package_path',
+        );
+        when(() => project.findByPackageName('example_package'))
+            .thenReturn(package);
+      });
+
+      test(
+        'gets dependencies using flutter pub get',
+        withMockEnv((manager) async {
+          final (progress: progress, logger: logger) =
+              setupLoggerWithoutGroup();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubGet(
+            packageName: 'example_package',
+          );
+
+          verifyInOrder([
+            () => logger.newLine(),
+            () => manager.runFlutterPubGet(
+                workingDirectory: 'example_package_path', dryRun: true),
+            () =>
+                logger.progress('Running "flutter pub get" in example_package'),
+            () => manager.runFlutterPubGet(
+                  workingDirectory: 'example_package_path',
+                ),
+            () => progress.complete(),
+            () => logger.newLine(),
+            () => logger.commandSuccess('Got Dependencies!'),
+          ]);
+          verifyNoMoreInteractions(manager);
+          verifyNoMoreInteractions(logger);
+          verifyNoMoreInteractions(progress);
+        }),
       );
-      verify(() => project.findByCwd()).called(1);
-      verifyNever(() => project.findByPackageName(any()));
+
+      test(
+        'rebootstraps dependent packages',
+        withMockEnv((manager) async {
+          final dependentPackages = [
+            FakeDartPackage(packageName: 'package_c'),
+            FakeDartPackage(packageName: 'package_d'),
+          ];
+          when(() => project.dependentPackages(package))
+              .thenReturn(dependentPackages);
+          final (progress: progress, logger: logger) =
+              setupLoggerWithoutGroup();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubGet(
+            packageName: 'example_package',
+          );
+
+          verifyInOrder([
+            () => logger.progress(
+                'Running "melos bootstrap --scope package_c,package_d"'),
+            () => manager.runMelosBootstrap(
+                  ['package_c', 'package_d'],
+                  workingDirectory: 'project_path',
+                ),
+            () => progress.complete(),
+          ]);
+        }),
+      );
+
+      test(
+        'does nothing when pub get would not change dependencies',
+        withMockEnv((manager) async {
+          when(
+            () => manager.runFlutterPubGet(
+                workingDirectory: 'example_package_path', dryRun: true),
+          ).thenAnswer(
+            (_) async =>
+                ProcessResult(0, 0, 'No dependencies would change.', ''),
+          );
+          final logger = MockRapidLogger();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubGet(
+            packageName: 'example_package',
+          );
+
+          verifyInOrder([
+            () => logger.newLine(),
+            () => manager.runFlutterPubGet(
+                workingDirectory: 'example_package_path', dryRun: true),
+            () => logger.commandSuccess('Got Dependencies!'),
+          ]);
+          verifyNoMoreInteractions(manager);
+          verifyNoMoreInteractions(logger);
+        }),
+      );
+
+      group('and command group is active', () {
+        setUp(() {
+          when(() => commandGroup.isActive).thenReturn(true);
+        });
+
+        test(
+          'marks package and dependent packages as need bootstrap',
+          withMockEnv((manager) async {
+            final dependentPackages = [
+              FakeDartPackage(packageName: 'package_c'),
+              FakeDartPackage(packageName: 'package_d'),
+            ];
+            when(() => project.dependentPackages(package))
+                .thenReturn(dependentPackages);
+            final logger = MockRapidLogger();
+            final rapid =
+                getRapid(project: project, tool: tool, logger: logger);
+
+            await rapid.pubGet(
+              packageName: 'example_package',
+            );
+
+            verifyInOrder([
+              () => tool.markAsNeedBootstrap(packages: dependentPackages),
+            ]);
+          }),
+        );
+      });
     });
 
-    test('completes', () async {
-      final package = FakeDartPackage();
-      final manager = MockProcessManager();
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      when(
-        () => manager.run(
-          [
-            'flutter',
-            'pub',
-            'get',
-            '--dry-run',
-          ],
-          workingDirectory: package.path,
-          runInShell: true,
-          stderrEncoding: utf8,
-          stdoutEncoding: utf8,
-        ),
-      ).thenAnswer(
-        (_) async => ProcessResult(0, 0, 'stdout', 'stderr'),
-      );
-      final dependentPackages = [
-        FakeDartPackage(packageName: 'package_c'),
-        FakeDartPackage(packageName: 'package_d'),
-      ];
-      final project = MockRapidProject();
-      when(() => project.dependentPackages(package))
-          .thenReturn(dependentPackages);
-      when(() => project.findByPackageName('example_package'))
-          .thenReturn(package);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: dependentPackages,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
+    group('given found package by current working directory', () {
+      late DartPackage package;
+
+      setUp(() {
+        package = MockDartPackage(
+          packageName: 'example_package',
+          path: 'example_package_path',
+        );
+        when(() => project.findByCwd()).thenReturn(package);
+      });
+
+      test(
+        'gets dependencies using flutter pub get',
+        withMockEnv((manager) async {
+          final (progress: progress, logger: logger) =
+              setupLoggerWithoutGroup();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubGet(
+            packageName: null,
+          );
+
+          verifyInOrder([
+            () => logger.newLine(),
+            () => manager.runFlutterPubGet(
+                workingDirectory: 'example_package_path', dryRun: true),
+            () =>
+                logger.progress('Running "flutter pub get" in example_package'),
+            () => manager.runFlutterPubGet(
+                  workingDirectory: 'example_package_path',
+                ),
+            () => progress.complete(),
+            () => logger.newLine(),
+            () => logger.commandSuccess('Got Dependencies!'),
+          ]);
+          verifyNoMoreInteractions(manager);
+          verifyNoMoreInteractions(logger);
+          verifyNoMoreInteractions(progress);
+        }),
       );
 
-      await withMockProcessManager(
-        () async => rapid.pubGet(packageName: 'example_package'),
-        manager: manager,
+      test(
+        'rebootstraps dependent packages',
+        withMockEnv((manager) async {
+          final dependentPackages = [
+            FakeDartPackage(packageName: 'package_c'),
+            FakeDartPackage(packageName: 'package_d'),
+          ];
+          when(() => project.dependentPackages(package))
+              .thenReturn(dependentPackages);
+          final (progress: progress, logger: logger) =
+              setupLoggerWithoutGroup();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubGet(
+            packageName: null,
+          );
+
+          verifyInOrder([
+            () => logger.progress(
+                'Running "melos bootstrap --scope package_c,package_d"'),
+            () => manager.runMelosBootstrap(
+                  ['package_c', 'package_d'],
+                  workingDirectory: 'project_path',
+                ),
+            () => progress.complete(),
+          ]);
+        }),
       );
 
-      verifyInOrder([
-        () => logger.newLine(),
-        ...flutterPubGet(manager, package: package, dryRun: true),
-        ...melosBootstrapTaskInvocations,
-        () => logger.newLine(),
-        () => logger.commandSuccess('Got Dependencies!'),
-      ]);
-    });
+      test(
+        'does nothing when pub get would not change dependencies',
+        withMockEnv((manager) async {
+          when(
+            () => manager.runFlutterPubGet(
+                workingDirectory: 'example_package_path', dryRun: true),
+          ).thenAnswer(
+            (_) async =>
+                ProcessResult(0, 0, 'No dependencies would change.', ''),
+          );
+          final logger = MockRapidLogger();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
 
-    test('completes (inside command group)', () async {
-      final package = FakeDartPackage();
-      final manager = MockProcessManager();
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(true);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      when(
-        () => manager.run(
-          [
-            'flutter',
-            'pub',
-            'get',
-            '--dry-run',
-          ],
-          workingDirectory: package.path,
-          runInShell: true,
-          stderrEncoding: utf8,
-          stdoutEncoding: utf8,
-        ),
-      ).thenAnswer(
-        (_) async => ProcessResult(0, 0, 'stdout', 'stderr'),
-      );
-      final dependentPackages = [
-        FakeDartPackage(packageName: 'package_c'),
-        FakeDartPackage(packageName: 'package_d'),
-      ];
-      final project = MockRapidProject();
-      when(() => project.dependentPackages(package))
-          .thenReturn(dependentPackages);
-      when(() => project.findByPackageName('example_package'))
-          .thenReturn(package);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInCommandGroupInvocations =
-          setupMelosBootstrapTaskInCommandGroup(
-        manager,
-        scope: dependentPackages,
-        tool: tool,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
+          await rapid.pubGet(
+            packageName: null,
+          );
+
+          verifyInOrder([
+            () => logger.newLine(),
+            () => manager.runFlutterPubGet(
+                workingDirectory: 'example_package_path', dryRun: true),
+            () => logger.commandSuccess('Got Dependencies!'),
+          ]);
+          verifyNoMoreInteractions(manager);
+          verifyNoMoreInteractions(logger);
+        }),
       );
 
-      await withMockProcessManager(
-        () async => rapid.pubGet(packageName: 'example_package'),
-        manager: manager,
-      );
+      group('and command group is active', () {
+        setUp(() {
+          when(() => commandGroup.isActive).thenReturn(true);
+        });
 
-      verifyInOrder([
-        () => logger.newLine(),
-        ...flutterPubGet(manager, package: package, dryRun: true),
-        ...melosBootstrapTaskInCommandGroupInvocations,
-        () => logger.newLine(),
-        () => logger.commandSuccess('Got Dependencies!'),
-      ]);
-    });
+        test(
+          'marks package and dependent packages as need bootstrap',
+          withMockEnv((manager) async {
+            final dependentPackages = [
+              FakeDartPackage(packageName: 'package_c'),
+              FakeDartPackage(packageName: 'package_d'),
+            ];
+            when(() => project.dependentPackages(package))
+                .thenReturn(dependentPackages);
+            final logger = MockRapidLogger();
+            final rapid =
+                getRapid(project: project, tool: tool, logger: logger);
 
-    test('skips melos bootstrap if no dependency changes', () async {
-      final package = FakeDartPackage();
-      final manager = MockProcessManager();
-      when(
-        () => manager.run(
-          [
-            'flutter',
-            'pub',
-            'get',
-            '--dry-run',
-          ],
-          workingDirectory: package.path,
-          runInShell: true,
-          stderrEncoding: utf8,
-          stdoutEncoding: utf8,
-        ),
-      ).thenAnswer(
-        (_) async =>
-            ProcessResult(0, 0, 'No dependencies would change.', 'stderr'),
-      );
-      final dependentPackages = [
-        FakeDartPackage(packageName: 'package_c'),
-        FakeDartPackage(packageName: 'package_d'),
-      ];
-      final project = MockRapidProject();
-      when(() => project.dependentPackages(package))
-          .thenReturn(dependentPackages);
-      when(() => project.findByPackageName('example_package'))
-          .thenReturn(package);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: dependentPackages,
-        logger: logger,
-      );
-      final rapid = getRapid(project: project, logger: logger);
+            await rapid.pubGet(
+              packageName: null,
+            );
 
-      await withMockProcessManager(
-        () async => rapid.pubGet(packageName: 'example_package'),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        ...flutterPubGet(manager, package: package, dryRun: true),
-        () => logger.commandSuccess('Got Dependencies!'),
-      ]);
-      verifyNeverMulti(melosBootstrapTaskInvocations);
+            verifyInOrder([
+              () => tool.markAsNeedBootstrap(packages: dependentPackages),
+            ]);
+          }),
+        );
+      });
     });
   });
 
   group('pubRemove', () {
-    test('finds package by package name', () async {
-      final project = MockRapidProject();
-      when(() => project.findByPackageName('example_package'))
-          .thenReturn(FakeDartPackage());
-      final rapid = getRapid(project: project);
+    test(
+      'throws PackageNotFoundException when package is not found by name',
+      () {
+        when(() => project.findByPackageName('non_existing_package'))
+            .thenThrow(Exception());
+        final rapid = getRapid(project: project);
 
-      await withMockProcessManager(
-        () async => rapid.pubRemove(
-          packageName: 'example_package',
-          packages: ['package_a', 'package_b'],
-        ),
-      );
-
-      verify(() => project.findByPackageName('example_package')).called(1);
-      verifyNever(() => project.findByCwd());
-    });
-
-    test('finds package by current working directory', () async {
-      final project = MockRapidProject();
-      when(() => project.findByCwd()).thenReturn(FakeDartPackage());
-      final rapid = getRapid(project: project);
-
-      await withMockProcessManager(
-        () async => rapid.pubRemove(
-          packageName: null,
-          packages: ['package_a', 'package_b'],
-        ),
-      );
-
-      verifyNever(() => project.findByPackageName(any()));
-      verify(() => project.findByCwd()).called(1);
-    });
-
-    test('throws PackageNotFoundException when package is not found by name',
-        () {
-      final project = MockRapidProject();
-      when(() => project.findByPackageName('non_existing_package'))
-          .thenThrow(Exception());
-      final rapid = getRapid(project: project);
-
-      expect(
-        () async => withMockProcessManager(
+        expect(
           () async => rapid.pubRemove(
             packageName: 'non_existing_package',
             packages: ['package_a', 'package_b'],
           ),
-        ),
-        throwsA(isA<PackageNotFoundException>()),
-      );
-      verify(() => project.findByPackageName('non_existing_package')).called(1);
-      verifyNever(() => project.findByCwd());
-    });
+          throwsA(isA<PackageNotFoundException>()),
+        );
+        verify(() => project.findByPackageName('non_existing_package'))
+            .called(1);
+        verifyNever(() => project.findByCwd());
+      },
+    );
 
     test(
-        'throws PackageAtCwdNotFoundException when package is not found at current working directory',
-        () {
-      final project = MockRapidProject();
-      when(() => project.findByCwd()).thenThrow(Exception());
-      final rapid = getRapid(project: project);
+      'throws PackageAtCwdNotFoundException when package is not found at current working directory',
+      () {
+        when(() => project.findByCwd()).thenThrow(Exception());
+        final rapid = getRapid(project: project);
 
-      expect(
-        () async => withMockProcessManager(
+        expect(
           () async => rapid.pubRemove(
             packageName: null,
             packages: ['package_a', 'package_b'],
           ),
-        ),
-        throwsA(isA<PackageAtCwdNotFoundException>()),
+          throwsA(isA<PackageAtCwdNotFoundException>()),
+        );
+        verify(() => project.findByCwd()).called(1);
+        verifyNever(() => project.findByPackageName(any()));
+      },
+    );
+
+    group('given found package by name', () {
+      late DartPackage package;
+
+      setUp(() {
+        package = MockDartPackage(
+          packageName: 'example_package',
+          path: 'example_package_path',
+        );
+        when(() => project.findByPackageName('example_package'))
+            .thenReturn(package);
+      });
+
+      test(
+        'removes dependencies using flutter pub remove',
+        withMockEnv((manager) async {
+          final (progress: progress, logger: logger) =
+              setupLoggerWithoutGroup();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubRemove(
+            packageName: 'example_package',
+            packages: ['package_a', 'package_b'],
+          );
+
+          verifyInOrder([
+            () => logger.newLine(),
+            () => logger.progress(
+                'Running "flutter pub remove package_a package_b" in example_package'),
+            () => manager.runFlutterPubRemove(
+                  ['package_a', 'package_b'],
+                  workingDirectory: 'example_package_path',
+                ),
+            () => progress.complete(),
+            () => logger.newLine(),
+            () => logger.commandSuccess('Removed Dependencies!'),
+          ]);
+          verifyNoMoreInteractions(manager);
+          verifyNoMoreInteractions(logger);
+          verifyNoMoreInteractions(progress);
+        }),
       );
-      verify(() => project.findByCwd()).called(1);
-      verifyNever(() => project.findByPackageName(any()));
+
+      test(
+        'rebootstraps dependent packages',
+        withMockEnv((manager) async {
+          final dependentPackages = [
+            FakeDartPackage(packageName: 'package_c'),
+            FakeDartPackage(packageName: 'package_d'),
+          ];
+          when(() => project.dependentPackages(package))
+              .thenReturn(dependentPackages);
+          final (progress: progress, logger: logger) =
+              setupLoggerWithoutGroup();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubRemove(
+            packageName: 'example_package',
+            packages: ['package_a', 'package_b'],
+          );
+
+          verifyInOrder([
+            () => logger.progress(
+                'Running "melos bootstrap --scope package_c,package_d"'),
+            () => manager.runMelosBootstrap(
+                  ['package_c', 'package_d'],
+                  workingDirectory: 'project_path',
+                ),
+            () => progress.complete(),
+          ]);
+        }),
+      );
+
+      group('and command group is active', () {
+        setUp(() {
+          when(() => commandGroup.isActive).thenReturn(true);
+        });
+
+        test(
+          'marks dependent packages as need bootstrap',
+          withMockEnv((manager) async {
+            final dependentPackages = [
+              FakeDartPackage(packageName: 'package_c'),
+              FakeDartPackage(packageName: 'package_d'),
+            ];
+            when(() => project.dependentPackages(package))
+                .thenReturn(dependentPackages);
+            final logger = MockRapidLogger();
+            final rapid =
+                getRapid(project: project, tool: tool, logger: logger);
+
+            await rapid.pubRemove(
+              packageName: 'example_package',
+              packages: ['package_a', 'package_b'],
+            );
+
+            verifyInOrder([
+              () => tool.markAsNeedBootstrap(packages: dependentPackages),
+            ]);
+          }),
+        );
+      });
     });
 
-    test('removes dependencies using flutter pub remove', () async {
-      final manager = MockProcessManager();
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final package = FakeDartPackage();
-      final dependentPackages = [
-        FakeDartPackage(packageName: 'package_c'),
-        FakeDartPackage(packageName: 'package_d'),
-      ];
-      final project = MockRapidProject();
-      when(() => project.dependentPackages(package))
-          .thenReturn(dependentPackages);
-      when(() => project.findByPackageName('example_package'))
-          .thenReturn(package);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: dependentPackages,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
+    group('given found package by current working directory', () {
+      late DartPackage package;
 
-      await withMockProcessManager(
-        () async => rapid.pubRemove(
+      setUp(() {
+        package = MockDartPackage(
           packageName: 'example_package',
-          packages: ['package_a', 'package_b'],
-        ),
-        manager: manager,
+          path: 'example_package_path',
+        );
+        when(() => project.findByCwd()).thenReturn(package);
+      });
+
+      test(
+        'removes dependencies using flutter pub remove',
+        withMockEnv((manager) async {
+          final (progress: progress, logger: logger) =
+              setupLoggerWithoutGroup();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubRemove(
+            packageName: null,
+            packages: ['package_a', 'package_b'],
+          );
+
+          verifyInOrder([
+            () => logger.newLine(),
+            () => logger.progress(
+                'Running "flutter pub remove package_a package_b" in example_package'),
+            () => manager.runFlutterPubRemove(
+                  ['package_a', 'package_b'],
+                  workingDirectory: 'example_package_path',
+                ),
+            () => progress.complete(),
+            () => logger.newLine(),
+            () => logger.commandSuccess('Removed Dependencies!'),
+          ]);
+          verifyNoMoreInteractions(manager);
+          verifyNoMoreInteractions(logger);
+          verifyNoMoreInteractions(progress);
+        }),
       );
 
-      verifyInOrder([
-        () => logger.newLine(),
-        ...flutterPubRemoveTask(
-          manager,
-          package: package,
-          packagesToRemove: ['package_a', 'package_b'],
-        ),
-        ...melosBootstrapTaskInvocations,
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Dependencies!'),
-      ]);
-    });
+      test(
+        'rebootstraps dependent packages',
+        withMockEnv((manager) async {
+          final dependentPackages = [
+            FakeDartPackage(packageName: 'package_c'),
+            FakeDartPackage(packageName: 'package_d'),
+          ];
+          when(() => project.dependentPackages(package))
+              .thenReturn(dependentPackages);
+          final (progress: progress, logger: logger) =
+              setupLoggerWithoutGroup();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
 
-    test('removes dependencies using flutter pub remove (inside command group)',
-        () async {
-      final manager = MockProcessManager();
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(true);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final package = FakeDartPackage();
-      final dependentPackages = [
-        FakeDartPackage(packageName: 'package_c'),
-        FakeDartPackage(packageName: 'package_d'),
-      ];
-      final project = MockRapidProject();
-      when(() => project.dependentPackages(package))
-          .thenReturn(dependentPackages);
-      when(() => project.findByPackageName('example_package'))
-          .thenReturn(package);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInCommandGroupInvocations =
-          setupMelosBootstrapTaskInCommandGroup(
-        manager,
-        scope: dependentPackages,
-        tool: tool,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
+          await rapid.pubRemove(
+            packageName: null,
+            packages: ['package_a', 'package_b'],
+          );
+
+          verifyInOrder([
+            () => logger.progress(
+                'Running "melos bootstrap --scope package_c,package_d"'),
+            () => manager.runMelosBootstrap(
+                  ['package_c', 'package_d'],
+                  workingDirectory: 'project_path',
+                ),
+            () => progress.complete(),
+          ]);
+        }),
       );
 
-      await withMockProcessManager(
-        () async => rapid.pubRemove(
-          packageName: 'example_package',
-          packages: ['package_a', 'package_b'],
-        ),
-        manager: manager,
-      );
+      group('and command group is active', () {
+        setUp(() {
+          when(() => commandGroup.isActive).thenReturn(true);
+        });
 
-      verifyInOrder([
-        () => logger.newLine(),
-        ...flutterPubRemoveTask(
-          manager,
-          package: package,
-          packagesToRemove: ['package_a', 'package_b'],
-        ),
-        ...melosBootstrapTaskInCommandGroupInvocations,
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Dependencies!'),
-      ]);
+        test(
+          'marks dependent packages as need bootstrap',
+          withMockEnv((manager) async {
+            final dependentPackages = [
+              FakeDartPackage(packageName: 'package_c'),
+              FakeDartPackage(packageName: 'package_d'),
+            ];
+            when(() => project.dependentPackages(package))
+                .thenReturn(dependentPackages);
+            final logger = MockRapidLogger();
+            final rapid =
+                getRapid(project: project, tool: tool, logger: logger);
+
+            await rapid.pubRemove(
+              packageName: null,
+              packages: ['package_a', 'package_b'],
+            );
+
+            verifyInOrder([
+              () => tool.markAsNeedBootstrap(packages: dependentPackages),
+            ]);
+          }),
+        );
+      });
     });
   });
 }

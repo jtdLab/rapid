@@ -2,26 +2,28 @@ part of 'runner.dart';
 
 mixin _EndMixin on _Rapid {
   Future<void> end() async {
-    if (!tool.loadGroup().isActive) {
+    final group = tool.loadGroup();
+    if (!group.isActive) {
       throw NoActiveGroupException._();
     }
 
+    logger.newLine();
+
     tool.deactivateCommandGroup();
 
-    final group = tool.loadGroup();
     if (group.packagesToBootstrap.isNotEmpty) {
       await melosBootstrapTask(scope: group.packagesToBootstrap);
+      logger.newLine();
     }
 
     if (group.packagesToCodeGen.isNotEmpty) {
       await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
         packages: group.packagesToCodeGen,
       );
+      logger.newLine();
     }
 
-    logger
-      ..newLine()
-      ..commandSuccess('Completed Command Group!');
+    logger.commandSuccess('Completed Command Group!');
   }
 }
 

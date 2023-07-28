@@ -41,12 +41,15 @@ class MockCubit extends Mock implements Cubit {
 class MockDartPackage extends Mock implements DartPackage {
   MockDartPackage({
     String? packageName,
+    String? path,
     PubspecYamlFile? pubSpec,
   }) {
-    packageName ??= 'package_name';
+    packageName ??= 'dart_package';
+    path ??= 'dart_package_path';
     pubSpec ??= MockPubspecYamlFile();
 
     when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
     when(() => pubSpecFile).thenReturn(pubSpec);
   }
 }
@@ -1174,9 +1177,33 @@ class MockPlatformUiPackage extends Mock implements PlatformUiPackage {
   }
 }
 
+abstract class WidgetBuilder {
+  Widget call({required String name});
+}
+
+class MockWidgetBuilder extends Mock implements WidgetBuilder {
+  MockWidgetBuilder({Widget? widget}) {
+    widget ??= MockWidget();
+
+    when(() => call(name: any(named: 'name'))).thenReturn(widget);
+  }
+}
+
 class MockWidget extends Mock implements Widget {
   MockWidget() {
     when(() => generate()).thenAnswer((_) async {});
+  }
+}
+
+abstract class ThemedWidgetBuilder {
+  ThemedWidget call({required String name});
+}
+
+class MockThemedWidgetBuilder extends Mock implements ThemedWidgetBuilder {
+  MockThemedWidgetBuilder({ThemedWidget? themedWidget}) {
+    themedWidget ??= MockThemedWidget();
+
+    when(() => call(name: any(named: 'name'))).thenReturn(themedWidget);
   }
 }
 
@@ -1269,6 +1296,21 @@ class FakeDartPackage extends Fake implements DartPackage {
 
   @override
   late final PubspecYamlFile pubSpecFile;
+}
+
+class FakeDartFile extends Fake implements DartFile {
+  FakeDartFile({String? path, bool? existsSync}) {
+    this.path = path ?? 'path/to/file.dart';
+    _existsSync = existsSync ?? false;
+  }
+
+  @override
+  late final String path;
+
+  @override
+  bool existsSync() => _existsSync;
+
+  late final bool _existsSync;
 }
 
 class FakeDirectoryGeneratorTarget extends Fake

@@ -72,6 +72,7 @@ _ProjectSetup _setupProject() {
     path: 'ui_package_path',
   );
   final project = MockRapidProject(
+    path: 'project_path',
     rootPackage: rootPackage,
     appModule: MockAppModule(
       diPackage: diPackage,
@@ -153,6 +154,7 @@ _ProjectWithPlatformSetup
     path: 'platform_ui_package_path',
   );
   final project = MockRapidProject(
+    path: 'project_path',
     rootPackage: rootPackage,
     appModule: MockAppModule(
       diPackage: diPackage,
@@ -400,7 +402,7 @@ void _verifyCreateProjectAndActivatePlatform<T extends PlatformRootPackage>(
     },
     () => logger.newLine(),
     () => logger.progress('Running "dart format . --fix" in project'),
-    () => manager.runDartFormatFix(workingDirectory: 'root_package_path'),
+    () => manager.runDartFormatFix(workingDirectory: 'project_path'),
     () => progress.complete(),
     () => logger.newLine(),
     () => logger.commandSuccess('Created Project!'),

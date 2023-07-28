@@ -144,7 +144,7 @@ abstract class _Rapid {
 
   Future<void> dartFormatFixTask() async => task(
         'Running "dart format . --fix" in project',
-        () async => dartFormatFix(package: project.rootPackage),
+        () async => dartFormatFix(project: project),
       );
 
   Future<void> flutterPubAddTask({
@@ -186,6 +186,19 @@ abstract class _Rapid {
           )
           .toList(),
     );
+  }
+
+  Future<void> flutterPubGetTask({
+    required DartPackage package,
+  }) async {
+    if (tool.loadGroup().isActive) {
+      tool.markAsNeedCodeGen(package: package);
+    } else {
+      await task(
+        'Running "flutter pub get" in ${package.packageName}',
+        () async => flutterPubGet(package: package),
+      );
+    }
   }
 
   Future<void> flutterPubRemoveTask({
@@ -255,7 +268,7 @@ abstract class _Rapid {
       tool.markAsNeedBootstrap(packages: scope);
     } else {
       await task(
-        'Running "melos bootstrap --scope="${scope.map((e) => e.packageName).join(',')}""',
+        'Running "melos bootstrap --scope ${scope.map((e) => e.packageName).join(',')}"',
         () async => melosBootstrap(scope: scope, project: project),
       );
     }

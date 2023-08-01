@@ -1,196 +1,83 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
+import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src/tool.dart';
 import 'package:test/test.dart';
 
-import '../invocations.dart';
 import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
+// TODO when adding and removing domains the errors are not realy good abstracted the command needs some reconsideration
+// TODO is it good to use global setup instead of setup fcts with records
+// TODO are defaults set usefully and minimalistic ?
+// TODO is the right package used foo_bar -> domain package is not verified same for other commands in other files
+
 void main() {
+  late Entity entity;
+  late ServiceInterface serviceInterface;
+  late ValueObject valueObject;
+  late DartFile domainPackageBarrelFile;
+  late DomainPackage domainPackage;
+  late InfrastructurePackage infrastructurePackage;
+  late PlatformRootPackage rootPackageA;
+  late PlatformRootPackage rootPackageB;
+  late RapidProject project;
+  late CommandGroup commandGroup;
+  late RapidTool tool;
+
   setUpAll(() {
     registerFallbackValues();
   });
 
+  setUp(() {
+    entity = MockEntity();
+    serviceInterface = MockServiceInterface();
+    valueObject = MockValueObject();
+    domainPackageBarrelFile = MockDartFile();
+    domainPackage = MockDomainPackage(
+      packageName: 'domain_package',
+      path: 'domain_package_path',
+      entity: ({required name}) => entity,
+      serviceInterface: ({required name}) => serviceInterface,
+      valueObject: ({required name}) => valueObject,
+    );
+    when(() => domainPackage.barrelFile).thenReturn(domainPackageBarrelFile);
+    when(() => domainPackage.existsSync()).thenReturn(true);
+    infrastructurePackage = MockInfrastructurePackage();
+    when(() => infrastructurePackage.existsSync()).thenReturn(true);
+    rootPackageA = MockNoneIosRootPackage(
+      packageName: 'root_package_a',
+      path: 'root_package_a_path',
+    );
+    rootPackageB = MockIosRootPackage(
+      packageName: 'root_package_b',
+      path: 'root_package_b_path',
+    );
+    project = MockRapidProject(
+      path: 'project_path',
+      appModule: MockAppModule(
+        domainDirectory: MockDomainDirectory(
+          domainPackage: ({name}) => domainPackage,
+        ),
+        infrastructureDirectory: MockInfrastructureDirectory(
+          infrastructurePackage: ({name}) => infrastructurePackage,
+        ),
+      ),
+      rootPackages: [rootPackageA, rootPackageB],
+    );
+    commandGroup = MockCommandGroup();
+    when(() => commandGroup.isActive).thenReturn(false);
+    tool = MockRapidTool();
+    when(() => tool.loadGroup()).thenReturn(commandGroup);
+  });
+
   group('domainAddSubDomain', () {
-    test('adds subdomain', () async {
-      final manager = MockProcessManager();
-      final domainPackage = MockDomainPackage();
-      when(() => domainPackage.existsSync()).thenReturn(false);
-      final infrastructurePackage = MockInfrastructurePackage();
-      when(() => infrastructurePackage.existsSync()).thenReturn(false);
-      final rootPackage1 = MockNoneIosRootPackage();
-      final rootPackage2 = MockIosRootPackage();
-      final rootPackages = [rootPackage1, rootPackage2];
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-        rootPackages: rootPackages,
-      );
-      final logger = MockRapidLogger();
-      final group = MockCommandGroup();
-      when(() => group.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(group);
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: [
-          domainPackage,
-          infrastructurePackage,
-          ...rootPackages,
-        ],
-        logger: logger,
-      );
-      final melosBootstrapTaskInCommandGroupInvocations =
-          setupMelosBootstrapTaskInCommandGroup(
-        manager,
-        scope: [
-          domainPackage,
-          infrastructurePackage,
-          ...rootPackages,
-        ],
-        tool: tool,
-      );
-      final codeGenTaskGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroup(
-        manager,
-        packages: rootPackages,
-        logger: logger,
-      );
-      final codeGenTaskGroupInCommandGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroupInCommandGroup(
-        manager,
-        packages: rootPackages,
-        tool: tool,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.domainAddSubDomain(name: 'foo_bar'),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => domainPackage.generate(),
-        () => infrastructurePackage.generate(),
-        () => rootPackage1.registerInfrastructurePackage(infrastructurePackage),
-        () => rootPackage2.registerInfrastructurePackage(infrastructurePackage),
-        ...melosBootstrapTaskInvocations,
-        ...codeGenTaskGroupInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Sub Domain!')
-      ]);
-      verifyNeverMulti(melosBootstrapTaskInCommandGroupInvocations);
-      verifyNeverMulti(codeGenTaskGroupInCommandGroupInvocations);
-    });
-
-    test('adds subdomain (inside command group)', () async {
-      final manager = MockProcessManager();
-      final domainPackage = MockDomainPackage();
-      when(() => domainPackage.existsSync()).thenReturn(false);
-      final infrastructurePackage = MockInfrastructurePackage();
-      when(() => infrastructurePackage.existsSync()).thenReturn(false);
-      final rootPackage1 = MockNoneIosRootPackage();
-      final rootPackage2 = MockIosRootPackage();
-      final rootPackages = [rootPackage1, rootPackage2];
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-        rootPackages: rootPackages,
-      );
-      final logger = MockRapidLogger();
-      final group = MockCommandGroup();
-      when(() => group.isActive).thenReturn(true);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(group);
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: [
-          domainPackage,
-          infrastructurePackage,
-          ...rootPackages,
-        ],
-        logger: logger,
-      );
-      final melosBootstrapTaskInCommandGroupInvocations =
-          setupMelosBootstrapTaskInCommandGroup(
-        manager,
-        scope: [
-          domainPackage,
-          infrastructurePackage,
-          ...rootPackages,
-        ],
-        tool: tool,
-      );
-      final codeGenTaskGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroup(
-        manager,
-        packages: rootPackages,
-        logger: logger,
-      );
-      final codeGenTaskGroupInCommandGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroupInCommandGroup(
-        manager,
-        packages: rootPackages,
-        tool: tool,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.domainAddSubDomain(name: 'foo_bar'),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => domainPackage.generate(),
-        () => infrastructurePackage.generate(),
-        () => rootPackage1.registerInfrastructurePackage(infrastructurePackage),
-        () => rootPackage2.registerInfrastructurePackage(infrastructurePackage),
-        ...melosBootstrapTaskInCommandGroupInvocations,
-        ...codeGenTaskGroupInCommandGroupInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Sub Domain!')
-      ]);
-      verifyNeverMulti(melosBootstrapTaskInvocations);
-      verifyNeverMulti(codeGenTaskGroupInvocations);
-    });
-
     test(
         'throws SubDomainAlreadyExistsException when domain package already exists',
         () async {
-      final domainPackage = MockDomainPackage();
       when(() => domainPackage.existsSync()).thenReturn(true);
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -202,20 +89,8 @@ void main() {
     test(
         'throws SubInfrastructureAlreadyExistsException when infrastructure package already exists',
         () async {
-      final domainPackage = MockDomainPackage();
       when(() => domainPackage.existsSync()).thenReturn(false);
-      final infrastructurePackage = MockInfrastructurePackage();
       when(() => infrastructurePackage.existsSync()).thenReturn(true);
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -223,174 +98,128 @@ void main() {
         throwsA(isA<SubInfrastructureAlreadyExistsException>()),
       );
     });
+
+    test(
+      'adds domain package and associated infrastructure package',
+      withMockEnv((manager) async {
+        when(() => domainPackage.existsSync()).thenReturn(false);
+        when(() => infrastructurePackage.existsSync()).thenReturn(false);
+        final (
+          progress: progress,
+          groupableProgress: groupableProgress,
+          progressGroup: progressGroup,
+          logger: logger,
+        ) = setupLogger();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.domainAddSubDomain(name: 'foo_bar');
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating domain package'),
+          () => domainPackage.generate(),
+          () => progress.complete(),
+          () => logger.progress('Creating infrastructure package'),
+          () => infrastructurePackage.generate(),
+          () =>
+              rootPackageA.registerInfrastructurePackage(infrastructurePackage),
+          () =>
+              rootPackageB.registerInfrastructurePackage(infrastructurePackage),
+          () => progress.complete(),
+          () => logger.progress(
+              'Running "melos bootstrap --scope domain_package,infrastructure_package,root_package_a,root_package_b"'),
+          () => manager.runMelosBootstrap(
+                [
+                  'domain_package',
+                  'infrastructure_package',
+                  'root_package_a',
+                  'root_package_b',
+                ],
+                workingDirectory: 'project_path',
+              ),
+          () => progress.complete(),
+          () => logger.progressGroup(null),
+          () => progressGroup
+              .progress('Running code generation in root_package_a'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'root_package_a_path',
+              ),
+          () => groupableProgress.complete(),
+          () => progressGroup
+              .progress('Running code generation in root_package_b'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'root_package_b_path',
+              ),
+          () => groupableProgress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Sub Domain!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(progress);
+        verifyNoMoreInteractions(groupableProgress);
+        verifyNoMoreInteractions(progressGroup);
+        verifyNoMoreInteractions(logger);
+      }),
+    );
+
+    group('given command group is active', () {
+      setUp(() {
+        when(() => commandGroup.isActive).thenReturn(true);
+      });
+
+      test(
+        'marks domain package, infrastructure package and root packages as need bootstrap',
+        withMockEnv((_) async {
+          when(() => domainPackage.existsSync()).thenReturn(false);
+          when(() => infrastructurePackage.existsSync()).thenReturn(false);
+          final rapid = getRapid(project: project, tool: tool);
+
+          await rapid.domainAddSubDomain(name: 'foo_bar');
+
+          verifyInOrder([
+            () => tool.markAsNeedBootstrap(
+                  packages: [
+                    domainPackage,
+                    infrastructurePackage,
+                    rootPackageA,
+                    rootPackageB,
+                  ],
+                ),
+          ]);
+        }),
+      );
+
+      test(
+        'marks root packages as need code gen',
+        withMockEnv((_) async {
+          when(() => domainPackage.existsSync()).thenReturn(false);
+          when(() => infrastructurePackage.existsSync()).thenReturn(false);
+          final rapid = getRapid(project: project, tool: tool);
+
+          await rapid.domainAddSubDomain(name: 'foo_bar');
+
+          verifyInOrder([
+            () => tool.markAsNeedCodeGen(package: rootPackageA),
+            () => tool.markAsNeedCodeGen(package: rootPackageB),
+          ]);
+        }),
+      );
+    });
   });
 
   group('domainRemoveSubDomain', () {
-    test('removes subdomain', () async {
-      final manager = MockProcessManager();
-      final domainPackage = MockDomainPackage();
-      when(() => domainPackage.existsSync()).thenReturn(true);
-      final infrastructurePackage = MockInfrastructurePackage();
-      when(() => infrastructurePackage.existsSync()).thenReturn(true);
-      final rootPackage1 = MockNoneIosRootPackage();
-      final rootPackage2 = MockIosRootPackage();
-      final rootPackages = [rootPackage1, rootPackage2];
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-        rootPackages: rootPackages,
-      );
-      final logger = MockRapidLogger();
-      final group = MockCommandGroup();
-      when(() => group.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(group);
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: rootPackages,
-        logger: logger,
-      );
-      final melosBootstrapTaskInCommandGroupInvocations =
-          setupMelosBootstrapTaskInCommandGroup(
-        manager,
-        scope: rootPackages,
-        tool: tool,
-      );
-      final codeGenTaskGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroup(
-        manager,
-        packages: rootPackages,
-        logger: logger,
-      );
-      final codeGenTaskGroupInCommandGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroupInCommandGroup(
-        manager,
-        packages: rootPackages,
-        tool: tool,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.domainRemoveSubDomain(name: 'foo_bar'),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => domainPackage.deleteSync(recursive: true),
-        () =>
-            rootPackage1.unregisterInfrastructurePackage(infrastructurePackage),
-        () =>
-            rootPackage2.unregisterInfrastructurePackage(infrastructurePackage),
-        () => infrastructurePackage.deleteSync(recursive: true),
-        ...melosBootstrapTaskInvocations,
-        ...codeGenTaskGroupInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Sub Domain!')
-      ]);
-      verifyNeverMulti(melosBootstrapTaskInCommandGroupInvocations);
-      verifyNeverMulti(codeGenTaskGroupInCommandGroupInvocations);
-    });
-
-    test('removes subdomain (inside command group)', () async {
-      final manager = MockProcessManager();
-      final domainPackage = MockDomainPackage();
-      when(() => domainPackage.existsSync()).thenReturn(true);
-      final infrastructurePackage = MockInfrastructurePackage();
-      when(() => infrastructurePackage.existsSync()).thenReturn(true);
-      final rootPackage1 = MockNoneIosRootPackage();
-      final rootPackage2 = MockIosRootPackage();
-      final rootPackages = [rootPackage1, rootPackage2];
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-        rootPackages: rootPackages,
-      );
-      final logger = MockRapidLogger();
-      final group = MockCommandGroup();
-      when(() => group.isActive).thenReturn(true);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(group);
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: rootPackages,
-        logger: logger,
-      );
-      final melosBootstrapTaskInCommandGroupInvocations =
-          setupMelosBootstrapTaskInCommandGroup(
-        manager,
-        scope: rootPackages,
-        tool: tool,
-      );
-      final codeGenTaskGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroup(
-        manager,
-        packages: rootPackages,
-        logger: logger,
-      );
-      final codeGenTaskGroupInCommandGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroupInCommandGroup(
-        manager,
-        packages: rootPackages,
-        tool: tool,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.domainRemoveSubDomain(name: 'foo_bar'),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => domainPackage.deleteSync(recursive: true),
-        () =>
-            rootPackage1.unregisterInfrastructurePackage(infrastructurePackage),
-        () =>
-            rootPackage2.unregisterInfrastructurePackage(infrastructurePackage),
-        () => infrastructurePackage.deleteSync(recursive: true),
-        ...melosBootstrapTaskInCommandGroupInvocations,
-        ...codeGenTaskGroupInCommandGroupInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Sub Domain!')
-      ]);
-      verifyNeverMulti(melosBootstrapTaskInvocations);
-      verifyNeverMulti(codeGenTaskGroupInvocations);
-    });
-
     test('throws SubDomainNotFoundException when domain package does not exist',
         () async {
-      final domainPackage = MockDomainPackage();
       when(() => domainPackage.existsSync()).thenReturn(false);
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -402,20 +231,7 @@ void main() {
     test(
         'throws SubInfrastructureNotFoundException when infrastructure package does not exist',
         () async {
-      final domainPackage = MockDomainPackage();
-      when(() => domainPackage.existsSync()).thenReturn(true);
-      final infrastructurePackage = MockInfrastructurePackage();
       when(() => infrastructurePackage.existsSync()).thenReturn(false);
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -423,62 +239,114 @@ void main() {
         throwsA(isA<SubInfrastructureNotFoundException>()),
       );
     });
+
+    test(
+      'removes domain package and associated infrastructure package',
+      withMockEnv((manager) async {
+        when(() => domainPackage.existsSync()).thenReturn(true);
+        when(() => infrastructurePackage.existsSync()).thenReturn(true);
+        final (
+          progress: progress,
+          groupableProgress: groupableProgress,
+          progressGroup: progressGroup,
+          logger: logger,
+        ) = setupLogger();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.domainRemoveSubDomain(name: 'foo_bar');
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Deleting domain package'),
+          () => domainPackage.deleteSync(recursive: true),
+          () => progress.complete(),
+          () => logger.progress('Deleting infrastructure package'),
+          () => rootPackageA
+              .unregisterInfrastructurePackage(infrastructurePackage),
+          () => rootPackageB
+              .unregisterInfrastructurePackage(infrastructurePackage),
+          () => infrastructurePackage.deleteSync(recursive: true),
+          () => progress.complete(),
+          () => logger.progress(
+              'Running "melos bootstrap --scope root_package_a,root_package_b"'),
+          () => manager.runMelosBootstrap(
+                ['root_package_a', 'root_package_b'],
+                workingDirectory: 'project_path',
+              ),
+          () => progress.complete(),
+          () => logger.progressGroup(null),
+          () => progressGroup
+              .progress('Running code generation in root_package_a'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'root_package_a_path',
+              ),
+          () => groupableProgress.complete(),
+          () => progressGroup
+              .progress('Running code generation in root_package_b'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'root_package_b_path',
+              ),
+          () => groupableProgress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Removed Sub Domain!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(progress);
+        verifyNoMoreInteractions(groupableProgress);
+        verifyNoMoreInteractions(progressGroup);
+        verifyNoMoreInteractions(logger);
+      }),
+    );
+
+    group('given command group is active', () {
+      setUp(() {
+        when(() => commandGroup.isActive).thenReturn(true);
+      });
+
+      test(
+        'marks root packages as need bootstrap',
+        withMockEnv((_) async {
+          final rapid = getRapid(project: project, tool: tool);
+
+          await rapid.domainRemoveSubDomain(name: 'foo_bar');
+
+          verifyInOrder([
+            () => tool
+                .markAsNeedBootstrap(packages: [rootPackageA, rootPackageB]),
+          ]);
+        }),
+      );
+
+      test(
+        'marks root packages as need code gen',
+        withMockEnv((_) async {
+          final rapid = getRapid(project: project, tool: tool);
+
+          await rapid.domainRemoveSubDomain(name: 'foo_bar');
+
+          verifyInOrder([
+            () => tool.markAsNeedCodeGen(package: rootPackageA),
+            () => tool.markAsNeedCodeGen(package: rootPackageB),
+          ]);
+        }),
+      );
+    });
   });
 
   group('domainSubDomainAddEntity', () {
-    test('adds entity to subdomain', () async {
-      final manager = MockProcessManager();
-      final entity = MockEntity();
-      when(() => entity.existsAny).thenReturn(false);
-      final barrelFile = MockDartFile();
-      final domainPackage = MockDomainPackage(
-        entity: ({required name}) => entity,
-      );
-      when(() => domainPackage.barrelFile).thenReturn(barrelFile);
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async => rapid.domainSubDomainAddEntity(
-          name: 'Cool',
-          subDomainName: 'foo_bar',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => entity.generate(),
-        () => barrelFile.addExport('src/cool.dart'),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Entity!')
-      ]);
-    });
-
     test(
         'throws EntityOrValueObjectAlreadyExistsException when entity already exists',
         () async {
-      final entity = MockEntity();
       when(() => entity.existsAny).thenReturn(true);
-      final domainPackage = MockDomainPackage(
-        entity: ({required name}) => entity,
-      );
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -489,63 +357,43 @@ void main() {
         throwsA(isA<EntityOrValueObjectAlreadyExistsException>()),
       );
     });
+
+    test(
+      'adds entity to subdomain',
+      withMockEnv((manager) async {
+        when(() => entity.existsAny).thenReturn(false);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.domainSubDomainAddEntity(
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating entity'),
+          () => entity.generate(),
+          () => domainPackageBarrelFile.addExport('src/cool.dart'),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Entity!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
   });
 
   group('domainSubDomainAddServiceInterface', () {
-    test('adds service interface to subdomain', () async {
-      final manager = MockProcessManager();
-      final serviceInterface = MockServiceInterface();
-      when(() => serviceInterface.existsAny).thenReturn(false);
-      final barrelFile = MockDartFile();
-      final domainPackage = MockDomainPackage(
-        serviceInterface: ({required name}) => serviceInterface,
-        barrelFile: barrelFile,
-      );
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async => rapid.domainSubDomainAddServiceInterface(
-          name: 'Cool',
-          subDomainName: 'foo_bar',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => serviceInterface.generate(),
-        () => barrelFile.addExport('src/i_cool_service.dart'),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Service Interface!')
-      ]);
-    });
-
     test(
         'throws ServiceInterfaceAlreadyExistsException when service interface already exists',
         () async {
-      final serviceInterface = MockServiceInterface();
       when(() => serviceInterface.existsAny).thenReturn(true);
-      final domainPackage = MockDomainPackage(
-        serviceInterface: ({required name}) => serviceInterface,
-      );
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -556,147 +404,43 @@ void main() {
         throwsA(isA<ServiceInterfaceAlreadyExistsException>()),
       );
     });
+
+    test(
+      'adds service interface to subdomain',
+      withMockEnv((manager) async {
+        when(() => serviceInterface.existsAny).thenReturn(false);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.domainSubDomainAddServiceInterface(
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating service interface'),
+          () => serviceInterface.generate(),
+          () => domainPackageBarrelFile.addExport('src/i_cool_service.dart'),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Service Interface!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
   });
 
   group('domainSubDomainAddValueObject', () {
-    test('adds value object to subdomain', () async {
-      final manager = MockProcessManager();
-      final valueObject = MockValueObject();
-      when(() => valueObject.existsAny).thenReturn(false);
-      final barrelFile = MockDartFile();
-      final domainPackage = MockDomainPackage(
-        valueObject: ({required name}) => valueObject,
-        barrelFile: barrelFile,
-      );
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
-      final logger = MockRapidLogger();
-      final group = MockCommandGroup();
-      when(() => group.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(group);
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: domainPackage,
-        logger: logger,
-      );
-      final codeGenTaskInCommandGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskInCommandGroup(
-        manager,
-        package: domainPackage,
-        tool: tool,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.domainSubDomainAddValueObject(
-          name: 'Cool',
-          subDomainName: 'foo_bar',
-          type: 'String',
-          generics: '<T>',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => valueObject.generate(type: 'String', generics: '<T>'),
-        () => barrelFile.addExport('src/cool.dart'),
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Value Object!')
-      ]);
-      verifyNeverMulti(codeGenTaskInCommandGroupInvocations);
-    });
-
-    test('adds value object to subdomain (inside command group)', () async {
-      final manager = MockProcessManager();
-      final valueObject = MockValueObject();
-      when(() => valueObject.existsAny).thenReturn(false);
-      final barrelFile = MockDartFile();
-      final domainPackage = MockDomainPackage(
-        valueObject: ({required name}) => valueObject,
-        barrelFile: barrelFile,
-      );
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
-      final logger = MockRapidLogger();
-      final group = MockCommandGroup();
-      when(() => group.isActive).thenReturn(true);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(group);
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: domainPackage,
-        logger: logger,
-      );
-      final codeGenTaskInCommandGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskInCommandGroup(
-        manager,
-        package: domainPackage,
-        tool: tool,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.domainSubDomainAddValueObject(
-          name: 'Cool',
-          subDomainName: 'foo_bar',
-          type: 'String',
-          generics: '<T>',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => valueObject.generate(type: 'String', generics: '<T>'),
-        () => barrelFile.addExport('src/cool.dart'),
-        ...codeGenTaskInCommandGroupInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Value Object!')
-      ]);
-      verifyNeverMulti(codeGenTaskInvocations);
-    });
-
     test(
         'throws EntityOrValueObjectAlreadyExistsException when value object already exists',
         () async {
-      final valueObject = MockValueObject();
       when(() => valueObject.existsAny).thenReturn(true);
-      final domainPackage = MockDomainPackage(
-        valueObject: ({required name}) => valueObject,
-      );
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -709,61 +453,83 @@ void main() {
         throwsA(isA<EntityOrValueObjectAlreadyExistsException>()),
       );
     });
+
+    test(
+      'adds value object to subdomain',
+      withMockEnv((manager) async {
+        when(() => valueObject.existsAny).thenReturn(false);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.domainSubDomainAddValueObject(
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+          type: 'String',
+          generics: '<T>',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating value object'),
+          () => valueObject.generate(type: 'String', generics: '<T>'),
+          () => domainPackageBarrelFile.addExport('src/cool.dart'),
+          () => progress.complete(),
+          () => logger.progress('Running code generation in domain_package'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'domain_package_path',
+              ),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Value Object!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
+
+    group('given command group is active', () {
+      setUp(() {
+        when(() => commandGroup.isActive).thenReturn(true);
+      });
+
+      test(
+        'marks domain package as need code gen',
+        withMockEnv((_) async {
+          when(() => valueObject.existsAny).thenReturn(false);
+          final logger = MockRapidLogger();
+          final rapid = getRapid(
+            project: project,
+            tool: tool,
+            logger: logger,
+          );
+
+          await rapid.domainSubDomainAddValueObject(
+            name: 'Cool',
+            subDomainName: 'foo_bar',
+            type: 'String',
+            generics: '<T>',
+          );
+
+          verifyInOrder([
+            () => tool.markAsNeedCodeGen(package: domainPackage),
+          ]);
+        }),
+      );
+    });
   });
 
   group('domainSubDomainRemoveEntity', () {
-    test('removes entity from subdomain', () async {
-      final manager = MockProcessManager();
-      final entity = MockEntity();
-      when(() => entity.existsAny).thenReturn(true);
-      final barrelFile = MockDartFile();
-      final domainPackage = MockDomainPackage(
-        entity: ({required name}) => entity,
-        barrelFile: barrelFile,
-      );
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async => rapid.domainSubDomainRemoveEntity(
-          name: 'Cool',
-          subDomainName: 'foo_bar',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => entity.delete(),
-        () => barrelFile.removeExport('src/cool.dart'),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Entity!')
-      ]);
-    });
-
     test('throws EntityNotFoundException when entity does not exist', () async {
-      final entity = MockEntity();
       when(() => entity.existsAny).thenReturn(false);
-      final domainPackage = MockDomainPackage(
-        entity: ({required name}) => entity,
-      );
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -774,64 +540,43 @@ void main() {
         throwsA(isA<EntityNotFoundException>()),
       );
     });
+
+    test(
+      'removes entity from subdomain',
+      withMockEnv((manager) async {
+        when(() => entity.existsAny).thenReturn(true);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.domainSubDomainRemoveEntity(
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Deleting entity files'),
+          () => entity.delete(),
+          () => domainPackageBarrelFile.removeExport('src/cool.dart'),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Removed Entity!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
   });
 
   group('domainSubDomainRemoveServiceInterface', () {
-    test('removes service interface from subdomain', () async {
-      final manager = MockProcessManager();
-
-      final serviceInterface = MockServiceInterface();
-      when(() => serviceInterface.existsAny).thenReturn(true);
-      final barrelFile = MockDartFile();
-      final domainPackage = MockDomainPackage(
-        serviceInterface: ({required name}) => serviceInterface,
-        barrelFile: barrelFile,
-      );
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async => rapid.domainSubDomainRemoveServiceInterface(
-          name: 'Cool',
-          subDomainName: 'foo_bar',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => serviceInterface.delete(),
-        () => barrelFile.removeExport('src/i_cool_service.dart'),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Service Interface!')
-      ]);
-    });
-
     test(
         'throws ServiceInterfaceNotFoundException when service interface does not exist',
         () async {
-      final serviceInterface = MockServiceInterface();
-
       when(() => serviceInterface.existsAny).thenReturn(false);
-      final domainPackage = MockDomainPackage(
-          serviceInterface: ({required name}) => serviceInterface);
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -842,62 +587,42 @@ void main() {
         throwsA(isA<ServiceInterfaceNotFoundException>()),
       );
     });
+
+    test(
+      'removes service interface from subdomain',
+      withMockEnv((manager) async {
+        when(() => serviceInterface.existsAny).thenReturn(true);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.domainSubDomainRemoveServiceInterface(
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Deleting service interface files'),
+          () => serviceInterface.delete(),
+          () => domainPackageBarrelFile.removeExport('src/i_cool_service.dart'),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Removed Service Interface!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
   });
 
   group('domainSubDomainRemoveValueObject', () {
-    test('removes value object from subdomain', () async {
-      final manager = MockProcessManager();
-      final valueObject = MockValueObject();
-      when(() => valueObject.existsAny).thenReturn(true);
-      final barrelFile = MockDartFile();
-      final domainPackage = MockDomainPackage(
-        valueObject: ({required name}) => valueObject,
-        barrelFile: barrelFile,
-      );
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async => rapid.domainSubDomainRemoveValueObject(
-          name: 'Cool',
-          subDomainName: 'foo_bar',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => valueObject.delete(),
-        () => barrelFile.removeExport('src/cool.dart'),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Value Object!')
-      ]);
-    });
-
     test('throws ValueObjectNotFoundException when value object does not exist',
         () async {
-      final valueObject = MockValueObject();
       when(() => valueObject.existsAny).thenReturn(false);
-      final domainPackage = MockDomainPackage(
-        valueObject: ({required name}) => valueObject,
-      );
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => domainPackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -908,5 +633,36 @@ void main() {
         throwsA(isA<ValueObjectNotFoundException>()),
       );
     });
+
+    test(
+      'removes value object from subdomain',
+      withMockEnv((manager) async {
+        when(() => valueObject.existsAny).thenReturn(true);
+
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.domainSubDomainRemoveValueObject(
+          name: 'Cool',
+          subDomainName: 'foo_bar',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Deleting value object files'),
+          () => valueObject.delete(),
+          () => domainPackageBarrelFile.removeExport('src/cool.dart'),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Removed Value Object!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
   });
 }

@@ -26,22 +26,30 @@ mixin _PlatformMixin on _Rapid {
 
     await task('Creating feature', () async {
       await featurePackage.generate(description: description);
-
       await rootPackage.registerFeaturePackage(featurePackage);
-
-      if (navigator) {
-        await _addNavigator(
-          featurePackage: featurePackage,
-          navigationPackage: platformDirectory.navigationPackage,
-        );
-      }
     });
+
+    if (navigator) {
+      await _addNavigatorInterface(
+        featurePackage: featurePackage,
+        navigationPackage: platformDirectory.navigationPackage,
+      );
+      await _addNavigatorImplementation(
+        featurePackage: featurePackage,
+      );
+    }
 
     await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
-    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
-      packages: [rootPackage, if (navigator) featurePackage],
-    );
+    if (navigator) {
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+        packages: [rootPackage, featurePackage],
+      );
+    } else {
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        package: rootPackage,
+      );
+    }
 
     await dartFormatFixTask();
 
@@ -73,7 +81,6 @@ mixin _PlatformMixin on _Rapid {
       throw FeatureAlreadyExistsException._(featurePackage, platform);
     }
 
-    final rootPackage = platformDirectory.rootPackage;
     final featurePackages =
         platformDirectory.featuresDirectory.featurePackages();
 
@@ -88,6 +95,8 @@ mixin _PlatformMixin on _Rapid {
       );
     }
 
+    final rootPackage = platformDirectory.rootPackage;
+
     logger.newLine();
 
     await task('Creating feature', () async {
@@ -97,20 +106,29 @@ mixin _PlatformMixin on _Rapid {
       );
 
       await rootPackage.registerFeaturePackage(featurePackage);
-
-      if (navigator) {
-        await _addNavigator(
-          featurePackage: featurePackage,
-          navigationPackage: platformDirectory.navigationPackage,
-        );
-      }
     });
+
+    if (navigator) {
+      await _addNavigatorInterface(
+        featurePackage: featurePackage,
+        navigationPackage: platformDirectory.navigationPackage,
+      );
+      await _addNavigatorImplementation(
+        featurePackage: featurePackage,
+      );
+    }
 
     await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
-    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
-      packages: [rootPackage, if (navigator) featurePackage],
-    );
+    if (navigator) {
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+        packages: [rootPackage, featurePackage],
+      );
+    } else {
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        package: rootPackage,
+      );
+    }
 
     await dartFormatFixTask();
 
@@ -144,24 +162,34 @@ mixin _PlatformMixin on _Rapid {
     logger.newLine();
 
     await task(
-      'Creating feature files',
+      'Creating feature',
       () async {
         await featurePackage.generate(description: description);
         await rootPackage.registerFeaturePackage(featurePackage);
-        if (navigator) {
-          await _addNavigator(
-            featurePackage: featurePackage,
-            navigationPackage: platformDirectory.navigationPackage,
-          );
-        }
       },
     );
 
+    if (navigator) {
+      await _addNavigatorInterface(
+        featurePackage: featurePackage,
+        navigationPackage: platformDirectory.navigationPackage,
+      );
+      await _addNavigatorImplementation(
+        featurePackage: featurePackage,
+      );
+    }
+
     await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
-    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
-      packages: [rootPackage, if (navigator) featurePackage],
-    );
+    if (navigator) {
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+        packages: [rootPackage, featurePackage],
+      );
+    } else {
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        package: rootPackage,
+      );
+    }
 
     await dartFormatFixTask();
 
@@ -193,7 +221,8 @@ mixin _PlatformMixin on _Rapid {
 
     logger.newLine();
 
-    await task('Generating feature files', () async {
+    // TODO more expressive
+    await task('Creating feature', () async {
       await featurePackage.generate(description: description);
       await rootPackage.registerFeaturePackage(featurePackage);
     });
@@ -223,38 +252,39 @@ mixin _PlatformMixin on _Rapid {
     final platformDirectory =
         project.appModule.platformDirectory(platform: platform);
     final localizationPackage = platformDirectory.localizationPackage;
+    final supportedLanguages = localizationPackage.supportedLanguages();
 
-    if (localizationPackage.supportedLanguages().contains(language)) {
+    if (supportedLanguages.contains(language)) {
       throw LanguageAlreadyPresentException._(language);
     }
 
     logger.newLine();
 
-    await task('Adding language', () {
-      final rootPackage = platformDirectory.rootPackage;
-      switch (rootPackage) {
-        case IosRootPackage():
-          rootPackage.addLanguage(language);
-        case MobileRootPackage():
-          rootPackage.addLanguage(language);
-        default:
-      }
-      localizationPackage.addLanguage(language);
+    final List<Language> languagesToAdd;
+    if (language.needsFallback) {
+      // add the language + its fallback language (if not added yet)
+      final fallbackLanguage = language.fallback();
+      languagesToAdd = [
+        language,
+        if (!supportedLanguages.contains(fallbackLanguage)) fallbackLanguage,
+      ];
+    } else {
+      languagesToAdd = [language];
+    }
 
-      // TODO move down ? check if already there? cleaner
-      if (language.hasScriptCode || language.hasCountryCode) {
+    for (final languageToAdd in languagesToAdd) {
+      await task('Adding language', () {
+        final rootPackage = platformDirectory.rootPackage;
         switch (rootPackage) {
           case IosRootPackage():
-            rootPackage.addLanguage(language);
+            rootPackage.addLanguage(languageToAdd);
           case MobileRootPackage():
-            rootPackage.addLanguage(language);
+            rootPackage.addLanguage(languageToAdd);
           default:
         }
-        localizationPackage.addLanguage(
-          Language(languageCode: language.languageCode),
-        );
-      }
-    });
+        localizationPackage.addLanguage(languageToAdd);
+      });
+    }
 
     await flutterGenl10nTask(package: localizationPackage);
 
@@ -289,9 +319,13 @@ mixin _PlatformMixin on _Rapid {
 
     logger.newLine();
 
-    await _addNavigator(
+    await _addNavigatorInterface(
       featurePackage: featurePackage,
       navigationPackage: platformDirectory.navigationPackage,
+    );
+    await _addNavigatorImplementation(
+      featurePackage: featurePackage,
+      runCodeGen: true,
     );
 
     await dartFormatFixTask();
@@ -343,7 +377,8 @@ mixin _PlatformMixin on _Rapid {
     });
 
     await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
-        package: featurePackage);
+      package: featurePackage,
+    );
 
     await dartFormatFixTask();
 
@@ -394,7 +429,8 @@ mixin _PlatformMixin on _Rapid {
     });
 
     await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
-        package: featurePackage);
+      package: featurePackage,
+    );
 
     await dartFormatFixTask();
 
@@ -432,19 +468,22 @@ mixin _PlatformMixin on _Rapid {
     await task('Removing bloc', () async {
       bloc.delete();
 
-      // TODO delete application dir if empty
-
       final applicationBarrelFile = featurePackage.applicationBarrelFile;
       applicationBarrelFile.removeExport('${name.snakeCase}_bloc.dart');
       if (!applicationBarrelFile.containsStatements()) {
         applicationBarrelFile.deleteSync(recursive: true);
         final barrelFile = featurePackage.barrelFile;
         barrelFile.removeExport('src/application/application.dart');
+        final applicationDir = featurePackage.applicationDir;
+        if (applicationDir.existsSync() && applicationDir.isEmpty()) {
+          applicationDir.deleteSync(recursive: true);
+        }
       }
     });
 
     await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
-        package: featurePackage);
+      package: featurePackage,
+    );
 
     await dartFormatFixTask();
 
@@ -481,7 +520,6 @@ mixin _PlatformMixin on _Rapid {
 
     await task('Removing cubit', () async {
       cubit.delete();
-      // TODO delete application dir if empty
 
       final applicationBarrelFile = featurePackage.applicationBarrelFile;
       applicationBarrelFile.removeExport('${name.snakeCase}_cubit.dart');
@@ -489,11 +527,16 @@ mixin _PlatformMixin on _Rapid {
         applicationBarrelFile.deleteSync(recursive: true);
         final barrelFile = featurePackage.barrelFile;
         barrelFile.removeExport('src/application/application.dart');
+        final applicationDir = featurePackage.applicationDir;
+        if (applicationDir.existsSync() && applicationDir.isEmpty()) {
+          applicationDir.deleteSync(recursive: true);
+        }
       }
     });
 
     await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
-        package: featurePackage);
+      package: featurePackage,
+    );
 
     await dartFormatFixTask();
 
@@ -537,15 +580,15 @@ mixin _PlatformMixin on _Rapid {
         }
       }
 
-      if (featurePackage is PlatformRoutableFeaturePackage) {
-        await _removeNavigatorInterface(
-          featurePackage: featurePackage,
-          navigationPackage: platformDirectory.navigationPackage,
-        );
-      }
-
       featurePackage.deleteSync(recursive: true);
     });
+
+    if (featurePackage is PlatformRoutableFeaturePackage) {
+      await _removeNavigatorInterface(
+        featurePackage: featurePackage,
+        navigationPackage: platformDirectory.navigationPackage,
+      );
+    }
 
     await melosBootstrapTask(
       scope: [
@@ -555,7 +598,8 @@ mixin _PlatformMixin on _Rapid {
     );
 
     await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
-        package: rootPackage);
+      package: rootPackage,
+    );
 
     await dartFormatFixTask();
 
@@ -589,33 +633,30 @@ mixin _PlatformMixin on _Rapid {
 
     logger.newLine();
 
-    await task('Removing language', () {
-      final rootPackage = platformDirectory.rootPackage;
-      switch (rootPackage) {
-        case IosRootPackage():
-          rootPackage.removeLanguage(language);
-        case MobileRootPackage():
-          rootPackage.removeLanguage(language);
-        default:
-      }
-      localizationPackage.removeLanguage(language);
+    final List<Language> languagesToRemove;
+    if (!language.needsFallback) {
+      // remove the language + all languages that have language as a fallback
+      languagesToRemove = supportedLanguages
+          .where((e) => e.languageCode == language.languageCode)
+          .toList();
+    } else {
+      languagesToRemove = [language];
+    }
 
-      // TODO move down ? cleaner
-      if (!language.hasScriptCode && !language.hasCountryCode) {
-        for (final language in supportedLanguages.where((e) =>
-            e.languageCode == language.languageCode &&
-            (e.hasScriptCode || e.hasCountryCode))) {
-          switch (rootPackage) {
-            case IosRootPackage():
-              rootPackage.removeLanguage(language);
-            case MobileRootPackage():
-              rootPackage.removeLanguage(language);
-            default:
-          }
-          localizationPackage.removeLanguage(language);
+    for (final languageToRemove in languagesToRemove) {
+      // TODO more expressive
+      await task('Removing language', () {
+        final rootPackage = platformDirectory.rootPackage;
+        switch (rootPackage) {
+          case IosRootPackage():
+            rootPackage.removeLanguage(languageToRemove);
+          case MobileRootPackage():
+            rootPackage.removeLanguage(languageToRemove);
+          default:
         }
-      }
-    });
+        localizationPackage.removeLanguage(languageToRemove);
+      });
+    }
 
     await flutterGenl10nTask(package: localizationPackage);
 
@@ -699,17 +740,6 @@ mixin _PlatformMixin on _Rapid {
       ..commandSuccess('Set Default Language!');
   }
 
-  Future<void> _addNavigator({
-    required PlatformRoutableFeaturePackage featurePackage,
-    required PlatformNavigationPackage navigationPackage,
-  }) async {
-    await _addNavigatorInterface(
-      featurePackage: featurePackage,
-      navigationPackage: navigationPackage,
-    );
-    await _addNavigatorImplementation(featurePackage: featurePackage);
-  }
-
   Future<void> _addNavigatorInterface({
     required PlatformRoutableFeaturePackage featurePackage,
     required PlatformNavigationPackage navigationPackage,
@@ -728,6 +758,8 @@ mixin _PlatformMixin on _Rapid {
 
   Future<void> _addNavigatorImplementation({
     required PlatformRoutableFeaturePackage featurePackage,
+    // if false the caller is expected to run the codegen
+    bool runCodeGen = false,
   }) async {
     final navigatorImplementation = featurePackage.navigatorImplementation;
     if (!navigatorImplementation.existsAny) {
@@ -735,8 +767,11 @@ mixin _PlatformMixin on _Rapid {
         'Creating navigator implementation',
         () async => navigatorImplementation.generate(),
       );
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
-          package: featurePackage);
+      if (runCodeGen) {
+        await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+          package: featurePackage,
+        );
+      }
     }
   }
 
@@ -767,7 +802,8 @@ mixin _PlatformMixin on _Rapid {
         () => navigatorImplementation.delete(),
       );
       await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
-          package: featurePackage);
+        package: featurePackage,
+      );
     }
   }
 }

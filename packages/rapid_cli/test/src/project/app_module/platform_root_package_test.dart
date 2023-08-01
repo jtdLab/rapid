@@ -11,6 +11,8 @@ import 'package:test/test.dart';
 import '../../mock_fs.dart';
 import '../../mocks.dart';
 
+// TODO share tests among platforms register etc?
+
 IosRootPackage _getIosRootPackage({
   String? projectName,
   String? path,
@@ -631,6 +633,34 @@ void main() {
         ]);
       }),
     );
+
+    test('addLanguage', () {
+      final nativeDirectory = MockIosNativeDirectory();
+      final iosRootPackage = _getIosRootPackage(
+        projectName: 'test_project',
+        path: '/path/to/ios_root_package',
+        nativeDirectory: nativeDirectory,
+      );
+
+      iosRootPackage.addLanguage(Language(languageCode: 'fr'));
+
+      verify(() => nativeDirectory.addLanguage(Language(languageCode: 'fr')))
+          .called(1);
+    });
+
+    test('removeLanguage', () {
+      final nativeDirectory = MockIosNativeDirectory();
+      final iosRootPackage = _getIosRootPackage(
+        projectName: 'test_project',
+        path: '/path/to/ios_root_package',
+        nativeDirectory: nativeDirectory,
+      );
+
+      iosRootPackage.removeLanguage(Language(languageCode: 'fr'));
+
+      verify(() => nativeDirectory.removeLanguage(Language(languageCode: 'fr')))
+          .called(1);
+    });
   });
 
   group('MacosRootPackage', () {
@@ -691,76 +721,6 @@ void main() {
                 },
               ),
           () => nativeDirectory.generate(
-                orgName: 'test_org',
-              ),
-        ]);
-      }),
-    );
-  });
-
-  group('NoneIosRootPackage', () {
-    test('.resolve', () {
-      final noneIosRootPackage = NoneIosRootPackage.resolve(
-        projectName: 'test_project',
-        projectPath: '/path/to/project',
-        platform: Platform.android,
-      );
-
-      expect(noneIosRootPackage.projectName, 'test_project');
-      expect(
-        noneIosRootPackage.path,
-        '/path/to/project/packages/test_project/test_project_android/test_project_android',
-      );
-      expect(noneIosRootPackage.platform, Platform.android);
-      final nativeDirectory = noneIosRootPackage.nativeDirectory;
-      expect(nativeDirectory.projectName, 'test_project');
-      expect(
-        nativeDirectory.path,
-        '/path/to/project/packages/test_project/test_project_android/test_project_android/android',
-      );
-      expect(nativeDirectory.platform, Platform.android);
-    });
-
-    test(
-      'generate',
-      withMockFs(() async {
-        final generator = MockMasonGenerator();
-        final generatorBuilder = MockMasonGeneratorBuilder(
-          generator: generator,
-        );
-        generatorOverrides = generatorBuilder;
-        final nativeDirectory = MockNoneIosNativeDirectory();
-        final noneIosRootPackage = _getNoneIosRootPackage(
-          projectName: 'test_project',
-          platform: Platform.android,
-          path: '/path/to/none_ios_root_package',
-          nativeDirectory: nativeDirectory,
-        );
-
-        await noneIosRootPackage.generate(
-          description: 'Test description',
-          orgName: 'test_org',
-        );
-
-        verifyInOrder([
-          () => generatorBuilder(platformRootPackageBundle),
-          () => generator.generate(
-                any(
-                  that: isA<DirectoryGeneratorTarget>().having(
-                    (e) => e.dir.path,
-                    'path',
-                    '/path/to/none_ios_root_package',
-                  ),
-                ),
-                vars: <String, dynamic>{
-                  'project_name': 'test_project',
-                  'description': 'Test description',
-                  'org_name': 'test_org',
-                  'platform': 'android',
-                },
-              ),
-          () => nativeDirectory.generate(
-                description: 'Test description',
                 orgName: 'test_org',
               ),
         ]);
@@ -843,6 +803,105 @@ void main() {
           () => iosNativeDirectory.generate(
                 orgName: 'test_org',
                 language: Language(languageCode: 'en'),
+              ),
+        ]);
+      }),
+    );
+
+    test('addLanguage', () {
+      final iosNativeDirectory = MockIosNativeDirectory();
+      final iosRootPackage = _getMobileRootPackage(
+        projectName: 'test_project',
+        path: '/path/to/ios_root_package',
+        iosNativeDirectory: iosNativeDirectory,
+      );
+
+      iosRootPackage.addLanguage(Language(languageCode: 'fr'));
+
+      verify(() => iosNativeDirectory.addLanguage(Language(languageCode: 'fr')))
+          .called(1);
+    });
+
+    test('removeLanguage', () {
+      final iosNativeDirectory = MockIosNativeDirectory();
+      final iosRootPackage = _getMobileRootPackage(
+        projectName: 'test_project',
+        path: '/path/to/ios_root_package',
+        iosNativeDirectory: iosNativeDirectory,
+      );
+
+      iosRootPackage.removeLanguage(Language(languageCode: 'fr'));
+
+      verify(
+        () => iosNativeDirectory.removeLanguage(Language(languageCode: 'fr')),
+      ).called(1);
+    });
+  });
+
+  group('NoneIosRootPackage', () {
+    test('.resolve', () {
+      final noneIosRootPackage = NoneIosRootPackage.resolve(
+        projectName: 'test_project',
+        projectPath: '/path/to/project',
+        platform: Platform.android,
+      );
+
+      expect(noneIosRootPackage.projectName, 'test_project');
+      expect(
+        noneIosRootPackage.path,
+        '/path/to/project/packages/test_project/test_project_android/test_project_android',
+      );
+      expect(noneIosRootPackage.platform, Platform.android);
+      final nativeDirectory = noneIosRootPackage.nativeDirectory;
+      expect(nativeDirectory.projectName, 'test_project');
+      expect(
+        nativeDirectory.path,
+        '/path/to/project/packages/test_project/test_project_android/test_project_android/android',
+      );
+      expect(nativeDirectory.platform, Platform.android);
+    });
+
+    test(
+      'generate',
+      withMockFs(() async {
+        final generator = MockMasonGenerator();
+        final generatorBuilder = MockMasonGeneratorBuilder(
+          generator: generator,
+        );
+        generatorOverrides = generatorBuilder;
+        final nativeDirectory = MockNoneIosNativeDirectory();
+        final noneIosRootPackage = _getNoneIosRootPackage(
+          projectName: 'test_project',
+          platform: Platform.android,
+          path: '/path/to/none_ios_root_package',
+          nativeDirectory: nativeDirectory,
+        );
+
+        await noneIosRootPackage.generate(
+          description: 'Test description',
+          orgName: 'test_org',
+        );
+
+        verifyInOrder([
+          () => generatorBuilder(platformRootPackageBundle),
+          () => generator.generate(
+                any(
+                  that: isA<DirectoryGeneratorTarget>().having(
+                    (e) => e.dir.path,
+                    'path',
+                    '/path/to/none_ios_root_package',
+                  ),
+                ),
+                vars: <String, dynamic>{
+                  'project_name': 'test_project',
+                  'description': 'Test description',
+                  'org_name': 'test_org',
+                  'platform': 'android',
+                },
+              ),
+          () => nativeDirectory.generate(
+                description: 'Test description',
+                orgName: 'test_org',
               ),
         ]);
       }),

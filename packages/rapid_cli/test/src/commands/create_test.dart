@@ -12,7 +12,6 @@ import 'package:rapid_cli/src/tool.dart';
 import 'package:test/test.dart';
 
 import '../common.dart';
-import '../invocations.dart';
 import '../mock_env.dart';
 import '../mock_fs.dart';
 import '../mocks.dart';
@@ -456,7 +455,7 @@ void main() {
         ) = _setupProject();
         final projectBuilder = MockRapidProjectBuilder(project: project);
         final (
-          progress: _,
+          progress: progress,
           groupableProgress: groupableProgress,
           progressGroup: progressGroup,
           logger: logger
@@ -520,7 +519,9 @@ void main() {
           () => manager.runFlutterPubGet(workingDirectory: 'ui_package_path'),
           () => groupableProgress.complete(),
           () => logger.newLine(),
-          ...dartFormatFixTask(manager),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
           () => logger.newLine(),
           () => logger.commandSuccess('Created Project!'),
         ]);

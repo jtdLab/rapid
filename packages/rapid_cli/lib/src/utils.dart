@@ -22,16 +22,6 @@ String multiLine(List<String> lines) => lines.join('\n');
 
 const envKeyRapidTerminalWidth = 'RAPID_TERMINAL_WIDTH';
 
-bool dirExists(String directory) {
-  final dir = Directory(directory);
-  return dir.existsSync();
-}
-
-bool dirIsEmpty(String directory) {
-  final dir = Directory(directory);
-  return dir.listSync().isEmpty;
-}
-
 void replaceInFile(File file, String from, String replace) {
   final content = file.readAsStringSync();
   final updatedContent = content.replaceAll(from, replace);
@@ -76,6 +66,12 @@ Future<Process> startCommand(
     workingDirectory: workingDirectory,
     runInShell: true,
   );
+}
+
+extension DirectoryUtils on Directory {
+  bool isEmpty() {
+    return listSync().isEmpty;
+  }
 }
 
 extension YamlUtils on YamlNode {

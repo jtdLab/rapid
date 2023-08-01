@@ -268,6 +268,10 @@ void main() {
         '/path/to/project/packages/test_project/test_project_web/test_project_web_features/test_project_web_app/lib/test_project_web_app.dart',
       );
       expect(
+        platformAppFeaturePackage.applicationDir.path,
+        '/path/to/project/packages/test_project/test_project_web/test_project_web_features/test_project_web_app/lib/src/application',
+      );
+      expect(
         platformAppFeaturePackage.applicationBarrelFile.path,
         '/path/to/project/packages/test_project/test_project_web/test_project_web_features/test_project_web_app/lib/src/application/application.dart',
       );
@@ -347,6 +351,10 @@ void main() {
       expect(
         platformPageFeaturePackage.barrelFile.path,
         '/path/to/project/packages/test_project/test_project_web/test_project_web_features/test_project_web_foo_page/lib/test_project_web_foo_page.dart',
+      );
+      expect(
+        platformPageFeaturePackage.applicationDir.path,
+        '/path/to/project/packages/test_project/test_project_web/test_project_web_features/test_project_web_foo_page/lib/src/application',
       );
       expect(
         platformPageFeaturePackage.applicationBarrelFile.path,
@@ -441,6 +449,10 @@ void main() {
       expect(
         platformFlowFeaturePackage.barrelFile.path,
         '/path/to/project/packages/test_project/test_project_web/test_project_web_features/test_project_web_foo_flow/lib/test_project_web_foo_flow.dart',
+      );
+      expect(
+        platformFlowFeaturePackage.applicationDir.path,
+        '/path/to/project/packages/test_project/test_project_web/test_project_web_features/test_project_web_foo_flow/lib/src/application',
       );
       expect(
         platformFlowFeaturePackage.applicationBarrelFile.path,
@@ -539,6 +551,10 @@ void main() {
       expect(
         platformTabFlowFeaturePackage.barrelFile.path,
         '/path/to/project/packages/test_project/test_project_web/test_project_web_features/test_project_web_foo_tab_flow/lib/test_project_web_foo_tab_flow.dart',
+      );
+      expect(
+        platformTabFlowFeaturePackage.applicationDir.path,
+        '/path/to/project/packages/test_project/test_project_web/test_project_web_features/test_project_web_foo_tab_flow/lib/src/application',
       );
       expect(
         platformTabFlowFeaturePackage.applicationBarrelFile.path,
@@ -641,6 +657,10 @@ void main() {
       expect(
         platformWidgetFeaturePackage.barrelFile.path,
         '/path/to/project/packages/test_project/test_project_web/test_project_web_features/test_project_web_foo_widget/lib/test_project_web_foo_widget.dart',
+      );
+      expect(
+        platformWidgetFeaturePackage.applicationDir.path,
+        '/path/to/project/packages/test_project/test_project_web/test_project_web_features/test_project_web_foo_widget/lib/src/application',
       );
       expect(
         platformWidgetFeaturePackage.applicationBarrelFile.path,

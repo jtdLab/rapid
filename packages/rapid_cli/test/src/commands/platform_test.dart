@@ -1,193 +1,157 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
+import 'package:rapid_cli/src/io.dart';
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src/tool.dart';
 import 'package:test/test.dart';
 
-import '../invocations.dart';
 import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
-// TODO verify never for melos bs and code gen + in command group cases are missing
+// TODO is it good to use global setup instead of setup fcts with records
 
 void main() {
+  late Platform platform; // TODO better test all platforms
+  late Bloc bloc;
+  late BlocBuilder blocBuilder;
+  late Cubit cubit;
+  late CubitBuilder cubitBuilder;
+  late DartFile platformFeaturePackageApplicationBarrelFile;
+  late Directory platformFeaturePackageApplicationDir;
+  late DartFile platformFeaturePackageBarrelFile;
+  late PlatformFeaturePackage platformFeaturePackage;
+  late PlatformFeaturePackageBuilder platformFeaturePackageBuilder;
+  late PlatformFeaturesDirectory platformFeaturesDirectory;
+  late PlatformLocalizationPackage platformLocalizationPackage;
+  late NavigatorInterface navigatorInterface;
+  late NavigatorInterfaceBuilder navigatorInterfaceBuilder;
+  late DartFile platformNavigationPackageBarrelFile;
+  late PlatformNavigationPackage platformNavigationPackage;
+  late PlatformDirectory platformDirectory;
+  late RapidProject project;
+  late CommandGroup commandGroup;
+  late RapidTool tool;
+
   setUpAll(() {
     registerFallbackValues();
   });
 
-  group('platformAddFeatureFlow', () {
-    test('adds a new flow feature to the platform', () async {
-      final manager = MockProcessManager();
-      final platformRootPackage = MockNoneIosRootPackage();
-      final platformNavigationPackage = MockPlatformNavigationPackage();
-      final platformFeaturePackage =
-          MockPlatformFlowFeaturePackage(name: 'cool_flow');
-      when(() => platformFeaturePackage.existsSync()).thenReturn(false);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: platformRootPackage,
-            navigationPackage: platformNavigationPackage,
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final logger = MockRapidLogger();
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: [platformRootPackage, platformFeaturePackage],
-        logger: logger,
-      );
-      final codeGenTaskGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroup(
-        manager,
-        packages: [
-          platformRootPackage,
-        ],
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformAddFeatureFlow(
-          Platform.android,
-          name: 'cool_flow',
-          description: 'Cool flow.',
-          navigator: false,
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => platformFeaturePackage.generate(description: 'Cool flow.'),
-        () =>
-            platformRootPackage.registerFeaturePackage(platformFeaturePackage),
-        ...melosBootstrapTaskInvocations,
-        ...codeGenTaskGroupInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Flow Feature!'),
-      ]);
+  setUp(() {
+    platform = randomPlatform();
+    bloc = MockBloc();
+    when(() => bloc.existsAny).thenReturn(false);
+    blocBuilder = MockBlocBuilder();
+    when(() => blocBuilder(name: any(named: 'name'))).thenReturn(bloc);
+    cubit = MockCubit();
+    when(() => cubit.existsAny).thenReturn(false);
+    cubitBuilder = MockCubitBuilder();
+    when(() => cubitBuilder(name: any(named: 'name'))).thenReturn(cubit);
+    platformFeaturePackageApplicationBarrelFile =
+        MockDartFile(existsSync: true);
+    platformFeaturePackageApplicationDir = MockDirectory(existsSync: true);
+    when(() => platformFeaturePackageApplicationDir.listSync()).thenReturn([
+      FakeDartFile(),
+    ]);
+    when(() => platformFeaturePackageApplicationBarrelFile.containsStatements())
+        .thenReturn(true);
+    platformFeaturePackageBarrelFile = MockDartFile(existsSync: true);
+    platformFeaturePackage = MockPlatformPageFeaturePackage(
+      packageName: 'cool_page',
+      path: 'cool_page_path',
+    );
+    when(() => platformFeaturePackage.existsSync()).thenReturn(true);
+    when(() => platformFeaturePackage.bloc).thenReturn(blocBuilder);
+    when(() => platformFeaturePackage.cubit).thenReturn(cubitBuilder);
+    when(() => platformFeaturePackage.applicationBarrelFile)
+        .thenReturn(platformFeaturePackageApplicationBarrelFile);
+    when(() => platformFeaturePackage.applicationDir)
+        .thenReturn(platformFeaturePackageApplicationDir);
+    when(() => platformFeaturePackage.barrelFile)
+        .thenReturn(platformFeaturePackageBarrelFile);
+    platformFeaturePackageBuilder = MockPlatformFeaturePackageBuilder();
+    when(
+      () => platformFeaturePackageBuilder(name: any(named: 'name')),
+    ).thenReturn(platformFeaturePackage);
+    platformFeaturesDirectory = MockPlatformFeaturesDirectory(
+      featurePackage: platformFeaturePackageBuilder,
+    );
+    platformLocalizationPackage = MockPlatformLocalizationPackage(
+      packageName: 'platform_localization_package',
+      path: 'platform_localization_package_path',
+    );
+    when(() => platformLocalizationPackage.supportedLanguages()).thenReturn({
+      Language(languageCode: 'en'),
+      Language(languageCode: 'fr'),
     });
+    when(() => platformLocalizationPackage.defaultLanguage())
+        .thenReturn(Language(languageCode: 'en'));
+    navigatorInterface = MockNavigatorInterface();
+    when(() => navigatorInterface.existsAny).thenReturn(false);
+    navigatorInterfaceBuilder = MockNavigatorInterfaceBuilder();
+    when(() => navigatorInterfaceBuilder(name: any(named: 'name')))
+        .thenReturn(navigatorInterface);
+    platformNavigationPackageBarrelFile = MockDartFile();
+    platformNavigationPackage = MockPlatformNavigationPackage(
+      navigatorInterface: navigatorInterfaceBuilder,
+      barrelFile: platformNavigationPackageBarrelFile,
+    );
+    platformDirectory = MockPlatformDirectory(
+      localizationPackage: platformLocalizationPackage,
+      featuresDirectory: platformFeaturesDirectory,
+      navigationPackage: platformNavigationPackage,
+    );
+    project = MockRapidProject(
+      path: 'project_path',
+      appModule: MockAppModule(
+        platformDirectory: ({required platform}) => platformDirectory,
+      ),
+    );
+    when(() => project.platformIsActivated(any())).thenReturn(true);
+    commandGroup = MockCommandGroup();
+    when(() => commandGroup.isActive).thenReturn(false);
+    tool = MockRapidTool();
+    when(() => tool.loadGroup()).thenReturn(commandGroup);
+  });
 
-    test('adds a new flow feature to the platform (with navigator)', () async {
-      final manager = MockProcessManager();
-      final platformRootPackage = MockNoneIosRootPackage();
-      final navigatorInterface = MockNavigatorInterface();
-      when(() => navigatorInterface.existsAny).thenReturn(false);
-      final navigationBarrelFile = MockDartFile();
-      final platformNavigationPackage = MockPlatformNavigationPackage(
-        barrelFile: navigationBarrelFile,
-        navigatorInterface: ({required name}) => navigatorInterface,
-      );
-      final navigatorImplementation = MockNavigatorImplementation();
+  group('platformAddFeatureFlow', () {
+    late NavigatorImplementation navigatorImplementation;
+    late PlatformFlowFeaturePackage platformFeaturePackage;
+    late NoneIosRootPackage platformRootPackage;
+
+    setUp(() {
+      navigatorImplementation = MockNavigatorImplementation();
       when(() => navigatorImplementation.existsAny).thenReturn(false);
-      final platformFeaturePackage = MockPlatformFlowFeaturePackage(
+      platformFeaturePackage = MockPlatformFlowFeaturePackage(
         name: 'cool_flow',
+        packageName: 'cool_flow',
+        path: 'cool_flow_path',
         navigatorImplementation: navigatorImplementation,
       );
       when(() => platformFeaturePackage.existsSync()).thenReturn(false);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: platformRootPackage,
-            navigationPackage: platformNavigationPackage,
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
+      when(
+        () => platformFeaturePackageBuilder.call<PlatformFlowFeaturePackage>(
+          name: 'cool_flow',
         ),
+      ).thenReturn(platformFeaturePackage);
+      platformRootPackage = MockNoneIosRootPackage(
+        packageName: 'none_ios_root_package',
+        path: 'none_ios_root_package_path',
       );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final logger = MockRapidLogger();
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: [platformRootPackage, platformFeaturePackage],
-        logger: logger,
-      );
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: platformFeaturePackage,
-        logger: logger,
-      );
-      final codeGenTaskGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroup(
-        manager,
-        packages: [
-          platformRootPackage,
-          platformFeaturePackage,
-        ],
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformAddFeatureFlow(
-          Platform.android,
-          name: 'cool',
-          description: 'Cool flow.',
-          navigator: true,
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => platformFeaturePackage.generate(description: 'Cool flow.'),
-        () =>
-            platformRootPackage.registerFeaturePackage(platformFeaturePackage),
-        () => navigatorInterface.generate(),
-        () => navigationBarrelFile.addExport('src/i_cool_flow_navigator.dart'),
-        () => navigatorImplementation.generate(),
-        ...codeGenTaskInvocations,
-        ...melosBootstrapTaskInvocations,
-        ...codeGenTaskGroupInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Flow Feature!'),
-      ]);
+      when(() => platformDirectory.rootPackage).thenReturn(platformRootPackage);
     });
 
     test(
         'throws PlatformNotActivatedException when the platform is not activated',
         () async {
-      final project = MockRapidProject();
       when(() => project.platformIsActivated(any())).thenReturn(false);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformAddFeatureFlow(
-          Platform.android,
+          platform,
           name: 'cool',
           description: 'Cool flow.',
           navigator: true,
@@ -199,28 +163,12 @@ void main() {
     test(
         'throws FeatureAlreadyExistsException when feature package already exists',
         () async {
-      final featurePackage = MockPlatformFlowFeaturePackage(name: 'cool_flow');
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      T featurePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: featurePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
+      when(() => platformFeaturePackage.existsSync()).thenReturn(true);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformAddFeatureFlow(
-          Platform.android,
+          platform,
           name: 'cool',
           description: 'Cool flow.',
           navigator: true,
@@ -228,194 +176,168 @@ void main() {
         throwsA(isA<FeatureAlreadyExistsException>()),
       );
     });
+
+    test(
+      'adds a new flow feature to the platform',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformAddFeatureFlow(
+          platform,
+          name: 'cool',
+          description: 'Cool flow.',
+          navigator: false,
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating feature'),
+          () => platformFeaturePackage.generate(description: 'Cool flow.'),
+          () => platformRootPackage
+              .registerFeaturePackage(platformFeaturePackage),
+          () => progress.complete(),
+          () => logger.progress(
+              'Running "melos bootstrap --scope none_ios_root_package,cool_flow"'),
+          () => manager.runMelosBootstrap(
+                ['none_ios_root_package', 'cool_flow'],
+                workingDirectory: 'project_path',
+              ),
+          () => progress.complete(),
+          () => logger
+              .progress('Running code generation in none_ios_root_package'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'none_ios_root_package_path',
+              ),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Flow Feature!'),
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
+
+    test(
+      'adds a navigator implementation to the flow feature when navigator is true',
+      withMockEnv((manager) async {
+        final (
+          progress: progress,
+          groupableProgress: groupableProgress,
+          progressGroup: progressGroup,
+          logger: logger,
+        ) = setupLogger();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformAddFeatureFlow(
+          platform,
+          name: 'cool',
+          description: 'Cool flow.',
+          navigator: true,
+        );
+
+        verifyInOrder([
+          () => logger.progress('Creating navigator implementation'),
+          () => navigatorImplementation.generate(),
+          () => progress.complete(),
+          () => logger.progressGroup(null),
+          () => progressGroup
+              .progress('Running code generation in none_ios_root_package'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'none_ios_root_package_path',
+              ),
+          () => groupableProgress.complete(),
+          () => progressGroup.progress('Running code generation in cool_flow'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'cool_flow_path',
+              ),
+          () => groupableProgress.complete(),
+        ]);
+      }),
+    );
+
+    test(
+      'adds a navigator interface to the platform navigation package when navigator is true',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformAddFeatureFlow(
+          platform,
+          name: 'cool',
+          description: 'Cool flow.',
+          navigator: true,
+        );
+
+        verifyInOrder([
+          () => logger.progress('Creating navigator interface'),
+          () => navigatorInterface.generate(),
+          () => platformNavigationPackageBarrelFile
+              .addExport('src/i_cool_flow_navigator.dart'),
+          () => progress.complete(),
+        ]);
+      }),
+    );
   });
 
   group('platformAddFeatureTabFlow', () {
-    test('adds a new tab flow feature to the platform', () async {
-      final manager = MockProcessManager();
-      final platformRootPackage = MockNoneIosRootPackage();
-      final platformNavigationPackage = MockPlatformNavigationPackage();
-      final platformFeaturePackage =
-          MockPlatformTabFlowFeaturePackage(name: 'cool_tab_flow');
-      when(() => platformFeaturePackage.existsSync()).thenReturn(false);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: platformRootPackage,
-            navigationPackage: platformNavigationPackage,
-            featuresDirectory: MockPlatformFeaturesDirectory(
-                featurePackage: platformFeaturePackageBuilder,
-                featurePackages: [
-                  MockPlatformPageFeaturePackage(name: 'home_page'),
-                ]),
-          ),
-        ),
-      );
+    late NavigatorImplementation navigatorImplementation;
+    late PlatformTabFlowFeaturePackage platformFeaturePackage;
+    late NoneIosRootPackage platformRootPackage;
 
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: [platformRootPackage, platformFeaturePackage],
-        logger: logger,
-      );
-      final codeGenTaskGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroup(
-        manager,
-        packages: [
-          platformRootPackage,
-        ],
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformAddFeatureTabFlow(
-          Platform.android,
-          name: 'cool',
-          description: 'Cool tab flow.',
-          navigator: false,
-          subFeatures: {'home_page'},
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => platformFeaturePackage.generate(
-              description: 'Cool tab flow.',
-              subFeatures: {'home_page'},
-            ),
-        () =>
-            platformRootPackage.registerFeaturePackage(platformFeaturePackage),
-        ...melosBootstrapTaskInvocations,
-        ...codeGenTaskGroupInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Tab Flow Feature!'),
-      ]);
-    });
-
-    test('adds a new tab flow feature to the platform (with navigator)',
-        () async {
-      final manager = MockProcessManager();
-      final platformRootPackage = MockNoneIosRootPackage();
-      final navigatorInterface = MockNavigatorInterface();
-      when(() => navigatorInterface.existsAny).thenReturn(false);
-      final navigationBarrelFile = MockDartFile();
-      final platformNavigationPackage = MockPlatformNavigationPackage(
-        barrelFile: navigationBarrelFile,
-        navigatorInterface: ({required name}) => navigatorInterface,
-      );
-      final navigatorImplementation = MockNavigatorImplementation();
+    setUp(() {
+      navigatorImplementation = MockNavigatorImplementation();
       when(() => navigatorImplementation.existsAny).thenReturn(false);
-      final platformFeaturePackage = MockPlatformTabFlowFeaturePackage(
+      platformFeaturePackage = MockPlatformTabFlowFeaturePackage(
         name: 'cool_tab_flow',
+        packageName: 'cool_tab_flow',
+        path: 'cool_tab_flow_path',
         navigatorImplementation: navigatorImplementation,
       );
       when(() => platformFeaturePackage.existsSync()).thenReturn(false);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: platformRootPackage,
-            navigationPackage: platformNavigationPackage,
-            featuresDirectory: MockPlatformFeaturesDirectory(
-                featurePackage: platformFeaturePackageBuilder,
-                featurePackages: [
-                  MockPlatformPageFeaturePackage(name: 'home_page'),
-                ]),
-          ),
+      when(
+        () => platformFeaturePackageBuilder.call<PlatformTabFlowFeaturePackage>(
+          name: 'cool_tab_flow',
         ),
+      ).thenReturn(platformFeaturePackage);
+      platformRootPackage = MockNoneIosRootPackage(
+        packageName: 'none_ios_root_package',
+        path: 'none_ios_root_package_path',
       );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: platformFeaturePackage,
-        logger: logger,
-      );
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: [platformRootPackage, platformFeaturePackage],
-        logger: logger,
-      );
-      final codeGenTaskGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroup(
-        manager,
-        packages: [
-          platformRootPackage,
-          platformFeaturePackage,
-        ],
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformAddFeatureTabFlow(
-          Platform.android,
-          name: 'cool',
-          description: 'Cool tab flow.',
-          navigator: true,
-          subFeatures: {'home_page'},
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => platformFeaturePackage.generate(
-              description: 'Cool tab flow.',
-              subFeatures: {'home_page'},
-            ),
-        () =>
-            platformRootPackage.registerFeaturePackage(platformFeaturePackage),
-        () => navigatorInterface.generate(),
-        () => navigationBarrelFile
-            .addExport('src/i_cool_tab_flow_navigator.dart'),
-        () => navigatorImplementation.generate(),
-        ...codeGenTaskInvocations,
-        ...melosBootstrapTaskInvocations,
-        ...codeGenTaskGroupInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Tab Flow Feature!'),
+      when(() => platformDirectory.rootPackage).thenReturn(platformRootPackage);
+      when(() => platformFeaturesDirectory.featurePackages()).thenReturn([
+        FakePlatformPageFeaturePackage(name: 'home_page'),
       ]);
     });
 
     test(
         'throws PlatformNotActivatedException when the platform is not activated',
         () async {
-      final project = MockRapidProject();
       when(() => project.platformIsActivated(any())).thenReturn(false);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformAddFeatureTabFlow(
-          Platform.android,
+          platform,
           name: 'cool',
           description: 'Cool tab flow.',
           navigator: false,
@@ -428,29 +350,12 @@ void main() {
     test(
         'throws FeatureAlreadyExistsException when feature package already exists',
         () async {
-      final featurePackage =
-          MockPlatformTabFlowFeaturePackage(name: 'cool_tab_flow');
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      T featurePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: featurePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
+      when(() => platformFeaturePackage.existsSync()).thenReturn(true);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformAddFeatureTabFlow(
-          Platform.android,
+          platform,
           name: 'cool',
           description: 'Cool tab flow.',
           navigator: false,
@@ -462,215 +367,185 @@ void main() {
 
     test('throws SubFeaturesNotFoundException when sub feature not found',
         () async {
-      final platformRootPackage = MockNoneIosRootPackage();
-      final platformFeaturePackage =
-          MockPlatformTabFlowFeaturePackage(name: 'cool_tab_flow');
-      when(() => platformFeaturePackage.existsSync()).thenReturn(false);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: platformRootPackage,
-            featuresDirectory: MockPlatformFeaturesDirectory(
-                featurePackage: platformFeaturePackageBuilder,
-                featurePackages: [
-                  MockPlatformPageFeaturePackage(name: 'other_page'),
-                ]),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final logger = MockRapidLogger();
-      final rapid = getRapid(
-        project: project,
-        logger: logger,
-      );
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformAddFeatureTabFlow(
-          Platform.android,
+          platform,
           name: 'cool',
           description: 'Cool tab flow.',
           navigator: false,
-          subFeatures: {'home_page'},
+          subFeatures: {'non_existing_page'},
         ),
         throwsA(isA<SubFeaturesNotFoundException>()),
       );
     });
+
+    test(
+      'adds a new tab flow feature to the platform',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformAddFeatureTabFlow(
+          platform,
+          name: 'cool',
+          description: 'Cool tab flow.',
+          navigator: false,
+          subFeatures: {'home_page'},
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating feature'),
+          () => platformFeaturePackage.generate(
+                description: 'Cool tab flow.',
+                subFeatures: {'home_page'},
+              ),
+          () => platformRootPackage
+              .registerFeaturePackage(platformFeaturePackage),
+          () => progress.complete(),
+          () => logger.progress(
+              'Running "melos bootstrap --scope none_ios_root_package,cool_tab_flow"'),
+          () => manager.runMelosBootstrap(
+                ['none_ios_root_package', 'cool_tab_flow'],
+                workingDirectory: 'project_path',
+              ),
+          () => progress.complete(),
+          () => logger
+              .progress('Running code generation in none_ios_root_package'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'none_ios_root_package_path',
+              ),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Tab Flow Feature!'),
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
+
+    test(
+      'adds a navigator implementation to the tab flow feature when navigator is true',
+      withMockEnv((manager) async {
+        final (
+          progress: progress,
+          groupableProgress: groupableProgress,
+          progressGroup: progressGroup,
+          logger: logger,
+        ) = setupLogger();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformAddFeatureTabFlow(
+          platform,
+          name: 'cool',
+          description: 'Cool tab flow.',
+          navigator: true,
+          subFeatures: {'home_page'},
+        );
+
+        verifyInOrder([
+          () => logger.progress('Creating navigator implementation'),
+          () => navigatorImplementation.generate(),
+          () => progress.complete(),
+          () => logger.progressGroup(null),
+          () => progressGroup
+              .progress('Running code generation in none_ios_root_package'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'none_ios_root_package_path',
+              ),
+          () => groupableProgress.complete(),
+          () => progressGroup
+              .progress('Running code generation in cool_tab_flow'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'cool_tab_flow_path',
+              ),
+          () => groupableProgress.complete(),
+        ]);
+      }),
+    );
+
+    test(
+      'adds a navigator interface to the platform navigation package when navigator is true',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformAddFeatureTabFlow(
+          platform,
+          name: 'cool',
+          description: 'Cool tab flow.',
+          navigator: true,
+          subFeatures: {'home_page'},
+        );
+
+        verifyInOrder([
+          () => logger.progress('Creating navigator interface'),
+          () => navigatorInterface.generate(),
+          () => platformNavigationPackageBarrelFile
+              .addExport('src/i_cool_tab_flow_navigator.dart'),
+          () => progress.complete(),
+        ]);
+      }),
+    );
   });
 
   group('platformAddFeaturePage', () {
-    test('adds a new page feature to the platform', () async {
-      final manager = MockProcessManager();
-      final platformRootPackage = MockNoneIosRootPackage();
-      final platformNavigationPackage = MockPlatformNavigationPackage();
-      final platformFeaturePackage =
-          MockPlatformPageFeaturePackage(name: 'cool_page');
-      when(() => platformFeaturePackage.existsSync()).thenReturn(false);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: platformRootPackage,
-            navigationPackage: platformNavigationPackage,
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: [platformRootPackage, platformFeaturePackage],
-        logger: logger,
-      );
-      final codeGenTaskGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroup(
-        manager,
-        packages: [
-          platformRootPackage,
-        ],
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
+    late NavigatorImplementation navigatorImplementation;
+    late PlatformPageFeaturePackage platformFeaturePackage;
+    late NoneIosRootPackage platformRootPackage;
 
-      await withMockProcessManager(
-        () async => rapid.platformAddFeaturePage(
-          Platform.android,
-          name: 'cool_page',
-          description: 'Cool page.',
-          navigator: false,
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => platformFeaturePackage.generate(description: 'Cool page.'),
-        () =>
-            platformRootPackage.registerFeaturePackage(platformFeaturePackage),
-        ...melosBootstrapTaskInvocations,
-        ...codeGenTaskGroupInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Page Feature!'),
-      ]);
-    });
-
-    test('adds a new page feature to the platform (with navigator)', () async {
-      final manager = MockProcessManager();
-      final platformRootPackage = MockNoneIosRootPackage();
-      final navigatorInterface = MockNavigatorInterface();
-      when(() => navigatorInterface.existsAny).thenReturn(false);
-      final navigationBarrelFile = MockDartFile();
-      final platformNavigationPackage = MockPlatformNavigationPackage(
-        barrelFile: navigationBarrelFile,
-        navigatorInterface: ({required name}) => navigatorInterface,
-      );
-      final navigatorImplementation = MockNavigatorImplementation();
+    setUp(() {
+      navigatorImplementation = MockNavigatorImplementation();
       when(() => navigatorImplementation.existsAny).thenReturn(false);
-      final platformFeaturePackage = MockPlatformPageFeaturePackage(
+      platformFeaturePackage = MockPlatformPageFeaturePackage(
         name: 'cool_page',
+        packageName: 'cool_page',
+        path: 'cool_page_path',
         navigatorImplementation: navigatorImplementation,
       );
       when(() => platformFeaturePackage.existsSync()).thenReturn(false);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: platformRootPackage,
-            navigationPackage: platformNavigationPackage,
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
+      when(
+        () => platformFeaturePackageBuilder.call<PlatformPageFeaturePackage>(
+          name: 'cool_page',
         ),
+      ).thenReturn(platformFeaturePackage);
+      platformRootPackage = MockNoneIosRootPackage(
+        packageName: 'none_ios_root_package',
+        path: 'none_ios_root_package_path',
       );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: [platformRootPackage, platformFeaturePackage],
-        logger: logger,
-      );
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: platformFeaturePackage,
-        logger: logger,
-      );
-      // TODO duplicated in feature package
-      final codeGenTaskGroupInvocations =
-          setupFlutterPubRunBuildRunnerBuildTaskGroup(
-        manager,
-        packages: [platformRootPackage, platformFeaturePackage],
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformAddFeaturePage(
-          Platform.android,
-          name: 'cool',
-          description: 'Cool page.',
-          navigator: true,
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => platformFeaturePackage.generate(description: 'Cool page.'),
-        () =>
-            platformRootPackage.registerFeaturePackage(platformFeaturePackage),
-        () => navigatorInterface.generate(),
-        () => navigationBarrelFile.addExport('src/i_cool_page_navigator.dart'),
-        () => navigatorImplementation.generate(),
-        ...codeGenTaskInvocations,
-        ...melosBootstrapTaskInvocations,
-        ...codeGenTaskGroupInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Page Feature!'),
-      ]);
+      when(() => platformDirectory.rootPackage).thenReturn(platformRootPackage);
     });
 
     test(
         'throws PlatformNotActivatedException when the platform is not activated',
         () async {
-      final project = MockRapidProject();
       when(() => project.platformIsActivated(any())).thenReturn(false);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformAddFeaturePage(
-          Platform.android,
+          platform,
           name: 'cool',
           description: 'Cool page.',
           navigator: true,
@@ -682,28 +557,12 @@ void main() {
     test(
         'throws FeatureAlreadyExistsException when feature package already exists',
         () async {
-      final featurePackage = MockPlatformPageFeaturePackage(name: 'cool_page');
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      T featurePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: featurePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
+      when(() => platformFeaturePackage.existsSync()).thenReturn(true);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformAddFeaturePage(
-          Platform.android,
+          platform,
           name: 'cool',
           description: 'Cool page.',
           navigator: true,
@@ -711,85 +570,160 @@ void main() {
         throwsA(isA<FeatureAlreadyExistsException>()),
       );
     });
+
+    test(
+      'adds a new page feature to the platform',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformAddFeaturePage(
+          platform,
+          name: 'cool',
+          description: 'Cool page.',
+          navigator: false,
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating feature'),
+          () => platformFeaturePackage.generate(description: 'Cool page.'),
+          () => platformRootPackage
+              .registerFeaturePackage(platformFeaturePackage),
+          () => progress.complete(),
+          () => logger.progress(
+              'Running "melos bootstrap --scope none_ios_root_package,cool_page"'),
+          () => manager.runMelosBootstrap(
+                ['none_ios_root_package', 'cool_page'],
+                workingDirectory: 'project_path',
+              ),
+          () => progress.complete(),
+          () => logger
+              .progress('Running code generation in none_ios_root_package'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'none_ios_root_package_path',
+              ),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Page Feature!'),
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
+
+    test(
+      'adds a navigator implementation to the page feature when navigator is true',
+      withMockEnv((manager) async {
+        final (
+          progress: progress,
+          groupableProgress: groupableProgress,
+          progressGroup: progressGroup,
+          logger: logger,
+        ) = setupLogger();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformAddFeaturePage(
+          platform,
+          name: 'cool',
+          description: 'Cool page.',
+          navigator: true,
+        );
+
+        verifyInOrder([
+          () => logger.progress('Creating navigator implementation'),
+          () => navigatorImplementation.generate(),
+          () => progress.complete(),
+          () => logger.progressGroup(null),
+          () => progressGroup
+              .progress('Running code generation in none_ios_root_package'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'none_ios_root_package_path',
+              ),
+          () => groupableProgress.complete(),
+          () => progressGroup.progress('Running code generation in cool_page'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'cool_page_path',
+              ),
+          () => groupableProgress.complete(),
+        ]);
+      }),
+    );
+
+    test(
+      'adds a navigator interface to the platform navigation package when navigator is true',
+      withMockEnv((_) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformAddFeaturePage(
+          platform,
+          name: 'cool',
+          description: 'Cool page.',
+          navigator: true,
+        );
+
+        verifyInOrder([
+          () => logger.progress('Creating navigator interface'),
+          () => navigatorInterface.generate(),
+          () => platformNavigationPackageBarrelFile
+              .addExport('src/i_cool_page_navigator.dart'),
+          () => progress.complete(),
+        ]);
+      }),
+    );
   });
 
   group('platformAddFeatureWidget', () {
-    test('adds a new widget feature to the platform', () async {
-      final manager = MockProcessManager();
-      final platformRootPackage = MockNoneIosRootPackage();
-      final platformNavigationPackage = MockPlatformNavigationPackage();
-      final platformFeaturePackage =
-          MockPlatformWidgetFeaturePackage(name: 'cool_widget');
+    late PlatformWidgetFeaturePackage platformFeaturePackage;
+    late NoneIosRootPackage platformRootPackage;
+
+    setUp(() {
+      platformFeaturePackage = MockPlatformWidgetFeaturePackage(
+        packageName: 'cool_widget',
+        path: 'cool_widget_path',
+      );
       when(() => platformFeaturePackage.existsSync()).thenReturn(false);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: platformRootPackage,
-            navigationPackage: platformNavigationPackage,
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: [platformRootPackage, platformFeaturePackage],
-        logger: logger,
-      );
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: platformRootPackage,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformAddFeatureWidget(
-          Platform.android,
+      when(
+        () => platformFeaturePackageBuilder.call<PlatformWidgetFeaturePackage>(
           name: 'cool_widget',
-          description: 'Cool widget.',
         ),
-        manager: manager,
+      ).thenReturn(platformFeaturePackage);
+      platformRootPackage = MockNoneIosRootPackage(
+        packageName: 'none_ios_root_package',
+        path: 'none_ios_root_package_path',
       );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => platformFeaturePackage.generate(description: 'Cool widget.'),
-        () =>
-            platformRootPackage.registerFeaturePackage(platformFeaturePackage),
-        ...melosBootstrapTaskInvocations,
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Widget Feature!'),
-      ]);
+      when(() => platformDirectory.rootPackage).thenReturn(platformRootPackage);
     });
 
     test(
         'throws PlatformNotActivatedException when the platform is not activated',
         () async {
-      final project = MockRapidProject();
       when(() => project.platformIsActivated(any())).thenReturn(false);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformAddFeatureWidget(
-          Platform.android,
+          platform,
           name: 'cool',
           description: 'Cool widget.',
         ),
@@ -800,477 +734,407 @@ void main() {
     test(
         'throws FeatureAlreadyExistsException when feature package already exists',
         () async {
-      final featurePackage =
-          MockPlatformWidgetFeaturePackage(name: 'cool_widget');
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      T featurePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: featurePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
+      when(() => platformFeaturePackage.existsSync()).thenReturn(true);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformAddFeatureWidget(
-          Platform.android,
+          platform,
           name: 'cool',
           description: 'Cool widget.',
         ),
         throwsA(isA<FeatureAlreadyExistsException>()),
       );
     });
+
+    test(
+      'adds a new widget feature to the platform',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformAddFeatureWidget(
+          platform,
+          name: 'cool',
+          description: 'Cool widget.',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating feature'),
+          () => platformFeaturePackage.generate(description: 'Cool widget.'),
+          () => platformRootPackage
+              .registerFeaturePackage(platformFeaturePackage),
+          () => progress.complete(),
+          () => logger.progress(
+              'Running "melos bootstrap --scope none_ios_root_package,cool_widget"'),
+          () => manager.runMelosBootstrap(
+                ['none_ios_root_package', 'cool_widget'],
+                workingDirectory: 'project_path',
+              ),
+          () => progress.complete(),
+          () => logger
+              .progress('Running code generation in none_ios_root_package'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'none_ios_root_package_path',
+              ),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Widget Feature!'),
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
   });
 
   group('platformAddLanguage', () {
-    test('adds a new language', () async {
-      final manager = MockProcessManager();
+    late PlatformRootPackage platformRootPackage;
 
-      final localizationPackage = MockPlatformLocalizationPackage();
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            localizationPackage: localizationPackage,
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      when(() => localizationPackage.supportedLanguages()).thenReturn({
+    setUp(() {
+      when(() => platformLocalizationPackage.supportedLanguages()).thenReturn({
         Language(languageCode: 'en'),
         Language(languageCode: 'fr'),
         Language(languageCode: 'de'),
       });
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async => rapid.platformAddLanguage(
-          Platform.android,
-          language: Language(languageCode: 'es'),
-        ),
-        manager: manager,
+      platformRootPackage = MockNoneIosRootPackage(
+        packageName: 'none_ios_root_package',
+        path: 'none_ios_root_package_path',
       );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => localizationPackage.addLanguage(Language(languageCode: 'es')),
-        () => flutterGenl10nTask(manager, package: localizationPackage),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Language!')
-      ]);
-    });
-
-    test('adds a new language (ios)', () async {
-      final manager = MockProcessManager();
-      final rootPackage = MockIosRootPackage();
-      final localizationPackage = MockPlatformLocalizationPackage();
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: rootPackage,
-            localizationPackage: localizationPackage,
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      when(() => localizationPackage.supportedLanguages()).thenReturn({
-        Language(languageCode: 'en'),
-        Language(languageCode: 'fr'),
-        Language(languageCode: 'de'),
-      });
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async => rapid.platformAddLanguage(
-          Platform.android,
-          language: Language(languageCode: 'es'),
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => rootPackage.addLanguage(Language(languageCode: 'es')),
-        () => localizationPackage.addLanguage(Language(languageCode: 'es')),
-        () => flutterGenl10nTask(manager, package: localizationPackage),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Language!')
-      ]);
-    });
-
-    test('adds a new language (mobile)', () async {
-      final manager = MockProcessManager();
-      final rootPackage = MockMobileRootPackage();
-      final localizationPackage = MockPlatformLocalizationPackage();
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: rootPackage,
-            localizationPackage: localizationPackage,
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      when(() => localizationPackage.supportedLanguages()).thenReturn({
-        Language(languageCode: 'en'),
-        Language(languageCode: 'fr'),
-        Language(languageCode: 'de'),
-      });
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async => rapid.platformAddLanguage(
-          Platform.android,
-          language: Language(languageCode: 'es'),
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => rootPackage.addLanguage(Language(languageCode: 'es')),
-        () => localizationPackage.addLanguage(Language(languageCode: 'es')),
-        () => flutterGenl10nTask(manager, package: localizationPackage),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Language!')
-      ]);
+      when(() => platformDirectory.rootPackage).thenReturn(platformRootPackage);
     });
 
     test('throws LanguageAlreadyPresentException for an existing language',
         () async {
-      final localizationPackage = MockPlatformLocalizationPackage();
-      when(() => localizationPackage.supportedLanguages()).thenReturn({
-        Language(languageCode: 'en'),
-        Language(languageCode: 'fr'),
-        Language(languageCode: 'de'),
-      });
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            localizationPackage: localizationPackage,
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformAddLanguage(
-          Platform.android,
+          platform,
           language: Language(languageCode: 'fr'),
         ),
         throwsA(isA<LanguageAlreadyPresentException>()),
       );
     });
 
-    test('throws PlatformNotActivatedException for an inactive platform',
+    test(
+        'throws PlatformNotActivatedException if the platform is not activated',
         () async {
-      final project = MockRapidProject();
-      final rapid = getRapid(project: project);
-
       when(() => project.platformIsActivated(any())).thenReturn(false);
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformAddLanguage(
-          Platform.android,
+          platform,
           language: Language(languageCode: 'en'),
-        ),
-        throwsA(isA<PlatformNotActivatedException>()),
-      );
-    });
-  });
-
-  group('platformAddNavigator', () {
-    test('adds a navigator to a routable feature package', () async {
-      final manager = MockProcessManager();
-      final navigatorInterface = MockNavigatorInterface();
-      when(() => navigatorInterface.existsAny).thenReturn(false);
-      final navigationBarrelFile = MockDartFile();
-      final platformNavigationPackage = MockPlatformNavigationPackage(
-        barrelFile: navigationBarrelFile,
-        navigatorInterface: ({required name}) => navigatorInterface,
-      );
-      final navigatorImplementation = MockNavigatorImplementation();
-      when(() => navigatorImplementation.existsAny).thenReturn(false);
-      final platformFeaturePackage = MockPlatformPageFeaturePackage(
-        name: 'cool_page',
-        navigatorImplementation: navigatorImplementation,
-      );
-      when(() => platformFeaturePackage.existsSync()).thenReturn(true);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-            navigationPackage: platformNavigationPackage,
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: platformFeaturePackage,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformAddNavigator(
-          Platform.android,
-          featureName: 'featureA',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => navigatorInterface.generate(),
-        () => navigationBarrelFile.addExport('src/i_cool_page_navigator.dart'),
-        () => navigatorImplementation.generate(),
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Navigator!')
-      ]);
-    });
-
-    test('throws PlatformNotActivatedException for an inactive platform',
-        () async {
-      final project = MockRapidProject();
-      final rapid = getRapid(project: project);
-
-      when(() => project.platformIsActivated(any())).thenReturn(false);
-
-      expect(
-        () => rapid.platformAddNavigator(
-          Platform.android,
-          featureName: 'featureA',
         ),
         throwsA(isA<PlatformNotActivatedException>()),
       );
     });
 
     test(
-        'throws FeatureNotRoutableException for a non-routable feature package',
-        () async {
-      final platformFeaturePackage =
-          MockPlatformWidgetFeaturePackage(name: 'cool_widget');
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
+      'adds a new language',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.platformAddLanguage(
+          platform,
+          language: Language(languageCode: 'es'),
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Adding language'),
+          () => platformLocalizationPackage
+              .addLanguage(Language(languageCode: 'es')),
+          () => progress.complete(),
+          () => logger.progress(
+              'Running "flutter gen-l10n" in platform_localization_package'),
+          () => manager.runFlutterGenl10n(
+              workingDirectory: 'platform_localization_package_path'),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Language!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
+
+    test(
+      'adds language + fallback language',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.platformAddLanguage(
+          platform,
+          language: Language(languageCode: 'zh', scriptCode: 'Hans'),
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Adding language'),
+          () => platformLocalizationPackage
+              .addLanguage(Language(languageCode: 'zh', scriptCode: 'Hans')),
+          () => progress.complete(),
+          () => logger.progress('Adding language'),
+          () => platformLocalizationPackage
+              .addLanguage(Language(languageCode: 'zh')),
+          () => progress.complete(),
+          () => logger.progress(
+              'Running "flutter gen-l10n" in platform_localization_package'),
+          () => manager.runFlutterGenl10n(
+              workingDirectory: 'platform_localization_package_path'),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Language!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
+
+    group('given platform is iOS', () {
+      setUp(() {
+        platform = Platform.ios;
+        platformRootPackage = MockIosRootPackage(
+          packageName: 'ios_root_package',
+          path: 'ios_root_package_path',
+        );
+        when(() => platformDirectory.rootPackage)
+            .thenReturn(platformRootPackage);
+      });
+
+      test(
+        'adds a new language to platform root package',
+        withMockEnv((manager) async {
+          final rapid = getRapid(project: project);
+
+          await rapid.platformAddLanguage(
+            platform,
+            language: Language(languageCode: 'zh'),
+          );
+
+          verifyInOrder([
+            () => (platformRootPackage as IosRootPackage).addLanguage(
+                  Language(languageCode: 'zh'),
+                ),
+          ]);
+        }),
       );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
+
+      test(
+        'adds language + fallback language to platform root package',
+        withMockEnv((manager) async {
+          final rapid = getRapid(project: project);
+
+          await rapid.platformAddLanguage(
+            platform,
+            language: Language(languageCode: 'zh', scriptCode: 'Hans'),
+          );
+
+          verifyInOrder([
+            () => (platformRootPackage as IosRootPackage).addLanguage(
+                  Language(languageCode: 'zh', scriptCode: 'Hans'),
+                ),
+            () => (platformRootPackage as IosRootPackage).addLanguage(
+                  Language(languageCode: 'zh'),
+                ),
+          ]);
+        }),
+      );
+    });
+
+    group('given platform is Mobile', () {
+      setUp(() {
+        platform = Platform.mobile;
+        platformRootPackage = MockMobileRootPackage(
+          packageName: 'mobile_root_package',
+          path: 'mobile_root_package_path',
+        );
+        when(() => platformDirectory.rootPackage)
+            .thenReturn(platformRootPackage);
+      });
+
+      test(
+        'adds a new language to platform root package',
+        withMockEnv((manager) async {
+          final rapid = getRapid(project: project);
+
+          await rapid.platformAddLanguage(
+            platform,
+            language: Language(languageCode: 'zh'),
+          );
+
+          verifyInOrder([
+            () => (platformRootPackage as MobileRootPackage).addLanguage(
+                  Language(languageCode: 'zh'),
+                ),
+          ]);
+        }),
+      );
+
+      test(
+        'adds language + fallback language to platform root package',
+        withMockEnv((manager) async {
+          final rapid = getRapid(project: project);
+
+          await rapid.platformAddLanguage(
+            platform,
+            language: Language(languageCode: 'zh', scriptCode: 'Hans'),
+          );
+
+          verifyInOrder([
+            () => (platformRootPackage as MobileRootPackage).addLanguage(
+                  Language(languageCode: 'zh', scriptCode: 'Hans'),
+                ),
+            () => (platformRootPackage as MobileRootPackage).addLanguage(
+                  Language(languageCode: 'zh'),
+                ),
+          ]);
+        }),
+      );
+    });
+  });
+
+  group('platformAddNavigator', () {
+    late NavigatorImplementation navigatorImplementation;
+    late PlatformPageFeaturePackage platformFeaturePackage;
+
+    setUp(() {
+      navigatorImplementation = MockNavigatorImplementation();
+      when(() => navigatorImplementation.existsAny).thenReturn(false);
+      platformFeaturePackage = MockPlatformPageFeaturePackage(
+        name: 'cool_page',
+        packageName: 'cool_page',
+        path: 'cool_page_path',
+        existsSync: true,
+        navigatorImplementation: navigatorImplementation,
+      );
+      when(
+        () => platformFeaturePackageBuilder(name: any(named: 'name')),
+      ).thenReturn(platformFeaturePackage);
+    });
+
+    test(
+        'throws PlatformNotActivatedException if the platform is not activated',
+        () async {
+      when(() => project.platformIsActivated(any())).thenReturn(false);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformAddNavigator(
-          Platform.android,
+          platform,
+          featureName: 'feature_a',
+        ),
+        throwsA(isA<PlatformNotActivatedException>()),
+      );
+    });
+
+    test('throws FeatureNotRoutableException if feature is not routable',
+        () async {
+      final platformFeaturePackage =
+          MockPlatformWidgetFeaturePackage(name: 'cool_widget');
+      when(
+        () => platformFeaturePackageBuilder(name: 'cool_widget'),
+      ).thenReturn(platformFeaturePackage);
+      final rapid = getRapid(project: project);
+
+      expect(
+        () => rapid.platformAddNavigator(
+          platform,
           featureName: 'cool_widget',
         ),
         throwsA(isA<FeatureNotRoutableException>()),
       );
     });
 
-    test('throws FeatureNotFoundException for a non-existing feature package',
-        () async {
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          MockPlatformPageFeaturePackage(name: 'cool_page') as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
+    test('throws FeatureNotFoundException if feature does not exist', () async {
+      when(() => platformFeaturePackage.existsSync()).thenReturn(false);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformAddNavigator(
-          Platform.android,
-          featureName: 'non_existing',
+          platform,
+          featureName: 'cool_page',
         ),
         throwsA(isA<FeatureNotFoundException>()),
       );
     });
+
+    test(
+      'adds a navigator to a routable feature package',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformAddNavigator(
+          platform,
+          featureName: 'cool_page',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating navigator interface'),
+          () => navigatorInterface.generate(),
+          () => platformNavigationPackageBarrelFile
+              .addExport('src/i_cool_page_navigator.dart'),
+          () => progress.complete(),
+          () => logger.progress('Creating navigator implementation'),
+          () => navigatorImplementation.generate(),
+          () => progress.complete(),
+          () => logger.progress('Running code generation in cool_page'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'cool_page_path',
+              ),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Navigator!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
   });
 
   group('platformFeatureAddBloc', () {
-    test('adds a new bloc to an existing feature package', () async {
-      final manager = MockProcessManager();
-      final bloc = MockBloc();
-      when(() => bloc.existsAny).thenReturn(false);
-      final applicationBarrelFile = MockDartFile(existsSync: true);
-      final featurePackage = MockPlatformWidgetFeaturePackage(
-        applicationBarrelFile: applicationBarrelFile,
-      );
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      when(() => featurePackage.bloc).thenReturn(({required name}) => bloc);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: featurePackage,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformFeatureAddBloc(
-          Platform.android,
-          name: 'Cool',
-          featureName: 'foo_bar',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => bloc.generate(),
-        () => applicationBarrelFile.addExport('cool_bloc.dart'),
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Bloc!')
-      ]);
-    });
-
-    test('handles non existing application barrel file', () async {
-      final manager = MockProcessManager();
-      final bloc = MockBloc();
-      when(() => bloc.existsAny).thenReturn(false);
-      final featureBarrelFile = MockDartFile(existsSync: true);
-      final applicationBarrelFile = MockDartFile(existsSync: false);
-      final featurePackage = MockPlatformWidgetFeaturePackage(
-        barrelFile: featureBarrelFile,
-        applicationBarrelFile: applicationBarrelFile,
-      );
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      when(() => featurePackage.bloc).thenReturn(({required name}) => bloc);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: featurePackage,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformFeatureAddBloc(
-          Platform.android,
-          name: 'Cool',
-          featureName: 'foo_bar',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => bloc.generate(),
-        () => applicationBarrelFile.createSync(recursive: true),
-        () => applicationBarrelFile.addExport('cool_bloc.dart'),
-        () => featureBarrelFile.addExport('src/application/application.dart'),
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Bloc!')
-      ]);
-    });
-
-    test('throws PlatformNotActivatedException for an inactive platform',
+    test(
+        'throws PlatformNotActivatedException if the platform is not activated',
         () async {
-      final project = MockRapidProject();
-      final rapid = getRapid(project: project);
-
       when(() => project.platformIsActivated(any())).thenReturn(false);
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformFeatureAddBloc(
-          Platform.android,
+          platform,
           name: 'Cool',
           featureName: 'foo_bar',
         ),
@@ -1278,29 +1142,13 @@ void main() {
       );
     });
 
-    test('throws FeatureNotFoundException for a non-existent feature package',
-        () async {
-      final featurePackage = MockPlatformWidgetFeaturePackage();
-      when(() => featurePackage.existsSync()).thenReturn(false);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
+    test('throws FeatureNotFoundException if feature does not exist', () async {
+      when(() => platformFeaturePackage.existsSync()).thenReturn(false);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformFeatureAddBloc(
-          Platform.android,
+          platform,
           name: 'Cool',
           featureName: 'foo_bar',
         ),
@@ -1308,174 +1156,106 @@ void main() {
       );
     });
 
-    test('throws BlocAlreadyExistsException for an existing bloc', () async {
-      final bloc = MockBloc();
+    test('throws BlocAlreadyExistsException if bloc already exists', () async {
       when(() => bloc.existsAny).thenReturn(true);
-      final featurePackage = MockPlatformWidgetFeaturePackage();
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      when(() => featurePackage.bloc).thenReturn(({required name}) => bloc);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformFeatureAddBloc(
-          Platform.android,
+          platform,
           name: 'Cool',
           featureName: 'foo_bar',
         ),
         throwsA(isA<BlocAlreadyExistsException>()),
       );
     });
+
+    test(
+      'adds a new bloc to an existing feature package',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformFeatureAddBloc(
+          platform,
+          name: 'Cool',
+          featureName: 'cool_page',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating bloc'),
+          () => bloc.generate(),
+          () => platformFeaturePackageApplicationBarrelFile
+              .addExport('cool_bloc.dart'),
+          () => progress.complete(),
+          () => logger.progress('Running code generation in cool_page'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'cool_page_path',
+              ),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Bloc!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
+
+    test(
+      'handles non existing application barrel file',
+      withMockEnv((manager) async {
+        when(() => platformFeaturePackageApplicationBarrelFile.existsSync())
+            .thenReturn(false);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformFeatureAddBloc(
+          platform,
+          name: 'Cool',
+          featureName: 'foo_bar',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating bloc'),
+          () => bloc.generate(),
+          () => platformFeaturePackageApplicationBarrelFile.createSync(
+              recursive: true),
+          () => platformFeaturePackageApplicationBarrelFile
+              .addExport('cool_bloc.dart'),
+          () => platformFeaturePackageBarrelFile
+              .addExport('src/application/application.dart'),
+          () => progress.complete(),
+        ]);
+      }),
+    );
   });
 
   group('platformFeatureAddCubit', () {
-    test('adds a new cubit to an existing feature package', () async {
-      final manager = MockProcessManager();
-      final cubit = MockCubit();
-      when(() => cubit.existsAny).thenReturn(false);
-      final applicationBarrelFile = MockDartFile(existsSync: true);
-      final featurePackage = MockPlatformWidgetFeaturePackage(
-        applicationBarrelFile: applicationBarrelFile,
-      );
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      when(() => featurePackage.cubit).thenReturn(({required name}) => cubit);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: featurePackage,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformFeatureAddCubit(
-          Platform.android,
-          name: 'Cool',
-          featureName: 'foo_bar',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => cubit.generate(),
-        () => applicationBarrelFile.addExport('cool_cubit.dart'),
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Cubit!')
-      ]);
-    });
-
-    test('handles non existing application barrel file', () async {
-      final manager = MockProcessManager();
-      final cubit = MockCubit();
-      when(() => cubit.existsAny).thenReturn(false);
-      final featureBarrelFile = MockDartFile(existsSync: true);
-      final applicationBarrelFile = MockDartFile(existsSync: false);
-      final featurePackage = MockPlatformWidgetFeaturePackage(
-        barrelFile: featureBarrelFile,
-        applicationBarrelFile: applicationBarrelFile,
-      );
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      when(() => featurePackage.cubit).thenReturn(({required name}) => cubit);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: featurePackage,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformFeatureAddCubit(
-          Platform.android,
-          name: 'Cool',
-          featureName: 'foo_bar',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => cubit.generate(),
-        () => applicationBarrelFile.createSync(recursive: true),
-        () => applicationBarrelFile.addExport('cool_cubit.dart'),
-        () => featureBarrelFile.addExport('src/application/application.dart'),
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Cubit!')
-      ]);
-    });
-
-    test('throws PlatformNotActivatedException for an inactive platform',
+    test(
+        'throws PlatformNotActivatedException if the platform is not activated',
         () async {
-      final project = MockRapidProject();
-      final rapid = getRapid(project: project);
-
       when(() => project.platformIsActivated(any())).thenReturn(false);
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformFeatureAddCubit(
-          Platform.android,
+          platform,
           name: 'Cool',
           featureName: 'foo_bar',
         ),
@@ -1483,29 +1263,13 @@ void main() {
       );
     });
 
-    test('throws FeatureNotFoundException for a non-existent feature package',
-        () async {
-      final featurePackage = MockPlatformWidgetFeaturePackage();
-      when(() => featurePackage.existsSync()).thenReturn(false);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
+    test('throws FeatureNotFoundException if feature does not exist', () async {
+      when(() => platformFeaturePackage.existsSync()).thenReturn(false);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformFeatureAddCubit(
-          Platform.android,
+          platform,
           name: 'Cool',
           featureName: 'foo_bar',
         ),
@@ -1513,178 +1277,108 @@ void main() {
       );
     });
 
-    test('throws CubitAlreadyExistsException for an existing cubit', () async {
-      final cubit = MockCubit();
+    test('throws CubitAlreadyExistsException if cubit already exists',
+        () async {
       when(() => cubit.existsAny).thenReturn(true);
-      final featurePackage = MockPlatformWidgetFeaturePackage();
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      when(() => featurePackage.cubit).thenReturn(({required name}) => cubit);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformFeatureAddCubit(
-          Platform.android,
+          platform,
           name: 'Cool',
           featureName: 'foo_bar',
         ),
         throwsA(isA<CubitAlreadyExistsException>()),
       );
     });
+
+    test(
+      'adds a new cubit to an existing feature package',
+      withMockEnv((manager) async {
+        when(() => cubit.existsAny).thenReturn(false);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformFeatureAddCubit(
+          platform,
+          name: 'Cool',
+          featureName: 'cool_page',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating cubit'),
+          () => cubit.generate(),
+          () => platformFeaturePackageApplicationBarrelFile
+              .addExport('cool_cubit.dart'),
+          () => progress.complete(),
+          () => logger.progress('Running code generation in cool_page'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'cool_page_path',
+              ),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Cubit!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
+
+    test(
+      'handles non existing application barrel file',
+      withMockEnv((manager) async {
+        when(() => platformFeaturePackageApplicationBarrelFile.existsSync())
+            .thenReturn(false);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformFeatureAddCubit(
+          platform,
+          name: 'Cool',
+          featureName: 'foo_bar',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating cubit'),
+          () => cubit.generate(),
+          () => platformFeaturePackageApplicationBarrelFile.createSync(
+              recursive: true),
+          () => platformFeaturePackageApplicationBarrelFile
+              .addExport('cool_cubit.dart'),
+          () => platformFeaturePackageBarrelFile
+              .addExport('src/application/application.dart'),
+          () => progress.complete(),
+        ]);
+      }),
+    );
   });
 
   group('platformFeatureRemoveBloc', () {
-    test('removes a bloc to an existing feature package', () async {
-      final manager = MockProcessManager();
-      final bloc = MockBloc();
-      when(() => bloc.existsAny).thenReturn(true);
-      final applicationBarrelFile = MockDartFile(existsSync: true);
-      when(() => applicationBarrelFile.containsStatements()).thenReturn(true);
-      final featurePackage = MockPlatformWidgetFeaturePackage(
-        applicationBarrelFile: applicationBarrelFile,
-      );
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      when(() => featurePackage.bloc).thenReturn(({required name}) => bloc);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: featurePackage,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformFeatureRemoveBloc(
-          Platform.android,
-          name: 'Cool',
-          featureName: 'foo_bar',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => bloc.delete(),
-        () => applicationBarrelFile.removeExport('cool_bloc.dart'),
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Bloc!')
-      ]);
-    });
-
-    test('remove application barrel file if it does not contain any code',
+    test(
+        'throws PlatformNotActivatedException if the platform is not activated',
         () async {
-      final manager = MockProcessManager();
-      final bloc = MockBloc();
-      when(() => bloc.existsAny).thenReturn(true);
-      final featureBarrelFile = MockDartFile(existsSync: true);
-      final applicationBarrelFile = MockDartFile(existsSync: true);
-      when(() => applicationBarrelFile.containsStatements()).thenReturn(false);
-      final featurePackage = MockPlatformWidgetFeaturePackage(
-        barrelFile: featureBarrelFile,
-        applicationBarrelFile: applicationBarrelFile,
-      );
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      when(() => featurePackage.bloc).thenReturn(({required name}) => bloc);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: featurePackage,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformFeatureRemoveBloc(
-          Platform.android,
-          name: 'Cool',
-          featureName: 'foo_bar',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => bloc.delete(),
-        () => applicationBarrelFile.removeExport('cool_bloc.dart'),
-        () => applicationBarrelFile.deleteSync(recursive: true),
-        () =>
-            featureBarrelFile.removeExport('src/application/application.dart'),
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Bloc!')
-      ]);
-    });
-
-    test('throws PlatformNotActivatedException for an inactive platform',
-        () async {
-      final project = MockRapidProject();
-      final rapid = getRapid(project: project);
-
       when(() => project.platformIsActivated(any())).thenReturn(false);
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformFeatureRemoveBloc(
-          Platform.android,
+          platform,
           name: 'Cool',
           featureName: 'foo_bar',
         ),
@@ -1692,29 +1386,13 @@ void main() {
       );
     });
 
-    test('throws FeatureNotFoundException for a non-existent feature package',
-        () async {
-      final featurePackage = MockPlatformWidgetFeaturePackage();
-      when(() => featurePackage.existsSync()).thenReturn(false);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
+    test('throws FeatureNotFoundException if feature does not exist', () async {
+      when(() => platformFeaturePackage.existsSync()).thenReturn(false);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformFeatureRemoveBloc(
-          Platform.android,
+          platform,
           name: 'Cool',
           featureName: 'foo_bar',
         ),
@@ -1722,178 +1400,119 @@ void main() {
       );
     });
 
-    test('throws BlocAlreadyExistsException for an existing bloc', () async {
-      final bloc = MockBloc();
+    test('throws BlocAlreadyExistsException if bloc does not exist', () async {
       when(() => bloc.existsAny).thenReturn(false);
-      final featurePackage = MockPlatformWidgetFeaturePackage();
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      when(() => featurePackage.bloc).thenReturn(({required name}) => bloc);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformFeatureRemoveBloc(
-          Platform.android,
+          platform,
           name: 'Cool',
           featureName: 'foo_bar',
         ),
         throwsA(isA<BlocNotFoundException>()),
       );
     });
+
+    test(
+      'removes a bloc from an existing feature package',
+      withMockEnv((manager) async {
+        when(() => bloc.existsAny).thenReturn(true);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformFeatureRemoveBloc(
+          platform,
+          name: 'Cool',
+          featureName: 'foo_bar',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Removing bloc'),
+          () => bloc.delete(),
+          () => platformFeaturePackageApplicationBarrelFile
+              .removeExport('cool_bloc.dart'),
+          () => progress.complete(),
+          () => logger.progress('Running code generation in cool_page'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'cool_page_path',
+              ),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Removed Bloc!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
+
+    test(
+      'removes application barrel file if it does not contain any code',
+      withMockEnv((manager) async {
+        when(() => bloc.existsAny).thenReturn(true);
+        when(() => platformFeaturePackageApplicationBarrelFile
+            .containsStatements()).thenReturn(false);
+        final rapid = getRapid(project: project, tool: tool);
+
+        await rapid.platformFeatureRemoveBloc(
+          platform,
+          name: 'Cool',
+          featureName: 'foo_bar',
+        );
+
+        verifyInOrder([
+          () => platformFeaturePackageApplicationBarrelFile.deleteSync(
+                recursive: true,
+              ),
+        ]);
+      }),
+    );
+
+    test(
+      'removes application dir if it is empty',
+      withMockEnv((manager) async {
+        when(() => bloc.existsAny).thenReturn(true);
+        when(() => platformFeaturePackageApplicationBarrelFile
+            .containsStatements()).thenReturn(false);
+        when(() => platformFeaturePackageApplicationDir.listSync())
+            .thenReturn([]);
+        final rapid = getRapid(project: project, tool: tool);
+
+        await rapid.platformFeatureRemoveBloc(
+          platform,
+          name: 'Cool',
+          featureName: 'foo_bar',
+        );
+
+        verifyInOrder([
+          () => platformFeaturePackageApplicationDir.deleteSync(
+                recursive: true,
+              ),
+        ]);
+      }),
+    );
   });
 
   group('platformFeatureRemoveCubit', () {
-    test('removes a cubit to an existing feature package', () async {
-      final manager = MockProcessManager();
-      final cubit = MockCubit();
-      when(() => cubit.existsAny).thenReturn(true);
-      final applicationBarrelFile = MockDartFile(existsSync: true);
-      when(() => applicationBarrelFile.containsStatements()).thenReturn(true);
-      final featurePackage = MockPlatformWidgetFeaturePackage(
-        applicationBarrelFile: applicationBarrelFile,
-      );
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      when(() => featurePackage.cubit).thenReturn(({required name}) => cubit);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: featurePackage,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformFeatureRemoveCubit(
-          Platform.android,
-          name: 'Cool',
-          featureName: 'foo_bar',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => cubit.delete(),
-        () => applicationBarrelFile.removeExport('cool_cubit.dart'),
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Cubit!')
-      ]);
-    });
-
-    test('remove application barrel file if it does not contain any code',
+    test(
+        'throws PlatformNotActivatedException if the platform is not activated',
         () async {
-      final manager = MockProcessManager();
-      final cubit = MockCubit();
-      when(() => cubit.existsAny).thenReturn(true);
-      final featureBarrelFile = MockDartFile(existsSync: true);
-      final applicationBarrelFile = MockDartFile(existsSync: true);
-      when(() => applicationBarrelFile.containsStatements()).thenReturn(false);
-      final featurePackage = MockPlatformWidgetFeaturePackage(
-        barrelFile: featureBarrelFile,
-        applicationBarrelFile: applicationBarrelFile,
-      );
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      when(() => featurePackage.cubit).thenReturn(({required name}) => cubit);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: featurePackage,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformFeatureRemoveCubit(
-          Platform.android,
-          name: 'Cool',
-          featureName: 'foo_bar',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => cubit.delete(),
-        () => applicationBarrelFile.removeExport('cool_cubit.dart'),
-        () => applicationBarrelFile.deleteSync(recursive: true),
-        () =>
-            featureBarrelFile.removeExport('src/application/application.dart'),
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Cubit!')
-      ]);
-    });
-
-    test('throws PlatformNotActivatedException for an inactive platform',
-        () async {
-      final project = MockRapidProject();
-      final rapid = getRapid(project: project);
-
       when(() => project.platformIsActivated(any())).thenReturn(false);
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformFeatureRemoveCubit(
-          Platform.android,
+          platform,
           name: 'Cool',
           featureName: 'foo_bar',
         ),
@@ -1901,29 +1520,13 @@ void main() {
       );
     });
 
-    test('throws FeatureNotFoundException for a non-existent feature package',
-        () async {
-      final featurePackage = MockPlatformWidgetFeaturePackage();
-      when(() => featurePackage.existsSync()).thenReturn(false);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
+    test('throws FeatureNotFoundException if feature does not exist', () async {
+      when(() => platformFeaturePackage.existsSync()).thenReturn(false);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformFeatureRemoveCubit(
-          Platform.android,
+          platform,
           name: 'Cool',
           featureName: 'foo_bar',
         ),
@@ -1931,225 +1534,158 @@ void main() {
       );
     });
 
-    test('throws CubitNotFoundException for an existing cubit', () async {
-      final cubit = MockCubit();
+    test('throws CubitNotFoundException if cubit does not exists', () async {
       when(() => cubit.existsAny).thenReturn(false);
-      final featurePackage = MockPlatformWidgetFeaturePackage();
-      when(() => featurePackage.existsSync()).thenReturn(true);
-      when(() => featurePackage.cubit).thenReturn(({required name}) => cubit);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformFeatureRemoveCubit(
-          Platform.android,
+          platform,
           name: 'Cool',
           featureName: 'foo_bar',
         ),
         throwsA(isA<CubitNotFoundException>()),
       );
     });
+
+    test(
+      'removes a cubit from an existing feature package',
+      withMockEnv((manager) async {
+        when(() => cubit.existsAny).thenReturn(true);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformFeatureRemoveCubit(
+          platform,
+          name: 'Cool',
+          featureName: 'foo_bar',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Removing cubit'),
+          () => cubit.delete(),
+          () => platformFeaturePackageApplicationBarrelFile
+              .removeExport('cool_cubit.dart'),
+          () => progress.complete(),
+          () => logger.progress('Running code generation in cool_page'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'cool_page_path',
+              ),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Removed Cubit!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
+
+    test(
+      'removes application barrel file if it does not contain any code',
+      withMockEnv((manager) async {
+        when(() => cubit.existsAny).thenReturn(true);
+        when(() => platformFeaturePackageApplicationBarrelFile
+            .containsStatements()).thenReturn(false);
+        final rapid = getRapid(project: project, tool: tool);
+
+        await rapid.platformFeatureRemoveCubit(
+          platform,
+          name: 'Cool',
+          featureName: 'foo_bar',
+        );
+
+        verifyInOrder([
+          () => platformFeaturePackageApplicationBarrelFile.deleteSync(
+                recursive: true,
+              ),
+        ]);
+      }),
+    );
+
+    test(
+      'removes application dir if it is empty',
+      withMockEnv((manager) async {
+        when(() => cubit.existsAny).thenReturn(true);
+        when(() => platformFeaturePackageApplicationBarrelFile
+            .containsStatements()).thenReturn(false);
+        when(() => platformFeaturePackageApplicationDir.listSync())
+            .thenReturn([]);
+        final rapid = getRapid(project: project, tool: tool);
+
+        await rapid.platformFeatureRemoveCubit(
+          platform,
+          name: 'Cool',
+          featureName: 'foo_bar',
+        );
+
+        verifyInOrder([
+          () => platformFeaturePackageApplicationDir.deleteSync(
+                recursive: true,
+              ),
+        ]);
+      }),
+    );
   });
 
   group('platformRemoveFeature', () {
-    test('removes a feature', () async {
-      final manager = MockProcessManager();
-      final platformRootPackage = MockNoneIosRootPackage();
-      final platformNavigationPackage = MockPlatformNavigationPackage();
-      final platformFeaturePackage = MockPlatformWidgetFeaturePackage(
-        name: 'cool_widget',
-        packageName: 'test_project_cool_widget',
-      );
-      when(() => platformFeaturePackage.existsSync()).thenReturn(true);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final remainingFeaturePubspecFile = MockPubspecYamlFile();
-      when(
-        () => remainingFeaturePubspecFile.hasDependency(
-          name: 'test_project_cool_widget',
-        ),
-      ).thenReturn(true);
-      final remainingFeaturePackage = MockPlatformWidgetFeaturePackage(
+    late PubspecYamlFile remainingFeaturePubspecFile;
+    late PlatformFeaturePackage remainingPlatformFeaturePackage;
+    late NavigatorImplementation navigatorImplementation;
+    late PlatformPageFeaturePackage platformFeaturePackage;
+    late PlatformRootPackage platformRootPackage;
+
+    setUp(() {
+      remainingFeaturePubspecFile = MockPubspecYamlFile();
+      when(() => remainingFeaturePubspecFile.hasDependency(name: 'cool_page'))
+          .thenReturn(true);
+      remainingPlatformFeaturePackage = MockPlatformWidgetFeaturePackage(
+        packageName: 'remaining_widget',
+        path: 'remaining_widget_path',
         pubSpec: remainingFeaturePubspecFile,
       );
-      final platformFeaturePackages = [
-        platformFeaturePackage,
-        remainingFeaturePackage,
-      ];
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: platformRootPackage,
-            navigationPackage: platformNavigationPackage,
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackages: platformFeaturePackages,
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: [remainingFeaturePackage, platformRootPackage],
-        logger: logger,
-      );
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: platformRootPackage,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformRemoveFeature(
-          Platform.android,
-          name: 'cool_widget',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => platformRootPackage
-            .unregisterFeaturePackage(platformFeaturePackage),
-        () => remainingFeaturePubspecFile.removeDependency(
-              name: 'test_project_cool_widget',
-            ),
-        ...melosBootstrapTaskInvocations,
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Feature!'),
-      ]);
-    });
-
-    test('removes a feature (with navigator)', () async {
-      final manager = MockProcessManager();
-      final platformRootPackage = MockNoneIosRootPackage();
-      final navigatorInterface = MockNavigatorInterface();
-      when(() => navigatorInterface.existsAny).thenReturn(true);
-      final navigationBarrelFile = MockDartFile();
-      final platformNavigationPackage = MockPlatformNavigationPackage(
-        barrelFile: navigationBarrelFile,
-        navigatorInterface: ({required name}) => navigatorInterface,
-      );
-      final platformFeaturePackage = MockPlatformPageFeaturePackage(
+      navigatorImplementation = MockNavigatorImplementation();
+      when(() => navigatorImplementation.existsAny).thenReturn(true);
+      platformFeaturePackage = MockPlatformPageFeaturePackage(
         name: 'cool_page',
-        packageName: 'test_project_cool_page',
+        packageName: 'cool_page',
+        path: 'cool_page_path',
+        existsSync: true,
+        navigatorImplementation: navigatorImplementation,
       );
-      when(() => platformFeaturePackage.existsSync()).thenReturn(true);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final remainingFeaturePubspecFile = MockPubspecYamlFile();
       when(
-        () => remainingFeaturePubspecFile.hasDependency(
-          name: 'test_project_cool_page',
-        ),
-      ).thenReturn(true);
-      final remainingFeaturePackage = MockPlatformWidgetFeaturePackage(
-        pubSpec: remainingFeaturePubspecFile,
-      );
-      final platformFeaturePackages = [
+        () => platformFeaturePackageBuilder(name: any(named: 'name')),
+      ).thenReturn(platformFeaturePackage);
+      when(() => platformFeaturesDirectory.featurePackages()).thenReturn([
         platformFeaturePackage,
-        remainingFeaturePackage,
-      ];
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: platformRootPackage,
-            navigationPackage: platformNavigationPackage,
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackages: platformFeaturePackages,
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final melosBootstrapTaskInvocations = setupMelosBootstrapTask(
-        manager,
-        scope: [remainingFeaturePackage, platformRootPackage],
-        logger: logger,
-      );
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: platformRootPackage,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformRemoveFeature(
-          Platform.android,
-          name: 'cool_page',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => platformRootPackage
-            .unregisterFeaturePackage(platformFeaturePackage),
-        () => remainingFeaturePubspecFile.removeDependency(
-              name: 'test_project_cool_page',
-            ),
-        () => navigatorInterface.delete(),
-        () =>
-            navigationBarrelFile.removeExport('src/i_cool_page_navigator.dart'),
-        ...melosBootstrapTaskInvocations,
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Feature!'),
+        remainingPlatformFeaturePackage,
       ]);
+      platformRootPackage = MockNoneIosRootPackage(
+        packageName: 'none_ios_root_package',
+        path: 'none_ios_root_package_path',
+      );
+      when(() => platformDirectory.rootPackage).thenReturn(platformRootPackage);
     });
 
     test(
-        'throws PlatformNotActivatedException when the platform is not activated',
+        'throws PlatformNotActivatedException if the platform is not activated',
         () async {
-      final project = MockRapidProject();
       when(() => project.platformIsActivated(any())).thenReturn(false);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformRemoveFeature(
-          Platform.android,
+          platform,
           name: 'cool_page',
         ),
         throwsA(isA<PlatformNotActivatedException>()),
@@ -2159,168 +1695,123 @@ void main() {
     test(
         'throws FeatureNotFoundException when the feature package does not exist',
         () async {
-      final featurePackage = MockPlatformPageFeaturePackage(name: 'cool_page');
-      when(() => featurePackage.existsSync()).thenReturn(false);
-      T featurePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          featurePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: featurePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
+      when(() => platformFeaturePackage.existsSync()).thenReturn(false);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformRemoveFeature(
-          Platform.android,
+          platform,
           name: 'cool_page',
         ),
         throwsA(isA<FeatureNotFoundException>()),
       );
     });
+
+    test(
+      'removes a feature',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformRemoveFeature(
+          platform,
+          name: 'cool_page',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Deleting feature files'),
+          () => platformRootPackage
+              .unregisterFeaturePackage(platformFeaturePackage),
+          () => remainingFeaturePubspecFile.removeDependency(
+                name: 'cool_page',
+              ),
+          () => platformFeaturePackage.deleteSync(recursive: true),
+          () => progress.complete(),
+          () => logger.progress(
+              'Running "melos bootstrap --scope remaining_widget,none_ios_root_package"'),
+          () => manager.runMelosBootstrap(
+                ['remaining_widget', 'none_ios_root_package'],
+                workingDirectory: 'project_path',
+              ),
+          () => progress.complete(),
+          () => logger
+              .progress('Running code generation in none_ios_root_package'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'none_ios_root_package_path',
+              ),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Removed Feature!'),
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
+
+    test(
+      'removes associated navigator interface from platform navigation package',
+      withMockEnv((manager) async {
+        when(() => navigatorInterface.existsAny).thenReturn(true);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformRemoveFeature(
+          platform,
+          name: 'cool_widget',
+        );
+
+        verifyInOrder([
+          () => logger.progress('Deleting navigator interface'),
+          () => navigatorInterface.delete(),
+          () => platformNavigationPackageBarrelFile
+              .removeExport('src/i_cool_page_navigator.dart'),
+          () => progress.complete(),
+        ]);
+      }),
+    );
   });
 
   group('platformRemoveLanguage', () {
-    test('removes a supported language', () async {
-      final manager = MockProcessManager();
-      final localizationPackage = MockPlatformLocalizationPackage();
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            localizationPackage: localizationPackage,
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      when(() => localizationPackage.supportedLanguages()).thenReturn({
+    late PlatformRootPackage platformRootPackage;
+
+    setUp(() {
+      when(() => platformLocalizationPackage.supportedLanguages()).thenReturn({
         Language(languageCode: 'en'),
-        Language(languageCode: 'fr'),
+        Language(languageCode: 'zh'),
+        Language(languageCode: 'zh', scriptCode: 'Hans'),
         Language(languageCode: 'de'),
       });
-      when(() => localizationPackage.defaultLanguage())
-          .thenReturn(Language(languageCode: 'en'));
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async => rapid.platformRemoveLanguage(
-          Platform.android,
-          language: Language(languageCode: 'fr'),
-        ),
-        manager: manager,
+      platformRootPackage = MockNoneIosRootPackage(
+        packageName: 'none_ios_root_package',
+        path: 'none_ios_root_package_path',
       );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => localizationPackage.removeLanguage(Language(languageCode: 'fr')),
-        () => flutterGenl10nTask(manager, package: localizationPackage),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Language!')
-      ]);
+      when(() => platformDirectory.rootPackage).thenReturn(platformRootPackage);
     });
 
-    test('removes a supported language (ios)', () async {
-      final manager = MockProcessManager();
-      final rootPackage = MockIosRootPackage();
-      final localizationPackage = MockPlatformLocalizationPackage();
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: rootPackage,
-            localizationPackage: localizationPackage,
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      when(() => localizationPackage.supportedLanguages()).thenReturn({
-        Language(languageCode: 'en'),
-        Language(languageCode: 'fr'),
-        Language(languageCode: 'de'),
-      });
-      when(() => localizationPackage.defaultLanguage())
-          .thenReturn(Language(languageCode: 'en'));
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async => rapid.platformRemoveLanguage(
-          Platform.android,
-          language: Language(languageCode: 'fr'),
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => rootPackage.removeLanguage(Language(languageCode: 'fr')),
-        () => localizationPackage.removeLanguage(Language(languageCode: 'fr')),
-        () => flutterGenl10nTask(manager, package: localizationPackage),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Language!')
-      ]);
-    });
-
-    test('removes a supported language (mobile)', () async {
-      final manager = MockProcessManager();
-      final rootPackage = MockMobileRootPackage();
-      final localizationPackage = MockPlatformLocalizationPackage();
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            rootPackage: rootPackage,
-            localizationPackage: localizationPackage,
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      when(() => localizationPackage.supportedLanguages()).thenReturn({
-        Language(languageCode: 'en'),
-        Language(languageCode: 'fr'),
-        Language(languageCode: 'de'),
-      });
-      when(() => localizationPackage.defaultLanguage())
-          .thenReturn(Language(languageCode: 'en'));
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async => rapid.platformRemoveLanguage(
-          Platform.android,
-          language: Language(languageCode: 'fr'),
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => rootPackage.removeLanguage(Language(languageCode: 'fr')),
-        () => localizationPackage.removeLanguage(Language(languageCode: 'fr')),
-        () => flutterGenl10nTask(manager, package: localizationPackage),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Language!')
-      ]);
-    });
-
-    test('throws PlatformNotActivatedException for an inactive platform',
+    test(
+        'throws PlatformNotActivatedException if the platform is not activated',
         () async {
-      final project = MockRapidProject();
-      final rapid = getRapid(project: project);
-
       when(() => project.platformIsActivated(any())).thenReturn(false);
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformRemoveLanguage(
-          Platform.android,
+          platform,
           language: Language(languageCode: 'en'),
         ),
         throwsA(isA<PlatformNotActivatedException>()),
@@ -2329,25 +1820,12 @@ void main() {
 
     test('throws LanguageNotFoundException for an unsupported language',
         () async {
-      final localizationPackage = MockPlatformLocalizationPackage();
-      when(() => localizationPackage.supportedLanguages()).thenReturn({
-        Language(languageCode: 'en'),
-        Language(languageCode: 'fr'),
-      });
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            localizationPackage: localizationPackage,
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformRemoveLanguage(
-          Platform.android,
-          language: Language(languageCode: 'de'),
+          platform,
+          language: Language(languageCode: 'es'),
         ),
         throwsA(isA<LanguageNotFoundException>()),
       );
@@ -2355,111 +1833,224 @@ void main() {
 
     test('throws CantRemoveDefaultLanguageException for the default language',
         () async {
-      final localizationPackage = MockPlatformLocalizationPackage();
-      when(() => localizationPackage.supportedLanguages()).thenReturn({
-        Language(languageCode: 'en'),
-        Language(languageCode: 'fr'),
-      });
-      when(() => localizationPackage.defaultLanguage())
+      when(() => platformLocalizationPackage.defaultLanguage())
           .thenReturn(Language(languageCode: 'en'));
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            localizationPackage: localizationPackage,
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformRemoveLanguage(
-          Platform.android,
+          platform,
           language: Language(languageCode: 'en'),
         ),
         throwsA(isA<CantRemoveDefaultLanguageException>()),
       );
     });
+
+    test(
+      'removes a supported language',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.platformRemoveLanguage(
+          platform,
+          language: Language(languageCode: 'zh', scriptCode: 'Hans'),
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Removing language'),
+          () => platformLocalizationPackage
+              .removeLanguage(Language(languageCode: 'zh', scriptCode: 'Hans')),
+          () => progress.complete(),
+          () => logger.progress(
+              'Running "flutter gen-l10n" in platform_localization_package'),
+          () => manager.runFlutterGenl10n(
+              workingDirectory: 'platform_localization_package_path'),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Removed Language!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
+
+    test(
+      'removes all language with same language code when language is fallback language',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.platformRemoveLanguage(
+          platform,
+          language: Language(languageCode: 'zh'),
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Removing language'),
+          () => platformLocalizationPackage
+              .removeLanguage(Language(languageCode: 'zh')),
+          () => progress.complete(),
+          () => logger.progress('Removing language'),
+          () => platformLocalizationPackage
+              .removeLanguage(Language(languageCode: 'zh', scriptCode: 'Hans')),
+          () => progress.complete(),
+          () => logger.progress(
+              'Running "flutter gen-l10n" in platform_localization_package'),
+          () => manager.runFlutterGenl10n(
+              workingDirectory: 'platform_localization_package_path'),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Removed Language!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
+
+    group('given platform is iOS', () {
+      setUp(() {
+        platform = Platform.ios;
+        platformRootPackage = MockIosRootPackage(
+          packageName: 'ios_root_package',
+          path: 'ios_root_package_path',
+        );
+        when(() => platformDirectory.rootPackage)
+            .thenReturn(platformRootPackage);
+      });
+
+      test(
+        'removes a supported language from platform root package',
+        withMockEnv((manager) async {
+          final rapid = getRapid(project: project);
+
+          await rapid.platformRemoveLanguage(
+            platform,
+            language: Language(languageCode: 'zh', scriptCode: 'Hans'),
+          );
+
+          verifyInOrder([
+            () => (platformRootPackage as IosRootPackage).removeLanguage(
+                  Language(languageCode: 'zh', scriptCode: 'Hans'),
+                ),
+          ]);
+        }),
+      );
+
+      test(
+        'removes all language with same language code when language is fallback language '
+        'from platform root package',
+        withMockEnv((manager) async {
+          final rapid = getRapid(project: project);
+
+          await rapid.platformRemoveLanguage(
+            platform,
+            language: Language(languageCode: 'zh'),
+          );
+
+          verifyInOrder([
+            () => (platformRootPackage as IosRootPackage).removeLanguage(
+                  Language(languageCode: 'zh'),
+                ),
+            () => (platformRootPackage as IosRootPackage).removeLanguage(
+                  Language(languageCode: 'zh', scriptCode: 'Hans'),
+                ),
+          ]);
+        }),
+      );
+    });
+
+    group('given platform is Mobile', () {
+      setUp(() {
+        platform = Platform.mobile;
+        platformRootPackage = MockMobileRootPackage(
+          packageName: 'mobile_root_package',
+          path: 'mobile_root_package_path',
+        );
+        when(() => platformDirectory.rootPackage)
+            .thenReturn(platformRootPackage);
+      });
+
+      test(
+        'removes a supported language from platform root package',
+        withMockEnv((manager) async {
+          final rapid = getRapid(project: project);
+
+          await rapid.platformRemoveLanguage(
+            platform,
+            language: Language(languageCode: 'zh', scriptCode: 'Hans'),
+          );
+
+          verifyInOrder([
+            () => (platformRootPackage as MobileRootPackage).removeLanguage(
+                  Language(languageCode: 'zh', scriptCode: 'Hans'),
+                ),
+          ]);
+        }),
+      );
+
+      test(
+        'removes all language with same language code when language is fallback language '
+        'from platform root package',
+        withMockEnv((manager) async {
+          final rapid = getRapid(project: project);
+
+          await rapid.platformRemoveLanguage(
+            platform,
+            language: Language(languageCode: 'zh'),
+          );
+
+          verifyInOrder([
+            () => (platformRootPackage as MobileRootPackage).removeLanguage(
+                  Language(languageCode: 'zh'),
+                ),
+            () => (platformRootPackage as MobileRootPackage).removeLanguage(
+                  Language(languageCode: 'zh', scriptCode: 'Hans'),
+                ),
+          ]);
+        }),
+      );
+    });
   });
 
   group('platformRemoveNavigator', () {
-    test('removes navigator for a routable feature package', () async {
-      final manager = MockProcessManager();
-      final navigatorInterface = MockNavigatorInterface();
-      when(() => navigatorInterface.existsAny).thenReturn(true);
-      final navigationBarrelFile = MockDartFile();
-      final navigatorImplementation = MockNavigatorImplementation();
+    late NavigatorImplementation navigatorImplementation;
+    late PlatformPageFeaturePackage platformFeaturePackage;
+
+    setUp(() {
+      navigatorImplementation = MockNavigatorImplementation();
       when(() => navigatorImplementation.existsAny).thenReturn(true);
-      final platformFeaturePackage = MockPlatformPageFeaturePackage(
+      platformFeaturePackage = MockPlatformPageFeaturePackage(
         name: 'cool_page',
+        packageName: 'cool_page',
+        path: 'cool_page_path',
+        existsSync: true,
         navigatorImplementation: navigatorImplementation,
       );
-      when(() => platformFeaturePackage.existsSync()).thenReturn(true);
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-            navigationPackage: MockPlatformNavigationPackage(
-              barrelFile: navigationBarrelFile,
-              navigatorInterface: ({required name}) => navigatorInterface,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final commandGroup = MockCommandGroup();
-      when(() => commandGroup.isActive).thenReturn(false);
-      final tool = MockRapidTool();
-      when(() => tool.loadGroup()).thenReturn(commandGroup);
-      final logger = MockRapidLogger();
-      final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-        manager,
-        package: platformFeaturePackage,
-        logger: logger,
-      );
-      final rapid = getRapid(
-        project: project,
-        tool: tool,
-        logger: logger,
-      );
-
-      await withMockProcessManager(
-        () async => rapid.platformRemoveNavigator(
-          Platform.android,
-          featureName: 'cool_page',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => navigatorInterface.delete(),
-        () =>
-            navigationBarrelFile.removeExport('src/i_cool_page_navigator.dart'),
-        () => navigatorImplementation.delete(),
-        ...codeGenTaskInvocations,
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Navigator!')
-      ]);
+      when(
+        () => platformFeaturePackageBuilder(name: any(named: 'name')),
+      ).thenReturn(platformFeaturePackage);
     });
 
-    test('throws PlatformNotActivatedException for an inactive platform',
+    test(
+        'throws PlatformNotActivatedException if the platform is not activated',
         () async {
-      final project = MockRapidProject();
-      final rapid = getRapid(project: project);
-
       when(() => project.platformIsActivated(any())).thenReturn(false);
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformRemoveNavigator(
-          Platform.android,
+          platform,
           featureName: 'some_feature',
         ),
         throwsA(isA<PlatformNotActivatedException>()),
@@ -2471,110 +2062,88 @@ void main() {
         () async {
       final platformFeaturePackage =
           MockPlatformWidgetFeaturePackage(name: 'cool_widget');
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          platformFeaturePackage as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
+      when(
+        () => platformFeaturePackageBuilder(name: 'cool_widget'),
+      ).thenReturn(platformFeaturePackage);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformRemoveNavigator(
-          Platform.android,
+          platform,
           featureName: 'cool_widget',
         ),
         throwsA(isA<FeatureNotRoutableException>()),
       );
     });
 
-    test('throws FeatureNotFoundException for a non-existing feature package',
-        () async {
-      T platformFeaturePackageBuilder<T extends PlatformFeaturePackage>({
-        required String name,
-      }) =>
-          MockPlatformPageFeaturePackage(name: 'cool_page') as T;
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            featuresDirectory: MockPlatformFeaturesDirectory(
-              featurePackage: platformFeaturePackageBuilder,
-            ),
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
+    test('throws FeatureNotFoundException if feature does not exist', () async {
+      when(() => platformFeaturePackage.existsSync()).thenReturn(false);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformRemoveNavigator(
-          Platform.android,
+          platform,
           featureName: 'non_existing',
         ),
         throwsA(isA<FeatureNotFoundException>()),
       );
     });
+
+    test(
+      'removes navigator of a routable feature package',
+      withMockEnv((manager) async {
+        when(() => navigatorInterface.existsAny).thenReturn(true);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(
+          project: project,
+          tool: tool,
+          logger: logger,
+        );
+
+        await rapid.platformRemoveNavigator(
+          platform,
+          featureName: 'cool_page',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Deleting navigator interface'),
+          () => navigatorInterface.delete(),
+          () => platformNavigationPackageBarrelFile
+              .removeExport('src/i_cool_page_navigator.dart'),
+          () => progress.complete(),
+          () => logger.progress('Deleting navigator implementation'),
+          () => navigatorImplementation.delete(),
+          () => progress.complete(),
+          () => logger.progress('Running code generation in cool_page'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'cool_page_path',
+              ),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Removed Navigator!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
   });
 
   group('platformSetDefaultLanguage', () {
-    test('sets default language', () async {
-      final manager = MockProcessManager();
-      final localizationPackage = MockPlatformLocalizationPackage();
-      when(() => localizationPackage.supportedLanguages()).thenReturn({
-        Language(languageCode: 'en'),
-        Language(languageCode: 'fr'),
-      });
-      when(() => localizationPackage.defaultLanguage())
-          .thenReturn(Language(languageCode: 'en'));
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            localizationPackage: localizationPackage,
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async => rapid.platformSetDefaultLanguage(
-          Platform.android,
-          language: Language(languageCode: 'fr'),
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => localizationPackage.setDefaultLanguage(
-              Language(languageCode: 'fr'),
-            ),
-        () => flutterGenl10nTask(manager, package: localizationPackage),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Set Default Language!')
-      ]);
-    });
-
-    test('throws PlatformNotActivatedException for an inactive platform',
+    test(
+        'throws PlatformNotActivatedException if the platform is not activated',
         () async {
-      final project = MockRapidProject();
-      final rapid = getRapid(project: project);
-
       when(() => project.platformIsActivated(any())).thenReturn(false);
+      final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformSetDefaultLanguage(
-          Platform.android,
+          platform,
           language: Language(languageCode: 'en'),
         ),
         throwsA(isA<PlatformNotActivatedException>()),
@@ -2583,23 +2152,11 @@ void main() {
 
     test('throws LanguageNotFoundException for an unsupported language',
         () async {
-      final localizationPackage = MockPlatformLocalizationPackage();
-      when(() => localizationPackage.supportedLanguages()).thenReturn({
-        Language(languageCode: 'en'),
-      });
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            localizationPackage: localizationPackage,
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformSetDefaultLanguage(
-          Platform.android,
+          platform,
           language: Language(languageCode: 'de'),
         ),
         throwsA(isA<LanguageNotFoundException>()),
@@ -2609,29 +2166,50 @@ void main() {
     test(
         'throws LanguageIsAlreadyDefaultLanguageException for an already default language',
         () async {
-      final localizationPackage = MockPlatformLocalizationPackage();
-      when(() => localizationPackage.supportedLanguages()).thenReturn({
-        Language(languageCode: 'en'),
-      });
-      when(() => localizationPackage.defaultLanguage())
-          .thenReturn(Language(languageCode: 'en'));
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          platformDirectory: ({required platform}) => MockPlatformDirectory(
-            localizationPackage: localizationPackage,
-          ),
-        ),
-      );
-      when(() => project.platformIsActivated(any())).thenReturn(true);
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformSetDefaultLanguage(
-          Platform.android,
+          platform,
           language: Language(languageCode: 'en'),
         ),
         throwsA(isA<LanguageIsAlreadyDefaultLanguageException>()),
       );
     });
+
+    test(
+      'sets default language',
+      withMockEnv((manager) async {
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.platformSetDefaultLanguage(
+          platform,
+          language: Language(languageCode: 'fr'),
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Setting default language'),
+          () => platformLocalizationPackage.setDefaultLanguage(
+                Language(languageCode: 'fr'),
+              ),
+          () => progress.complete(),
+          () => logger.progress(
+              'Running "flutter gen-l10n" in platform_localization_package'),
+          () => manager.runFlutterGenl10n(
+              workingDirectory: 'platform_localization_package_path'),
+          () => progress.complete(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Set Default Language!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
   });
 }

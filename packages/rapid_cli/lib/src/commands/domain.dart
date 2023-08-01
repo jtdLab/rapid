@@ -213,7 +213,7 @@ mixin _DomainMixin on _Rapid {
       final barrelFile = domainPackage.barrelFile;
 
       await task(
-        'Deleting entity',
+        'Deleting entity files',
         () async {
           entity.delete();
           barrelFile.removeExport(p.join('src', '${name.snakeCase}.dart'));

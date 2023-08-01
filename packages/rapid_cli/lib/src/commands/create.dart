@@ -9,14 +9,14 @@ mixin _CreateMixin on _ActivateMixin {
     required Language language,
     required Set<Platform> platforms,
   }) async {
-    outputDir = Directory(outputDir).absolute.path;
-    if (dirExists(outputDir) && !dirIsEmpty(outputDir)) {
-      throw OutputDirNotEmptyException._(outputDir);
+    final out = Directory(outputDir).absolute;
+    if (out.existsSync() && !out.isEmpty()) {
+      throw OutputDirNotEmptyException._(out.path);
     }
 
     project = projectBuilder(
       config: RapidProjectConfig(
-        path: outputDir,
+        path: out.path,
         name: projectName,
       ),
     );

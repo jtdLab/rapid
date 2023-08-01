@@ -64,6 +64,16 @@ class MockDartFile extends Mock implements DartFile {
   }
 }
 
+class MockDirectory extends Mock implements Directory {
+  MockDirectory({String? path, bool? existsSync}) {
+    path ??= 'path';
+    existsSync ??= false;
+
+    when(() => this.path).thenReturn(path);
+    when(() => this.existsSync()).thenReturn(existsSync);
+  }
+}
+
 class MockArbFile extends Mock implements ArbFile {}
 
 class MockYamlFile extends Mock implements YamlFile {}
@@ -1177,6 +1187,32 @@ class MockPlatformUiPackage extends Mock implements PlatformUiPackage {
   }
 }
 
+abstract class PlatformFeaturePackageBuilder {
+  T call<T extends PlatformFeaturePackage>({required String name});
+}
+
+class MockPlatformFeaturePackageBuilder extends Mock
+    implements PlatformFeaturePackageBuilder {}
+
+abstract class BlocBuilder {
+  Bloc call({required String name});
+}
+
+class MockBlocBuilder extends Mock implements BlocBuilder {}
+
+abstract class CubitBuilder {
+  Cubit call({required String name});
+}
+
+class MockCubitBuilder extends Mock implements CubitBuilder {}
+
+abstract class NavigatorInterfaceBuilder {
+  NavigatorInterface call({required String name});
+}
+
+class MockNavigatorInterfaceBuilder extends Mock
+    implements NavigatorInterfaceBuilder {}
+
 abstract class WidgetBuilder {
   Widget call({required String name});
 }
@@ -1381,6 +1417,16 @@ class FakeRootPackage extends Fake implements RootPackage {
 
   @override
   late final String path;
+}
+
+class FakePlatformPageFeaturePackage extends Fake
+    implements PlatformPageFeaturePackage {
+  FakePlatformPageFeaturePackage({String? name}) {
+    this.name = name ?? 'platform_page_feature_package';
+  }
+
+  @override
+  late final String name;
 }
 
 ///

@@ -223,13 +223,11 @@ class IosRootPackage extends PlatformRootPackage {
   }
 
   void addLanguage(Language language) {
-    // TODO edit plist
-    nativeDirectory;
+    nativeDirectory.addLanguage(language);
   }
 
   void removeLanguage(Language language) {
-    // TODO edit plist
-    nativeDirectory;
+    nativeDirectory.removeLanguage(language);
   }
 }
 
@@ -276,61 +274,6 @@ class MacosRootPackage extends PlatformRootPackage {
       },
     );
     await nativeDirectory.generate(orgName: orgName);
-  }
-}
-
-// TODO better name
-class NoneIosRootPackage extends PlatformRootPackage {
-  NoneIosRootPackage({
-    required super.projectName,
-    required super.platform,
-    required super.path,
-    required this.nativeDirectory,
-  });
-
-  factory NoneIosRootPackage.resolve({
-    required String projectName,
-    required String projectPath,
-    required Platform platform,
-  }) {
-    final path = p.join(
-      projectPath,
-      'packages',
-      projectName,
-      '${projectName}_${platform.name}',
-      '${projectName}_${platform.name}',
-    );
-    final nativeDirectory = NoneIosNativeDirectory.resolve(
-      projectName: projectName,
-      platformRootPackagePath: path,
-      platform: platform,
-    );
-
-    return NoneIosRootPackage(
-      projectName: projectName,
-      platform: platform,
-      path: path,
-      nativeDirectory: nativeDirectory,
-    );
-  }
-
-  final NoneIosNativeDirectory nativeDirectory;
-
-  Future<void> generate({
-    String? description,
-    String? orgName,
-  }) async {
-    await mason.generate(
-      bundle: platformRootPackageBundle,
-      target: this,
-      vars: <String, dynamic>{
-        'project_name': projectName,
-        'description': description,
-        'org_name': orgName,
-        'platform': platform.name,
-      },
-    );
-    await nativeDirectory.generate(description: description, orgName: orgName);
   }
 }
 
@@ -397,12 +340,65 @@ class MobileRootPackage extends PlatformRootPackage {
   }
 
   void addLanguage(Language language) {
-    // TODO edit plist
-    iosNativeDirectory;
+    iosNativeDirectory.addLanguage(language);
   }
 
   void removeLanguage(Language language) {
-    // TODO edit plist
-    iosNativeDirectory;
+    iosNativeDirectory.removeLanguage(language);
+  }
+}
+
+// TODO better name
+class NoneIosRootPackage extends PlatformRootPackage {
+  NoneIosRootPackage({
+    required super.projectName,
+    required super.platform,
+    required super.path,
+    required this.nativeDirectory,
+  });
+
+  factory NoneIosRootPackage.resolve({
+    required String projectName,
+    required String projectPath,
+    required Platform platform,
+  }) {
+    final path = p.join(
+      projectPath,
+      'packages',
+      projectName,
+      '${projectName}_${platform.name}',
+      '${projectName}_${platform.name}',
+    );
+    final nativeDirectory = NoneIosNativeDirectory.resolve(
+      projectName: projectName,
+      platformRootPackagePath: path,
+      platform: platform,
+    );
+
+    return NoneIosRootPackage(
+      projectName: projectName,
+      platform: platform,
+      path: path,
+      nativeDirectory: nativeDirectory,
+    );
+  }
+
+  final NoneIosNativeDirectory nativeDirectory;
+
+  Future<void> generate({
+    String? description,
+    String? orgName,
+  }) async {
+    await mason.generate(
+      bundle: platformRootPackageBundle,
+      target: this,
+      vars: <String, dynamic>{
+        'project_name': projectName,
+        'description': description,
+        'org_name': orgName,
+        'platform': platform.name,
+      },
+    );
+    await nativeDirectory.generate(description: description, orgName: orgName);
   }
 }

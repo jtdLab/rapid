@@ -50,6 +50,32 @@ class IosNativeDirectory extends PlatformNativeDirectory {
       },
     );
   }
+
+  void addLanguage(Language language) {
+    final dict = infoFile.readDict();
+
+    final localizations =
+        (dict['CFBundleLocalizations'] as List<dynamic>?)?.cast<String>();
+
+    dict['CFBundleLocalizations'] = [
+      ...?localizations,
+      language.toStringWithSeperator('-'),
+    ]..sort();
+
+    infoFile.setDict(dict);
+  }
+
+  void removeLanguage(Language language) {
+    final dict = infoFile.readDict();
+    final localizations =
+        (dict['CFBundleLocalizations'] as List<dynamic>?)?.cast<String>();
+
+    dict['CFBundleLocalizations'] = [
+      ...?localizations?..remove(language.toStringWithSeperator('-')),
+    ]..sort();
+
+    infoFile.setDict(dict);
+  }
 }
 
 class MacosNativeDirectory extends PlatformNativeDirectory {

@@ -38,7 +38,6 @@ void main() {
   setUp(() {
     widget = MockWidget();
     widgetBuilder = MockWidgetBuilder(widget: widget);
-    when(() => widget.existsAny).thenReturn(false);
     when(() => widget.entities).thenReturn([
       FakeDartFile(path: 'foo/bar.dart', existsSync: true),
       FakeDartFile(path: 'baz/bam.dart', existsSync: true),
@@ -47,7 +46,6 @@ void main() {
     when(() => theme.existsAny).thenReturn(false);
     themedWidget = MockThemedWidget();
     when(() => themedWidget.theme).thenReturn(theme);
-    when(() => themedWidget.existsAny).thenReturn(false);
     when(() => themedWidget.entities).thenReturn([
       FakeDartFile(path: 'fresh/nice.dart', existsSync: true),
       FakeDartFile(path: 'cool/funny.dart', existsSync: true),
@@ -72,7 +70,6 @@ void main() {
       themeExtensionsFile: uiPackageThemeExtensionsFile,
     );
     platformWidget = MockWidget();
-    when(() => platformWidget.existsAny).thenReturn(false);
     when(() => platformWidget.entities).thenReturn([
       FakeDartFile(path: 'foo/bar.dart', existsSync: true),
       FakeDartFile(path: 'baz/bam.dart', existsSync: true),
@@ -82,7 +79,6 @@ void main() {
     when(() => platformTheme.existsAny).thenReturn(false);
     platformThemedWidget = MockThemedWidget();
     when(() => platformThemedWidget.theme).thenReturn(platformTheme);
-    when(() => platformThemedWidget.existsAny).thenReturn(false);
     when(() => platformThemedWidget.entities).thenReturn([
       FakeDartFile(path: 'fresh/nice.dart', existsSync: true),
       FakeDartFile(path: 'cool/funny.dart', existsSync: true),
@@ -171,6 +167,7 @@ void main() {
     test(
       'creates widget',
       withMockEnv((manager) async {
+        when(() => widget.existsAny).thenReturn(false);
         final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
         final rapid = getRapid(project: project, logger: logger);
 
@@ -199,6 +196,7 @@ void main() {
     test(
       'creates themed widget',
       withMockEnv((manager) async {
+        when(() => themedWidget.existsAny).thenReturn(false);
         final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
         final rapid = getRapid(project: project, logger: logger);
 
@@ -304,6 +302,7 @@ void main() {
     test(
       'creates widget',
       withMockEnv((manager) async {
+        when(() => platformWidget.existsAny).thenReturn(false);
         final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
         final rapid = getRapid(project: project, logger: logger);
 
@@ -337,6 +336,7 @@ void main() {
     test(
       'creates themed widget',
       withMockEnv((manager) async {
+        when(() => platformThemedWidget.existsAny).thenReturn(false);
         final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
         final rapid = getRapid(project: project, logger: logger);
 
@@ -474,7 +474,7 @@ void main() {
       'throws WidgetNotFoundException when widget not found',
       () async {
         final platform = randomPlatform();
-        when(() => widget.existsAny).thenReturn(false);
+        when(() => platformWidget.existsAny).thenReturn(false);
         final rapid = getRapid(project: project);
 
         expect(

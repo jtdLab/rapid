@@ -29,9 +29,7 @@ void main() {
     serviceInterface = MockServiceInterface();
     when(() => serviceInterface.existsAll).thenReturn(true);
     dataTransferObject = MockDataTransferObject();
-    when(() => dataTransferObject.existsAny).thenReturn(false);
     serviceImplementation = MockServiceImplementation();
-    when(() => serviceImplementation.existsAny).thenReturn(false);
     infrastructurePackageBarrelFile = MockDartFile();
     infrastructurePackage = MockInfrastructurePackage(
       dataTransferObject: ({required entityName}) => dataTransferObject,
@@ -88,6 +86,7 @@ void main() {
     test(
       'adds data transfer object to infrastructure package',
       withMockEnv((manager) async {
+        when(() => dataTransferObject.existsAny).thenReturn(false);
         final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
         final rapid = getRapid(project: project, logger: logger);
 
@@ -152,6 +151,7 @@ void main() {
     test(
       'adds service implementation to infrastructure package',
       withMockEnv((manager) async {
+        when(() => serviceImplementation.existsAny).thenReturn(false);
         final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
         final rapid = getRapid(project: project, logger: logger);
 

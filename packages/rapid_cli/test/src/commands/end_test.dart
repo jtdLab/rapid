@@ -217,6 +217,8 @@ void main() {
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(progress);
+        verifyNoMoreInteractions(groupableProgress);
+        verifyNoMoreInteractions(progressGroup);
         verifyNoMoreInteractions(logger);
       }),
     );

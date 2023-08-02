@@ -64,7 +64,7 @@ void main() {
         final {{name.camelCase()}} = {{name.pascalCase()}}(/* TODO: invalid */);
 
         // Assert
-        expect({{name.camelCase()}}.getOrCrash(), throwsStateError);
+        expect(() => {{name.camelCase()}}.getOrCrash(), throwsStateError);
       });
     });
 

@@ -38,7 +38,7 @@ void main() {
             ]);
 
             // Assert
-            await verifyHasAnalyzerIssues(3);
+            await verifyNoAnalyzerIssues();
             await verifyNoFormattingIssues();
             verifyDoExist({
               ...tester.valueObjectFiles(

@@ -88,7 +88,7 @@ class PlatformLocalizationPackage extends DartPackage {
           name: 'supportedLocales',
           parentClass: '${projectName.pascalCase}Localizations',
         )
-        .map((e) => e.toLanguageFromDartLocale())
+        .map((e) => Language.fromDartUiLocal(e))
         .toSet();
   }
 

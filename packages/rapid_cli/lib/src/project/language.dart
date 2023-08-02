@@ -38,6 +38,158 @@ class Language implements Comparable<Language> {
     }
   }
 
+  /// Creates a [Language] by extracting it from the provided [raw] string.
+  ///
+  /// The [raw] string is expected to be a representation
+  /// of a [Locale](https://api.flutter.dev/flutter/dart-ui/Locale-class.html) in dart code.
+  factory Language.fromDartUiLocal(String raw) {
+    raw = raw
+        .replaceAll('\r\n', '')
+        .replaceAll('\n', '')
+        .replaceAll(RegExp(r'\s\s+'), '');
+    final RegExpMatch match;
+    if (RegExp(r"Locale\('([A-z]+)',?\)").hasMatch(raw)) {
+      match = RegExp(r"Locale\('([A-z]+)',?\)").firstMatch(raw)!;
+      return Language(languageCode: match.group(1)!);
+    } else if (RegExp(r"Locale\('([A-z]+)', '([A-z]+)',?\)").hasMatch(raw)) {
+      match = RegExp(r"Locale\('([A-z]+)', '([A-z]+)',?\)").firstMatch(raw)!;
+      return Language(
+          languageCode: match.group(1)!, countryCode: match.group(2)!);
+    } else if (RegExp(r"Locale.fromSubtags\(,?\)").hasMatch(raw)) {
+      match = RegExp(r"Locale.fromSubtags\(,?\)").firstMatch(raw)!;
+      return Language(languageCode: 'und');
+    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(languageCode: match.group(1)!);
+    } else if (RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(languageCode: 'und', countryCode: match.group(1)!);
+    } else if (RegExp(r"Locale.fromSubtags\(scriptCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(r"Locale.fromSubtags\(scriptCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(languageCode: 'und', scriptCode: match.group(1)!);
+    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(languageCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(
+          languageCode: match.group(1)!, countryCode: match.group(2)!);
+    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(languageCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(
+          languageCode: match.group(1)!, scriptCode: match.group(2)!);
+    } else if (RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(countryCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(
+          countryCode: match.group(1)!, languageCode: match.group(2)!);
+    } else if (RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(countryCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(
+        languageCode: 'und',
+        countryCode: match.group(1)!,
+        scriptCode: match.group(2)!,
+      );
+    } else if (RegExp(r"Locale.fromSubtags\(scriptCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(scriptCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(
+          scriptCode: match.group(1)!, languageCode: match.group(2)!);
+    } else if (RegExp(r"Locale.fromSubtags\(scriptCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(scriptCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(
+        languageCode: 'und',
+        scriptCode: match.group(1)!,
+        countryCode: match.group(2)!,
+      );
+    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)', countryCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(languageCode: '([A-z]+)', countryCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(
+        languageCode: match.group(1)!,
+        countryCode: match.group(2)!,
+        scriptCode: match.group(3)!,
+      );
+    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)', scriptCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(languageCode: '([A-z]+)', scriptCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(
+        languageCode: match.group(1)!,
+        scriptCode: match.group(2)!,
+        countryCode: match.group(3)!,
+      );
+    } else if (RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)', languageCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(countryCode: '([A-z]+)', languageCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(
+        countryCode: match.group(1)!,
+        languageCode: match.group(2)!,
+        scriptCode: match.group(3)!,
+      );
+    } else if (RegExp(
+            r"Locale.fromSubtags\(countryCode: '([A-z]+)', scriptCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(countryCode: '([A-z]+)', scriptCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(
+        countryCode: match.group(1)!,
+        scriptCode: match.group(2)!,
+        languageCode: match.group(3)!,
+      );
+    } else if (RegExp(
+            r"Locale.fromSubtags\(scriptCode: '([A-z]+)', languageCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(scriptCode: '([A-z]+)', languageCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(
+        scriptCode: match.group(1)!,
+        languageCode: match.group(2)!,
+        countryCode: match.group(3)!,
+      );
+    } else if (RegExp(
+            r"Locale.fromSubtags\(scriptCode: '([A-z]+)', countryCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
+        .hasMatch(raw)) {
+      match = RegExp(
+              r"Locale.fromSubtags\(scriptCode: '([A-z]+)', countryCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
+          .firstMatch(raw)!;
+      return Language(
+        scriptCode: match.group(1)!,
+        countryCode: match.group(2)!,
+        languageCode: match.group(3)!,
+      );
+    }
+
+    // TODO
+    throw Error();
+  }
+
   bool get hasScriptCode => scriptCode != null;
 
   bool get hasCountryCode => countryCode != null;

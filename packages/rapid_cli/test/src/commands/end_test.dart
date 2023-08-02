@@ -42,8 +42,8 @@ void main() {
     test(
       'completes with no packages to bootstrap and no packages to codegen',
       withMockEnv((manager) async {
-        when(() => commandGroup.packagesToBootstrap).thenReturn([]);
-        when(() => commandGroup.packagesToCodeGen).thenReturn([]);
+        when(() => commandGroup.packagesToBootstrap).thenReturn({});
+        when(() => commandGroup.packagesToCodeGen).thenReturn({});
         final logger = MockRapidLogger();
         final rapid = getRapid(tool: tool, logger: logger);
 
@@ -63,13 +63,13 @@ void main() {
       'completes with packages to bootstrap and no packages to codegen',
       withMockEnv((manager) async {
         final project = MockRapidProject(path: 'project_path');
-        final packagesToBootstrap = [
+        when(() => project.packages()).thenReturn([
           FakeDartPackage(packageName: 'package_a'),
-          FakeDartPackage(packageName: 'package_b')
-        ];
+          FakeDartPackage(packageName: 'package_b'),
+        ]);
         when(() => commandGroup.packagesToBootstrap)
-            .thenReturn(packagesToBootstrap);
-        when(() => commandGroup.packagesToCodeGen).thenReturn([]);
+            .thenReturn({'package_a', 'package_b'});
+        when(() => commandGroup.packagesToCodeGen).thenReturn({});
         final (progress: progress, logger: logger) = setupLoggerWithoutGroup();
         final rapid = getRapid(
           project: project,
@@ -101,7 +101,8 @@ void main() {
     test(
       'completes with no packages to bootstrap and packages to codegen',
       withMockEnv((manager) async {
-        final packagesToCodeGen = [
+        final project = MockRapidProject(path: 'project_path');
+        when(() => project.packages()).thenReturn([
           FakeDartPackage(
             packageName: 'package_a',
             path: 'package_a_path',
@@ -110,18 +111,17 @@ void main() {
             packageName: 'package_b',
             path: 'package_b_path',
           )
-        ];
-        when(() => commandGroup.packagesToBootstrap).thenReturn([]);
+        ]);
+        when(() => commandGroup.packagesToBootstrap).thenReturn({});
         when(() => commandGroup.packagesToCodeGen)
-            .thenReturn(packagesToCodeGen);
+            .thenReturn({'package_a', 'package_b'});
         final (
           progress: progress,
           groupableProgress: groupableProgress,
           progressGroup: progressGroup,
           logger: logger,
         ) = setupLogger();
-
-        final rapid = getRapid(tool: tool, logger: logger);
+        final rapid = getRapid(project: project, tool: tool, logger: logger);
 
         await rapid.end();
 
@@ -156,11 +156,9 @@ void main() {
       'completes with packages to bootstrap and packages to codegen',
       withMockEnv((manager) async {
         final project = MockRapidProject(path: 'project_path');
-        final packagesToBootstrap = [
+        when(() => project.packages()).thenReturn([
           FakeDartPackage(packageName: 'package_a'),
-          FakeDartPackage(packageName: 'package_b')
-        ];
-        final packagesToCodeGen = [
+          FakeDartPackage(packageName: 'package_b'),
           FakeDartPackage(
             packageName: 'package_c',
             path: 'package_c_path',
@@ -169,11 +167,11 @@ void main() {
             packageName: 'package_d',
             path: 'package_d_path',
           )
-        ];
+        ]);
         when(() => commandGroup.packagesToBootstrap)
-            .thenReturn(packagesToBootstrap);
+            .thenReturn({'package_a', 'package_b'});
         when(() => commandGroup.packagesToCodeGen)
-            .thenReturn(packagesToCodeGen);
+            .thenReturn({'package_c', 'package_d'});
         final (
           progress: progress,
           groupableProgress: groupableProgress,

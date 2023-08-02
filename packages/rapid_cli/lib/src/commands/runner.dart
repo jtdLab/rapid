@@ -84,7 +84,7 @@ class Rapid extends _Rapid
   final RapidTool? _tool;
 
   @override
-  RapidTool get tool => _tool ?? RapidTool(project: project);
+  RapidTool get tool => _tool ?? RapidTool(path: project.path);
 }
 
 abstract class _Rapid {

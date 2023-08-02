@@ -22,12 +22,6 @@ String multiLine(List<String> lines) => lines.join('\n');
 
 const envKeyRapidTerminalWidth = 'RAPID_TERMINAL_WIDTH';
 
-void replaceInFile(File file, String from, String replace) {
-  final content = file.readAsStringSync();
-  final updatedContent = content.replaceAll(from, replace);
-  file.writeAsStringSync(updatedContent);
-}
-
 int get terminalWidth {
   if (currentPlatform.environment.containsKey(envKeyRapidTerminalWidth)) {
     return int.tryParse(
@@ -146,63 +140,6 @@ extension LanguageUtils on Language {
   Language fallback() => Language(languageCode: languageCode);
 }
 
-///  class InfoPlistFileImpl extends PlistFileImpl implements InfoPlistFile {
-///   InfoPlistFileImpl({
-///     required IosNativeDirectory iosNativeDirectory,
-///   }) : super(
-///           path: p.join(iosNativeDirectory.path, 'Runner'),
-///           name: 'Info',
-///         );
-///
-///   @override
-///   void addLanguage({required Language language}) {
-///     final dict = readDict();
-///
-///     var languages = ((dict['CFBundleLocalizations'] ?? []) as List)
-///         .cast<String>()
-///         .map((e) => Language.fromString(e));
-///     if (!languages.contains(language)) {
-///       dict['CFBundleLocalizations'] = {
-///         ...languages,
-///         language,
-///       }.map((e) => e.toStringWithSeperator('-')).toList();
-///     }
-///
-///     setDict(dict);
-///   }
-///
-///   @override
-///   void removeLanguage({required Language language}) {
-///     final dict = readDict();
-///
-///     var languages = ((dict['CFBundleLocalizations'] ?? []) as List)
-///         .cast<String>()
-///         .map((e) => Language.fromString(e))
-///         .toList();
-///     if (languages.contains(language)) {
-///       dict['CFBundleLocalizations'] = (languages..remove(language))
-///           .map((e) => e.toStringWithSeperator('-'))
-///           .toList();
-///     }
-///
-///     languages = ((dict['CFBundleLocalizations'] ?? []) as List)
-///         .cast<String>()
-///         .map((e) => Language.fromString(e))
-///         .toList();
-///     if (!language.hasScriptCode && !language.hasCountryCode) {
-///       dict['CFBundleLocalizations'] = (languages
-///             ..removeWhere(
-///               (e) => e.languageCode.startsWith(language.languageCode),
-///             ))
-///           .map((e) => e.toStringWithSeperator('-'))
-///           .toList();
-///     }
-///
-///     setDict(dict);
-///   }
-/// }
-///
-
 extension DartPackageListUtils on List<DartPackage> {
   List<DartPackage> without(List<DartPackage> packages) {
     // TODO maybe override euqalitty in DartPackage
@@ -213,7 +150,7 @@ extension DartPackageListUtils on List<DartPackage> {
   }
 }
 
-// TODO needed ?
+// TODO simplify subtags seems not to be needed
 extension LocaleUtils on String {
   Language toLanguageFromDartLocale() {
     final self = replaceAll('\r\n', '')

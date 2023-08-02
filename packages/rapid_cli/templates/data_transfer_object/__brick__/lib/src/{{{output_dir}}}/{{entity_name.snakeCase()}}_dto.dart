@@ -8,7 +8,7 @@ part '{{entity_name.snakeCase()}}_dto.g.dart';
 class {{entity_name.pascalCase()}}Dto with _${{entity_name.pascalCase()}}Dto {
   const factory {{entity_name.pascalCase()}}Dto({
     required String id,
-    // TODO: more fields
+    // TODO: add more fields here
   }) = _{{entity_name.pascalCase()}}Dto;
 
   const {{entity_name.pascalCase()}}Dto._();
@@ -16,14 +16,12 @@ class {{entity_name.pascalCase()}}Dto with _${{entity_name.pascalCase()}}Dto {
   factory {{entity_name.pascalCase()}}Dto.fromDomain({{entity_name.pascalCase()}} domain) {
     return {{entity_name.pascalCase()}}Dto(
       id: domain.id,
-      // TODO: more fields
     );
   }
 
   {{entity_name.pascalCase()}} toDomain() {
     return {{entity_name.pascalCase()}}(
       id: id,
-      // TODO: more fields
     );
   }
 

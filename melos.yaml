@@ -1,7 +1,6 @@
 name: rapid
 
 packages:
-  - packages/rapid/rapid_domain
   - packages/rapid_cli
 
 command:
@@ -35,7 +34,6 @@ scripts:
 
   format:
     run: |
-      dart format packages/rapid --fix && \
       dart format packages/rapid_cli/bin --fix && \
       dart format packages/rapid_cli/lib --fix && \
       dart format packages/rapid_cli/test --fix
@@ -43,10 +41,9 @@ scripts:
 
   analyze:
     run: |
-      flutter analyze packages/rapid && \
       flutter analyze packages/rapid_cli/bin && \
       flutter analyze packages/rapid_cli/lib && \
-      flutter analyze packages/apid_cli/test
+      flutter analyze packages/rapid_cli/test
     description: Analyze the project
 
   fix:
@@ -81,7 +78,7 @@ scripts:
     exec: sh tool/bundles.sh
     description: Regenerate fresh bundles from templates.
     packageFilters:
-      scope: "rapid_cli"
+      scope: rapid_cli
 
   git:bundles:into:dev:
     run: |
@@ -100,7 +97,6 @@ scripts:
       git reset --hard origin/main && \
       git push --force origin dev
     description: Reset dev to main branch. (This must be run from dev branch)
-
 
   test:coverage:
     exec: flutter test test/src --coverage

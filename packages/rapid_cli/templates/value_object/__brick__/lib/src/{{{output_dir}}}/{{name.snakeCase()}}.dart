@@ -1,6 +1,5 @@
 import 'package:faker/faker.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:rapid_domain/rapid_domain.dart';
 
 part '{{name.snakeCase()}}.freezed.dart';
 

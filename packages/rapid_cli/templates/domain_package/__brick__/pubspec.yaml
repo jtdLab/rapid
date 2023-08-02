@@ -7,10 +7,6 @@ environment:
   sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  rapid_domain:
-    git:
-      url: https://github.com/jtdLab/rapid.git
-      path: packages/rapid/rapid_domain
   faker: ^2.1.0
   freezed_annotation: ^2.4.1
 

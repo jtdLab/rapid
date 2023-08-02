@@ -8,7 +8,7 @@ final navigatorInterfaceBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "lib/src/i_{{name.snakeCase()}}_navigator.dart",
       "data":
-          "YWJzdHJhY3QgY2xhc3MgSXt7bmFtZS5wYXNjYWxDYXNlKCl9fU5hdmlnYXRvciB7CiAgLy8gVE9ETzogYWRkIG5hdmlnYXRpb24gbWV0aG9kcwp9Cg==",
+          "YWJzdHJhY3QgY2xhc3MgSXt7bmFtZS5wYXNjYWxDYXNlKCl9fU5hdmlnYXRvciB7CiAgLy8gVE9ETzogYWRkIG5hdmlnYXRpb24gbWV0aG9kcyBoZXJlCn0K",
       "type": "text"
     }
   ],

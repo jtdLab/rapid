@@ -5,5 +5,5 @@ import 'package:injectable/injectable.dart';
 @{{#android}}android{{/android}}{{#ios}}ios{{/ios}}{{#linux}}linux{{/linux}}{{#macos}}macos{{/macos}}{{#web}}web{{/web}}{{#windows}}windows{{/windows}}{{#mobile}}mobile{{/mobile}}
 @LazySingleton(as: I{{name.pascalCase()}}Navigator)
 class {{name.pascalCase()}}Navigator implements I{{name.pascalCase()}}Navigator {
-  // TODO: implement navigation methods
+  // TODO: implement
 }

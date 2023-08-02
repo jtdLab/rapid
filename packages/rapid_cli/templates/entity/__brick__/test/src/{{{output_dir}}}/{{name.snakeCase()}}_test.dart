@@ -4,7 +4,7 @@ import 'package:{{project_name}}_domain{{#has_sub_domain_name}}_{{sub_domain_nam
 void main() {
   group('{{name.pascalCase()}}', () {
     group('.()', () {
-      test('', () {
+      test('returns correct instance', () {
         // Arrange + Act
         final {{name.camelCase()}} = {{name.pascalCase()}}(id: 'some_id');
 
@@ -14,14 +14,6 @@ void main() {
     });
 
     group('.random()', () {
-      test('', () {
-        // Arrange + Act
-        final {{name.camelCase()}} = {{name.pascalCase()}}.random();
-
-        // Assert
-        expect({{name.camelCase()}}.id, isNotNull);
-      });
-
       test(
         'returns different instances',
         () {

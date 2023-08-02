@@ -7,10 +7,9 @@ part '{{name.snakeCase()}}.freezed.dart';
 class {{name.pascalCase()}} with _${{name.pascalCase()}} {
   const factory {{name.pascalCase()}}({
     required String id,
-    // TODO: more fields
+    // TODO: add more fields here
   }) = _{{name.pascalCase()}};
 
-  /// Returns a random instance.
   factory {{name.pascalCase()}}.random() {
     final faker = Faker();
 

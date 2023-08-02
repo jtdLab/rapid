@@ -17,12 +17,12 @@ class {{name.pascalCase()}}Bloc extends Bloc<{{name.pascalCase()}}Event, {{name.
         ) {
     // Register handlers
     on<{{name.pascalCase()}}Started>(
-      (event, emit) async => _handleStarted(event, emit),
+      (event, emit) => _onStarted(event, emit),
     );
   }
 
   /// Handle incoming [{{name.pascalCase()}}Started] event.
-  void _handleStarted(
+  void _onStarted(
     {{name.pascalCase()}}Started event,
     Emitter<{{name.pascalCase()}}State> emit,
   ) {

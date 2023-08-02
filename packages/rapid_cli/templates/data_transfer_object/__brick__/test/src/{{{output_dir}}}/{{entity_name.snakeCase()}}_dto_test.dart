@@ -5,7 +5,7 @@ import 'package:{{project_name}}_infrastructure{{#has_sub_infrastructure_name}}_
 void main() {
   group('{{entity_name.pascalCase()}}Dto', () {
     group('.()', () {
-      test('', () {
+      test('returns correct instance', () {
         // Act
         final {{entity_name.camelCase()}}Dto = {{entity_name.pascalCase()}}Dto(id: 'some_id');
 
@@ -15,7 +15,7 @@ void main() {
     });
 
     group('.fromDomain()', () {
-      test('', () {
+      test('returns correct instance', () {
         // Arrange
         final {{entity_name.camelCase()}} = {{entity_name.pascalCase()}}(id: 'some_id');
 
@@ -25,7 +25,7 @@ void main() {
     });
 
     group('.fromJson()', () {
-      test('', () {
+      test('returns correct instance', () {
         // Arrange
         final {{entity_name.camelCase()}}Json = {'id': 'some_id'};
 
@@ -40,7 +40,7 @@ void main() {
     });
 
     group('.toDomain()', () {
-      test('', () {
+      test('returns correct entity', () {
         // Arrange
         final {{entity_name.camelCase()}}Dto = {{entity_name.pascalCase()}}Dto(id: 'some_id');
 
@@ -50,7 +50,7 @@ void main() {
     });
 
     group('.toJson()', () {
-      test('', () {
+      test('returns correct json', () {
         // Arrange
         final {{entity_name.camelCase()}}Dto = {{entity_name.pascalCase()}}Dto(id: 'some_id');
 

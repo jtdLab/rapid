@@ -1,74 +1,54 @@
-import 'package:dartz/dartz.dart';
 import 'package:faker/faker.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:rapid_domain/rapid_domain.dart';
 
 part '{{name.snakeCase()}}.freezed.dart';
 
-/// {@template {{name.snakeCase()}}}
-/// ***Valid***:
-///
-/// TODO: valid cases
-///
-/// ---
-///
-/// ***Invalid***:
-///
-/// TODO: invalid cases
-/// {@endtemplate}
-class {{name.pascalCase()}}{{{generics}}} extends ValueObject<{{{type}}}> {
-  @override
-  final Either<{{name.pascalCase()}}Failure, {{{type}}}> value;
+sealed class {{name.pascalCase()}}{{{generics}}} {
+  const {{name.pascalCase()}}._();
 
-  /// {@macro {{name.snakeCase()}}}
   factory {{name.pascalCase()}}({{{type}}} raw) {
-    return {{name.pascalCase()}}._(_validate(raw));
+    return _validate(raw);
   }
 
-  /// Returns a random instance.
-  ///
-  /// If [isValid] holds value else holds failure.
-  factory {{name.pascalCase()}}.random({bool isValid = true}) {
+  factory {{name.pascalCase()}}.random({bool valid = true}) {
     final faker = Faker();
 
-    if (isValid) {
-      // TODO: implement: return instance holding random value
-      throw UnimplementedError();
+    if (valid) {
+      return faker.randomGenerator.element([
+        // TODO: insert random valid instances here
+      ]);
     } else {
-      // TODO: implement: return instance holding random failure
-      throw UnimplementedError();
+      return faker.randomGenerator.element([
+        // TODO: insert random invalid instances here
+      ]);
     }
   }
 
-  const {{name.pascalCase()}}._(this.value);
-
-  /// ***Returns [raw]***:
-  ///
-  /// TODO: valid cases
-  ///
-  /// ---
-  ///
-  /// ***Returns [{{name.pascalCase()}}Failure]***:
-  ///
-  /// TODO: invalid cases
-  static Either<{{name.pascalCase()}}Failure, {{{type}}}> _validate{{{generics}}}({{{type}}} raw) {
-    // TODO: implement validation
+  static {{name.pascalCase()}}{{{generics}}} _validate{{{generics}}}({{{type}}} raw) {
+    // TODO: implement validation here
     throw UnimplementedError();
   }
 
-  @override
-  String toString() => value.fold(
-        (failure) => '{{name.pascalCase()}}(failure: $failure)',
-        (value) => '{{name.pascalCase()}}(value: $value)',
-      );
+  {{{type}}} getOrCrash() {
+    return switch (this) {
+      Valid{{name.pascalCase()}}{{{generics}}} valid => valid.value,
+      {{name.pascalCase()}}Failure failure =>
+        throw StateError('Unexpected $failure at unrecoverable point.'),
+    };
+  }
+
+  bool isValid() => this is Valid{{name.pascalCase()}};
 }
 
-/// [ValueFailure] union that belongs to [{{name.pascalCase()}}].
 @freezed
-sealed class {{name.pascalCase()}}Failure{{{generics}}} extends ValueFailure<{{{type}}}>
-    with _${{name.pascalCase()}}Failure{{{generics}}} {
-  const factory {{name.pascalCase()}}Failure.failureA({
-    required {{{type}}} failedValue,
-  }) = {{name.pascalCase()}}FailureA;
-  // TODO: add more failure cases
+class Valid{{name.pascalCase()}}{{{generics}}} extends {{name.pascalCase()}}{{{generics}}} with _$Valid{{name.pascalCase()}}{{{generics}}} {
+  const Valid{{name.pascalCase()}}._() : super._();
+  const factory Valid{{name.pascalCase()}}({{{type}}} value) = _Valid{{name.pascalCase()}};
+}
+
+@freezed
+sealed class {{name.pascalCase()}}Failure{{{generics}}} extends {{name.pascalCase()}}{{{generics}}} with _${{name.pascalCase()}}Failure{{{generics}}} {
+  const {{name.pascalCase()}}Failure._() : super._();
+  const factory {{name.pascalCase()}}Failure.foo() = {{name.pascalCase()}}FailureFoo;
+  // TODO: add more failures here
 }

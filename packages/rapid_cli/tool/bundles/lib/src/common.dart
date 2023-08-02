@@ -20,7 +20,6 @@ final packages = [
   PackageDependency('build_runner', '2.4.6'),
   PackageDependency('build_verify', '3.1.0'),
   PackageDependency('cupertino_icons', '1.0.5'),
-  PackageDependency('dartz', '0.10.1'),
   PackageDependency('faker', '2.1.0'),
   PackageDependency('fluent_ui', '4.7.1'),
   PackageDependency('flutter_bloc', '8.1.3'),

@@ -2,6 +2,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
 import 'package:rapid_cli/src/io.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src/tool.dart';
 import 'package:test/test.dart';
 
 import '../mock_env.dart';
@@ -18,6 +19,8 @@ void main() {
   late DartFile infrastructurePackageBarrelFile;
   late InfrastructurePackage infrastructurePackage;
   late RapidProject project;
+  late CommandGroup commandGroup;
+  late RapidTool tool;
 
   setUpAll(() {
     registerFallbackValues();
@@ -32,6 +35,8 @@ void main() {
     serviceImplementation = MockServiceImplementation();
     infrastructurePackageBarrelFile = MockDartFile();
     infrastructurePackage = MockInfrastructurePackage(
+      packageName: 'infrastructure_package',
+      path: 'infrastructure_package_path',
       dataTransferObject: ({required entityName}) => dataTransferObject,
       serviceImplementation: ({required name, required serviceInterfaceName}) =>
           serviceImplementation,
@@ -52,6 +57,10 @@ void main() {
         ),
       ),
     );
+    commandGroup = MockCommandGroup();
+    when(() => commandGroup.isActive).thenReturn(false);
+    tool = MockRapidTool();
+    when(() => tool.loadGroup()).thenReturn(commandGroup);
   });
 
   group('infrastructureSubInfrastructureAddDataTransferObject', () {
@@ -101,7 +110,6 @@ void main() {
           () => dataTransferObject.generate(),
           () => infrastructurePackageBarrelFile.addExport('src/cool_dto.dart'),
           () => progress.complete(),
-          () => logger.newLine(),
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           () => progress.complete(),
@@ -153,7 +161,7 @@ void main() {
       withMockEnv((manager) async {
         when(() => serviceImplementation.existsAny).thenReturn(false);
         final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
-        final rapid = getRapid(project: project, logger: logger);
+        final rapid = getRapid(project: project, tool: tool, logger: logger);
 
         await rapid.infrastructureSubInfrastructureAddServiceImplementation(
           name: 'Fake',
@@ -168,7 +176,13 @@ void main() {
           () => infrastructurePackageBarrelFile
               .addExport('src/fake_cool_service.dart'),
           () => progress.complete(),
-          () => logger.newLine(),
+          () => logger
+              .progress('Running code generation in infrastructure_package'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'infrastructure_package_path',
+              ),
+          () => progress.complete(),
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           () => progress.complete(),
@@ -180,6 +194,35 @@ void main() {
         verifyNoMoreInteractions(progress);
       }),
     );
+
+    group('given command group is active', () {
+      setUp(() {
+        when(() => commandGroup.isActive).thenReturn(true);
+      });
+
+      test(
+        'marks infrastructure package as need code gen',
+        withMockEnv((_) async {
+          when(() => serviceImplementation.existsAny).thenReturn(false);
+          final logger = MockRapidLogger();
+          final rapid = getRapid(
+            project: project,
+            tool: tool,
+            logger: logger,
+          );
+
+          await rapid.infrastructureSubInfrastructureAddServiceImplementation(
+            name: 'Fake',
+            subInfrastructureName: 'foo_bar',
+            serviceInterfaceName: 'Cool',
+          );
+
+          verifyInOrder([
+            () => tool.markAsNeedCodeGen(package: infrastructurePackage),
+          ]);
+        }),
+      );
+    });
   });
 
   group('infrastructureSubInfrastructureRemoveDataTransferObject', () {
@@ -217,7 +260,6 @@ void main() {
               infrastructurePackageBarrelFile.removeExport('src/cool_dto.dart'),
           () => dataTransferObject.delete(),
           () => progress.complete(),
-          () => logger.newLine(),
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           () => progress.complete(),
@@ -253,7 +295,7 @@ void main() {
       withMockEnv((manager) async {
         when(() => serviceImplementation.existsAny).thenReturn(true);
         final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
-        final rapid = getRapid(project: project, logger: logger);
+        final rapid = getRapid(project: project, tool: tool, logger: logger);
 
         await rapid.infrastructureSubInfrastructureRemoveServiceImplementation(
           name: 'Fake',
@@ -268,7 +310,13 @@ void main() {
               .removeExport('src/fake_cool_service.dart'),
           () => serviceImplementation.delete(),
           () => progress.complete(),
-          () => logger.newLine(),
+          () => logger
+              .progress('Running code generation in infrastructure_package'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'infrastructure_package_path',
+              ),
+          () => progress.complete(),
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           () => progress.complete(),
@@ -280,5 +328,35 @@ void main() {
         verifyNoMoreInteractions(progress);
       }),
     );
+
+    group('given command group is active', () {
+      setUp(() {
+        when(() => commandGroup.isActive).thenReturn(true);
+      });
+
+      test(
+        'marks infrastructure package as need code gen',
+        withMockEnv((_) async {
+          when(() => serviceImplementation.existsAny).thenReturn(true);
+          final logger = MockRapidLogger();
+          final rapid = getRapid(
+            project: project,
+            tool: tool,
+            logger: logger,
+          );
+
+          await rapid
+              .infrastructureSubInfrastructureRemoveServiceImplementation(
+            name: 'Fake',
+            subInfrastructureName: 'foo_bar',
+            serviceInterfaceName: 'Cool',
+          );
+
+          verifyInOrder([
+            () => tool.markAsNeedCodeGen(package: infrastructurePackage),
+          ]);
+        }),
+      );
+    });
   });
 }

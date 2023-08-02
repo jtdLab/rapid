@@ -1,20 +1,28 @@
-// import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-part '{{#snakeCase}}i_{{name}}_service{{/snakeCase}}.freezed.dart';
+part 'i_{{name.snakeCase()}}_service.freezed.dart';
 
-// TODO: description
 abstract class I{{name.pascalCase()}}Service {
-  // TODO: add service methods
+  MyMethodResult myMethod();
+
+  // TODO: add more service methods
 }
 
-// TODO: add failure unions for each service method like:
-/* /// Failure union that belongs to [I{{name.pascalCase()}}Service.myMethod].
-sealed class {{name.pascalCase()}}ServiceMyMethodFailure {}
+sealed class MyMethodResult {
+  const MyMethodResult();
+}
 
-final class {{name.pascalCase()}}ServiceMyMethodMyFailure extends {{name.pascalCase()}}ServiceMyMethodFailure {}
-*/
+@freezed
+class MyMethodSuccess extends MyMethodResult with _$MyMethodSuccess {
+  const MyMethodSuccess._();
+  const factory MyMethodSuccess(String value) = _MyMethodSuccess;
+}
 
-// TODO: add failures that are shared across multiple method specific failures.
-/*
-final class {{name.pascalCase()}}ServiceMySharedFailure implements {{name.pascalCase()}}ServiceMyMethodFailure {}
-*/
+@freezed
+sealed class MyMethodFailure extends MyMethodResult with _$MyMethodFailure {
+  const MyMethodFailure._();
+  const factory MyMethodFailure.foo() = MyMethodFailureFoo;
+  // TODO: add more failure cases here
+}
+
+// TODO: add more service method results here

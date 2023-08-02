@@ -28,8 +28,6 @@ mixin _InfrastructureMixin on _Rapid {
           },
         );
 
-        logger.newLine();
-
         await dartFormatFixTask();
 
         logger
@@ -76,7 +74,9 @@ mixin _InfrastructureMixin on _Rapid {
           },
         );
 
-        logger.newLine();
+        await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+          package: infrastructurePackage,
+        );
 
         await dartFormatFixTask();
 
@@ -119,8 +119,6 @@ mixin _InfrastructureMixin on _Rapid {
         },
       );
 
-      logger.newLine();
-
       await dartFormatFixTask();
 
       logger
@@ -160,7 +158,9 @@ mixin _InfrastructureMixin on _Rapid {
         },
       );
 
-      logger.newLine();
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        package: infrastructurePackage,
+      );
 
       await dartFormatFixTask();
 

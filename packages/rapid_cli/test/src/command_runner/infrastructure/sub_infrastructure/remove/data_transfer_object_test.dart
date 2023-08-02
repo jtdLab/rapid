@@ -28,15 +28,7 @@ void main() {
     test(
       'help',
       overridePrint((printLogs) async {
-        final infrastructurePackage =
-            FakeInfrastructurePackage(name: 'package_a');
-        final project = MockRapidProject(
-          appModule: MockAppModule(
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackages: [infrastructurePackage],
-            ),
-          ),
-        );
+        final project = setupProjectWithInfrastructurePackage('package_a');
         final commandRunner = getCommandRunner(project: project);
 
         await commandRunner.run([
@@ -65,15 +57,7 @@ void main() {
       test(
         'when entity is missing',
         overridePrint((printLogs) async {
-          final infrastructurePackage =
-              FakeInfrastructurePackage(name: 'package_a');
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [infrastructurePackage],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(
@@ -93,15 +77,7 @@ void main() {
       test(
         'when entity is not a valid dart class name',
         overridePrint((printLogs) async {
-          final infrastructurePackage =
-              FakeInfrastructurePackage(name: 'package_a');
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [infrastructurePackage],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(
@@ -123,12 +99,6 @@ void main() {
 
     test('completes', () async {
       final rapid = MockRapid();
-      when(
-        () => rapid.infrastructureSubInfrastructureRemoveDataTransferObject(
-          subInfrastructureName: any(named: 'subInfrastructureName'),
-          entityName: any(named: 'entityName'),
-        ),
-      ).thenAnswer((_) async {});
       final argResults = MockArgResults();
       when(() => argResults['entity']).thenReturn('Foo');
       final command =

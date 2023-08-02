@@ -57,12 +57,12 @@ mixin _ActivateMixin on _Rapid {
     required String description,
     required String orgName,
     required Language language,
-    bool cleanUp = true,
+    bool calledFromCreate = false,
   }) async {
     final platform = Platform.android;
     await _wrapActivatePlatform(
       platform,
-      cleanUp: cleanUp,
+      calledFromCreate: calledFromCreate,
       activatePlatform: () async {
         final rootPackage = project.appModule
             .platformDirectory(platform: platform)
@@ -86,12 +86,12 @@ mixin _ActivateMixin on _Rapid {
   Future<void> _activateIos({
     required String orgName,
     required Language language,
-    bool cleanUp = true,
+    bool calledFromCreate = false,
   }) async {
     final platform = Platform.ios;
     await _wrapActivatePlatform(
       platform,
-      cleanUp: cleanUp,
+      calledFromCreate: calledFromCreate,
       activatePlatform: () async {
         final rootPackage = project.appModule
             .platformDirectory(platform: platform)
@@ -114,12 +114,12 @@ mixin _ActivateMixin on _Rapid {
   Future<void> _activateLinux({
     required String orgName,
     required Language language,
-    bool cleanUp = true,
+    bool calledFromCreate = false,
   }) async {
     final platform = Platform.linux;
     await _wrapActivatePlatform(
       platform,
-      cleanUp: cleanUp,
+      calledFromCreate: calledFromCreate,
       activatePlatform: () async {
         final rootPackage = project.appModule
             .platformDirectory(platform: platform)
@@ -141,12 +141,12 @@ mixin _ActivateMixin on _Rapid {
   Future<void> _activateMacos({
     required String orgName,
     required Language language,
-    bool cleanUp = true,
+    bool calledFromCreate = false,
   }) async {
     final platform = Platform.macos;
     return _wrapActivatePlatform(
       platform,
-      cleanUp: cleanUp,
+      calledFromCreate: calledFromCreate,
       activatePlatform: () async {
         final rootPackage = project.appModule
             .platformDirectory(platform: platform)
@@ -166,12 +166,12 @@ mixin _ActivateMixin on _Rapid {
   Future<void> _activateWeb({
     required String description,
     required Language language,
-    bool cleanUp = true,
+    bool calledFromCreate = false,
   }) async {
     final platform = Platform.web;
     return _wrapActivatePlatform(
       platform,
-      cleanUp: cleanUp,
+      calledFromCreate: calledFromCreate,
       activatePlatform: () async {
         final rootPackage = project.appModule
             .platformDirectory(platform: platform)
@@ -193,12 +193,12 @@ mixin _ActivateMixin on _Rapid {
   Future<void> _activateWindows({
     required String orgName,
     required Language language,
-    bool cleanUp = true,
+    bool calledFromCreate = false,
   }) async {
     final platform = Platform.windows;
     return _wrapActivatePlatform(
       platform,
-      cleanUp: cleanUp,
+      calledFromCreate: calledFromCreate,
       activatePlatform: () async {
         final rootPackage = project.appModule
             .platformDirectory(platform: platform)
@@ -221,12 +221,12 @@ mixin _ActivateMixin on _Rapid {
     required String description,
     required String orgName,
     required Language language,
-    bool cleanUp = true,
+    bool calledFromCreate = false,
   }) async {
     final platform = Platform.mobile;
     return _wrapActivatePlatform(
       platform,
-      cleanUp: cleanUp,
+      calledFromCreate: calledFromCreate,
       activatePlatform: () async {
         final rootPackage = project.appModule
             .platformDirectory(platform: platform)
@@ -256,22 +256,28 @@ mixin _ActivateMixin on _Rapid {
   ///  was issued from the create command.
   Future<void> _wrapActivatePlatform(
     Platform platform, {
-    required bool cleanUp,
+    required bool calledFromCreate,
     required Future<void> Function() activatePlatform,
   }) async {
     if (project.platformIsActivated(platform)) {
       throw PlatformAlreadyActivatedException._(platform);
     }
 
-    logger.newLine();
+    if (!calledFromCreate) {
+      logger.newLine();
+    }
 
     await activatePlatform();
 
-    await dartFormatFixTask();
+    if (!calledFromCreate) {
+      logger.newLine();
 
-    logger
-      ..newLine()
-      ..commandSuccess('Activated ${platform.prettyName}!');
+      await dartFormatFixTask();
+
+      logger
+        ..newLine()
+        ..commandSuccess('Activated ${platform.prettyName}!');
+    }
   }
 
   Future<void> _activatePlatform(
@@ -334,7 +340,9 @@ mixin _ActivateMixin on _Rapid {
     );
 
     if (infrastructureContainsNonDefaultPackage) {
-      await codeGenTask(package: rootPackage);
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        package: rootPackage,
+      );
     }
 
     await flutterGenl10nTask(package: localizationPackage);
@@ -343,23 +351,21 @@ mixin _ActivateMixin on _Rapid {
         in flutterConfigEnablePlatformTasks) {
       await flutterConfigEnablePlatform();
     }
-
-    logger.newLine();
   }
 
   Future<void> _flutterConfigEnablePlatformTask({
     required Platform platform,
   }) async {
     final commandString = switch (platform) {
-      Platform.android => '--enable-android',
-      Platform.ios => '--enable-ios',
-      Platform.linux => '--enable-linux-desktop',
-      Platform.macos => '--enable-macos-desktop',
-      Platform.web => '--enable-web',
-      _ => '--enable-windows-desktop',
+      Platform.android => 'flutter config --enable-android',
+      Platform.ios => 'flutter config --enable-ios',
+      Platform.linux => 'flutter config --enable-linux-desktop',
+      Platform.macos => 'flutter config --enable-macos-desktop',
+      Platform.web => 'flutter config --enable-web',
+      _ => 'flutter config --enable-windows-desktop',
     };
     return task(
-      'Running "$commandString" in project',
+      'Running "$commandString"',
       () async => flutterConfigEnable(platform: platform, project: project),
     );
   }

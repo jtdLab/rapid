@@ -28,15 +28,7 @@ void main() {
     test(
       'help',
       overridePrint((printLogs) async {
-        final infrastructurePackage =
-            FakeInfrastructurePackage(name: 'package_a');
-        final project = MockRapidProject(
-          appModule: MockAppModule(
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackages: [infrastructurePackage],
-            ),
-          ),
-        );
+        final project = setupProjectWithInfrastructurePackage('package_a');
         final commandRunner = getCommandRunner(project: project);
 
         await commandRunner.run([
@@ -65,15 +57,7 @@ void main() {
       test(
         'when service is missing',
         overridePrint((printLogs) async {
-          final infrastructurePackage =
-              FakeInfrastructurePackage(name: 'package_a');
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [infrastructurePackage],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(
@@ -94,15 +78,7 @@ void main() {
       test(
         'when service is not a valid dart class name',
         overridePrint((printLogs) async {
-          final infrastructurePackage =
-              FakeInfrastructurePackage(name: 'package_a');
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [infrastructurePackage],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(
@@ -125,15 +101,7 @@ void main() {
       test(
         'when name is missing',
         overridePrint((printLogs) async {
-          final infrastructurePackage =
-              FakeInfrastructurePackage(name: 'package_a');
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [infrastructurePackage],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(
@@ -151,15 +119,7 @@ void main() {
       test(
         'when multiple names are provided',
         overridePrint((printLogs) async {
-          final infrastructurePackage =
-              FakeInfrastructurePackage(name: 'package_a');
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [infrastructurePackage],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(
@@ -179,15 +139,7 @@ void main() {
       test(
         'when name is not a valid dart class name',
         overridePrint((printLogs) async {
-          final infrastructurePackage =
-              FakeInfrastructurePackage(name: 'package_a');
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              infrastructureDirectory: MockInfrastructureDirectory(
-                infrastructurePackages: [infrastructurePackage],
-              ),
-            ),
-          );
+          final project = setupProjectWithInfrastructurePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           expect(
@@ -208,13 +160,6 @@ void main() {
 
     test('completes', () async {
       final rapid = MockRapid();
-      when(
-        () => rapid.infrastructureSubInfrastructureAddServiceImplementation(
-          subInfrastructureName: any(named: 'subInfrastructureName'),
-          serviceInterfaceName: any(named: 'serviceInterfaceName'),
-          name: any(named: 'name'),
-        ),
-      ).thenAnswer((_) async {});
       final argResults = MockArgResults();
       when(() => argResults['service']).thenReturn('Foo');
       when(() => argResults.rest).thenReturn(['My']);

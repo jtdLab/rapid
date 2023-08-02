@@ -41,18 +41,31 @@ class MockCubit extends Mock implements Cubit {
 class MockDartPackage extends Mock implements DartPackage {
   MockDartPackage({
     String? packageName,
+    String? path,
     PubspecYamlFile? pubSpec,
   }) {
-    packageName ??= 'package_name';
+    packageName ??= 'dart_package';
+    path ??= 'dart_package_path';
     pubSpec ??= MockPubspecYamlFile();
 
     when(() => this.packageName).thenReturn(packageName);
+    when(() => this.path).thenReturn(path);
     when(() => pubSpecFile).thenReturn(pubSpec);
   }
 }
 
 class MockDartFile extends Mock implements DartFile {
   MockDartFile({String? path, bool? existsSync}) {
+    path ??= 'path';
+    existsSync ??= false;
+
+    when(() => this.path).thenReturn(path);
+    when(() => this.existsSync()).thenReturn(existsSync);
+  }
+}
+
+class MockDirectory extends Mock implements Directory {
+  MockDirectory({String? path, bool? existsSync}) {
     path ??= 'path';
     existsSync ??= false;
 
@@ -92,7 +105,13 @@ abstract class _RapidProjectBuilder {
   RapidProject call({required RapidProjectConfig config});
 }
 
-class MockRapidProjectBuilder extends Mock implements _RapidProjectBuilder {}
+class MockRapidProjectBuilder extends Mock implements _RapidProjectBuilder {
+  MockRapidProjectBuilder({RapidProject? project}) {
+    project ??= MockRapidProject();
+
+    when(() => this(config: any(named: 'config'))).thenReturn(project);
+  }
+}
 
 class MockRapidProjectConfig extends Mock implements RapidProjectConfig {}
 
@@ -142,7 +161,272 @@ class MockGeneratorHooks extends Mock implements GeneratorHooks {
   }
 }
 
-class MockRapid extends Mock implements Rapid {}
+class MockRapid extends Mock implements Rapid {
+  MockRapid() {
+    when(
+      () => activateAndroid(
+        description: any(named: 'description'),
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => activateIos(
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => activateLinux(
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => activateMacos(
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => activateMobile(
+        description: any(named: 'description'),
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => activateWeb(
+        description: any(named: 'description'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => activateWindows(
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => begin()).thenAnswer((_) async {});
+    when(
+      () => create(
+        projectName: any(named: 'projectName'),
+        outputDir: any(named: 'outputDir'),
+        description: any(named: 'description'),
+        orgName: any(named: 'orgName'),
+        language: any(named: 'language'),
+        platforms: any(named: 'platforms'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => deactivatePlatform(any())).thenAnswer((_) async {});
+    when(
+      () => domainAddSubDomain(name: any(named: 'name')),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainRemoveSubDomain(name: any(named: 'name')),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainSubDomainAddEntity(
+        name: any(named: 'name'),
+        subDomainName: any(named: 'subDomainName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainSubDomainAddServiceInterface(
+        name: any(named: 'name'),
+        subDomainName: any(named: 'subDomainName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainSubDomainAddValueObject(
+        name: any(named: 'name'),
+        subDomainName: any(named: 'subDomainName'),
+        type: any(named: 'type'),
+        generics: any(named: 'generics'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainSubDomainRemoveEntity(
+        name: any(named: 'name'),
+        subDomainName: any(named: 'subDomainName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainSubDomainRemoveServiceInterface(
+        name: any(named: 'name'),
+        subDomainName: any(named: 'subDomainName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => domainSubDomainRemoveValueObject(
+        name: any(named: 'name'),
+        subDomainName: any(named: 'subDomainName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(() => end()).thenAnswer((_) async {});
+    when(
+      () => infrastructureSubInfrastructureAddDataTransferObject(
+        subInfrastructureName: any(named: 'subInfrastructureName'),
+        entityName: any(named: 'entityName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => infrastructureSubInfrastructureAddServiceImplementation(
+        subInfrastructureName: any(named: 'subInfrastructureName'),
+        serviceInterfaceName: any(named: 'serviceInterfaceName'),
+        name: any(named: 'name'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => infrastructureSubInfrastructureRemoveDataTransferObject(
+        subInfrastructureName: any(named: 'subInfrastructureName'),
+        entityName: any(named: 'entityName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => infrastructureSubInfrastructureRemoveServiceImplementation(
+        subInfrastructureName: any(named: 'subInfrastructureName'),
+        serviceInterfaceName: any(named: 'serviceInterfaceName'),
+        name: any(named: 'name'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformAddFeatureFlow(
+        any(),
+        name: any(named: 'name'),
+        description: any(named: 'description'),
+        navigator: any(named: 'navigator'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformAddFeaturePage(
+        any(),
+        name: any(named: 'name'),
+        description: any(named: 'description'),
+        navigator: any(named: 'navigator'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformAddFeatureTabFlow(
+        any(),
+        name: any(named: 'name'),
+        description: any(named: 'description'),
+        navigator: any(named: 'navigator'),
+        subFeatures: any(named: 'subFeatures'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformAddFeatureWidget(
+        any(),
+        name: any(named: 'name'),
+        description: any(named: 'description'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformAddLanguage(
+        any(),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformAddNavigator(
+        any(),
+        featureName: any(named: 'featureName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformFeatureAddBloc(
+        any(),
+        name: any(named: 'name'),
+        featureName: any(named: 'featureName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformFeatureAddCubit(
+        any(),
+        name: any(named: 'name'),
+        featureName: any(named: 'featureName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformFeatureRemoveBloc(
+        any(),
+        name: any(named: 'name'),
+        featureName: any(named: 'featureName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformFeatureRemoveCubit(
+        any(),
+        name: any(named: 'name'),
+        featureName: any(named: 'featureName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformSetDefaultLanguage(
+        any(),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformRemoveFeature(
+        any(),
+        name: any(named: 'name'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformRemoveLanguage(
+        any(),
+        language: any(named: 'language'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => platformRemoveNavigator(
+        any(),
+        featureName: any(named: 'featureName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => pubAdd(
+        packageName: any(named: 'packageName'),
+        packages: any(named: 'packages'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => pubGet(
+        packageName: any(named: 'packageName'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => pubRemove(
+        packageName: any(named: 'packageName'),
+        packages: any(named: 'packages'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => uiAddWidget(
+        name: any(named: 'name'),
+        theme: any(named: 'theme'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => uiPlatformAddWidget(
+        any(),
+        name: any(named: 'name'),
+        theme: any(named: 'theme'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => uiPlatformRemoveWidget(
+        any(),
+        name: any(named: 'name'),
+      ),
+    ).thenAnswer((_) async {});
+    when(
+      () => uiRemoveWidget(name: any(named: 'name')),
+    ).thenAnswer((_) async {});
+  }
+}
 
 class MockRapidProject extends Mock implements RapidProject {
   MockRapidProject({
@@ -189,8 +473,8 @@ class MockRootPackage extends Mock implements RootPackage {
     bool? existsSync,
     PubspecYamlFile? pubSpec,
   }) {
-    packageName ??= 'macos_root_package';
-    path ??= 'macos_root_package_path';
+    packageName ??= 'root_package';
+    path ??= 'root_package_path';
     existsSync ??= false;
     pubSpec ??= MockPubspecYamlFile();
 
@@ -364,7 +648,7 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
     PubspecYamlFile? pubSpec,
     DartFile? barrelFile,
   }) {
-    packageName ??= 'domain_package';
+    packageName ??= 'infrastructure_package';
     path ??= 'infrastructure_package_path';
     dataTransferObject ??=
         ({required String entityName}) => MockDataTransferObject();
@@ -471,6 +755,10 @@ class MockIosRootPackage extends Mock implements IosRootPackage {
         language: any(named: 'language'),
       ),
     ).thenAnswer((_) async {});
+    when(() => registerFeaturePackage(any())).thenAnswer((_) async {});
+    when(() => registerInfrastructurePackage(any())).thenAnswer((_) async {});
+    when(() => unregisterFeaturePackage(any())).thenAnswer((_) async {});
+    when(() => unregisterInfrastructurePackage(any())).thenAnswer((_) async {});
   }
 }
 
@@ -521,7 +809,7 @@ class MockNoneIosRootPackage extends Mock implements NoneIosRootPackage {
     bool? existsSync,
   }) {
     packageName ??= 'none_ios_root_package';
-    path ??= 'none_ios_root_path';
+    path ??= 'none_ios_root_package_path';
     nativeDirectory ??= MockNoneIosNativeDirectory();
     existsSync ??= false;
 
@@ -597,7 +885,7 @@ class MockPlatformLocalizationPackage extends Mock
     bool? existsSync,
   }) {
     packageName ??= 'platform_localization_package';
-    path ??= 'platform_localization_path';
+    path ??= 'platform_localization_package_path';
     languageArbFile ??= ({required Language language}) => MockArbFile();
     languageLocalizationsFile ??=
         ({required Language language}) => MockDartFile();
@@ -632,7 +920,7 @@ class MockPlatformNavigationPackage extends Mock
     bool? existsSync,
   }) {
     packageName ??= 'platform_navigation_package';
-    path ??= 'platform_navigation_path';
+    path ??= 'platform_navigation_package_path';
     navigatorInterface ??= ({required String name}) => MockNavigatorInterface();
     barrelFile ??= MockDartFile();
     existsSync ??= false;
@@ -698,7 +986,7 @@ class MockPlatformAppFeaturePackage extends Mock
     bool? existsSync,
   }) {
     packageName ??= 'platform_app_feature_package';
-    path ??= 'platform_app_feature_path';
+    path ??= 'platform_app_feature_package_path';
     existsSync ??= false;
 
     when(() => this.packageName).thenReturn(packageName);
@@ -719,7 +1007,7 @@ class MockPlatformPageFeaturePackage extends Mock
   }) {
     name ??= 'name';
     packageName ??= 'platform_page_feature_package';
-    path ??= 'platform_page_feature_path';
+    path ??= 'platform_page_feature_package_path';
     navigatorImplementation ??= MockNavigatorImplementation();
     existsSync ??= false;
 
@@ -899,9 +1187,59 @@ class MockPlatformUiPackage extends Mock implements PlatformUiPackage {
   }
 }
 
+abstract class PlatformFeaturePackageBuilder {
+  T call<T extends PlatformFeaturePackage>({required String name});
+}
+
+class MockPlatformFeaturePackageBuilder extends Mock
+    implements PlatformFeaturePackageBuilder {}
+
+abstract class BlocBuilder {
+  Bloc call({required String name});
+}
+
+class MockBlocBuilder extends Mock implements BlocBuilder {}
+
+abstract class CubitBuilder {
+  Cubit call({required String name});
+}
+
+class MockCubitBuilder extends Mock implements CubitBuilder {}
+
+abstract class NavigatorInterfaceBuilder {
+  NavigatorInterface call({required String name});
+}
+
+class MockNavigatorInterfaceBuilder extends Mock
+    implements NavigatorInterfaceBuilder {}
+
+abstract class WidgetBuilder {
+  Widget call({required String name});
+}
+
+class MockWidgetBuilder extends Mock implements WidgetBuilder {
+  MockWidgetBuilder({Widget? widget}) {
+    widget ??= MockWidget();
+
+    when(() => call(name: any(named: 'name'))).thenReturn(widget);
+  }
+}
+
 class MockWidget extends Mock implements Widget {
   MockWidget() {
     when(() => generate()).thenAnswer((_) async {});
+  }
+}
+
+abstract class ThemedWidgetBuilder {
+  ThemedWidget call({required String name});
+}
+
+class MockThemedWidgetBuilder extends Mock implements ThemedWidgetBuilder {
+  MockThemedWidgetBuilder({ThemedWidget? themedWidget}) {
+    themedWidget ??= MockThemedWidget();
+
+    when(() => call(name: any(named: 'name'))).thenReturn(themedWidget);
   }
 }
 
@@ -996,6 +1334,21 @@ class FakeDartPackage extends Fake implements DartPackage {
   late final PubspecYamlFile pubSpecFile;
 }
 
+class FakeDartFile extends Fake implements DartFile {
+  FakeDartFile({String? path, bool? existsSync}) {
+    this.path = path ?? 'path/to/file.dart';
+    _existsSync = existsSync ?? false;
+  }
+
+  @override
+  late final String path;
+
+  @override
+  bool existsSync() => _existsSync;
+
+  late final bool _existsSync;
+}
+
 class FakeDirectoryGeneratorTarget extends Fake
     implements DirectoryGeneratorTarget {}
 
@@ -1065,3 +1418,116 @@ class FakeRootPackage extends Fake implements RootPackage {
   @override
   late final String path;
 }
+
+class FakePlatformPageFeaturePackage extends Fake
+    implements PlatformPageFeaturePackage {
+  FakePlatformPageFeaturePackage({String? name}) {
+    this.name = name ?? 'platform_page_feature_package';
+  }
+
+  @override
+  late final String name;
+}
+
+///
+/// class FakeRootPackage extends Fake implements RootPackage {
+///   FakeRootPackage({
+///     String? packageName,
+///     String? path,
+///   })  : packageName = packageName ?? 'root_package_name',
+///         path = path ?? 'root_package_path';
+///
+///   @override
+///   final String packageName;
+///
+///   @override
+///   final String path;
+///
+///   @override
+///   Future<void> generate() async {}
+/// }
+///
+/// class FakeDiPackage extends Fake implements DiPackage {
+///   FakeDiPackage({
+///     String? packageName,
+///     String? path,
+///   })  : packageName = packageName ?? 'di_package_name',
+///         path = path ?? 'di_package_path';
+///
+///   @override
+///   final String packageName;
+///
+///   @override
+///   final String path;
+///
+///   @override
+///   Future<void> generate() async {}
+/// }
+///
+/// class FakeDomainPackage extends Fake implements DomainPackage {
+///   FakeDomainPackage({
+///     String? packageName,
+///     String? path,
+///   })  : packageName = packageName ?? 'domain_package_name',
+///         path = path ?? 'domain_package_path';
+///
+///   @override
+///   final String packageName;
+///
+///   @override
+///   final String path;
+///
+///   @override
+///   Future<void> generate() async {}
+/// }
+///
+/// class FakeInfrastructurePackage extends Fake implements InfrastructurePackage {
+///   FakeInfrastructurePackage({
+///     String? packageName,
+///     String? path,
+///   })  : packageName = packageName ?? 'infrastructure_package_name',
+///         path = path ?? 'infrastructure_package_path';
+///
+///   @override
+///   final String packageName;
+///
+///   @override
+///   final String path;
+///
+///   @override
+///   Future<void> generate() async {}
+/// }
+///
+/// class FakeLoggingPackage extends Fake implements LoggingPackage {
+///   FakeLoggingPackage({
+///     String? packageName,
+///     String? path,
+///   })  : packageName = packageName ?? 'logging_package_name',
+///         path = path ?? 'logging_package_path';
+///
+///   @override
+///   final String packageName;
+///
+///   @override
+///   final String path;
+///
+///   @override
+///   Future<void> generate() async {}
+/// }
+///
+/// class FakeUiPackage extends Fake implements UiPackage {
+///   FakeUiPackage({
+///     String? packageName,
+///     String? path,
+///   })  : packageName = packageName ?? 'ui_package_name',
+///         path = path ?? 'ui_package_path';
+///
+///   @override
+///   final String packageName;
+///
+///   @override
+///   final String path;
+///
+///   @override
+///   Future<void> generate() async {}
+/// }

@@ -43,8 +43,6 @@ void main() {
 
         test('completes', () async {
           final rapid = MockRapid();
-          when(() => rapid.deactivatePlatform(platform))
-              .thenAnswer((_) async {});
           final command = DeactivatePlatformCommand(platform, null)
             ..rapidOverrides = rapid;
 

@@ -89,12 +89,6 @@ void main() {
 
       test('completes', () async {
         final rapid = MockRapid();
-        when(
-          () => rapid.platformRemoveFeature(
-            any(),
-            name: any(named: 'name'),
-          ),
-        ).thenAnswer((_) async {});
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['package_a']);
         final command = PlatformRemoveFeatureCommand(platform, null)

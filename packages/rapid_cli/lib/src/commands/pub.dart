@@ -49,7 +49,10 @@ mixin _PubMixin on _Rapid {
 
     final result = await flutterPubGet(package: package, dryRun: true);
     if (result.wouldChangeDependencies) {
-      await melosBootstrapTask(scope: project.dependentPackages(package));
+      await flutterPubGetTask(package: package);
+      await melosBootstrapTask(
+        scope: project.dependentPackages(package),
+      );
       logger.newLine();
     }
 

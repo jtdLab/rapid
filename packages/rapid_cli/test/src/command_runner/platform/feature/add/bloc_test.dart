@@ -32,17 +32,7 @@ void main() {
       test(
         'help',
         overridePrint((printLogs) async {
-          final featurePackage = FakePlatformFeaturePackage(name: 'package_a');
-          final project = MockRapidProject(
-            appModule: MockAppModule(
-              platformDirectory: ({required Platform platform}) =>
-                  MockPlatformDirectory(
-                featuresDirectory: MockPlatformFeaturesDirectory(
-                  featurePackages: [featurePackage],
-                ),
-              ),
-            ),
-          );
+          final project = setupProjectWithPlatformFeaturePackage('package_a');
           final commandRunner = getCommandRunner(project: project);
 
           await commandRunner
@@ -67,18 +57,7 @@ void main() {
         test(
           'when name is missing',
           overridePrint((printLogs) async {
-            final featurePackage =
-                FakePlatformFeaturePackage(name: 'package_a');
-            final project = MockRapidProject(
-              appModule: MockAppModule(
-                platformDirectory: ({required Platform platform}) =>
-                    MockPlatformDirectory(
-                  featuresDirectory: MockPlatformFeaturesDirectory(
-                    featurePackages: [featurePackage],
-                  ),
-                ),
-              ),
-            );
+            final project = setupProjectWithPlatformFeaturePackage('package_a');
             final commandRunner = getCommandRunner(project: project);
 
             expect(
@@ -98,18 +77,7 @@ void main() {
         test(
           'when multiple names are provided',
           overridePrint((printLogs) async {
-            final featurePackage =
-                FakePlatformFeaturePackage(name: 'package_a');
-            final project = MockRapidProject(
-              appModule: MockAppModule(
-                platformDirectory: ({required Platform platform}) =>
-                    MockPlatformDirectory(
-                  featuresDirectory: MockPlatformFeaturesDirectory(
-                    featurePackages: [featurePackage],
-                  ),
-                ),
-              ),
-            );
+            final project = setupProjectWithPlatformFeaturePackage('package_a');
             final commandRunner = getCommandRunner(project: project);
 
             expect(
@@ -123,18 +91,7 @@ void main() {
         test(
           'when name is not a valid dart class name',
           overridePrint((printLogs) async {
-            final featurePackage =
-                FakePlatformFeaturePackage(name: 'package_a');
-            final project = MockRapidProject(
-              appModule: MockAppModule(
-                platformDirectory: ({required Platform platform}) =>
-                    MockPlatformDirectory(
-                  featuresDirectory: MockPlatformFeaturesDirectory(
-                    featurePackages: [featurePackage],
-                  ),
-                ),
-              ),
-            );
+            final project = setupProjectWithPlatformFeaturePackage('package_a');
             final commandRunner = getCommandRunner(project: project);
 
             expect(
@@ -150,13 +107,6 @@ void main() {
 
       test('completes', () async {
         final rapid = MockRapid();
-        when(
-          () => rapid.platformFeatureAddBloc(
-            any(),
-            name: any(named: 'name'),
-            featureName: any(named: 'featureName'),
-          ),
-        ).thenAnswer((_) async {});
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['Foo']);
         final command =

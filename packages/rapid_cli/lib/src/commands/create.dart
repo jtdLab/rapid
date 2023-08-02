@@ -9,14 +9,14 @@ mixin _CreateMixin on _ActivateMixin {
     required Language language,
     required Set<Platform> platforms,
   }) async {
-    outputDir = Directory(outputDir).absolute.path;
-    if (dirExists(outputDir) && !dirIsEmpty(outputDir)) {
-      throw OutputDirNotEmptyException._(outputDir);
+    final out = Directory(outputDir).absolute;
+    if (out.existsSync() && !out.isEmpty()) {
+      throw OutputDirNotEmptyException._(out.path);
     }
 
     project = projectBuilder(
       config: RapidProjectConfig(
-        path: outputDir,
+        path: out.path,
         name: projectName,
       ),
     );
@@ -63,47 +63,49 @@ mixin _CreateMixin on _ActivateMixin {
             description: description,
             orgName: orgName,
             language: language,
-            cleanUp: false,
+            calledFromCreate: true,
           );
         case Platform.ios:
           await _activateIos(
             orgName: orgName,
             language: language,
-            cleanUp: false,
+            calledFromCreate: true,
           );
         case Platform.linux:
           await _activateLinux(
             orgName: orgName,
             language: language,
-            cleanUp: false,
+            calledFromCreate: true,
           );
         case Platform.macos:
           await _activateMacos(
             orgName: orgName,
             language: language,
-            cleanUp: false,
+            calledFromCreate: true,
           );
         case Platform.web:
           await _activateWeb(
             description: description,
             language: language,
-            cleanUp: false,
+            calledFromCreate: true,
           );
         case Platform.windows:
           await _activateWindows(
             orgName: orgName,
             language: language,
-            cleanUp: false,
+            calledFromCreate: true,
           );
         case Platform.mobile:
           await _activateMobile(
             description: description,
             orgName: orgName,
             language: language,
-            cleanUp: false,
+            calledFromCreate: true,
           );
       }
     }
+
+    logger.newLine();
 
     await dartFormatFixTask();
 

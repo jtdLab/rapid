@@ -1,38 +1,35 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:path/path.dart' as p;
 
 import 'io.dart';
-import 'project/project.dart';
 
 class RapidTool {
   RapidTool({
-    required this.project,
+    required this.path,
   });
 
-  final RapidProject project;
+  final String path;
 
-  String get _dotRapidTool => p.join(project.path, '.rapid_tool');
+  String get _dotRapidTool => p.join(path, '.rapid_tool');
 
   File get _groupJson => File(p.join(_dotRapidTool, 'group.json'));
 
   CommandGroup loadGroup() {
     if (!_groupJson.existsSync()) {
-      return CommandGroup._(
-        project: project,
+      return CommandGroup(
         isActive: false,
-        packagesToBootstrap: [],
-        packagesToCodeGen: [],
+        packagesToBootstrap: {},
+        packagesToCodeGen: {},
       );
     }
 
-    return CommandGroup.fromJson(
-      project,
-      jsonDecode(_groupJson.readAsStringSync()),
-    );
+    final json = jsonDecode(_groupJson.readAsStringSync());
+    return CommandGroup.fromJson(json);
   }
 
-  void _writeGroup(CommandGroup group) {
+  void _saveGroup(CommandGroup group) {
     if (!_groupJson.existsSync()) {
       _groupJson.createSync(recursive: true);
     }
@@ -41,45 +38,32 @@ class RapidTool {
   }
 
   void activateCommandGroup() {
-    _writeGroup(
-      CommandGroup._(
-        project: project,
+    _saveGroup(
+      CommandGroup(
         isActive: true,
-        packagesToBootstrap: [],
-        packagesToCodeGen: [],
+        packagesToBootstrap: {},
+        packagesToCodeGen: {},
       ),
     );
   }
 
   void deactivateCommandGroup() {
     final group = loadGroup();
-
-    _writeGroup(
-      CommandGroup._(
-        project: project,
-        isActive: false,
-        packagesToBootstrap: group.packagesToBootstrap,
-        packagesToCodeGen: group.packagesToCodeGen,
-      ),
-    );
+    _saveGroup(group.copyWith(isActive: false));
   }
 
   /// Marks [packages] so `melos bootstrap` is run on them when the command group is ended.
   void markAsNeedBootstrap({required List<DartPackage> packages}) {
     final group = loadGroup();
-    final packagesToBootstrap = <DartPackage>[];
-    for (final package in [...group.packagesToBootstrap, ...packages]) {
-      if (!packagesToBootstrap.any((e) => e.path == package.path)) {
-        packagesToBootstrap.add(package);
-      }
+    final packagesToBootstrap = group.packagesToBootstrap;
+
+    for (final package in packages) {
+      packagesToBootstrap.add(package.packageName);
     }
 
-    _writeGroup(
-      CommandGroup._(
-        project: project,
-        isActive: group.isActive,
-        packagesToBootstrap: packagesToBootstrap,
-        packagesToCodeGen: group.packagesToCodeGen,
+    _saveGroup(
+      group.copyWith(
+        packagesToBootstrap: packagesToBootstrap..sorted().toSet(),
       ),
     );
   }
@@ -89,64 +73,68 @@ class RapidTool {
   void markAsNeedCodeGen({required DartPackage package}) {
     final group = loadGroup();
 
-    final packagesToCodeGen = <DartPackage>[];
-    for (final package in [...group.packagesToCodeGen, package]) {
-      if (!packagesToCodeGen.any((e) => e.path == package.path)) {
-        packagesToCodeGen.add(package);
-      }
-    }
+    final packagesToCodeGen = group.packagesToCodeGen;
+    packagesToCodeGen.add(package.packageName);
 
-    _writeGroup(
-      CommandGroup._(
-        project: project,
-        isActive: group.isActive,
-        packagesToBootstrap: group.packagesToBootstrap,
-        packagesToCodeGen: packagesToCodeGen,
+    _saveGroup(
+      group.copyWith(
+        packagesToCodeGen: packagesToCodeGen..sorted().toSet(),
       ),
     );
   }
 }
 
 class CommandGroup {
-  final RapidProject project;
   final bool isActive;
-  final List<DartPackage> packagesToBootstrap;
-  final List<DartPackage> packagesToCodeGen;
+  final Set<String> packagesToBootstrap;
+  final Set<String> packagesToCodeGen;
 
-  CommandGroup._({
-    required this.project,
+  CommandGroup({
     required this.isActive,
     required this.packagesToBootstrap,
     required this.packagesToCodeGen,
   });
 
-  factory CommandGroup.fromJson(
-    RapidProject project,
-    Map<String, dynamic> json,
-  ) {
-    return CommandGroup._(
-      project: project,
+  factory CommandGroup.fromJson(Map<String, dynamic> json) {
+    return CommandGroup(
       isActive: json['isActive'],
-      packagesToBootstrap: project
-          .packages()
-          .where(
-            (e) => json['packagesToBootstrap'].contains(e.packageName),
-          )
-          .toList(),
-      packagesToCodeGen: project
-          .packages()
-          .where(
-            (e) => json['packagesToCodeGen'].contains(e.packageName),
-          )
-          .toList(),
+      packagesToBootstrap:
+          (json['packagesToBootstrap'] as List<dynamic>).cast<String>().toSet(),
+      packagesToCodeGen:
+          (json['packagesToCodeGen'] as List<dynamic>).cast<String>().toSet(),
+    );
+  }
+
+  CommandGroup copyWith({
+    bool? isActive,
+    Set<String>? packagesToBootstrap,
+    Set<String>? packagesToCodeGen,
+  }) {
+    return CommandGroup(
+      isActive: isActive ?? this.isActive,
+      packagesToBootstrap: packagesToBootstrap ?? this.packagesToBootstrap,
+      packagesToCodeGen: packagesToCodeGen ?? this.packagesToCodeGen,
     );
   }
 
   Map<String, dynamic> toJson() => {
         'isActive': isActive,
-        'packagesToBootstrap':
-            packagesToBootstrap.map((e) => e.packageName).toList(),
-        'packagesToCodeGen':
-            packagesToCodeGen.map((e) => e.packageName).toList(),
+        'packagesToBootstrap': packagesToBootstrap.toList(),
+        'packagesToCodeGen': packagesToCodeGen.toList(),
       };
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    final setEquals = const DeepCollectionEquality().equals;
+
+    return other is CommandGroup &&
+        other.isActive == isActive &&
+        setEquals(other.packagesToBootstrap, packagesToBootstrap) &&
+        setEquals(other.packagesToCodeGen, packagesToCodeGen);
+  }
+
+  @override
+  int get hashCode => Object.hashAllUnordered(
+      [isActive, ...packagesToBootstrap, ...packagesToCodeGen]);
 }

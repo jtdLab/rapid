@@ -27,7 +27,7 @@ Future<void> melosBootstrap({
   if (result.exitCode != 0) {
     throw CliException._(
       'Failed to bootstrap.',
-      directory: project.rootPackage,
+      directory: project.rootPackage, // TODO good?
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -81,16 +81,16 @@ Future<void> flutterGenl10n({required DartPackage package}) async {
   }
 }
 
-Future<void> dartFormatFix({required DartPackage package}) async {
+Future<void> dartFormatFix({required RapidProject project}) async {
   final result = await runCommand(
     ['dart', 'format', '.', '--fix'],
-    workingDirectory: package.path,
+    workingDirectory: project.path,
   );
 
   if (result.exitCode != 0) {
     throw CliException._(
       'Failed to format.',
-      directory: package,
+      directory: project.rootPackage, // TODO good?
       stdout: result.stdout,
       stderr: result.stderr,
     );

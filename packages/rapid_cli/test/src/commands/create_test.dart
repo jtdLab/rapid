@@ -2,28 +2,415 @@ import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/commands/runner.dart';
 import 'package:rapid_cli/src/io.dart' hide Platform;
+import 'package:rapid_cli/src/logging.dart';
+import 'package:rapid_cli/src/process.dart';
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/project_config.dart';
+import 'package:rapid_cli/src/tool.dart';
 import 'package:test/test.dart';
 
-import '../invocations.dart';
+import '../common.dart';
 import '../mock_env.dart';
 import '../mock_fs.dart';
 import '../mocks.dart';
+import '../utils.dart';
 
-// TODO test loggs better and verify nothing ran on exception
+// TODO maybe share some with activate tests
+
+typedef _ProjectSetup<T extends PlatformRootPackage> = ({
+  RootPackage rootPackage,
+  DiPackage diPackage,
+  DomainPackage defaultDomainPackage,
+  InfrastructurePackage defaultInfrastructurePackage,
+  LoggingPackage loggingPackage,
+  UiPackage uiPackage,
+  RapidProject project,
+});
+
+typedef _ProjectWithPlatformSetup<T extends PlatformRootPackage> = ({
+  RootPackage rootPackage,
+  DiPackage diPackage,
+  DomainPackage defaultDomainPackage,
+  InfrastructurePackage defaultInfrastructurePackage,
+  LoggingPackage loggingPackage,
+  UiPackage uiPackage,
+  T platformRootPackage,
+  PlatformLocalizationPackage platformLocalizationPackage,
+  PlatformNavigationPackage platformNavigationPackage,
+  PlatformAppFeaturePackage platformAppFeaturePackage,
+  PlatformPageFeaturePackage platformHomePageFeaturePackage,
+  PlatformUiPackage platformUiPackage,
+  RapidProject project,
+});
+
+_ProjectSetup _setupProject() {
+  final rootPackage = MockRootPackage(
+    packageName: 'root_package',
+    path: 'root_package_path',
+  );
+  final diPackage = MockDiPackage(
+    packageName: 'di_package',
+    path: 'di_package_path',
+  );
+  final defaultDomainPackage = MockDomainPackage(
+    packageName: 'domain_package',
+    path: 'domain_package_path',
+  );
+  final defaultInfrastructurePackage = MockInfrastructurePackage(
+    packageName: 'infrastructure_package',
+    path: 'infrastructure_package_path',
+  );
+  final loggingPackage = MockLoggingPackage(
+    packageName: 'logging_package',
+    path: 'logging_package_path',
+  );
+  final uiPackage = MockUiPackage(
+    packageName: 'ui_package',
+    path: 'ui_package_path',
+  );
+  final project = MockRapidProject(
+    path: 'project_path',
+    rootPackage: rootPackage,
+    appModule: MockAppModule(
+      diPackage: diPackage,
+      domainDirectory: MockDomainDirectory(
+        domainPackage: ({name}) => defaultDomainPackage,
+      ),
+      infrastructureDirectory: MockInfrastructureDirectory(
+        infrastructurePackage: ({name}) => defaultInfrastructurePackage,
+      ),
+      loggingPackage: loggingPackage,
+    ),
+    uiModule: MockUiModule(
+      uiPackage: uiPackage,
+    ),
+  );
+
+  return (
+    rootPackage: rootPackage,
+    diPackage: diPackage,
+    defaultDomainPackage: defaultDomainPackage,
+    defaultInfrastructurePackage: defaultInfrastructurePackage,
+    loggingPackage: loggingPackage,
+    uiPackage: uiPackage,
+    project: project,
+  );
+}
+
+_ProjectWithPlatformSetup
+    _setupProjectWithPlatform<T extends PlatformRootPackage>() {
+  final (
+    rootPackage: rootPackage,
+    diPackage: diPackage,
+    defaultDomainPackage: defaultDomainPackage,
+    defaultInfrastructurePackage: defaultInfrastructurePackage,
+    loggingPackage: loggingPackage,
+    uiPackage: uiPackage,
+    project: _,
+  ) = _setupProject();
+  final T platformRootPackage = switch (T) {
+    IosRootPackage => MockIosRootPackage(
+        packageName: 'platform_root_package',
+        path: 'platform_root_package_path',
+      ),
+    MacosRootPackage => MockMacosRootPackage(
+        packageName: 'platform_root_package',
+        path: 'platform_root_package_path',
+      ),
+    MobileRootPackage => MockMobileRootPackage(
+        packageName: 'platform_root_package',
+        path: 'platform_root_package_path',
+      ),
+    _ => MockNoneIosRootPackage(
+        packageName: 'platform_root_package',
+        path: 'platform_root_package_path',
+      ),
+  } as T;
+  final platformLocalizationPackage = MockPlatformLocalizationPackage(
+    packageName: 'platform_localization_package',
+    path: 'platform_localization_package_path',
+  );
+  final platformNavigationPackage = MockPlatformNavigationPackage(
+    packageName: 'platform_navigation_package',
+    path: 'platform_navigation_package_path',
+  );
+  final platformAppFeaturePackage = MockPlatformAppFeaturePackage(
+    packageName: 'platform_app_feature_package',
+    path: 'platform_app_feature_package_path',
+  );
+  final platformHomePageFeaturePackage = MockPlatformPageFeaturePackage(
+    packageName: 'platform_home_page_feature_package',
+    path: 'platform_home_page_feature_package_path',
+  );
+  P platformFeaturePackage<P extends PlatformFeaturePackage>({
+    required String name,
+  }) =>
+      platformHomePageFeaturePackage as P;
+  final platformUiPackage = MockPlatformUiPackage(
+    packageName: 'platform_ui_package',
+    path: 'platform_ui_package_path',
+  );
+  final project = MockRapidProject(
+    path: 'project_path',
+    rootPackage: rootPackage,
+    appModule: MockAppModule(
+      diPackage: diPackage,
+      domainDirectory: MockDomainDirectory(
+        domainPackage: ({name}) => defaultDomainPackage,
+      ),
+      infrastructureDirectory: MockInfrastructureDirectory(
+        infrastructurePackage: ({name}) => defaultInfrastructurePackage,
+      ),
+      loggingPackage: loggingPackage,
+      platformDirectory: ({required platform}) => MockPlatformDirectory(
+        rootPackage: platformRootPackage,
+        localizationPackage: platformLocalizationPackage,
+        navigationPackage: platformNavigationPackage,
+        featuresDirectory: MockPlatformFeaturesDirectory(
+          appFeaturePackage: platformAppFeaturePackage,
+          featurePackage: platformFeaturePackage,
+        ),
+      ),
+    ),
+    uiModule: MockUiModule(
+      uiPackage: uiPackage,
+      platformUiPackage: ({required platform}) => platformUiPackage,
+    ),
+  );
+
+  return (
+    rootPackage: rootPackage,
+    diPackage: diPackage,
+    defaultDomainPackage: defaultDomainPackage,
+    defaultInfrastructurePackage: defaultInfrastructurePackage,
+    loggingPackage: loggingPackage,
+    uiPackage: uiPackage,
+    platformRootPackage: platformRootPackage,
+    platformLocalizationPackage: platformLocalizationPackage,
+    platformNavigationPackage: platformNavigationPackage,
+    platformAppFeaturePackage: platformAppFeaturePackage,
+    platformHomePageFeaturePackage: platformHomePageFeaturePackage,
+    platformUiPackage: platformUiPackage,
+    project: project,
+  );
+}
 
 Rapid _getRapid({
   RapidProject Function({required RapidProjectConfig config})? projectBuilder,
-  MockRapidTool? tool,
-  MockRapidLogger? logger,
+  RapidTool? tool,
+  RapidLogger? logger,
 }) {
   return Rapid(
     tool: tool ?? MockRapidTool(),
     logger: logger ?? MockRapidLogger(),
   )..projectBuilderOverrides = projectBuilder;
+}
+
+void _verifyCreateProjectAndActivatePlatform<T extends PlatformRootPackage>(
+  Platform platform, {
+  required ProcessManager manager,
+  required _ProjectWithPlatformSetup<T> projectSetup,
+  required MockRapidProjectBuilder projectBuilder,
+  required LoggerSetup loggerSetup,
+}) {
+  final (
+    rootPackage: rootPackage,
+    diPackage: diPackage,
+    defaultDomainPackage: defaultDomainPackage,
+    defaultInfrastructurePackage: defaultInfrastructurePackage,
+    loggingPackage: loggingPackage,
+    uiPackage: uiPackage,
+    platformRootPackage: platformRootPackage,
+    platformLocalizationPackage: platformLocalizationPackage,
+    platformNavigationPackage: platformNavigationPackage,
+    platformAppFeaturePackage: platformAppFeaturePackage,
+    platformHomePageFeaturePackage: platformHomePageFeaturePackage,
+    platformUiPackage: platformUiPackage,
+    project: _,
+  ) = projectSetup;
+  final (
+    progress: progress,
+    groupableProgress: groupableProgress,
+    progressGroup: progressGroup,
+    logger: logger,
+  ) = loggerSetup;
+
+  verifyInOrder([
+    () => projectBuilder(
+          config: RapidProjectConfig(
+            path: '/some/path',
+            name: 'test_app',
+          ),
+        ),
+    () => logger.newLine(),
+    () => logger.log('📦 Creating project'),
+    () => logger.progress('Generating platform-independent packages'),
+    () => rootPackage.generate(),
+    () => diPackage.generate(),
+    () => defaultDomainPackage.generate(),
+    () => defaultInfrastructurePackage.generate(),
+    () => loggingPackage.generate(),
+    () => uiPackage.generate(),
+    () => progress.complete(),
+    () => logger.progressGroup(null),
+    () => progressGroup.progress('Running "flutter pub get" in root_package'),
+    () => manager.runFlutterPubGet(workingDirectory: 'root_package_path'),
+    () => groupableProgress.complete(),
+    () => progressGroup.progress('Running "flutter pub get" in di_package'),
+    () => manager.runFlutterPubGet(workingDirectory: 'di_package_path'),
+    () => groupableProgress.complete(),
+    () => progressGroup.progress('Running "flutter pub get" in domain_package'),
+    () => manager.runFlutterPubGet(workingDirectory: 'domain_package_path'),
+    () => groupableProgress.complete(),
+    () => progressGroup
+        .progress('Running "flutter pub get" in infrastructure_package'),
+    () => manager.runFlutterPubGet(
+        workingDirectory: 'infrastructure_package_path'),
+    () => groupableProgress.complete(),
+    () =>
+        progressGroup.progress('Running "flutter pub get" in logging_package'),
+    () => manager.runFlutterPubGet(workingDirectory: 'logging_package_path'),
+    () => groupableProgress.complete(),
+    () => progressGroup.progress('Running "flutter pub get" in ui_package'),
+    () => manager.runFlutterPubGet(workingDirectory: 'ui_package_path'),
+    () => groupableProgress.complete(),
+    () => logger.newLine(),
+    () => logger.log('🚀 Activating ${platform.prettyName}'),
+    () => logger.progress('Generating ${platform.prettyName} packages'),
+    () => platformAppFeaturePackage.generate(),
+    () => platformHomePageFeaturePackage.generate(),
+    () => platformLocalizationPackage.generate(
+          defaultLanguage: Language(languageCode: 'fr'),
+        ),
+    () => platformNavigationPackage.generate(),
+    switch (platform) {
+      Platform.android => () =>
+          (platformRootPackage as NoneIosRootPackage).generate(
+            orgName: 'test.example',
+            description: 'Some desc.',
+          ),
+      Platform.ios => () => (platformRootPackage as IosRootPackage).generate(
+            orgName: 'test.example',
+            language: Language(languageCode: 'fr'),
+          ),
+      Platform.linux => () =>
+          (platformRootPackage as NoneIosRootPackage).generate(
+            orgName: 'test.example',
+          ),
+      Platform.macos => () =>
+          (platformRootPackage as MacosRootPackage).generate(
+            orgName: 'test.example',
+          ),
+      Platform.web => () =>
+          (platformRootPackage as NoneIosRootPackage).generate(
+            description: 'Some desc.',
+          ),
+      Platform.windows => () =>
+          (platformRootPackage as NoneIosRootPackage).generate(
+            orgName: 'test.example',
+          ),
+      Platform.mobile => () =>
+          (platformRootPackage as MobileRootPackage).generate(
+            description: 'Some desc.',
+            orgName: 'test.example',
+            language: Language(languageCode: 'fr'),
+          ),
+    },
+    () => platformUiPackage.generate(),
+    () => progress.complete(),
+    () => logger.progressGroup(null),
+    () => progressGroup
+        .progress('Running "flutter pub get" in platform_app_feature_package'),
+    () => manager.runFlutterPubGet(
+        workingDirectory: 'platform_app_feature_package_path'),
+    () => groupableProgress.complete(),
+    () => progressGroup.progress(
+        'Running "flutter pub get" in platform_home_page_feature_package'),
+    () => manager.runFlutterPubGet(
+        workingDirectory: 'platform_home_page_feature_package_path'),
+    () => groupableProgress.complete(),
+    () => progressGroup
+        .progress('Running "flutter pub get" in platform_localization_package'),
+    () => manager.runFlutterPubGet(
+        workingDirectory: 'platform_localization_package_path'),
+    () => groupableProgress.complete(),
+    () => progressGroup
+        .progress('Running "flutter pub get" in platform_navigation_package'),
+    () => manager.runFlutterPubGet(
+        workingDirectory: 'platform_navigation_package_path'),
+    () => groupableProgress.complete(),
+    () => progressGroup
+        .progress('Running "flutter pub get" in platform_root_package'),
+    () => manager.runFlutterPubGet(
+        workingDirectory: 'platform_root_package_path'),
+    () => groupableProgress.complete(),
+    () => progressGroup
+        .progress('Running "flutter pub get" in platform_ui_package'),
+    () =>
+        manager.runFlutterPubGet(workingDirectory: 'platform_ui_package_path'),
+    () => groupableProgress.complete(),
+    () => logger.progress(
+        'Running "flutter gen-l10n" in platform_localization_package'),
+    () => manager.runFlutterGenl10n(
+        workingDirectory: 'platform_localization_package_path'),
+    () => progress.complete(),
+    ...switch (platform) {
+      Platform.android => [
+          () => logger.progress('Running "flutter config --enable-android"'),
+          () => manager.runFlutterConfigEnablePlatform(platform),
+          () => progress.complete(),
+        ],
+      Platform.ios => [
+          () => logger.progress('Running "flutter config --enable-ios"'),
+          () => manager.runFlutterConfigEnablePlatform(platform),
+          () => progress.complete(),
+        ],
+      Platform.linux => [
+          () => logger
+              .progress('Running "flutter config --enable-linux-desktop"'),
+          () => manager.runFlutterConfigEnablePlatform(platform),
+          () => progress.complete(),
+        ],
+      Platform.macos => [
+          () => logger
+              .progress('Running "flutter config --enable-macos-desktop"'),
+          () => manager.runFlutterConfigEnablePlatform(platform),
+          () => progress.complete(),
+        ],
+      Platform.web => [
+          () => logger.progress('Running "flutter config --enable-web"'),
+          () => manager.runFlutterConfigEnablePlatform(platform),
+          () => progress.complete(),
+        ],
+      Platform.windows => [
+          () => logger
+              .progress('Running "flutter config --enable-windows-desktop"'),
+          () => manager.runFlutterConfigEnablePlatform(platform),
+          () => progress.complete(),
+        ],
+      Platform.mobile => [
+          () => logger.progress('Running "flutter config --enable-android"'),
+          () => manager.runFlutterConfigEnablePlatform(Platform.android),
+          () => progress.complete(),
+          () => logger.progress('Running "flutter config --enable-ios"'),
+          () => manager.runFlutterConfigEnablePlatform(Platform.ios),
+          () => progress.complete(),
+        ],
+    },
+    () => logger.newLine(),
+    () => logger.progress('Running "dart format . --fix" in project'),
+    () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+    () => progress.complete(),
+    () => logger.newLine(),
+    () => logger.commandSuccess('Created Project!'),
+  ]);
+  verifyNoMoreInteractions(manager);
+  verifyNoMoreInteractions(logger);
+  verifyNoMoreInteractions(progress);
+  verifyNoMoreInteractions(progressGroup);
+  verifyNoMoreInteractions(groupableProgress);
 }
 
 void main() {
@@ -37,7 +424,7 @@ void main() {
       withMockFs(() async {
         final outputDir = 'some/path';
         // simulate non empty output dir
-        File(p.join(outputDir, 'foo')).absolute.createSync(recursive: true);
+        File(p.join(outputDir, 'foo')).createSync(recursive: true);
         final rapid = _getRapid();
 
         expect(
@@ -51,56 +438,40 @@ void main() {
           ),
           throwsA(isA<OutputDirNotEmptyException>()),
         );
-        // TODO
-/*         verifyNever(() => tool.loadGroup());
-        verifyNever(() => tool.activateCommandGroup());
-        verifyNever(() => logger.commandSuccess(any())); */
       }),
     );
 
     test(
       'creates project and activates no platforms',
-      withMockFs(() async {
-        final manager = MockProcessManager();
-        final rootPackage = MockRootPackage();
-        final diPackage = MockDiPackage();
-        final defaultDomainPackage = MockDomainPackage();
-        final defaultInfrastructurePackage = MockInfrastructurePackage();
-        final loggingPackage = MockLoggingPackage();
-        final uiPackage = MockUiPackage();
-        final project = MockRapidProject(
+      withMockEnv((manager) async {
+        final (
           rootPackage: rootPackage,
-          appModule: MockAppModule(
-            diPackage: diPackage,
-            domainDirectory: MockDomainDirectory(
-              domainPackage: ({name}) => defaultDomainPackage,
-            ),
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackage: ({name}) => defaultInfrastructurePackage,
-            ),
-            loggingPackage: loggingPackage,
-          ),
-          uiModule: MockUiModule(uiPackage: uiPackage),
-        );
-        final projectBuilder = MockRapidProjectBuilder();
-        when(() => projectBuilder(config: any(named: 'config')))
-            .thenReturn(project);
-        final logger = MockRapidLogger();
+          diPackage: diPackage,
+          defaultDomainPackage: defaultDomainPackage,
+          defaultInfrastructurePackage: defaultInfrastructurePackage,
+          loggingPackage: loggingPackage,
+          uiPackage: uiPackage,
+          project: project,
+        ) = _setupProject();
+        final projectBuilder = MockRapidProjectBuilder(project: project);
+        final (
+          progress: progress,
+          groupableProgress: groupableProgress,
+          progressGroup: progressGroup,
+          logger: logger
+        ) = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
           logger: logger,
         );
 
-        await withMockProcessManager(
-          () async => rapid.create(
-            projectName: 'test_app',
-            outputDir: 'some/path',
-            description: 'Some desc.',
-            orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
-            platforms: {},
-          ),
-          manager: manager,
+        await rapid.create(
+          projectName: 'test_app',
+          outputDir: 'some/path',
+          description: 'Some desc.',
+          orgName: 'test.example',
+          language: Language(languageCode: 'fr'),
+          platforms: {},
         );
 
         verifyInOrder([
@@ -119,19 +490,38 @@ void main() {
           () => defaultInfrastructurePackage.generate(),
           () => loggingPackage.generate(),
           () => uiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              rootPackage,
-              diPackage,
-              defaultDomainPackage,
-              defaultInfrastructurePackage,
-              loggingPackage,
-              uiPackage,
-            ],
-          ),
+          () => logger.progressGroup(null),
+          () => progressGroup
+              .progress('Running "flutter pub get" in root_package'),
+          () => manager.runFlutterPubGet(workingDirectory: 'root_package_path'),
+          () => groupableProgress.complete(),
+          () =>
+              progressGroup.progress('Running "flutter pub get" in di_package'),
+          () => manager.runFlutterPubGet(workingDirectory: 'di_package_path'),
+          () => groupableProgress.complete(),
+          () => progressGroup
+              .progress('Running "flutter pub get" in domain_package'),
+          () =>
+              manager.runFlutterPubGet(workingDirectory: 'domain_package_path'),
+          () => groupableProgress.complete(),
+          () => progressGroup
+              .progress('Running "flutter pub get" in infrastructure_package'),
+          () => manager.runFlutterPubGet(
+              workingDirectory: 'infrastructure_package_path'),
+          () => groupableProgress.complete(),
+          () => progressGroup
+              .progress('Running "flutter pub get" in logging_package'),
+          () => manager.runFlutterPubGet(
+              workingDirectory: 'logging_package_path'),
+          () => groupableProgress.complete(),
+          () =>
+              progressGroup.progress('Running "flutter pub get" in ui_package'),
+          () => manager.runFlutterPubGet(workingDirectory: 'ui_package_path'),
+          () => groupableProgress.complete(),
           () => logger.newLine(),
-          ...dartFormatFixTask(manager),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
           () => logger.newLine(),
           () => logger.commandSuccess('Created Project!'),
         ]);
@@ -141,1125 +531,221 @@ void main() {
 
     test(
       'creates project and activates Android',
-      withMockFs(() async {
-        final manager = MockProcessManager();
-        final rootPackage = MockRootPackage();
-        final diPackage = MockDiPackage();
-        final defaultDomainPackage = MockDomainPackage();
-        final defaultInfrastructurePackage = MockInfrastructurePackage();
-        final loggingPackage = MockLoggingPackage();
-        final uiPackage = MockUiPackage();
-        final platformRootPackage = MockNoneIosRootPackage();
-        final localizationPackage = MockPlatformLocalizationPackage();
-        final navigationPackage = MockPlatformNavigationPackage();
-        final appFeaturePackage = MockPlatformAppFeaturePackage();
-        final homePageFeaturePackage = MockPlatformPageFeaturePackage();
-        T featurePackage<T extends PlatformFeaturePackage>({
-          required String name,
-        }) =>
-            homePageFeaturePackage as T;
-        final platformUiPackage = MockPlatformUiPackage();
-
-        final project = MockRapidProject(
-          rootPackage: rootPackage,
-          appModule: MockAppModule(
-            diPackage: diPackage,
-            domainDirectory: MockDomainDirectory(
-              domainPackage: ({name}) => defaultDomainPackage,
-            ),
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackage: ({name}) => defaultInfrastructurePackage,
-            ),
-            loggingPackage: loggingPackage,
-            platformDirectory: ({required platform}) => MockPlatformDirectory(
-              rootPackage: platformRootPackage,
-              localizationPackage: localizationPackage,
-              navigationPackage: navigationPackage,
-              featuresDirectory: MockPlatformFeaturesDirectory(
-                appFeaturePackage: appFeaturePackage,
-                featurePackage: featurePackage,
-              ),
-            ),
-          ),
-          uiModule: MockUiModule(
-            uiPackage: uiPackage,
-            platformUiPackage: ({required platform}) => platformUiPackage,
-          ),
-        );
-        final projectBuilder = MockRapidProjectBuilder();
-        when(() => projectBuilder(config: any(named: 'config')))
-            .thenReturn(project);
-        final logger = MockRapidLogger();
+      withMockEnv((manager) async {
+        final projectSetup = _setupProjectWithPlatform<NoneIosRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
-        await withMockProcessManager(
-          () async => rapid.create(
-            projectName: 'test_app',
-            outputDir: 'some/path',
-            description: 'Some desc.',
-            orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
-            platforms: {
-              Platform.android,
-            },
-          ),
+        await rapid.create(
+          projectName: 'test_app',
+          outputDir: 'some/path',
+          description: 'Some desc.',
+          orgName: 'test.example',
+          language: Language(languageCode: 'fr'),
+          platforms: {Platform.android},
+        );
+
+        _verifyCreateProjectAndActivatePlatform(
+          Platform.android,
           manager: manager,
+          projectSetup: projectSetup,
+          projectBuilder: projectBuilder,
+          loggerSetup: loggerSetup,
         );
-
-        verifyInOrder([
-          () => projectBuilder(
-                config: RapidProjectConfig(
-                  path: '/some/path',
-                  name: 'test_app',
-                ),
-              ),
-          () => logger.newLine(),
-          () => logger.log('📦 Creating project'),
-          () => logger.progress('Generating platform-independent packages'),
-          () => rootPackage.generate(),
-          () => diPackage.generate(),
-          () => defaultDomainPackage.generate(),
-          () => defaultInfrastructurePackage.generate(),
-          () => loggingPackage.generate(),
-          () => uiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              rootPackage,
-              diPackage,
-              defaultDomainPackage,
-              defaultInfrastructurePackage,
-              loggingPackage,
-              uiPackage,
-            ],
-          ),
-          () => logger.newLine(),
-          () => appFeaturePackage.generate(),
-          () => homePageFeaturePackage.generate(),
-          () => localizationPackage.generate(
-                defaultLanguage: Language(languageCode: 'fr'),
-              ),
-          () => navigationPackage.generate(),
-          () => platformRootPackage.generate(
-                description: 'Some desc.',
-                orgName: 'test.example',
-              ),
-          () => platformUiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
-          ...flutterGenl10nTask(manager, package: localizationPackage),
-          ...flutterConfigEnablePlatform(manager, platform: Platform.android),
-          () => logger.newLine(),
-          ...dartFormatFixTask(manager),
-          () => logger.newLine(),
-          () => logger.commandSuccess('Created Project!'),
-        ]);
       }),
     );
 
     test(
       'creates project and activates iOS',
-      withMockFs(() async {
-        final manager = MockProcessManager();
-        final rootPackage = MockRootPackage();
-        final diPackage = MockDiPackage();
-        final defaultDomainPackage = MockDomainPackage();
-        final defaultInfrastructurePackage = MockInfrastructurePackage();
-        final loggingPackage = MockLoggingPackage();
-        final uiPackage = MockUiPackage();
-        final platformRootPackage = MockIosRootPackage();
-        final localizationPackage = MockPlatformLocalizationPackage();
-        final navigationPackage = MockPlatformNavigationPackage();
-        final appFeaturePackage = MockPlatformAppFeaturePackage();
-        final homePageFeaturePackage = MockPlatformPageFeaturePackage();
-        T featurePackage<T extends PlatformFeaturePackage>({
-          required String name,
-        }) =>
-            homePageFeaturePackage as T;
-        final platformUiPackage = MockPlatformUiPackage();
-
-        final project = MockRapidProject(
-          rootPackage: rootPackage,
-          appModule: MockAppModule(
-            diPackage: diPackage,
-            domainDirectory: MockDomainDirectory(
-              domainPackage: ({name}) => defaultDomainPackage,
-            ),
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackage: ({name}) => defaultInfrastructurePackage,
-            ),
-            loggingPackage: loggingPackage,
-            platformDirectory: ({required platform}) => MockPlatformDirectory(
-              rootPackage: platformRootPackage,
-              localizationPackage: localizationPackage,
-              navigationPackage: navigationPackage,
-              featuresDirectory: MockPlatformFeaturesDirectory(
-                appFeaturePackage: appFeaturePackage,
-                featurePackage: featurePackage,
-              ),
-            ),
-          ),
-          uiModule: MockUiModule(
-            uiPackage: uiPackage,
-            platformUiPackage: ({required platform}) => platformUiPackage,
-          ),
-        );
-        final projectBuilder = MockRapidProjectBuilder();
-        when(() => projectBuilder(config: any(named: 'config')))
-            .thenReturn(project);
-        final logger = MockRapidLogger();
+      withMockEnv((manager) async {
+        final projectSetup = _setupProjectWithPlatform<IosRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
-        await withMockProcessManager(
-          () async => rapid.create(
-            projectName: 'test_app',
-            outputDir: 'some/path',
-            description: 'Some desc.',
-            orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
-            platforms: {
-              Platform.ios,
-            },
-          ),
+        await rapid.create(
+          projectName: 'test_app',
+          outputDir: 'some/path',
+          description: 'Some desc.',
+          orgName: 'test.example',
+          language: Language(languageCode: 'fr'),
+          platforms: {Platform.ios},
+        );
+
+        _verifyCreateProjectAndActivatePlatform(
+          Platform.ios,
           manager: manager,
+          projectSetup: projectSetup,
+          projectBuilder: projectBuilder,
+          loggerSetup: loggerSetup,
         );
-
-        verifyInOrder([
-          () => projectBuilder(
-                config: RapidProjectConfig(
-                  path: '/some/path',
-                  name: 'test_app',
-                ),
-              ),
-          () => logger.newLine(),
-          () => logger.log('📦 Creating project'),
-          () => logger.progress('Generating platform-independent packages'),
-          () => rootPackage.generate(),
-          () => diPackage.generate(),
-          () => defaultDomainPackage.generate(),
-          () => defaultInfrastructurePackage.generate(),
-          () => loggingPackage.generate(),
-          () => uiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              rootPackage,
-              diPackage,
-              defaultDomainPackage,
-              defaultInfrastructurePackage,
-              loggingPackage,
-              uiPackage,
-            ],
-          ),
-          () => logger.newLine(),
-          () => appFeaturePackage.generate(),
-          () => homePageFeaturePackage.generate(),
-          () => localizationPackage.generate(
-                defaultLanguage: Language(languageCode: 'fr'),
-              ),
-          () => navigationPackage.generate(),
-          () => platformRootPackage.generate(
-                orgName: 'test.example',
-                language: Language(languageCode: 'fr'),
-              ),
-          () => platformUiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
-          ...flutterGenl10nTask(manager, package: localizationPackage),
-          ...flutterConfigEnablePlatform(manager, platform: Platform.ios),
-          () => logger.newLine(),
-          ...dartFormatFixTask(manager),
-          () => logger.newLine(),
-          () => logger.commandSuccess('Created Project!'),
-        ]);
       }),
     );
 
     test(
       'creates project and activates Linux',
-      withMockFs(() async {
-        final manager = MockProcessManager();
-        final rootPackage = MockRootPackage();
-        final diPackage = MockDiPackage();
-        final defaultDomainPackage = MockDomainPackage();
-        final defaultInfrastructurePackage = MockInfrastructurePackage();
-        final loggingPackage = MockLoggingPackage();
-        final uiPackage = MockUiPackage();
-        final platformRootPackage = MockNoneIosRootPackage();
-        final localizationPackage = MockPlatformLocalizationPackage();
-        final navigationPackage = MockPlatformNavigationPackage();
-        final appFeaturePackage = MockPlatformAppFeaturePackage();
-        final homePageFeaturePackage = MockPlatformPageFeaturePackage();
-        T featurePackage<T extends PlatformFeaturePackage>({
-          required String name,
-        }) =>
-            homePageFeaturePackage as T;
-        final platformUiPackage = MockPlatformUiPackage();
-
-        final project = MockRapidProject(
-          rootPackage: rootPackage,
-          appModule: MockAppModule(
-            diPackage: diPackage,
-            domainDirectory: MockDomainDirectory(
-              domainPackage: ({name}) => defaultDomainPackage,
-            ),
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackage: ({name}) => defaultInfrastructurePackage,
-            ),
-            loggingPackage: loggingPackage,
-            platformDirectory: ({required platform}) => MockPlatformDirectory(
-              rootPackage: platformRootPackage,
-              localizationPackage: localizationPackage,
-              navigationPackage: navigationPackage,
-              featuresDirectory: MockPlatformFeaturesDirectory(
-                appFeaturePackage: appFeaturePackage,
-                featurePackage: featurePackage,
-              ),
-            ),
-          ),
-          uiModule: MockUiModule(
-            uiPackage: uiPackage,
-            platformUiPackage: ({required platform}) => platformUiPackage,
-          ),
-        );
-        final projectBuilder = MockRapidProjectBuilder();
-        when(() => projectBuilder(config: any(named: 'config')))
-            .thenReturn(project);
-        final logger = MockRapidLogger();
+      withMockEnv((manager) async {
+        final projectSetup = _setupProjectWithPlatform<NoneIosRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
-        await withMockProcessManager(
-          () async => rapid.create(
-            projectName: 'test_app',
-            outputDir: 'some/path',
-            description: 'Some desc.',
-            orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
-            platforms: {
-              Platform.linux,
-            },
-          ),
+        await rapid.create(
+          projectName: 'test_app',
+          outputDir: 'some/path',
+          description: 'Some desc.',
+          orgName: 'test.example',
+          language: Language(languageCode: 'fr'),
+          platforms: {Platform.linux},
+        );
+
+        _verifyCreateProjectAndActivatePlatform(
+          Platform.linux,
           manager: manager,
+          projectSetup: projectSetup,
+          projectBuilder: projectBuilder,
+          loggerSetup: loggerSetup,
         );
-
-        verifyInOrder([
-          () => projectBuilder(
-                config: RapidProjectConfig(
-                  path: '/some/path',
-                  name: 'test_app',
-                ),
-              ),
-          () => logger.newLine(),
-          () => logger.log('📦 Creating project'),
-          () => logger.progress('Generating platform-independent packages'),
-          () => rootPackage.generate(),
-          () => diPackage.generate(),
-          () => defaultDomainPackage.generate(),
-          () => defaultInfrastructurePackage.generate(),
-          () => loggingPackage.generate(),
-          () => uiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              rootPackage,
-              diPackage,
-              defaultDomainPackage,
-              defaultInfrastructurePackage,
-              loggingPackage,
-              uiPackage,
-            ],
-          ),
-          () => logger.newLine(),
-          () => appFeaturePackage.generate(),
-          () => homePageFeaturePackage.generate(),
-          () => localizationPackage.generate(
-                defaultLanguage: Language(languageCode: 'fr'),
-              ),
-          () => navigationPackage.generate(),
-          () => platformRootPackage.generate(
-                orgName: 'test.example',
-              ),
-          () => platformUiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
-          ...flutterGenl10nTask(manager, package: localizationPackage),
-          ...flutterConfigEnablePlatform(manager, platform: Platform.linux),
-          () => logger.newLine(),
-          ...dartFormatFixTask(manager),
-          () => logger.newLine(),
-          () => logger.commandSuccess('Created Project!'),
-        ]);
       }),
     );
 
     test(
       'creates project and activates macOS',
-      withMockFs(() async {
-        final manager = MockProcessManager();
-        final rootPackage = MockRootPackage();
-        final diPackage = MockDiPackage();
-        final defaultDomainPackage = MockDomainPackage();
-        final defaultInfrastructurePackage = MockInfrastructurePackage();
-        final loggingPackage = MockLoggingPackage();
-        final uiPackage = MockUiPackage();
-        final platformRootPackage = MockMacosRootPackage();
-        final localizationPackage = MockPlatformLocalizationPackage();
-        final navigationPackage = MockPlatformNavigationPackage();
-        final appFeaturePackage = MockPlatformAppFeaturePackage();
-        final homePageFeaturePackage = MockPlatformPageFeaturePackage();
-        T featurePackage<T extends PlatformFeaturePackage>({
-          required String name,
-        }) =>
-            homePageFeaturePackage as T;
-        final platformUiPackage = MockPlatformUiPackage();
-
-        final project = MockRapidProject(
-          rootPackage: rootPackage,
-          appModule: MockAppModule(
-            diPackage: diPackage,
-            domainDirectory: MockDomainDirectory(
-              domainPackage: ({name}) => defaultDomainPackage,
-            ),
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackage: ({name}) => defaultInfrastructurePackage,
-            ),
-            loggingPackage: loggingPackage,
-            platformDirectory: ({required platform}) => MockPlatformDirectory(
-              rootPackage: platformRootPackage,
-              localizationPackage: localizationPackage,
-              navigationPackage: navigationPackage,
-              featuresDirectory: MockPlatformFeaturesDirectory(
-                appFeaturePackage: appFeaturePackage,
-                featurePackage: featurePackage,
-              ),
-            ),
-          ),
-          uiModule: MockUiModule(
-            uiPackage: uiPackage,
-            platformUiPackage: ({required platform}) => platformUiPackage,
-          ),
-        );
-        final projectBuilder = MockRapidProjectBuilder();
-        when(() => projectBuilder(config: any(named: 'config')))
-            .thenReturn(project);
-        final logger = MockRapidLogger();
+      withMockEnv((manager) async {
+        final projectSetup = _setupProjectWithPlatform<MacosRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
-        await withMockProcessManager(
-          () async => rapid.create(
-            projectName: 'test_app',
-            outputDir: 'some/path',
-            description: 'Some desc.',
-            orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
-            platforms: {
-              Platform.macos,
-            },
-          ),
+        await rapid.create(
+          projectName: 'test_app',
+          outputDir: 'some/path',
+          description: 'Some desc.',
+          orgName: 'test.example',
+          language: Language(languageCode: 'fr'),
+          platforms: {Platform.macos},
+        );
+
+        _verifyCreateProjectAndActivatePlatform(
+          Platform.macos,
           manager: manager,
+          projectSetup: projectSetup,
+          projectBuilder: projectBuilder,
+          loggerSetup: loggerSetup,
         );
-
-        verifyInOrder([
-          () => projectBuilder(
-                config: RapidProjectConfig(
-                  path: '/some/path',
-                  name: 'test_app',
-                ),
-              ),
-          () => logger.newLine(),
-          () => logger.log('📦 Creating project'),
-          () => logger.progress('Generating platform-independent packages'),
-          () => rootPackage.generate(),
-          () => diPackage.generate(),
-          () => defaultDomainPackage.generate(),
-          () => defaultInfrastructurePackage.generate(),
-          () => loggingPackage.generate(),
-          () => uiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              rootPackage,
-              diPackage,
-              defaultDomainPackage,
-              defaultInfrastructurePackage,
-              loggingPackage,
-              uiPackage,
-            ],
-          ),
-          () => logger.newLine(),
-          () => appFeaturePackage.generate(),
-          () => homePageFeaturePackage.generate(),
-          () => localizationPackage.generate(
-                defaultLanguage: Language(languageCode: 'fr'),
-              ),
-          () => navigationPackage.generate(),
-          () => platformRootPackage.generate(
-                orgName: 'test.example',
-              ),
-          () => platformUiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
-          ...flutterGenl10nTask(manager, package: localizationPackage),
-          ...flutterConfigEnablePlatform(manager, platform: Platform.macos),
-          () => logger.newLine(),
-          ...dartFormatFixTask(manager),
-          () => logger.newLine(),
-          () => logger.commandSuccess('Created Project!'),
-        ]);
       }),
     );
 
     test(
       'creates project and activates Web',
-      withMockFs(() async {
-        final manager = MockProcessManager();
-        final rootPackage = MockRootPackage();
-        final diPackage = MockDiPackage();
-        final defaultDomainPackage = MockDomainPackage();
-        final defaultInfrastructurePackage = MockInfrastructurePackage();
-        final loggingPackage = MockLoggingPackage();
-        final uiPackage = MockUiPackage();
-        final platformRootPackage = MockNoneIosRootPackage();
-        final localizationPackage = MockPlatformLocalizationPackage();
-        final navigationPackage = MockPlatformNavigationPackage();
-        final appFeaturePackage = MockPlatformAppFeaturePackage();
-        final homePageFeaturePackage = MockPlatformPageFeaturePackage();
-        T featurePackage<T extends PlatformFeaturePackage>({
-          required String name,
-        }) =>
-            homePageFeaturePackage as T;
-        final platformUiPackage = MockPlatformUiPackage();
-
-        final project = MockRapidProject(
-          rootPackage: rootPackage,
-          appModule: MockAppModule(
-            diPackage: diPackage,
-            domainDirectory: MockDomainDirectory(
-              domainPackage: ({name}) => defaultDomainPackage,
-            ),
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackage: ({name}) => defaultInfrastructurePackage,
-            ),
-            loggingPackage: loggingPackage,
-            platformDirectory: ({required platform}) => MockPlatformDirectory(
-              rootPackage: platformRootPackage,
-              localizationPackage: localizationPackage,
-              navigationPackage: navigationPackage,
-              featuresDirectory: MockPlatformFeaturesDirectory(
-                appFeaturePackage: appFeaturePackage,
-                featurePackage: featurePackage,
-              ),
-            ),
-          ),
-          uiModule: MockUiModule(
-            uiPackage: uiPackage,
-            platformUiPackage: ({required platform}) => platformUiPackage,
-          ),
-        );
-        final projectBuilder = MockRapidProjectBuilder();
-        when(() => projectBuilder(config: any(named: 'config')))
-            .thenReturn(project);
-        final logger = MockRapidLogger();
+      withMockEnv((manager) async {
+        final projectSetup = _setupProjectWithPlatform<NoneIosRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
-        await withMockProcessManager(
-          () async => rapid.create(
-            projectName: 'test_app',
-            outputDir: 'some/path',
-            description: 'Some desc.',
-            orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
-            platforms: {
-              Platform.web,
-            },
-          ),
+        await rapid.create(
+          projectName: 'test_app',
+          outputDir: 'some/path',
+          description: 'Some desc.',
+          orgName: 'test.example',
+          language: Language(languageCode: 'fr'),
+          platforms: {Platform.web},
+        );
+
+        _verifyCreateProjectAndActivatePlatform(
+          Platform.web,
           manager: manager,
+          projectSetup: projectSetup,
+          projectBuilder: projectBuilder,
+          loggerSetup: loggerSetup,
         );
-
-        verifyInOrder([
-          () => projectBuilder(
-                config: RapidProjectConfig(
-                  path: '/some/path',
-                  name: 'test_app',
-                ),
-              ),
-          () => logger.newLine(),
-          () => logger.log('📦 Creating project'),
-          () => logger.progress('Generating platform-independent packages'),
-          () => rootPackage.generate(),
-          () => diPackage.generate(),
-          () => defaultDomainPackage.generate(),
-          () => defaultInfrastructurePackage.generate(),
-          () => loggingPackage.generate(),
-          () => uiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              rootPackage,
-              diPackage,
-              defaultDomainPackage,
-              defaultInfrastructurePackage,
-              loggingPackage,
-              uiPackage,
-            ],
-          ),
-          () => logger.newLine(),
-          () => appFeaturePackage.generate(),
-          () => homePageFeaturePackage.generate(),
-          () => localizationPackage.generate(
-                defaultLanguage: Language(languageCode: 'fr'),
-              ),
-          () => navigationPackage.generate(),
-          () => platformRootPackage.generate(
-                description: 'Some desc.',
-              ),
-          () => platformUiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
-          ...flutterGenl10nTask(manager, package: localizationPackage),
-          ...flutterConfigEnablePlatform(manager, platform: Platform.web),
-          () => logger.newLine(),
-          ...dartFormatFixTask(manager),
-          () => logger.newLine(),
-          () => logger.commandSuccess('Created Project!'),
-        ]);
       }),
     );
 
     test(
       'creates project and activates Windows',
-      withMockFs(() async {
-        final manager = MockProcessManager();
-        final rootPackage = MockRootPackage();
-        final diPackage = MockDiPackage();
-        final defaultDomainPackage = MockDomainPackage();
-        final defaultInfrastructurePackage = MockInfrastructurePackage();
-        final loggingPackage = MockLoggingPackage();
-        final uiPackage = MockUiPackage();
-        final platformRootPackage = MockNoneIosRootPackage();
-        final localizationPackage = MockPlatformLocalizationPackage();
-        final navigationPackage = MockPlatformNavigationPackage();
-        final appFeaturePackage = MockPlatformAppFeaturePackage();
-        final homePageFeaturePackage = MockPlatformPageFeaturePackage();
-        T featurePackage<T extends PlatformFeaturePackage>({
-          required String name,
-        }) =>
-            homePageFeaturePackage as T;
-        final platformUiPackage = MockPlatformUiPackage();
-
-        final project = MockRapidProject(
-          rootPackage: rootPackage,
-          appModule: MockAppModule(
-            diPackage: diPackage,
-            domainDirectory: MockDomainDirectory(
-              domainPackage: ({name}) => defaultDomainPackage,
-            ),
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackage: ({name}) => defaultInfrastructurePackage,
-            ),
-            loggingPackage: loggingPackage,
-            platformDirectory: ({required platform}) => MockPlatformDirectory(
-              rootPackage: platformRootPackage,
-              localizationPackage: localizationPackage,
-              navigationPackage: navigationPackage,
-              featuresDirectory: MockPlatformFeaturesDirectory(
-                appFeaturePackage: appFeaturePackage,
-                featurePackage: featurePackage,
-              ),
-            ),
-          ),
-          uiModule: MockUiModule(
-            uiPackage: uiPackage,
-            platformUiPackage: ({required platform}) => platformUiPackage,
-          ),
-        );
-        final projectBuilder = MockRapidProjectBuilder();
-        when(() => projectBuilder(config: any(named: 'config')))
-            .thenReturn(project);
-        final logger = MockRapidLogger();
+      withMockEnv((manager) async {
+        final projectSetup = _setupProjectWithPlatform<NoneIosRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
-        await withMockProcessManager(
-          () async => rapid.create(
-            projectName: 'test_app',
-            outputDir: 'some/path',
-            description: 'Some desc.',
-            orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
-            platforms: {
-              Platform.windows,
-            },
-          ),
+        await rapid.create(
+          projectName: 'test_app',
+          outputDir: 'some/path',
+          description: 'Some desc.',
+          orgName: 'test.example',
+          language: Language(languageCode: 'fr'),
+          platforms: {Platform.windows},
+        );
+
+        _verifyCreateProjectAndActivatePlatform(
+          Platform.windows,
           manager: manager,
+          projectSetup: projectSetup,
+          projectBuilder: projectBuilder,
+          loggerSetup: loggerSetup,
         );
-
-        verifyInOrder([
-          () => projectBuilder(
-                config: RapidProjectConfig(
-                  path: '/some/path',
-                  name: 'test_app',
-                ),
-              ),
-          () => logger.newLine(),
-          () => logger.log('📦 Creating project'),
-          () => logger.progress('Generating platform-independent packages'),
-          () => rootPackage.generate(),
-          () => diPackage.generate(),
-          () => defaultDomainPackage.generate(),
-          () => defaultInfrastructurePackage.generate(),
-          () => loggingPackage.generate(),
-          () => uiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              rootPackage,
-              diPackage,
-              defaultDomainPackage,
-              defaultInfrastructurePackage,
-              loggingPackage,
-              uiPackage,
-            ],
-          ),
-          () => logger.newLine(),
-          () => appFeaturePackage.generate(),
-          () => homePageFeaturePackage.generate(),
-          () => localizationPackage.generate(
-                defaultLanguage: Language(languageCode: 'fr'),
-              ),
-          () => navigationPackage.generate(),
-          () => platformRootPackage.generate(
-                orgName: 'test.example',
-              ),
-          () => platformUiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
-          ...flutterGenl10nTask(manager, package: localizationPackage),
-          ...flutterConfigEnablePlatform(manager, platform: Platform.windows),
-          () => logger.newLine(),
-          ...dartFormatFixTask(manager),
-          () => logger.newLine(),
-          () => logger.commandSuccess('Created Project!'),
-        ]);
       }),
     );
 
     test(
       'creates project and activates Mobile',
-      withMockFs(() async {
-        final manager = MockProcessManager();
-        final rootPackage = MockRootPackage();
-        final diPackage = MockDiPackage();
-        final defaultDomainPackage = MockDomainPackage();
-        final defaultInfrastructurePackage = MockInfrastructurePackage();
-        final loggingPackage = MockLoggingPackage();
-        final uiPackage = MockUiPackage();
-        final platformRootPackage = MockMobileRootPackage();
-        final localizationPackage = MockPlatformLocalizationPackage();
-        final navigationPackage = MockPlatformNavigationPackage();
-        final appFeaturePackage = MockPlatformAppFeaturePackage();
-        final homePageFeaturePackage = MockPlatformPageFeaturePackage();
-        T featurePackage<T extends PlatformFeaturePackage>({
-          required String name,
-        }) =>
-            homePageFeaturePackage as T;
-        final platformUiPackage = MockPlatformUiPackage();
-
-        final project = MockRapidProject(
-          rootPackage: rootPackage,
-          appModule: MockAppModule(
-            diPackage: diPackage,
-            domainDirectory: MockDomainDirectory(
-              domainPackage: ({name}) => defaultDomainPackage,
-            ),
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackage: ({name}) => defaultInfrastructurePackage,
-            ),
-            loggingPackage: loggingPackage,
-            platformDirectory: ({required platform}) => MockPlatformDirectory(
-              rootPackage: platformRootPackage,
-              localizationPackage: localizationPackage,
-              navigationPackage: navigationPackage,
-              featuresDirectory: MockPlatformFeaturesDirectory(
-                appFeaturePackage: appFeaturePackage,
-                featurePackage: featurePackage,
-              ),
-            ),
-          ),
-          uiModule: MockUiModule(
-            uiPackage: uiPackage,
-            platformUiPackage: ({required platform}) => platformUiPackage,
-          ),
-        );
-        final projectBuilder = MockRapidProjectBuilder();
-        when(() => projectBuilder(config: any(named: 'config')))
-            .thenReturn(project);
-        final logger = MockRapidLogger();
+      withMockEnv((manager) async {
+        final projectSetup = _setupProjectWithPlatform<MobileRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
         final rapid = _getRapid(
           projectBuilder: projectBuilder,
-          logger: logger,
+          logger: loggerSetup.logger,
         );
 
-        await withMockProcessManager(
-          () async => rapid.create(
-            projectName: 'test_app',
-            outputDir: 'some/path',
-            description: 'Some desc.',
-            orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
-            platforms: {
-              Platform.mobile,
-            },
-          ),
+        await rapid.create(
+          projectName: 'test_app',
+          outputDir: 'some/path',
+          description: 'Some desc.',
+          orgName: 'test.example',
+          language: Language(languageCode: 'fr'),
+          platforms: {Platform.mobile},
+        );
+
+        _verifyCreateProjectAndActivatePlatform(
+          Platform.mobile,
           manager: manager,
+          projectSetup: projectSetup,
+          projectBuilder: projectBuilder,
+          loggerSetup: loggerSetup,
         );
-
-        verifyInOrder([
-          () => projectBuilder(
-                config: RapidProjectConfig(
-                  path: '/some/path',
-                  name: 'test_app',
-                ),
-              ),
-          () => logger.newLine(),
-          () => logger.log('📦 Creating project'),
-          () => logger.progress('Generating platform-independent packages'),
-          () => rootPackage.generate(),
-          () => diPackage.generate(),
-          () => defaultDomainPackage.generate(),
-          () => defaultInfrastructurePackage.generate(),
-          () => loggingPackage.generate(),
-          () => uiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              rootPackage,
-              diPackage,
-              defaultDomainPackage,
-              defaultInfrastructurePackage,
-              loggingPackage,
-              uiPackage,
-            ],
-          ),
-          () => logger.newLine(),
-          () => appFeaturePackage.generate(),
-          () => homePageFeaturePackage.generate(),
-          () => localizationPackage.generate(
-                defaultLanguage: Language(languageCode: 'fr'),
-              ),
-          () => navigationPackage.generate(),
-          () => platformRootPackage.generate(
-                orgName: 'test.example',
-                description: 'Some desc.',
-                language: Language(languageCode: 'fr'),
-              ),
-          () => platformUiPackage.generate(),
-          ...flutterPubGetTaskGroup(
-            manager,
-            packages: [
-              appFeaturePackage,
-              homePageFeaturePackage,
-              localizationPackage,
-              navigationPackage,
-              platformRootPackage,
-              platformUiPackage,
-            ],
-          ),
-          ...flutterGenl10nTask(manager, package: localizationPackage),
-          ...flutterConfigEnablePlatform(manager, platform: Platform.android),
-          ...flutterConfigEnablePlatform(manager, platform: Platform.ios),
-          () => logger.newLine(),
-          ...dartFormatFixTask(manager),
-          () => logger.newLine(),
-          () => logger.commandSuccess('Created Project!'),
-        ]);
       }),
     );
 
-    // TODO add test for all platforms ?
-    ///  test(
-    ///   'creates project and activates all platforms',
-    ///   withMockFs(() async {
-    ///     final manager = MockProcessManager();
-    ///     final rootPackage = MockRootPackage();
-    ///     final diPackage = MockDiPackage();
-    ///     final defaultDomainPackage = MockDomainPackage();
-    ///     final defaultInfrastructurePackage = MockInfrastructurePackage();
-    ///     final loggingPackage = MockLoggingPackage();
-    ///     final uiPackage = MockUiPackage();
-    ///     final platformRootPackage = MockNoneIosRootPackage();
-    ///     final localizationPackage = MockPlatformLocalizationPackage();
-    ///     final navigationPackage = MockPlatformNavigationPackage();
-    ///     final appFeaturePackage = MockPlatformAppFeaturePackage();
-    ///     final homePageFeaturePackage = MockPlatformPageFeaturePackage();
-    ///     T featurePackage<T extends PlatformFeaturePackage>({
-    ///       required String name,
-    ///     }) =>
-    ///         homePageFeaturePackage as T;
-    ///     final platformUiPackage = MockPlatformUiPackage();
-    ///
-    ///     final project = MockRapidProject(
-    ///       rootPackage: rootPackage,
-    ///       appModule: MockAppModule(
-    ///         diPackage: diPackage,
-    ///         domainDirectory: MockDomainDirectory(
-    ///           domainPackage: ({name}) => defaultDomainPackage,
-    ///         ),
-    ///         infrastructureDirectory: MockInfrastructureDirectory(
-    ///           infrastructurePackage: ({name}) => defaultInfrastructurePackage,
-    ///         ),
-    ///         loggingPackage: loggingPackage,
-    ///         platformDirectory: ({required platform}) => MockPlatformDirectory(
-    ///           rootPackage: platformRootPackage,
-    ///           localizationPackage: localizationPackage,
-    ///           navigationPackage: navigationPackage,
-    ///           featuresDirectory: MockPlatformFeaturesDirectory(
-    ///             appFeaturePackage: appFeaturePackage,
-    ///             featurePackage: featurePackage,
-    ///           ),
-    ///         ),
-    ///       ),
-    ///       uiModule: MockUiModule(
-    ///         uiPackage: uiPackage,
-    ///         platformUiPackage: ({required platform}) => platformUiPackage,
-    ///       ),
-    ///     );
-    ///     final projectBuilder = MockRapidProjectBuilder();
-    ///     when(() => projectBuilder(config: any(named: 'config')))
-    ///         .thenReturn(project);
-    ///     final logger = MockRapidLogger();
-    ///     final rapid = _getRapid(
-    ///       projectBuilder: projectBuilder,
-    ///       logger: logger,
-    ///     );
-    ///
-    ///     await withMockProcessManager(
-    ///       () async => rapid.create(
-    ///         projectName: 'test_app',
-    ///         outputDir: 'some/path',
-    ///         description: 'Some desc.',
-    ///         orgName: 'test.example',
-    ///         language: Language(languageCode: 'fr'),
-    ///         platforms: {
-    ///           Platform.android,
-    ///           Platform.ios,
-    ///           Platform.linux,
-    ///           Platform.macos,
-    ///           Platform.web,
-    ///           Platform.windows,
-    ///           Platform.mobile,
-    ///         },
-    ///       ),
-    ///       manager: manager,
-    ///     );
-    ///
-    ///     verifyInOrder([
-    ///       () => projectBuilder(
-    ///             config: RapidProjectConfig(
-    ///               path: '/some/path',
-    ///               name: 'test_app',
-    ///             ),
-    ///           ),
-    ///       () => logger.newLine(),
-    ///       () => logger.log('📦 Creating project'),
-    ///       () => logger.progress('Generating platform-independent packages'),
-    ///       () => rootPackage.generate(),
-    ///       () => diPackage.generate(),
-    ///       () => defaultDomainPackage.generate(),
-    ///       () => defaultInfrastructurePackage.generate(),
-    ///       () => loggingPackage.generate(),
-    ///       () => uiPackage.generate(),
-    ///       ...flutterPubGetTaskGroup(
-    ///         manager,
-    ///         packages: [
-    ///           rootPackage,
-    ///           diPackage,
-    ///           defaultDomainPackage,
-    ///           defaultInfrastructurePackage,
-    ///           loggingPackage,
-    ///           uiPackage,
-    ///         ],
-    ///       ),
-    ///       () => logger.newLine(),
-    ///       () => appFeaturePackage.generate(),
-    ///       () => homePageFeaturePackage.generate(),
-    ///       () => localizationPackage.generate(
-    ///             defaultLanguage: Language(languageCode: 'fr'),
-    ///           ),
-    ///       () => navigationPackage.generate(),
-    ///       () => platformRootPackage.generate(
-    ///             description: 'Some desc.',
-    ///             orgName: 'test.example',
-    ///           ),
-    ///       () => platformUiPackage.generate(),
-    ///       ...flutterPubGetTaskGroup(
-    ///         manager,
-    ///         packages: [
-    ///           appFeaturePackage,
-    ///           homePageFeaturePackage,
-    ///           localizationPackage,
-    ///           navigationPackage,
-    ///           platformRootPackage,
-    ///           platformUiPackage,
-    ///         ],
-    ///       ),
-    ///       ...flutterGenl10nTask(manager, package: localizationPackage),
-    ///       ...flutterConfigEnablePlatform(manager, platform: Platform.android),
-    ///       ...flutterConfigEnablePlatform(manager, platform: Platform.ios),
-    ///       ...flutterConfigEnablePlatform(manager, platform: Platform.linux),
-    ///       ...flutterConfigEnablePlatform(manager, platform: Platform.macos),
-    ///       ...flutterConfigEnablePlatform(manager, platform: Platform.web),
-    ///       ...flutterConfigEnablePlatform(manager, platform: Platform.windows),
-    ///       ...flutterConfigEnablePlatform(manager, platform: Platform.mobile),
-    ///       () => logger.newLine(),
-    ///       ...dartFormatFixTask(manager),
-    ///       () => logger.newLine(),
-    ///       () => logger.commandSuccess('Created Project!'),
-    ///     ]);
-    ///   }),
-    /// );
-    ///
-
-    // TODO add macos regression
-    ///  test(
-    ///   'regression issue 96: Podfile creation (file does not exist)',
-    ///   withMockFs(() async {
-    ///     final manager = MockProcessManager();
-    ///     final rootPackage = MockMacosRootPackage();
-    ///     final platformRootPackage = MockMacosRootPackage();
-    ///     final podFile = MockFile();
-    ///     when(() => podFile.existsSync()).thenReturn(false);
-    ///     when(() => rootPackage.nativeDirectory.podFile).thenReturn(podFile);
-    ///
-    ///     final project = MockRapidProject(
-    ///       rootPackage: rootPackage,
-    ///       appModule: MockAppModule(
-    ///         platformDirectory: ({required platform}) => MockPlatformDirectory(
-    ///           rootPackage: platformRootPackage,
-    ///         ),
-    ///       ),
-    ///     );
-    ///     final projectBuilder = MockRapidProjectBuilder();
-    ///     when(() => projectBuilder(config: any(named: 'config')))
-    ///         .thenReturn(project);
-    ///     final logger = MockRapidLogger();
-    ///     final rapid = _getRapid(
-    ///       projectBuilder: projectBuilder,
-    ///       logger: logger,
-    ///     );
-    ///
-    ///     await rapid.__activatePlatform(Platform.macos);
-    ///
-    ///     verify(() => logger.log('Modifying Podfile for macOS')).called(1);
-    ///     verify(() => replaceInFile(any(named: 'file'), any(named: 'pattern'),
-    ///         any(named: 'replacement'))).called(1);
-    ///   }),
-    /// );
-    ///
-    /// test(
-    ///   'regression issue 96: Podfile modification (file exists)',
-    ///   withMockFs(() async {
-    ///     final manager = MockProcessManager();
-    ///     final rootPackage = MockMacosRootPackage();
-    ///     final platformRootPackage = MockMacosRootPackage();
-    ///     final podFile = MockFile();
-    ///     when(() => podFile.existsSync()).thenReturn(true);
-    ///     when(() => rootPackage.nativeDirectory.podFile).thenReturn(podFile);
-    ///
-    ///     final project = MockRapidProject(
-    ///       rootPackage: rootPackage,
-    ///       appModule: MockAppModule(
-    ///         platformDirectory: ({required platform}) => MockPlatformDirectory(
-    ///           rootPackage: platformRootPackage,
-    ///         ),
-    ///       ),
-    ///     );
-    ///     final projectBuilder = MockRapidProjectBuilder();
-    ///     when(() => projectBuilder(config: any(named: 'config')))
-    ///         .thenReturn(project);
-    ///     final logger = MockRapidLogger();
-    ///     final rapid = _getRapid(
-    ///       projectBuilder: projectBuilder,
-    ///       logger: logger,
-    ///     );
-    ///
-    ///     await rapid.__activatePlatform(Platform.macos);
-    ///
-    ///     verify(() => logger.log('Modifying Podfile for macOS')).called(1);
-    ///     verify(() => replaceInFile(any(named: 'file'), any(named: 'pattern'),
-    ///         any(named: 'replacement'))).called(1);
-    ///   }),
-    /// );
+    // TODO: case for all platforms
   });
 }

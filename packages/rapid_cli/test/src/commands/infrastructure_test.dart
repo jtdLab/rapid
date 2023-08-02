@@ -1,84 +1,64 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
+import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 
-import '../invocations.dart';
 import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
+// TODO is it good to use global setup instead of setup fcts with records
+
 void main() {
+  late Entity entity;
+  late ServiceInterface serviceInterface;
+  late DataTransferObject dataTransferObject;
+  late ServiceImplementation serviceImplementation;
+  late DartFile infrastructurePackageBarrelFile;
+  late InfrastructurePackage infrastructurePackage;
+  late RapidProject project;
+
   setUpAll(() {
     registerFallbackValues();
   });
 
+  setUp(() {
+    entity = MockEntity();
+    when(() => entity.existsAll).thenReturn(true);
+    serviceInterface = MockServiceInterface();
+    when(() => serviceInterface.existsAll).thenReturn(true);
+    dataTransferObject = MockDataTransferObject();
+    serviceImplementation = MockServiceImplementation();
+    infrastructurePackageBarrelFile = MockDartFile();
+    infrastructurePackage = MockInfrastructurePackage(
+      dataTransferObject: ({required entityName}) => dataTransferObject,
+      serviceImplementation: ({required name, required serviceInterfaceName}) =>
+          serviceImplementation,
+    );
+    when(() => infrastructurePackage.barrelFile)
+        .thenReturn(infrastructurePackageBarrelFile);
+    project = MockRapidProject(
+      path: 'project_path',
+      appModule: MockAppModule(
+        domainDirectory: MockDomainDirectory(
+          domainPackage: ({name}) => MockDomainPackage(
+            entity: ({required name}) => entity,
+            serviceInterface: ({required name}) => serviceInterface,
+          ),
+        ),
+        infrastructureDirectory: MockInfrastructureDirectory(
+          infrastructurePackage: ({name}) => infrastructurePackage,
+        ),
+      ),
+    );
+  });
+
   group('infrastructureSubInfrastructureAddDataTransferObject', () {
-    test('adds data transfer object to sub-infrastructure', () async {
-      final manager = MockProcessManager();
-      final entity = MockEntity();
-      when(() => entity.existsAll).thenReturn(true);
-      final dataTransferObject = MockDataTransferObject();
-      when(() => dataTransferObject.existsAny).thenReturn(false);
-      final barrelFile = MockDartFile();
-      final infrastructurePackage = MockInfrastructurePackage(
-        dataTransferObject: ({required entityName}) => dataTransferObject,
-      );
-      when(() => infrastructurePackage.barrelFile).thenReturn(barrelFile);
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => MockDomainPackage(
-              entity: ({required name}) => entity,
-            ),
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-      );
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async => rapid.infrastructureSubInfrastructureAddDataTransferObject(
-          subInfrastructureName: 'foo_bar',
-          entityName: 'Cool',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => dataTransferObject.generate(),
-        () => barrelFile.addExport('src/cool_dto.dart'),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Data Transfer Object!')
-      ]);
-    });
-
     test(
         'throws DataTransferObjectAlreadyExistsException when data transfer object already exists',
         () async {
-      final entity = MockEntity();
-      when(() => entity.existsAll).thenReturn(true);
-      final dataTransferObject = MockDataTransferObject();
       when(() => dataTransferObject.existsAny).thenReturn(true);
-      final infrastructurePackage = MockInfrastructurePackage(
-        dataTransferObject: ({required entityName}) => dataTransferObject,
-      );
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => MockDomainPackage(
-              entity: ({required name}) => entity,
-            ),
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -91,17 +71,7 @@ void main() {
     });
 
     test('throws EntityNotFoundException when entity does not exist', () async {
-      final entity = MockEntity();
       when(() => entity.existsAll).thenReturn(false);
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => MockDomainPackage(
-              entity: ({required name}) => entity,
-            ),
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -112,84 +82,44 @@ void main() {
         throwsA(isA<EntityNotFoundException>()),
       );
     });
+
+    test(
+      'adds data transfer object to infrastructure package',
+      withMockEnv((manager) async {
+        when(() => dataTransferObject.existsAny).thenReturn(false);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.infrastructureSubInfrastructureAddDataTransferObject(
+          subInfrastructureName: 'foo_bar',
+          entityName: 'Cool',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating data transfer object'),
+          () => dataTransferObject.generate(),
+          () => infrastructurePackageBarrelFile.addExport('src/cool_dto.dart'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Data Transfer Object!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
   });
 
   group('infrastructureSubInfrastructureAddServiceImplementation', () {
-    test('adds service implementation to sub-infrastructure', () async {
-      final manager = MockProcessManager();
-      final serviceImplementation = MockServiceImplementation();
-      when(() => serviceImplementation.existsAny).thenReturn(false);
-      final barrelFile = MockDartFile();
-      final infrastructurePackage = MockInfrastructurePackage(
-        serviceImplementation: (
-                {required name, required serviceInterfaceName}) =>
-            serviceImplementation,
-      );
-      when(() => infrastructurePackage.barrelFile).thenReturn(barrelFile);
-      final serviceInterface = MockServiceInterface();
-      when(() => serviceInterface.existsAll).thenReturn(true);
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => MockDomainPackage(
-              serviceInterface: ({required name}) => serviceInterface,
-            ),
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-      );
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async =>
-            rapid.infrastructureSubInfrastructureAddServiceImplementation(
-          name: 'Fake',
-          subInfrastructureName: 'foo_bar',
-          serviceInterfaceName: 'Cool',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => serviceImplementation.generate(),
-        () => barrelFile.addExport('src/fake_cool_service.dart'),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Added Service Implementation!')
-      ]);
-    });
-
     test(
         'throws ServiceImplementationAlreadyExistsException when implementation already exists',
         () async {
-      final serviceImplementation = MockServiceImplementation();
       when(() => serviceImplementation.existsAny).thenReturn(true);
-      final infrastructurePackage = MockInfrastructurePackage(
-        serviceImplementation: ({
-          required name,
-          required serviceInterfaceName,
-        }) =>
-            serviceImplementation,
-      );
-      final serviceInterface = MockServiceInterface();
-      when(() => serviceInterface.existsAll).thenReturn(true);
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => MockDomainPackage(
-              serviceInterface: ({required name}) => serviceInterface,
-            ),
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -205,22 +135,7 @@ void main() {
     test(
         'throws ServiceInterfaceNotFoundException when service interface does not exist',
         () async {
-      final infrastructurePackage = MockInfrastructurePackage();
-      final serviceInterface = MockServiceInterface();
       when(() => serviceInterface.existsAll).thenReturn(false);
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => MockDomainPackage(
-              serviceInterface: ({required name}) => serviceInterface,
-            ),
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -232,69 +147,46 @@ void main() {
         throwsA(isA<ServiceInterfaceNotFoundException>()),
       );
     });
+
+    test(
+      'adds service implementation to infrastructure package',
+      withMockEnv((manager) async {
+        when(() => serviceImplementation.existsAny).thenReturn(false);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.infrastructureSubInfrastructureAddServiceImplementation(
+          name: 'Fake',
+          subInfrastructureName: 'foo_bar',
+          serviceInterfaceName: 'Cool',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Creating service implementation'),
+          () => serviceImplementation.generate(),
+          () => infrastructurePackageBarrelFile
+              .addExport('src/fake_cool_service.dart'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Added Service Implementation!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
   });
 
   group('infrastructureSubInfrastructureRemoveDataTransferObject', () {
-    test('removes data transfer object from sub-infrastructure', () async {
-      final manager = MockProcessManager();
-      final dataTransferObject = MockDataTransferObject();
-      when(() => dataTransferObject.existsAny).thenReturn(true);
-      final barrelFile = MockDartFile();
-      final infrastructurePackage = MockInfrastructurePackage(
-        dataTransferObject: ({required entityName}) => dataTransferObject,
-        barrelFile: barrelFile,
-      );
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => MockDomainPackage(),
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-      );
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async =>
-            rapid.infrastructureSubInfrastructureRemoveDataTransferObject(
-          subInfrastructureName: 'foo',
-          entityName: 'Cool',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => barrelFile.removeExport('src/cool_dto.dart'),
-        () => dataTransferObject.delete(),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Data Transfer Object!')
-      ]);
-    });
-
     test(
         'throws DataTransferObjectNotFoundException when data transfer object does not exist',
         () async {
-      final dataTransferObject = MockDataTransferObject();
       when(() => dataTransferObject.existsAny).thenReturn(false);
-      final infrastructurePackage = MockInfrastructurePackage(
-        dataTransferObject: ({required entityName}) => dataTransferObject,
-      );
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => MockDomainPackage(),
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -305,76 +197,45 @@ void main() {
         throwsA(isA<DataTransferObjectNotFoundException>()),
       );
     });
+
+    test(
+      'removes data transfer object from infrastructure package',
+      withMockEnv((manager) async {
+        when(() => dataTransferObject.existsAny).thenReturn(true);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.infrastructureSubInfrastructureRemoveDataTransferObject(
+          subInfrastructureName: 'foo',
+          entityName: 'Cool',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Deleting data transfer object'),
+          () =>
+              infrastructurePackageBarrelFile.removeExport('src/cool_dto.dart'),
+          () => dataTransferObject.delete(),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Removed Data Transfer Object!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
   });
 
   group('infrastructureSubInfrastructureRemoveServiceImplementation', () {
-    test('removes service implementation from sub-infrastructure', () async {
-      final manager = MockProcessManager();
-      final serviceImplementation = MockServiceImplementation();
-      when(() => serviceImplementation.existsAny).thenReturn(true);
-      final barrelFile = MockDartFile();
-      final infrastructurePackage = MockInfrastructurePackage(
-        serviceImplementation: ({
-          required name,
-          required serviceInterfaceName,
-        }) =>
-            serviceImplementation,
-        barrelFile: barrelFile,
-      );
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => MockDomainPackage(),
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-      );
-      final logger = MockRapidLogger();
-      final rapid = getRapid(project: project, logger: logger);
-
-      await withMockProcessManager(
-        () async =>
-            rapid.infrastructureSubInfrastructureRemoveServiceImplementation(
-          name: 'Fake',
-          subInfrastructureName: 'foo_bar',
-          serviceInterfaceName: 'Cool',
-        ),
-        manager: manager,
-      );
-
-      verifyInOrder([
-        () => logger.newLine(),
-        () => barrelFile.removeExport('src/fake_cool_service.dart'),
-        () => serviceImplementation.delete(),
-        () => dartFormatFixTask(manager),
-        () => logger.newLine(),
-        () => logger.commandSuccess('Removed Service Implementation!')
-      ]);
-    });
-
     test(
         'throws ServiceImplementationNotFoundException when service implementation does not exist',
         () async {
-      final serviceImplementation = MockServiceImplementation();
       when(() => serviceImplementation.existsAny).thenReturn(false);
-      final infrastructurePackage = MockInfrastructurePackage(
-        serviceImplementation: (
-                {required name, required serviceInterfaceName}) =>
-            serviceImplementation,
-      );
-
-      final project = MockRapidProject(
-        appModule: MockAppModule(
-          domainDirectory: MockDomainDirectory(
-            domainPackage: ({name}) => MockDomainPackage(),
-          ),
-          infrastructureDirectory: MockInfrastructureDirectory(
-            infrastructurePackage: ({name}) => infrastructurePackage,
-          ),
-        ),
-      );
       final rapid = getRapid(project: project);
 
       expect(
@@ -386,5 +247,38 @@ void main() {
         throwsA(isA<ServiceImplementationNotFoundException>()),
       );
     });
+
+    test(
+      'removes service implementation from infrastructure package',
+      withMockEnv((manager) async {
+        when(() => serviceImplementation.existsAny).thenReturn(true);
+        final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
+        final rapid = getRapid(project: project, logger: logger);
+
+        await rapid.infrastructureSubInfrastructureRemoveServiceImplementation(
+          name: 'Fake',
+          subInfrastructureName: 'foo_bar',
+          serviceInterfaceName: 'Cool',
+        );
+
+        verifyInOrder([
+          () => logger.newLine(),
+          () => logger.progress('Deleting service implementation'),
+          () => infrastructurePackageBarrelFile
+              .removeExport('src/fake_cool_service.dart'),
+          () => serviceImplementation.delete(),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.progress('Running "dart format . --fix" in project'),
+          () => manager.runDartFormatFix(workingDirectory: 'project_path'),
+          () => progress.complete(),
+          () => logger.newLine(),
+          () => logger.commandSuccess('Removed Service Implementation!')
+        ]);
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+      }),
+    );
   });
 }

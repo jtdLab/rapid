@@ -92,12 +92,6 @@ void main() {
 
       test('completes', () async {
         final rapid = MockRapid();
-        when(
-          () => rapid.platformRemoveLanguage(
-            any(),
-            language: any(named: 'language'),
-          ),
-        ).thenAnswer((_) async {});
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['de']);
         final command = PlatformRemoveLanguageCommand(platform, null)

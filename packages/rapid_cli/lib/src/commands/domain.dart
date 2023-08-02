@@ -85,7 +85,8 @@ mixin _DomainMixin on _Rapid {
         await melosBootstrapTask(scope: rootPackages);
 
         await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
-            packages: rootPackages);
+          packages: rootPackages,
+        );
 
         await dartFormatFixTask();
 
@@ -184,7 +185,9 @@ mixin _DomainMixin on _Rapid {
         },
       );
 
-      await codeGenTask(package: domainPackage);
+      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        package: domainPackage,
+      );
 
       await dartFormatFixTask();
 
@@ -210,7 +213,7 @@ mixin _DomainMixin on _Rapid {
       final barrelFile = domainPackage.barrelFile;
 
       await task(
-        'Deleting entity',
+        'Deleting entity files',
         () async {
           entity.delete();
           barrelFile.removeExport(p.join('src', '${name.snakeCase}.dart'));

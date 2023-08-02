@@ -1,10 +1,13 @@
 import 'package:mocktail/mocktail.dart';
+import 'package:rapid_cli/src/io.dart';
 import 'package:rapid_cli/src/mason.dart';
 import 'package:rapid_cli/src/project/bundles/bundles.dart';
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
+import 'package:path/path.dart' as p;
 
 import '../../mock_fs.dart';
 import '../../mocks.dart';
@@ -115,6 +118,686 @@ void main() {
         },
       ),
     );
+
+    group('addLanguage', () {
+      test(
+        'en',
+        withMockFs(() {
+          final infoFile =
+              File(p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+                ..createSync(recursive: true)
+                ..writeAsStringSync(
+                  multiLine([
+                    '<?xml version="1.0" encoding="UTF-8"?>',
+                    '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                    '<plist version="1.0">',
+                    '  <dict>',
+                    '    <key>CFBundleLocalizations</key>',
+                    '    <array>',
+                    '      <string>fr</string>',
+                    '    </array>',
+                    '  <key>key</key>',
+                    '  <string>value</string>',
+                    '  </dict>',
+                    '</plist>'
+                  ]),
+                );
+          final iosNativeDirectory = _getIosNativeDirectory(
+            path: 'ios_native_directory_path',
+          );
+
+          iosNativeDirectory.addLanguage(Language(languageCode: 'en'));
+
+          expect(
+            infoFile.readAsStringSync(),
+            multiLine([
+              '<?xml version="1.0" encoding="UTF-8"?>',
+              '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+              '<plist version="1.0">',
+              '  <dict>',
+              '    <key>CFBundleLocalizations</key>',
+              '    <array>',
+              '      <string>en</string>',
+              '      <string>fr</string>',
+              '    </array>',
+              '    <key>key</key>',
+              '    <string>value</string>',
+              '  </dict>',
+              '</plist>'
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'en-US',
+        withMockFs(() {
+          final infoFile =
+              File(p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+                ..createSync(recursive: true)
+                ..writeAsStringSync(
+                  multiLine([
+                    '<?xml version="1.0" encoding="UTF-8"?>',
+                    '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                    '<plist version="1.0">',
+                    '  <dict>',
+                    '    <key>CFBundleLocalizations</key>',
+                    '    <array>',
+                    '      <string>fr</string>',
+                    '    </array>',
+                    '  <key>key</key>',
+                    '  <string>value</string>',
+                    '  </dict>',
+                    '</plist>'
+                  ]),
+                );
+          final iosNativeDirectory = _getIosNativeDirectory(
+            path: 'ios_native_directory_path',
+          );
+
+          iosNativeDirectory
+              .addLanguage(Language(languageCode: 'en', countryCode: 'US'));
+
+          expect(
+            infoFile.readAsStringSync(),
+            multiLine([
+              '<?xml version="1.0" encoding="UTF-8"?>',
+              '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+              '<plist version="1.0">',
+              '  <dict>',
+              '    <key>CFBundleLocalizations</key>',
+              '    <array>',
+              '      <string>en-US</string>',
+              '      <string>fr</string>',
+              '    </array>',
+              '    <key>key</key>',
+              '    <string>value</string>',
+              '  </dict>',
+              '</plist>'
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'zh-Hans-CN',
+        withMockFs(() {
+          final infoFile =
+              File(p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+                ..createSync(recursive: true)
+                ..writeAsStringSync(multiLine([
+                  '<?xml version="1.0" encoding="UTF-8"?>',
+                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                  '<plist version="1.0">',
+                  '  <dict>',
+                  '    <key>CFBundleLocalizations</key>',
+                  '    <array>',
+                  '      <string>fr</string>',
+                  '    </array>',
+                  '    <key>key</key>',
+                  '    <string>value</string>',
+                  '  </dict>',
+                  '</plist>'
+                ]));
+          final iosNativeDirectory = _getIosNativeDirectory(
+            path: 'ios_native_directory_path',
+          );
+
+          iosNativeDirectory.addLanguage(
+            Language(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+          );
+
+          expect(
+            infoFile.readAsStringSync(),
+            multiLine([
+              '<?xml version="1.0" encoding="UTF-8"?>',
+              '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+              '<plist version="1.0">',
+              '  <dict>',
+              '    <key>CFBundleLocalizations</key>',
+              '    <array>',
+              '      <string>fr</string>',
+              '      <string>zh-Hans-CN</string>',
+              '    </array>',
+              '    <key>key</key>',
+              '    <string>value</string>',
+              '  </dict>',
+              '</plist>'
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'sorts CFBundleLocalizations alphabetically ',
+        withMockFs(() {
+          final infoFile =
+              File(p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+                ..createSync(recursive: true)
+                ..writeAsStringSync(multiLine([
+                  '<?xml version="1.0" encoding="UTF-8"?>',
+                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                  '<plist version="1.0">',
+                  '  <dict>',
+                  '    <key>CFBundleLocalizations</key>',
+                  '    <array>',
+                  '      <string>zh-Hans-CN</string>',
+                  '      <string>fr</string>',
+                  '    </array>',
+                  '    <key>key</key>',
+                  '    <string>value</string>',
+                  '  </dict>',
+                  '</plist>'
+                ]));
+          final iosNativeDirectory = _getIosNativeDirectory(
+            path: 'ios_native_directory_path',
+          );
+
+          iosNativeDirectory.addLanguage(Language(languageCode: 'en'));
+
+          expect(
+            infoFile.readAsStringSync(),
+            multiLine([
+              '<?xml version="1.0" encoding="UTF-8"?>',
+              '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+              '<plist version="1.0">',
+              '  <dict>',
+              '    <key>CFBundleLocalizations</key>',
+              '    <array>',
+              '      <string>en</string>',
+              '      <string>fr</string>',
+              '      <string>zh-Hans-CN</string>',
+              '    </array>',
+              '    <key>key</key>',
+              '    <string>value</string>',
+              '  </dict>',
+              '</plist>'
+            ]),
+          );
+        }),
+      );
+
+      group('given no other languages are present', () {
+        test(
+          'en',
+          withMockFs(() {
+            final infoFile = File(
+                p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+              ..createSync(recursive: true)
+              ..writeAsStringSync(
+                multiLine([
+                  '<?xml version="1.0" encoding="UTF-8"?>',
+                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                  '<plist version="1.0">',
+                  '  <dict>',
+                  '    <key>key</key>',
+                  '    <string>value</string>',
+                  '  </dict>',
+                  '</plist>'
+                ]),
+              );
+            final iosNativeDirectory = _getIosNativeDirectory(
+              path: 'ios_native_directory_path',
+            );
+
+            iosNativeDirectory.addLanguage(Language(languageCode: 'en'));
+
+            expect(
+              infoFile.readAsStringSync(),
+              multiLine([
+                '<?xml version="1.0" encoding="UTF-8"?>',
+                '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                '<plist version="1.0">',
+                '  <dict>',
+                '    <key>CFBundleLocalizations</key>',
+                '    <array>',
+                '      <string>en</string>',
+                '    </array>',
+                '    <key>key</key>',
+                '    <string>value</string>',
+                '  </dict>',
+                '</plist>'
+              ]),
+            );
+          }),
+        );
+
+        test(
+          'en-US',
+          withMockFs(() {
+            final infoFile = File(
+                p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+              ..createSync(recursive: true)
+              ..writeAsStringSync(
+                multiLine([
+                  '<?xml version="1.0" encoding="UTF-8"?>',
+                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                  '<plist version="1.0">',
+                  '  <dict>',
+                  '    <key>key</key>',
+                  '    <string>value</string>',
+                  '  </dict>',
+                  '</plist>'
+                ]),
+              );
+            final iosNativeDirectory = _getIosNativeDirectory(
+              path: 'ios_native_directory_path',
+            );
+
+            iosNativeDirectory
+                .addLanguage(Language(languageCode: 'en', countryCode: 'US'));
+
+            expect(
+              infoFile.readAsStringSync(),
+              multiLine([
+                '<?xml version="1.0" encoding="UTF-8"?>',
+                '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                '<plist version="1.0">',
+                '  <dict>',
+                '    <key>CFBundleLocalizations</key>',
+                '    <array>',
+                '      <string>en-US</string>',
+                '    </array>',
+                '    <key>key</key>',
+                '    <string>value</string>',
+                '  </dict>',
+                '</plist>'
+              ]),
+            );
+          }),
+        );
+
+        test(
+          'zh-Hans-CN',
+          withMockFs(() {
+            final infoFile = File(
+                p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+              ..createSync(recursive: true)
+              ..writeAsStringSync(
+                multiLine([
+                  '<?xml version="1.0" encoding="UTF-8"?>',
+                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                  '<plist version="1.0">',
+                  '  <dict>',
+                  '    <key>key</key>',
+                  '    <string>value</string>',
+                  '  </dict>',
+                  '</plist>'
+                ]),
+              );
+            final iosNativeDirectory = _getIosNativeDirectory(
+              path: 'ios_native_directory_path',
+            );
+
+            iosNativeDirectory.addLanguage(
+              Language(
+                  languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+            );
+
+            expect(
+              infoFile.readAsStringSync(),
+              multiLine([
+                '<?xml version="1.0" encoding="UTF-8"?>',
+                '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                '<plist version="1.0">',
+                '  <dict>',
+                '    <key>CFBundleLocalizations</key>',
+                '    <array>',
+                '      <string>zh-Hans-CN</string>',
+                '    </array>',
+                '    <key>key</key>',
+                '    <string>value</string>',
+                '  </dict>',
+                '</plist>'
+              ]),
+            );
+          }),
+        );
+      });
+    });
+
+    group('removeLanguage', () {
+      test(
+        'en',
+        withMockFs(() {
+          final infoFile =
+              File(p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+                ..createSync(recursive: true)
+                ..writeAsStringSync(
+                  multiLine([
+                    '<?xml version="1.0" encoding="UTF-8"?>',
+                    '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                    '<plist version="1.0">',
+                    '  <dict>',
+                    '    <key>CFBundleLocalizations</key>',
+                    '    <array>',
+                    '      <string>en</string>',
+                    '      <string>fr</string>',
+                    '    </array>',
+                    '    <key>key</key>',
+                    '    <string>value</string>',
+                    '  </dict>',
+                    '</plist>'
+                  ]),
+                );
+          final iosNativeDirectory = _getIosNativeDirectory(
+            path: 'ios_native_directory_path',
+          );
+
+          iosNativeDirectory.removeLanguage(Language(languageCode: 'en'));
+
+          expect(
+            infoFile.readAsStringSync(),
+            multiLine([
+              '<?xml version="1.0" encoding="UTF-8"?>',
+              '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+              '<plist version="1.0">',
+              '  <dict>',
+              '    <key>CFBundleLocalizations</key>',
+              '    <array>',
+              '      <string>fr</string>',
+              '    </array>',
+              '    <key>key</key>',
+              '    <string>value</string>',
+              '  </dict>',
+              '</plist>'
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'en-US',
+        withMockFs(() {
+          final infoFile =
+              File(p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+                ..createSync(recursive: true)
+                ..writeAsStringSync(
+                  multiLine([
+                    '<?xml version="1.0" encoding="UTF-8"?>',
+                    '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                    '<plist version="1.0">',
+                    '  <dict>',
+                    '    <key>CFBundleLocalizations</key>',
+                    '    <array>',
+                    '      <string>en-US</string>',
+                    '      <string>fr</string>',
+                    '    </array>',
+                    '    <key>key</key>',
+                    '    <string>value</string>',
+                    '  </dict>',
+                    '</plist>'
+                  ]),
+                );
+          final iosNativeDirectory = _getIosNativeDirectory(
+            path: 'ios_native_directory_path',
+          );
+
+          iosNativeDirectory
+              .removeLanguage(Language(languageCode: 'en', countryCode: 'US'));
+
+          expect(
+            infoFile.readAsStringSync(),
+            multiLine([
+              '<?xml version="1.0" encoding="UTF-8"?>',
+              '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+              '<plist version="1.0">',
+              '  <dict>',
+              '    <key>CFBundleLocalizations</key>',
+              '    <array>',
+              '      <string>fr</string>',
+              '    </array>',
+              '    <key>key</key>',
+              '    <string>value</string>',
+              '  </dict>',
+              '</plist>'
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'zh-Hans-CN',
+        withMockFs(() {
+          final infoFile =
+              File(p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+                ..createSync(recursive: true)
+                ..writeAsStringSync(multiLine([
+                  '<?xml version="1.0" encoding="UTF-8"?>',
+                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                  '<plist version="1.0">',
+                  '  <dict>',
+                  '    <key>CFBundleLocalizations</key>',
+                  '    <array>',
+                  '      <string>fr</string>',
+                  '      <string>zh-Hans-CN</string>',
+                  '    </array>',
+                  '    <key>key</key>',
+                  '    <string>value</string>',
+                  '  </dict>',
+                  '</plist>'
+                ]));
+          final iosNativeDirectory = _getIosNativeDirectory(
+            path: 'ios_native_directory_path',
+          );
+
+          iosNativeDirectory.removeLanguage(
+            Language(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+          );
+
+          expect(
+            infoFile.readAsStringSync(),
+            multiLine([
+              '<?xml version="1.0" encoding="UTF-8"?>',
+              '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+              '<plist version="1.0">',
+              '  <dict>',
+              '    <key>CFBundleLocalizations</key>',
+              '    <array>',
+              '      <string>fr</string>',
+              '    </array>',
+              '    <key>key</key>',
+              '    <string>value</string>',
+              '  </dict>',
+              '</plist>'
+            ]),
+          );
+        }),
+      );
+
+      test(
+        'sorts CFBundleLocalizations alphabetically ',
+        withMockFs(() {
+          final infoFile =
+              File(p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+                ..createSync(recursive: true)
+                ..writeAsStringSync(multiLine([
+                  '<?xml version="1.0" encoding="UTF-8"?>',
+                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                  '<plist version="1.0">',
+                  '  <dict>',
+                  '    <key>CFBundleLocalizations</key>',
+                  '    <array>',
+                  '      <string>en</string>',
+                  '      <string>zh-Hans-CN</string>',
+                  '      <string>fr</string>',
+                  '    </array>',
+                  '    <key>key</key>',
+                  '    <string>value</string>',
+                  '  </dict>',
+                  '</plist>'
+                ]));
+          final iosNativeDirectory = _getIosNativeDirectory(
+            path: 'ios_native_directory_path',
+          );
+
+          iosNativeDirectory.removeLanguage(Language(languageCode: 'en'));
+
+          expect(
+            infoFile.readAsStringSync(),
+            multiLine([
+              '<?xml version="1.0" encoding="UTF-8"?>',
+              '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+              '<plist version="1.0">',
+              '  <dict>',
+              '    <key>CFBundleLocalizations</key>',
+              '    <array>',
+              '      <string>fr</string>',
+              '      <string>zh-Hans-CN</string>',
+              '    </array>',
+              '    <key>key</key>',
+              '    <string>value</string>',
+              '  </dict>',
+              '</plist>'
+            ]),
+          );
+        }),
+      );
+
+      group('given only one language present', () {
+        test(
+          'en',
+          withMockFs(() {
+            final infoFile = File(
+                p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+              ..createSync(recursive: true)
+              ..writeAsStringSync(
+                multiLine([
+                  '<?xml version="1.0" encoding="UTF-8"?>',
+                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                  '<plist version="1.0">',
+                  '  <dict>',
+                  '    <key>CFBundleLocalizations</key>',
+                  '    <array>',
+                  '      <string>en</string>',
+                  '    </array>',
+                  '    <key>key</key>',
+                  '    <string>value</string>',
+                  '  </dict>',
+                  '</plist>'
+                ]),
+              );
+            final iosNativeDirectory = _getIosNativeDirectory(
+              path: 'ios_native_directory_path',
+            );
+
+            iosNativeDirectory.removeLanguage(Language(languageCode: 'en'));
+
+            expect(
+              infoFile.readAsStringSync(),
+              multiLine([
+                '<?xml version="1.0" encoding="UTF-8"?>',
+                '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                '<plist version="1.0">',
+                '  <dict>',
+                '    <key>CFBundleLocalizations</key>',
+                '    <array/>',
+                '    <key>key</key>',
+                '    <string>value</string>',
+                '  </dict>',
+                '</plist>'
+              ]),
+            );
+          }),
+        );
+
+        test(
+          'en-US',
+          withMockFs(() {
+            final infoFile = File(
+                p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+              ..createSync(recursive: true)
+              ..writeAsStringSync(
+                multiLine([
+                  '<?xml version="1.0" encoding="UTF-8"?>',
+                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                  '<plist version="1.0">',
+                  '  <dict>',
+                  '    <key>CFBundleLocalizations</key>',
+                  '    <array>',
+                  '      <string>en-US</string>',
+                  '    </array>',
+                  '    <key>key</key>',
+                  '    <string>value</string>',
+                  '  </dict>',
+                  '</plist>'
+                ]),
+              );
+            final iosNativeDirectory = _getIosNativeDirectory(
+              path: 'ios_native_directory_path',
+            );
+
+            iosNativeDirectory.removeLanguage(
+                Language(languageCode: 'en', countryCode: 'US'));
+
+            expect(
+              infoFile.readAsStringSync(),
+              multiLine([
+                '<?xml version="1.0" encoding="UTF-8"?>',
+                '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                '<plist version="1.0">',
+                '  <dict>',
+                '    <key>CFBundleLocalizations</key>',
+                '    <array/>',
+                '    <key>key</key>',
+                '    <string>value</string>',
+                '  </dict>',
+                '</plist>'
+              ]),
+            );
+          }),
+        );
+
+        test(
+          'zh-Hans-CN',
+          withMockFs(() {
+            final infoFile = File(
+                p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+              ..createSync(recursive: true)
+              ..writeAsStringSync(
+                multiLine([
+                  '<?xml version="1.0" encoding="UTF-8"?>',
+                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                  '<plist version="1.0">',
+                  '  <dict>',
+                  '    <key>CFBundleLocalizations</key>',
+                  '    <array>',
+                  '      <string>zh-Hans-CN</string>',
+                  '    </array>',
+                  '    <key>key</key>',
+                  '    <string>value</string>',
+                  '  </dict>',
+                  '</plist>'
+                ]),
+              );
+            final iosNativeDirectory = _getIosNativeDirectory(
+              path: 'ios_native_directory_path',
+            );
+
+            iosNativeDirectory.removeLanguage(
+              Language(
+                  languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+            );
+
+            expect(
+              infoFile.readAsStringSync(),
+              multiLine([
+                '<?xml version="1.0" encoding="UTF-8"?>',
+                '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                '<plist version="1.0">',
+                '  <dict>',
+                '    <key>CFBundleLocalizations</key>',
+                '    <array/>',
+                '    <key>key</key>',
+                '    <string>value</string>',
+                '  </dict>',
+                '</plist>'
+              ]),
+            );
+          }),
+        );
+      });
+    });
   });
 
   group('MacosNativeDirectory', () {

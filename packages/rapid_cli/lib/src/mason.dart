@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 
-export 'package:mason/mason.dart';
+export 'package:mason/mason.dart' hide Logger, Progress;
 
 @visibleForTesting
 Future<MasonGenerator> Function(MasonBundle)? generatorOverrides;

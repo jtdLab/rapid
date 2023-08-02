@@ -39,11 +39,6 @@ void main() {
 
     test('completes', () async {
       final rapid = MockRapid();
-      when(
-        () => rapid.pubGet(
-          packageName: any(named: 'packageName'),
-        ),
-      ).thenAnswer((_) async {});
       final argResults = MockArgResults();
       when(() => argResults['package']).thenReturn('foo');
       final command = PubGetCommand(null)

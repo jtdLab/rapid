@@ -26,15 +26,7 @@ void main() {
     test(
       'help',
       overridePrint((printLogs) async {
-        final infrastructurePackage =
-            FakeInfrastructurePackage(name: 'package_a');
-        final project = MockRapidProject(
-          appModule: MockAppModule(
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackages: [infrastructurePackage],
-            ),
-          ),
-        );
+        final project = setupProjectWithInfrastructurePackage('package_a');
         final commandRunner = getCommandRunner(project: project);
 
         await commandRunner

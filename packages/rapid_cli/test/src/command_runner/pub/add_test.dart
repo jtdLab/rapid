@@ -81,12 +81,6 @@ void main() {
 
     test('completes', () async {
       final rapid = MockRapid();
-      when(
-        () => rapid.pubAdd(
-          packageName: any(named: 'packageName'),
-          packages: any(named: 'packages'),
-        ),
-      ).thenAnswer((_) async {});
       final argResults = MockArgResults();
       when(() => argResults['package']).thenReturn('foo');
       when(() => argResults.rest).thenReturn(['a: ^1.0.0', 'b:']);

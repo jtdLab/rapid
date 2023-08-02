@@ -80,12 +80,6 @@ void main() {
 
       test('completes', () async {
         final rapid = MockRapid();
-        when(
-          () => rapid.platformRemoveNavigator(
-            any(),
-            featureName: any(named: 'featureName'),
-          ),
-        ).thenAnswer((_) async {});
         final argResults = MockArgResults();
         when(() => argResults['feature']).thenReturn('package_a');
         final command = PlatformRemoveNavigatorCommand(platform, null)

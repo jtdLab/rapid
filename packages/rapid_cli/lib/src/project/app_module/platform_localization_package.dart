@@ -88,7 +88,7 @@ class PlatformLocalizationPackage extends DartPackage {
           name: 'supportedLocales',
           parentClass: '${projectName.pascalCase}Localizations',
         )
-        .map((e) => e.toLanguageFromDartLocale())
+        .map((e) => Language.fromDartUiLocal(e))
         .toSet();
   }
 
@@ -115,6 +115,7 @@ class PlatformLocalizationPackage extends DartPackage {
   }
 
   void addLanguage(Language language) {
+    // TODO
     final existingLanguages = supportedLanguages();
 
     if (!existingLanguages.contains(language)) {
@@ -129,6 +130,7 @@ class PlatformLocalizationPackage extends DartPackage {
   }
 
   void removeLanguage(Language language) {
+    // TODO
     final existingLanguages = supportedLanguages();
 
     if (existingLanguages.contains(language)) {

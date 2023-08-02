@@ -25,7 +25,7 @@ void main() {
       verifyNever(() => logger.commandSuccess(any()));
     });
 
-    test('completes', () async {
+    test('begins a command group', () async {
       final commandGroup = MockCommandGroup();
       when(() => commandGroup.isActive).thenReturn(false);
       final tool = MockRapidTool();

@@ -20,6 +20,10 @@ abstract class PlatformFeaturePackage extends DartPackage
   DartFile get barrelFile => DartFile(
       p.join(path, 'lib', '${projectName}_${platform.name}_$name.dart'));
 
+  Directory get applicationDir =>
+      Directory(p.join(path, 'lib', 'src', 'application'));
+
+  // TODO move to application dir?
   DartFile get applicationBarrelFile =>
       DartFile(p.join(path, 'lib', 'src', 'application', 'application.dart'));
 

@@ -28,6 +28,8 @@ mixin _InfrastructureMixin on _Rapid {
           },
         );
 
+        logger.newLine();
+
         await dartFormatFixTask();
 
         logger
@@ -74,6 +76,8 @@ mixin _InfrastructureMixin on _Rapid {
           },
         );
 
+        logger.newLine();
+
         await dartFormatFixTask();
 
         // TODO better hint containg related service etc
@@ -115,6 +119,8 @@ mixin _InfrastructureMixin on _Rapid {
         },
       );
 
+      logger.newLine();
+
       await dartFormatFixTask();
 
       logger
@@ -153,6 +159,8 @@ mixin _InfrastructureMixin on _Rapid {
           serviceImplementation.delete();
         },
       );
+
+      logger.newLine();
 
       await dartFormatFixTask();
 

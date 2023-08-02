@@ -4,6 +4,8 @@ import 'dart:io';
 import 'package:file/memory.dart';
 import 'package:rapid_cli/src/platform.dart';
 
+// TODO move to mock_env
+
 /// Runs [testBody] against an in-memory file system.
 FutureOr<void> Function() withMockFs(FutureOr<void> Function() testBody) {
   return () => IOOverrides.runWithIOOverrides(testBody, MockFs());

@@ -103,12 +103,6 @@ void main() {
 
     test('completes', () async {
       final rapid = MockRapid();
-      when(
-        () => rapid.activateMacos(
-          orgName: any(named: 'orgName'),
-          language: any(named: 'language'),
-        ),
-      ).thenAnswer((_) async {});
       final argResults = MockArgResults();
       when(() => argResults['org-name']).thenReturn('com.foo.bar');
       when(() => argResults['language']).thenReturn('de');

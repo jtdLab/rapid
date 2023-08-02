@@ -105,13 +105,6 @@ void main() {
 
     test('completes', () async {
       final rapid = MockRapid();
-      when(
-        () => rapid.activateMobile(
-          description: any(named: 'description'),
-          orgName: any(named: 'orgName'),
-          language: any(named: 'language'),
-        ),
-      ).thenAnswer((_) async {});
       final argResults = MockArgResults();
       when(() => argResults['desc']).thenReturn('A description.');
       when(() => argResults['org-name']).thenReturn('com.foo.bar');

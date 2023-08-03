@@ -14,7 +14,7 @@ dependencies:
   bloc: ^8.1.2
   freezed_annotation: ^2.4.1
   flutter_bloc: ^8.1.3
-  auto_route: ^7.7.1
+  auto_route: ^7.8.0
   injectable: ^2.1.2
   {{project_name}}_di:
   {{project_name}}_domain:
@@ -30,7 +30,7 @@ dev_dependencies:
   mocktail: ^1.0.0
   build_runner: ^2.4.6
   freezed: ^2.4.1
-  auto_route_generator: ^7.2.0
+  auto_route_generator: ^7.3.0
   injectable_generator: ^2.1.6
   flutter_gen_runner: ^5.3.1
   flutter_lints: ^2.0.2

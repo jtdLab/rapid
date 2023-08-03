@@ -31,11 +31,7 @@ int get terminalWidth {
         80;
   }
 
-  if (stdout.hasTerminal) {
-    return stdout.terminalColumns;
-  }
-
-  return 80;
+  return stdout.hasTerminal ? stdout.terminalColumns : 80;
 }
 
 Future<ProcessResult> runCommand(

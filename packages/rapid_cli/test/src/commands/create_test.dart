@@ -17,7 +17,7 @@ import '../mock_fs.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
-// TODO maybe share some with activate tests
+// TODO refactor using global setup and share some logic with activate
 
 typedef _ProjectSetup<T extends PlatformRootPackage> = ({
   RootPackage rootPackage,
@@ -490,6 +490,7 @@ void main() {
           () => defaultInfrastructurePackage.generate(),
           () => loggingPackage.generate(),
           () => uiPackage.generate(),
+          () => progress.complete(),
           () => logger.progressGroup(null),
           () => progressGroup
               .progress('Running "flutter pub get" in root_package'),
@@ -525,7 +526,11 @@ void main() {
           () => logger.newLine(),
           () => logger.commandSuccess('Created Project!'),
         ]);
-        // TODO verify never activate platform
+        verifyNoMoreInteractions(manager);
+        verifyNoMoreInteractions(logger);
+        verifyNoMoreInteractions(progress);
+        verifyNoMoreInteractions(progressGroup);
+        verifyNoMoreInteractions(groupableProgress);
       }),
     );
 
@@ -746,6 +751,36 @@ void main() {
       }),
     );
 
-    // TODO: case for all platforms
+    // TODO
+/*     test(
+      'creates project and activates all platforms',
+      withMockEnv((manager) async {
+        final projectSetup = _setupProjectWithPlatform<NoneIosRootPackage>();
+        final projectBuilder =
+            MockRapidProjectBuilder(project: projectSetup.project);
+        final loggerSetup = setupLogger();
+        final rapid = _getRapid(
+          projectBuilder: projectBuilder,
+          logger: loggerSetup.logger,
+        );
+
+        await rapid.create(
+          projectName: 'test_app',
+          outputDir: 'some/path',
+          description: 'Some desc.',
+          orgName: 'test.example',
+          language: Language(languageCode: 'fr'),
+          platforms: Platform.values.toSet(),
+        );
+
+        _verifyCreateProjectAndActivatePlatform(
+          Platform.android,
+          manager: manager,
+          projectSetup: projectSetup,
+          projectBuilder: projectBuilder,
+          loggerSetup: loggerSetup,
+        );
+      }),
+    ); */
   });
 }

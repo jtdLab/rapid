@@ -15,6 +15,11 @@ abstract class RapidCommand extends Command<void> {
   RapidCommand([this.project]);
 
   final RapidProject? project;
+
+  @override
+  late final ArgParser argParser = ArgParser(
+    usageLineLength: terminalWidth,
+  );
 }
 
 abstract class RapidBranchCommand extends RapidCommand {

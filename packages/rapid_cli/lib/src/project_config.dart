@@ -52,15 +52,15 @@ class RapidProjectConfig {
     final pubspecYamlFile = File(p.join(projectRoot.path, 'pubspec.yaml'));
     if (!pubspecYamlFile.existsSync()) {
       throw UnresolvedProject(
+        // TODO: is link correct ?
         multiLine([
           'Found no pubspec.yaml file in "${projectRoot.path}".',
           '',
-          'You must have a ${AnsiStyles.bold('pubspec.yaml')} file in the root '
-              'of your project.',
+          'You must have a ${AnsiStyles.bold('pubspec.yaml')} file in the root ',
+          'of your project.',
           '',
-          // TODO: add link
-          'For more information, see: '
-              'TODO',
+          'For more information, see: ',
+          'https://docs.page/jtdLab/rapid/cli/create',
         ]),
       );
     }
@@ -89,13 +89,13 @@ class RapidProjectConfig {
   /// or a parent directory by throwing an error with a helpful message.
   static Future<Never> handleProjectNotFound(Directory current) async {
     throw UnresolvedProject(
+      // TODO is link correct ?
       multiLine([
-        'Your current directory does not appear to be within a Rapid '
-            'project.',
+        'Your current directory does not appear to be within a Rapid ',
+        'project.',
         '',
-        // TODO: add link
-        'For setting up a project, see: '
-            'TODO',
+        'For setting up a project, see: ',
+        'https://docs.page/jtdLab/rapid/cli/create',
       ]),
     );
   }

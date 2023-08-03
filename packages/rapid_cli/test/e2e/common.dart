@@ -83,6 +83,7 @@ final class RapidE2ETester {
   /// Runs `rapid activate android` for `args = ['activate', 'android']`
   Future<void> runRapidCommand(List<String> args) async {
     final commandRunner = RapidCommandRunner(
+      // TODO this is not perfact as resolveProject should be private
       project: await resolveProject(
         args,
         args.first == 'create' ? null : Directory.current,

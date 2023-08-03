@@ -1,8 +1,12 @@
+import 'dart:typed_data';
+
+import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/io.dart';
 import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
 
 import 'mock_fs.dart';
+import 'mocks.dart';
 
 class _FileSystemEntityCollection extends FileSystemEntityCollection {
   _FileSystemEntityCollection({required this.entities});
@@ -16,6 +20,10 @@ class _DartPackage extends DartPackage {
 }
 
 void main() {
+  setUpAll(() {
+    registerFallbackValues();
+  });
+
   group('FileSystemEntityCollection', () {
     group('existAny', () {
       test(
@@ -98,25 +106,770 @@ void main() {
   });
 
   group('Directory', () {
-    // TODO
-    /*  test(
-      '.()',
-      withMockFs(() {
-        final ioDir = io.Directory('foo');
-        final dir = Directory('foo');
+    late Directory directory;
+    late MockIODirectory ioDirectory;
 
+    setUp(() {
+      ioDirectory = MockIODirectory();
 
-      }),
-    );
+      Directory.directoryOverrides = ioDirectory;
 
-    test(
-      'current',
-      withMockFs(() {}),
-    ); */
+      directory = Directory('path');
+    });
+
+    tearDown(() {
+      Directory.directoryOverrides = null;
+    });
+
+    test('absolute', () {
+      when(() => ioDirectory.absolute)
+          .thenReturn(FakeIODirectory(path: 'absolute_path'));
+
+      final absolute = directory.absolute;
+
+      verify(() => ioDirectory.absolute).called(1);
+      expect(absolute.path, 'absolute_path');
+    });
+
+    test('create', () async {
+      when(
+        () => ioDirectory.create(
+          recursive: any(named: 'recursive'),
+        ),
+      ).thenAnswer((_) async => FakeIODirectory(path: 'created_path'));
+
+      final createdDirectory = await directory.create(recursive: true);
+
+      verify(() => ioDirectory.create(recursive: true)).called(1);
+      expect(createdDirectory.path, 'created_path');
+    });
+
+    test('createSync', () {
+      directory.createSync(recursive: true);
+
+      verify(() => ioDirectory.createSync(recursive: true)).called(1);
+    });
+
+    test('createTemp', () async {
+      when(
+        () => ioDirectory.createTemp(any()),
+      ).thenAnswer((_) async => FakeIODirectory(path: 'temp_path'));
+
+      final tempDirectory = await directory.createTemp('temp_path');
+
+      verify(() => ioDirectory.createTemp('temp_path')).called(1);
+      expect(tempDirectory.path, 'temp_path');
+    });
+
+    test('createTempSync', () {
+      when(
+        () => ioDirectory.createTempSync(any()),
+      ).thenReturn(FakeIODirectory(path: 'temp_path'));
+
+      final tempDirectory = directory.createTempSync('temp_path');
+
+      verify(() => ioDirectory.createTempSync('temp_path')).called(1);
+      expect(tempDirectory.path, 'temp_path');
+    });
+
+    test('delete', () async {
+      when(
+        () => ioDirectory.delete(
+          recursive: any(named: 'recursive'),
+        ),
+      ).thenAnswer((_) async => FakeIODirectory(path: 'deleted_path'));
+
+      final deletedEntity = await directory.delete(recursive: true);
+
+      verify(() => ioDirectory.delete(recursive: true)).called(1);
+      expect(deletedEntity.path, 'deleted_path');
+    });
+
+    test('deleteSync', () {
+      ioDirectory.deleteSync(recursive: true);
+
+      verify(() => ioDirectory.deleteSync(recursive: true)).called(1);
+    });
+
+    test('exists', () async {
+      when(() => ioDirectory.exists()).thenAnswer((_) async => true);
+
+      final exists = await directory.exists();
+
+      verify(() => ioDirectory.exists()).called(1);
+      expect(exists, true);
+    });
+
+    test('existsSync', () {
+      when(() => ioDirectory.existsSync()).thenReturn(true);
+
+      final exists = directory.existsSync();
+
+      verify(() => ioDirectory.existsSync()).called(1);
+      expect(exists, true);
+    });
+
+    test('isAbsolute', () {
+      when(() => ioDirectory.isAbsolute).thenReturn(true);
+
+      final isAbsolute = directory.isAbsolute;
+
+      verify(() => ioDirectory.isAbsolute).called(1);
+      expect(isAbsolute, true);
+    });
+
+    test('list', () async {
+      when(
+        () => ioDirectory.list(
+          recursive: any(named: 'recursive'),
+          followLinks: any(named: 'followLinks'),
+        ),
+      ).thenAnswer(
+        (_) => Stream<FileSystemEntity>.fromIterable([
+          FakeIOFile(path: 'path_1'),
+          FakeIODirectory(path: 'path_2'),
+        ]),
+      );
+
+      final stream = directory.list(recursive: true, followLinks: true);
+
+      verify(
+        () => ioDirectory.list(recursive: true, followLinks: true),
+      ).called(1);
+      expect(await stream.first,
+          isA<File>().having((f) => f.path, 'path', 'path_1'));
+      expect(await stream.last,
+          isA<Directory>().having((f) => f.path, 'path', 'path_2'));
+    });
+
+    test('listSync', () {
+      when(
+        () => ioDirectory.listSync(
+          recursive: any(named: 'recursive'),
+          followLinks: any(named: 'followLinks'),
+        ),
+      ).thenAnswer(
+        (_) => [
+          FakeIOFile(path: 'path_1'),
+          FakeIODirectory(path: 'path_2'),
+        ],
+      );
+
+      final list = directory.listSync(recursive: true, followLinks: true);
+
+      verify(
+        () => ioDirectory.listSync(recursive: true, followLinks: true),
+      ).called(1);
+      expect(list.first, isA<File>().having((f) => f.path, 'path', 'path_1'));
+      expect(
+          list.last, isA<Directory>().having((f) => f.path, 'path', 'path_2'));
+    });
+
+    test('parent', () {
+      when(() => ioDirectory.parent)
+          .thenReturn(FakeIODirectory(path: 'parent_path'));
+
+      final parentDirectory = directory.parent;
+
+      verify(() => ioDirectory.parent).called(1);
+      expect(parentDirectory.path, 'parent_path');
+    });
+
+    test('path', () {
+      when(() => ioDirectory.path).thenReturn('path');
+
+      final path = directory.path;
+
+      verify(() => ioDirectory.path).called(1);
+      expect(path, 'path');
+    });
+
+    test('rename', () async {
+      when(() => ioDirectory.rename(any())).thenAnswer(
+        (_) async => FakeIODirectory(path: 'new_path'),
+      );
+
+      final renamedFile = await directory.rename('new_path');
+
+      verify(() => ioDirectory.rename('new_path')).called(1);
+      expect(renamedFile.path, 'new_path');
+    });
+
+    test('renameSync', () {
+      when(() => ioDirectory.renameSync(any())).thenReturn(
+        FakeIODirectory(path: 'new_path'),
+      );
+
+      final renamedFile = directory.renameSync('new_path');
+
+      verify(() => ioDirectory.renameSync('new_path')).called(1);
+      expect(renamedFile.path, 'new_path');
+    });
+
+    test('resolveSymbolicLinks', () async {
+      when(() => ioDirectory.resolveSymbolicLinks())
+          .thenAnswer((_) async => 'resolved_path');
+
+      final result = await directory.resolveSymbolicLinks();
+
+      verify(() => ioDirectory.resolveSymbolicLinks()).called(1);
+      expect(result, 'resolved_path');
+    });
+
+    test('resolveSymbolicLinksSync', () {
+      when(() => ioDirectory.resolveSymbolicLinksSync())
+          .thenReturn('resolved_path');
+
+      final result = directory.resolveSymbolicLinksSync();
+
+      verify(() => ioDirectory.resolveSymbolicLinksSync()).called(1);
+      expect(result, 'resolved_path');
+    });
+
+    test('stat', () async {
+      final mockFileStat = MockFileStat();
+      when(() => ioDirectory.stat()).thenAnswer((_) async => mockFileStat);
+
+      final directoryStat = await directory.stat();
+
+      verify(() => ioDirectory.stat()).called(1);
+      expect(directoryStat, mockFileStat);
+    });
+
+    test('statSync', () {
+      final mockFileStat = MockFileStat();
+      when(() => ioDirectory.statSync()).thenReturn(mockFileStat);
+
+      final directoryStat = directory.statSync();
+
+      verify(() => ioDirectory.statSync()).called(1);
+      expect(directoryStat, mockFileStat);
+    });
+
+    test('uri', () {
+      final mockUri = Uri.parse('directory:///path/to/directory');
+      when(() => ioDirectory.uri).thenReturn(mockUri);
+
+      final uri = directory.uri;
+
+      verify(() => ioDirectory.uri).called(1);
+      expect(uri, mockUri);
+    });
+
+    test('watch', () {
+      final mockStream = Stream<FileSystemEvent>.empty();
+      when(
+        () => ioDirectory.watch(
+          events: any(named: 'events'),
+          recursive: any(named: 'recursive'),
+        ),
+      ).thenAnswer((_) => mockStream);
+
+      final stream =
+          directory.watch(events: FileSystemEvent.all, recursive: true);
+
+      verify(
+        () => ioDirectory.watch(events: FileSystemEvent.all, recursive: true),
+      ).called(1);
+      expect(stream, mockStream);
+    });
   });
 
   group('File', () {
-    // TODO
+    late File file;
+    late MockIOFile ioFile;
+
+    setUp(() {
+      ioFile = MockIOFile();
+      File.fileOverrides = ioFile;
+
+      file = File('path');
+    });
+
+    tearDown(() {
+      File.fileOverrides = null;
+    });
+
+    test('absolute', () {
+      when(() => ioFile.absolute).thenReturn(FakeIOFile(path: 'absolute_path'));
+
+      final absolute = file.absolute;
+
+      verify(() => ioFile.absolute).called(1);
+      expect(absolute.path, 'absolute_path');
+    });
+
+    test('copy', () async {
+      when(() => ioFile.copy(any()))
+          .thenAnswer((_) async => FakeIOFile(path: 'new_path'));
+
+      final newFile = await file.copy('new_path');
+
+      verify(() => ioFile.copy('new_path')).called(1);
+      expect(newFile.path, 'new_path');
+    });
+
+    test('copySync', () {
+      when(() => ioFile.copySync(any()))
+          .thenReturn(FakeIOFile(path: 'new_path'));
+
+      final newFile = file.copySync('new_path');
+
+      verify(() => ioFile.copySync('new_path')).called(1);
+      expect(newFile.path, 'new_path');
+    });
+
+    test('create', () async {
+      when(
+        () => ioFile.create(
+          recursive: any(named: 'recursive'),
+          exclusive: any(named: 'exclusive'),
+        ),
+      ).thenAnswer((_) async => FakeIOFile(path: 'created_path'));
+
+      final createdFile = await file.create(recursive: true, exclusive: false);
+
+      verify(() => ioFile.create(recursive: true, exclusive: false)).called(1);
+      expect(createdFile.path, 'created_path');
+    });
+
+    test('createSync', () {
+      file.createSync(recursive: true, exclusive: false);
+
+      verify(() => ioFile.createSync(recursive: true, exclusive: false))
+          .called(1);
+    });
+
+    test('delete', () async {
+      when(
+        () => ioFile.delete(
+          recursive: any(named: 'recursive'),
+        ),
+      ).thenAnswer((_) async => FakeIOFile(path: 'deleted_path'));
+
+      final deletedEntity = await file.delete(recursive: true);
+
+      verify(() => ioFile.delete(recursive: true)).called(1);
+      expect(deletedEntity.path, 'deleted_path');
+    });
+
+    test('deleteSync', () {
+      file.deleteSync(recursive: true);
+
+      verify(() => ioFile.deleteSync(recursive: true)).called(1);
+    });
+
+    test('exists', () async {
+      when(() => ioFile.exists()).thenAnswer((_) async => true);
+
+      final exists = await file.exists();
+
+      verify(() => ioFile.exists()).called(1);
+      expect(exists, true);
+    });
+
+    test('existsSync', () {
+      when(() => ioFile.existsSync()).thenReturn(true);
+
+      final exists = file.existsSync();
+
+      verify(() => ioFile.existsSync()).called(1);
+      expect(exists, true);
+    });
+
+    test('isAbsolute', () {
+      when(() => ioFile.isAbsolute).thenReturn(true);
+
+      final isAbsolute = file.isAbsolute;
+
+      verify(() => ioFile.isAbsolute).called(1);
+      expect(isAbsolute, true);
+    });
+
+    test('lastAccessed', () async {
+      final lastAccessedDateTime = DateTime(2023, 8, 3, 12, 0, 0);
+      when(() => ioFile.lastAccessed())
+          .thenAnswer((_) async => lastAccessedDateTime);
+
+      final lastAccessed = await file.lastAccessed();
+
+      verify(() => ioFile.lastAccessed()).called(1);
+      expect(lastAccessed, equals(lastAccessedDateTime));
+    });
+
+    test('lastAccessedSync', () {
+      final lastAccessedDateTime = DateTime(2023, 8, 3, 12, 0, 0);
+      when(() => ioFile.lastAccessedSync()).thenReturn(lastAccessedDateTime);
+
+      final lastAccessed = file.lastAccessedSync();
+
+      verify(() => ioFile.lastAccessedSync()).called(1);
+      expect(lastAccessed, equals(lastAccessedDateTime));
+    });
+
+    test('lastModified', () async {
+      final lastModifiedDateTime = DateTime(2023, 8, 2, 15, 30, 0);
+      when(() => ioFile.lastModified())
+          .thenAnswer((_) async => lastModifiedDateTime);
+
+      final lastModified = await file.lastModified();
+
+      verify(() => ioFile.lastModified()).called(1);
+      expect(lastModified, equals(lastModifiedDateTime));
+    });
+
+    test('lastModifiedSync', () {
+      final lastModifiedDateTime = DateTime(2023, 8, 2, 15, 30, 0);
+      when(() => ioFile.lastModifiedSync()).thenReturn(lastModifiedDateTime);
+
+      final lastModified = file.lastModifiedSync();
+
+      verify(() => ioFile.lastModifiedSync()).called(1);
+      expect(lastModified, equals(lastModifiedDateTime));
+    });
+
+    test('length', () async {
+      const fileLength = 1024;
+      when(() => ioFile.length()).thenAnswer((_) async => fileLength);
+
+      final length = await file.length();
+
+      verify(() => ioFile.length()).called(1);
+      expect(length, equals(fileLength));
+    });
+
+    test('lengthSync', () {
+      const fileLength = 1024;
+      when(() => ioFile.lengthSync()).thenReturn(fileLength);
+
+      final length = file.lengthSync();
+
+      verify(() => ioFile.lengthSync()).called(1);
+      expect(length, equals(fileLength));
+    });
+
+    test('open', () async {
+      final mockRandomAccessFile = MockRandomAccessFile();
+      when(() => ioFile.open(mode: any(named: 'mode')))
+          .thenAnswer((_) async => mockRandomAccessFile);
+
+      final openedFile = await file.open(mode: FileMode.append);
+
+      verify(() => ioFile.open(mode: FileMode.append)).called(1);
+      expect(openedFile, equals(mockRandomAccessFile));
+    });
+
+    test('openRead', () {
+      final mockStream = Stream<List<int>>.empty();
+      when(() => ioFile.openRead(any(), any())).thenAnswer((_) => mockStream);
+
+      final stream = file.openRead();
+
+      verify(() => ioFile.openRead(any(), any())).called(1);
+      expect(stream, equals(mockStream));
+    });
+
+    test('openSync', () {
+      final mockRandomAccessFile = MockRandomAccessFile();
+      when(() => ioFile.openSync(mode: any(named: 'mode')))
+          .thenReturn(mockRandomAccessFile);
+
+      final openedFile = file.openSync(mode: FileMode.write);
+
+      verify(() => ioFile.openSync(mode: FileMode.write)).called(1);
+      expect(openedFile, equals(mockRandomAccessFile));
+    });
+
+    test('openWrite', () {
+      final mockIOSink = MockIOSink();
+      when(
+        () => ioFile.openWrite(
+          mode: any(named: 'mode'),
+          encoding: any(named: 'encoding'),
+        ),
+      ).thenReturn(mockIOSink);
+
+      final sink = file.openWrite(mode: FileMode.append);
+
+      verify(() => ioFile.openWrite(mode: FileMode.append)).called(1);
+      expect(sink, equals(mockIOSink));
+    });
+
+    test('parent', () {
+      when(() => ioFile.parent)
+          .thenReturn(FakeIODirectory(path: 'parent_path'));
+
+      final parentDirectory = file.parent;
+
+      verify(() => ioFile.parent).called(1);
+      expect(parentDirectory.path, 'parent_path');
+    });
+
+    test('path', () {
+      when(() => ioFile.path).thenReturn('path');
+
+      final path = file.path;
+
+      verify(() => ioFile.path).called(1);
+      expect(path, 'path');
+    });
+
+    test('readAsBytes', () async {
+      when(() => ioFile.readAsBytes())
+          .thenAnswer((_) async => Uint8List.fromList([65, 66, 67]));
+
+      final bytes = await file.readAsBytes();
+
+      verify(() => ioFile.readAsBytes()).called(1);
+      expect(bytes, Uint8List.fromList([65, 66, 67]));
+    });
+
+    test('readAsBytesSync', () {
+      when(() => ioFile.readAsBytesSync())
+          .thenReturn(Uint8List.fromList([65, 66, 67]));
+
+      final bytes = file.readAsBytesSync();
+
+      verify(() => ioFile.readAsBytesSync()).called(1);
+      expect(bytes, Uint8List.fromList([65, 66, 67]));
+    });
+
+    test('readAsLines', () async {
+      when(() => ioFile.readAsLines(encoding: any(named: 'encoding')))
+          .thenAnswer((_) async => ['Line 1', 'Line 2', 'Line 3']);
+
+      final lines = await file.readAsLines();
+
+      verify(() => ioFile.readAsLines()).called(1);
+      expect(lines, ['Line 1', 'Line 2', 'Line 3']);
+    });
+
+    test('readAsLinesSync', () {
+      when(() => ioFile.readAsLinesSync())
+          .thenReturn(['Line 1', 'Line 2', 'Line 3']);
+
+      final lines = file.readAsLinesSync();
+
+      verify(() => ioFile.readAsLinesSync()).called(1);
+      expect(lines, ['Line 1', 'Line 2', 'Line 3']);
+    });
+
+    test('readAsString', () async {
+      when(() => ioFile.readAsString(encoding: any(named: 'encoding')))
+          .thenAnswer((_) async => 'Hello, world!');
+
+      final result = await file.readAsString();
+
+      verify(() => ioFile.readAsString()).called(1);
+      expect(result, 'Hello, world!');
+    });
+
+    test('readAsStringSync', () {
+      when(() => ioFile.readAsStringSync(encoding: any(named: 'encoding')))
+          .thenReturn('Hello, world!');
+
+      final result = file.readAsStringSync();
+
+      verify(() => ioFile.readAsStringSync()).called(1);
+      expect(result, 'Hello, world!');
+    });
+
+    test('rename', () async {
+      when(() => ioFile.rename(any())).thenAnswer(
+        (_) async => FakeIOFile(path: 'new_path'),
+      );
+
+      final renamedFile = await file.rename('new_path');
+
+      verify(() => ioFile.rename('new_path')).called(1);
+      expect(renamedFile.path, 'new_path');
+    });
+
+    test('renameSync', () {
+      when(() => ioFile.renameSync(any())).thenReturn(
+        FakeIOFile(path: 'new_path'),
+      );
+
+      final renamedFile = file.renameSync('new_path');
+
+      verify(() => ioFile.renameSync('new_path')).called(1);
+      expect(renamedFile.path, 'new_path');
+    });
+
+    test('resolveSymbolicLinks', () async {
+      when(() => ioFile.resolveSymbolicLinks())
+          .thenAnswer((_) async => 'resolved_path');
+
+      final result = await file.resolveSymbolicLinks();
+
+      verify(() => ioFile.resolveSymbolicLinks()).called(1);
+      expect(result, 'resolved_path');
+    });
+
+    test('resolveSymbolicLinksSync', () {
+      when(() => ioFile.resolveSymbolicLinksSync()).thenReturn('resolved_path');
+
+      final result = file.resolveSymbolicLinksSync();
+
+      verify(() => ioFile.resolveSymbolicLinksSync()).called(1);
+      expect(result, 'resolved_path');
+    });
+
+    test('setLastAccessed', () async {
+      final lastAccessed = DateTime(2023, 8, 3, 12, 0, 0);
+      when(() => ioFile.setLastAccessed(any())).thenAnswer((_) async => true);
+
+      final result = await file.setLastAccessed(lastAccessed);
+
+      verify(() => ioFile.setLastAccessed(lastAccessed)).called(1);
+      expect(result, true);
+    });
+
+    test('setLastAccessedSync', () {
+      final lastAccessed = DateTime(2023, 8, 3, 12, 0, 0);
+      file.setLastAccessedSync(lastAccessed);
+
+      verify(() => ioFile.setLastAccessedSync(lastAccessed)).called(1);
+    });
+
+    test('setLastModified', () async {
+      final lastModified = DateTime(2023, 8, 2, 15, 30, 0);
+      when(() => ioFile.setLastModified(any())).thenAnswer((_) async => true);
+
+      final result = await file.setLastModified(lastModified);
+
+      verify(() => ioFile.setLastModified(lastModified)).called(1);
+      expect(result, true);
+    });
+
+    test('setLastModifiedSync', () {
+      final lastModified = DateTime(2023, 8, 2, 15, 30, 0);
+
+      file.setLastModifiedSync(lastModified);
+
+      verify(() => ioFile.setLastModifiedSync(lastModified)).called(1);
+    });
+
+    test('stat', () async {
+      final mockFileStat = MockFileStat();
+      when(() => ioFile.stat()).thenAnswer((_) async => mockFileStat);
+
+      final fileStat = await file.stat();
+
+      verify(() => ioFile.stat()).called(1);
+      expect(fileStat, mockFileStat);
+    });
+
+    test('statSync', () {
+      final mockFileStat = MockFileStat();
+      when(() => ioFile.statSync()).thenReturn(mockFileStat);
+
+      final fileStat = file.statSync();
+
+      verify(() => ioFile.statSync()).called(1);
+      expect(fileStat, mockFileStat);
+    });
+
+    test('uri', () {
+      final mockUri = Uri.parse('file:///path/to/file.txt');
+      when(() => ioFile.uri).thenReturn(mockUri);
+
+      final uri = file.uri;
+
+      verify(() => ioFile.uri).called(1);
+      expect(uri, mockUri);
+    });
+
+    test('watch', () {
+      final mockStream = Stream<FileSystemEvent>.empty();
+      when(
+        () => ioFile.watch(
+          events: any(named: 'events'),
+          recursive: any(named: 'recursive'),
+        ),
+      ).thenAnswer((_) => mockStream);
+
+      final stream =
+          file.watch(events: FileSystemEvent.modify, recursive: true);
+
+      verify(
+        () => ioFile.watch(events: FileSystemEvent.modify, recursive: true),
+      ).called(1);
+      expect(stream, mockStream);
+    });
+
+    test('writeAsBytes', () async {
+      when(
+        () => ioFile.writeAsBytes(
+          any(),
+          mode: any(named: 'mode'),
+          flush: any(named: 'flush'),
+        ),
+      ).thenAnswer((_) async => FakeIOFile(path: 'path'));
+
+      final writtenFile = await file.writeAsBytes(
+        [65, 66, 67],
+        mode: FileMode.append,
+        flush: true,
+      );
+
+      verify(
+        () => ioFile
+            .writeAsBytes([65, 66, 67], mode: FileMode.append, flush: true),
+      ).called(1);
+      expect(writtenFile.path, 'path');
+    });
+
+    test('writeAsBytesSync', () {
+      file.writeAsBytesSync([65, 66, 67], mode: FileMode.append, flush: true);
+
+      verify(
+        () => ioFile
+            .writeAsBytesSync([65, 66, 67], mode: FileMode.append, flush: true),
+      ).called(1);
+    });
+
+    test('writeAsString', () async {
+      when(
+        () => ioFile.writeAsString(
+          any(),
+          mode: any(named: 'mode'),
+          encoding: any(named: 'encoding'),
+          flush: any(named: 'flush'),
+        ),
+      ).thenAnswer((_) async => FakeIOFile(path: 'path'));
+
+      final writtenFile = await file.writeAsString(
+        'Hello, world!',
+        mode: FileMode.writeOnly,
+        flush: true,
+      );
+
+      verify(
+        () => ioFile.writeAsString(
+          'Hello, world!',
+          mode: FileMode.writeOnly,
+          flush: true,
+        ),
+      ).called(1);
+      expect(writtenFile.path, 'path');
+    });
+
+    test('writeAsStringSync', () {
+      file.writeAsStringSync(
+        'Hello, world!',
+        mode: FileMode.writeOnly,
+        flush: true,
+      );
+
+      verify(
+        () => ioFile.writeAsStringSync(
+          'Hello, world!',
+          mode: FileMode.writeOnly,
+          flush: true,
+        ),
+      ).called(1);
+    });
   });
 
   group('DartPackage', () {
@@ -593,9 +1346,11 @@ void main() {
               multiLine([
                 'export \'dart:io\';',
                 '',
+                'import \'b.dart\';',
                 'export \'package:aaa/aaa.dart\';',
                 'import \'dart:io\';',
                 'import \'dart:async\';',
+                'import \'a.dart\';',
                 'export \'dart:async\';',
                 '',
                 '// some code',
@@ -613,6 +1368,9 @@ void main() {
               'import \'dart:io\';',
               '',
               'import \'package:bbb/bbb.dart\';',
+              '',
+              'import \'a.dart\';',
+              'import \'b.dart\';',
               '',
               'export \'dart:async\';',
               'export \'dart:io\';',
@@ -1696,8 +2454,8 @@ void main() {
             () => plistFile.setDict({'key': 'value'}),
             throwsA(
               isA<PlistFileError>().having(
-                (e) => e.message,
-                'message',
+                (e) => e.toString(),
+                'toString',
                 'Invalid Plist file: Root element in file.plist must be a dictionary, but a non-dictionary element was found.',
               ),
             ),

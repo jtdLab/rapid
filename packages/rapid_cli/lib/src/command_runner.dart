@@ -3,7 +3,7 @@ import 'dart:io' hide Platform;
 
 import 'package:args/command_runner.dart';
 import 'package:cli_launcher/cli_launcher.dart';
-import 'package:mason/mason.dart' hide packageVersion;
+import 'package:meta/meta.dart';
 import 'package:pub_updater/pub_updater.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -20,6 +20,7 @@ import 'command_runner/platform.dart';
 import 'command_runner/pub.dart';
 import 'command_runner/ui.dart';
 import 'exception.dart';
+import 'logging.dart';
 import 'project_config.dart';
 import 'version.dart';
 
@@ -31,8 +32,6 @@ const packageName = 'rapid_cli';
 class RapidCommandRunner extends CommandRunner<void> {
   RapidCommandRunner({
     RapidProject? project,
-    // TODO use this logger or rm it
-    Logger? logger,
   }) : super(
           'rapid',
           'A CLI tool for developing Flutter apps based on Rapid Architecture.',
@@ -73,17 +72,28 @@ class RapidCommandRunner extends CommandRunner<void> {
   String get invocation => 'rapid <command>';
 }
 
+/// Override to test [rapidEntryPoint]
+@visibleForTesting
+RapidLogger? loggerOverrides;
+
+/// Override to test [rapidEntryPoint]
+@visibleForTesting
+RapidCommandRunner Function({RapidProject? project})? commandRunnerOverrides;
+
+/// Override to test [rapidEntryPoint]
+@visibleForTesting
+PubUpdater? pubUpdaterOverrides;
+
 FutureOr<void> rapidEntryPoint(
   List<String> arguments,
   LaunchContext context,
 ) async {
-  final logger = Logger();
+  final logger = loggerOverrides ?? RapidLogger();
 
   if (arguments.contains('--version') || arguments.contains('-v')) {
     logger.info(packageVersion);
 
     await _checkForUpdates(context, logger: logger);
-
     return;
   }
   try {
@@ -116,7 +126,9 @@ FutureOr<void> rapidEntryPoint(
       context.localInstallation?.packageRoot,
     );
 
-    await RapidCommandRunner(project: project, logger: logger).run(arguments);
+    final commandRunner =
+        (commandRunnerOverrides ?? RapidCommandRunner.new)(project: project);
+    await commandRunner.run(arguments);
   } on RapidException catch (err) {
     logger.err(err.toString());
     exitCode = 1;
@@ -124,16 +136,15 @@ FutureOr<void> rapidEntryPoint(
     logger.err(err.toString());
     exitCode = 1;
   } catch (err) {
-    exitCode = 1;
     rethrow;
   }
 }
 
 Future<void> _checkForUpdates(
   LaunchContext context, {
-  required Logger logger,
+  required RapidLogger logger,
 }) async {
-  final pubUpdater = PubUpdater();
+  final pubUpdater = pubUpdaterOverrides ?? PubUpdater();
   final isUpToDate = await pubUpdater.isUpToDate(
     packageName: packageName,
     currentVersion: packageVersion,
@@ -164,7 +175,8 @@ Future<void> _checkForUpdates(
   }
 }
 
-// Make this public for use in e2e tests
+/// Visible for e2e tests
+@visibleForTesting
 Future<RapidProject?> resolveProject(
   List<String> arguments,
   Directory? projectRoot,

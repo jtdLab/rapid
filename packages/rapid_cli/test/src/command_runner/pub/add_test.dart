@@ -23,7 +23,7 @@ const expectedUsage = [
       '\n'
       'Add to dev_dependencies by prefixing with "dev:".\n'
       '\n'
-      'Make dependency overrides by prefixing with "override:". \n'
+      'Make dependency overrides by prefixing with "override:".\n'
       '\n'
       'Add packages with specific constraints or other sources by giving a descriptor\n'
       'after a colon.\n'

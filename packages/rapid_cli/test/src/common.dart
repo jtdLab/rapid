@@ -3,7 +3,10 @@ import 'dart:io' hide Platform;
 import 'dart:math';
 
 import 'package:path/path.dart' as p;
+import 'package:platform/platform.dart' as io;
+import 'package:rapid_cli/src/platform.dart';
 import 'package:rapid_cli/src/project/platform.dart';
+import 'package:rapid_cli/src/utils.dart';
 
 extension PlatformX on Platform {
   String get prettyName {
@@ -85,9 +88,17 @@ void Function() overridePrint(void Function(List<String>) fn) {
       },
     );
 
-    return Zone.current
-        .fork(specification: spec)
-        .run<void>(() => fn(printLogs));
+    final platform = io.FakePlatform(
+      // TODO: this make testing command usages easier because fewer line breaks
+      environment: {envKeyRapidTerminalWidth: '1000'},
+    );
+
+    return Zone.current.fork(
+      specification: spec,
+      zoneValues: {
+        currentPlatformZoneKey: platform,
+      },
+    ).run<void>(() => fn(printLogs));
   };
 }
 

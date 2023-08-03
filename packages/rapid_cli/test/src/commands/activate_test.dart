@@ -4,6 +4,7 @@ import 'package:rapid_cli/src/process.dart';
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
+import 'package:rapid_cli/src/tool.dart';
 import 'package:test/test.dart';
 
 import '../common.dart';
@@ -11,7 +12,15 @@ import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
+// TODO refactor using global setup and share some logic with create
+
+typedef _RapidToolSetup = ({
+  CommandGroup commandGroup,
+  RapidTool tool,
+});
+
 typedef _ProjectSetup<T extends PlatformRootPackage> = ({
+  InfrastructurePackage nonDefaultInfrastructurePackage,
   T platformRootPackage,
   PlatformLocalizationPackage platformLocalizationPackage,
   PlatformNavigationPackage platformNavigationPackage,
@@ -21,7 +30,21 @@ typedef _ProjectSetup<T extends PlatformRootPackage> = ({
   RapidProject project,
 });
 
+_RapidToolSetup _setupTool() {
+  final commandGroup = MockCommandGroup();
+  when(() => commandGroup.isActive).thenReturn(false);
+  final tool = MockRapidTool();
+  when(() => tool.loadGroup()).thenReturn(commandGroup);
+
+  return (commandGroup: commandGroup, tool: tool);
+}
+
 _ProjectSetup<T> _setupProjectWithPlatform<T extends PlatformRootPackage>() {
+  final nonDefaultInfrastructurePackage = MockInfrastructurePackage(
+    packageName: 'non_default_infrastructure_package',
+    path: 'non_default_infrastructure_package_path',
+    isDefault: false,
+  );
   final T platformRootPackage = switch (T) {
     IosRootPackage => MockIosRootPackage(
         packageName: 'platform_root_package',
@@ -67,6 +90,12 @@ _ProjectSetup<T> _setupProjectWithPlatform<T extends PlatformRootPackage>() {
   final project = MockRapidProject(
     path: 'project_path',
     appModule: MockAppModule(
+      infrastructureDirectory: MockInfrastructureDirectory(
+        infrastructurePackages: [
+          MockInfrastructurePackage(isDefault: true),
+          nonDefaultInfrastructurePackage,
+        ],
+      ),
       platformDirectory: ({required platform}) => MockPlatformDirectory(
         rootPackage: platformRootPackage,
         localizationPackage: platformLocalizationPackage,
@@ -83,6 +112,7 @@ _ProjectSetup<T> _setupProjectWithPlatform<T extends PlatformRootPackage>() {
   );
 
   return (
+    nonDefaultInfrastructurePackage: nonDefaultInfrastructurePackage,
     platformRootPackage: platformRootPackage,
     platformLocalizationPackage: platformLocalizationPackage,
     platformNavigationPackage: platformNavigationPackage,
@@ -97,9 +127,12 @@ void _verifyActivatePlatform<T extends PlatformRootPackage>(
   Platform platform, {
   required ProcessManager manager,
   required _ProjectSetup<T> projectSetup,
+  required _RapidToolSetup toolSetup,
   required LoggerSetup loggerSetup,
+  bool commandGroupIsActive = false,
 }) {
   final (
+    nonDefaultInfrastructurePackage: nonDefaultInfrastructurePackage,
     platformRootPackage: platformRootPackage,
     platformLocalizationPackage: platformLocalizationPackage,
     platformNavigationPackage: platformNavigationPackage,
@@ -108,6 +141,7 @@ void _verifyActivatePlatform<T extends PlatformRootPackage>(
     platformUiPackage: platformUiPackage,
     project: _,
   ) = projectSetup;
+  final (commandGroup: _, tool: tool) = toolSetup;
   final (
     progress: progress,
     groupableProgress: groupableProgress,
@@ -160,6 +194,8 @@ void _verifyActivatePlatform<T extends PlatformRootPackage>(
     },
     () => platformUiPackage.generate(),
     () => progress.complete(),
+    () => platformRootPackage
+        .registerInfrastructurePackage(nonDefaultInfrastructurePackage),
     () => logger.progressGroup(null),
     () => progressGroup
         .progress('Running "flutter pub get" in platform_app_feature_package'),
@@ -191,6 +227,20 @@ void _verifyActivatePlatform<T extends PlatformRootPackage>(
     () =>
         manager.runFlutterPubGet(workingDirectory: 'platform_ui_package_path'),
     () => groupableProgress.complete(),
+    ...switch (commandGroupIsActive) {
+      true => [
+          () => tool.markAsNeedCodeGen(package: platformRootPackage),
+        ],
+      false => [
+          () => logger
+              .progress('Running code generation in platform_root_package'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'platform_root_package_path',
+              ),
+          () => progress.complete(),
+        ],
+    },
     () => logger.progress(
         'Running "flutter gen-l10n" in platform_localization_package'),
     () => manager.runFlutterGenl10n(
@@ -278,9 +328,11 @@ void main() {
       withMockEnv(
         (manager) async {
           final projectSetup = _setupProjectWithPlatform<NoneIosRootPackage>();
+          final toolSetup = _setupTool();
           final loggerSetup = setupLogger();
           final rapid = getRapid(
             project: projectSetup.project,
+            tool: toolSetup.tool,
             logger: loggerSetup.logger,
           );
 
@@ -294,6 +346,7 @@ void main() {
             Platform.android,
             manager: manager,
             projectSetup: projectSetup,
+            toolSetup: toolSetup,
             loggerSetup: loggerSetup,
           );
         },
@@ -324,9 +377,11 @@ void main() {
       withMockEnv(
         (manager) async {
           final projectSetup = _setupProjectWithPlatform<IosRootPackage>();
+          final toolSetup = _setupTool();
           final loggerSetup = setupLogger();
           final rapid = getRapid(
             project: projectSetup.project,
+            tool: toolSetup.tool,
             logger: loggerSetup.logger,
           );
 
@@ -339,6 +394,7 @@ void main() {
             Platform.ios,
             manager: manager,
             projectSetup: projectSetup,
+            toolSetup: toolSetup,
             loggerSetup: loggerSetup,
           );
         },
@@ -370,9 +426,11 @@ void main() {
       withMockEnv(
         (manager) async {
           final projectSetup = _setupProjectWithPlatform<NoneIosRootPackage>();
+          final toolSetup = _setupTool();
           final loggerSetup = setupLogger();
           final rapid = getRapid(
             project: projectSetup.project,
+            tool: toolSetup.tool,
             logger: loggerSetup.logger,
           );
 
@@ -385,6 +443,7 @@ void main() {
             Platform.linux,
             manager: manager,
             projectSetup: projectSetup,
+            toolSetup: toolSetup,
             loggerSetup: loggerSetup,
           );
         },
@@ -416,9 +475,11 @@ void main() {
       withMockEnv(
         (manager) async {
           final projectSetup = _setupProjectWithPlatform<MacosRootPackage>();
+          final toolSetup = _setupTool();
           final loggerSetup = setupLogger();
           final rapid = getRapid(
             project: projectSetup.project,
+            tool: toolSetup.tool,
             logger: loggerSetup.logger,
           );
 
@@ -431,133 +492,12 @@ void main() {
             Platform.macos,
             manager: manager,
             projectSetup: projectSetup,
+            toolSetup: toolSetup,
             loggerSetup: loggerSetup,
           );
         },
       ),
     );
-
-    // TODO refactor this and to for all platforms
-/*     test(
-      'handles existing non default infrastructure packages',
-      () async {
-        final manager = MockProcessManager();
-        final nonDefaultInfrastructurePackage =
-            MockInfrastructurePackage(isDefault: false);
-        final platformRootPackage = MockMacosRootPackage(
-          packageName: 'macos_root_package_name',
-        );
-        final project = MockRapidProject(
-          appModule: MockAppModule(
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackages: [
-                MockInfrastructurePackage(isDefault: true),
-                nonDefaultInfrastructurePackage,
-              ],
-            ),
-            platformDirectory: ({required platform}) => MockPlatformDirectory(
-              rootPackage: platformRootPackage,
-            ),
-          ),
-        );
-        final logger = MockRapidLogger();
-        final group = MockCommandGroup();
-        when(() => group.isActive).thenReturn(false);
-        final tool = MockRapidTool();
-        when(() => tool.loadGroup()).thenReturn(group);
-        final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-          manager,
-          package: platformRootPackage,
-          logger: logger,
-        );
-        final codeGenTaskInCommandGroupInvocations =
-            setupFlutterPubRunBuildRunnerBuildTaskInCommandGroup(
-          manager,
-          package: platformRootPackage,
-          tool: tool,
-        );
-        final rapid = getRapid(
-          project: project,
-          tool: tool,
-          logger: logger,
-        );
-
-        await withMockProcessManager(
-          () async => rapid.activateMacos(
-            orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
-          ),
-          manager: manager,
-        );
-
-        verifyInOrder([
-          () => platformRootPackage
-              .registerInfrastructurePackage(nonDefaultInfrastructurePackage),
-          ...codeGenTaskInvocations,
-        ]);
-        verifyNeverMulti(codeGenTaskInCommandGroupInvocations);
-      },
-    );
-
-    test(
-      'handles existing non default infrastructure packages (inside command group)',
-      () async {
-        final manager = MockProcessManager();
-        final nonDefaultInfrastructurePackage =
-            MockInfrastructurePackage(isDefault: false);
-        final platformRootPackage = MockMacosRootPackage();
-        final project = MockRapidProject(
-          appModule: MockAppModule(
-            infrastructureDirectory: MockInfrastructureDirectory(
-              infrastructurePackages: [
-                MockInfrastructurePackage(isDefault: true),
-                nonDefaultInfrastructurePackage,
-              ],
-            ),
-            platformDirectory: ({required platform}) => MockPlatformDirectory(
-              rootPackage: platformRootPackage,
-            ),
-          ),
-        );
-        final logger = MockRapidLogger();
-        final group = MockCommandGroup();
-        when(() => group.isActive).thenReturn(true);
-        final tool = MockRapidTool();
-        when(() => tool.loadGroup()).thenReturn(group);
-        final codeGenTaskInvocations = setupFlutterPubRunBuildRunnerBuildTask(
-          manager,
-          package: platformRootPackage,
-          logger: logger,
-        );
-        final codeGenTaskInCommandGroupInvocations =
-            setupFlutterPubRunBuildRunnerBuildTaskInCommandGroup(
-          manager,
-          package: platformRootPackage,
-          tool: tool,
-        );
-        final rapid = getRapid(
-          project: project,
-          tool: tool,
-          logger: logger,
-        );
-
-        await withMockProcessManager(
-          () async => rapid.activateMacos(
-            orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
-          ),
-          manager: manager,
-        );
-
-        verifyInOrder([
-          () => platformRootPackage
-              .registerInfrastructurePackage(nonDefaultInfrastructurePackage),
-          ...codeGenTaskInCommandGroupInvocations,
-        ]);
-        verifyNeverMulti(codeGenTaskInvocations);
-      },
-    );
-  */
   });
 
   group('activateWeb', () {
@@ -583,9 +523,11 @@ void main() {
       withMockEnv(
         (manager) async {
           final projectSetup = _setupProjectWithPlatform<NoneIosRootPackage>();
+          final toolSetup = _setupTool();
           final loggerSetup = setupLogger();
           final rapid = getRapid(
             project: projectSetup.project,
+            tool: toolSetup.tool,
             logger: loggerSetup.logger,
           );
 
@@ -598,6 +540,7 @@ void main() {
             Platform.web,
             manager: manager,
             projectSetup: projectSetup,
+            toolSetup: toolSetup,
             loggerSetup: loggerSetup,
           );
         },
@@ -629,9 +572,11 @@ void main() {
       withMockEnv(
         (manager) async {
           final projectSetup = _setupProjectWithPlatform<NoneIosRootPackage>();
+          final toolSetup = _setupTool();
           final loggerSetup = setupLogger();
           final rapid = getRapid(
             project: projectSetup.project,
+            tool: toolSetup.tool,
             logger: loggerSetup.logger,
           );
 
@@ -644,6 +589,7 @@ void main() {
             Platform.windows,
             manager: manager,
             projectSetup: projectSetup,
+            toolSetup: toolSetup,
             loggerSetup: loggerSetup,
           );
         },
@@ -676,9 +622,11 @@ void main() {
       withMockEnv(
         (manager) async {
           final projectSetup = _setupProjectWithPlatform<MobileRootPackage>();
+          final toolSetup = _setupTool();
           final loggerSetup = setupLogger();
           final rapid = getRapid(
             project: projectSetup.project,
+            tool: toolSetup.tool,
             logger: loggerSetup.logger,
           );
 
@@ -692,6 +640,7 @@ void main() {
             Platform.mobile,
             manager: manager,
             projectSetup: projectSetup,
+            toolSetup: toolSetup,
             loggerSetup: loggerSetup,
           );
         },

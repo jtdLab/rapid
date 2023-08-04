@@ -118,7 +118,7 @@ abstract class _Rapid {
   }) async {
     if (parallelism == 1) {
       if (description != null) {
-        logger.log(description);
+        logger.info(description);
       }
       for (final task in tasks) {
         await this.task(task.$1, task.$2);

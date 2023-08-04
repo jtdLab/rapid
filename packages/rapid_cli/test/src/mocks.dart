@@ -1378,6 +1378,10 @@ class MockLaunchContext extends Mock implements LaunchContext {}
 class MockExecutableInstallation extends Mock
     implements ExecutableInstallation {}
 
+class MockStdout extends Mock implements Stdout {}
+
+class MockStdin extends Mock implements Stdin {}
+
 // Fakes
 
 class FakeDartPackage extends Fake implements DartPackage {

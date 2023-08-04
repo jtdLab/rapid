@@ -151,7 +151,7 @@ void _verifyActivatePlatform<T extends PlatformRootPackage>(
 
   verifyInOrder([
     () => logger.newLine(),
-    () => logger.log('🚀 Activating ${platform.prettyName}'),
+    () => logger.info('🚀 Activating ${platform.prettyName}'),
     () => logger.progress('Generating ${platform.prettyName} packages'),
     () => platformAppFeaturePackage.generate(),
     () => platformHomePageFeaturePackage.generate(),

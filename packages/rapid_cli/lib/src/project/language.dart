@@ -43,151 +43,41 @@ class Language implements Comparable<Language> {
   /// The [raw] string is expected to be a representation
   /// of a [Locale](https://api.flutter.dev/flutter/dart-ui/Locale-class.html) in dart code.
   factory Language.fromDartUiLocal(String raw) {
-    raw = raw
-        .replaceAll('\r\n', '')
-        .replaceAll('\n', '')
-        .replaceAll(RegExp(r'\s\s+'), '');
-    final RegExpMatch match;
-    if (RegExp(r"Locale\('([A-z]+)',?\)").hasMatch(raw)) {
-      match = RegExp(r"Locale\('([A-z]+)',?\)").firstMatch(raw)!;
-      return Language(languageCode: match.group(1)!);
-    } else if (RegExp(r"Locale\('([A-z]+)', '([A-z]+)',?\)").hasMatch(raw)) {
-      match = RegExp(r"Locale\('([A-z]+)', '([A-z]+)',?\)").firstMatch(raw)!;
+    raw = raw.replaceAll('\r', '').replaceAll(RegExp(r'\s*'), '');
+    RegExpMatch? match;
+
+    match = RegExp(
+            r'''Locale\((['"](?<languageCode>[A-z]+)['"]),?(['"](?<countryCode>[A-z]+)['"])?,?\)''')
+        .firstMatch(raw);
+    if (match != null) {
       return Language(
-          languageCode: match.group(1)!, countryCode: match.group(2)!);
-    } else if (RegExp(r"Locale.fromSubtags\(,?\)").hasMatch(raw)) {
-      match = RegExp(r"Locale.fromSubtags\(,?\)").firstMatch(raw)!;
-      return Language(languageCode: 'und');
-    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(languageCode: match.group(1)!);
-    } else if (RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(languageCode: 'und', countryCode: match.group(1)!);
-    } else if (RegExp(r"Locale.fromSubtags\(scriptCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(r"Locale.fromSubtags\(scriptCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(languageCode: 'und', scriptCode: match.group(1)!);
-    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(
-              r"Locale.fromSubtags\(languageCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(
-          languageCode: match.group(1)!, countryCode: match.group(2)!);
-    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(
-              r"Locale.fromSubtags\(languageCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(
-          languageCode: match.group(1)!, scriptCode: match.group(2)!);
-    } else if (RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(
-              r"Locale.fromSubtags\(countryCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(
-          countryCode: match.group(1)!, languageCode: match.group(2)!);
-    } else if (RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(
-              r"Locale.fromSubtags\(countryCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(
-        languageCode: 'und',
-        countryCode: match.group(1)!,
-        scriptCode: match.group(2)!,
-      );
-    } else if (RegExp(r"Locale.fromSubtags\(scriptCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(
-              r"Locale.fromSubtags\(scriptCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(
-          scriptCode: match.group(1)!, languageCode: match.group(2)!);
-    } else if (RegExp(r"Locale.fromSubtags\(scriptCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(
-              r"Locale.fromSubtags\(scriptCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(
-        languageCode: 'und',
-        scriptCode: match.group(1)!,
-        countryCode: match.group(2)!,
-      );
-    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)', countryCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(
-              r"Locale.fromSubtags\(languageCode: '([A-z]+)', countryCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(
-        languageCode: match.group(1)!,
-        countryCode: match.group(2)!,
-        scriptCode: match.group(3)!,
-      );
-    } else if (RegExp(r"Locale.fromSubtags\(languageCode: '([A-z]+)', scriptCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(
-              r"Locale.fromSubtags\(languageCode: '([A-z]+)', scriptCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(
-        languageCode: match.group(1)!,
-        scriptCode: match.group(2)!,
-        countryCode: match.group(3)!,
-      );
-    } else if (RegExp(r"Locale.fromSubtags\(countryCode: '([A-z]+)', languageCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(
-              r"Locale.fromSubtags\(countryCode: '([A-z]+)', languageCode: '([A-z]+)', scriptCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(
-        countryCode: match.group(1)!,
-        languageCode: match.group(2)!,
-        scriptCode: match.group(3)!,
-      );
-    } else if (RegExp(
-            r"Locale.fromSubtags\(countryCode: '([A-z]+)', scriptCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(
-              r"Locale.fromSubtags\(countryCode: '([A-z]+)', scriptCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(
-        countryCode: match.group(1)!,
-        scriptCode: match.group(2)!,
-        languageCode: match.group(3)!,
-      );
-    } else if (RegExp(
-            r"Locale.fromSubtags\(scriptCode: '([A-z]+)', languageCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(
-              r"Locale.fromSubtags\(scriptCode: '([A-z]+)', languageCode: '([A-z]+)', countryCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(
-        scriptCode: match.group(1)!,
-        languageCode: match.group(2)!,
-        countryCode: match.group(3)!,
-      );
-    } else if (RegExp(
-            r"Locale.fromSubtags\(scriptCode: '([A-z]+)', countryCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
-        .hasMatch(raw)) {
-      match = RegExp(
-              r"Locale.fromSubtags\(scriptCode: '([A-z]+)', countryCode: '([A-z]+)', languageCode: '([A-z]+)',?\)")
-          .firstMatch(raw)!;
-      return Language(
-        scriptCode: match.group(1)!,
-        countryCode: match.group(2)!,
-        languageCode: match.group(3)!,
+        languageCode: match.namedGroup('languageCode')!,
+        countryCode: match.namedGroup('countryCode'),
       );
     }
 
-    // TODO
-    throw Error();
+    match =
+        RegExp(r'''Locale.fromSubtags\((?<params>[\s\S]*)\)''').firstMatch(raw);
+    if (match != null) {
+      final params = match.namedGroup('params')!;
+      final languageCodeMatch =
+          RegExp(r'''languageCode:['"](?<languageCode>[A-z]+)['"]''')
+              .firstMatch(params);
+      final scriptCodeMatch =
+          RegExp(r'''scriptCode:['"](?<scriptCode>[A-z]+)['"]''')
+              .firstMatch(params);
+      final countryCodeMatch =
+          RegExp(r'''countryCode:['"](?<countryCode>[A-z]+)['"]''')
+              .firstMatch(params);
+
+      return Language(
+        languageCode: languageCodeMatch?.namedGroup('languageCode') ?? 'und',
+        scriptCode: scriptCodeMatch?.namedGroup('scriptCode'),
+        countryCode: countryCodeMatch?.namedGroup('countryCode'),
+      );
+    }
+
+    throw ArgumentError.value(raw, 'raw', 'Does not contain parsable Locale');
   }
 
   bool get hasScriptCode => scriptCode != null;

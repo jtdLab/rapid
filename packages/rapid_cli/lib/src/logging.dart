@@ -5,12 +5,14 @@ import 'package:ansi_styles/ansi_styles.dart';
 import 'package:io/ansi.dart';
 import 'package:mason/mason.dart' as mason;
 
-export 'package:mason/mason.dart' show Level, ProgressOptions;
+export 'package:ansi_styles/ansi_styles.dart';
+export 'package:io/ansi.dart';
+export 'package:mason/mason.dart'
+    show Level, ProgressOptions, ProgressAnimation, LogTheme;
 
 // TODO: use masons Progress if https://github.com/felangel/mason/issues/711 is fixed
 
 final successMessageColor = AnsiStyles.green;
-final successLableColor = AnsiStyles.greenBright;
 final successStyle = AnsiStyles.bold;
 final taskGroupTitleStyle = AnsiStyles.bold;
 final paket = '📦';
@@ -20,9 +22,11 @@ final tada = '🎉';
 
 class RapidLogger with _DelegateLogger {
   RapidLogger({
+    mason.LogTheme theme = const mason.LogTheme(),
     mason.Level level = mason.Level.info,
     mason.ProgressOptions progressOptions = const mason.ProgressOptions(),
   }) : _logger = mason.Logger(
+          theme: theme,
           level: level,
           progressOptions: progressOptions,
         );
@@ -30,15 +34,13 @@ class RapidLogger with _DelegateLogger {
   @override
   final mason.Logger _logger;
 
-  void log(String message) => info(message);
-
   void newLine() => info('');
 
   void commandSuccess(String message) {
     info(successMessageColor(successStyle('✅ $message')));
   }
 
-  ProgressGroup progressGroup(String? description) =>
+  ProgressGroup progressGroup([String? description]) =>
       ProgressGroup._(description, level, options: progressOptions);
 }
 
@@ -225,13 +227,13 @@ class ProgressGroup {
     }
 
     _progresses[progress] = message;
-    final snap = '${_progresses.entries.map((e) => e.value).join('\n')}\n';
-    _stdout.write(snap);
+    final frame = '${_progresses.entries.map((e) => e.value).join('\n')}\n';
+    _stdout.write(frame);
   }
 
   void _eraseLines(int n) {
-    const ereaseLine = '\x1b[2K\r';
-    final moveUp = '\x1b[1A';
+    const ereaseLine = '\u001b[2K\r';
+    const moveUp = '\u001b[1A';
     _stdout.write('$moveUp$ereaseLine' * n);
   }
 }
@@ -377,7 +379,7 @@ abstract mixin class _DelegateLogger implements mason.Logger {
     T? defaultValue,
     String Function(T choice)? display,
   }) =>
-      chooseOne<T>(
+      _logger.chooseOne<T>(
         message,
         choices: choices,
         defaultValue: defaultValue,

@@ -1,8 +1,0 @@
-arb-dir: lib/src/presentation/l10n/arb
-output-class: ExampleIosLoginPageLocalizations
-output-dir: lib/src/presentation/l10n
-template-arb-file: login_page_en.arb
-output-localization-file: example_ios_login_page_localizations.dart
-nullable-getter: false
-synthetic-package: false
-header: // coverage:ignore-file

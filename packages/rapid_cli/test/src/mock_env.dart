@@ -18,14 +18,16 @@ FutureOr<void> Function() withMockEnv(
   FutureOr<void> Function(ProcessManager processManager) testBody, {
   Platform? platform,
 }) {
+  platform ??= FakePlatform(
+    numberOfProcessors: 2,
+  );
+  final processManager = MockProcessManager();
   return withMockFs(() async {
-    final processManager = MockProcessManager();
-
     return runZoned(
       () => testBody(processManager),
       zoneValues: {
         currentProcessManagerZoneKey: processManager,
-        if (platform != null) currentPlatformZoneKey: platform,
+        currentPlatformZoneKey: platform,
       },
     );
   });

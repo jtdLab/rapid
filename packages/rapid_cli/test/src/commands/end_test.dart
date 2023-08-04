@@ -110,11 +110,15 @@ void main() {
           FakeDartPackage(
             packageName: 'package_b',
             path: 'package_b_path',
+          ),
+          FakeDartPackage(
+            packageName: 'package_c',
+            path: 'package_c_path',
           )
         ]);
         when(() => commandGroup.packagesToBootstrap).thenReturn({});
         when(() => commandGroup.packagesToCodeGen)
-            .thenReturn({'package_a', 'package_b'});
+            .thenReturn({'package_a', 'package_b', 'package_c'});
         final (
           progress: progress,
           groupableProgress: groupableProgress,
@@ -139,6 +143,12 @@ void main() {
           () =>
               manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'package_b_path',
+              ),
+          () => groupableProgress.complete(),
+          () => progressGroup.progress('Running code generation in package_c'),
+          () =>
+              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                workingDirectory: 'package_c_path',
               ),
           () => groupableProgress.complete(),
           () => logger.newLine(),

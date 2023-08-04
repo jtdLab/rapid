@@ -72,17 +72,17 @@ class RapidProjectConfig {
         sourceUrl: pubspecYamlFile.uri,
       ).toPlainObject();
     } on YamlException catch (error) {
-      throw RapidConfigException('Failed to parse pubspec.yaml:\n$error');
+      throw RapidConfigException('could not be parsed and failed.\n$error');
     }
 
     if (rapidYamlContents is! Map<Object?, Object?>) {
-      throw RapidConfigException('pubspec.yaml must contain a YAML map.');
+      throw RapidConfigException('must contain a YAML map.');
     }
 
     return RapidProjectConfig.fromYaml(
       rapidYamlContents,
       path: projectRoot.path,
-    )..validatePhysicalProject();
+    );
   }
 
   /// Handles the case where a project could not be found in the [current]
@@ -110,35 +110,22 @@ class RapidProjectConfig {
   void _validate() {
     final projectDir = Directory(path);
     if (!projectDir.isAbsolute) {
-      throw RapidConfigException('path must be an absolute path but got $path');
-    }
-  }
-
-  /// Validates the physical project on the file system.
-  void validatePhysicalProject() {
-    if (!Directory(path).existsSync()) {
       throw RapidConfigException(
-        'The path $path does not point to a directory',
-      );
+          'path must be an absolute path but got $path.');
     }
   }
 
   @override
-  bool operator ==(Object other) =>
-      other is RapidProjectConfig &&
-      runtimeType == other.runtimeType &&
-      other.path == path &&
-      other.name == name;
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is RapidProjectConfig &&
+        other.path == path &&
+        other.name == name;
+  }
 
   @override
-  int get hashCode => runtimeType.hashCode ^ path.hashCode ^ name.hashCode;
-
-  Map<String, Object> toJson() {
-    return {
-      'name': name,
-      'path': path,
-    };
-  }
+  int get hashCode => path.hashCode ^ name.hashCode;
 }
 
 /// An exception thrown when a Rapid project could not be resolved.

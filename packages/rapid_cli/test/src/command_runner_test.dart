@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:ansi_styles/ansi_styles.dart';
 import 'package:args/command_runner.dart';
 import 'package:cli_launcher/cli_launcher.dart';
 import 'package:mocktail/mocktail.dart';
@@ -81,14 +80,11 @@ void main() {
 
     setUp(() {
       logger = MockRapidLogger();
-      loggerOverrides = logger;
       commandRunner = MockRapidCommandRunner();
       commandRunnerBuilder = MockRapidCommandRunnerBuilder();
       when(() => commandRunnerBuilder(project: any(named: 'project')))
           .thenReturn(commandRunner);
-      commandRunnerOverrides = commandRunnerBuilder;
       pubUpdater = MockPubUpdater();
-      pubUpdaterOverrides = pubUpdater;
       launchContext = MockLaunchContext();
       when(() => launchContext.localInstallation).thenReturn(null);
     });
@@ -109,9 +105,14 @@ void main() {
             '',
             'rapid:',
             '  name: cool',
+            '  foo: [1, 2, 3]'
           ]));
         when(() => launchContext.localInstallation).thenReturn(installation);
-        await rapidEntryPoint(['activate android'], launchContext);
+        await rapidEntryPoint(
+          ['activate android'],
+          launchContext,
+          commandRunnerBuilder: commandRunnerBuilder,
+        );
 
         verifyInOrder([
           () => commandRunnerBuilder(
@@ -140,7 +141,12 @@ void main() {
         });
 
         test('informs about update', () async {
-          await rapidEntryPoint(['--version'], launchContext);
+          await rapidEntryPoint(
+            ['--version'],
+            launchContext,
+            logger: logger,
+            pubUpdater: pubUpdater,
+          );
 
           verifyInOrder([
             () => logger.info(packageVersion),
@@ -165,7 +171,12 @@ void main() {
               ),
             ).thenReturn('true');
 
-            await rapidEntryPoint(['--version'], launchContext);
+            await rapidEntryPoint(
+              ['--version'],
+              launchContext,
+              logger: logger,
+              pubUpdater: pubUpdater,
+            );
 
             verifyInOrder([
               () => logger.info(packageVersion),
@@ -185,7 +196,12 @@ void main() {
           test('does nothing when is prompt declined', () async {
             when(() => logger.prompt(any())).thenReturn('false');
 
-            await rapidEntryPoint(['--version'], launchContext);
+            await rapidEntryPoint(
+              ['--version'],
+              launchContext,
+              logger: logger,
+              pubUpdater: pubUpdater,
+            );
 
             verifyInOrder([
               () => logger.info(packageVersion),
@@ -219,7 +235,11 @@ void main() {
           (_) async => ProcessResult(0, 1, 'stdout', 'stderr'),
         );
 
-        await rapidEntryPoint(['activate'], launchContext);
+        await rapidEntryPoint(
+          ['activate'],
+          launchContext,
+          logger: logger,
+        );
 
         verify(() => logger.err('Dart not installed.')).called(1);
         expect(exitCode, 1);
@@ -241,7 +261,11 @@ void main() {
           (_) async => ProcessResult(0, 1, 'stdout', 'stderr'),
         );
 
-        await rapidEntryPoint(['activate'], launchContext);
+        await rapidEntryPoint(
+          ['activate'],
+          launchContext,
+          logger: logger,
+        );
 
         verify(() => logger.err('Flutter not installed.')).called(1);
         expect(exitCode, 1);
@@ -263,7 +287,11 @@ void main() {
           (_) async => ProcessResult(0, 1, 'stdout', 'stderr'),
         );
 
-        await rapidEntryPoint(['activate'], launchContext);
+        await rapidEntryPoint(
+          ['activate'],
+          launchContext,
+          logger: logger,
+        );
 
         verify(() => logger.err('Melos not installed.')).called(1);
         expect(exitCode, 1);
@@ -271,13 +299,21 @@ void main() {
     );
 
     test('resolve project with null when will show help', () async {
-      await rapidEntryPoint(['activate', '--help'], launchContext);
+      await rapidEntryPoint(
+        ['activate', '--help'],
+        launchContext,
+        commandRunnerBuilder: commandRunnerBuilder,
+      );
 
       verify(() => commandRunnerBuilder(project: null)).called(1);
     });
 
     test('resolve project with null when will run create', () async {
-      await rapidEntryPoint(['create'], launchContext);
+      await rapidEntryPoint(
+        ['create'],
+        launchContext,
+        commandRunnerBuilder: commandRunnerBuilder,
+      );
 
       verify(() => commandRunnerBuilder(project: null)).called(1);
     });
@@ -300,7 +336,11 @@ void main() {
             '  name: cool',
           ]));
         when(() => launchContext.localInstallation).thenReturn(installation);
-        await rapidEntryPoint(['activate'], launchContext);
+        await rapidEntryPoint(
+          ['activate'],
+          launchContext,
+          commandRunnerBuilder: commandRunnerBuilder,
+        );
 
         verify(
           () => commandRunnerBuilder(
@@ -313,7 +353,11 @@ void main() {
     test(
       'fails resolving project when cwd is not inside a rapid project',
       withMockEnv((_) async {
-        await rapidEntryPoint(['activate'], launchContext);
+        await rapidEntryPoint(
+          ['activate'],
+          launchContext,
+          logger: logger,
+        );
 
         verify(
           () => logger.err(
@@ -336,7 +380,11 @@ void main() {
         final installation = MockExecutableInstallation();
         when(() => installation.packageRoot).thenReturn(Directory('some_path'));
         when(() => launchContext.localInstallation).thenReturn(installation);
-        await rapidEntryPoint(['activate'], launchContext);
+        await rapidEntryPoint(
+          ['activate'],
+          launchContext,
+          logger: logger,
+        );
 
         verify(
           () => logger.err(
@@ -349,6 +397,61 @@ void main() {
               'For more information, see: ',
               'https://docs.page/jtdLab/rapid/cli/create',
             ]),
+          ),
+        ).called(1);
+        expect(exitCode, 1);
+      }),
+    );
+
+    test(
+      'fails resolving project when failed to parse pubspec.yaml',
+      withMockEnv((_) async {
+        final installation = MockExecutableInstallation();
+        when(() => installation.packageRoot)
+            .thenReturn(Directory('/some_path'));
+        File('/some_path/pubspec.yaml')
+          ..createSync(recursive: true)
+          ..writeAsStringSync(multiLine([
+            'name: cool',
+            'name: cool',
+          ]));
+        when(() => launchContext.localInstallation).thenReturn(installation);
+        await rapidEntryPoint(
+          ['activate android'],
+          launchContext,
+          logger: logger,
+        );
+
+        verify(
+          () => logger.err(
+            any(
+              that: contains('pubspec.yaml: could not be parsed and failed.'),
+            ),
+          ),
+        ).called(1);
+        expect(exitCode, 1);
+      }),
+    );
+
+    test(
+      'fails resolving project when pubspec.yaml does not contain YAML map',
+      withMockEnv((_) async {
+        final installation = MockExecutableInstallation();
+        when(() => installation.packageRoot)
+            .thenReturn(Directory('/some_path'));
+        File('/some_path/pubspec.yaml')
+          ..createSync(recursive: true)
+          ..writeAsStringSync('a:b:c:d');
+        when(() => launchContext.localInstallation).thenReturn(installation);
+        await rapidEntryPoint(
+          ['activate android'],
+          launchContext,
+          logger: logger,
+        );
+
+        verify(
+          () => logger.err(
+            'pubspec.yaml: must contain a YAML map.',
           ),
         ).called(1);
         expect(exitCode, 1);
@@ -376,7 +479,12 @@ void main() {
         when(() => launchContext.localInstallation).thenReturn(installation);
         when(() => commandRunner.run(any())).thenThrow(FakeRapidException());
 
-        await rapidEntryPoint(['activate'], launchContext);
+        await rapidEntryPoint(
+          ['activate'],
+          launchContext,
+          logger: logger,
+          commandRunnerBuilder: commandRunnerBuilder,
+        );
 
         verify(
           () => logger.err('Instance of \'FakeRapidException\''),
@@ -406,7 +514,12 @@ void main() {
         when(() => commandRunner.run(any()))
             .thenThrow(UsageException('message', 'usage'));
 
-        await rapidEntryPoint(['activate'], launchContext);
+        await rapidEntryPoint(
+          ['activate'],
+          launchContext,
+          logger: logger,
+          commandRunnerBuilder: commandRunnerBuilder,
+        );
 
         verify(
           () => logger.err(
@@ -442,7 +555,12 @@ void main() {
         when(() => commandRunner.run(any())).thenThrow(Error());
 
         expect(
-          () async => rapidEntryPoint(['activate'], launchContext),
+          () async => rapidEntryPoint(
+            ['activate'],
+            launchContext,
+            logger: logger,
+            commandRunnerBuilder: commandRunnerBuilder,
+          ),
           throwsA(isA<Error>()),
         );
       }),

@@ -946,16 +946,28 @@ void main() {
   });
 
   group('PubspecYamlFile', () {
-    test(
-      'name',
-      withMockFs(() {
-        File('pubspec.yaml').writeAsStringSync('name: my_project');
-        final yamlFile = PubspecYamlFile('pubspec.yaml');
+    group('name', () {
+      test(
+        'returns name',
+        withMockFs(() {
+          File('pubspec.yaml').writeAsStringSync('name: my_project');
+          final yamlFile = PubspecYamlFile('pubspec.yaml');
 
-        final name = yamlFile.name;
-        expect(name, equals('my_project'));
-      }),
-    );
+          final name = yamlFile.name;
+          expect(name, equals('my_project'));
+        }),
+      );
+
+      test(
+        'throws StateError if no name present',
+        withMockFs(() {
+          File('pubspec.yaml').writeAsStringSync('foo: bar');
+          final yamlFile = PubspecYamlFile('pubspec.yaml');
+
+          expect(() => yamlFile.name, throwsStateError);
+        }),
+      );
+    });
 
     group('hasDependency', () {
       test(

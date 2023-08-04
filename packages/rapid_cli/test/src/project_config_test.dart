@@ -67,21 +67,33 @@ void main() {
       });
 
       test('accepts valid dart package name', () {
-        void testName(String name) {
-          RapidProjectConfig.fromYaml(
-            {
-              'rapid': {
-                'name': name,
+        void test(String name) {
+          expect(
+            RapidProjectConfig.fromYaml(
+              {
+                'rapid': {
+                  'name': name,
+                },
               },
-            },
-            path: '/foo',
+              path: '/foo',
+            ),
+            RapidProjectConfig(name: name, path: '/foo'),
           );
         }
 
-        testName('hello_world');
-        testName('hello-world');
-        testName('helloworld');
+        test('hello_world');
+        test('hello-world');
+        test('helloworld');
       });
+    });
+
+    test('hashCode', () {
+      final instance1 = RapidProjectConfig(path: '/foo', name: 'bar');
+      final instance2 = RapidProjectConfig(path: '/foo', name: 'bar');
+      final instance3 = RapidProjectConfig(path: '/hello', name: 'world');
+
+      expect(instance1.hashCode == instance2.hashCode, true);
+      expect(instance1.hashCode == instance3.hashCode, false);
     });
   });
 }

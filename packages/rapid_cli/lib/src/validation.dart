@@ -1,14 +1,5 @@
 import 'exception.dart';
 
-// TODO not clean as its only used to validate pubspec.yaml name
-T assertNotNull<T>(T? value) {
-  if (value == null) {
-    throw ValidationException._('Value cannot be null');
-  }
-
-  return value;
-}
-
 T assertIsA<T>({
   int? index,
   Object? key,
@@ -76,8 +67,4 @@ class RapidConfigException extends RapidException {
 
   @override
   String toString() => 'pubspec.yaml: $message';
-}
-
-class ValidationException extends RapidException {
-  ValidationException._(super.message);
 }

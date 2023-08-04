@@ -72,29 +72,19 @@ class RapidCommandRunner extends CommandRunner<void> {
   String get invocation => 'rapid <command>';
 }
 
-/// Override to test [rapidEntryPoint]
-@visibleForTesting
-RapidLogger? loggerOverrides;
-
-/// Override to test [rapidEntryPoint]
-@visibleForTesting
-RapidCommandRunner Function({RapidProject? project})? commandRunnerOverrides;
-
-/// Override to test [rapidEntryPoint]
-@visibleForTesting
-PubUpdater? pubUpdaterOverrides;
-
 FutureOr<void> rapidEntryPoint(
   List<String> arguments,
-  LaunchContext context,
-) async {
-  final logger = loggerOverrides ?? RapidLogger();
+  LaunchContext context, {
+  RapidLogger? logger,
+  RapidCommandRunner Function({RapidProject? project})? commandRunnerBuilder,
+  PubUpdater? pubUpdater,
+}) async {
+  logger ??= RapidLogger();
 
   if (arguments.contains('--version') || arguments.contains('-v')) {
     logger.info(packageVersion);
 
-    await _checkForUpdates(context, logger: logger);
-    return;
+    return _checkForUpdates(context, logger: logger, pubUpdater: pubUpdater);
   }
   try {
     if (!arguments.willShowHelp) {
@@ -127,7 +117,7 @@ FutureOr<void> rapidEntryPoint(
     );
 
     final commandRunner =
-        (commandRunnerOverrides ?? RapidCommandRunner.new)(project: project);
+        (commandRunnerBuilder ?? RapidCommandRunner.new)(project: project);
     await commandRunner.run(arguments);
   } on RapidException catch (err) {
     logger.err(err.toString());
@@ -143,8 +133,11 @@ FutureOr<void> rapidEntryPoint(
 Future<void> _checkForUpdates(
   LaunchContext context, {
   required RapidLogger logger,
+  PubUpdater? pubUpdater,
 }) async {
-  final pubUpdater = pubUpdaterOverrides ?? PubUpdater();
+  // TODO: ingore coverage manually is not good
+  pubUpdater ??= PubUpdater(); // coverage:ignore-line
+
   final isUpToDate = await pubUpdater.isUpToDate(
     packageName: packageName,
     currentVersion: packageVersion,

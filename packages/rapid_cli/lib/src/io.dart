@@ -12,7 +12,6 @@ import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import 'package:propertylistserialization/propertylistserialization.dart';
 import 'package:pubspec/pubspec.dart';
-import 'package:rapid_cli/src/validation.dart';
 import 'package:xml/xml.dart' show XmlDocument;
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
@@ -431,7 +430,14 @@ class PubspecYamlFile extends YamlFile {
 
   PubSpec get _pubSpec => PubSpec.fromYamlString(readAsStringSync());
 
-  String get name => assertNotNull(_pubSpec.name);
+  String get name {
+    final name = _pubSpec.name;
+    if (name != null) {
+      return name;
+    }
+
+    throw StateError('Name not found.');
+  }
 
   bool hasDependency({required String name}) {
     return _pubSpec.allDependencies.containsKey(name);

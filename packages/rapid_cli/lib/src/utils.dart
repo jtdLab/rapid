@@ -5,7 +5,6 @@ import 'package:rapid_cli/src/project/platform.dart';
 import 'package:yaml/yaml.dart';
 
 import 'io.dart';
-import 'io.dart' as io;
 import 'platform.dart';
 import 'process.dart';
 
@@ -47,7 +46,8 @@ Future<ProcessResult> runCommand(
   );
 }
 
-Future<Process> startCommand(
+// TODO rm or keep
+/* Future<Process> startCommand(
   List<String> cmd, {
   String? workingDirectory,
 }) async {
@@ -56,7 +56,7 @@ Future<Process> startCommand(
     workingDirectory: workingDirectory,
     runInShell: true,
   );
-}
+} */
 
 extension DirectoryUtils on Directory {
   bool isEmpty() {
@@ -66,11 +66,8 @@ extension DirectoryUtils on Directory {
 
 extension YamlUtils on YamlNode {
   /// Converts a YAML node to a regular mutable Dart object.
-  Object? toPlainObject() {
+  Object toPlainObject() {
     final node = this;
-    if (node is YamlScalar) {
-      return node.value;
-    }
     if (node is YamlMap) {
       return {
         for (final entry in node.nodes.entries)
@@ -80,10 +77,8 @@ extension YamlUtils on YamlNode {
     if (node is YamlList) {
       return node.nodes.map((node) => node.toPlainObject()).toList();
     }
-    throw FormatException(
-      'Unsupported YAML node type encountered: ${node.runtimeType}',
-      this,
-    );
+
+    return (node as YamlScalar).value;
   }
 }
 
@@ -112,7 +107,8 @@ extension StreamUtils<T> on Stream<T> {
       });
       pending.add(future);
 
-      if (pending.length < (parallelism ?? io.Platform.numberOfProcessors)) {
+      final numberOfProcessors = currentPlatform.numberOfProcessors;
+      if (pending.length < (parallelism ?? numberOfProcessors)) {
         continue;
       }
 
@@ -138,7 +134,7 @@ extension LanguageUtils on Language {
 
 extension DartPackageListUtils on List<DartPackage> {
   List<DartPackage> without(List<DartPackage> packages) {
-    // TODO maybe override euqalitty in DartPackage
+    // TODO maybe override euqality in DartPackage
     return this
       ..removeWhere(
         (e) => packages.map((e) => e.packageName).contains(e.packageName),

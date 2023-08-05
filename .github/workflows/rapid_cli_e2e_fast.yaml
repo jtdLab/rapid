@@ -1,0 +1,47 @@
+name: rapid_cli_e2e_fast
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - dev
+
+env:
+  FLUTTER_VERSION: 3.10.0
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/rapid_cli
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get Cached Fixtures
+        uses: actions/cache/restore@v3
+        with:
+          path: ${{ env.FIXTURES_PATH }}
+          key: fixtures-${{ github.run_id }}
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
+
+      - name: Install Flutter dependencies
+        run: flutter pub get
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+        # TODO is all of this required
+      - name: Setup Coverage Utils
+        run: flutter pub global activate coverage && flutter pub global activate test_cov_console && flutter pub global activate remove_from_coverage
+
+      - name: Run E2E Tests
+        run: dart test test/e2e/fast_test.dart --run-skipped -t e2e

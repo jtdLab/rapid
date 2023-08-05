@@ -4,56 +4,54 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
+dynamic performTest({
+  required String flag,
+}) =>
+    withTempDir((_) async {
+      // Arrange
+      final tester = RapidE2ETester('test_app');
+
+      // Act
+      await tester.runRapidCommand([
+        'create',
+        tester.projectName,
+        '--$flag',
+      ]);
+
+      // Assert
+      final platform = Platform.values.firstWhere((p) => flag == p.name);
+      await verifyNoAnalyzerIssues();
+      await verifyNoFormattingIssues();
+      verifyDoNotExist(
+        tester.allPlatformDependentPackages.without(
+          tester.platformDependentPackages(platform),
+        ),
+      );
+      final platformPackages = tester.platformDependentPackages(platform);
+      final featurePackages = [
+        tester.featurePackage('app', platform),
+        tester.featurePackage('home_page', platform),
+      ];
+      verifyDoExist([
+        ...tester.platformIndependentPackages,
+        ...platformPackages,
+        ...featurePackages,
+      ]);
+      verifyDoNotHaveTests([
+        ...tester.platformDependentPackagesWithoutTests(platform),
+      ]);
+      await verifyTestsPassWith100PercentCoverage([
+        ...tester.platformIndependentPackages,
+        ...tester.platformDependentPackagesWithTests(platform),
+        ...featurePackages,
+      ]);
+    });
+
 void main() {
   group(
     'E2E',
     () {
       group('create', () {
-        dynamic performTest({
-          required String flag,
-        }) =>
-            withTempDir((_) async {
-              // Arrange
-              final tester = RapidE2ETester('test_app');
-
-              // Act
-              await tester.runRapidCommand([
-                'create',
-                tester.projectName,
-                '--$flag',
-              ]);
-
-              // Assert
-              final platform =
-                  Platform.values.firstWhere((p) => flag == p.name);
-              await verifyNoAnalyzerIssues();
-              await verifyNoFormattingIssues();
-              verifyDoNotExist(
-                tester.allPlatformDependentPackages.without(
-                  tester.platformDependentPackages(platform),
-                ),
-              );
-              final platformPackages =
-                  tester.platformDependentPackages(platform);
-              final featurePackages = [
-                tester.featurePackage('app', platform),
-                tester.featurePackage('home_page', platform),
-              ];
-              verifyDoExist([
-                ...tester.platformIndependentPackages,
-                ...platformPackages,
-                ...featurePackages,
-              ]);
-              verifyDoNotHaveTests([
-                ...tester.platformDependentPackagesWithoutTests(platform),
-              ]);
-              await verifyTestsPassWith100PercentCoverage([
-                ...tester.platformIndependentPackages,
-                ...tester.platformDependentPackagesWithTests(platform),
-                ...featurePackages,
-              ]);
-            });
-
         test(
           '--android',
           performTest(

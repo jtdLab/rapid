@@ -121,7 +121,7 @@ void _updatePlatformNativeDirectoryTemplate({
   print('Updating ${platform}_native_directory templates...');
 
   final brickDir = Directory(
-    'templates/platform_root_package/${platform}_native_directory/__brick__',
+    'bricks/platform_root_package/${platform}_native_directory/__brick__',
   );
   brickDir.deleteSync(recursive: true);
   brickDir.create();

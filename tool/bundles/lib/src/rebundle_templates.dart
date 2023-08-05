@@ -10,7 +10,7 @@ Future<void> rebundleTemplates(List<Template> templates) async {
     print('Rebundling template $name...');
     await run(
       'mason',
-      ['bundle', path, '-t', 'dart', '-o', 'lib/src/project/bundles'],
+      ['bundle', path, '-t', 'dart', '-o', 'packages/rapid_cli/lib/src/project/bundles'],
     );
   }
 }

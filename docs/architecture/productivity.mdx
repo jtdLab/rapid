@@ -55,10 +55,10 @@ Rapid projects rely extensively on code generation to facilitate fast developmen
 
 ```bash
 # Single run
-melos gen-code
+melos build_runner
 
 # Watch mode
-melos gen-code:watch
+melos build_runner:watch
 ```
 
 </TabItem>
@@ -66,10 +66,10 @@ melos gen-code:watch
 
 ```bash
 # Single run
-flutter pub run build_runner build --delete-conflicting outputs
+dart run build_runner build --delete-conflicting-outputs
 
 # Watch mode
-flutter pub run build_runner watch --delete-conflicting outputs
+dart run build_runner watch --delete-conflicting-outputs
 ```
 
 </TabItem>

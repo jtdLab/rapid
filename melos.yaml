@@ -74,18 +74,6 @@ scripts:
       rapid create foo_bar -o packages/rapid_cli/tmp --all
     description: Run rapid create for tinkering with all platforms.
 
-  tool:bundles:
-    exec: sh tool/bundles.sh
-    description: Regenerate fresh bundles from templates.
-    packageFilters:
-      scope: rapid_cli
-
-  git:bundles:into:dev:
-    run: |
-      git merge --ff-only origin/bundles && \
-      git push origin dev
-    description: Merge bundles branch into dev branch (This must be run from dev branch)
-
   git:dev:into:main:
     run: |
       git merge --ff-only origin/dev && \

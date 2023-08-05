@@ -44,7 +44,7 @@ jobs:
           key: fixtures-${{ github.run_id }}
 
       - name: Generate Fixtures
-        run: bash tool/fixtures.sh
+        run: bash ../../tool/fixtures.sh
 
   e2e:
     runs-on: ubuntu-latest

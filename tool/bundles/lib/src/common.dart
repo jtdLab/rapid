@@ -47,131 +47,131 @@ final packages = [
 
 const androidNativeDirectory = Template(
   'android_native_directory',
-  'templates/platform_root_package/android_native_directory',
+  'bricks/platform_root_package/android_native_directory',
 );
 const bloc = Template(
   'bloc',
-  'templates/bloc',
+  'bricks/bloc',
 );
 const cubit = Template(
   'cubit',
-  'templates/cubit',
+  'bricks/cubit',
 );
 const dataTransferObject = Template(
   'data_transfer_object',
-  'templates/data_transfer_object',
+  'bricks/data_transfer_object',
 );
 const diPackage = PackageTemplate(
   'di_package',
-  'templates/di_package',
+  'bricks/di_package',
 );
 const domainPackage = PackageTemplate(
   'domain_package',
-  'templates/domain_package',
+  'bricks/domain_package',
 );
 const entity = Template(
   'entity',
-  'templates/entity',
+  'bricks/entity',
 );
 const infrastructurePackage = PackageTemplate(
   'infrastructure_package',
-  'templates/infrastructure_package',
+  'bricks/infrastructure_package',
 );
 const iosNativeDirectory = Template(
   'ios_native_directory',
-  'templates/platform_root_package/ios_native_directory',
+  'bricks/platform_root_package/ios_native_directory',
 );
 const linuxNativeDirectory = Template(
   'linux_native_directory',
-  'templates/platform_root_package/linux_native_directory',
+  'bricks/platform_root_package/linux_native_directory',
 );
 const loggingPackage = PackageTemplate(
   'logging_package',
-  'templates/logging_package',
+  'bricks/logging_package',
 );
 const macosNativeDirectory = Template(
   'macos_native_directory',
-  'templates/platform_root_package/macos_native_directory',
+  'bricks/platform_root_package/macos_native_directory',
 );
 const navigatorImplementation = Template(
   'navigator_implementation',
-  'templates/navigator_implementation',
+  'bricks/navigator_implementation',
 );
 const navigatorInterface = Template(
   'navigator_interface',
-  'templates/navigator_interface',
+  'bricks/navigator_interface',
 );
 const platformAppFeaturePackage = PlatformPackageTemplate(
   'platform_app_feature_package',
-  'templates/platform_app_feature_package',
+  'bricks/platform_app_feature_package',
 );
 const platformFlowFeaturePackage = PlatformNamedPackageTemplate(
   'platform_flow_feature_package',
-  'templates/platform_flow_feature_package',
+  'bricks/platform_flow_feature_package',
 );
 const platformLocalizationPackage = PlatformPackageTemplate(
   'platform_localization_package',
-  'templates/platform_localization_package',
+  'bricks/platform_localization_package',
 );
 const platformNavigationPackage = PlatformPackageTemplate(
   'platform_navigation_package',
-  'templates/platform_navigation_package',
+  'bricks/platform_navigation_package',
 );
 const platformPageFeaturePackage = PlatformNamedPackageTemplate(
   'platform_page_feature_package',
-  'templates/platform_page_feature_package',
+  'bricks/platform_page_feature_package',
 );
 const platformRootPackage = PlatformPackageTemplate(
   'platform_root_package',
-  'templates/platform_root_package',
+  'bricks/platform_root_package',
 );
 const platformTabFlowFeaturePackage = PlatformNamedPackageTemplate(
   'platform_tab_flow_feature_package',
-  'templates/platform_tab_flow_feature_package',
+  'bricks/platform_tab_flow_feature_package',
 );
 const platformUiPackage = PlatformPackageTemplate(
   'platform_ui_package',
-  'templates/platform_ui_package',
+  'bricks/platform_ui_package',
 );
 const platformWidgetFeaturePackage = PlatformNamedPackageTemplate(
   'platform_widget_feature_package',
-  'templates/platform_widget_feature_package',
+  'bricks/platform_widget_feature_package',
 );
 const rootPackage = PackageTemplate(
   'root_package',
-  'templates/root_package',
+  'bricks/root_package',
 );
 const serviceImplementation = Template(
   'service_implementation',
-  'templates/service_implementation',
+  'bricks/service_implementation',
 );
 const serviceInterface = Template(
   'service_interface',
-  'templates/service_interface',
+  'bricks/service_interface',
 );
 const themedWidget = Template(
   'themed_widget',
-  'templates/themed_widget',
+  'bricks/themed_widget',
 );
 const uiPackage = PackageTemplate(
   'ui_package',
-  'templates/ui_package',
+  'bricks/ui_package',
 );
 const valueObject = Template(
   'value_object',
-  'templates/value_object',
+  'bricks/value_object',
 );
 const webNativeDirectory = Template(
   'web_native_directory',
-  'templates/platform_root_package/web_native_directory',
+  'bricks/platform_root_package/web_native_directory',
 );
 const widget = Template(
   'widget',
-  'templates/widget',
+  'bricks/widget',
 );
 const windowsNativeDirectory = Template(
   'windows_native_directory',
-  'templates/platform_root_package/windows_native_directory',
+  'bricks/platform_root_package/windows_native_directory',
 );
 
 final templates = [
@@ -239,7 +239,7 @@ class Template {
   /// The name specified in 'brick.yaml'.
   final String name;
 
-  /// The path relative to `rapid_cli`.
+  /// The path relative to root.
   final String path;
 
   const Template(this.name, this.path);

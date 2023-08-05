@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:bundles/bundles.dart';
 
 Future<void> main(List<String> arguments) async {
-  // must be run from rapid_cli dir
-  if (!Directory.current.path.endsWith('packages/rapid_cli')) {
-    print('Must be run from packages/rapid_cli');
+  // must be run from root
+  if (!Directory.current.listSync().any((e) => e.path.endsWith('bricks'))) {
+    print('Could not find directory named "bricks"');
     return;
   }
 

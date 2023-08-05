@@ -7,13 +7,10 @@ import 'utils.dart';
 
 export 'package:pubspec/pubspec.dart';
 
-// TODO Atm all commands use run under the maybe start offers more insights
-
 Future<void> melosBootstrap({
   required List<DartPackage> scope,
   required RapidProject project,
 }) async {
-  // TODO forward updates about bootstrapped packages / failures based on the process streams stdout.
   final result = await runCommand(
     [
       'melos',
@@ -26,14 +23,15 @@ Future<void> melosBootstrap({
 
   if (result.exitCode != 0) {
     throw CliException._(
-      'Failed to bootstrap.',
-      directory: project.rootPackage, // TODO good?
+      'Failed to bootstrap',
+      workingDirectory: project.path,
       stdout: result.stdout,
       stderr: result.stderr,
     );
   }
 }
 
+// Use dart pub get
 Future<FlutterPubGetResult> flutterPubGet({
   bool dryRun = false,
   required DartPackage package,
@@ -45,8 +43,8 @@ Future<FlutterPubGetResult> flutterPubGet({
 
   if (result.exitCode != 0) {
     throw CliException._(
-      'Failed to install.',
-      directory: package,
+      'Failed to install',
+      workingDirectory: package.path,
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -73,8 +71,8 @@ Future<void> flutterGenl10n({required DartPackage package}) async {
 
   if (result.exitCode != 0) {
     throw CliException._(
-      'Failed to generate localizations.',
-      directory: package,
+      'Failed to generate localizations',
+      workingDirectory: package.path,
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -89,14 +87,15 @@ Future<void> dartFormatFix({required RapidProject project}) async {
 
   if (result.exitCode != 0) {
     throw CliException._(
-      'Failed to format.',
-      directory: project.rootPackage, // TODO good?
+      'Failed to format',
+      workingDirectory: project.path,
       stdout: result.stdout,
       stderr: result.stderr,
     );
   }
 }
 
+// TODO: use dart run
 Future<void> flutterPubRunBuildRunnerBuildDeleteConflictingOutputs({
   required DartPackage package,
 }) async {
@@ -114,14 +113,15 @@ Future<void> flutterPubRunBuildRunnerBuildDeleteConflictingOutputs({
 
   if (result.exitCode != 0) {
     throw CliException._(
-      'Failed to run code generation.',
-      directory: package,
+      'Failed to run code generation',
+      workingDirectory: package.path,
       stdout: result.stdout,
       stderr: result.stderr,
     );
   }
 }
 
+// TODO: use dart pub add
 Future<void> flutterPubAdd({
   required List<String> dependenciesToAdd,
   required DartPackage package,
@@ -134,13 +134,14 @@ Future<void> flutterPubAdd({
   if (result.exitCode != 0) {
     throw CliException._(
       'Failed to add dependencies',
-      directory: package,
+      workingDirectory: package.path,
       stdout: result.stdout,
       stderr: result.stderr,
     );
   }
 }
 
+// TODO: use dart pub remove
 Future<void> flutterPubRemove({
   required List<String> packagesToRemove,
   required DartPackage package,
@@ -152,8 +153,8 @@ Future<void> flutterPubRemove({
 
   if (result.exitCode != 0) {
     throw CliException._(
-      'Failed to remove dependencies.',
-      directory: package,
+      'Failed to remove dependencies',
+      workingDirectory: package.path,
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -185,19 +186,19 @@ Future<void> flutterConfigEnable({
 class CliException extends RapidException {
   CliException._(
     super.message, {
-    required this.directory,
+    required this.workingDirectory,
     this.stdout,
     this.stderr,
   });
 
-  final Directory directory;
+  final String workingDirectory;
   final String? stdout;
   final String? stderr;
 
   @override
   String toString() {
     return multiLine([
-      '$message - at ${directory.path}.',
+      '$message at $workingDirectory.',
       if (stderr != null) ...[
         '',
         stderr!,

@@ -46,18 +46,6 @@ Future<ProcessResult> runCommand(
   );
 }
 
-// TODO rm or keep
-/* Future<Process> startCommand(
-  List<String> cmd, {
-  String? workingDirectory,
-}) async {
-  return currentProcessManager.start(
-    cmd,
-    workingDirectory: workingDirectory,
-    runInShell: true,
-  );
-} */
-
 extension DirectoryUtils on Directory {
   bool isEmpty() {
     return listSync().isEmpty;

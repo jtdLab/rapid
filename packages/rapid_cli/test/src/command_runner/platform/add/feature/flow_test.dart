@@ -114,6 +114,26 @@ void main() {
           ),
         ).called(1);
       });
+
+      test('completes with fallbacks', () async {
+        final rapid = MockRapid();
+        final argResults = MockArgResults();
+        when(() => argResults.rest).thenReturn(['package_a']);
+        final command = PlatformAddFeatureFlowCommand(platform, null)
+          ..argResultOverrides = argResults
+          ..rapidOverrides = rapid;
+
+        await command.run();
+
+        verify(
+          () => rapid.platformAddFeatureFlow(
+            platform,
+            name: 'package_a',
+            description: 'The PackageA tab flow feature.',
+            navigator: false,
+          ),
+        ).called(1);
+      });
     });
   }
 }

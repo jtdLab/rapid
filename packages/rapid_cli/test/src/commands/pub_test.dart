@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
 import 'package:rapid_cli/src/io.dart';
@@ -105,6 +107,34 @@ void main() {
       );
 
       test(
+        'when flutter pub add fails run flutter pub get',
+        withMockEnv((manager) async {
+          when(
+            () => manager.run(
+              ['flutter', 'pub', 'add', 'package_a', 'package_b'],
+              workingDirectory: any(named: 'workingDirectory'),
+              runInShell: true,
+              stderrEncoding: utf8,
+              stdoutEncoding: utf8,
+            ),
+          ).thenAnswer((_) async => ProcessResult(0, 1, 'stdout', 'stderr'));
+          final logger = MockRapidLogger();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubAdd(
+            packageName: 'example_package',
+            packages: ['package_a', 'package_b'],
+          );
+
+          verifyInOrder([
+            () => manager.runFlutterPubGet(
+                  workingDirectory: 'example_package_path',
+                ),
+          ]);
+        }),
+      );
+
+      test(
         'rebootstraps dependent packages',
         withMockEnv((manager) async {
           final dependentPackages = [
@@ -137,9 +167,16 @@ void main() {
       test(
         'handles packages with empty constraints manually',
         withMockEnv((manager) async {
+          final dependentPackages = [
+            FakeDartPackage(packageName: 'package_c'),
+            FakeDartPackage(packageName: 'package_d'),
+          ];
+          when(() => project.dependentPackages(package))
+              .thenReturn(dependentPackages);
           final packagePubSpecFile = MockPubspecYamlFile();
           when(() => package.pubSpecFile).thenReturn(packagePubSpecFile);
-          final logger = MockRapidLogger();
+          final (progress: progress, logger: logger) =
+              setupLoggerWithoutGroup();
           final rapid = getRapid(project: project, tool: tool, logger: logger);
 
           await rapid.pubAdd(
@@ -159,6 +196,13 @@ void main() {
                   dependency: HostedReference(VersionConstraint.empty),
                   dev: true,
                 ),
+            () => logger.progress(
+                'Running "melos bootstrap --scope example_package,package_c,package_d"'),
+            () => manager.runMelosBootstrap(
+                  ['example_package', 'package_c', 'package_d'],
+                  workingDirectory: 'project_path',
+                ),
+            () => progress.complete(),
           ]);
           verifyNever(
             () => logger.progress(
@@ -243,6 +287,34 @@ void main() {
           verifyNoMoreInteractions(manager);
           verifyNoMoreInteractions(logger);
           verifyNoMoreInteractions(progress);
+        }),
+      );
+
+      test(
+        'when flutter pub add fails run flutter pub get',
+        withMockEnv((manager) async {
+          when(
+            () => manager.run(
+              ['flutter', 'pub', 'add', 'package_a', 'package_b'],
+              workingDirectory: any(named: 'workingDirectory'),
+              runInShell: true,
+              stderrEncoding: utf8,
+              stdoutEncoding: utf8,
+            ),
+          ).thenAnswer((_) async => ProcessResult(0, 1, 'stdout', 'stderr'));
+          final logger = MockRapidLogger();
+          final rapid = getRapid(project: project, tool: tool, logger: logger);
+
+          await rapid.pubAdd(
+            packageName: null,
+            packages: ['package_a', 'package_b'],
+          );
+
+          verifyInOrder([
+            () => manager.runFlutterPubGet(
+                  workingDirectory: 'example_package_path',
+                ),
+          ]);
         }),
       );
 

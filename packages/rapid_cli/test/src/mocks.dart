@@ -1404,6 +1404,17 @@ class FakeDartPackage extends Fake implements DartPackage {
   late final PubspecYamlFile pubSpecFile;
 }
 
+class FakeRapidProject extends Fake implements RapidProject {
+  FakeRapidProject({
+    String? path,
+  }) {
+    this.path = path ?? 'path/to/project';
+  }
+
+  @override
+  late final String path;
+}
+
 class FakeIODirectory extends Fake implements io.Directory {
   FakeIODirectory({String? path, bool? existsSync}) {
     this.path = path ?? 'path/to/directory';

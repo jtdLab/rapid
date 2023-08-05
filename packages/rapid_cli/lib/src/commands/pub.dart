@@ -9,7 +9,7 @@ mixin _PubMixin on _Rapid {
 
     final package = _findCurrentPackage(packageName);
 
-    // These packages can be handles by `dart pub add` directly
+    // These packages can be handled by `dart pub add` directly
     final packagesWithNonEmptyConstraint =
         packages.map((e) => e.trim()).where((e) => !e.endsWith(':')).toList();
     if (packagesWithNonEmptyConstraint.isNotEmpty) {
@@ -33,7 +33,12 @@ mixin _PubMixin on _Rapid {
       );
     }
 
-    await melosBootstrapTask(scope: project.dependentPackages(package));
+    await melosBootstrapTask(
+      scope: [
+        if (packagesWithEmptyConstraint.isNotEmpty) package,
+        ...project.dependentPackages(package),
+      ],
+    );
 
     logger
       ..newLine()

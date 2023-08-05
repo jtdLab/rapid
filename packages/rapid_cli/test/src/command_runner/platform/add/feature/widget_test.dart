@@ -111,6 +111,25 @@ void main() {
           ),
         ).called(1);
       });
+
+      test('completes with fallbacks', () async {
+        final rapid = MockRapid();
+        final argResults = MockArgResults();
+        when(() => argResults.rest).thenReturn(['package_a']);
+        final command = PlatformAddFeatureWidgetCommand(platform, null)
+          ..argResultOverrides = argResults
+          ..rapidOverrides = rapid;
+
+        await command.run();
+
+        verify(
+          () => rapid.platformAddFeatureWidget(
+            platform,
+            name: 'package_a',
+            description: 'The PackageA widget feature.',
+          ),
+        ).called(1);
+      });
     });
   }
 }

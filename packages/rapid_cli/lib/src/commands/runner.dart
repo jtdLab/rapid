@@ -53,20 +53,14 @@ class Rapid extends _Rapid
 
   @override
   RapidProject get project {
-    if (_project != null) {
-      return _project!;
-    }
-
-    throw UnsupportedError('No project resolved.');
+    assert(_project != null, 'No project resolved.');
+    return _project!;
   }
 
   @override
   set project(RapidProject project) {
-    if (_project == null) {
-      _project = project;
-    } else {
-      throw UnsupportedError('Project already resolved.');
-    }
+    assert(_project == null, 'Project already resolved.');
+    _project = project;
   }
 
   /// Override this to test create command.
@@ -74,12 +68,15 @@ class Rapid extends _Rapid
   RapidProject Function({required RapidProjectConfig config})?
       projectBuilderOverrides;
 
+  // TODO(jtdLab): get this covered
+  // coverage:ignore-start
   @override
   RapidProject Function({required RapidProjectConfig config})
       get projectBuilder =>
           projectBuilderOverrides ??
           ({required RapidProjectConfig config}) =>
               RapidProject.fromConfig(config);
+  // coverage:ignore-end
 
   final RapidTool? _tool;
 
@@ -105,7 +102,8 @@ abstract class _Rapid {
       progress.complete();
       return result;
     } catch (e) {
-      progress.fail();
+      // TODO(jtdLab): get this covered
+      progress.fail(); // coverage:ignore-line
       rethrow;
     }
   }
@@ -118,7 +116,7 @@ abstract class _Rapid {
   }) async {
     if (parallelism == 1) {
       if (description != null) {
-        logger.log(description);
+        logger.info(description);
       }
       for (final task in tasks) {
         await this.task(task.$1, task.$2);
@@ -133,7 +131,8 @@ abstract class _Rapid {
             progress.complete();
             return result;
           } catch (e) {
-            progress.fail();
+            // TODO(jtdLab): get this covered
+            progress.fail(); // coverage:ignore-line
             rethrow;
           }
         },
@@ -161,7 +160,9 @@ abstract class _Rapid {
           dependenciesToAdd: dependenciesToAdd,
         );
       } catch (_) {
-        // TODO: https://github.com/dart-lang/sdk/issues/52895
+        // TODO(jtdLab): https://github.com/dart-lang/sdk/issues/52895
+        // leads to pub add failing if empty version deps already in a pubspec.yaml
+        // where pub add is called on
         await flutterPubGet(package: package);
       }
     });

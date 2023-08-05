@@ -43,8 +43,10 @@ class ValueObject extends FileSystemEntityCollection {
         'name': name,
         'type': type,
         'generics': generics,
-        'output_dir': '.', // TODO rm later
+        'output_dir': '.',
+        'output_dir_is_cwd': true,
         'sub_domain_name': subDomainName,
+        'has_sub_domain_name': subDomainName != null,
       },
     );
   }

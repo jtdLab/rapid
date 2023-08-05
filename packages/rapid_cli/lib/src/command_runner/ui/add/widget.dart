@@ -11,7 +11,7 @@ class UiAddWidgetCommand extends RapidLeafCommand with ClassNameGetter {
   UiAddWidgetCommand(super.project) {
     argParser.addFlag(
       'theme',
-      help: 'Wheter the new widget has its own theme.',
+      help: 'Whether the new widget has its own theme.',
       defaultsTo: _defaultTheme,
     );
   }

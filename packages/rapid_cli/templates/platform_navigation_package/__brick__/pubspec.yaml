@@ -10,7 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  auto_route: ^7.7.1
+  auto_route: ^7.8.0
 
 dev_dependencies:
   lints: ^2.1.1

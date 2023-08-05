@@ -103,9 +103,8 @@ mixin _CreateMixin on _ActivateMixin {
             calledFromCreate: true,
           );
       }
+      logger.newLine();
     }
-
-    logger.newLine();
 
     await dartFormatFixTask();
 

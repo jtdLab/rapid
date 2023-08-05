@@ -83,20 +83,7 @@ final infrastructurePackageBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     }
   ],
-  "hooks": [
-    {
-      "path": "pre_gen.dart",
-      "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwoKdm9pZCBydW4oSG9va0NvbnRleHQgY29udGV4dCkgewogIGZpbmFsIG5hbWUgPSBjb250ZXh0LnZhcnNbJ25hbWUnXTsKICBjb250ZXh0LnZhcnMgPSB7CiAgICAuLi5jb250ZXh0LnZhcnMsCiAgICAnaGFzX25hbWUnOiBuYW1lICE9IG51bGwsCiAgfTsKfQo=",
-      "type": "text"
-    },
-    {
-      "path": "pubspec.yaml",
-      "data":
-          "bmFtZTogaW5mcmFzdHJ1Y3R1cmVfcGFja2FnZV9ob29rcwoKZW52aXJvbm1lbnQ6CiAgc2RrOiAiPj0zLjAuMCA8NC4wLjAiCgpkZXBlbmRlbmNpZXM6CiAgbWFzb246IGFueQo=",
-      "type": "text"
-    }
-  ],
+  "hooks": [],
   "name": "infrastructure_package",
   "description":
       "A brick generating the infrastructure package of a Rapid project.",
@@ -114,6 +101,7 @@ final infrastructurePackageBundle = MasonBundle.fromJson(<String, dynamic>{
   },
   "vars": {
     "project_name": {"type": "string"},
-    "name": {"type": "string"}
+    "name": {"type": "string"},
+    "has_name": {"type": "boolean"}
   }
 });

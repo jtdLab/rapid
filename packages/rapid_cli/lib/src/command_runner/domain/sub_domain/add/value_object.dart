@@ -1,8 +1,6 @@
 import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
-// TODO fix the template needs super class from rapid
-
 /// The default type.
 const _defaultType = 'String';
 

@@ -114,6 +114,27 @@ void main() {
           ),
         ).called(1);
       });
+
+      test('completes with fallbacks', () async {
+        final rapid = MockRapid();
+        final argResults = MockArgResults();
+
+        when(() => argResults.rest).thenReturn(['package_a']);
+        final command = PlatformAddFeaturePageCommand(platform, null)
+          ..argResultOverrides = argResults
+          ..rapidOverrides = rapid;
+
+        await command.run();
+
+        verify(
+          () => rapid.platformAddFeaturePage(
+            platform,
+            name: 'package_a',
+            description: 'The PackageA page feature.',
+            navigator: false,
+          ),
+        ).called(1);
+      });
     });
   }
 }

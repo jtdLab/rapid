@@ -3,52 +3,50 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
-// TODO output-dir
+dynamic performTest({
+  required String subDomain,
+  String? outputDir,
+}) =>
+    withTempDir((root) async {
+      // Arrange
+      final tester = await RapidE2ETester.withProject(root);
+      if (subDomain != 'default') {
+        await tester.runRapidCommand([
+          'domain',
+          'add',
+          'sub_domain',
+          subDomain,
+        ]);
+      }
+      final name = 'FooBar';
+
+      // Act
+      await tester.runRapidCommand([
+        'domain',
+        subDomain,
+        'add',
+        'value_object',
+        name,
+        if (outputDir != null) '--output-dir',
+        if (outputDir != null) outputDir,
+      ]);
+
+      // Assert
+      await verifyNoAnalyzerIssues();
+      await verifyNoFormattingIssues();
+      verifyDoExist({
+        ...tester.valueObjectFiles(
+          name: name,
+          subDomainName: subDomain,
+          outputDir: outputDir,
+        ),
+      });
+    });
 
 void main() {
   group(
     'E2E',
     () {
-      dynamic performTest({
-        required String subDomain,
-        String? outputDir,
-      }) =>
-          withTempDir((root) async {
-            // Arrange
-            final tester = await RapidE2ETester.withProject(root);
-            if (subDomain != 'default') {
-              await tester.runRapidCommand([
-                'domain',
-                'add',
-                'sub_domain',
-                subDomain,
-              ]);
-            }
-            final name = 'FooBar';
-
-            // Act
-            await tester.runRapidCommand([
-              'domain',
-              subDomain,
-              'add',
-              'value_object',
-              name,
-              if (outputDir != null) '--output-dir',
-              if (outputDir != null) outputDir,
-            ]);
-
-            // Assert
-            await verifyNoAnalyzerIssues();
-            await verifyNoFormattingIssues();
-            verifyDoExist({
-              ...tester.valueObjectFiles(
-                name: name,
-                subDomainName: subDomain,
-                outputDir: outputDir,
-              ),
-            });
-          });
-
       test(
         'domain default add value_object',
         performTest(

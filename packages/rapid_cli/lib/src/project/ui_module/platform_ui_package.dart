@@ -47,7 +47,7 @@ class PlatformUiPackage extends UiPackage {
       target: this,
       vars: <String, dynamic>{
         'project_name': projectName,
-        'platform': platform.name,
+        ...platformVars(platform),
       },
     );
   }

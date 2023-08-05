@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
+import 'package:rapid_cli/src/io.dart';
 import 'package:rapid_cli/src/logging.dart';
 import 'package:rapid_cli/src/process.dart';
 import 'package:rapid_cli/src/project/platform.dart';
@@ -113,7 +114,7 @@ RapidProject setupProjectWithInfrastructurePackage(String name) {
 }
 
 extension ProcessManagerX on ProcessManager {
-  dynamic _runProcess(
+  Future<ProcessResult> _runProcess(
     List<String> command, {
     required String workingDirectory,
   }) =>
@@ -125,7 +126,7 @@ extension ProcessManagerX on ProcessManager {
         stdoutEncoding: utf8,
       );
 
-  dynamic runFlutterPubGet({
+  Future<ProcessResult> runFlutterPubGet({
     required String workingDirectory,
     bool dryRun = false,
   }) =>
@@ -134,7 +135,7 @@ extension ProcessManagerX on ProcessManager {
         workingDirectory: workingDirectory,
       );
 
-  dynamic runFlutterGenl10n({
+  Future<ProcessResult> runFlutterGenl10n({
     required String workingDirectory,
   }) =>
       _runProcess(
@@ -142,7 +143,7 @@ extension ProcessManagerX on ProcessManager {
         workingDirectory: workingDirectory,
       );
 
-  dynamic runDartFormatFix({
+  Future<ProcessResult> runDartFormatFix({
     required String workingDirectory,
   }) =>
       _runProcess(
@@ -150,7 +151,8 @@ extension ProcessManagerX on ProcessManager {
         workingDirectory: workingDirectory,
       );
 
-  dynamic runFlutterConfigEnablePlatform(Platform platform) => _runProcess(
+  Future<ProcessResult> runFlutterConfigEnablePlatform(Platform platform) =>
+      _runProcess(
         [
           'flutter',
           'config',
@@ -164,7 +166,7 @@ extension ProcessManagerX on ProcessManager {
         workingDirectory: any(named: 'workingDirectory'),
       );
 
-  dynamic runFlutterPubAdd(
+  Future<ProcessResult> runFlutterPubAdd(
     List<String> dependenciesToAdd, {
     required String workingDirectory,
   }) =>
@@ -173,7 +175,7 @@ extension ProcessManagerX on ProcessManager {
         workingDirectory: workingDirectory,
       );
 
-  dynamic runFlutterPubRemove(
+  Future<ProcessResult> runFlutterPubRemove(
     List<String> dependenciesToRemove, {
     required String workingDirectory,
   }) =>
@@ -182,7 +184,7 @@ extension ProcessManagerX on ProcessManager {
         workingDirectory: workingDirectory,
       );
 
-  dynamic runMelosBootstrap(
+  Future<ProcessResult> runMelosBootstrap(
     List<String> scope, {
     required String workingDirectory,
   }) =>
@@ -191,18 +193,19 @@ extension ProcessManagerX on ProcessManager {
         workingDirectory: workingDirectory,
       );
 
-  dynamic runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs({
+  Future<ProcessResult>
+      runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs({
     required String workingDirectory,
   }) =>
-      _runProcess(
-        [
-          'flutter',
-          'pub',
-          'run',
-          'build_runner',
-          'build',
-          '--delete-conflicting-outputs',
-        ],
-        workingDirectory: workingDirectory,
-      );
+          _runProcess(
+            [
+              'flutter',
+              'pub',
+              'run',
+              'build_runner',
+              'build',
+              '--delete-conflicting-outputs',
+            ],
+            workingDirectory: workingDirectory,
+          );
 }

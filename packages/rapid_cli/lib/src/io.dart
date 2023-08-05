@@ -6,11 +6,12 @@ import 'dart:typed_data';
 
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:collection/collection.dart';
 import 'package:dart_style/dart_style.dart';
+import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 import 'package:propertylistserialization/propertylistserialization.dart';
 import 'package:pubspec/pubspec.dart';
-import 'package:rapid_cli/src/validation.dart';
 import 'package:xml/xml.dart' show XmlDocument;
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
@@ -27,6 +28,23 @@ export 'package:pubspec/pubspec.dart'
         ExternalHostedReference,
         SdkReference;
 
+FileSystemEntity _entityFromIO(FileSystemEntity entity) =>
+    entity is io.Directory
+        ? Directory._fromIO(entity)
+        : entity is io.File
+            ? File._fromIO(entity)
+            : entity;
+
+Future<FileSystemEntity> _entityFromIOAsync(
+    Future<FileSystemEntity> entity) async {
+  final result = await entity;
+  return result is io.Directory
+      ? Directory._fromIO(result)
+      : result is io.File
+          ? File._fromIO(result)
+          : result;
+}
+
 abstract class FileSystemEntityCollection {
   Iterable<FileSystemEntity> get entities;
 
@@ -42,7 +60,12 @@ abstract class FileSystemEntityCollection {
 }
 
 class Directory implements io.Directory {
-  Directory(String path) : _directory = io.Directory(p.normalize(path));
+  /// Overrides the underlying directory from dart:io for testing.
+  @visibleForTesting
+  static io.Directory? directoryOverrides;
+
+  Directory(String path)
+      : _directory = directoryOverrides ?? io.Directory(p.normalize(path));
 
   static Directory get current => Directory._fromIO(io.Directory.current);
 
@@ -150,7 +173,11 @@ class Directory implements io.Directory {
 }
 
 class File implements io.File {
-  File(String path) : _file = io.File(p.normalize(path));
+  /// Overrides the underlying file from dart:io for testing.
+  @visibleForTesting
+  static io.File? fileOverrides;
+
+  File(String path) : _file = fileOverrides ?? io.File(p.normalize(path));
 
   File._fromIO(io.File file) : _file = file;
 
@@ -403,7 +430,14 @@ class PubspecYamlFile extends YamlFile {
 
   PubSpec get _pubSpec => PubSpec.fromYamlString(readAsStringSync());
 
-  String get name => assertNotNull(_pubSpec.name);
+  String get name {
+    final name = _pubSpec.name;
+    if (name != null) {
+      return name;
+    }
+
+    throw StateError('Name not found.');
+  }
 
   bool hasDependency({required String name}) {
     return _pubSpec.allDependencies.containsKey(name);
@@ -520,35 +554,38 @@ class DartFile extends File {
     // Add new import/export
     importExportLines = updateImportsAndExports(importExportLines);
 
-    // Sort exports and imports
-    importExportLines.sort(_compareExports);
-    importExportLines.sort(_compareImports);
-
     // Make imports appear before exports
     // Separate dart and package imports/exports
+    // Sort each section alphabetically
     final dartImportLines = importExportLines
         .where((line) => line.startsWith('import \'dart:'))
+        .sorted()
         .toSet();
     final packageImportLines = importExportLines
         .where((line) => line.startsWith('import \'package:'))
+        .sorted()
         .toSet();
     final localImportLines = importExportLines
         .where((line) =>
             !line.startsWith('import \'dart:') &&
             !line.startsWith('import \'package:') &&
             line.startsWith('import \''))
+        .sorted()
         .toSet();
     final dartExportLines = importExportLines
         .where((line) => line.startsWith('export \'dart:'))
+        .sorted()
         .toSet();
     final packageExportLines = importExportLines
         .where((line) => line.startsWith('export \'package:'))
+        .sorted()
         .toSet();
     final localExportLines = importExportLines
         .where((line) =>
             !line.startsWith('export \'dart:') &&
             !line.startsWith('export \'package:') &&
             line.startsWith('export \''))
+        .sorted()
         .toSet();
     importExportLines = [
       ...dartImportLines,
@@ -845,78 +882,6 @@ class DartFile extends File {
     return unit.declarations;
   }
 
-  /// Sorts imports after dart standard
-  ///
-  /// ```dart
-  /// dart:***
-  /// ... more dart imports
-  /// package:***
-  /// ... more package imports
-  /// foo.dart
-  /// ... more relative imports
-  /// ```
-  int _compareImports(String a, String b) {
-    if (a.startsWith('import \'dart')) {
-      if (b.startsWith('import \'dart')) {
-        return a.compareTo(b);
-      }
-
-      return -1;
-    } else if (a.startsWith('import \'package')) {
-      if (b.startsWith('import \'dart')) {
-        return 1;
-      } else if (b.startsWith('import \'package')) {
-        return a.compareTo(b);
-      }
-
-      return -1;
-    } else {
-      if (b.startsWith('import \'dart')) {
-        return 1;
-      } else if (b.startsWith('import \'package')) {
-        return 1;
-      }
-
-      return a.compareTo(b);
-    }
-  }
-
-  /// Sorts exports after dart standard
-  ///
-  /// ```dart
-  /// dart:***
-  /// ... more dart exports
-  /// package:***
-  /// ... more package exports
-  /// foo.dart
-  /// ... more relative exports
-  /// ```
-  int _compareExports(String a, String b) {
-    if (a.startsWith('export \'dart')) {
-      if (b.startsWith('export \'dart')) {
-        return a.compareTo(b);
-      }
-
-      return -1;
-    } else if (a.startsWith('export \'package')) {
-      if (b.startsWith('export \'dart')) {
-        return 1;
-      } else if (b.startsWith('export \'package')) {
-        return a.compareTo(b);
-      }
-
-      return -1;
-    } else {
-      if (b.startsWith('export \'dart')) {
-        return 1;
-      } else if (b.startsWith('export \'package')) {
-        return 1;
-      }
-
-      return a.compareTo(b);
-    }
-  }
-
   final _importRegExp = RegExp('import \'([a-z_/.:]+)\'( as [a-z]+)?;');
   final _exportRegExp =
       RegExp('export \'([a-z_/.:]+)\'( (:?hide|show) [A-Z]+[A-z1-9]*;)?');
@@ -964,23 +929,6 @@ class ArbFile extends File {
     final output = JsonEncoder.withIndent('  ').convert(json);
     writeAsStringSync(output);
   }
-}
-
-FileSystemEntity _entityFromIO(FileSystemEntity entity) =>
-    entity is io.Directory
-        ? Directory._fromIO(entity)
-        : entity is io.File
-            ? File._fromIO(entity)
-            : entity;
-
-Future<FileSystemEntity> _entityFromIOAsync(
-    Future<FileSystemEntity> entity) async {
-  final result = await entity;
-  return result is io.Directory
-      ? Directory._fromIO(result)
-      : result is io.File
-          ? File._fromIO(result)
-          : result;
 }
 
 class PlistFileError extends Error {

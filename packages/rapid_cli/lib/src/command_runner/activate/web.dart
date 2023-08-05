@@ -7,6 +7,9 @@ import '../util/language_option.dart';
 import '../util/org_name_option.dart';
 import 'platform.dart';
 
+/// The default description.
+const _defaultDescription = 'A Rapid app.';
+
 /// {@template activate_web_command}
 /// `rapid activate web` command adds support for Web to an existing Rapid project.
 /// {@endtemplate}
@@ -20,6 +23,7 @@ class ActivateWebCommand extends ActivatePlatformCommand
     argParser
       ..addDescriptionOption(
         help: 'The description for the native Web project.',
+        defaultsTo: _defaultDescription,
       )
       ..addLanguageOption(
         help: 'The default language for Web',
@@ -32,7 +36,7 @@ class ActivateWebCommand extends ActivatePlatformCommand
     final language = super.language;
 
     return rapid.activateWeb(
-      description: description,
+      description: description ?? _defaultDescription,
       language: language,
     );
   }

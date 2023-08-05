@@ -1,8 +1,6 @@
 import '../../../base.dart';
 import '../../../util/entity_option.dart';
 
-// TODO in test template without output dir a path gets a unneccessary dot
-
 /// {@template infrastructure_sub_infrastructure_add_data_transfer_object_command}
 /// `rapid infrastructure sub_infrastructure add data_transfer_object` command adds data_transfer_object to the infrastructure part of an existing Rapid project.
 /// {@endtemplate}

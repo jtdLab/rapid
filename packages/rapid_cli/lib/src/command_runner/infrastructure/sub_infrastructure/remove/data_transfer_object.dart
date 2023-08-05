@@ -1,8 +1,6 @@
 import '../../../base.dart';
 import '../../../util/entity_option.dart';
 
-// TODO maybe introduce super class for dto and service implementation remove
-
 /// {@template infrastructure_sub_infrastructure_remove_data_transfer_object_command}
 /// `rapid infrastructure sub_infrastructure remove data_transfer_object` command removes data transfer object from the infrastructure part of an existing Rapid project.
 /// {@endtemplate}

@@ -43,8 +43,10 @@ class DataTransferObject extends FileSystemEntityCollection {
       vars: <String, dynamic>{
         'project_name': projectName,
         'entity_name': entityName,
-        'output_dir': '.', // TODO rm later
+        'output_dir': '.',
+        'output_dir_is_cwd': true,
         'sub_infrastructure_name': subInfrastructureName,
+        'has_sub_infrastructure_name': subInfrastructureName != null,
       },
     );
   }

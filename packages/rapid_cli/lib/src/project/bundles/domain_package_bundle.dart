@@ -54,20 +54,7 @@ final domainPackageBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     }
   ],
-  "hooks": [
-    {
-      "path": "pre_gen.dart",
-      "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwoKdm9pZCBydW4oSG9va0NvbnRleHQgY29udGV4dCkgewogIGZpbmFsIG5hbWUgPSBjb250ZXh0LnZhcnNbJ25hbWUnXTsKICBjb250ZXh0LnZhcnMgPSB7CiAgICAuLi5jb250ZXh0LnZhcnMsCiAgICAnaGFzX25hbWUnOiBuYW1lICE9IG51bGwsCiAgfTsKfQo=",
-      "type": "text"
-    },
-    {
-      "path": "pubspec.yaml",
-      "data":
-          "bmFtZTogZG9tYWluX3BhY2thZ2VfaG9va3MKCmVudmlyb25tZW50OgogIHNkazogIj49My4wLjAgPDQuMC4wIgoKZGVwZW5kZW5jaWVzOgogIG1hc29uOiBhbnkK",
-      "type": "text"
-    }
-  ],
+  "hooks": [],
   "name": "domain_package",
   "description": "A brick generating the domain package of a Rapid project.",
   "version": "0.1.0",
@@ -84,6 +71,7 @@ final domainPackageBundle = MasonBundle.fromJson(<String, dynamic>{
   },
   "vars": {
     "project_name": {"type": "string"},
-    "name": {"type": "string"}
+    "name": {"type": "string"},
+    "has_name": {"type": "boolean"}
   }
 });

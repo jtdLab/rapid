@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'base.dart';
 
-// TODO: e2e test
-
 /// {@template begin_command}
 /// `rapid begin` command starts a group of Rapid command executions.
 class BeginCommand extends RapidLeafCommand {

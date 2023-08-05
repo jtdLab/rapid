@@ -14,7 +14,7 @@ List<String> expectedUsage(Platform platform) {
         '\n'
         'Usage: rapid ui ${platform.name} add widget <name> [arguments]\n'
         '-h, --help          Print this usage information.\n'
-        '    --[no-]theme    Wheter the new widget has its own theme.\n'
+        '    --[no-]theme    Whether the new widget has its own theme.\n'
         '                    (defaults to on)\n'
         '\n'
         'Run "rapid help" to see global options.'

@@ -1,11 +1,16 @@
 import 'dart:convert';
 
 import 'package:args/args.dart';
+import 'package:cli_launcher/cli_launcher.dart';
 import 'package:mason/mason.dart' hide Logger, Progress;
 import 'package:mocktail/mocktail.dart';
 import 'package:process/process.dart';
+import 'package:pub_updater/pub_updater.dart';
+import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
+import 'package:rapid_cli/src/exception.dart';
 import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io.dart' as io;
 import 'package:rapid_cli/src/logging.dart';
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
@@ -24,6 +29,9 @@ void registerFallbackValues() {
   registerFallbackValue(FakeRapidProjectConfig());
   registerFallbackValue(FakeInfrastructurePackage());
   registerFallbackValue(FakePlatformFeaturePackage());
+  registerFallbackValue(FileMode.append);
+  registerFallbackValue(FileSystemEvent.create);
+  registerFallbackValue(utf8);
 }
 
 class MockBloc extends Mock implements Bloc {
@@ -80,6 +88,24 @@ class MockYamlFile extends Mock implements YamlFile {}
 
 class MockFile extends Mock implements File {
   MockFile({bool? existsSync}) {
+    existsSync ??= false;
+
+    when(() => this.existsSync()).thenReturn(existsSync);
+  }
+}
+
+class MockRandomAccessFile extends Mock implements io.RandomAccessFile {}
+
+class MockIOFile extends Mock implements io.File {
+  MockIOFile({bool? existsSync}) {
+    existsSync ??= false;
+
+    when(() => this.existsSync()).thenReturn(existsSync);
+  }
+}
+
+class MockIODirectory extends Mock implements io.Directory {
+  MockIODirectory({bool? existsSync}) {
     existsSync ??= false;
 
     when(() => this.existsSync()).thenReturn(existsSync);
@@ -665,7 +691,6 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
     when(() => this.dataTransferObject).thenReturn(dataTransferObject);
     when(() => this.serviceImplementation).thenReturn(serviceImplementation);
     when(() => this.isDefault).thenReturn(isDefault);
-    // when(() => this.barrelFile).thenReturn(MockDartFile()); // TODO needed ?
     when(() => generate()).thenAnswer((_) async {});
     when(() => pubSpecFile).thenReturn(pubSpec);
     when(() => this.barrelFile).thenReturn(barrelFile);
@@ -868,6 +893,10 @@ class MockMobileRootPackage extends Mock implements MobileRootPackage {
         language: any(named: 'language'),
       ),
     ).thenAnswer((_) async {});
+    when(() => registerFeaturePackage(any())).thenAnswer((_) async {});
+    when(() => registerInfrastructurePackage(any())).thenAnswer((_) async {});
+    when(() => unregisterFeaturePackage(any())).thenAnswer((_) async {});
+    when(() => unregisterInfrastructurePackage(any())).thenAnswer((_) async {});
   }
 }
 
@@ -938,7 +967,7 @@ class MockNavigatorInterface extends Mock implements NavigatorInterface {
   MockNavigatorInterface({
     String? name,
   }) {
-    name ??= 'Foo'; // TODO upper case good?
+    name ??= 'Foo';
 
     when(() => this.name).thenReturn(name);
     when(() => generate()).thenAnswer((_) async {});
@@ -1105,7 +1134,7 @@ class MockNavigatorImplementation extends Mock
   MockNavigatorImplementation({
     String? name,
   }) {
-    name ??= 'Foo'; // TODO upper case good?
+    name ??= 'Foo';
 
     when(() => this.name).thenReturn(name);
     when(() => generate()).thenAnswer((_) async {});
@@ -1292,6 +1321,13 @@ class MockRapidLogger extends Mock implements RapidLogger {
 
     when(() => this.progress(any())).thenReturn(progress);
     when(() => this.progressGroup(any())).thenReturn(progressGroup);
+    when(
+      () => prompt(
+        any(),
+        defaultValue: any(named: 'defaultValue'),
+        hidden: any(named: 'hidden'),
+      ),
+    ).thenReturn('false');
   }
 }
 
@@ -1310,6 +1346,40 @@ class MockGroupableProgress extends Mock implements GroupableProgress {}
 class MockRapidTool extends Mock implements RapidTool {}
 
 class MockCommandGroup extends Mock implements CommandGroup {}
+
+class MockIOSink extends Mock implements IOSink {}
+
+class MockFileStat extends Mock implements io.FileStat {}
+
+class MockRapidCommandRunner extends Mock implements RapidCommandRunner {
+  MockRapidCommandRunner() {
+    when(() => run(any())).thenAnswer((_) async {});
+  }
+}
+
+abstract class _RapidCommandRunnerBuilder {
+  RapidCommandRunner call({RapidProject? project});
+}
+
+class MockRapidCommandRunnerBuilder extends Mock
+    implements _RapidCommandRunnerBuilder {}
+
+class MockPubUpdater extends Mock implements PubUpdater {
+  MockPubUpdater() {
+    when(() => update(packageName: packageName)).thenAnswer(
+      (_) async => ProcessResult(0, 0, '', ''),
+    );
+  }
+}
+
+class MockLaunchContext extends Mock implements LaunchContext {}
+
+class MockExecutableInstallation extends Mock
+    implements ExecutableInstallation {}
+
+class MockStdout extends Mock implements Stdout {}
+
+class MockStdin extends Mock implements Stdin {}
 
 // Fakes
 
@@ -1332,6 +1402,47 @@ class FakeDartPackage extends Fake implements DartPackage {
 
   @override
   late final PubspecYamlFile pubSpecFile;
+}
+
+class FakeRapidProject extends Fake implements RapidProject {
+  FakeRapidProject({
+    String? path,
+  }) {
+    this.path = path ?? 'path/to/project';
+  }
+
+  @override
+  late final String path;
+}
+
+class FakeIODirectory extends Fake implements io.Directory {
+  FakeIODirectory({String? path, bool? existsSync}) {
+    this.path = path ?? 'path/to/directory';
+    _existsSync = existsSync ?? false;
+  }
+
+  @override
+  late final String path;
+
+  @override
+  bool existsSync() => _existsSync;
+
+  late final bool _existsSync;
+}
+
+class FakeIOFile extends Fake implements io.File {
+  FakeIOFile({String? path, bool? existsSync}) {
+    this.path = path ?? 'path/to/file';
+    _existsSync = existsSync ?? false;
+  }
+
+  @override
+  late final String path;
+
+  @override
+  bool existsSync() => _existsSync;
+
+  late final bool _existsSync;
 }
 
 class FakeDartFile extends Fake implements DartFile {
@@ -1428,6 +1539,11 @@ class FakePlatformPageFeaturePackage extends Fake
   @override
   late final String name;
 }
+
+class FakeExecutableInstallation extends Fake
+    implements ExecutableInstallation {}
+
+class FakeRapidException extends Fake implements RapidException {}
 
 ///
 /// class FakeRootPackage extends Fake implements RootPackage {

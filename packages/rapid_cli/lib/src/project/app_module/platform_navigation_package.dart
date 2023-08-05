@@ -48,7 +48,7 @@ class PlatformNavigationPackage extends DartPackage {
       target: this,
       vars: <String, dynamic>{
         'project_name': projectName,
-        'platform': platform.name,
+        ...platformVars(platform),
       },
     );
   }

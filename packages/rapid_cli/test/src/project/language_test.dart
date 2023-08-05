@@ -33,6 +33,129 @@ void main() {
       });
     });
 
+    group('.fromDartUiLocal', () {
+      test('Locale(\'zh\')', () {
+        void test(String raw) {
+          expect(
+            Language.fromDartUiLocal(raw),
+            Language(languageCode: 'zh'),
+          );
+        }
+
+        test('Locale(\'zh\')');
+        test('Locale(\'zh\',)');
+        test('Locale( \'zh\' , ) ');
+        test('Locale("zh")');
+        test('Locale("zh",)');
+        test('Locale( "zh" , ) ');
+      });
+
+      test('Locale(\'zh\', \'CN\')', () {
+        void test(String raw) {
+          expect(
+            Language.fromDartUiLocal(raw),
+            Language(languageCode: 'zh', countryCode: 'CN'),
+          );
+        }
+
+        test('Locale(\'zh\', \'CN\')');
+        test('Locale(\'zh\', \'CN\',)');
+        test(' Locale( \'zh\' ,  \'CN\' , ) ');
+        test('Locale("zh", "CN")');
+        test('Locale("zh", "CN",)');
+        test(' Locale( "zh" ,  "CN" , ) ');
+      });
+
+      test('Locale.fromSubtags()', () {
+        expect(
+          Language.fromDartUiLocal('Locale.fromSubtags()'),
+          Language(languageCode: 'und'),
+        );
+      });
+
+      test('Locale.fromSubtags(languageCode: \'zh\')', () {
+        void test(String raw) {
+          expect(
+            Language.fromDartUiLocal(raw),
+            Language(languageCode: 'zh'),
+          );
+        }
+
+        test('Locale.fromSubtags(languageCode: \'zh\')');
+        test('Locale.fromSubtags(languageCode: \'zh\',)');
+        test('Locale.fromSubtags( languageCode: \'zh\' , ) ');
+        test('Locale.fromSubtags(languageCode: "zh")');
+        test('Locale.fromSubtags(languageCode: "zh",)');
+        test('Locale.fromSubtags( languageCode: "zh" , ) ');
+      });
+
+      test('Locale.fromSubtags(languageCode: \'zh\', scriptCode: \'Hans\')',
+          () {
+        void test(String raw) {
+          expect(
+            Language.fromDartUiLocal(raw),
+            Language(languageCode: 'zh', scriptCode: 'Hans'),
+          );
+        }
+
+        test('Locale.fromSubtags(languageCode: \'zh\', scriptCode: \'Hans\')');
+        test('Locale.fromSubtags(languageCode: \'zh\', scriptCode: \'Hans\',)');
+        test(
+            'Locale.fromSubtags( languageCode: \'zh\' , scriptCode: \'Hans\' , ) ');
+        test('Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans")');
+        test('Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans",)');
+        test(
+            'Locale.fromSubtags( languageCode: "zh" , scriptCode: "Hans" , ) ');
+      });
+
+      test('Locale.fromSubtags(languageCode: \'zh\', countryCode: \'CN\')', () {
+        void test(String raw) {
+          expect(
+            Language.fromDartUiLocal(raw),
+            Language(languageCode: 'zh', countryCode: 'CN'),
+          );
+        }
+
+        test('Locale.fromSubtags(languageCode: \'zh\', countryCode: \'CN\')');
+        test('Locale.fromSubtags(languageCode: \'zh\', countryCode: \'CN\',)');
+        test(
+            'Locale.fromSubtags( languageCode: \'zh\' , countryCode: \'CN\' , ) ');
+        test('Locale.fromSubtags(languageCode: "zh", countryCode: "CN")');
+        test('Locale.fromSubtags(languageCode: "zh", countryCode: "CN",)');
+        test('Locale.fromSubtags( languageCode: "zh" , countryCode: "CN" , ) ');
+      });
+
+      test(
+          'Locale.fromSubtags(languageCode: \'zh\', scriptCode: \'Hans\', countryCode: \'CN\')',
+          () {
+        void test(String raw) {
+          expect(
+            Language.fromDartUiLocal(raw),
+            Language(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+          );
+        }
+
+        test(
+            'Locale.fromSubtags(languageCode: \'zh\', scriptCode: \'Hans\', countryCode: \'CN\')');
+        test(
+            'Locale.fromSubtags(languageCode: \'zh\', scriptCode: \'Hans\', countryCode: \'CN\',)');
+        test(
+            'Locale.fromSubtags( languageCode: \'zh\' , scriptCode: \'Hans\' , countryCode: \'CN\', ) ');
+        test(
+            'Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans", countryCode: "CN")');
+        test(
+            'Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans", countryCode: "CN",)');
+        test(
+            'Locale.fromSubtags( languageCode: "zh" , scriptCode: "Hans" , countryCode: "CN", ) ');
+      });
+
+      // TODO(jtdLab): maybe add more tests for param permuations of .subTags
+
+      test('throws ArgumentError', () {
+        expect(() => Language.fromDartUiLocal('foo'), throwsArgumentError);
+      });
+    });
+
     group('hasScriptCode', () {
       test('should return true if script code exists', () {
         final language = Language(languageCode: 'en', scriptCode: 'Latn');

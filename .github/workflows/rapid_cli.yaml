@@ -40,9 +40,8 @@ jobs:
       - name: Format
         run: dart format lib test tool --set-exit-if-changed
 
-      # TODO uncomment if project is clean
-      # - name: Analyze
-      #   run: flutter analyze .
+      - name: Analyze
+        run: melos analyze
 
       - name: Run Unit Tests
         run: flutter test test/src -j 1 --no-pub --test-randomize-ordering-seed random --coverage
@@ -50,7 +49,7 @@ jobs:
       - name: Ensure 100% Code Coverage
         uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
-          min_coverage: 80 # TODO set to 100 if unit test are complete
+          min_coverage: 100
           path: packages/rapid_cli/coverage/lcov.info
 
   pana:
@@ -78,4 +77,4 @@ jobs:
         run: flutter pub global activate pana
 
       - name: Verify Pub Score
-        run: bash tool/verify_pub_score.sh 100 # TODO set to perfect score if release
+        run: bash tool/verify_pub_score.sh

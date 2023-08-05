@@ -7,6 +7,9 @@ import '../util/language_option.dart';
 import '../util/org_name_option.dart';
 import 'platform.dart';
 
+/// The default description.
+const _defaultDescription = 'A Rapid app.';
+
 /// {@template activate_mobile_command}
 /// `rapid activate mobile` command adds support for Mobile to an existing Rapid project.
 /// {@endtemplate}
@@ -21,6 +24,7 @@ class ActivateMobileCommand extends ActivatePlatformCommand
     argParser
       ..addDescriptionOption(
         help: 'The description for the native Android project.',
+        defaultsTo: _defaultDescription,
       )
       ..addOrgNameOption(
         help: 'The organization for the native Mobile projects.',
@@ -37,7 +41,7 @@ class ActivateMobileCommand extends ActivatePlatformCommand
     final language = super.language;
 
     return rapid.activateMobile(
-      description: description,
+      description: description ?? _defaultDescription,
       orgName: orgName,
       language: language,
     );

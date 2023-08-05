@@ -109,6 +109,7 @@ void main() {
                   vars: <String, dynamic>{
                     'project_name': 'test_project',
                     'name': 'cool',
+                    'has_name': true,
                   },
                 ),
           ]);

@@ -115,7 +115,9 @@ void main() {
                   'project_name': 'test_project',
                   'name': 'User',
                   'output_dir': '.',
+                  'output_dir_is_cwd': true,
                   'sub_domain_name': 'sub_domain',
+                  'has_sub_domain_name': true,
                 },
               ),
         ]);

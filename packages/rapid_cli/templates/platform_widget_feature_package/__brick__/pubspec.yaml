@@ -25,7 +25,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   alchemist: ^0.6.1
-  auto_route: ^7.7.1
+  auto_route: ^7.8.0
   bloc_test: ^9.1.4
   mocktail: ^1.0.0
   build_runner: ^2.4.6

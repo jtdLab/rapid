@@ -18,20 +18,7 @@ final navigatorImplementationBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     }
   ],
-  "hooks": [
-    {
-      "path": "pre_gen.dart",
-      "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwoKdm9pZCBydW4oSG9va0NvbnRleHQgY29udGV4dCkgewogIGFkZFBsYXRmb3JtRmxhZ3MoY29udGV4dCk7Cn0KCnZvaWQgYWRkUGxhdGZvcm1GbGFncyhIb29rQ29udGV4dCBjb250ZXh0KSB7CiAgY29udGV4dC52YXJzID0gewogICAgLi4uY29udGV4dC52YXJzLAogICAgJ2FuZHJvaWQnOiBmYWxzZSwKICAgICdpb3MnOiBmYWxzZSwKICAgICdsaW51eCc6IGZhbHNlLAogICAgJ21hY29zJzogZmFsc2UsCiAgICAnd2ViJzogZmFsc2UsCiAgICAnd2luZG93cyc6IGZhbHNlLAogICAgJ21vYmlsZSc6IGZhbHNlLAogIH07CgogIGZpbmFsIHBsYXRmb3JtID0gY29udGV4dC52YXJzWydwbGF0Zm9ybSddOwogIGlmIChwbGF0Zm9ybSAhPSBudWxsKSB7CiAgICBjb250ZXh0LnZhcnMgPSB7Li4uY29udGV4dC52YXJzLCBwbGF0Zm9ybTogdHJ1ZX07CiAgfQp9Cg==",
-      "type": "text"
-    },
-    {
-      "path": "pubspec.yaml",
-      "data":
-          "bmFtZTogbmF2aWdhdG9yX2ltcGxlbWVudGF0aW9uX2hvb2tzCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBtYXNvbjogYW55Cg==",
-      "type": "text"
-    }
-  ],
+  "hooks": [],
   "name": "navigator_implementation",
   "description":
       "A brick generating a navigator_implementation a platform feature package of a Rapid project.",
@@ -50,6 +37,13 @@ final navigatorImplementationBundle = MasonBundle.fromJson(<String, dynamic>{
   "vars": {
     "project_name": {"type": "string"},
     "name": {"type": "string"},
-    "platform": {"type": "string"}
+    "platform": {"type": "string"},
+    "android": {"type": "boolean"},
+    "ios": {"type": "boolean"},
+    "linux": {"type": "boolean"},
+    "macos": {"type": "boolean"},
+    "web": {"type": "boolean"},
+    "windows": {"type": "boolean"},
+    "mobile": {"type": "boolean"}
   }
 });

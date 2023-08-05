@@ -105,6 +105,13 @@ void main() {
                   'project_name': 'test_project',
                   'name': 'HomePage',
                   'platform': 'android',
+                  'android': true,
+                  'ios': false,
+                  'linux': false,
+                  'macos': false,
+                  'web': false,
+                  'windows': false,
+                  'mobile': false,
                 },
               ),
         ]);

@@ -68,6 +68,7 @@ class DomainPackage extends DartPackage implements Comparable<DomainPackage> {
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
+        'has_name': name != null,
       },
     );
   }

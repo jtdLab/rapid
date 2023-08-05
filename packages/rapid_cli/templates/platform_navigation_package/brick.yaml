@@ -20,3 +20,17 @@ vars:
     type: string
   platform:
     type: string
+  android:
+    type: boolean
+  ios:
+    type: boolean
+  linux:
+    type: boolean
+  macos:
+    type: boolean
+  web:
+    type: boolean
+  windows:
+    type: boolean
+  mobile:
+    type: boolean

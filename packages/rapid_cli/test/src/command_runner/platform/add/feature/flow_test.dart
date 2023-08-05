@@ -17,7 +17,7 @@ List<String> expectedUsage(Platform platform) {
         '\n'
         '\n'
         '    --desc         The description of the new feature.\n'
-        '    --navigator    Wheter to generate a navigator for the new feature.\n'
+        '    --navigator    Whether to generate a navigator for the new feature.\n'
         '\n'
         'Run "rapid help" to see global options.'
   ];
@@ -111,6 +111,26 @@ void main() {
             name: 'package_a',
             description: 'Some description.',
             navigator: true,
+          ),
+        ).called(1);
+      });
+
+      test('completes with fallbacks', () async {
+        final rapid = MockRapid();
+        final argResults = MockArgResults();
+        when(() => argResults.rest).thenReturn(['package_a']);
+        final command = PlatformAddFeatureFlowCommand(platform, null)
+          ..argResultOverrides = argResults
+          ..rapidOverrides = rapid;
+
+        await command.run();
+
+        verify(
+          () => rapid.platformAddFeatureFlow(
+            platform,
+            name: 'package_a',
+            description: 'The PackageA tab flow feature.',
+            navigator: false,
           ),
         ).called(1);
       });

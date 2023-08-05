@@ -3,77 +3,75 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
-// TODO dir
+dynamic performTest({
+  required String subInfrastructure,
+  String? dir,
+}) =>
+    withTempDir((root) async {
+      // Arrange
+      final tester = await RapidE2ETester.withProject(root);
+      if (subInfrastructure != 'default') {
+        await tester.runRapidCommand([
+          'domain',
+          'add',
+          'sub_domain',
+          subInfrastructure,
+        ]);
+      }
+      final name = 'Fake';
+      final service = 'FooBar';
+      final outputDir = 'foo';
+      await tester.runRapidCommand([
+        'domain',
+        subInfrastructure,
+        'add',
+        'service_interface',
+        service,
+        if (dir != null) '--output-dir',
+        if (dir != null) outputDir,
+      ]);
+      await tester.runRapidCommand([
+        'infrastructure',
+        subInfrastructure,
+        'add',
+        'service_implementation',
+        name,
+        '--service',
+        service,
+        if (dir != null) '--output-dir',
+        if (dir != null) outputDir,
+      ]);
+
+      // Act
+      await tester.runRapidCommand([
+        'infrastructure',
+        subInfrastructure,
+        'remove',
+        'service_implementation',
+        name,
+        '--service',
+        service,
+        if (dir != null) '--dir',
+        if (dir != null) outputDir
+      ]);
+
+      // Assert
+      await verifyNoAnalyzerIssues();
+      await verifyNoFormattingIssues();
+      verifyDoNotExist({
+        ...tester.serviceImplementationFiles(
+          name: name,
+          serviceName: service,
+          subInfrastructureName: subInfrastructure,
+          outputDir: outputDir,
+        ),
+      });
+    });
 
 void main() {
   group(
     'E2E',
     () {
-      dynamic performTest({
-        required String subInfrastructure,
-        String? dir,
-      }) =>
-          withTempDir((root) async {
-            // Arrange
-            final tester = await RapidE2ETester.withProject(root);
-            if (subInfrastructure != 'default') {
-              await tester.runRapidCommand([
-                'domain',
-                'add',
-                'sub_domain',
-                subInfrastructure,
-              ]);
-            }
-            final name = 'Fake';
-            final service = 'FooBar';
-            final outputDir = 'foo';
-            await tester.runRapidCommand([
-              'domain',
-              subInfrastructure,
-              'add',
-              'service_interface',
-              service,
-              if (dir != null) '--output-dir',
-              if (dir != null) outputDir,
-            ]);
-            await tester.runRapidCommand([
-              'infrastructure',
-              subInfrastructure,
-              'add',
-              'service_implementation',
-              name,
-              '--service',
-              service,
-              if (dir != null) '--output-dir',
-              if (dir != null) outputDir,
-            ]);
-
-            // Act
-            await tester.runRapidCommand([
-              'infrastructure',
-              subInfrastructure,
-              'remove',
-              'service_implementation',
-              name,
-              '--service',
-              service,
-              if (dir != null) '--dir',
-              if (dir != null) outputDir
-            ]);
-
-            // Assert
-            await verifyNoAnalyzerIssues();
-            await verifyNoFormattingIssues();
-            verifyDoNotExist({
-              ...tester.serviceImplementationFiles(
-                name: name,
-                serviceName: service,
-                subInfrastructureName: subInfrastructure,
-                outputDir: outputDir,
-              ),
-            });
-          });
-
       test(
         'infrastructure default remove service_implementation',
         performTest(

@@ -3,7 +3,10 @@ import 'dart:io' hide Platform;
 import 'dart:math';
 
 import 'package:path/path.dart' as p;
+import 'package:platform/platform.dart' as io;
+import 'package:rapid_cli/src/platform.dart';
 import 'package:rapid_cli/src/project/platform.dart';
+import 'package:rapid_cli/src/utils.dart';
 
 extension PlatformX on Platform {
   String get prettyName {
@@ -85,51 +88,16 @@ void Function() overridePrint(void Function(List<String>) fn) {
       },
     );
 
-    return Zone.current
-        .fork(specification: spec)
-        .run<void>(() => fn(printLogs));
-  };
-}
-
-/* 
-/// Runs [fn] in a test environment with a project.
-///
-/// This is used to implement negative/positive testing of commands
-/// that depend on a project to be available.
-void Function() withRunnerOnProject(
-  FutureOr<void> Function(
-    RapidCommandRunner commandRunner,
-    Logger logger,
-    MelosFile melosFile,
-    Project project,
-    List<String> printLogs,
-  ) fn,
-) {
-  return _overridePrint((printLogs) async {
-    registerFallbackValue(Platform.android); // TODO
-    final logger = MockLogger();
-    final melosFile = MockMelosFile();
-    when(() => melosFile.exists()).thenReturn(true);
-    when(() => melosFile.readName()).thenReturn('test_app');
-    final project = MockProject();
-    when(() => project.existsAll()).thenReturn(true);
-    when(() => project.platformIsActivated(any())).thenReturn(true);
-    when(() => project.melosFile).thenReturn(melosFile);
-
-    final progress = MockProgress();
-    final progressLogs = <String>[];
-    final commandRunner = RapidCommandRunner(
-      logger: logger,
-      project: project,
+    final platform = io.FakePlatform(
+      // TODO(jtdLab): this make testing command usages easier because fewer line breaks
+      environment: {envKeyRapidTerminalWidth: '1000'},
     );
 
-    when(() => progress.complete(any())).thenAnswer((_) {
-      final message = _.positionalArguments.elementAt(0) as String?;
-      if (message != null) progressLogs.add(message);
-    });
-    when(() => logger.progress(any())).thenReturn(progress);
-
-    await fn(commandRunner, logger, melosFile, project, printLogs);
-  });
+    return Zone.current.fork(
+      specification: spec,
+      zoneValues: {
+        currentPlatformZoneKey: platform,
+      },
+    ).run<void>(() => fn(printLogs));
+  };
 }
- */

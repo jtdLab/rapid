@@ -18,7 +18,7 @@ List<String> expectedUsage(Platform platform) {
         '\n'
         '    --sub-features    The features that have this tab flow as a parent.\n'
         '    --desc            The description of the new feature.\n'
-        '    --navigator       Wheter to generate a navigator for the new feature.\n'
+        '    --navigator       Whether to generate a navigator for the new feature.\n'
         '\n'
         'Run "rapid help" to see global options.'
   ];
@@ -112,8 +112,7 @@ void main() {
       test('completes', () async {
         final rapid = MockRapid();
         final argResults = MockArgResults();
-        when(() => argResults['navigator']).thenReturn(true);
-        when(() => argResults['desc']).thenReturn('Some description.');
+
         when(() => argResults['sub-features'])
             .thenReturn('package_b, package_c');
         when(() => argResults.rest).thenReturn(['package_a']);
@@ -127,8 +126,8 @@ void main() {
           () => rapid.platformAddFeatureTabFlow(
             platform,
             name: 'package_a',
-            description: 'Some description.',
-            navigator: true,
+            description: 'The PackageA flow feature.',
+            navigator: false,
             subFeatures: {'package_b', 'package_c'},
           ),
         ).called(1);

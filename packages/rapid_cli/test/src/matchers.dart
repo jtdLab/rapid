@@ -1,6 +1,8 @@
 import 'package:args/command_runner.dart';
 import 'package:collection/collection.dart';
+import 'package:rapid_cli/src/cli.dart';
 import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/validation.dart';
 import 'package:test/test.dart';
 
 Matcher isUsageException({String? message}) {
@@ -15,6 +17,61 @@ Matcher isUsageException({String? message}) {
 
 Matcher throwsUsageException({String? message}) {
   return throwsA(isUsageException(message: message));
+}
+
+Matcher isRapidConfigException({String? message}) {
+  var matcher = isA<RapidConfigException>();
+
+  if (message != null) {
+    matcher = matcher.having((e) => e.message, 'message', message);
+  }
+
+  return matcher;
+}
+
+Matcher throwsRapidConfigException({String? message}) {
+  return throwsA(isRapidConfigException(message: message));
+}
+
+Matcher isCliException({
+  String? message,
+  String? workingDirectory,
+}) {
+  var matcher = isA<CliException>();
+
+  if (message != null) {
+    matcher = matcher.having((e) => e.message, 'message', message);
+  }
+
+  if (workingDirectory != null) {
+    matcher = matcher.having(
+      (e) => e.workingDirectory,
+      'workingDirectory',
+      workingDirectory,
+    );
+  }
+
+  if (message != null && workingDirectory != null) {
+    matcher = matcher.having(
+      (e) => e.toString(),
+      'toString',
+      contains('$message at $workingDirectory'),
+    );
+  }
+
+  return matcher;
+}
+
+Matcher throwsCliException({
+  String? message,
+  String? workingDirectory,
+}) {
+  return throwsA(
+    isCliException(
+      message: message,
+      workingDirectory: workingDirectory,
+    ),
+  );
 }
 
 Matcher entityEquals(List<FileSystemEntity> expectedEntities) =>

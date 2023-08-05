@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
+import 'package:rapid_cli/src/io.dart';
 
 export 'package:mason/mason.dart' hide Logger, Progress;
 
@@ -15,18 +14,8 @@ Future<List<GeneratedFile>> generate({
 }) async {
   final generator =
       await (generatorOverrides ?? MasonGenerator.fromBundle)(bundle);
-  await generator.hooks.preGen(
-    vars: vars,
-    onVarsChanged: (newVars) => vars = newVars,
-  );
-  final files = await generator.generate(
+  return generator.generate(
     DirectoryGeneratorTarget(target),
     vars: vars,
   );
-  await generator.hooks.postGen(
-    workingDirectory: target.path,
-    vars: vars,
-  );
-
-  return files;
 }

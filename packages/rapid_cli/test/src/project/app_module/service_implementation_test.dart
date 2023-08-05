@@ -107,8 +107,10 @@ void main() {
                   'project_name': 'test_project',
                   'name': 'Fake',
                   'output_dir': '.',
+                  'output_dir_is_cwd': true,
                   'service_interface_name': 'Auth',
                   'sub_infrastructure_name': 'sub_infrastrucuture',
+                  'has_sub_infrastructure_name': true,
                 },
               ),
         ]);

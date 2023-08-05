@@ -19,12 +19,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Get Cached Fixtures
-        uses: actions/cache/restore@v3
-        with:
-          path: ${{ env.FIXTURES_PATH }}
-          key: fixtures-${{ github.run_id }}
-
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
         with:

@@ -20,20 +20,7 @@ final serviceImplementationBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     }
   ],
-  "hooks": [
-    {
-      "path": "pre_gen.dart",
-      "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwoKdm9pZCBydW4oSG9va0NvbnRleHQgY29udGV4dCkgewogIGZpbmFsIG91dHB1dERpciA9IGNvbnRleHQudmFyc1snb3V0cHV0X2RpciddOwogIGZpbmFsIHN1YkluZnJhc3RydWN0dXJlTmFtZSA9IGNvbnRleHQudmFyc1snc3ViX2luZnJhc3RydWN0dXJlX25hbWUnXTsKICBjb250ZXh0LnZhcnMgPSB7CiAgICAuLi5jb250ZXh0LnZhcnMsCiAgICAnb3V0cHV0X2Rpcl9pc19jd2QnOiBvdXRwdXREaXIgPT0gJy4nLAogICAgJ2hhc19zdWJfaW5mcmFzdHJ1Y3R1cmVfbmFtZSc6IHN1YkluZnJhc3RydWN0dXJlTmFtZSAhPSBudWxsLAogIH07Cn0K",
-      "type": "text"
-    },
-    {
-      "path": "pubspec.yaml",
-      "data":
-          "bmFtZTogc2VydmljZV9pbXBsZW1lbnRhdGlvbl9ob29rcwoKZW52aXJvbm1lbnQ6CiAgc2RrOiAiPj0zLjAuMCA8NC4wLjAiCgpkZXBlbmRlbmNpZXM6CiAgbWFzb246IGFueQo=",
-      "type": "text"
-    }
-  ],
+  "hooks": [],
   "name": "service_implementation",
   "description":
       "A brick generating a service implementation of a infrastructure package of a Rapid project.",
@@ -54,6 +41,8 @@ final serviceImplementationBundle = MasonBundle.fromJson(<String, dynamic>{
     "name": {"type": "string"},
     "service_interface_name": {"type": "string"},
     "output_dir": {"type": "string"},
-    "sub_infrastructure_name": {"type": "string"}
+    "output_dir_is_cwd": {"type": "boolean"},
+    "sub_infrastructure_name": {"type": "string"},
+    "has_sub_infrastructure_name": {"type": "boolean"}
   }
 });

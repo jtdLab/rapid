@@ -241,20 +241,7 @@ final iosNativeDirectoryBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     }
   ],
-  "hooks": [
-    {
-      "path": "pre_gen.dart",
-      "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwoKdm9pZCBydW4oSG9va0NvbnRleHQgY29udGV4dCkgewogIGFkZExhbmd1YWdlRmxhZ3MoY29udGV4dCk7Cn0KCnZvaWQgYWRkTGFuZ3VhZ2VGbGFncyhIb29rQ29udGV4dCBjb250ZXh0KSB7CiAgZmluYWwgc2NyaXB0Q29kZSA9IGNvbnRleHQudmFyc1snc2NyaXB0X2NvZGUnXTsKICBmaW5hbCBjb3VudHJ5Q29kZSA9IGNvbnRleHQudmFyc1snY291bnRyeV9jb2RlJ107CiAgY29udGV4dC52YXJzID0gewogICAgLi4uY29udGV4dC52YXJzLAogICAgJ2hhc19zY3JpcHRfY29kZSc6IHNjcmlwdENvZGUgIT0gbnVsbCwKICAgICdoYXNfY291bnRyeV9jb2RlJzogY291bnRyeUNvZGUgIT0gbnVsbAogIH07Cn0K",
-      "type": "text"
-    },
-    {
-      "path": "pubspec.yaml",
-      "data":
-          "bmFtZTogaW9zX25hdGl2ZV9kaXJlY3RvcnlfaG9va3MKCmVudmlyb25tZW50OgogIHNkazogIj49My4wLjAgPDQuMC4wIgoKZGVwZW5kZW5jaWVzOgogIG1hc29uOiBhbnkK",
-      "type": "text"
-    }
-  ],
+  "hooks": [],
   "name": "ios_native_directory",
   "description":
       "A brick generating the ios native directory of a Rapid project.",
@@ -275,6 +262,8 @@ final iosNativeDirectoryBundle = MasonBundle.fromJson(<String, dynamic>{
     "org_name": {"type": "string"},
     "language_code": {"type": "string"},
     "script_code": {"type": "string"},
-    "country_code": {"type": "string"}
+    "has_script_code": {"type": "boolean"},
+    "country_code": {"type": "string"},
+    "has_country_code": {"type": "boolean"}
   }
 });

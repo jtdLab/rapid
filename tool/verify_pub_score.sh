@@ -1,8 +1,9 @@
 #!/bin/bash
 
 ############################################################################################
-# bash tool/verify_pub_score.sh 100
-# bash tool/verify_pub_score.sh
+# Run from package
+# bash ../../tool/verify_pub_score.sh 100
+# bash ../../tool/verify_pub_score.sh
 ############################################################################################
 # Runs `pana . --no-warning` and verifies that the package score
 # is greater or equal to the desired score. By default the desired score is

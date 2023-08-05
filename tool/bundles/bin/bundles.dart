@@ -22,5 +22,5 @@ Future<void> main(List<String> arguments) async {
   await updatePlatformNativeDirectoryTemplates();
   await updatePubspecYamlFiles();
   await rebundleTemplates(templates);
-  await run('dart', ['format', 'lib', '--fix']);
+  await run('dart', ['format', 'packages/rapid_cli/lib', '--fix']);
 }

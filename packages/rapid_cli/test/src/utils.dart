@@ -4,9 +4,8 @@ import 'dart:math';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart' hide Platform;
 import 'package:rapid_cli/src/logging.dart';
-import 'package:rapid_cli/src/process.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/tool.dart';
@@ -126,12 +125,12 @@ extension ProcessManagerX on ProcessManager {
         stdoutEncoding: utf8,
       );
 
-  Future<ProcessResult> runFlutterPubGet({
+  Future<ProcessResult> runDartPubGet({
     required String workingDirectory,
     bool dryRun = false,
   }) =>
       _runProcess(
-        ['flutter', 'pub', 'get', if (dryRun) '--dry-run'],
+        ['dart', 'pub', 'get', if (dryRun) '--dry-run'],
         workingDirectory: workingDirectory,
       );
 
@@ -166,21 +165,21 @@ extension ProcessManagerX on ProcessManager {
         workingDirectory: any(named: 'workingDirectory'),
       );
 
-  Future<ProcessResult> runFlutterPubAdd(
+  Future<ProcessResult> runDartPubAdd(
     List<String> dependenciesToAdd, {
     required String workingDirectory,
   }) =>
       _runProcess(
-        ['flutter', 'pub', 'add', ...dependenciesToAdd],
+        ['dart', 'pub', 'add', ...dependenciesToAdd],
         workingDirectory: workingDirectory,
       );
 
-  Future<ProcessResult> runFlutterPubRemove(
+  Future<ProcessResult> runDartPubRemove(
     List<String> dependenciesToRemove, {
     required String workingDirectory,
   }) =>
       _runProcess(
-        ['flutter', 'pub', 'remove', ...dependenciesToRemove],
+        ['dart', 'pub', 'remove', ...dependenciesToRemove],
         workingDirectory: workingDirectory,
       );
 
@@ -193,19 +192,17 @@ extension ProcessManagerX on ProcessManager {
         workingDirectory: workingDirectory,
       );
 
-  Future<ProcessResult>
-      runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs({
+  Future<ProcessResult> runDartRunBuildRunnerBuildDeleteConflictingOutputs({
     required String workingDirectory,
   }) =>
-          _runProcess(
-            [
-              'flutter',
-              'pub',
-              'run',
-              'build_runner',
-              'build',
-              '--delete-conflicting-outputs',
-            ],
-            workingDirectory: workingDirectory,
-          );
+      _runProcess(
+        [
+          'dart',
+          'run',
+          'build_runner',
+          'build',
+          '--delete-conflicting-outputs',
+        ],
+        workingDirectory: workingDirectory,
+      );
 }

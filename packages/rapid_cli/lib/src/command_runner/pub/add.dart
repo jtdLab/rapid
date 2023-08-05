@@ -26,7 +26,7 @@ class PubAddCommand extends RapidLeafCommand with PackageGetter {
   String get description =>
       '''Add dependencies to `pubspec.yaml` in a Rapid project.
 
-This command works similiar to `dart pub add` or `flutter pub add` but takes care of
+This command works similiar to `dart pub add` or `dart pub add` but takes care of
 dependent packages and updates their transitiv dependencies accordingly.
 
 Invoking `rapid pub add foo bar` will add `foo` and `bar` to `pubspec.yaml`
@@ -47,25 +47,25 @@ after a colon.
 
 For example:
   * Add a hosted dependency at newest compatible stable version:
-    `flutter pub add foo`
+    `dart pub add foo`
   * Add a hosted dev dependency at newest compatible stable version:
-    `flutter pub add dev:foo`
+    `dart pub add dev:foo`
   * Add a hosted dependency with the given constraint
-    `flutter pub add foo:^1.2.3`
+    `dart pub add foo:^1.2.3`
   * Add multiple dependencies:
-    `flutter pub add foo dev:bar`
+    `dart pub add foo dev:bar`
   * Add a path dependency:
-    `flutter pub add 'foo:{"path":"../foo"}'`
+    `dart pub add 'foo:{"path":"../foo"}'`
   * Add a hosted dependency:
-    `flutter pub add 'foo:{"hosted":"my-pub.dev"}'`
+    `dart pub add 'foo:{"hosted":"my-pub.dev"}'`
   * Add an sdk dependency:
-    `flutter pub add 'foo:{"sdk":"flutter"}'`
+    `dart pub add 'foo:{"sdk":"flutter"}'`
   * Add a git dependency:
-    `flutter pub add 'foo:{"git":"https://github.com/foo/foo"}'`
+    `dart pub add 'foo:{"git":"https://github.com/foo/foo"}'`
   * Add a dependency override:
-    `flutter pub add 'override:foo:1.0.0'`
+    `dart pub add 'override:foo:1.0.0'`
   * Add a git dependency with a path and ref specified:
-    `flutter pub add \\
+    `dart pub add \\
       'foo:{"git":{"url":"../foo.git","ref":"<branch>","path":"<subdir>"}}'`''';
 
   @override

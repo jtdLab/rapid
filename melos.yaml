@@ -86,6 +86,13 @@ scripts:
       git push --force origin dev
     description: Reset dev to main branch. (This must be run from dev branch)
 
+  test:
+    exec: flutter test test/src
+    description: Run `flutter test test/src` in a package.
+    packageFilters:
+      dirExists:
+        - test/src
+
   test:coverage:
     exec: flutter test test/src --coverage
     description: Run `flutter test test/src --coverage` in a package.

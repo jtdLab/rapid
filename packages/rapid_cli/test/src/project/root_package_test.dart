@@ -4,7 +4,7 @@ import 'package:rapid_cli/src/project/bundles/bundles.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 
-import '../mock_fs.dart';
+import '../mock_env.dart';
 import '../mocks.dart';
 
 RootPackage _getRootPackage({

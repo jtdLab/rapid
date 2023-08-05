@@ -76,6 +76,7 @@ mixin _ActivateMixin on _Rapid {
           ),
           flutterConfigEnablePlatformTasks: [
             // TODO use task and do same for other platforms
+
             () => _flutterConfigEnablePlatformTask(platform: platform)
           ],
         );
@@ -328,7 +329,7 @@ mixin _ActivateMixin on _Rapid {
       }
     }
 
-    await flutterPubGetTaskGroup(
+    await dartPubGetTaskGroup(
       packages: [
         appFeaturePackage,
         homePageFeaturePackage,
@@ -340,7 +341,7 @@ mixin _ActivateMixin on _Rapid {
     );
 
     if (infrastructureContainsNonDefaultPackage) {
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+      await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
         package: rootPackage,
       );
     }

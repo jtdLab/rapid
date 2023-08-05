@@ -1,8 +1,8 @@
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
 
-import '../../mock_fs.dart';
+import '../../mock_env.dart';
 import '../../mocks.dart';
 
 DomainDirectory _getDomainDirectory({

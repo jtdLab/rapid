@@ -1,5 +1,5 @@
 import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart' hide Platform;
 import 'package:rapid_cli/src/mason.dart';
 import 'package:rapid_cli/src/project/bundles/bundles.dart';
 import 'package:rapid_cli/src/project/language.dart';
@@ -8,7 +8,7 @@ import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
 
-import '../../mock_fs.dart';
+import '../../mock_env.dart';
 import '../../mocks.dart';
 
 // TODO share tests among platforms register etc?

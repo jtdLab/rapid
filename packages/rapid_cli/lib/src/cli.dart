@@ -1,7 +1,7 @@
 import 'package:rapid_cli/src/project/platform.dart';
 
 import 'exception.dart';
-import 'io.dart';
+import 'io/io.dart' hide Platform;
 import 'project/project.dart';
 import 'utils.dart';
 
@@ -31,13 +31,12 @@ Future<void> melosBootstrap({
   }
 }
 
-// Use dart pub get
-Future<FlutterPubGetResult> flutterPubGet({
+Future<DartPubGetResult> dartPubGet({
   bool dryRun = false,
   required DartPackage package,
 }) async {
   final result = await runCommand(
-    ['flutter', 'pub', 'get', if (dryRun) '--dry-run'],
+    ['dart', 'pub', 'get', if (dryRun) '--dry-run'],
     workingDirectory: package.path,
   );
 
@@ -52,15 +51,15 @@ Future<FlutterPubGetResult> flutterPubGet({
 
   final wouldChangeDependencies =
       !(result.stdout as String).contains('No dependencies would change.');
-  return FlutterPubGetResult(
+  return DartPubGetResult(
     wouldChangeDependencies: wouldChangeDependencies,
   );
 }
 
-class FlutterPubGetResult {
+class DartPubGetResult {
   final bool wouldChangeDependencies;
 
-  FlutterPubGetResult({required this.wouldChangeDependencies});
+  DartPubGetResult({required this.wouldChangeDependencies});
 }
 
 Future<void> flutterGenl10n({required DartPackage package}) async {
@@ -95,14 +94,12 @@ Future<void> dartFormatFix({required RapidProject project}) async {
   }
 }
 
-// TODO: use dart run
-Future<void> flutterPubRunBuildRunnerBuildDeleteConflictingOutputs({
+Future<void> dartRunBuildRunnerBuildDeleteConflictingOutputs({
   required DartPackage package,
 }) async {
   final result = await runCommand(
     [
-      'flutter',
-      'pub',
+      'dart',
       'run',
       'build_runner',
       'build',
@@ -121,13 +118,12 @@ Future<void> flutterPubRunBuildRunnerBuildDeleteConflictingOutputs({
   }
 }
 
-// TODO: use dart pub add
-Future<void> flutterPubAdd({
+Future<void> dartPubAdd({
   required List<String> dependenciesToAdd,
   required DartPackage package,
 }) async {
   final result = await runCommand(
-    ['flutter', 'pub', 'add', ...dependenciesToAdd],
+    ['dart', 'pub', 'add', ...dependenciesToAdd],
     workingDirectory: package.path,
   );
 
@@ -141,13 +137,12 @@ Future<void> flutterPubAdd({
   }
 }
 
-// TODO: use dart pub remove
-Future<void> flutterPubRemove({
+Future<void> dartPubRemove({
   required List<String> packagesToRemove,
   required DartPackage package,
 }) async {
   final result = await runCommand(
-    ['flutter', 'pub', 'remove', ...packagesToRemove],
+    ['dart', 'pub', 'remove', ...packagesToRemove],
     workingDirectory: package.path,
   );
 

@@ -1,6 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart' hide Platform;
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -210,8 +210,7 @@ void main() {
           () => progress.complete(),
           () => logger
               .progress('Running code generation in none_ios_root_package'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
           () => progress.complete(),
@@ -256,14 +255,12 @@ void main() {
           () => logger.progressGroup(null),
           () => progressGroup
               .progress('Running code generation in none_ios_root_package'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
           () => groupableProgress.complete(),
           () => progressGroup.progress('Running code generation in cool_flow'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_flow_path',
               ),
           () => groupableProgress.complete(),
@@ -418,8 +415,7 @@ void main() {
           () => progress.complete(),
           () => logger
               .progress('Running code generation in none_ios_root_package'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
           () => progress.complete(),
@@ -465,15 +461,13 @@ void main() {
           () => logger.progressGroup(null),
           () => progressGroup
               .progress('Running code generation in none_ios_root_package'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
           () => groupableProgress.complete(),
           () => progressGroup
               .progress('Running code generation in cool_tab_flow'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_tab_flow_path',
               ),
           () => groupableProgress.complete(),
@@ -604,8 +598,7 @@ void main() {
           () => progress.complete(),
           () => logger
               .progress('Running code generation in none_ios_root_package'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
           () => progress.complete(),
@@ -650,14 +643,12 @@ void main() {
           () => logger.progressGroup(null),
           () => progressGroup
               .progress('Running code generation in none_ios_root_package'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
           () => groupableProgress.complete(),
           () => progressGroup.progress('Running code generation in cool_page'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
           () => groupableProgress.complete(),
@@ -779,8 +770,7 @@ void main() {
           () => progress.complete(),
           () => logger
               .progress('Running code generation in none_ios_root_package'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
           () => progress.complete(),
@@ -1107,8 +1097,7 @@ void main() {
           () => navigatorImplementation.generate(),
           () => progress.complete(),
           () => logger.progress('Running code generation in cool_page'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
           () => progress.complete(),
@@ -1195,8 +1184,7 @@ void main() {
               .addExport('cool_bloc.dart'),
           () => progress.complete(),
           () => logger.progress('Running code generation in cool_page'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
           () => progress.complete(),
@@ -1318,8 +1306,7 @@ void main() {
               .addExport('cool_cubit.dart'),
           () => progress.complete(),
           () => logger.progress('Running code generation in cool_page'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
           () => progress.complete(),
@@ -1439,8 +1426,7 @@ void main() {
               .removeExport('cool_bloc.dart'),
           () => progress.complete(),
           () => logger.progress('Running code generation in cool_page'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
           () => progress.complete(),
@@ -1574,8 +1560,7 @@ void main() {
               .removeExport('cool_cubit.dart'),
           () => progress.complete(),
           () => logger.progress('Running code generation in cool_page'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
           () => progress.complete(),
@@ -1741,8 +1726,7 @@ void main() {
           () => progress.complete(),
           () => logger
               .progress('Running code generation in none_ios_root_package'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
           () => progress.complete(),
@@ -2116,8 +2100,7 @@ void main() {
           () => navigatorImplementation.delete(),
           () => progress.complete(),
           () => logger.progress('Running code generation in cool_page'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
           () => progress.complete(),

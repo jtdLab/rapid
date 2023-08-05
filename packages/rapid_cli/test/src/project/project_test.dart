@@ -1,11 +1,11 @@
 import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart' hide Platform;
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/project_config.dart';
 import 'package:test/test.dart';
 
-import '../mock_fs.dart';
+import '../mock_env.dart';
 import '../mocks.dart';
 
 RapidProject _getRapidProject({

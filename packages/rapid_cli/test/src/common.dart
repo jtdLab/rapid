@@ -1,10 +1,8 @@
 import 'dart:async';
-import 'dart:io' hide Platform;
 import 'dart:math';
 
 import 'package:path/path.dart' as p;
-import 'package:platform/platform.dart' as io;
-import 'package:rapid_cli/src/platform.dart';
+import 'package:rapid_cli/src/io/io.dart' hide Platform;
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/utils.dart';
 
@@ -88,7 +86,7 @@ void Function() overridePrint(void Function(List<String>) fn) {
       },
     );
 
-    final platform = io.FakePlatform(
+    final platform = FakePlatform(
       // TODO(jtdLab): this make testing command usages easier because fewer line breaks
       environment: {envKeyRapidTerminalWidth: '1000'},
     );

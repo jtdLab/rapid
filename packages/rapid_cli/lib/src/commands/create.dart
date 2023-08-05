@@ -43,7 +43,7 @@ mixin _CreateMixin on _ActivateMixin {
       parallelism: 1,
     );
 
-    await flutterPubGetTaskGroup(
+    await dartPubGetTaskGroup(
       packages: [
         project.rootPackage,
         project.appModule.diPackage,

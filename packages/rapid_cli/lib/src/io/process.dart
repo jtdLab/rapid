@@ -1,12 +1,4 @@
-import 'dart:async';
-import 'dart:io';
-
-import 'package:meta/meta.dart';
-import 'package:process/process.dart';
-
-export 'package:process/process.dart';
-
-// TODO consider moving to io.dart
+part of 'io.dart';
 
 @visibleForTesting
 const currentProcessManagerZoneKey = #currentProcessManager;

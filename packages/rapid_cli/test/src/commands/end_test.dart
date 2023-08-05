@@ -134,20 +134,17 @@ void main() {
           () => tool.deactivateCommandGroup(),
           () => logger.progressGroup(null),
           () => progressGroup.progress('Running code generation in package_a'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'package_a_path',
               ),
           () => groupableProgress.complete(),
           () => progressGroup.progress('Running code generation in package_b'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'package_b_path',
               ),
           () => groupableProgress.complete(),
           () => progressGroup.progress('Running code generation in package_c'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'package_c_path',
               ),
           () => groupableProgress.complete(),
@@ -209,14 +206,12 @@ void main() {
           () => logger.newLine(),
           () => logger.progressGroup(null),
           () => progressGroup.progress('Running code generation in package_c'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'package_c_path',
               ),
           () => groupableProgress.complete(),
           () => progressGroup.progress('Running code generation in package_d'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'package_d_path',
               ),
           () => groupableProgress.complete(),

@@ -1,7 +1,7 @@
 import 'package:args/command_runner.dart';
 import 'package:collection/collection.dart';
 import 'package:rapid_cli/src/cli.dart';
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart';
 import 'package:rapid_cli/src/validation.dart';
 import 'package:test/test.dart';
 

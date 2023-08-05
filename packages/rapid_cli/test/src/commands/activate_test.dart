@@ -1,6 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
-import 'package:rapid_cli/src/process.dart';
+import 'package:rapid_cli/src/io/io.dart' hide Platform;
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -198,34 +198,32 @@ void _verifyActivatePlatform<T extends PlatformRootPackage>(
         .registerInfrastructurePackage(nonDefaultInfrastructurePackage),
     () => logger.progressGroup(null),
     () => progressGroup
-        .progress('Running "flutter pub get" in platform_app_feature_package'),
-    () => manager.runFlutterPubGet(
+        .progress('Running "dart pub get" in platform_app_feature_package'),
+    () => manager.runDartPubGet(
         workingDirectory: 'platform_app_feature_package_path'),
     () => groupableProgress.complete(),
     () => progressGroup.progress(
-        'Running "flutter pub get" in platform_home_page_feature_package'),
-    () => manager.runFlutterPubGet(
+        'Running "dart pub get" in platform_home_page_feature_package'),
+    () => manager.runDartPubGet(
         workingDirectory: 'platform_home_page_feature_package_path'),
     () => groupableProgress.complete(),
     () => progressGroup
-        .progress('Running "flutter pub get" in platform_localization_package'),
-    () => manager.runFlutterPubGet(
+        .progress('Running "dart pub get" in platform_localization_package'),
+    () => manager.runDartPubGet(
         workingDirectory: 'platform_localization_package_path'),
     () => groupableProgress.complete(),
     () => progressGroup
-        .progress('Running "flutter pub get" in platform_navigation_package'),
-    () => manager.runFlutterPubGet(
+        .progress('Running "dart pub get" in platform_navigation_package'),
+    () => manager.runDartPubGet(
         workingDirectory: 'platform_navigation_package_path'),
     () => groupableProgress.complete(),
     () => progressGroup
-        .progress('Running "flutter pub get" in platform_root_package'),
-    () => manager.runFlutterPubGet(
-        workingDirectory: 'platform_root_package_path'),
+        .progress('Running "dart pub get" in platform_root_package'),
+    () => manager.runDartPubGet(workingDirectory: 'platform_root_package_path'),
     () => groupableProgress.complete(),
-    () => progressGroup
-        .progress('Running "flutter pub get" in platform_ui_package'),
     () =>
-        manager.runFlutterPubGet(workingDirectory: 'platform_ui_package_path'),
+        progressGroup.progress('Running "dart pub get" in platform_ui_package'),
+    () => manager.runDartPubGet(workingDirectory: 'platform_ui_package_path'),
     () => groupableProgress.complete(),
     ...switch (commandGroupIsActive) {
       true => [
@@ -234,8 +232,7 @@ void _verifyActivatePlatform<T extends PlatformRootPackage>(
       false => [
           () => logger
               .progress('Running code generation in platform_root_package'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'platform_root_package_path',
               ),
           () => progress.complete(),

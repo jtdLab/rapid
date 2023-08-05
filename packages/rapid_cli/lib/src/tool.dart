@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:path/path.dart' as p;
 
-import 'io.dart';
+import 'io/io.dart';
 
 class RapidTool {
   RapidTool({

@@ -10,7 +10,7 @@ import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/utils.dart';
 
-import '../io.dart';
+import '../io/io.dart' hide Platform;
 import '../mason.dart' as mason;
 import '../project_config.dart';
 import 'bundles/bundles.dart';

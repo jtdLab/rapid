@@ -1,9 +1,8 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/commands/runner.dart';
-import 'package:rapid_cli/src/io.dart' hide Platform;
+import 'package:rapid_cli/src/io/io.dart' hide Platform;
 import 'package:rapid_cli/src/logging.dart';
-import 'package:rapid_cli/src/process.dart';
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -13,7 +12,6 @@ import 'package:test/test.dart';
 
 import '../common.dart';
 import '../mock_env.dart';
-import '../mock_fs.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
@@ -255,26 +253,25 @@ void _verifyCreateProjectAndActivatePlatform<T extends PlatformRootPackage>(
     () => uiPackage.generate(),
     () => progress.complete(),
     () => logger.progressGroup(null),
-    () => progressGroup.progress('Running "flutter pub get" in root_package'),
-    () => manager.runFlutterPubGet(workingDirectory: 'root_package_path'),
+    () => progressGroup.progress('Running "dart pub get" in root_package'),
+    () => manager.runDartPubGet(workingDirectory: 'root_package_path'),
     () => groupableProgress.complete(),
-    () => progressGroup.progress('Running "flutter pub get" in di_package'),
-    () => manager.runFlutterPubGet(workingDirectory: 'di_package_path'),
+    () => progressGroup.progress('Running "dart pub get" in di_package'),
+    () => manager.runDartPubGet(workingDirectory: 'di_package_path'),
     () => groupableProgress.complete(),
-    () => progressGroup.progress('Running "flutter pub get" in domain_package'),
-    () => manager.runFlutterPubGet(workingDirectory: 'domain_package_path'),
+    () => progressGroup.progress('Running "dart pub get" in domain_package'),
+    () => manager.runDartPubGet(workingDirectory: 'domain_package_path'),
     () => groupableProgress.complete(),
     () => progressGroup
-        .progress('Running "flutter pub get" in infrastructure_package'),
-    () => manager.runFlutterPubGet(
-        workingDirectory: 'infrastructure_package_path'),
-    () => groupableProgress.complete(),
+        .progress('Running "dart pub get" in infrastructure_package'),
     () =>
-        progressGroup.progress('Running "flutter pub get" in logging_package'),
-    () => manager.runFlutterPubGet(workingDirectory: 'logging_package_path'),
+        manager.runDartPubGet(workingDirectory: 'infrastructure_package_path'),
     () => groupableProgress.complete(),
-    () => progressGroup.progress('Running "flutter pub get" in ui_package'),
-    () => manager.runFlutterPubGet(workingDirectory: 'ui_package_path'),
+    () => progressGroup.progress('Running "dart pub get" in logging_package'),
+    () => manager.runDartPubGet(workingDirectory: 'logging_package_path'),
+    () => groupableProgress.complete(),
+    () => progressGroup.progress('Running "dart pub get" in ui_package'),
+    () => manager.runDartPubGet(workingDirectory: 'ui_package_path'),
     () => groupableProgress.complete(),
     () => logger.newLine(),
     () => logger.info('🚀 Activating ${platform.prettyName}'),
@@ -322,34 +319,32 @@ void _verifyCreateProjectAndActivatePlatform<T extends PlatformRootPackage>(
     () => progress.complete(),
     () => logger.progressGroup(null),
     () => progressGroup
-        .progress('Running "flutter pub get" in platform_app_feature_package'),
-    () => manager.runFlutterPubGet(
+        .progress('Running "dart pub get" in platform_app_feature_package'),
+    () => manager.runDartPubGet(
         workingDirectory: 'platform_app_feature_package_path'),
     () => groupableProgress.complete(),
     () => progressGroup.progress(
-        'Running "flutter pub get" in platform_home_page_feature_package'),
-    () => manager.runFlutterPubGet(
+        'Running "dart pub get" in platform_home_page_feature_package'),
+    () => manager.runDartPubGet(
         workingDirectory: 'platform_home_page_feature_package_path'),
     () => groupableProgress.complete(),
     () => progressGroup
-        .progress('Running "flutter pub get" in platform_localization_package'),
-    () => manager.runFlutterPubGet(
+        .progress('Running "dart pub get" in platform_localization_package'),
+    () => manager.runDartPubGet(
         workingDirectory: 'platform_localization_package_path'),
     () => groupableProgress.complete(),
     () => progressGroup
-        .progress('Running "flutter pub get" in platform_navigation_package'),
-    () => manager.runFlutterPubGet(
+        .progress('Running "dart pub get" in platform_navigation_package'),
+    () => manager.runDartPubGet(
         workingDirectory: 'platform_navigation_package_path'),
     () => groupableProgress.complete(),
     () => progressGroup
-        .progress('Running "flutter pub get" in platform_root_package'),
-    () => manager.runFlutterPubGet(
-        workingDirectory: 'platform_root_package_path'),
+        .progress('Running "dart pub get" in platform_root_package'),
+    () => manager.runDartPubGet(workingDirectory: 'platform_root_package_path'),
     () => groupableProgress.complete(),
-    () => progressGroup
-        .progress('Running "flutter pub get" in platform_ui_package'),
     () =>
-        manager.runFlutterPubGet(workingDirectory: 'platform_ui_package_path'),
+        progressGroup.progress('Running "dart pub get" in platform_ui_package'),
+    () => manager.runDartPubGet(workingDirectory: 'platform_ui_package_path'),
     () => groupableProgress.complete(),
     () => logger.progress(
         'Running "flutter gen-l10n" in platform_localization_package'),
@@ -492,32 +487,28 @@ void main() {
           () => uiPackage.generate(),
           () => progress.complete(),
           () => logger.progressGroup(null),
-          () => progressGroup
-              .progress('Running "flutter pub get" in root_package'),
-          () => manager.runFlutterPubGet(workingDirectory: 'root_package_path'),
-          () => groupableProgress.complete(),
           () =>
-              progressGroup.progress('Running "flutter pub get" in di_package'),
-          () => manager.runFlutterPubGet(workingDirectory: 'di_package_path'),
+              progressGroup.progress('Running "dart pub get" in root_package'),
+          () => manager.runDartPubGet(workingDirectory: 'root_package_path'),
+          () => groupableProgress.complete(),
+          () => progressGroup.progress('Running "dart pub get" in di_package'),
+          () => manager.runDartPubGet(workingDirectory: 'di_package_path'),
           () => groupableProgress.complete(),
           () => progressGroup
-              .progress('Running "flutter pub get" in domain_package'),
-          () =>
-              manager.runFlutterPubGet(workingDirectory: 'domain_package_path'),
+              .progress('Running "dart pub get" in domain_package'),
+          () => manager.runDartPubGet(workingDirectory: 'domain_package_path'),
           () => groupableProgress.complete(),
           () => progressGroup
-              .progress('Running "flutter pub get" in infrastructure_package'),
-          () => manager.runFlutterPubGet(
+              .progress('Running "dart pub get" in infrastructure_package'),
+          () => manager.runDartPubGet(
               workingDirectory: 'infrastructure_package_path'),
           () => groupableProgress.complete(),
           () => progressGroup
-              .progress('Running "flutter pub get" in logging_package'),
-          () => manager.runFlutterPubGet(
-              workingDirectory: 'logging_package_path'),
+              .progress('Running "dart pub get" in logging_package'),
+          () => manager.runDartPubGet(workingDirectory: 'logging_package_path'),
           () => groupableProgress.complete(),
-          () =>
-              progressGroup.progress('Running "flutter pub get" in ui_package'),
-          () => manager.runFlutterPubGet(workingDirectory: 'ui_package_path'),
+          () => progressGroup.progress('Running "dart pub get" in ui_package'),
+          () => manager.runDartPubGet(workingDirectory: 'ui_package_path'),
           () => groupableProgress.complete(),
           () => logger.newLine(),
           () => logger.progress('Running "dart format . --fix" in project'),

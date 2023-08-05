@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/tool.dart';
 import 'package:test/test.dart';
@@ -77,7 +77,7 @@ void main() {
       });
 
       test(
-        'adds dependencies using flutter pub add',
+        'adds dependencies using dart pub add',
         withMockEnv((manager) async {
           final (progress: progress, logger: logger) =
               setupLoggerWithoutGroup();
@@ -91,8 +91,8 @@ void main() {
           verifyInOrder([
             () => logger.newLine(),
             () => logger.progress(
-                'Running "flutter pub add package_a package_b" in example_package'),
-            () => manager.runFlutterPubAdd(
+                'Running "dart pub add package_a package_b" in example_package'),
+            () => manager.runDartPubAdd(
                   ['package_a', 'package_b'],
                   workingDirectory: 'example_package_path',
                 ),
@@ -107,11 +107,11 @@ void main() {
       );
 
       test(
-        'when flutter pub add fails run flutter pub get',
+        'when dart pub add fails run dart pub get',
         withMockEnv((manager) async {
           when(
             () => manager.run(
-              ['flutter', 'pub', 'add', 'package_a', 'package_b'],
+              ['dart', 'pub', 'add', 'package_a', 'package_b'],
               workingDirectory: any(named: 'workingDirectory'),
               runInShell: true,
               stderrEncoding: utf8,
@@ -127,7 +127,7 @@ void main() {
           );
 
           verifyInOrder([
-            () => manager.runFlutterPubGet(
+            () => manager.runDartPubGet(
                   workingDirectory: 'example_package_path',
                 ),
           ]);
@@ -206,11 +206,11 @@ void main() {
           ]);
           verifyNever(
             () => logger.progress(
-              'Running "flutter pub add package_a package_b" in example_package',
+              'Running "dart pub add package_a package_b" in example_package',
             ),
           );
           verifyNever(
-            () => manager.runFlutterPubAdd(
+            () => manager.runDartPubAdd(
               ['package_a', 'package_b'],
               workingDirectory: 'example_package_path',
             ),
@@ -261,7 +261,7 @@ void main() {
       });
 
       test(
-        'adds dependencies using flutter pub add',
+        'adds dependencies using dart pub add',
         withMockEnv((manager) async {
           final (progress: progress, logger: logger) =
               setupLoggerWithoutGroup();
@@ -275,8 +275,8 @@ void main() {
           verifyInOrder([
             () => logger.newLine(),
             () => logger.progress(
-                'Running "flutter pub add package_a package_b" in example_package'),
-            () => manager.runFlutterPubAdd(
+                'Running "dart pub add package_a package_b" in example_package'),
+            () => manager.runDartPubAdd(
                   ['package_a', 'package_b'],
                   workingDirectory: 'example_package_path',
                 ),
@@ -291,11 +291,11 @@ void main() {
       );
 
       test(
-        'when flutter pub add fails run flutter pub get',
+        'when dart pub add fails run dart pub get',
         withMockEnv((manager) async {
           when(
             () => manager.run(
-              ['flutter', 'pub', 'add', 'package_a', 'package_b'],
+              ['dart', 'pub', 'add', 'package_a', 'package_b'],
               workingDirectory: any(named: 'workingDirectory'),
               runInShell: true,
               stderrEncoding: utf8,
@@ -311,7 +311,7 @@ void main() {
           );
 
           verifyInOrder([
-            () => manager.runFlutterPubGet(
+            () => manager.runDartPubGet(
                   workingDirectory: 'example_package_path',
                 ),
           ]);
@@ -376,11 +376,11 @@ void main() {
           ]);
           verifyNever(
             () => logger.progress(
-              'Running "flutter pub add package_a package_b" in example_package',
+              'Running "dart pub add package_a package_b" in example_package',
             ),
           );
           verifyNever(
-            () => manager.runFlutterPubAdd(
+            () => manager.runDartPubAdd(
               ['package_a', 'package_b'],
               workingDirectory: 'example_package_path',
             ),
@@ -470,7 +470,7 @@ void main() {
       });
 
       test(
-        'gets dependencies using flutter pub get',
+        'gets dependencies using dart pub get',
         withMockEnv((manager) async {
           final (progress: progress, logger: logger) =
               setupLoggerWithoutGroup();
@@ -482,11 +482,10 @@ void main() {
 
           verifyInOrder([
             () => logger.newLine(),
-            () => manager.runFlutterPubGet(
+            () => manager.runDartPubGet(
                 workingDirectory: 'example_package_path', dryRun: true),
-            () =>
-                logger.progress('Running "flutter pub get" in example_package'),
-            () => manager.runFlutterPubGet(
+            () => logger.progress('Running "dart pub get" in example_package'),
+            () => manager.runDartPubGet(
                   workingDirectory: 'example_package_path',
                 ),
             () => progress.complete(),
@@ -532,7 +531,7 @@ void main() {
         'does nothing when pub get would not change dependencies',
         withMockEnv((manager) async {
           when(
-            () => manager.runFlutterPubGet(
+            () => manager.runDartPubGet(
                 workingDirectory: 'example_package_path', dryRun: true),
           ).thenAnswer(
             (_) async =>
@@ -547,7 +546,7 @@ void main() {
 
           verifyInOrder([
             () => logger.newLine(),
-            () => manager.runFlutterPubGet(
+            () => manager.runDartPubGet(
                 workingDirectory: 'example_package_path', dryRun: true),
             () => logger.commandSuccess('Got Dependencies!'),
           ]);
@@ -598,7 +597,7 @@ void main() {
       });
 
       test(
-        'gets dependencies using flutter pub get',
+        'gets dependencies using dart pub get',
         withMockEnv((manager) async {
           final (progress: progress, logger: logger) =
               setupLoggerWithoutGroup();
@@ -610,11 +609,10 @@ void main() {
 
           verifyInOrder([
             () => logger.newLine(),
-            () => manager.runFlutterPubGet(
+            () => manager.runDartPubGet(
                 workingDirectory: 'example_package_path', dryRun: true),
-            () =>
-                logger.progress('Running "flutter pub get" in example_package'),
-            () => manager.runFlutterPubGet(
+            () => logger.progress('Running "dart pub get" in example_package'),
+            () => manager.runDartPubGet(
                   workingDirectory: 'example_package_path',
                 ),
             () => progress.complete(),
@@ -660,7 +658,7 @@ void main() {
         'does nothing when pub get would not change dependencies',
         withMockEnv((manager) async {
           when(
-            () => manager.runFlutterPubGet(
+            () => manager.runDartPubGet(
                 workingDirectory: 'example_package_path', dryRun: true),
           ).thenAnswer(
             (_) async =>
@@ -675,7 +673,7 @@ void main() {
 
           verifyInOrder([
             () => logger.newLine(),
-            () => manager.runFlutterPubGet(
+            () => manager.runDartPubGet(
                 workingDirectory: 'example_package_path', dryRun: true),
             () => logger.commandSuccess('Got Dependencies!'),
           ]);
@@ -767,7 +765,7 @@ void main() {
       });
 
       test(
-        'removes dependencies using flutter pub remove',
+        'removes dependencies using dart pub remove',
         withMockEnv((manager) async {
           final (progress: progress, logger: logger) =
               setupLoggerWithoutGroup();
@@ -781,8 +779,8 @@ void main() {
           verifyInOrder([
             () => logger.newLine(),
             () => logger.progress(
-                'Running "flutter pub remove package_a package_b" in example_package'),
-            () => manager.runFlutterPubRemove(
+                'Running "dart pub remove package_a package_b" in example_package'),
+            () => manager.runDartPubRemove(
                   ['package_a', 'package_b'],
                   workingDirectory: 'example_package_path',
                 ),
@@ -869,7 +867,7 @@ void main() {
       });
 
       test(
-        'removes dependencies using flutter pub remove',
+        'removes dependencies using dart pub remove',
         withMockEnv((manager) async {
           final (progress: progress, logger: logger) =
               setupLoggerWithoutGroup();
@@ -883,8 +881,8 @@ void main() {
           verifyInOrder([
             () => logger.newLine(),
             () => logger.progress(
-                'Running "flutter pub remove package_a package_b" in example_package'),
-            () => manager.runFlutterPubRemove(
+                'Running "dart pub remove package_a package_b" in example_package'),
+            () => manager.runDartPubRemove(
                   ['package_a', 'package_b'],
                   workingDirectory: 'example_package_path',
                 ),

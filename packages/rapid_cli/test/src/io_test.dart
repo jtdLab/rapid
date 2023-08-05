@@ -1,11 +1,11 @@
 import 'dart:typed_data';
 
 import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart';
 import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
 
-import 'mock_fs.dart';
+import 'mock_env.dart';
 import 'mocks.dart';
 
 class _FileSystemEntityCollection extends FileSystemEntityCollection {

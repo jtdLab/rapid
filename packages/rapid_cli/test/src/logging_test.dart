@@ -5,7 +5,7 @@ import 'package:mason_logger/src/io.dart' show ControlCharacter, KeyStroke;
 // ignore: depend_on_referenced_packages
 import 'package:mason_logger/src/stdin_overrides.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart';
 import 'package:rapid_cli/src/logging.dart';
 import 'package:test/test.dart';
 

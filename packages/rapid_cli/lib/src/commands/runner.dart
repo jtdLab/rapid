@@ -7,7 +7,7 @@ import 'package:rapid_cli/src/project/platform.dart';
 
 import '../cli.dart';
 import '../exception.dart';
-import '../io.dart';
+import '../io/io.dart' hide Platform;
 import '../logging.dart';
 import '../mason.dart';
 import '../project/language.dart';
@@ -146,16 +146,16 @@ abstract class _Rapid {
         () async => dartFormatFix(project: project),
       );
 
-  Future<void> flutterPubAddTask({
+  Future<void> dartPubAddTask({
     required List<String> dependenciesToAdd,
     required DartPackage package,
   }) async {
     if (dependenciesToAdd.isEmpty) return;
     await task(
-        'Running "flutter pub add ${dependenciesToAdd.join(' ')}" in ${package.packageName}',
+        'Running "dart pub add ${dependenciesToAdd.join(' ')}" in ${package.packageName}',
         () async {
       try {
-        await flutterPubAdd(
+        await dartPubAdd(
           package: package,
           dependenciesToAdd: dependenciesToAdd,
         );
@@ -163,7 +163,7 @@ abstract class _Rapid {
         // TODO(jtdLab): https://github.com/dart-lang/sdk/issues/52895
         // leads to pub add failing if empty version deps already in a pubspec.yaml
         // where pub add is called on
-        await flutterPubGet(package: package);
+        await dartPubGet(package: package);
       }
     });
   }
@@ -173,7 +173,7 @@ abstract class _Rapid {
         () async => flutterGenl10n(package: package),
       );
 
-  Future<void> flutterPubGetTaskGroup({
+  Future<void> dartPubGetTaskGroup({
     required List<DartPackage> packages,
   }) async {
     if (packages.isEmpty) return;
@@ -181,42 +181,42 @@ abstract class _Rapid {
       tasks: packages
           .map(
             (package) => (
-              'Running "flutter pub get" in ${package.packageName}',
-              () async => flutterPubGet(package: package)
+              'Running "dart pub get" in ${package.packageName}',
+              () async => dartPubGet(package: package)
             ),
           )
           .toList(),
     );
   }
 
-  Future<void> flutterPubGetTask({
+  Future<void> dartPubGetTask({
     required DartPackage package,
   }) async {
     if (tool.loadGroup().isActive) {
       tool.markAsNeedCodeGen(package: package);
     } else {
       await task(
-        'Running "flutter pub get" in ${package.packageName}',
-        () async => flutterPubGet(package: package),
+        'Running "dart pub get" in ${package.packageName}',
+        () async => dartPubGet(package: package),
       );
     }
   }
 
-  Future<void> flutterPubRemoveTask({
+  Future<void> dartPubRemoveTask({
     required List<String> packagesToRemove,
     required DartPackage package,
   }) async {
     if (packagesToRemove.isEmpty) return;
     await task(
-      'Running "flutter pub remove ${packagesToRemove.join(' ')}" in ${package.packageName}',
-      () async => flutterPubRemove(
+      'Running "dart pub remove ${packagesToRemove.join(' ')}" in ${package.packageName}',
+      () async => dartPubRemove(
         package: package,
         packagesToRemove: packagesToRemove,
       ),
     );
   }
 
-  Future<void> flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask({
+  Future<void> dartRunBuildRunnerBuildDeleteConflictingOutputsTask({
     required DartPackage package,
   }) async {
     if (tool.loadGroup().isActive) {
@@ -225,7 +225,7 @@ abstract class _Rapid {
       await task(
         'Running code generation in ${package.packageName}',
         () async {
-          await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          await dartRunBuildRunnerBuildDeleteConflictingOutputs(
             package: package,
           );
         },
@@ -233,7 +233,7 @@ abstract class _Rapid {
     }
   }
 
-  Future<void> flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup({
+  Future<void> dartRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup({
     required List<DartPackage> packages,
   }) async {
     if (packages.isEmpty) return;
@@ -249,7 +249,7 @@ abstract class _Rapid {
               (package) => (
                 'Running code generation in ${package.packageName}',
                 () async {
-                  await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+                  await dartRunBuildRunnerBuildDeleteConflictingOutputs(
                     package: package,
                   );
                 }

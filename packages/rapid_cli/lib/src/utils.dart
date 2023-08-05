@@ -4,9 +4,7 @@ import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:yaml/yaml.dart';
 
-import 'io.dart';
-import 'platform.dart';
-import 'process.dart';
+import 'io/io.dart' hide Platform;
 
 export 'package:pubspec/pubspec.dart';
 
@@ -122,7 +120,7 @@ extension LanguageUtils on Language {
 
 extension DartPackageListUtils on List<DartPackage> {
   List<DartPackage> without(List<DartPackage> packages) {
-    // TODO maybe override euqality in DartPackage
+    // TODO maybe override equality in DartPackage
     return this
       ..removeWhere(
         (e) => packages.map((e) => e.packageName).contains(e.packageName),

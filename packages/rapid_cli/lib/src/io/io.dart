@@ -1,5 +1,5 @@
+import 'dart:async';
 import 'dart:convert';
-import 'dart:io' hide Directory, File;
 import 'dart:io' as io;
 import 'dart:math';
 import 'dart:typed_data';
@@ -10,14 +10,18 @@ import 'package:collection/collection.dart';
 import 'package:dart_style/dart_style.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
+import 'package:platform/platform.dart';
+import 'package:process/process.dart';
 import 'package:propertylistserialization/propertylistserialization.dart';
 import 'package:pubspec/pubspec.dart';
-import 'package:xml/xml.dart' show XmlDocument;
+import 'package:xml/xml.dart';
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
-export 'dart:io' hide Directory, File;
+export 'dart:io' hide Directory, File, Platform;
 
+export 'package:platform/platform.dart';
+export 'package:process/process.dart';
 export 'package:pub_semver/pub_semver.dart';
 export 'package:pubspec/pubspec.dart'
     show
@@ -28,25 +32,11 @@ export 'package:pubspec/pubspec.dart'
         ExternalHostedReference,
         SdkReference;
 
-FileSystemEntity _entityFromIO(FileSystemEntity entity) =>
-    entity is io.Directory
-        ? Directory._fromIO(entity)
-        : entity is io.File
-            ? File._fromIO(entity)
-            : entity;
-
-Future<FileSystemEntity> _entityFromIOAsync(
-    Future<FileSystemEntity> entity) async {
-  final result = await entity;
-  return result is io.Directory
-      ? Directory._fromIO(result)
-      : result is io.File
-          ? File._fromIO(result)
-          : result;
-}
+part 'platform.dart';
+part 'process.dart';
 
 abstract class FileSystemEntityCollection {
-  Iterable<FileSystemEntity> get entities;
+  Iterable<io.FileSystemEntity> get entities;
 
   bool get existsAny => entities.any((e) => e.existsSync());
 
@@ -100,7 +90,7 @@ class Directory implements io.Directory {
       Directory._fromIO(_directory.createTempSync(prefix));
 
   @override
-  Future<FileSystemEntity> delete({bool recursive = false}) =>
+  Future<io.FileSystemEntity> delete({bool recursive = false}) =>
       _entityFromIOAsync(_directory.delete(recursive: recursive));
 
   @override
@@ -117,7 +107,7 @@ class Directory implements io.Directory {
   bool get isAbsolute => _directory.isAbsolute;
 
   @override
-  Stream<FileSystemEntity> list({
+  Stream<io.FileSystemEntity> list({
     bool recursive = false,
     bool followLinks = true,
   }) =>
@@ -126,7 +116,7 @@ class Directory implements io.Directory {
           .map(_entityFromIO);
 
   @override
-  List<FileSystemEntity> listSync({
+  List<io.FileSystemEntity> listSync({
     bool recursive = false,
     bool followLinks = true,
   }) =>
@@ -156,17 +146,17 @@ class Directory implements io.Directory {
   String resolveSymbolicLinksSync() => _directory.resolveSymbolicLinksSync();
 
   @override
-  Future<FileStat> stat() => _directory.stat();
+  Future<io.FileStat> stat() => _directory.stat();
 
   @override
-  FileStat statSync() => _directory.statSync();
+  io.FileStat statSync() => _directory.statSync();
 
   @override
   Uri get uri => _directory.uri;
 
   @override
-  Stream<FileSystemEvent> watch({
-    int events = FileSystemEvent.all,
+  Stream<io.FileSystemEvent> watch({
+    int events = io.FileSystemEvent.all,
     bool recursive = false,
   }) =>
       _directory.watch(events: events, recursive: recursive);
@@ -206,7 +196,7 @@ class File implements io.File {
       _file.createSync(recursive: recursive, exclusive: exclusive);
 
   @override
-  Future<FileSystemEntity> delete({bool recursive = false}) =>
+  Future<io.FileSystemEntity> delete({bool recursive = false}) =>
       _entityFromIOAsync(_file.delete(recursive: recursive));
 
   @override
@@ -241,7 +231,7 @@ class File implements io.File {
   int lengthSync() => _file.lengthSync();
 
   @override
-  Future<RandomAccessFile> open({FileMode mode = FileMode.read}) =>
+  Future<io.RandomAccessFile> open({io.FileMode mode = io.FileMode.read}) =>
       _file.open(mode: mode);
 
   @override
@@ -249,12 +239,12 @@ class File implements io.File {
       _file.openRead(start, end);
 
   @override
-  RandomAccessFile openSync({FileMode mode = FileMode.read}) =>
+  io.RandomAccessFile openSync({io.FileMode mode = io.FileMode.read}) =>
       _file.openSync(mode: mode);
 
   @override
-  IOSink openWrite({
-    FileMode mode = FileMode.write,
+  io.IOSink openWrite({
+    io.FileMode mode = io.FileMode.write,
     Encoding encoding = utf8,
   }) =>
       _file.openWrite(mode: mode, encoding: encoding);
@@ -313,17 +303,17 @@ class File implements io.File {
   void setLastModifiedSync(DateTime time) => _file.setLastModifiedSync(time);
 
   @override
-  Future<FileStat> stat() => _file.stat();
+  Future<io.FileStat> stat() => _file.stat();
 
   @override
-  FileStat statSync() => _file.statSync();
+  io.FileStat statSync() => _file.statSync();
 
   @override
   Uri get uri => _file.uri;
 
   @override
-  Stream<FileSystemEvent> watch({
-    int events = FileSystemEvent.all,
+  Stream<io.FileSystemEvent> watch({
+    int events = io.FileSystemEvent.all,
     bool recursive = false,
   }) =>
       _file.watch(
@@ -334,7 +324,7 @@ class File implements io.File {
   @override
   Future<File> writeAsBytes(
     List<int> bytes, {
-    FileMode mode = FileMode.write,
+    io.FileMode mode = io.FileMode.write,
     bool flush = false,
   }) =>
       File._fromIOAsync(
@@ -348,7 +338,7 @@ class File implements io.File {
   @override
   void writeAsBytesSync(
     List<int> bytes, {
-    FileMode mode = FileMode.write,
+    io.FileMode mode = io.FileMode.write,
     bool flush = false,
   }) =>
       _file.writeAsBytesSync(
@@ -360,7 +350,7 @@ class File implements io.File {
   @override
   Future<File> writeAsString(
     String contents, {
-    FileMode mode = FileMode.write,
+    io.FileMode mode = io.FileMode.write,
     Encoding encoding = utf8,
     bool flush = false,
   }) =>
@@ -376,7 +366,7 @@ class File implements io.File {
   @override
   void writeAsStringSync(
     String contents, {
-    FileMode mode = FileMode.write,
+    io.FileMode mode = io.FileMode.write,
     Encoding encoding = utf8,
     bool flush = false,
   }) =>
@@ -479,16 +469,6 @@ class PubspecYamlFile extends YamlFile {
     } catch (_) {}
 
     writeAsStringSync(editor.toString());
-  }
-}
-
-extension on int {
-  int replaceWhenNegative(int replacement) {
-    if (this < 0) {
-      return replacement;
-    } else {
-      return this;
-    }
   }
 }
 
@@ -946,4 +926,31 @@ class PlistFileError extends Error {
 
   @override
   String toString() => message;
+}
+
+io.FileSystemEntity _entityFromIO(io.FileSystemEntity entity) =>
+    entity is io.Directory
+        ? Directory._fromIO(entity)
+        : entity is io.File
+            ? File._fromIO(entity)
+            : entity;
+
+Future<io.FileSystemEntity> _entityFromIOAsync(
+    Future<io.FileSystemEntity> entity) async {
+  final result = await entity;
+  return result is io.Directory
+      ? Directory._fromIO(result)
+      : result is io.File
+          ? File._fromIO(result)
+          : result;
+}
+
+extension on int {
+  int replaceWhenNegative(int replacement) {
+    if (this < 0) {
+      return replacement;
+    } else {
+      return this;
+    }
+  }
 }

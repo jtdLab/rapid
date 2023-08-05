@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart';
 import 'package:rapid_cli/src/tool.dart';
 import 'package:test/test.dart';
 
-import 'mock_fs.dart';
+import 'mock_env.dart';
 import 'mocks.dart';
 
 RapidTool _getRapidTool({

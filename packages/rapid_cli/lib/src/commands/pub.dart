@@ -13,7 +13,7 @@ mixin _PubMixin on _Rapid {
     final packagesWithNonEmptyConstraint =
         packages.map((e) => e.trim()).where((e) => !e.endsWith(':')).toList();
     if (packagesWithNonEmptyConstraint.isNotEmpty) {
-      await flutterPubAddTask(
+      await dartPubAddTask(
         package: package,
         dependenciesToAdd: packagesWithNonEmptyConstraint,
       );
@@ -52,9 +52,9 @@ mixin _PubMixin on _Rapid {
 
     final package = _findCurrentPackage(packageName);
 
-    final result = await flutterPubGet(package: package, dryRun: true);
+    final result = await dartPubGet(package: package, dryRun: true);
     if (result.wouldChangeDependencies) {
-      await flutterPubGetTask(package: package);
+      await dartPubGetTask(package: package);
       await melosBootstrapTask(
         scope: project.dependentPackages(package),
       );
@@ -72,7 +72,7 @@ mixin _PubMixin on _Rapid {
 
     final package = _findCurrentPackage(packageName);
 
-    await flutterPubRemoveTask(package: package, packagesToRemove: packages);
+    await dartPubRemoveTask(package: package, packagesToRemove: packages);
 
     await melosBootstrapTask(scope: project.dependentPackages(package));
 

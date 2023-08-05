@@ -42,11 +42,11 @@ mixin _PlatformMixin on _Rapid {
     await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
     if (navigator) {
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+      await dartRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
         packages: [rootPackage, featurePackage],
       );
     } else {
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+      await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
         package: rootPackage,
       );
     }
@@ -121,11 +121,11 @@ mixin _PlatformMixin on _Rapid {
     await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
     if (navigator) {
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+      await dartRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
         packages: [rootPackage, featurePackage],
       );
     } else {
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+      await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
         package: rootPackage,
       );
     }
@@ -182,11 +182,11 @@ mixin _PlatformMixin on _Rapid {
     await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
     if (navigator) {
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+      await dartRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
         packages: [rootPackage, featurePackage],
       );
     } else {
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+      await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
         package: rootPackage,
       );
     }
@@ -229,7 +229,7 @@ mixin _PlatformMixin on _Rapid {
 
     await melosBootstrapTask(scope: [rootPackage, featurePackage]);
 
-    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+    await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
       package: rootPackage,
     );
 
@@ -376,7 +376,7 @@ mixin _PlatformMixin on _Rapid {
       }
     });
 
-    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+    await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
       package: featurePackage,
     );
 
@@ -428,7 +428,7 @@ mixin _PlatformMixin on _Rapid {
       }
     });
 
-    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+    await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
       package: featurePackage,
     );
 
@@ -481,7 +481,7 @@ mixin _PlatformMixin on _Rapid {
       }
     });
 
-    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+    await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
       package: featurePackage,
     );
 
@@ -534,7 +534,7 @@ mixin _PlatformMixin on _Rapid {
       }
     });
 
-    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+    await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
       package: featurePackage,
     );
 
@@ -597,7 +597,7 @@ mixin _PlatformMixin on _Rapid {
       ],
     );
 
-    await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+    await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
       package: rootPackage,
     );
 
@@ -768,7 +768,7 @@ mixin _PlatformMixin on _Rapid {
         () async => navigatorImplementation.generate(),
       );
       if (runCodeGen) {
-        await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
           package: featurePackage,
         );
       }
@@ -801,7 +801,7 @@ mixin _PlatformMixin on _Rapid {
         'Deleting navigator implementation',
         () => navigatorImplementation.delete(),
       );
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+      await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
         package: featurePackage,
       );
     }

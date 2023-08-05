@@ -74,7 +74,7 @@ mixin _InfrastructureMixin on _Rapid {
           },
         );
 
-        await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+        await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
           package: infrastructurePackage,
         );
 
@@ -158,7 +158,7 @@ mixin _InfrastructureMixin on _Rapid {
         },
       );
 
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+      await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
         package: infrastructurePackage,
       );
 

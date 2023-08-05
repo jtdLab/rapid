@@ -1,17 +1,16 @@
 import 'dart:convert';
+import 'dart:io' as io;
 
 import 'package:args/args.dart';
 import 'package:cli_launcher/cli_launcher.dart';
-import 'package:mason/mason.dart' hide Logger, Progress;
 import 'package:mocktail/mocktail.dart';
-import 'package:process/process.dart';
 import 'package:pub_updater/pub_updater.dart';
 import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
 import 'package:rapid_cli/src/exception.dart';
-import 'package:rapid_cli/src/io.dart';
-import 'package:rapid_cli/src/io.dart' as io;
+import 'package:rapid_cli/src/io/io.dart' hide Platform;
 import 'package:rapid_cli/src/logging.dart';
+import 'package:rapid_cli/src/mason.dart';
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
@@ -36,13 +35,13 @@ void registerFallbackValues() {
 
 class MockBloc extends Mock implements Bloc {
   MockBloc() {
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
   }
 }
 
 class MockCubit extends Mock implements Cubit {
   MockCubit() {
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
   }
 }
 
@@ -156,7 +155,7 @@ class MockMasonGenerator extends Mock implements MasonGenerator {
     when(() => description).thenReturn('some description');
     when(() => this.hooks).thenReturn(hooks);
     when(
-      () => generate(
+      () => this.generate(
         any(),
         vars: any(named: 'vars'),
         logger: any(named: 'logger'),
@@ -507,7 +506,7 @@ class MockRootPackage extends Mock implements RootPackage {
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
     when(() => this.existsSync()).thenReturn(existsSync);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
     when(() => pubSpecFile).thenReturn(pubSpec);
   }
 }
@@ -551,7 +550,7 @@ class MockDiPackage extends Mock implements DiPackage {
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
     when(() => pubSpecFile).thenReturn(pubSpec);
   }
 }
@@ -598,7 +597,7 @@ class MockDomainPackage extends Mock implements DomainPackage {
     when(() => this.serviceInterface).thenReturn(serviceInterface);
     when(() => this.valueObject).thenReturn(valueObject);
     when(() => this.barrelFile).thenReturn(barrelFile);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
     when(() => pubSpecFile).thenReturn(pubSpec);
   }
 }
@@ -610,7 +609,7 @@ class MockEntity extends Mock implements Entity {
     name ??= 'Foo';
 
     when(() => this.name).thenReturn(name);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
   }
 }
 
@@ -621,7 +620,7 @@ class MockServiceInterface extends Mock implements ServiceInterface {
     name ??= 'Foo';
 
     when(() => this.name).thenReturn(name);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
   }
 }
 
@@ -633,7 +632,7 @@ class MockValueObject extends Mock implements ValueObject {
 
     when(() => this.name).thenReturn(name);
     when(
-      () => generate(
+      () => this.generate(
         type: any(named: 'type'),
         generics: any(named: 'generics'),
       ),
@@ -691,7 +690,7 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
     when(() => this.dataTransferObject).thenReturn(dataTransferObject);
     when(() => this.serviceImplementation).thenReturn(serviceImplementation);
     when(() => this.isDefault).thenReturn(isDefault);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
     when(() => pubSpecFile).thenReturn(pubSpec);
     when(() => this.barrelFile).thenReturn(barrelFile);
   }
@@ -704,7 +703,7 @@ class MockDataTransferObject extends Mock implements DataTransferObject {
     entityName ??= 'Foo';
 
     when(() => this.entityName).thenReturn(entityName);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
   }
 }
 
@@ -715,7 +714,7 @@ class MockServiceImplementation extends Mock implements ServiceImplementation {
     serviceInterfaceName ??= 'Foo';
 
     when(() => this.serviceInterfaceName).thenReturn(serviceInterfaceName);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
   }
 }
 
@@ -731,7 +730,7 @@ class MockLoggingPackage extends Mock implements LoggingPackage {
 
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
     when(() => pubSpecFile).thenReturn(pubSpec);
   }
 }
@@ -775,7 +774,7 @@ class MockIosRootPackage extends Mock implements IosRootPackage {
     when(() => this.nativeDirectory).thenReturn(nativeDirectory);
     when(() => this.existsSync()).thenReturn(existsSync);
     when(
-      () => generate(
+      () => this.generate(
         orgName: any(named: 'orgName'),
         language: any(named: 'language'),
       ),
@@ -790,7 +789,7 @@ class MockIosRootPackage extends Mock implements IosRootPackage {
 class MockIosNativeDirectory extends Mock implements IosNativeDirectory {
   MockIosNativeDirectory() {
     when(
-      () => generate(
+      () => this.generate(
         orgName: any(named: 'orgName'),
         language: any(named: 'language'),
       ),
@@ -813,7 +812,7 @@ class MockMacosRootPackage extends Mock implements MacosRootPackage {
     when(() => this.nativeDirectory).thenReturn(nativeDirectory);
     when(() => registerInfrastructurePackage(any())).thenAnswer((_) async {});
     when(
-      () => generate(orgName: any(named: 'orgName')),
+      () => this.generate(orgName: any(named: 'orgName')),
     ).thenAnswer((_) async {});
   }
 }
@@ -821,7 +820,7 @@ class MockMacosRootPackage extends Mock implements MacosRootPackage {
 class MockMacosNativeDirectory extends Mock implements MacosNativeDirectory {
   MockMacosNativeDirectory() {
     when(
-      () => generate(orgName: any(named: 'orgName')),
+      () => this.generate(orgName: any(named: 'orgName')),
     ).thenAnswer((_) async {});
   }
 }
@@ -843,7 +842,7 @@ class MockNoneIosRootPackage extends Mock implements NoneIosRootPackage {
     when(() => this.nativeDirectory).thenReturn(nativeDirectory);
     when(() => this.existsSync()).thenReturn(existsSync);
     when(
-      () => generate(
+      () => this.generate(
         description: any(named: 'description'),
         orgName: any(named: 'orgName'),
       ),
@@ -859,7 +858,7 @@ class MockNoneIosNativeDirectory extends Mock
     implements NoneIosNativeDirectory {
   MockNoneIosNativeDirectory() {
     when(
-      () => generate(
+      () => this.generate(
         orgName: any(named: 'orgName'),
         description: any(named: 'description'),
       ),
@@ -887,7 +886,7 @@ class MockMobileRootPackage extends Mock implements MobileRootPackage {
     when(() => this.iosNativeDirectory).thenReturn(iosNativeDirectory);
     when(() => this.existsSync()).thenReturn(existsSync);
     when(
-      () => generate(
+      () => this.generate(
         orgName: any(named: 'orgName'),
         description: any(named: 'description'),
         language: any(named: 'language'),
@@ -932,7 +931,7 @@ class MockPlatformLocalizationPackage extends Mock
     when(() => this.localizationsFile).thenReturn(localizationsFile);
     when(() => this.l10nFile).thenReturn(l10nFile);
     when(() => this.existsSync()).thenReturn(existsSync);
-    when(() => generate(defaultLanguage: any(named: 'defaultLanguage')))
+    when(() => this.generate(defaultLanguage: any(named: 'defaultLanguage')))
         .thenAnswer((_) async {});
     when(() => this.supportedLanguages()).thenReturn(supportedLanguages);
     when(() => this.defaultLanguage()).thenReturn(defaultLanguage);
@@ -959,7 +958,7 @@ class MockPlatformNavigationPackage extends Mock
     when(() => this.navigatorInterface).thenReturn(navigatorInterface);
     when(() => this.barrelFile).thenReturn(barrelFile);
     when(() => this.existsSync()).thenReturn(existsSync);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
   }
 }
 
@@ -970,7 +969,7 @@ class MockNavigatorInterface extends Mock implements NavigatorInterface {
     name ??= 'Foo';
 
     when(() => this.name).thenReturn(name);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
   }
 }
 
@@ -1002,7 +1001,7 @@ class MockPlatformFeaturesDirectory extends Mock
 
     when(() => this.appFeaturePackage).thenReturn(appFeaturePackage);
     when(() => this.featurePackage).thenReturn(featurePackage);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
     when(() => this.featurePackages()).thenReturn(featurePackages);
   }
 }
@@ -1021,7 +1020,7 @@ class MockPlatformAppFeaturePackage extends Mock
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
     when(() => this.existsSync()).thenReturn(existsSync);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
   }
 }
 
@@ -1046,7 +1045,7 @@ class MockPlatformPageFeaturePackage extends Mock
     when(() => this.navigatorImplementation)
         .thenReturn(navigatorImplementation);
     when(() => this.existsSync()).thenReturn(existsSync);
-    when(() => generate(description: any(named: 'description')))
+    when(() => this.generate(description: any(named: 'description')))
         .thenAnswer((_) async {});
   }
 }
@@ -1068,7 +1067,7 @@ class MockPlatformTabFlowFeaturePackage extends Mock
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
     when(
-      () => generate(
+      () => this.generate(
         description: any(named: 'description'),
         subFeatures: any(named: 'subFeatures'),
       ),
@@ -1094,7 +1093,7 @@ class MockPlatformFlowFeaturePackage extends Mock
     when(() => this.name).thenReturn(name);
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
-    when(() => generate(description: any(named: 'description')))
+    when(() => this.generate(description: any(named: 'description')))
         .thenAnswer((_) async {});
     when(() => this.navigatorImplementation)
         .thenReturn(navigatorImplementation);
@@ -1121,7 +1120,7 @@ class MockPlatformWidgetFeaturePackage extends Mock
     when(() => this.name).thenReturn(name);
     when(() => this.packageName).thenReturn(packageName);
     when(() => this.path).thenReturn(path);
-    when(() => generate(description: any(named: 'description')))
+    when(() => this.generate(description: any(named: 'description')))
         .thenAnswer((_) async {});
     when(() => pubSpecFile).thenReturn(pubSpec);
     when(() => this.barrelFile).thenReturn(barrelFile);
@@ -1137,7 +1136,7 @@ class MockNavigatorImplementation extends Mock
     name ??= 'Foo';
 
     when(() => this.name).thenReturn(name);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
   }
 }
 
@@ -1180,7 +1179,7 @@ class MockUiPackage extends Mock implements UiPackage {
     when(() => this.path).thenReturn(path);
     when(() => this.widget).thenReturn(widget);
     when(() => this.themedWidget).thenReturn(themedWidget);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
     when(() => pubSpecFile).thenReturn(pubSpec);
     when(() => this.barrelFile).thenReturn(barrelFile);
     when(() => this.themeExtensionsFile).thenReturn(themeExtensionsFile);
@@ -1212,7 +1211,7 @@ class MockPlatformUiPackage extends Mock implements PlatformUiPackage {
     when(() => this.barrelFile).thenReturn(barrelFile);
     when(() => this.themeExtensionsFile).thenReturn(themeExtensionsFile);
     when(() => this.existsSync()).thenReturn(existsSync);
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
   }
 }
 
@@ -1256,7 +1255,7 @@ class MockWidgetBuilder extends Mock implements WidgetBuilder {
 
 class MockWidget extends Mock implements Widget {
   MockWidget() {
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
   }
 }
 
@@ -1276,7 +1275,7 @@ class MockThemedWidget extends Mock implements ThemedWidget {
   MockThemedWidget({Theme? theme}) {
     theme ??= MockTheme();
 
-    when(() => generate()).thenAnswer((_) async {});
+    when(() => this.generate()).thenAnswer((_) async {});
     when(() => this.theme).thenReturn(theme);
   }
 }
@@ -1560,7 +1559,7 @@ class FakeRapidException extends Fake implements RapidException {}
 ///   final String path;
 ///
 ///   @override
-///   Future<void> generate() async {}
+///   Future<void> this.generate() async {}
 /// }
 ///
 /// class FakeDiPackage extends Fake implements DiPackage {
@@ -1577,7 +1576,7 @@ class FakeRapidException extends Fake implements RapidException {}
 ///   final String path;
 ///
 ///   @override
-///   Future<void> generate() async {}
+///   Future<void> this.generate() async {}
 /// }
 ///
 /// class FakeDomainPackage extends Fake implements DomainPackage {
@@ -1594,7 +1593,7 @@ class FakeRapidException extends Fake implements RapidException {}
 ///   final String path;
 ///
 ///   @override
-///   Future<void> generate() async {}
+///   Future<void> this.generate() async {}
 /// }
 ///
 /// class FakeInfrastructurePackage extends Fake implements InfrastructurePackage {
@@ -1611,7 +1610,7 @@ class FakeRapidException extends Fake implements RapidException {}
 ///   final String path;
 ///
 ///   @override
-///   Future<void> generate() async {}
+///   Future<void> this.generate() async {}
 /// }
 ///
 /// class FakeLoggingPackage extends Fake implements LoggingPackage {
@@ -1628,7 +1627,7 @@ class FakeRapidException extends Fake implements RapidException {}
 ///   final String path;
 ///
 ///   @override
-///   Future<void> generate() async {}
+///   Future<void> this.generate() async {}
 /// }
 ///
 /// class FakeUiPackage extends Fake implements UiPackage {
@@ -1645,5 +1644,5 @@ class FakeRapidException extends Fake implements RapidException {}
 ///   final String path;
 ///
 ///   @override
-///   Future<void> generate() async {}
+///   Future<void> this.generate() async {}
 /// }

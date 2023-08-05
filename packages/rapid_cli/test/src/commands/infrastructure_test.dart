@@ -1,6 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/tool.dart';
 import 'package:test/test.dart';
@@ -178,8 +178,7 @@ void main() {
           () => progress.complete(),
           () => logger
               .progress('Running code generation in infrastructure_package'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'infrastructure_package_path',
               ),
           () => progress.complete(),
@@ -312,8 +311,7 @@ void main() {
           () => progress.complete(),
           () => logger
               .progress('Running code generation in infrastructure_package'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'infrastructure_package_path',
               ),
           () => progress.complete(),

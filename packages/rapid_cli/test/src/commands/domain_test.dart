@@ -1,6 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/tool.dart';
 import 'package:test/test.dart';
@@ -145,15 +145,13 @@ void main() {
           () => logger.progressGroup(null),
           () => progressGroup
               .progress('Running code generation in root_package_a'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'root_package_a_path',
               ),
           () => groupableProgress.complete(),
           () => progressGroup
               .progress('Running code generation in root_package_b'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'root_package_b_path',
               ),
           () => groupableProgress.complete(),
@@ -281,15 +279,13 @@ void main() {
           () => logger.progressGroup(null),
           () => progressGroup
               .progress('Running code generation in root_package_a'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'root_package_a_path',
               ),
           () => groupableProgress.complete(),
           () => progressGroup
               .progress('Running code generation in root_package_b'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'root_package_b_path',
               ),
           () => groupableProgress.complete(),
@@ -479,8 +475,7 @@ void main() {
           () => domainPackageBarrelFile.addExport('src/cool.dart'),
           () => progress.complete(),
           () => logger.progress('Running code generation in domain_package'),
-          () =>
-              manager.runFlutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'domain_package_path',
               ),
           () => progress.complete(),

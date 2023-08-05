@@ -27,7 +27,7 @@ mixin _EndMixin on _Rapid {
           .packages()
           .where((e) => packagesToCodeGen.contains(e.packageName))
           .toList();
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+      await dartRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
         packages: packages,
       );
       logger.newLine();

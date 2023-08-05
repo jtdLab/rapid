@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/cli.dart';
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart' hide Platform;
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
@@ -70,7 +70,7 @@ void main() {
     );
   });
 
-  group('flutterPubGet', () {
+  group('dartPubGet', () {
     test(
       'throws CliException when process exits with error',
       withMockEnv((manager) async {
@@ -85,7 +85,7 @@ void main() {
         ).thenAnswer((_) async => ProcessResult(0, 1, 'stdout', 'stderr'));
 
         expect(
-          () async => flutterPubGet(
+          () async => dartPubGet(
             package: FakeDartPackage(path: 'example_package_path'),
           ),
           throwsCliException(
@@ -99,13 +99,13 @@ void main() {
     test(
       'completes',
       withMockEnv((manager) async {
-        await flutterPubGet(
+        await dartPubGet(
           package: FakeDartPackage(path: 'example_package_path'),
         );
 
         verify(
           () => manager.run(
-            ['flutter', 'pub', 'get'],
+            ['dart', 'pub', 'get'],
             workingDirectory: 'example_package_path',
             runInShell: true,
             stderrEncoding: utf8,
@@ -118,14 +118,14 @@ void main() {
     test(
       'completes (dry run)',
       withMockEnv((manager) async {
-        await flutterPubGet(
+        await dartPubGet(
           dryRun: true,
           package: FakeDartPackage(path: 'example_package_path'),
         );
 
         verify(
           () => manager.run(
-            ['flutter', 'pub', 'get', '--dry-run'],
+            ['dart', 'pub', 'get', '--dry-run'],
             workingDirectory: 'example_package_path',
             runInShell: true,
             stderrEncoding: utf8,
@@ -228,7 +228,7 @@ void main() {
     );
   });
 
-  group('flutterPubRunBuildRunnerBuildDeleteConflictingOutputs', () {
+  group('dartRunBuildRunnerBuildDeleteConflictingOutputs', () {
     test(
       'throws CliException when process exits with error',
       withMockEnv((manager) async {
@@ -243,7 +243,7 @@ void main() {
         ).thenAnswer((_) async => ProcessResult(0, 1, 'stdout', 'stderr'));
 
         expect(
-          () async => flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+          () async => dartRunBuildRunnerBuildDeleteConflictingOutputs(
             package: FakeDartPackage(path: 'example_package_path'),
           ),
           throwsCliException(
@@ -257,15 +257,14 @@ void main() {
     test(
       'completes',
       withMockEnv((manager) async {
-        await flutterPubRunBuildRunnerBuildDeleteConflictingOutputs(
+        await dartRunBuildRunnerBuildDeleteConflictingOutputs(
           package: FakeDartPackage(path: 'example_package_path'),
         );
 
         verify(
           () => manager.run(
             [
-              'flutter',
-              'pub',
+              'dart',
               'run',
               'build_runner',
               'build',
@@ -281,7 +280,7 @@ void main() {
     );
   });
 
-  group('flutterPubAdd', () {
+  group('dartPubAdd', () {
     test(
       'throws CliException when process exits with error',
       withMockEnv((manager) async {
@@ -296,7 +295,7 @@ void main() {
         ).thenAnswer((_) async => ProcessResult(0, 1, 'stdout', 'stderr'));
 
         expect(
-          () async => flutterPubAdd(
+          () async => dartPubAdd(
             dependenciesToAdd: ['foo: 1.0.0', 'bar: ^2.0.0'],
             package: FakeDartPackage(path: 'example_package_path'),
           ),
@@ -311,14 +310,14 @@ void main() {
     test(
       'completes',
       withMockEnv((manager) async {
-        await flutterPubAdd(
+        await dartPubAdd(
           dependenciesToAdd: ['foo: 1.0.0', 'bar: ^2.0.0'],
           package: FakeDartPackage(path: 'example_package_path'),
         );
 
         verify(
           () => manager.run(
-            ['flutter', 'pub', 'add', 'foo: 1.0.0', 'bar: ^2.0.0'],
+            ['dart', 'pub', 'add', 'foo: 1.0.0', 'bar: ^2.0.0'],
             workingDirectory: 'example_package_path',
             runInShell: true,
             stderrEncoding: utf8,
@@ -329,7 +328,7 @@ void main() {
     );
   });
 
-  group('flutterPubRemove', () {
+  group('dartPubRemove', () {
     test(
       'throws CliException when process exits with error',
       withMockEnv((manager) async {
@@ -344,7 +343,7 @@ void main() {
         ).thenAnswer((_) async => ProcessResult(0, 1, 'stdout', 'stderr'));
 
         expect(
-          () async => flutterPubRemove(
+          () async => dartPubRemove(
             packagesToRemove: ['foo', 'bar'],
             package: FakeDartPackage(path: 'example_package_path'),
           ),
@@ -359,14 +358,14 @@ void main() {
     test(
       'completes',
       withMockEnv((manager) async {
-        await flutterPubRemove(
+        await dartPubRemove(
           packagesToRemove: ['foo', 'bar'],
           package: FakeDartPackage(path: 'example_package_path'),
         );
 
         verify(
           () => manager.run(
-            ['flutter', 'pub', 'remove', 'foo', 'bar'],
+            ['dart', 'pub', 'remove', 'foo', 'bar'],
             workingDirectory: 'example_package_path',
             runInShell: true,
             stderrEncoding: utf8,

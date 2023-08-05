@@ -37,7 +37,7 @@ mixin _DomainMixin on _Rapid {
           ],
         );
 
-        await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+        await dartRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
           packages: rootPackages,
         );
 
@@ -84,7 +84,7 @@ mixin _DomainMixin on _Rapid {
 
         await melosBootstrapTask(scope: rootPackages);
 
-        await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
+        await dartRunBuildRunnerBuildDeleteConflictingOutputsTaskGroup(
           packages: rootPackages,
         );
 
@@ -185,7 +185,7 @@ mixin _DomainMixin on _Rapid {
         },
       );
 
-      await flutterPubRunBuildRunnerBuildDeleteConflictingOutputsTask(
+      await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
         package: domainPackage,
       );
 

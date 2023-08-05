@@ -5,7 +5,7 @@ import 'package:cli_launcher/cli_launcher.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:pub_updater/pub_updater.dart';
 import 'package:rapid_cli/src/command_runner.dart';
-import 'package:rapid_cli/src/io.dart';
+import 'package:rapid_cli/src/io/io.dart';
 import 'package:rapid_cli/src/logging.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/utils.dart';

@@ -61,6 +61,7 @@ void main() {
         ...featurePackages,
       ]);
 
+      // TODO: this times out
       // TODO: use command groups to
       // 1. add all components
       // 2. check if all component files are existing

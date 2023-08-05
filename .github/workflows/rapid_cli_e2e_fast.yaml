@@ -2,9 +2,10 @@ name: rapid_cli_e2e_fast
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - dev
+  # TODO enable if impl finished
+  # push:
+  #   branches:
+  #     - dev
 
 env:
   FLUTTER_VERSION: 3.10.0

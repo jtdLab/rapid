@@ -552,7 +552,7 @@ extension IterableX<E extends FileSystemEntity> on Iterable<E> {
   }
 }
 
-/// Verifys wheter ALL [entities] exist on disk.
+/// Verifys whether ALL [entities] exist on disk.
 void verifyDoExist(Iterable<FileSystemEntity> entities) {
   for (final entity in entities) {
     _println('Verify does exist ${entity.path}\n');
@@ -561,7 +561,7 @@ void verifyDoExist(Iterable<FileSystemEntity> entities) {
   }
 }
 
-/// Verifys wheter NONE of [entities] exist on disk.
+/// Verifys whether NONE of [entities] exist on disk.
 void verifyDoNotExist(Iterable<FileSystemEntity> entities) {
   for (final entity in entities) {
     _println('Verify does NOT exist ${entity.path}\n');
@@ -680,7 +680,7 @@ Future<TestResult> _runFlutterOrDartTest({
   required String cwd,
   bool coverage = true,
 }) async {
-  // TODO: required because of https://github.com/dart-lang/test/issues/1977
+  // TODO(jtdLab): required because of https://github.com/dart-lang/test/issues/1977
   final pubspec = File(p.join(cwd, 'pubspec.yaml'));
   final content = pubspec.readAsStringSync();
   final hasFlutterTest = content.contains('flutter_test:');

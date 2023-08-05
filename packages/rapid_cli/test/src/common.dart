@@ -89,7 +89,7 @@ void Function() overridePrint(void Function(List<String>) fn) {
     );
 
     final platform = io.FakePlatform(
-      // TODO: this make testing command usages easier because fewer line breaks
+      // TODO(jtdLab): this make testing command usages easier because fewer line breaks
       environment: {envKeyRapidTerminalWidth: '1000'},
     );
 

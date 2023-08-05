@@ -4,15 +4,13 @@ import 'package:rapid_cli/src/project/platform.dart';
 import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
-// TODO add platform specific stuff to the tempalte
-
 const _defaultTheme = true;
 
 class UiPlatformAddWidgetCommand extends RapidLeafCommand with ClassNameGetter {
   UiPlatformAddWidgetCommand(this.platform, super.project) {
     argParser.addFlag(
       'theme',
-      help: 'Wheter the new widget has its own theme.',
+      help: 'Whether the new widget has its own theme.',
       defaultsTo: _defaultTheme,
     );
   }

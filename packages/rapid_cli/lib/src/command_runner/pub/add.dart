@@ -1,9 +1,8 @@
 import '../base.dart';
 import '../util/package_option.dart';
 
-// TODO impl cleaner + e2e test
-// TODO consider adding options of `dart pub add`
-// TODO description synced with other pub commands
+// TODO consider adding ALL options of `dart pub add`
+// TODO description sync with other pub commands
 
 /// {@template pub_add_command}
 /// `rapid pub add` command add packages in a Rapid environment.

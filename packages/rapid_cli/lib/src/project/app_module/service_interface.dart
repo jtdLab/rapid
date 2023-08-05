@@ -32,7 +32,7 @@ class ServiceInterface extends FileSystemEntityCollection {
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
-        'output_dir': '.', // TODO rm later
+        'output_dir': '.',
       },
     );
   }

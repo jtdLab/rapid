@@ -48,7 +48,7 @@ class Cubit extends FileSystemEntityCollection {
         'name': name,
         'platform': platform.name,
         'feature_name': featureName,
-        'output_dir': '.', // TODO
+        'output_dir': '.',
       },
     );
   }

@@ -161,7 +161,7 @@ abstract class _Rapid {
           dependenciesToAdd: dependenciesToAdd,
         );
       } catch (_) {
-        // TODO: https://github.com/dart-lang/sdk/issues/52895
+        // TODO(jtdLab): https://github.com/dart-lang/sdk/issues/52895
         await flutterPubGet(package: package);
       }
     });

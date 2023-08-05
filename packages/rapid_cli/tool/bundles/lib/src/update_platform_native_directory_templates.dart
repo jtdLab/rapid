@@ -133,7 +133,7 @@ void _updatePlatformNativeDirectoryTemplate({
     );
   }
 
-  // TODO: https://github.com/jtdLab/rapid/issues/96
+  // TODO(jtdLab): https://github.com/jtdLab/rapid/issues/96
   if (platform == 'macos') {
     for (final file in brickDir
         .listSync(recursive: true)

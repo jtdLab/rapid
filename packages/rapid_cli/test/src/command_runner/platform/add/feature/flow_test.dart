@@ -17,7 +17,7 @@ List<String> expectedUsage(Platform platform) {
         '\n'
         '\n'
         '    --desc         The description of the new feature.\n'
-        '    --navigator    Wheter to generate a navigator for the new feature.\n'
+        '    --navigator    Whether to generate a navigator for the new feature.\n'
         '\n'
         'Run "rapid help" to see global options.'
   ];

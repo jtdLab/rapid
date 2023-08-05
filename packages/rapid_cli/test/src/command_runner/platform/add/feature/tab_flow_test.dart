@@ -18,7 +18,7 @@ List<String> expectedUsage(Platform platform) {
         '\n'
         '    --sub-features    The features that have this tab flow as a parent.\n'
         '    --desc            The description of the new feature.\n'
-        '    --navigator       Wheter to generate a navigator for the new feature.\n'
+        '    --navigator       Whether to generate a navigator for the new feature.\n'
         '\n'
         'Run "rapid help" to see global options.'
   ];

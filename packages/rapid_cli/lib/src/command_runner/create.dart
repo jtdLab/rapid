@@ -1,4 +1,5 @@
 import 'package:args/command_runner.dart';
+import 'package:rapid_cli/src/command_runner/util/description_option.dart';
 
 import '../project/platform.dart';
 import 'base.dart';
@@ -14,7 +15,7 @@ const _defaultDescription = 'A Rapid app.';
 /// `rapid create` command creates a new Rapid project in the specified directory.
 /// {@endtemplate}
 class CreateCommand extends RapidLeafCommand
-    with OutputDirGetter, OrgNameGetter, LanguageGetter {
+    with OutputDirGetter, DescriptionGetter, OrgNameGetter, LanguageGetter {
   /// {@macro create_command}
   CreateCommand() {
     argParser
@@ -22,8 +23,7 @@ class CreateCommand extends RapidLeafCommand
       ..addOutputDirOption(
         help: 'The directory where to generate the new project',
       )
-      ..addOption(
-        'desc',
+      ..addDescriptionOption(
         help: 'The description of the new project.',
         defaultsTo: _defaultDescription,
       )
@@ -36,37 +36,37 @@ class CreateCommand extends RapidLeafCommand
       ..addSeparator('')
       ..addFlag(
         'android',
-        help: 'Wheter the new project supports the Android platform.',
+        help: 'Whether the new project supports the Android platform.',
         negatable: false,
       )
       ..addFlag(
         'ios',
-        help: 'Wheter the new project supports the iOS platform.',
+        help: 'Whether the new project supports the iOS platform.',
         negatable: false,
       )
       ..addFlag(
         'linux',
-        help: 'Wheter the new project supports the Linux platform.',
+        help: 'Whether the new project supports the Linux platform.',
         negatable: false,
       )
       ..addFlag(
         'macos',
-        help: 'Wheter the new project supports the macOS platform.',
+        help: 'Whether the new project supports the macOS platform.',
         negatable: false,
       )
       ..addFlag(
         'web',
-        help: 'Wheter the new project supports the Web platform.',
+        help: 'Whether the new project supports the Web platform.',
         negatable: false,
       )
       ..addFlag(
         'windows',
-        help: 'Wheter the new project supports the Windows platform.',
+        help: 'Whether the new project supports the Windows platform.',
         negatable: false,
       )
       ..addFlag(
         'mobile',
-        help: 'Wheter the new project supports the Mobile platform.',
+        help: 'Whether the new project supports the Mobile platform.',
         negatable: false,
       );
   }
@@ -87,7 +87,7 @@ class CreateCommand extends RapidLeafCommand
   Future<void> run() {
     final projectName = _validateProjectNameArg(argResults.rest);
     final outputDir = super.outputDir;
-    final description = argResults['desc'] ?? _defaultDescription;
+    final description = super.desc ?? _defaultDescription;
     final orgName = super.orgName;
     final language = super.language;
     final android = argResults['android'] ?? false;

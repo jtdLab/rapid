@@ -691,7 +691,6 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
     when(() => this.dataTransferObject).thenReturn(dataTransferObject);
     when(() => this.serviceImplementation).thenReturn(serviceImplementation);
     when(() => this.isDefault).thenReturn(isDefault);
-    // when(() => this.barrelFile).thenReturn(MockDartFile()); // TODO needed ?
     when(() => generate()).thenAnswer((_) async {});
     when(() => pubSpecFile).thenReturn(pubSpec);
     when(() => this.barrelFile).thenReturn(barrelFile);
@@ -968,7 +967,7 @@ class MockNavigatorInterface extends Mock implements NavigatorInterface {
   MockNavigatorInterface({
     String? name,
   }) {
-    name ??= 'Foo'; // TODO upper case good?
+    name ??= 'Foo';
 
     when(() => this.name).thenReturn(name);
     when(() => generate()).thenAnswer((_) async {});
@@ -1135,7 +1134,7 @@ class MockNavigatorImplementation extends Mock
   MockNavigatorImplementation({
     String? name,
   }) {
-    name ??= 'Foo'; // TODO upper case good?
+    name ??= 'Foo';
 
     when(() => this.name).thenReturn(name);
     when(() => generate()).thenAnswer((_) async {});

@@ -135,7 +135,7 @@ Future<void> _checkForUpdates(
   required RapidLogger logger,
   PubUpdater? pubUpdater,
 }) async {
-  // TODO: ingore coverage manually is not good
+  // TODO(jtdLab): get this covered
   pubUpdater ??= PubUpdater(); // coverage:ignore-line
 
   final isUpToDate = await pubUpdater.isUpToDate(

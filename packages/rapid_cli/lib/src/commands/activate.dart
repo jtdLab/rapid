@@ -248,7 +248,7 @@ mixin _ActivateMixin on _Rapid {
     );
   }
 
-  /// Checks wheter [platform] can be activated.
+  /// Checks whether [platform] can be activated.
   /// If true executes [activatePlatform].
   /// Afterwards if [cleanup] runs cleanup and logs sucess.
   ///

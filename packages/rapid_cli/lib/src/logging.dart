@@ -10,7 +10,7 @@ export 'package:io/ansi.dart';
 export 'package:mason/mason.dart'
     show Level, ProgressOptions, ProgressAnimation, LogTheme;
 
-// TODO: use masons Progress if https://github.com/felangel/mason/issues/711 is fixed
+// TODO(jtdLab): use masons Progress if https://github.com/felangel/mason/issues/711 is fixed
 
 final successMessageColor = AnsiStyles.green;
 final successStyle = AnsiStyles.bold;

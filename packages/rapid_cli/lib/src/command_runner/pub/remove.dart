@@ -1,8 +1,6 @@
 import '../base.dart';
 import '../util/package_option.dart';
 
-// TODO impl cleaner + e2e test
-
 /// {@template pub_remove_command}
 /// `rapid pub remove` command remove packages in a Rapid environment.
 /// {@endtemplate}

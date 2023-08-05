@@ -1,25 +1,24 @@
 import 'package:mason/mason.dart';
 import 'package:rapid_cli/src/command_runner/util/dart_package_name_rest.dart';
+import 'package:rapid_cli/src/command_runner/util/description_option.dart';
+import 'package:rapid_cli/src/command_runner/util/navigator_flag.dart';
 import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 
 import '../../../base.dart';
 
+String _defaultDescription(String name) =>
+    'The ${name.pascalCase} tab flow feature.';
+
 class PlatformAddFeatureFlowCommand extends RapidLeafCommand
-    with DartPackageNameGetter {
+    with DartPackageNameGetter, DescriptionGetter, NavigatorGetter {
   PlatformAddFeatureFlowCommand(this.platform, super.project) {
     argParser
       ..addSeparator('')
-      ..addOption(
-        'desc',
+      ..addDescriptionOption(
         help: 'The description of the new feature.',
       )
-      // TODO maybe add a option to specify features that want a dependency before melos bs runs
-      ..addFlag(
-        'navigator',
-        help: 'Wheter to generate a navigator for the new feature.',
-        negatable: false,
-      );
+      ..addNavigatorFlag();
   }
 
   final Platform platform;
@@ -38,10 +37,8 @@ class PlatformAddFeatureFlowCommand extends RapidLeafCommand
   @override
   Future<void> run() {
     final name = super.dartPackageName;
-    // TODO share?
-    final description =
-        argResults['desc'] ?? 'The ${name.pascalCase} flow feature.';
-    final navigator = argResults['navigator'] ?? false; // TODO share?
+    final description = super.desc ?? _defaultDescription(name);
+    final navigator = super.navigator;
 
     return rapid.platformAddFeatureFlow(
       platform,

@@ -3,59 +3,57 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
-// TODO dir
+dynamic performTest({
+  required String subDomain,
+  String? dir,
+}) =>
+    withTempDir((root) async {
+      // Arrange
+      final tester = await RapidE2ETester.withProject(root);
+      if (subDomain != 'default') {
+        await tester.runRapidCommand([
+          'domain',
+          'add',
+          'sub_domain',
+          subDomain,
+        ]);
+      }
+      final name = 'FooBar';
+      await tester.runRapidCommand([
+        'domain',
+        subDomain,
+        'add',
+        'entity',
+        name,
+        if (dir != null) '--output-dir',
+        if (dir != null) dir,
+      ]);
+
+      // Act
+      await tester.runRapidCommand([
+        'domain',
+        subDomain,
+        'remove',
+        'entity',
+        name,
+        if (dir != null) '--dir',
+        if (dir != null) dir,
+      ]);
+
+      // Assert
+      await verifyNoAnalyzerIssues();
+      await verifyNoFormattingIssues();
+      verifyDoNotExist({
+        ...tester.entityFiles(
+          name: name,
+          subDomainName: subDomain,
+          outputDir: dir,
+        ),
+      });
+    });
 
 void main() {
   group('E2E', () {
-    dynamic performTest({
-      required String subDomain,
-      String? dir,
-    }) =>
-        withTempDir((root) async {
-          // Arrange
-          final tester = await RapidE2ETester.withProject(root);
-          if (subDomain != 'default') {
-            await tester.runRapidCommand([
-              'domain',
-              'add',
-              'sub_domain',
-              subDomain,
-            ]);
-          }
-          final name = 'FooBar';
-          await tester.runRapidCommand([
-            'domain',
-            subDomain,
-            'add',
-            'entity',
-            name,
-            if (dir != null) '--output-dir',
-            if (dir != null) dir,
-          ]);
-
-          // Act
-          await tester.runRapidCommand([
-            'domain',
-            subDomain,
-            'remove',
-            'entity',
-            name,
-            if (dir != null) '--dir',
-            if (dir != null) dir,
-          ]);
-
-          // Assert
-          await verifyNoAnalyzerIssues();
-          await verifyNoFormattingIssues();
-          verifyDoNotExist({
-            ...tester.entityFiles(
-              name: name,
-              subDomainName: subDomain,
-              outputDir: dir,
-            ),
-          });
-        });
-
     test(
       'domain default remove entity',
       performTest(

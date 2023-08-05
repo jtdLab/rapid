@@ -1,3 +1,4 @@
+@Tags(['e2e'])
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 

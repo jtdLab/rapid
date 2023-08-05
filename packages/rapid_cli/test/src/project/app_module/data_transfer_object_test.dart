@@ -129,7 +129,9 @@ void main() {
                   'project_name': 'test_project',
                   'entity_name': 'User',
                   'output_dir': '.',
+                  'output_dir_is_cwd': true,
                   'sub_infrastructure_name': 'sub_infrastructure',
+                  'has_sub_infrastructure_name': true,
                 },
               ),
         ]);

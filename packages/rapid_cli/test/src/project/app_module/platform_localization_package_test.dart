@@ -7,6 +7,7 @@ import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
+import 'package:path/path.dart' as p;
 
 import '../../mock_fs.dart';
 import '../../mocks.dart';
@@ -103,6 +104,29 @@ void main() {
             projectName: 'test_project',
             path: '/path/to/localization_package',
             platform: Platform.linux,
+            languageArbFile: ({required language}) {
+              if (language == Language(languageCode: 'en')) {
+                return ArbFile(
+                  p.join(
+                    '/path/to/localization_package',
+                    'lib',
+                    'src',
+                    'arb',
+                    'test_project_en.arb',
+                  ),
+                );
+              } else {
+                return ArbFile(
+                  p.join(
+                    '/path/to/localization_package',
+                    'lib',
+                    'src',
+                    'arb',
+                    'test_project_en_US.arb',
+                  ),
+                );
+              }
+            },
           );
 
           await platformLocalizationPackage.generate(
@@ -122,15 +146,54 @@ void main() {
                   vars: <String, dynamic>{
                     'project_name': 'test_project',
                     'platform': 'linux',
+                    'android': false,
+                    'ios': false,
+                    'linux': true,
+                    'macos': false,
+                    'web': false,
+                    'windows': false,
+                    'mobile': false,
                     'default_language_code': 'en',
-                    'default_has_script_code': false,
                     'default_script_code': null,
-                    'default_has_country_code': true,
+                    'default_has_script_code': false,
                     'default_country_code': 'US',
+                    'default_has_country_code': true,
                     'fallback_language_code': 'en',
                   },
                 ),
           ]);
+          expect(
+            File(
+              p.join(
+                '/path/to/localization_package',
+                'lib',
+                'src',
+                'arb',
+                'test_project_en_US.arb',
+              ),
+            ).readAsStringSync(),
+            multiLine([
+              '{',
+              '  "@@locale": "en_US"',
+              '}',
+            ]),
+          );
+          expect(
+            File(
+              p.join(
+                '/path/to/localization_package',
+                'lib',
+                'src',
+                'arb',
+                'test_project_en.arb',
+              ),
+            ).readAsStringSync(),
+            multiLine([
+              '{',
+              '  "@@locale": "en"',
+              '}',
+            ]),
+          );
         },
       ),
     );

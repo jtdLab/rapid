@@ -6,6 +6,8 @@ import 'package:process/process.dart';
 
 export 'package:process/process.dart';
 
+// TODO consider moving to io.dart
+
 @visibleForTesting
 const currentProcessManagerZoneKey = #currentProcessManager;
 

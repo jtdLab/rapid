@@ -24,5 +24,9 @@ vars:
     type: string
   script_code:
     type: string
+  has_script_code:
+    type: bool
   country_code:
     type: string
+  has_country_code:
+    type: bool

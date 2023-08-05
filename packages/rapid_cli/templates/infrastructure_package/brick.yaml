@@ -20,3 +20,5 @@ vars:
     type: string
   name:
     type: string
+  has_name:
+    type: boolean

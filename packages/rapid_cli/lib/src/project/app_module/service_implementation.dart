@@ -38,9 +38,11 @@ class ServiceImplementation extends FileSystemEntityCollection {
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
-        'output_dir': '.', // TODO rm later
+        'output_dir': '.',
+        'output_dir_is_cwd': true,
         'service_interface_name': serviceInterfaceName,
         'sub_infrastructure_name': subInfrastructureName,
+        'has_sub_infrastructure_name': subInfrastructureName != null,
       },
     );
   }

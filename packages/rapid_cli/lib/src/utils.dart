@@ -141,3 +141,17 @@ extension DartPackageListUtils on List<DartPackage> {
       );
   }
 }
+
+Map<String, dynamic> platformVars(Platform? platform) {
+  return {
+    if (platform != null) 'platform': platform.name,
+    'android': false,
+    'ios': false,
+    'linux': false,
+    'macos': false,
+    'web': false,
+    'windows': false,
+    'mobile': false,
+    if (platform != null) platform.name: true
+  };
+}

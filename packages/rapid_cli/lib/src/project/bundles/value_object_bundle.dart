@@ -18,20 +18,7 @@ final valueObjectBundle = MasonBundle.fromJson(<String, dynamic>{
       "type": "text"
     }
   ],
-  "hooks": [
-    {
-      "path": "pre_gen.dart",
-      "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwoKdm9pZCBydW4oSG9va0NvbnRleHQgY29udGV4dCkgewogIGZpbmFsIG91dHB1dERpciA9IGNvbnRleHQudmFyc1snb3V0cHV0X2RpciddOwogIGZpbmFsIHN1YkRvbWFpbk5hbWUgPSBjb250ZXh0LnZhcnNbJ3N1Yl9kb21haW5fbmFtZSddOwogIGNvbnRleHQudmFycyA9IHsKICAgIC4uLmNvbnRleHQudmFycywKICAgICdvdXRwdXRfZGlyX2lzX2N3ZCc6IG91dHB1dERpciA9PSAnLicsCiAgICAnaGFzX3N1Yl9kb21haW5fbmFtZSc6IHN1YkRvbWFpbk5hbWUgIT0gbnVsbCwKICB9Owp9Cg==",
-      "type": "text"
-    },
-    {
-      "path": "pubspec.yaml",
-      "data":
-          "bmFtZTogdmFsdWVfb2JqZWN0X2hvb2tzCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBtYXNvbjogYW55Cg==",
-      "type": "text"
-    }
-  ],
+  "hooks": [],
   "name": "value_object",
   "description":
       "A brick generating a value object of a domain package of a Rapid project.",
@@ -54,7 +41,7 @@ final valueObjectBundle = MasonBundle.fromJson(<String, dynamic>{
     "output_dir_is_cwd": {"type": "boolean"},
     "type": {"type": "string"},
     "generics": {"type": "string"},
-    "has_sub_domain_name": {"type": "boolean"},
-    "sub_domain_name": {"type": "string"}
+    "sub_domain_name": {"type": "string"},
+    "has_sub_domain_name": {"type": "boolean"}
   }
 });

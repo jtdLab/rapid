@@ -120,7 +120,9 @@ void main() {
                   'type': 'String',
                   'generics': '<String>',
                   'output_dir': '.',
+                  'output_dir_is_cwd': true,
                   'sub_domain_name': 'sub_domain',
+                  'has_sub_domain_name': true,
                 },
               ),
         ]);

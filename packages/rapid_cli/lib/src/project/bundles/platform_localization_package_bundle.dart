@@ -54,26 +54,7 @@ final platformLocalizationPackageBundle =
       "type": "text"
     }
   ],
-  "hooks": [
-    {
-      "path": "post_gen.dart",
-      "data":
-          "aW1wb3J0ICdkYXJ0OmlvJzsKCmltcG9ydCAncGFja2FnZTptYXNvbi9tYXNvbi5kYXJ0JzsKCnZvaWQgcnVuKEhvb2tDb250ZXh0IGNvbnRleHQpIHsKICBmaW5hbCBwcm9qZWN0TmFtZSA9IGNvbnRleHQudmFyc1sncHJvamVjdF9uYW1lJ107CgogIGdlbmVyYXRlQXJiRmlsZSgKICAgIHByb2plY3ROYW1lOiBwcm9qZWN0TmFtZSwKICAgIGxhbmd1YWdlQ29kZTogY29udGV4dC52YXJzWydkZWZhdWx0X2xhbmd1YWdlX2NvZGUnXSwKICAgIHNjcmlwdENvZGU6IGNvbnRleHQudmFyc1snZGVmYXVsdF9zY3JpcHRfY29kZSddLAogICAgY291bnRyeUNvZGU6IGNvbnRleHQudmFyc1snZGVmYXVsdF9jb3VudHJ5X2NvZGUnXSwKICApOwogIGZpbmFsIGZhbGxiYWNrTGFuZ3VhZ2VDb2RlID0gY29udGV4dC52YXJzWydmYWxsYmFja19sYW5ndWFnZV9jb2RlJ107CiAgaWYgKGZhbGxiYWNrTGFuZ3VhZ2VDb2RlICE9IG51bGwpIHsKICAgIGdlbmVyYXRlQXJiRmlsZSgKICAgICAgcHJvamVjdE5hbWU6IHByb2plY3ROYW1lLAogICAgICBsYW5ndWFnZUNvZGU6IGZhbGxiYWNrTGFuZ3VhZ2VDb2RlLAogICAgKTsKICB9Cn0KCnZvaWQgZ2VuZXJhdGVBcmJGaWxlKHsKICByZXF1aXJlZCBTdHJpbmcgcHJvamVjdE5hbWUsCiAgcmVxdWlyZWQgU3RyaW5nIGxhbmd1YWdlQ29kZSwKICBTdHJpbmc/IHNjcmlwdENvZGUsCiAgU3RyaW5nPyBjb3VudHJ5Q29kZSwKfSkgewogIGZpbmFsIHNjcmlwdENvZGVTZWdtZW50ID0gc2NyaXB0Q29kZSAhPSBudWxsID8gJ18ke3NjcmlwdENvZGV9JyA6ICcnOwogIGZpbmFsIGNvdW50cnlDb2RlU2VnbWVudCA9IGNvdW50cnlDb2RlICE9IG51bGwgPyAnXyR7Y291bnRyeUNvZGV9JyA6ICcnOwoKICBmaW5hbCBhcmJGaWxlID0gRmlsZSgKICAgICdsaWIvc3JjL2FyYi8ke3Byb2plY3ROYW1lfV8kbGFuZ3VhZ2VDb2RlJHNjcmlwdENvZGVTZWdtZW50JGNvdW50cnlDb2RlU2VnbWVudC5hcmInLAogICk7CgogIGlmICghYXJiRmlsZS5leGlzdHNTeW5jKCkpIHsKICAgIGFyYkZpbGUuY3JlYXRlU3luYyhyZWN1cnNpdmU6IHRydWUpOwogIH0KCiAgYXJiRmlsZS53cml0ZUFzU3RyaW5nU3luYygKICAgIFsKICAgICAgJ3snLAogICAgICAnICAiQEBsb2NhbGUiOiAiJGxhbmd1YWdlQ29kZSRzY3JpcHRDb2RlU2VnbWVudCRjb3VudHJ5Q29kZVNlZ21lbnQiJywKICAgICAgJ30nLAogICAgXS5qb2luKCdcbicpLAogICk7Cn0K",
-      "type": "text"
-    },
-    {
-      "path": "pre_gen.dart",
-      "data":
-          "aW1wb3J0ICdwYWNrYWdlOm1hc29uL21hc29uLmRhcnQnOwoKdm9pZCBydW4oSG9va0NvbnRleHQgY29udGV4dCkgewogIC8vIFRPRE8gdGhpcyBuZWVkcyB0byBiZSB1cGRhdGVkCiAgYWRkTGFuZ3VhZ2VGbGFncyhjb250ZXh0KTsKfQoKdm9pZCBhZGRMYW5ndWFnZUZsYWdzKEhvb2tDb250ZXh0IGNvbnRleHQpIHsKICBmaW5hbCBzY3JpcHRDb2RlID0gY29udGV4dC52YXJzWydzY3JpcHRfY29kZSddOwogIGZpbmFsIGNvdW50cnlDb2RlID0gY29udGV4dC52YXJzWydjb3VudHJ5X2NvZGUnXTsKICBjb250ZXh0LnZhcnMgPSB7CiAgICAuLi5jb250ZXh0LnZhcnMsCiAgICAnaGFzX3NjcmlwdF9jb2RlJzogc2NyaXB0Q29kZSAhPSBudWxsLAogICAgJ2hhc19jb3VudHJ5X2NvZGUnOiBjb3VudHJ5Q29kZSAhPSBudWxsCiAgfTsKfQo=",
-      "type": "text"
-    },
-    {
-      "path": "pubspec.yaml",
-      "data":
-          "bmFtZTogcGxhdGZvcm1fbG9jYWxpemF0aW9uc19wYWNrYWdlX2hvb2tzCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBtYXNvbjogYW55Cg==",
-      "type": "text"
-    }
-  ],
+  "hooks": [],
   "name": "platform_localization_package",
   "description":
       "A brick generating a platform localization package of a Rapid project.",
@@ -93,10 +74,10 @@ final platformLocalizationPackageBundle =
     "project_name": {"type": "string"},
     "platform": {"type": "string"},
     "default_language_code": {"type": "string"},
-    "default_has_script_code": {"type": "boolean"},
     "default_script_code": {"type": "string"},
-    "default_has_country_code": {"type": "boolean"},
+    "default_has_script_code": {"type": "boolean"},
     "default_country_code": {"type": "string"},
+    "default_has_country_code": {"type": "boolean"},
     "fallback_language_code": {"type": "string"}
   }
 });

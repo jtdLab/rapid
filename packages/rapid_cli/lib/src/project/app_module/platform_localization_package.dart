@@ -63,23 +63,45 @@ class PlatformLocalizationPackage extends DartPackage {
   YamlFile get l10nFile => YamlFile(p.join(path, 'l10n.yaml'));
 
   Future<void> generate({required Language defaultLanguage}) async {
+    final fallbackLanguage =
+        defaultLanguage.needsFallback ? defaultLanguage.fallback() : null;
     await mason.generate(
       bundle: platformLocalizationPackageBundle,
       target: this,
       vars: <String, dynamic>{
         'project_name': projectName,
-        'platform': platform.name,
+        ...platformVars(platform),
         'default_language_code': defaultLanguage.languageCode,
-        'default_has_script_code':
-            defaultLanguage.hasScriptCode, // TODO inside hook ?
         'default_script_code': defaultLanguage.scriptCode,
-        'default_has_country_code':
-            defaultLanguage.hasCountryCode, // TODO inside hook ?
+        'default_has_script_code': defaultLanguage.hasScriptCode,
         'default_country_code': defaultLanguage.countryCode,
-        if (defaultLanguage.needsFallback)
-          'fallback_language_code': defaultLanguage.languageCode,
+        'default_has_country_code': defaultLanguage.hasCountryCode,
+        if (fallbackLanguage != null)
+          'fallback_language_code': fallbackLanguage.languageCode,
       },
     );
+
+    languageArbFile(language: defaultLanguage)
+      ..createSync(recursive: true)
+      ..writeAsStringSync(
+        multiLine([
+          '{',
+          '  "@@locale": "${defaultLanguage.toStringWithSeperator()}"',
+          '}',
+        ]),
+      );
+
+    if (fallbackLanguage != null) {
+      languageArbFile(language: fallbackLanguage)
+        ..createSync(recursive: true)
+        ..writeAsStringSync(
+          multiLine([
+            '{',
+            '  "@@locale": "${fallbackLanguage.toStringWithSeperator()}"',
+            '}',
+          ]),
+        );
+    }
   }
 
   Set<Language> supportedLanguages() {

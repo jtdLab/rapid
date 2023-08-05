@@ -108,10 +108,10 @@ void main() {
                     'project_name': 'test_project',
                     'org_name': 'com.example',
                     'language_code': 'en',
-                    'has_script_code': false,
                     'script_code': null,
-                    'has_country_code': false,
+                    'has_script_code': false,
                     'country_code': null,
+                    'has_country_code': false,
                   },
                 ),
           ]);

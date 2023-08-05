@@ -35,7 +35,7 @@ class NavigatorImplementation extends FileSystemEntityCollection {
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
-        'platform': platform.name,
+        ...platformVars(platform),
       },
     );
   }

@@ -43,10 +43,10 @@ class IosNativeDirectory extends PlatformNativeDirectory {
         'project_name': projectName,
         'org_name': orgName,
         'language_code': language.languageCode,
-        'has_script_code': language.hasScriptCode,
         'script_code': language.scriptCode,
-        'has_country_code': language.hasCountryCode,
+        'has_script_code': language.hasScriptCode,
         'country_code': language.countryCode,
+        'has_country_code': language.hasCountryCode,
       },
     );
   }

@@ -22,5 +22,9 @@ vars:
     type: string
   output_dir:
     type: string
+  output_dir_is_cwd:
+    type: bool
   sub_infrastructure_name:
     type: string
+  has_sub_infrastructure_name:
+    type: bool

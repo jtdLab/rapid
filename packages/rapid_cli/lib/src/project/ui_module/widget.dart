@@ -36,7 +36,7 @@ class Widget extends FileSystemEntityCollection {
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
-        'platform': platform?.name,
+        ...platformVars(platform),
       },
     );
   }
@@ -67,7 +67,7 @@ class ThemedWidget extends Widget {
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
-        'platform': platform?.name,
+        ...platformVars(platform),
       },
     );
   }

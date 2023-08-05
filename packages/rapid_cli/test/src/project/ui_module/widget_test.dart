@@ -107,7 +107,14 @@ void main() {
                 vars: <String, dynamic>{
                   'project_name': 'test_project',
                   'name': 'CoolButton',
-                  'platform': 'android'
+                  'platform': 'android',
+                  'android': true,
+                  'ios': false,
+                  'linux': false,
+                  'macos': false,
+                  'web': false,
+                  'windows': false,
+                  'mobile': false,
                 },
               ),
         ]);
@@ -161,7 +168,14 @@ void main() {
                 vars: <String, dynamic>{
                   'project_name': 'test_project',
                   'name': 'CoolButton',
-                  'platform': 'macos'
+                  'platform': 'macos',
+                  'android': false,
+                  'ios': false,
+                  'linux': false,
+                  'macos': true,
+                  'web': false,
+                  'windows': false,
+                  'mobile': false,
                 },
               ),
         ]);

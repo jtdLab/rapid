@@ -22,13 +22,13 @@ vars:
     type: string
   default_language_code:
     type: string
-  default_has_script_code:
-    type: boolean
   default_script_code:
     type: string
-  default_has_country_code:
+  default_has_script_code:
     type: boolean
   default_country_code:
     type: string
+  default_has_country_code:
+    type: boolean
   fallback_language_code:
     type: string

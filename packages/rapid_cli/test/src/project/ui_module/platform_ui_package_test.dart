@@ -101,6 +101,13 @@ void main() {
                 vars: <String, dynamic>{
                   'project_name': 'test_project',
                   'platform': 'ios',
+                  'android': false,
+                  'ios': true,
+                  'linux': false,
+                  'macos': false,
+                  'web': false,
+                  'windows': false,
+                  'mobile': false,
                 },
               ),
         ]);

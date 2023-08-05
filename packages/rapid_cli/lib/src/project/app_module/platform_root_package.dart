@@ -216,7 +216,7 @@ class IosRootPackage extends PlatformRootPackage {
       vars: <String, dynamic>{
         'project_name': projectName,
         'org_name': orgName,
-        'platform': platform.name,
+        ...platformVars(platform),
       },
     );
     await nativeDirectory.generate(orgName: orgName, language: language);
@@ -270,7 +270,7 @@ class MacosRootPackage extends PlatformRootPackage {
       vars: <String, dynamic>{
         'project_name': projectName,
         'org_name': orgName,
-        'platform': platform.name,
+        ...platformVars(platform),
       },
     );
     await nativeDirectory.generate(orgName: orgName);
@@ -329,7 +329,7 @@ class MobileRootPackage extends PlatformRootPackage {
       vars: <String, dynamic>{
         'project_name': projectName,
         'org_name': orgName,
-        'platform': platform.name,
+        ...platformVars(platform),
       },
     );
     await androidNativeDirectory.generate(
@@ -396,7 +396,7 @@ class NoneIosRootPackage extends PlatformRootPackage {
         'project_name': projectName,
         'description': description,
         'org_name': orgName,
-        'platform': platform.name,
+        ...platformVars(platform),
       },
     );
     await nativeDirectory.generate(description: description, orgName: orgName);

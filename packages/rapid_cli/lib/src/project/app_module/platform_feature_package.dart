@@ -114,7 +114,7 @@ class PlatformAppFeaturePackage extends PlatformFeaturePackage {
       target: this,
       vars: <String, dynamic>{
         'project_name': projectName,
-        'platform': platform.name,
+        ...platformVars(platform),
       },
     );
   }
@@ -186,7 +186,7 @@ class PlatformPageFeaturePackage extends PlatformRoutableFeaturePackage {
         'name': name, // TODO this is foo_page shouldnt it just be foo?
         'description': description, // TODO default inside template
         'project_name': projectName,
-        'platform': platform.name,
+        ...platformVars(platform),
       },
     );
   }
@@ -257,7 +257,7 @@ class PlatformFlowFeaturePackage extends PlatformRoutableFeaturePackage {
         'name': name,
         'description': description,
         'project_name': projectName,
-        'platform': platform.name,
+        ...platformVars(platform),
       },
     );
   }
@@ -332,7 +332,7 @@ class PlatformTabFlowFeaturePackage extends PlatformRoutableFeaturePackage {
         'name': name,
         'description': description,
         'project_name': projectName,
-        'platform': platform.name,
+        ...platformVars(platform),
         'subRoutes': subFeatures
             .mapIndexed((i, e) => {'name': e.pascalCase, 'isFirst': i == 0})
             .toList(), // TODO needed at all? needed to upper case?
@@ -399,7 +399,7 @@ class PlatformWidgetFeaturePackage extends PlatformFeaturePackage {
         'name': name,
         'description': description,
         'project_name': projectName,
-        'platform': platform.name,
+        ...platformVars(platform),
       },
     );
   }

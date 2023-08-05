@@ -72,6 +72,7 @@ class InfrastructurePackage extends DartPackage
       vars: <String, dynamic>{
         'project_name': projectName,
         'name': name,
+        'has_name': name != null,
       },
     );
   }

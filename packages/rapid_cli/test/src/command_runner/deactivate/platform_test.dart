@@ -8,12 +8,12 @@ import '../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Removes support for ${platform.prettyName} from this project.\n'
-        '\n'
-        'Usage: rapid deactivate ${platform.name}\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Remove support for ${platform.prettyName} from this project.',
+    '',
+    'Usage: rapid deactivate ${platform.name}',
+    '-h, --help    Print this usage information.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

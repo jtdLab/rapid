@@ -4,15 +4,15 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
-  'Remove components from the platform independent UI part of an existing Rapid project.\n'
-      '\n'
-      'Usage: rapid ui remove <subcommand>\n'
-      '-h, --help    Print this usage information.\n'
-      '\n'
-      'Available subcommands:\n'
-      '  widget   Remove a widget to the platform independent UI part of an existing Rapid project.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Remove a component from the platform independent UI part of a Rapid project.',
+  '',
+  'Usage: rapid ui remove <component>',
+  '-h, --help    Print this usage information.',
+  '',
+  'Available subcommands:',
+  '  widget   Remove a widget from the platform independent UI part of a Rapid project.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

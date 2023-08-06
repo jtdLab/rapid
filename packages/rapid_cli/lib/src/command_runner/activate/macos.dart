@@ -6,7 +6,7 @@ import '../util/org_name_option.dart';
 import 'platform.dart';
 
 /// {@template activate_macos_command}
-/// `rapid activate macos` command adds support for macOS to an existing Rapid project.
+/// `rapid activate macos` adds support for macOS to a Rapid project.
 /// {@endtemplate}
 class ActivateMacosCommand extends ActivatePlatformCommand
     with OrgNameGetter, LanguageGetter {

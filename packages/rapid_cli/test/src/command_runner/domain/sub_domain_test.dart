@@ -4,16 +4,16 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 List<String> expectedUsage(String subDomainPackage) => [
-      'Work with the subdomain $subDomainPackage.\n'
-          '\n'
-          'Usage: rapid domain $subDomainPackage <subcommand>\n'
-          '-h, --help    Print this usage information.\n'
-          '\n'
-          'Available subcommands:\n'
-          '  add      Add a component to the subdomain $subDomainPackage.\n'
-          '  remove   Remove a component from the subdomain $subDomainPackage.\n'
-          '\n'
-          'Run "rapid help" to see global options.'
+      'Work with the subdomain $subDomainPackage.',
+      '',
+      'Usage: rapid domain $subDomainPackage <command>',
+      '-h, --help    Print this usage information.',
+      '',
+      'Available subcommands:',
+      '  add      Add a component to the subdomain $subDomainPackage.',
+      '  remove   Remove a component from the subdomain $subDomainPackage.',
+      '',
+      'Run "rapid help" to see global options.'
     ];
 
 void main() {

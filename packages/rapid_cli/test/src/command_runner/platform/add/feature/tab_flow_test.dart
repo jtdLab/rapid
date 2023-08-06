@@ -9,17 +9,17 @@ import '../../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Add a tab flow feature to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ${platform.name} add feature tab_flow <name> [arguments]\n'
-        '-h, --help            Print this usage information.\n'
-        '\n'
-        '\n'
-        '    --sub-features    The features that have this tab flow as a parent.\n'
-        '    --desc            The description of the new feature.\n'
-        '    --navigator       Whether to generate a navigator for the new feature.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Add a tab flow feature to the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Usage: rapid ${platform.name} add feature tab_flow <name> [arguments]',
+    '-h, --help            Print this usage information.',
+    '',
+    '',
+    '    --sub-features    The features that have this tab flow as a parent.',
+    '    --desc            The description of the new feature.',
+    '    --navigator       Whether to generate a navigator for the new feature.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

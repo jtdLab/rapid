@@ -2,7 +2,7 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
 /// {@template domain_sub_domain_add_service_interface_command}
-/// `rapid domain sub_domain add service_interface` command adds service_interface to the domain part of an existing Rapid project.
+/// `rapid domain sub_domain add service_interface` add a service_interface to the domain part of a Rapid project.
 /// {@endtemplate}
 class DomainSubDomainAddServiceInterfaceCommand extends RapidLeafCommand
     with ClassNameGetter {

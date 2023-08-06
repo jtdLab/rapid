@@ -8,18 +8,18 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
-  'Adds support for Android to this project.\n'
-      '\n'
-      'Usage: rapid activate android\n'
-      '-h, --help        Print this usage information.\n'
-      '    --desc        The description for the native Android project.\n'
-      '                  (defaults to "A Rapid app.")\n'
-      '    --org-name    The organization for the native Android project.\n'
-      '                  (defaults to "com.example")\n'
-      '    --language    The default language for Android\n'
-      '                  (defaults to "en")\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Add support for Android to this project.',
+  '',
+  'Usage: rapid activate android',
+  '-h, --help        Print this usage information.',
+  '    --desc        The description for the native Android project.',
+  '                  (defaults to "A Rapid app.")',
+  '    --org-name    The organization for the native Android project.',
+  '                  (defaults to "com.example")',
+  '    --language    The default language for Android',
+  '                  (defaults to "en")',
+  '',
+  'Run "rapid help" to see global options.',
 ];
 
 void main() {

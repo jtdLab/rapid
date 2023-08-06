@@ -3,7 +3,13 @@ import '../../../utils.dart';
 import '../../base.dart';
 import '../../util/feature_option.dart';
 
+// TODO refactor this
+
+/// {@template platform_add_navigator_command}
+/// `rapid <platform> add navigator` add a navigator to the platform part of a Rapid project.
+/// {@endtemplate}
 class PlatformAddNavigatorCommand extends RapidLeafCommand with FeatureGetter {
+  /// {@macro platform_add_navigator_command}
   PlatformAddNavigatorCommand(this.platform, super.project) {
     argParser
       ..addSeparator('')
@@ -27,7 +33,7 @@ class PlatformAddNavigatorCommand extends RapidLeafCommand with FeatureGetter {
 
   @override
   String get description =>
-      'Add a navigator to the ${platform.prettyName} part of an existing Rapid project.';
+      'Add a navigator to the ${platform.prettyName} part of a Rapid project.';
 
   @override
   Future<void> run() {

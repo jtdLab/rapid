@@ -2,7 +2,7 @@ import '../base.dart';
 import '../util/package_option.dart';
 
 /// {@template pub_get_command}
-/// `rapid pub get` command get packages in a Rapid environment.
+/// `rapid pub get` get packages in a Rapid environment.
 /// {@endtemplate}
 class PubGetCommand extends RapidLeafCommand with PackageGetter {
   /// {@macro pub_get_command}

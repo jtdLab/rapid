@@ -9,7 +9,7 @@ import 'platform.dart';
 const _defaultDescription = 'A Rapid app.';
 
 /// {@template activate_mobile_command}
-/// `rapid activate mobile` command adds support for Mobile to an existing Rapid project.
+/// `rapid activate mobile` adds support for Mobile to a Rapid project.
 /// {@endtemplate}
 class ActivateMobileCommand extends ActivatePlatformCommand
     with DescriptionGetter, OrgNameGetter, LanguageGetter {

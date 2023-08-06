@@ -3,7 +3,7 @@ import 'sub_infrastructure/add.dart';
 import 'sub_infrastructure/remove.dart';
 
 /// {@template infrastructure_sub_infrastructure_command}
-/// `rapid infrastructure sub_infrastructure` command work with subinfrastructures of the infrastructure part of an existing Rapid project.
+/// `rapid infrastructure sub_infrastructure` work with a subinfrastructure of the infrastructure part of a Rapid project.
 /// {@endtemplate}
 class InfrastructureSubinfrastructureCommand extends RapidBranchCommand {
   /// {@macro infrastructure_sub_infrastructure_command}
@@ -29,7 +29,7 @@ class InfrastructureSubinfrastructureCommand extends RapidBranchCommand {
 
   @override
   String get invocation =>
-      'rapid infrastructure $subInfrastructureName <subcommand>';
+      'rapid infrastructure $subInfrastructureName <command>';
 
   @override
   String get description =>

@@ -4,7 +4,11 @@ import '../base.dart';
 import 'feature/add.dart';
 import 'feature/remove.dart';
 
+/// {@template platform_feature_command}
+/// `rapid <platform> <feature>` work with a feature of the platform part of a Rapid project.
+/// {@endtemplate}
 class PlatformFeatureCommand extends RapidBranchCommand {
+  /// {@macro platform_feature_command}
   PlatformFeatureCommand(this.platform, this.featureName, super.project) {
     addSubcommand(
       PlatformFeatureAddCommand(
@@ -33,5 +37,5 @@ class PlatformFeatureCommand extends RapidBranchCommand {
 
   @override
   String get description =>
-      'Work with $featureName of the ${platform.prettyName} part of an existing Rapid project.';
+      'Work with $featureName of the ${platform.prettyName} part of a Rapid project.';
 }

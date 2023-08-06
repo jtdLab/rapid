@@ -46,5 +46,5 @@ abstract class ActivatePlatformCommand extends RapidLeafCommand {
 
   @override
   String get description =>
-      'Adds support for ${platform.prettyName} to this project.';
+      'Add support for ${platform.prettyName} to this project.';
 }

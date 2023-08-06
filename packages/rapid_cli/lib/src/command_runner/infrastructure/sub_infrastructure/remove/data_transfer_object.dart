@@ -2,7 +2,7 @@ import '../../../base.dart';
 import '../../../util/entity_option.dart';
 
 /// {@template infrastructure_sub_infrastructure_remove_data_transfer_object_command}
-/// `rapid infrastructure sub_infrastructure remove data_transfer_object` command removes data transfer object from the infrastructure part of an existing Rapid project.
+/// `rapid infrastructure sub_infrastructure remove data_transfer_object` remove a data transfer object from the infrastructure part of a Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureRemoveDataTransferObjectCommand
     extends RapidLeafCommand with EntityGetter {

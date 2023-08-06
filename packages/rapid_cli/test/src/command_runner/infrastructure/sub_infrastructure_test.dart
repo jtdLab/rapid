@@ -4,16 +4,16 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 List<String> expectedUsage(String subInfrastructurePackage) => [
-      'Work with the subinfrastructure $subInfrastructurePackage.\n'
-          '\n'
-          'Usage: rapid infrastructure $subInfrastructurePackage <subcommand>\n'
-          '-h, --help    Print this usage information.\n'
-          '\n'
-          'Available subcommands:\n'
-          '  add      Add a component to the subinfrastructure $subInfrastructurePackage.\n'
-          '  remove   Remove a component from the subinfrastructure $subInfrastructurePackage.\n'
-          '\n'
-          'Run "rapid help" to see global options.'
+      'Work with the subinfrastructure $subInfrastructurePackage.',
+      '',
+      'Usage: rapid infrastructure $subInfrastructurePackage <command>',
+      '-h, --help    Print this usage information.',
+      '',
+      'Available subcommands:',
+      '  add      Add a component to the subinfrastructure $subInfrastructurePackage.',
+      '  remove   Remove a component from the subinfrastructure $subInfrastructurePackage.',
+      '',
+      'Run "rapid help" to see global options.'
     ];
 
 void main() {

@@ -6,15 +6,15 @@ import '../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Set properties of features from the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ${platform.name} set <subcommand>\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Available subcommands:\n'
-        '  default_language   Set the default language of the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Set properties of the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Usage: rapid ${platform.name} set <subcommand>',
+    '-h, --help    Print this usage information.',
+    '',
+    'Available subcommands:',
+    '  default_language   Set the default language of the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

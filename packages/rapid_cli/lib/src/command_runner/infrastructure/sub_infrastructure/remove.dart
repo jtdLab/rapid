@@ -3,7 +3,7 @@ import 'remove/data_transfer_object.dart';
 import 'remove/service_implementation.dart';
 
 /// {@template infrastructure_sub_infrastructure_remove_command}
-/// `rapid infrastructure sub_infrastructure remove` command remove components from the infrastructure part of an existing Rapid project.
+/// `rapid infrastructure sub_infrastructure remove` remove a component from the infrastructure part of a Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureRemoveCommand extends RapidBranchCommand {
   /// {@macro infrastructure_sub_infrastructure_remove_command}

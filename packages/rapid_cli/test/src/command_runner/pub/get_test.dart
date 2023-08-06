@@ -6,13 +6,13 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
-  'Get packages in a Rapid environment.\n'
-      '\n'
-      'Usage: rapid pub get\n'
-      '-h, --help       Print this usage information.\n'
-      '-p, --package    The package where the command is run.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Get packages in a Rapid environment.',
+  '',
+  'Usage: rapid pub get',
+  '-h, --help       Print this usage information.',
+  '-p, --package    The package where the command is run.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

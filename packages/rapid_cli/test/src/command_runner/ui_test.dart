@@ -4,23 +4,23 @@ import '../mocks.dart';
 import '../utils.dart';
 
 const expectedUsage = [
-  'Work with the UI part of an existing Rapid project.\n'
-      '\n'
-      'Usage: rapid ui <subcommand>\n'
-      '-h, --help    Print this usage information.\n'
-      '\n'
-      'Available subcommands:\n'
-      '  add       Add components to the platform independent UI part of an existing Rapid project.\n'
-      '  android   Work with the Android UI part of an existing Rapid project.\n'
-      '  ios       Work with the iOS UI part of an existing Rapid project.\n'
-      '  linux     Work with the Linux UI part of an existing Rapid project.\n'
-      '  macos     Work with the macOS UI part of an existing Rapid project.\n'
-      '  mobile    Work with the Mobile UI part of an existing Rapid project.\n'
-      '  remove    Remove components from the platform independent UI part of an existing Rapid project.\n'
-      '  web       Work with the Web UI part of an existing Rapid project.\n'
-      '  windows   Work with the Windows UI part of an existing Rapid project.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Work with the UI part of a Rapid project.',
+  '',
+  'Usage: rapid ui <subcommand>',
+  '-h, --help    Print this usage information.',
+  '',
+  'Available subcommands:',
+  '  add       Add a component to the platform independent UI part of a Rapid project.',
+  '  android   Work with the Android UI part of a Rapid project.',
+  '  ios       Work with the iOS UI part of a Rapid project.',
+  '  linux     Work with the Linux UI part of a Rapid project.',
+  '  macos     Work with the macOS UI part of a Rapid project.',
+  '  mobile    Work with the Mobile UI part of a Rapid project.',
+  '  remove    Remove a component from the platform independent UI part of a Rapid project.',
+  '  web       Work with the Web UI part of a Rapid project.',
+  '  windows   Work with the Windows UI part of a Rapid project.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

@@ -2,7 +2,7 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
 /// {@template domain_sub_domain_add_entity_command}
-/// `rapid domain sub_domain add entity` command adds entity to the domain part of an existing Rapid project.
+/// `rapid domain sub_domain add entity` add an entity to the domain part of a Rapid project.
 /// {@endtemplate}
 class DomainSubDomainAddEntityCommand extends RapidLeafCommand
     with ClassNameGetter {

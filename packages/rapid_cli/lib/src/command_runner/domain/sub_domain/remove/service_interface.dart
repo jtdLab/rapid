@@ -2,7 +2,7 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
 /// {@template domain_sub_domain_remove_service_interface_command}
-/// `rapid domain sub_domain remove service_interface` command removes service interface from the domain part of an existing Rapid project.
+/// `rapid domain sub_domain remove service_interface` remove a service interface from the domain part of a Rapid project.
 /// {@endtemplate}
 class DomainSubDomainRemoveServiceInterfaceCommand extends RapidLeafCommand
     with ClassNameGetter {

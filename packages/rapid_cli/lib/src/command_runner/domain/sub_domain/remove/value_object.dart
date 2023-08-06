@@ -2,7 +2,7 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
 /// {@template domain_sub_domain_remove_value_object_command}
-/// `rapid domain sub_domain remove value_object` command removes value object from the domain part of an existing Rapid project.
+/// `rapid domain sub_domain remove value_object` remove a value object from the domain part of a Rapid project.
 /// {@endtemplate}
 class DomainSubDomainRemoveValueObjectCommand extends RapidLeafCommand
     with ClassNameGetter {

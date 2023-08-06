@@ -3,8 +3,12 @@ import '../../../../utils.dart';
 import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
+/// {@template platform_feature_remove_bloc_command}
+/// `rapid <platform> <feature> remove bloc` remove a bloc from a feature of the platform part of a Rapid project.
+/// {@endtemplate}
 class PlatformFeatureRemoveBlocCommand extends RapidLeafCommand
     with ClassNameGetter {
+  /// {@macro platform_feature_remove_bloc_command}
   PlatformFeatureRemoveBlocCommand(
     this.platform,
     this.featureName,
@@ -23,7 +27,7 @@ class PlatformFeatureRemoveBlocCommand extends RapidLeafCommand
 
   @override
   String get description =>
-      'Removes a bloc from $featureName of the ${platform.prettyName} part of an existing Rapid project.';
+      'Remove a bloc from $featureName of the ${platform.prettyName} part of a Rapid project.';
 
   @override
   Future<void> run() {

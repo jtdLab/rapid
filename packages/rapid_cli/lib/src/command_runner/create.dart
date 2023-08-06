@@ -11,7 +11,7 @@ import 'util/validate_dart_package_name.dart';
 const _defaultDescription = 'A Rapid app.';
 
 /// {@template create_command}
-/// `rapid create` command creates a new Rapid project in the specified directory.
+/// `rapid create` creates a new Rapid project in the specified directory.
 /// {@endtemplate}
 class CreateCommand extends RapidLeafCommand
     with OutputDirGetter, DescriptionGetter, OrgNameGetter, LanguageGetter {

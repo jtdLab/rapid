@@ -11,8 +11,12 @@ import '../../../util/navigator_flag.dart';
 String _defaultDescription(String name) =>
     'The ${name.pascalCase} flow feature.';
 
+/// {@template platform_add_feature_tab_flow_command}
+/// `rapid <platform> add feature tab_flow` add a tab flow feature to the platform part of a Rapid project.
+/// {@endtemplate}
 class PlatformAddFeatureTabFlowCommand extends RapidLeafCommand
     with DartPackageNameGetter, DescriptionGetter, NavigatorGetter {
+  /// {@macro platform_add_feature_tab_flow_command}
   PlatformAddFeatureTabFlowCommand(this.platform, super.project) {
     argParser
       ..addSeparator('')
@@ -37,7 +41,7 @@ class PlatformAddFeatureTabFlowCommand extends RapidLeafCommand
 
   @override
   String get description =>
-      'Add a tab flow feature to the ${platform.prettyName} part of an existing Rapid project.';
+      'Add a tab flow feature to the ${platform.prettyName} part of a Rapid project.';
 
   @override
   Future<void> run() {

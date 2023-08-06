@@ -9,16 +9,16 @@ List<String> expectedUsage(
   required Platform platform,
 }) {
   return [
-    'Add components to $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ${platform.name} $featurePackage add <component>\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Available subcommands:\n'
-        '  bloc    Adds a bloc to $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  cubit   Adds a cubit to $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Add a component to $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Usage: rapid ${platform.name} $featurePackage add <component>',
+    '-h, --help    Print this usage information.',
+    '',
+    'Available subcommands:',
+    '  bloc    Add a bloc to $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    '  cubit   Add a cubit to $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

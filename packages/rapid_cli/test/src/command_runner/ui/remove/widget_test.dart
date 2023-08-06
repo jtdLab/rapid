@@ -7,12 +7,12 @@ import '../../../mocks.dart';
 import '../../../utils.dart';
 
 const expectedUsage = [
-  'Remove a widget to the platform independent UI part of an existing Rapid project.\n'
-      '\n'
-      'Usage: rapid ui remove widget <name> [arguments]\n'
-      '-h, --help    Print this usage information.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Remove a widget from the platform independent UI part of a Rapid project.',
+  '',
+  'Usage: rapid ui remove widget <name> [arguments]',
+  '-h, --help    Print this usage information.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

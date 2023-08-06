@@ -12,12 +12,12 @@ List<String> expectedUsage(
   required Platform platform,
 }) {
   return [
-    'Adds a cubit to $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ${platform.name} $featurePackage add cubit <name> [arguments]\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Add a cubit to $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Usage: rapid ${platform.name} $featurePackage add cubit <name> [arguments]',
+    '-h, --help    Print this usage information.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

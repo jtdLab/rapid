@@ -6,55 +6,55 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
-  'Add dependencies to `pubspec.yaml` in a Rapid project.\n'
-      '\n'
-      'This command works similiar to `dart pub add` or `flutter pub add` but takes care of\n'
-      'dependent packages and updates their transitiv dependencies accordingly.\n'
-      '\n'
-      'Invoking `rapid pub add foo bar` will add `foo` and `bar` to `pubspec.yaml`\n'
-      'with a default constraint derived from latest compatible version.\n'
-      '\n'
-      'IMPORTANT:\n'
-      '\n'
-      'Invoking `rapid pub add foo: bar:` will add `foo:` and `bar:` to `pubspec.yaml`\n'
-      'with a empty constraint. In most cases this is used to add locale packages which\n'
-      'are linked using `melos`.\n'
-      '\n'
-      'Add to dev_dependencies by prefixing with "dev:".\n'
-      '\n'
-      'Make dependency overrides by prefixing with "override:".\n'
-      '\n'
-      'Add packages with specific constraints or other sources by giving a descriptor\n'
-      'after a colon.\n'
-      '\n'
-      'For example:\n'
-      '  * Add a hosted dependency at newest compatible stable version:\n'
-      '    `dart pub add foo`\n'
-      '  * Add a hosted dev dependency at newest compatible stable version:\n'
-      '    `dart pub add dev:foo`\n'
-      '  * Add a hosted dependency with the given constraint\n'
-      '    `dart pub add foo:^1.2.3`\n'
-      '  * Add multiple dependencies:\n'
-      '    `dart pub add foo dev:bar`\n'
-      '  * Add a path dependency:\n'
-      '    `dart pub add \'foo:{"path":"../foo"}\'`\n'
-      '  * Add a hosted dependency:\n'
-      '    `dart pub add \'foo:{"hosted":"my-pub.dev"}\'`\n'
-      '  * Add an sdk dependency:\n'
-      '    `dart pub add \'foo:{"sdk":"flutter"}\'`\n'
-      '  * Add a git dependency:\n'
-      '    `dart pub add \'foo:{"git":"https://github.com/foo/foo"}\'`\n'
-      '  * Add a dependency override:\n'
-      "    `dart pub add 'override:foo:1.0.0'`\n"
-      '  * Add a git dependency with a path and ref specified:\n'
-      '    `dart pub add \\\n'
-      '      \'foo:{"git":{"url":"../foo.git","ref":"<branch>","path":"<subdir>"}}\'`\n'
-      '\n'
-      'Usage: rapid pub add [<section>:]<package>[:[descriptor]] [<section>:]<package2>[:[descriptor]] ...]\n'
-      '-h, --help       Print this usage information.\n'
-      '-p, --package    The package where the command is run.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Add dependencies to `pubspec.yaml` in a Rapid project.',
+  '',
+  'This command works similiar to `dart pub add` or `flutter pub add` but takes care of',
+  'dependent packages and updates their transitiv dependencies accordingly.',
+  '',
+  'Invoking `rapid pub add foo bar` will add `foo` and `bar` to `pubspec.yaml`',
+  'with a default constraint derived from latest compatible version.',
+  '',
+  'IMPORTANT:',
+  '',
+  'Invoking `rapid pub add foo: bar:` will add `foo:` and `bar:` to `pubspec.yaml`',
+  'with a empty constraint. In most cases this is used to add locale packages which',
+  'are linked using `melos`.',
+  '',
+  'Add to dev_dependencies by prefixing with "dev:".',
+  '',
+  'Make dependency overrides by prefixing with "override:".',
+  '',
+  'Add packages with specific constraints or other sources by giving a descriptor',
+  'after a colon.',
+  '',
+  'For example:',
+  '  * Add a hosted dependency at newest compatible stable version:',
+  '    `dart pub add foo`',
+  '  * Add a hosted dev dependency at newest compatible stable version:',
+  '    `dart pub add dev:foo`',
+  '  * Add a hosted dependency with the given constraint',
+  '    `dart pub add foo:^1.2.3`',
+  '  * Add multiple dependencies:',
+  '    `dart pub add foo dev:bar`',
+  '  * Add a path dependency:',
+  '    `dart pub add \'foo:{"path":"../foo"}\'`',
+  '  * Add a hosted dependency:',
+  '    `dart pub add \'foo:{"hosted":"my-pub.dev"}\'`',
+  '  * Add an sdk dependency:',
+  '    `dart pub add \'foo:{"sdk":"flutter"}\'`',
+  '  * Add a git dependency:',
+  '    `dart pub add \'foo:{"git":"https://github.com/foo/foo"}\'`',
+  '  * Add a dependency override:',
+  "    `dart pub add 'override:foo:1.0.0'`",
+  '  * Add a git dependency with a path and ref specified:',
+  r'    `dart pub add \',
+  '      \'foo:{"git":{"url":"../foo.git","ref":"<branch>","path":"<subdir>"}}\'`',
+  '',
+  'Usage: rapid pub add [<section>:]<package>[:[descriptor]] [<section>:]<package2>[:[descriptor]] ...]',
+  '-h, --help       Print this usage information.',
+  '-p, --package    The package where the command is run.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

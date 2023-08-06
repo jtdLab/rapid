@@ -9,16 +9,16 @@ List<String> expectedUsage(
   required Platform platform,
 }) {
   return [
-    'Remove components from $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ${platform.name} $featurePackage remove <component>\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Available subcommands:\n'
-        '  bloc    Removes a bloc from $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  cubit   Removes a cubit from $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Remove a component from $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Usage: rapid ${platform.name} $featurePackage remove <component>',
+    '-h, --help    Print this usage information.',
+    '',
+    'Available subcommands:',
+    '  bloc    Remove a bloc from $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    '  cubit   Remove a cubit from $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

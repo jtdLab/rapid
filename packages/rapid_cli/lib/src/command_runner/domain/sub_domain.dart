@@ -3,7 +3,7 @@ import 'sub_domain/add.dart';
 import 'sub_domain/remove.dart';
 
 /// {@template domain_sub_domain_command}
-/// `rapid domain sub_domain` command work with subdomains of the domain part of an existing Rapid project.
+/// `rapid domain sub_domain` work with a subdomain of the domain part of a Rapid project.
 /// {@endtemplate}
 class DomainSubdomainCommand extends RapidBranchCommand {
   /// {@macro domain_sub_domain_command}
@@ -18,7 +18,7 @@ class DomainSubdomainCommand extends RapidBranchCommand {
   String get name => subDomainName;
 
   @override
-  String get invocation => 'rapid domain $subDomainName <subcommand>';
+  String get invocation => 'rapid domain $subDomainName <command>';
 
   @override
   String get description => 'Work with the subdomain $subDomainName.';

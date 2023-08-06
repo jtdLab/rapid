@@ -6,7 +6,7 @@ import '../util/org_name_option.dart';
 import 'platform.dart';
 
 /// {@template activate_ios_command}
-/// `rapid activate ios` command adds support for iOS to an existing Rapid project.
+/// `rapid activate ios` adds support for iOS to a Rapid project.
 /// {@endtemplate}
 class ActivateIosCommand extends ActivatePlatformCommand
     with OrgNameGetter, LanguageGetter {

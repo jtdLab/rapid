@@ -6,12 +6,12 @@ import '../mocks.dart';
 import '../utils.dart';
 
 const expectedUsage = [
-  'Starts a group of Rapid command executions.\n'
-      '\n'
-      'Usage: rapid begin\n'
-      '-h, --help    Print this usage information.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Starts a group of Rapid command executions.',
+  '',
+  'Usage: rapid begin',
+  '-h, --help    Print this usage information.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

@@ -6,15 +6,15 @@ import '../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Remove components from the ${platform.prettyName} UI part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ui ${platform.name} remove <subcommand>\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Available subcommands:\n'
-        '  widget   Remove a widget from the ${platform.prettyName} UI part of an existing Rapid project.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Remove a component from the ${platform.prettyName} UI part of a Rapid project.',
+    '',
+    'Usage: rapid ui ${platform.name} remove <component>',
+    '-h, --help    Print this usage information.',
+    '',
+    'Available subcommands:',
+    '  widget   Remove a widget from the ${platform.prettyName} UI part of a Rapid project.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

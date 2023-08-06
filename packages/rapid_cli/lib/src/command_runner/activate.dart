@@ -8,7 +8,7 @@ import 'activate/windows.dart';
 import 'base.dart';
 
 /// {@template activate_command}
-/// `rapid activate` command adds support for a platform to an existing Rapid project.
+/// `rapid activate` adds support for a platform to a Rapid project.
 /// {@endtemplate}
 class ActivateCommand extends RapidBranchCommand {
   /// {@macro activate_command}
@@ -29,6 +29,5 @@ class ActivateCommand extends RapidBranchCommand {
   String get invocation => 'rapid activate <platform>';
 
   @override
-  String get description =>
-      'Add support for a platform to an existing Rapid project.';
+  String get description => 'Add support for a platform to a Rapid project.';
 }

@@ -10,8 +10,12 @@ import '../../../util/navigator_flag.dart';
 String _defaultDescription(String name) =>
     'The ${name.pascalCase} page feature.';
 
+/// {@template platform_add_feature_page_command}
+/// `rapid <platform> add feature page` add a page feature to the platform part of a Rapid project.
+/// {@endtemplate}
 class PlatformAddFeaturePageCommand extends RapidLeafCommand
     with DartPackageNameGetter, DescriptionGetter, NavigatorGetter {
+  /// {@macro platform_add_feature_page_command}
   PlatformAddFeaturePageCommand(this.platform, super.project) {
     argParser
       ..addSeparator('')
@@ -32,7 +36,7 @@ class PlatformAddFeaturePageCommand extends RapidLeafCommand
 
   @override
   String get description =>
-      'Add a page feature to the ${platform.prettyName} part of an existing Rapid project.';
+      'Add a page feature to the ${platform.prettyName} part of a Rapid project.';
 
   @override
   Future<void> run() {

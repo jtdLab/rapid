@@ -8,16 +8,16 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
-  'Adds support for Web to this project.\n'
-      '\n'
-      'Usage: rapid activate web\n'
-      '-h, --help        Print this usage information.\n'
-      '    --desc        The description for the native Web project.\n'
-      '                  (defaults to "A Rapid app.")\n'
-      '    --language    The default language for Web\n'
-      '                  (defaults to "en")\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Add support for Web to this project.',
+  '',
+  'Usage: rapid activate web',
+  '-h, --help        Print this usage information.',
+  '    --desc        The description for the native Web project.',
+  '                  (defaults to "A Rapid app.")',
+  '    --language    The default language for Web',
+  '                  (defaults to "en")',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

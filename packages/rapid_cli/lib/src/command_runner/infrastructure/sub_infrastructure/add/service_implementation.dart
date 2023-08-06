@@ -3,7 +3,7 @@ import '../../../util/class_name_rest.dart';
 import '../../../util/service_option.dart';
 
 /// {@template infrastructure_sub_infrastructure_add_service_implementation_command}
-/// `rapid infrastructure sub_infrastructure add service_implementation` command adds service_implementation to the infrastructure part of an existing Rapid project.
+/// `rapid infrastructure sub_infrastructure add service_implementation` adds service_implementation to the infrastructure part of a Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureAddServiceImplementationCommand
     extends RapidLeafCommand with ClassNameGetter, ServiceGetter {

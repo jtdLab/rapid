@@ -3,7 +3,7 @@ import 'add/data_transfer_object.dart';
 import 'add/service_implementation.dart';
 
 /// {@template infrastructure_sub_infrastructure_add_command}
-/// `rapid infrastructure sub_infrastructure add` command add components to the infrastructure part of an existing Rapid project.
+/// `rapid infrastructure sub_infrastructure add` add a component to the infrastructure part of a Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureAddCommand extends RapidBranchCommand {
   /// {@macro infrastructure_sub_infrastructure_add_command}

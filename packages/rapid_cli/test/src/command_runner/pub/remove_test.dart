@@ -6,13 +6,13 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
-  'Remove packages in a Rapid environment.\n'
-      '\n'
-      'Usage: rapid pub remove [packages]\n'
-      '-h, --help       Print this usage information.\n'
-      '-p, --package    The package where the command is run in.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Remove packages in a Rapid environment.',
+  '',
+  'Usage: rapid pub remove [packages]',
+  '-h, --help       Print this usage information.',
+  '-p, --package    The package where the command is run in.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

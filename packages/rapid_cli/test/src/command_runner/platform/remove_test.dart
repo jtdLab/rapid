@@ -6,17 +6,17 @@ import '../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Removes features or languages from the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ${platform.name} remove <subcommand>\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Available subcommands:\n'
-        '  feature     Removes a feature from the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  language    Removes a language from the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  navigator   Remove a navigator from the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Remove features or languages from the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Usage: rapid ${platform.name} remove <subcommand>',
+    '-h, --help    Print this usage information.',
+    '',
+    'Available subcommands:',
+    '  feature     Remove a feature from the ${platform.prettyName} part of a Rapid project.',
+    '  language    Remove a language from the ${platform.prettyName} part of a Rapid project.',
+    '  navigator   Remove a navigator from the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

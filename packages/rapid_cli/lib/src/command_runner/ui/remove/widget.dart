@@ -2,7 +2,7 @@ import '../../../command_runner/base.dart';
 import '../../util/class_name_rest.dart';
 
 /// {@template ui_remove_widget_command}
-/// `rapid ui remove widget` command removes a widget to the platform independent UI part of an existing Rapid project.
+/// `rapid ui remove widget` remove a widget from the platform independent UI part of a Rapid project.
 /// {@endtemplate}
 class UiRemoveWidgetCommand extends RapidLeafCommand with ClassNameGetter {
   /// {@macro ui_remove_widget_command}
@@ -16,7 +16,7 @@ class UiRemoveWidgetCommand extends RapidLeafCommand with ClassNameGetter {
 
   @override
   String get description =>
-      'Remove a widget to the platform independent UI part of an existing Rapid project.';
+      'Remove a widget from the platform independent UI part of a Rapid project.';
 
   @override
   Future<void> run() {

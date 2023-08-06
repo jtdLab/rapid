@@ -7,17 +7,17 @@ import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
 List<String> expectedUsage(String subDomainPackage) => [
-      'Add a value object to the subdomain $subDomainPackage.\n'
-          '\n'
-          'Usage: rapid domain $subDomainPackage add value_object <name> [arguments]\n'
-          '-h, --help    Print this usage information.\n'
-          '\n'
-          '\n'
-          '    --type    The type that gets wrapped by this value object.\n'
-          '              Generics get escaped via "#" e.g Tuple<#A, #B, String>.\n'
-          '              (defaults to "String")\n'
-          '\n'
-          'Run "rapid help" to see global options.'
+      'Add a value object to the subdomain $subDomainPackage.',
+      '',
+      'Usage: rapid domain $subDomainPackage add value_object <name> [arguments]',
+      '-h, --help    Print this usage information.',
+      '',
+      '',
+      '    --type    The type that gets wrapped by this value object.',
+      '              Generics get escaped via "#" e.g Tuple<#A, #B, String>.',
+      '              (defaults to "String")',
+      '',
+      'Run "rapid help" to see global options.'
     ];
 
 void main() {

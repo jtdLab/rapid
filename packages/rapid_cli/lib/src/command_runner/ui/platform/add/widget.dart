@@ -5,7 +5,11 @@ import '../../../util/class_name_rest.dart';
 
 const _defaultTheme = true;
 
+/// {@template ui_platform_add_widget_command}
+/// `rapid ui <platform> add` add a widget to the platform UI part of a Rapid project.
+/// {@endtemplate}
 class UiPlatformAddWidgetCommand extends RapidLeafCommand with ClassNameGetter {
+  /// {@macro ui_platform_add_widget_command}
   UiPlatformAddWidgetCommand(this.platform, super.project) {
     argParser.addFlag(
       'theme',
@@ -25,7 +29,7 @@ class UiPlatformAddWidgetCommand extends RapidLeafCommand with ClassNameGetter {
 
   @override
   String get description =>
-      'Add a widget to the ${platform.prettyName} UI part of an existing Rapid project.';
+      'Add a widget to the ${platform.prettyName} UI part of a Rapid project.';
 
   @override
   Future<void> run() {

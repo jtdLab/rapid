@@ -8,16 +8,16 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
-  'Adds support for Windows to this project.\n'
-      '\n'
-      'Usage: rapid activate windows\n'
-      '-h, --help        Print this usage information.\n'
-      '    --org-name    The organization for the native Windows project.\n'
-      '                  (defaults to "com.example")\n'
-      '    --language    The default language for Windows\n'
-      '                  (defaults to "en")\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Add support for Windows to this project.',
+  '',
+  'Usage: rapid activate windows',
+  '-h, --help        Print this usage information.',
+  '    --org-name    The organization for the native Windows project.',
+  '                  (defaults to "com.example")',
+  '    --language    The default language for Windows',
+  '                  (defaults to "en")',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

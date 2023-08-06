@@ -4,7 +4,7 @@ import 'add/service_interface.dart';
 import 'add/value_object.dart';
 
 /// {@template domain_sub_domain_add_command}
-/// `rapid domain sub_domain add` command add components to the domain part of an existing Rapid project.
+/// `rapid domain sub_domain add` add a component to the domain part of a Rapid project.
 /// {@endtemplate}
 class DomainSubDomainAddCommand extends RapidBranchCommand {
   /// {@macro domain_sub_domain_add_command}

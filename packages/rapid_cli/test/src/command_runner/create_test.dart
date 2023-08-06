@@ -11,31 +11,31 @@ import '../utils.dart';
 // TODO consider sharing test logic for flags with other commands
 
 const expectedUsage = [
-  'Create a new Rapid project.\n'
-      '\n'
-      'Usage: rapid create <project name> [arguments]\n'
-      '-h, --help          Print this usage information.\n'
-      '\n'
-      '\n'
-      '-o, --output-dir    The directory where to generate the new project\n'
-      '                    (defaults to ".")\n'
-      '    --desc          The description of the new project.\n'
-      '                    (defaults to "A Rapid app.")\n'
-      '    --org-name      The organization of the new project.\n'
-      '                    (defaults to "com.example")\n'
-      '    --language      The language of the new project\n'
-      '                    (defaults to "en")\n'
-      '\n'
-      '\n'
-      '    --android       Whether the new project supports the Android platform.\n'
-      '    --ios           Whether the new project supports the iOS platform.\n'
-      '    --linux         Whether the new project supports the Linux platform.\n'
-      '    --macos         Whether the new project supports the macOS platform.\n'
-      '    --web           Whether the new project supports the Web platform.\n'
-      '    --windows       Whether the new project supports the Windows platform.\n'
-      '    --mobile        Whether the new project supports the Mobile platform.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Create a new Rapid project.',
+  '',
+  'Usage: rapid create <project name> [arguments]',
+  '-h, --help          Print this usage information.',
+  '',
+  '',
+  '-o, --output-dir    The directory where to generate the new project',
+  '                    (defaults to ".")',
+  '    --desc          The description of the new project.',
+  '                    (defaults to "A Rapid app.")',
+  '    --org-name      The organization of the new project.',
+  '                    (defaults to "com.example")',
+  '    --language      The language of the new project',
+  '                    (defaults to "en")',
+  '',
+  '',
+  '    --android       Whether the new project supports the Android platform.',
+  '    --ios           Whether the new project supports the iOS platform.',
+  '    --linux         Whether the new project supports the Linux platform.',
+  '    --macos         Whether the new project supports the macOS platform.',
+  '    --web           Whether the new project supports the Web platform.',
+  '    --windows       Whether the new project supports the Windows platform.',
+  '    --mobile        Whether the new project supports the Mobile platform.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

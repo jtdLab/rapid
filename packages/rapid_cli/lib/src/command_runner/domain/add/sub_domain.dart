@@ -2,7 +2,7 @@ import '../../base.dart';
 import '../../util/dart_package_name_rest.dart';
 
 /// {@template domain_add_sub_domain_command}
-/// `rapid domain add sub_domain` command add subdomains to the domain part of an existing Rapid project.
+/// `rapid domain add sub_domain` add subdomains to the domain part of a Rapid project.
 /// {@endtemplate}
 class DomainAddSubDomainCommand extends RapidLeafCommand
     with DartPackageNameGetter {
@@ -20,7 +20,7 @@ class DomainAddSubDomainCommand extends RapidLeafCommand
 
   @override
   String get description =>
-      'Add subdomains of the domain part of an existing Rapid project.';
+      'Add a subdomain to the domain part of a Rapid project.';
 
   @override
   Future<void> run() {

@@ -4,15 +4,15 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
-  'Remove subdomains from the domain part of an existing Rapid project.\n'
-      '\n'
-      'Usage: rapid domain remove <subcommand>\n'
-      '-h, --help    Print this usage information.\n'
-      '\n'
-      'Available subcommands:\n'
-      '  sub_domain   Remove subdomains of the domain part of an existing Rapid project.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Remove subdomains from the domain part of a Rapid project.',
+  '',
+  'Usage: rapid domain remove <subcommand>',
+  '-h, --help    Print this usage information.',
+  '',
+  'Available subcommands:',
+  '  sub_domain   Remove a subdomain from the domain part of a Rapid project.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

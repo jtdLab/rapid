@@ -8,16 +8,16 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
-  'Adds support for iOS to this project.\n'
-      '\n'
-      'Usage: rapid activate ios\n'
-      '-h, --help        Print this usage information.\n'
-      '    --org-name    The organization for the native iOS project.\n'
-      '                  (defaults to "com.example")\n'
-      '    --language    The default language for iOS\n'
-      '                  (defaults to "en")\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Add support for iOS to this project.',
+  '',
+  'Usage: rapid activate ios',
+  '-h, --help        Print this usage information.',
+  '    --org-name    The organization for the native iOS project.',
+  '                  (defaults to "com.example")',
+  '    --language    The default language for iOS',
+  '                  (defaults to "en")',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

@@ -6,18 +6,18 @@ import '../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Add features to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ${platform.name} add feature <type>\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Available subcommands:\n'
-        '  flow       Add a flow feature to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  page       Add a page feature to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  tab_flow   Add a tab flow feature to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  widget     Add a widget feature to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Add a feature to the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Usage: rapid ${platform.name} add feature <type>',
+    '-h, --help    Print this usage information.',
+    '',
+    'Available subcommands:',
+    '  flow       Add a flow feature to the ${platform.prettyName} part of a Rapid project.',
+    '  page       Add a page feature to the ${platform.prettyName} part of a Rapid project.',
+    '  tab_flow   Add a tab flow feature to the ${platform.prettyName} part of a Rapid project.',
+    '  widget     Add a widget feature to the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

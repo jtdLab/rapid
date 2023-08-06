@@ -9,14 +9,14 @@ import '../../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Add a widget to the ${platform.prettyName} UI part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ui ${platform.name} add widget <name> [arguments]\n'
-        '-h, --help          Print this usage information.\n'
-        '    --[no-]theme    Whether the new widget has its own theme.\n'
-        '                    (defaults to on)\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Add a widget to the ${platform.prettyName} UI part of a Rapid project.',
+    '',
+    'Usage: rapid ui ${platform.name} add widget <name> [arguments]',
+    '-h, --help          Print this usage information.',
+    '    --[no-]theme    Whether the new widget has its own theme.',
+    '                    (defaults to on)',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

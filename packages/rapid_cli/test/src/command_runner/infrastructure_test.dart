@@ -4,15 +4,16 @@ import '../mocks.dart';
 import '../utils.dart';
 
 List<String> expectedUsage(List<String> infrastructurePackages) => [
-      'Work with the infrastructure part of an existing Rapid project.\n'
-          '\n'
-          'Usage: rapid infrastructure <subcommand>\n'
-          '-h, --help    Print this usage information.\n'
-          '\n'
-          'Available subcommands:\n'
-          '${infrastructurePackages.map((infrastructurePackage) => '  $infrastructurePackage   Work with the subinfrastructure $infrastructurePackage.\n').join()}'
-          '\n'
-          'Run "rapid help" to see global options.'
+      'Work with the infrastructure part of a Rapid project.',
+      '',
+      'Usage: rapid infrastructure <subcommand>',
+      '-h, --help    Print this usage information.',
+      '',
+      'Available subcommands:',
+      ...infrastructurePackages.map((infrastructurePackage) =>
+          '  $infrastructurePackage   Work with the subinfrastructure $infrastructurePackage.'),
+      '',
+      'Run "rapid help" to see global options.'
     ];
 
 void main() {

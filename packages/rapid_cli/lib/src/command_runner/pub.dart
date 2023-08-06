@@ -4,7 +4,7 @@ import 'pub/get.dart';
 import 'pub/remove.dart';
 
 /// {@template pub_command}
-/// `rapid pub` command work with packages in a Rapid environment.
+/// `rapid pub` work with packages in a Rapid environment.
 /// {@endtemplate}
 class PubCommand extends RapidBranchCommand {
   /// {@macro ui_command}

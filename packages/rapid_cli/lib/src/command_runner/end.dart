@@ -3,7 +3,7 @@ import 'dart:async';
 import 'base.dart';
 
 /// {@template end_command}
-/// `rapid end` command ends a group of Rapid command executions.
+/// `rapid end` ends a group of Rapid command executions.
 /// {@endtemplate}
 class EndCommand extends RapidLeafCommand {
   /// {@macro end_command}

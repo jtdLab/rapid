@@ -17,35 +17,69 @@ import 'mocks.dart';
 import 'utils.dart';
 
 const expectedUsage = [
-  'A CLI tool for developing Flutter apps based on Rapid Architecture.\n'
-      '\n'
-      'Usage: rapid <command>\n'
-      '\n'
-      'Global options:\n'
-      '-h, --help       Print this usage information.\n'
-      '-v, --version    Print the current version.\n'
-      '    --verbose    Enable verbose logging.\n'
-      '\n'
-      'Available commands:\n'
-      '  activate         Add support for a platform to an existing Rapid project.\n'
-      '  android          Work with the Android part of an existing Rapid project.\n'
-      '  begin            Starts a group of Rapid command executions.\n'
-      '  create           Create a new Rapid project.\n'
-      '  deactivate       Remove support for a platform from an existing Rapid project.\n'
-      '  domain           Work with the domain part of an existing Rapid project.\n'
-      '  end              Ends a group of Rapid command executions.\n'
-      '  infrastructure   Work with the infrastructure part of an existing Rapid project.\n'
-      '  ios              Work with the iOS part of an existing Rapid project.\n'
-      '  linux            Work with the Linux part of an existing Rapid project.\n'
-      '  macos            Work with the macOS part of an existing Rapid project.\n'
-      '  mobile           Work with the Mobile part of an existing Rapid project.\n'
-      '  pub              Work with packages in a Rapid environment.\n'
-      '  ui               Work with the UI part of an existing Rapid project.\n'
-      '  web              Work with the Web part of an existing Rapid project.\n'
-      '  windows          Work with the Windows part of an existing Rapid project.\n'
-      '\n'
-      'Run "rapid help <command>" for more information about a command.'
+  'A CLI tool for developing Flutter apps based on Rapid Architecture.',
+  '',
+  'Usage: rapid <command>',
+  '',
+  'Global options:',
+  '-h, --help       Print this usage information.',
+  '-v, --version    Print the current version.',
+  '    --verbose    Enable verbose logging.',
+  '',
+  'Available commands:',
+  '  activate         Add support for a platform to a Rapid project.',
+  '  android          Work with the Android part of a Rapid project.',
+  '  begin            Starts a group of Rapid command executions.',
+  '  create           Create a new Rapid project.',
+  '  deactivate       Remove support for a platform from a Rapid project.',
+  '  domain           Work with the domain part of a Rapid project.',
+  '  end              Ends a group of Rapid command executions.',
+  '  infrastructure   Work with the infrastructure part of a Rapid project.',
+  '  ios              Work with the iOS part of a Rapid project.',
+  '  linux            Work with the Linux part of a Rapid project.',
+  '  macos            Work with the macOS part of a Rapid project.',
+  '  mobile           Work with the Mobile part of a Rapid project.',
+  '  pub              Work with packages in a Rapid environment.',
+  '  ui               Work with the UI part of a Rapid project.',
+  '  web              Work with the Web part of a Rapid project.',
+  '  windows          Work with the Windows part of a Rapid project.',
+  '',
+  'Run "rapid help <command>" for more information about a command.'
 ];
+
+/* 
+const expectedUsage = [
+  '''
+A CLI tool for developing Flutter apps based on Rapid Architecture.
+
+Usage: rapid <command>
+
+Global options:
+-h, --help       Print this usage information.
+-v, --version    Print the current version.
+    --verbose    Enable verbose logging.
+
+Available commands:
+  activate         Add support for a platform to a Rapid project.
+  android          Work with the Android part of a Rapid project.
+  begin            Starts a group of Rapid command executions.
+  create           Create a new Rapid project.
+  deactivate       Remove support for a platform from a Rapid project.
+  domain           Work with the domain part of a Rapid project.
+  end              Ends a group of Rapid command executions.
+  infrastructure   Work with the infrastructure part of a Rapid project.
+  ios              Work with the iOS part of a Rapid project.
+  linux            Work with the Linux part of a Rapid project.
+  macos            Work with the macOS part of a Rapid project.
+  mobile           Work with the Mobile part of a Rapid project.
+  pub              Work with packages in a Rapid environment.
+  ui               Work with the UI part of a Rapid project.
+  web              Work with the Web part of a Rapid project.
+  windows          Work with the Windows part of a Rapid project.
+
+Run "rapid help <command>" for more information about a command.
+'''
+]; */
 
 void main() {
   setUpAll(registerFallbackValues);

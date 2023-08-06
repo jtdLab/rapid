@@ -6,7 +6,7 @@ import '../util/package_option.dart';
 // TODO consider updating all descs of pub commands
 
 /// {@template pub_add_command}
-/// `rapid pub add` command add packages in a Rapid environment.
+/// `rapid pub add` add packages in a Rapid environment.
 /// {@endtemplate}
 class PubAddCommand extends RapidLeafCommand with PackageGetter {
   /// {@macro pub_add_command}

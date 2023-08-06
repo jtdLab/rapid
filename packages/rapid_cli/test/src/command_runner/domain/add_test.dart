@@ -4,15 +4,15 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
-  'Add subdomains to the domain part of an existing Rapid project.\n'
-      '\n'
-      'Usage: rapid domain add <subcommand>\n'
-      '-h, --help    Print this usage information.\n'
-      '\n'
-      'Available subcommands:\n'
-      '  sub_domain   Add subdomains of the domain part of an existing Rapid project.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Add subdomains to the domain part of a Rapid project.',
+  '',
+  'Usage: rapid domain add <subcommand>',
+  '-h, --help    Print this usage information.',
+  '',
+  'Available subcommands:',
+  '  sub_domain   Add a subdomain to the domain part of a Rapid project.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

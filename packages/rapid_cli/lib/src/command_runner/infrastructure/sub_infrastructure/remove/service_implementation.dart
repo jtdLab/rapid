@@ -3,7 +3,7 @@ import '../../../util/class_name_rest.dart';
 import '../../../util/service_option.dart';
 
 /// {@template infrastructure_sub_infrastructure_remove_service_implementation_command}
-/// `rapid infrastructure sub_infrastructure remove service_implementation` command removes service implementation from the infrastructure part of an existing Rapid project.
+/// `rapid infrastructure sub_infrastructure remove service_implementation` remove a service implementation from the infrastructure part of a Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
     extends RapidLeafCommand with ClassNameGetter, ServiceGetter {

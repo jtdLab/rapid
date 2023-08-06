@@ -7,15 +7,15 @@ import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
 List<String> expectedUsage(String subInfrastructurePackage) => [
-      'Add a data transfer object to the subinfrastructure $subInfrastructurePackage.\n'
-          '\n'
-          'Usage: rapid infrastructure $subInfrastructurePackage add data_transfer_object [arguments]\n'
-          '-h, --help      Print this usage information.\n'
-          '\n'
-          '\n'
-          '-e, --entity    The name of the entity the data transfer object is related to.\n'
-          '\n'
-          'Run "rapid help" to see global options.'
+      'Add a data transfer object to the subinfrastructure $subInfrastructurePackage.',
+      '',
+      'Usage: rapid infrastructure $subInfrastructurePackage add data_transfer_object [arguments]',
+      '-h, --help      Print this usage information.',
+      '',
+      '',
+      '-e, --entity    The name of the entity the data transfer object is related to.',
+      '',
+      'Run "rapid help" to see global options.'
     ];
 
 void main() {

@@ -3,8 +3,12 @@ import '../../../utils.dart';
 import '../../base.dart';
 import '../../util/language_rest.dart';
 
+/// {@template platform_remove_language_command}
+/// `rapid <platform> remove language` remove a language from the platform part of a Rapid project.
+/// {@endtemplate}
 class PlatformRemoveLanguageCommand extends RapidLeafCommand
     with LanguageGetter {
+  /// {@macro platform_remove_language_command}
   PlatformRemoveLanguageCommand(this.platform, super.project);
 
   final Platform platform;
@@ -20,7 +24,7 @@ class PlatformRemoveLanguageCommand extends RapidLeafCommand
 
   @override
   String get description =>
-      'Removes a language from the ${platform.prettyName} part of an existing Rapid project.';
+      'Remove a language from the ${platform.prettyName} part of a Rapid project.';
 
   @override
   Future<void> run() {

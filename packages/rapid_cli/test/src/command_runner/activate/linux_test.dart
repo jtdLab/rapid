@@ -8,16 +8,16 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
-  'Adds support for Linux to this project.\n'
-      '\n'
-      'Usage: rapid activate linux\n'
-      '-h, --help        Print this usage information.\n'
-      '    --org-name    The organization for the native Linux project.\n'
-      '                  (defaults to "com.example")\n'
-      '    --language    The default language for Linux\n'
-      '                  (defaults to "en")\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Add support for Linux to this project.',
+  '',
+  'Usage: rapid activate linux',
+  '-h, --help        Print this usage information.',
+  '    --org-name    The organization for the native Linux project.',
+  '                  (defaults to "com.example")',
+  '    --language    The default language for Linux',
+  '                  (defaults to "en")',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

@@ -1,4 +1,6 @@
 @Tags(['e2e'])
+library;
+
 import 'package:test/test.dart';
 
 import 'common.dart';
@@ -98,7 +100,8 @@ void main() {
       );
 
 /*       test(
-        'infrastructure <sub_infrastructure> remove service_implementation (with dir)',
+        'infrastructure <sub_infrastructure> remove '
+        'service_implementation (with dir)',
         performTest(
           subInfrastructure: 'foo_bar',
           dir: 'foo',

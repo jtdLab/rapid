@@ -1,4 +1,6 @@
 @Tags(['e2e'])
+library;
+
 import 'package:test/test.dart';
 
 import 'common.dart';

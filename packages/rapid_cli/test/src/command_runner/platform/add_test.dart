@@ -6,17 +6,17 @@ import '../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Add features or languages to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ${platform.name} add <subcommand>\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Available subcommands:\n'
-        '  feature     Add features to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  language    Add a language to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  navigator   Add a navigator to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Add features or languages to the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Usage: rapid ${platform.name} add <subcommand>',
+    '-h, --help    Print this usage information.',
+    '',
+    'Available subcommands:',
+    '  feature     Add a feature to the ${platform.prettyName} part of a Rapid project.',
+    '  language    Add a language to the ${platform.prettyName} part of a Rapid project.',
+    '  navigator   Add a navigator to the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

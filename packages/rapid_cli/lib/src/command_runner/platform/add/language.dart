@@ -3,7 +3,11 @@ import '../../../utils.dart';
 import '../../base.dart';
 import '../../util/language_rest.dart';
 
+/// {@template platform_add_language_command}
+/// `rapid <platform> add language` add a language to the platform part of a Rapid project.
+/// {@endtemplate}
 class PlatformAddLanguageCommand extends RapidLeafCommand with LanguageGetter {
+  /// {@macro platform_add_language_command}
   PlatformAddLanguageCommand(this.platform, super.project);
 
   final Platform platform;
@@ -19,7 +23,7 @@ class PlatformAddLanguageCommand extends RapidLeafCommand with LanguageGetter {
 
   @override
   String get description =>
-      'Add a language to the ${platform.prettyName} part of an existing Rapid project.';
+      'Add a language to the ${platform.prettyName} part of a Rapid project.';
 
   @override
   Future<void> run() {

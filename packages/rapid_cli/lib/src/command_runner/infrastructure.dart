@@ -3,7 +3,7 @@ import 'base.dart';
 import 'infrastructure/sub_infrastructure.dart';
 
 /// {@template infrastructure_command}
-/// `rapid infrastructure` command work with the infrastructure part of an existing Rapid project.
+/// `rapid infrastructure` work with the infrastructure part of a Rapid project.
 /// {@endtemplate}
 class InfrastructureCommand extends RapidBranchCommand {
   /// {@macro infrastructure_command}
@@ -32,5 +32,5 @@ class InfrastructureCommand extends RapidBranchCommand {
 
   @override
   String get description =>
-      'Work with the infrastructure part of an existing Rapid project.';
+      'Work with the infrastructure part of a Rapid project.';
 }

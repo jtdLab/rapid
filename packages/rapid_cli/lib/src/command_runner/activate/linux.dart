@@ -6,7 +6,7 @@ import '../util/org_name_option.dart';
 import 'platform.dart';
 
 /// {@template activate_linux_command}
-/// `rapid activate linux` command adds support for Linux to an existing Rapid project.
+/// `rapid activate linux` adds support for Linux to a Rapid project.
 /// {@endtemplate}
 class ActivateLinuxCommand extends ActivatePlatformCommand
     with OrgNameGetter, LanguageGetter {

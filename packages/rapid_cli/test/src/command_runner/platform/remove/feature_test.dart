@@ -9,12 +9,12 @@ import '../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Removes a feature from the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ${platform.name} remove feature <name>\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Remove a feature from the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Usage: rapid ${platform.name} remove feature <name>',
+    '-h, --help    Print this usage information.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

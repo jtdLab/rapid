@@ -6,15 +6,15 @@ import '../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Add components to the ${platform.prettyName} UI part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ui ${platform.name} add <subcommand>\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Available subcommands:\n'
-        '  widget   Add a widget to the ${platform.prettyName} UI part of an existing Rapid project.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Add a component to the ${platform.prettyName} UI part of a Rapid project.',
+    '',
+    'Usage: rapid ui ${platform.name} add <component>',
+    '-h, --help    Print this usage information.',
+    '',
+    'Available subcommands:',
+    '  widget   Add a widget to the ${platform.prettyName} UI part of a Rapid project.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

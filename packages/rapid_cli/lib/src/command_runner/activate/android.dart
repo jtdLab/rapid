@@ -9,7 +9,7 @@ import 'platform.dart';
 const _defaultDescription = 'A Rapid app.';
 
 /// {@template activate_android_command}
-/// `rapid activate android` command adds support for Android to an existing Rapid project.
+/// `rapid activate android` adds support for Android to a Rapid project.
 /// {@endtemplate}
 class ActivateAndroidCommand extends ActivatePlatformCommand
     with DescriptionGetter, OrgNameGetter, LanguageGetter {

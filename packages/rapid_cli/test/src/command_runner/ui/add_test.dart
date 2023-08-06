@@ -4,15 +4,15 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
-  'Add components to the platform independent UI part of an existing Rapid project.\n'
-      '\n'
-      'Usage: rapid ui add <subcommand>\n'
-      '-h, --help    Print this usage information.\n'
-      '\n'
-      'Available subcommands:\n'
-      '  widget   Add a widget to the platform independent UI part of an existing Rapid project.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Add a component to the platform independent UI part of a Rapid project.',
+  '',
+  'Usage: rapid ui add <component>',
+  '-h, --help    Print this usage information.',
+  '',
+  'Available subcommands:',
+  '  widget   Add a widget to the platform independent UI part of a Rapid project.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

@@ -6,7 +6,7 @@ import '../util/org_name_option.dart';
 import 'platform.dart';
 
 /// {@template activate_windows_command}
-/// `rapid activate windows` command adds support for Windows to an existing Rapid project.
+/// `rapid activate windows` adds support for Windows to a Rapid project.
 /// {@endtemplate}
 class ActivateWindowsCommand extends ActivatePlatformCommand
     with OrgNameGetter, LanguageGetter {

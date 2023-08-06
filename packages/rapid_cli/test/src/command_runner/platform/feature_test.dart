@@ -9,16 +9,16 @@ List<String> expectedUsage(
   required Platform platform,
 }) {
   return [
-    'Work with $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ${platform.name} $featurePackage <subcommand>\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Available subcommands:\n'
-        '  add      Add components to $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  remove   Remove components from $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Work with $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Usage: rapid ${platform.name} $featurePackage <subcommand>',
+    '-h, --help    Print this usage information.',
+    '',
+    'Available subcommands:',
+    '  add      Add a component to $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    '  remove   Remove a component from $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

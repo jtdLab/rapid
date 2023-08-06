@@ -4,21 +4,21 @@ import '../mocks.dart';
 import '../utils.dart';
 
 const expectedUsage = [
-  'Remove support for a platform from an existing Rapid project.\n'
-      '\n'
-      'Usage: rapid deactivate <platform>\n'
-      '-h, --help    Print this usage information.\n'
-      '\n'
-      'Available subcommands:\n'
-      '  android   Removes support for Android from this project.\n'
-      '  ios       Removes support for iOS from this project.\n'
-      '  linux     Removes support for Linux from this project.\n'
-      '  macos     Removes support for macOS from this project.\n'
-      '  mobile    Removes support for Mobile from this project.\n'
-      '  web       Removes support for Web from this project.\n'
-      '  windows   Removes support for Windows from this project.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Remove support for a platform from a Rapid project.',
+  '',
+  'Usage: rapid deactivate <platform>',
+  '-h, --help    Print this usage information.',
+  '',
+  'Available subcommands:',
+  '  android   Remove support for Android from this project.',
+  '  ios       Remove support for iOS from this project.',
+  '  linux     Remove support for Linux from this project.',
+  '  macos     Remove support for macOS from this project.',
+  '  mobile    Remove support for Mobile from this project.',
+  '  web       Remove support for Web from this project.',
+  '  windows   Remove support for Windows from this project.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

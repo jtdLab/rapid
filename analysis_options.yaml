@@ -56,7 +56,6 @@ linter:
     - camel_case_extensions
     - camel_case_types
     - cancel_subscriptions
-#    - cascade_invocations TODO rm?
     - cast_nullable_to_non_nullable
     - collection_methods_unrelated_type
     - combinators_ordering
@@ -84,15 +83,15 @@ linter:
     - iterable_contains_unrelated_type
     - join_return_with_assignment
     - leading_newlines_in_multiline_strings
-#    - library_annotations TODO rm ?
+    - library_annotations
     - library_names
     - library_prefixes
     - library_private_types_in_public_api
-#    - lines_longer_than_80_chars
+    - lines_longer_than_80_chars
     - list_remove_unrelated_type
     - literal_only_boolean_expressions
     - missing_whitespace_between_adjacent_strings
-    # - no_adjacent_strings_in_list
+    - no_adjacent_strings_in_list
     - no_default_cases
     - no_duplicate_case_values
     - no_leading_underscores_for_library_prefixes
@@ -146,7 +145,7 @@ linter:
     - prefer_typing_uninitialized_variables
     - prefer_void_to_null
     - provide_deprecation_message
-    # - public_member_api_docs
+    - public_member_api_docs
     - recursive_getters
     - require_trailing_commas
     - secure_pubspec_urls

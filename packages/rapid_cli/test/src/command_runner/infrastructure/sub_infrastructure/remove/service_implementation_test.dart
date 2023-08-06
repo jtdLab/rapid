@@ -7,15 +7,15 @@ import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
 List<String> expectedUsage(String subInfrastructurePackage) => [
-      'Remove a service implementation from the subinfrastructure $subInfrastructurePackage.\n'
-          '\n'
-          'Usage: rapid infrastructure $subInfrastructurePackage remove service_implementation <name> [arguments]\n'
-          '-h, --help       Print this usage information.\n'
-          '\n'
-          '\n'
-          '-s, --service    The name of the service interface the service implementation is related to.\n'
-          '\n'
-          'Run "rapid help" to see global options.'
+      'Remove a service implementation from the subinfrastructure $subInfrastructurePackage.',
+      '',
+      'Usage: rapid infrastructure $subInfrastructurePackage remove service_implementation <name> [arguments]',
+      '-h, --help       Print this usage information.',
+      '',
+      '',
+      '-s, --service    The name of the service interface the service implementation is related to.',
+      '',
+      'Run "rapid help" to see global options.'
     ];
 
 void main() {

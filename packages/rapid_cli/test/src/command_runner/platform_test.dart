@@ -12,18 +12,21 @@ List<String> expectedUsage(
   required Platform platform,
 }) {
   return [
-    'Work with the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ${platform.name} <subcommand>\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Available subcommands:\n'
-        '  add         Add features or languages to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '${featurePackages.map((featurePackage) => '  $featurePackage   Work with $featurePackage of the ${platform.prettyName} part of an existing Rapid project.\n').join()}'
-        '  remove      Removes features or languages from the ${platform.prettyName} part of an existing Rapid project.\n'
-        '  set         Set properties of features from the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Work with the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Usage: rapid ${platform.name} <subcommand>',
+    '-h, --help    Print this usage information.',
+    '',
+    'Available subcommands:',
+    '  add         Add features or languages to the ${platform.prettyName} part of a Rapid project.',
+    ...featurePackages.map(
+      (featurePackage) =>
+          '  $featurePackage   Work with $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    ),
+    '  remove      Remove features or languages from the ${platform.prettyName} part of a Rapid project.',
+    '  set         Set properties of the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

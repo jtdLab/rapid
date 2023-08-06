@@ -9,7 +9,7 @@ import 'platform.dart';
 const _defaultDescription = 'A Rapid app.';
 
 /// {@template activate_web_command}
-/// `rapid activate web` command adds support for Web to an existing Rapid project.
+/// `rapid activate web` adds support for Web to a Rapid project.
 /// {@endtemplate}
 class ActivateWebCommand extends ActivatePlatformCommand
     with DescriptionGetter, OrgNameGetter, LanguageGetter {

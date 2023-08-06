@@ -2,7 +2,7 @@ import '../base.dart';
 import 'add/sub_domain.dart';
 
 /// {@template domain_add_command}
-/// `rapid domain add` command add subdomains to the domain part of an existing Rapid project.
+/// `rapid domain add` add subdomains to the domain part of a Rapid project.
 /// {@endtemplate}
 class DomainAddCommand extends RapidBranchCommand {
   /// {@macro domain_add_command}
@@ -18,5 +18,5 @@ class DomainAddCommand extends RapidBranchCommand {
 
   @override
   String get description =>
-      'Add subdomains to the domain part of an existing Rapid project.';
+      'Add subdomains to the domain part of a Rapid project.';
 }

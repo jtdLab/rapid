@@ -7,15 +7,15 @@ import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
 List<String> expectedUsage(String subInfrastructurePackage) => [
-      'Add a service implementation to the subinfrastructure $subInfrastructurePackage.\n'
-          '\n'
-          'Usage: rapid infrastructure $subInfrastructurePackage add service_implementation <name> [arguments]\n'
-          '-h, --help       Print this usage information.\n'
-          '\n'
-          '\n'
-          '-s, --service    The name of the service interface the service implementation is related to.\n'
-          '\n'
-          'Run "rapid help" to see global options.'
+      'Add a service implementation to the subinfrastructure $subInfrastructurePackage.',
+      '',
+      'Usage: rapid infrastructure $subInfrastructurePackage add service_implementation <name> [arguments]',
+      '-h, --help       Print this usage information.',
+      '',
+      '',
+      '-s, --service    The name of the service interface the service implementation is related to.',
+      '',
+      'Run "rapid help" to see global options.'
     ];
 
 void main() {

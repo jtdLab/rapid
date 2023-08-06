@@ -7,12 +7,12 @@ import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
 List<String> expectedUsage(String subDomainPackage) => [
-      'Add an entity to the subdomain $subDomainPackage.\n'
-          '\n'
-          'Usage: rapid domain $subDomainPackage add entity <name> [arguments]\n'
-          '-h, --help    Print this usage information.\n'
-          '\n'
-          'Run "rapid help" to see global options.'
+      'Add an entity to the subdomain $subDomainPackage.',
+      '',
+      'Usage: rapid domain $subDomainPackage add entity <name> [arguments]',
+      '-h, --help    Print this usage information.',
+      '',
+      'Run "rapid help" to see global options.'
     ];
 
 void main() {

@@ -3,7 +3,7 @@ import 'base.dart';
 import 'deactivate/platform.dart';
 
 /// {@template deactivate_command}
-/// `rapid deactivate` command removes support for a platform from an existing Rapid project.
+/// `rapid deactivate` removes support for a platform from a Rapid project.
 /// {@endtemplate}
 class DeactivateCommand extends RapidBranchCommand {
   /// {@macro deactivate_command}
@@ -22,7 +22,7 @@ class DeactivateCommand extends RapidBranchCommand {
 
   @override
   String get description =>
-      'Remove support for a platform from an existing Rapid project.';
+      'Remove support for a platform from a Rapid project.';
 
   @override
   String get invocation => 'rapid deactivate <platform>';

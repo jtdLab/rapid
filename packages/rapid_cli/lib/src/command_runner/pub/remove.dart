@@ -2,7 +2,7 @@ import '../base.dart';
 import '../util/package_option.dart';
 
 /// {@template pub_remove_command}
-/// `rapid pub remove` command remove packages in a Rapid environment.
+/// `rapid pub remove` remove packages in a Rapid environment.
 /// {@endtemplate}
 class PubRemoveCommand extends RapidLeafCommand with PackageGetter {
   /// {@macro pub_remove_command}

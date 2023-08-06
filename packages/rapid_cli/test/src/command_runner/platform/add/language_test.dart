@@ -10,12 +10,12 @@ import '../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Add a language to the ${platform.prettyName} part of an existing Rapid project.\n'
-        '\n'
-        'Usage: rapid ${platform.name} add language <language>\n'
-        '-h, --help    Print this usage information.\n'
-        '\n'
-        'Run "rapid help" to see global options.'
+    'Add a language to the ${platform.prettyName} part of a Rapid project.',
+    '',
+    'Usage: rapid ${platform.name} add language <language>',
+    '-h, --help    Print this usage information.',
+    '',
+    'Run "rapid help" to see global options.'
   ];
 }
 

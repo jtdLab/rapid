@@ -3,8 +3,14 @@ import '../../../utils.dart';
 import '../../base.dart';
 import '../../util/feature_option.dart';
 
+// TODO refactor this
+
+/// {@template platform_remove_navigator_command}
+/// `rapid <platform> remove navigator` remove a navigator from the platform part of a Rapid project.
+/// {@endtemplate}
 class PlatformRemoveNavigatorCommand extends RapidLeafCommand
     with FeatureGetter {
+  /// {@macro platform_remove_navigator_command}
   PlatformRemoveNavigatorCommand(this.platform, super.project) {
     argParser
       ..addSeparator('')
@@ -29,7 +35,7 @@ class PlatformRemoveNavigatorCommand extends RapidLeafCommand
 
   @override
   String get description =>
-      'Remove a navigator from the ${platform.prettyName} part of an existing Rapid project.';
+      'Remove a navigator from the ${platform.prettyName} part of a Rapid project.';
 
   @override
   Future<void> run() {

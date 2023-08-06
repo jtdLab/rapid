@@ -7,12 +7,12 @@ import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
 List<String> expectedUsage(String subDomainPackage) => [
-      'Remove a service interface from the subdomain $subDomainPackage.\n'
-          '\n'
-          'Usage: rapid domain $subDomainPackage remove service_interface <name> [arguments]\n'
-          '-h, --help    Print this usage information.\n'
-          '\n'
-          'Run "rapid help" to see global options.'
+      'Remove a service interface from the subdomain $subDomainPackage.',
+      '',
+      'Usage: rapid domain $subDomainPackage remove service_interface <name> [arguments]',
+      '-h, --help    Print this usage information.',
+      '',
+      'Run "rapid help" to see global options.'
     ];
 
 void main() {

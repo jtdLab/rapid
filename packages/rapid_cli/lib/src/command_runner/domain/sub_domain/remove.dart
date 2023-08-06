@@ -4,7 +4,7 @@ import 'remove/service_interface.dart';
 import 'remove/value_object.dart';
 
 /// {@template domain_sub_domain_remove_command}
-/// `rapid domain sub_domain remove` command remove components from the domain part of an existing Rapid project.
+/// `rapid domain sub_domain remove` remove a component from the domain part of a Rapid project.
 /// {@endtemplate}
 class DomainSubDomainRemoveCommand extends RapidLeafCommand {
   /// {@macro domain_sub_domain_remove_command}

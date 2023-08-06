@@ -1,4 +1,6 @@
 @Tags(['e2e'])
+library;
+
 import 'package:test/test.dart';
 
 import 'common.dart';
@@ -86,7 +88,8 @@ void main() {
       );
 
 /*       test(
-        'infrastructure <sub_infrastructure> add data_transfer_object (with output dir)',
+        'infrastructure <sub_infrastructure> add '
+        'data_transfer_object (with output dir)',
         performTest(
           subInfrastructure: 'foo_bar',
           outputDir: 'foo',

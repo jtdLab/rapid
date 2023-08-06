@@ -4,17 +4,17 @@ import '../mocks.dart';
 import '../utils.dart';
 
 const expectedUsage = [
-  'Work with packages in a Rapid environment.\n'
-      '\n'
-      'Usage: rapid pub <subcommand>\n'
-      '-h, --help    Print this usage information.\n'
-      '\n'
-      'Available subcommands:\n'
-      '  add      Add dependencies to `pubspec.yaml` in a Rapid project.\n'
-      '  get      Get packages in a Rapid environment.\n'
-      '  remove   Remove packages in a Rapid environment.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Work with packages in a Rapid environment.',
+  '',
+  'Usage: rapid pub <subcommand>',
+  '-h, --help    Print this usage information.',
+  '',
+  'Available subcommands:',
+  '  add      Add dependencies to `pubspec.yaml` in a Rapid project.',
+  '  get      Get packages in a Rapid environment.',
+  '  remove   Remove packages in a Rapid environment.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

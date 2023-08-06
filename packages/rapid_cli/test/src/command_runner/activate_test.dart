@@ -4,21 +4,21 @@ import '../mocks.dart';
 import '../utils.dart';
 
 const expectedUsage = [
-  'Add support for a platform to an existing Rapid project.\n'
-      '\n'
-      'Usage: rapid activate <platform>\n'
-      '-h, --help    Print this usage information.\n'
-      '\n'
-      'Available subcommands:\n'
-      '  android   Adds support for Android to this project.\n'
-      '  ios       Adds support for iOS to this project.\n'
-      '  linux     Adds support for Linux to this project.\n'
-      '  macos     Adds support for macOS to this project.\n'
-      '  mobile    Adds support for Mobile to this project.\n'
-      '  web       Adds support for Web to this project.\n'
-      '  windows   Adds support for Windows to this project.\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Add support for a platform to a Rapid project.',
+  '',
+  'Usage: rapid activate <platform>',
+  '-h, --help    Print this usage information.',
+  '',
+  'Available subcommands:',
+  '  android   Add support for Android to this project.',
+  '  ios       Add support for iOS to this project.',
+  '  linux     Add support for Linux to this project.',
+  '  macos     Add support for macOS to this project.',
+  '  mobile    Add support for Mobile to this project.',
+  '  web       Add support for Web to this project.',
+  '  windows   Add support for Windows to this project.',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

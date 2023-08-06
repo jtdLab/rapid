@@ -4,17 +4,17 @@ import '../../../mocks.dart';
 import '../../../utils.dart';
 
 List<String> expectedUsage(String subDomainPackage) => [
-      'Remove a component from the subdomain $subDomainPackage.\n'
-          '\n'
-          'Usage: rapid domain $subDomainPackage remove <component>\n'
-          '-h, --help    Print this usage information.\n'
-          '\n'
-          'Available subcommands:\n'
-          '  entity              Remove an entity from the subdomain $subDomainPackage.\n'
-          '  service_interface   Remove a service interface from the subdomain $subDomainPackage.\n'
-          '  value_object        Remove a value object from the subdomain $subDomainPackage.\n'
-          '\n'
-          'Run "rapid help" to see global options.'
+      'Remove a component from the subdomain $subDomainPackage.',
+      '',
+      'Usage: rapid domain $subDomainPackage remove <component>',
+      '-h, --help    Print this usage information.',
+      '',
+      'Available subcommands:',
+      '  entity              Remove an entity from the subdomain $subDomainPackage.',
+      '  service_interface   Remove a service interface from the subdomain $subDomainPackage.',
+      '  value_object        Remove a value object from the subdomain $subDomainPackage.',
+      '',
+      'Run "rapid help" to see global options.'
     ];
 
 void main() {

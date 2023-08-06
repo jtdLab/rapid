@@ -40,7 +40,8 @@ final class RapidE2ETester {
   RapidE2ETester(this.projectName);
   late final String projectName;
 
-  /// Create a [RapidE2ETester] having a project with [activatedPlatform] setup in cwd.
+  /// Create a [RapidE2ETester] having a project with [activatedPlatform]
+  /// setup in cwd.
   ///
   /// If [activatedPlatform] is null NO platform will be activated.
   static Future<RapidE2ETester> withProject(
@@ -679,9 +680,11 @@ Future<void> verifyTestsPass(
   expect(testResult.coverage, expectedCoverage);
 }
 
-/// Verifys that no element in [dirs] has a test directory with test files in it.
+/// Verifys that no element in [dirs] has a test directory
+/// with test files in it.
 ///
-/// This passes if no test dir, only empty test/ or test contains empty src/ and/or a mocks.dart exists.
+/// This passes if no test dir, only empty test/ or test contains
+/// empty src/ and/or a mocks.dart exists.
 void verifyDoNotHaveTests(
   Iterable<Directory> dirs,
 ) {
@@ -773,7 +776,8 @@ Future<TestResult> _runFlutterOrDartTest({
   late ProcessResult result;
   if (hasFlutterTest) {
     _println(
-      'Run "flutter test --run-skipped --update-goldens${coverage ? ' --coverage' : ''}" in $cwd\n',
+      'Run "flutter test --run-skipped --update-goldens'
+      '${coverage ? ' --coverage' : ''}" in $cwd\n',
     );
 
     result = await Process.run(

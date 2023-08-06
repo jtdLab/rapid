@@ -8,16 +8,16 @@ import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
-  'Adds support for macOS to this project.\n'
-      '\n'
-      'Usage: rapid activate macos\n'
-      '-h, --help        Print this usage information.\n'
-      '    --org-name    The organization for the native macOS project.\n'
-      '                  (defaults to "com.example")\n'
-      '    --language    The default language for macOS\n'
-      '                  (defaults to "en")\n'
-      '\n'
-      'Run "rapid help" to see global options.'
+  'Add support for macOS to this project.',
+  '',
+  'Usage: rapid activate macos',
+  '-h, --help        Print this usage information.',
+  '    --org-name    The organization for the native macOS project.',
+  '                  (defaults to "com.example")',
+  '    --language    The default language for macOS',
+  '                  (defaults to "en")',
+  '',
+  'Run "rapid help" to see global options.'
 ];
 
 void main() {

@@ -16,9 +16,7 @@ List<String> expectedUsage(String subDomainPackage) => [
     ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('domain <sub_domain> add service_interface', () {
     test(
@@ -86,7 +84,8 @@ void main() {
 
           expect(
             () => commandRunner.run(
-                ['domain', 'package_a', 'add', 'service_interface', 'foo']),
+              ['domain', 'package_a', 'add', 'service_interface', 'foo'],
+            ),
             throwsUsageException(
               message: '"foo" is not a valid dart class name.',
             ),

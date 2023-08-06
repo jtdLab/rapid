@@ -17,7 +17,8 @@ class ServiceInterface extends FileSystemEntityCollection {
       File(p.join(path, 'lib', 'src', 'i_${name.snakeCase}_service.dart'));
 
   File get freezedFile => File(
-      p.join(path, 'lib', 'src', 'i_${name.snakeCase}_service.freezed.dart'));
+        p.join(path, 'lib', 'src', 'i_${name.snakeCase}_service.freezed.dart'),
+      );
 
   @override
   Iterable<FileSystemEntity> get entities => {

@@ -22,9 +22,7 @@ const expectedUsage = [
 ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('activate', () {
     test(

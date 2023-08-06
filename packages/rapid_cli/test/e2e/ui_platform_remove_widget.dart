@@ -8,7 +8,7 @@ dynamic Function() performTest({
     withTempDir((root) async {
       // Arrange
       final tester = await RapidE2ETester.withProject(root, platform);
-      final name = 'FooBar';
+      const name = 'FooBar';
       await tester.runRapidCommand([
         'ui',
         platform.name,
@@ -33,5 +33,6 @@ dynamic Function() performTest({
         ...tester.widgetFiles(name: name, platform: platform),
       });
       await verifyTestsPassWith100PercentCoverage(
-          [tester.platformUiPackage(platform)]);
+        [tester.platformUiPackage(platform)],
+      );
     });

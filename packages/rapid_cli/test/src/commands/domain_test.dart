@@ -27,9 +27,7 @@ void main() {
   late CommandGroup commandGroup;
   late RapidTool tool;
 
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   setUp(() {
     entity = MockEntity();
@@ -119,19 +117,20 @@ void main() {
         await rapid.domainAddSubDomain(name: 'foo_bar');
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating domain package'),
           () => domainPackage.generate(),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Creating infrastructure package'),
           () => infrastructurePackage.generate(),
           () =>
               rootPackageA.registerInfrastructurePackage(infrastructurePackage),
           () =>
               rootPackageB.registerInfrastructurePackage(infrastructurePackage),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress(
-              'Running "melos bootstrap --scope domain_package,infrastructure_package,root_package_a,root_package_b"'),
+                'Running "melos bootstrap --scope domain_package,infrastructure_package,root_package_a,root_package_b"',
+              ),
           () => manager.runMelosBootstrap(
                 [
                   'domain_package',
@@ -141,24 +140,24 @@ void main() {
                 ],
                 workingDirectory: 'project_path',
               ),
-          () => progress.complete(),
-          () => logger.progressGroup(null),
+          progress.complete,
+          logger.progressGroup,
           () => progressGroup
               .progress('Running code generation in root_package_a'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'root_package_a_path',
               ),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => progressGroup
               .progress('Running code generation in root_package_b'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'root_package_b_path',
               ),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Sub Domain!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -258,41 +257,42 @@ void main() {
         await rapid.domainRemoveSubDomain(name: 'foo_bar');
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Deleting domain package'),
           () => domainPackage.deleteSync(recursive: true),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Deleting infrastructure package'),
           () => rootPackageA
               .unregisterInfrastructurePackage(infrastructurePackage),
           () => rootPackageB
               .unregisterInfrastructurePackage(infrastructurePackage),
           () => infrastructurePackage.deleteSync(recursive: true),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress(
-              'Running "melos bootstrap --scope root_package_a,root_package_b"'),
+                'Running "melos bootstrap --scope root_package_a,root_package_b"',
+              ),
           () => manager.runMelosBootstrap(
                 ['root_package_a', 'root_package_b'],
                 workingDirectory: 'project_path',
               ),
-          () => progress.complete(),
-          () => logger.progressGroup(null),
+          progress.complete,
+          logger.progressGroup,
           () => progressGroup
               .progress('Running code generation in root_package_a'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'root_package_a_path',
               ),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => progressGroup
               .progress('Running code generation in root_package_b'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'root_package_b_path',
               ),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Sub Domain!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -367,15 +367,15 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating entity'),
           () => entity.generate(),
           () => domainPackageBarrelFile.addExport('src/cool.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Entity!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -414,15 +414,15 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating service interface'),
           () => serviceInterface.generate(),
           () => domainPackageBarrelFile.addExport('src/i_cool_service.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Service Interface!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -469,20 +469,20 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating value object'),
           () => valueObject.generate(type: 'String', generics: '<T>'),
           () => domainPackageBarrelFile.addExport('src/cool.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running code generation in domain_package'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'domain_package_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Value Object!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -549,15 +549,15 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Deleting entity files'),
           () => entity.delete(),
           () => domainPackageBarrelFile.removeExport('src/cool.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Entity!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -596,15 +596,15 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Deleting service interface files'),
           () => serviceInterface.delete(),
           () => domainPackageBarrelFile.removeExport('src/i_cool_service.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Service Interface!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -643,15 +643,15 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Deleting value object files'),
           () => valueObject.delete(),
           () => domainPackageBarrelFile.removeExport('src/cool.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Value Object!')
         ]);
         verifyNoMoreInteractions(manager);

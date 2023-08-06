@@ -20,9 +20,7 @@ class _DartPackage extends DartPackage {
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('FileSystemEntityCollection', () {
     group('existAny', () {
@@ -231,15 +229,19 @@ void main() {
         ]),
       );
 
-      final stream = directory.list(recursive: true, followLinks: true);
+      final stream = directory.list(recursive: true);
 
       verify(
-        () => ioDirectory.list(recursive: true, followLinks: true),
+        () => ioDirectory.list(recursive: true),
       ).called(1);
-      expect(await stream.first,
-          isA<File>().having((f) => f.path, 'path', 'path_1'));
-      expect(await stream.last,
-          isA<Directory>().having((f) => f.path, 'path', 'path_2'));
+      expect(
+        await stream.first,
+        isA<File>().having((f) => f.path, 'path', 'path_1'),
+      );
+      expect(
+        await stream.last,
+        isA<Directory>().having((f) => f.path, 'path', 'path_2'),
+      );
     });
 
     test('listSync', () {
@@ -255,14 +257,16 @@ void main() {
         ],
       );
 
-      final list = directory.listSync(recursive: true, followLinks: true);
+      final list = directory.listSync(recursive: true);
 
       verify(
-        () => ioDirectory.listSync(recursive: true, followLinks: true),
+        () => ioDirectory.listSync(recursive: true),
       ).called(1);
       expect(list.first, isA<File>().having((f) => f.path, 'path', 'path_1'));
       expect(
-          list.last, isA<Directory>().having((f) => f.path, 'path', 'path_2'));
+        list.last,
+        isA<Directory>().having((f) => f.path, 'path', 'path_2'),
+      );
     });
 
     test('parent', () {
@@ -357,7 +361,7 @@ void main() {
     });
 
     test('watch', () {
-      final mockStream = Stream<FileSystemEvent>.empty();
+      const mockStream = Stream<FileSystemEvent>.empty();
       when(
         () => ioDirectory.watch(
           events: any(named: 'events'),
@@ -365,11 +369,10 @@ void main() {
         ),
       ).thenAnswer((_) => mockStream);
 
-      final stream =
-          directory.watch(events: FileSystemEvent.all, recursive: true);
+      final stream = directory.watch(recursive: true);
 
       verify(
-        () => ioDirectory.watch(events: FileSystemEvent.all, recursive: true),
+        () => ioDirectory.watch(recursive: true),
       ).called(1);
       expect(stream, mockStream);
     });
@@ -427,17 +430,16 @@ void main() {
         ),
       ).thenAnswer((_) async => FakeIOFile(path: 'created_path'));
 
-      final createdFile = await file.create(recursive: true, exclusive: false);
+      final createdFile = await file.create(recursive: true);
 
-      verify(() => ioFile.create(recursive: true, exclusive: false)).called(1);
+      verify(() => ioFile.create(recursive: true)).called(1);
       expect(createdFile.path, 'created_path');
     });
 
     test('createSync', () {
-      file.createSync(recursive: true, exclusive: false);
+      file.createSync(recursive: true);
 
-      verify(() => ioFile.createSync(recursive: true, exclusive: false))
-          .called(1);
+      verify(() => ioFile.createSync(recursive: true)).called(1);
     });
 
     test('delete', () async {
@@ -487,7 +489,7 @@ void main() {
     });
 
     test('lastAccessed', () async {
-      final lastAccessedDateTime = DateTime(2023, 8, 3, 12, 0, 0);
+      final lastAccessedDateTime = DateTime(2023, 8, 3, 12);
       when(() => ioFile.lastAccessed())
           .thenAnswer((_) async => lastAccessedDateTime);
 
@@ -498,7 +500,7 @@ void main() {
     });
 
     test('lastAccessedSync', () {
-      final lastAccessedDateTime = DateTime(2023, 8, 3, 12, 0, 0);
+      final lastAccessedDateTime = DateTime(2023, 8, 3, 12);
       when(() => ioFile.lastAccessedSync()).thenReturn(lastAccessedDateTime);
 
       final lastAccessed = file.lastAccessedSync();
@@ -508,7 +510,7 @@ void main() {
     });
 
     test('lastModified', () async {
-      final lastModifiedDateTime = DateTime(2023, 8, 2, 15, 30, 0);
+      final lastModifiedDateTime = DateTime(2023, 8, 2, 15, 30);
       when(() => ioFile.lastModified())
           .thenAnswer((_) async => lastModifiedDateTime);
 
@@ -519,7 +521,7 @@ void main() {
     });
 
     test('lastModifiedSync', () {
-      final lastModifiedDateTime = DateTime(2023, 8, 2, 15, 30, 0);
+      final lastModifiedDateTime = DateTime(2023, 8, 2, 15, 30);
       when(() => ioFile.lastModifiedSync()).thenReturn(lastModifiedDateTime);
 
       final lastModified = file.lastModifiedSync();
@@ -560,7 +562,7 @@ void main() {
     });
 
     test('openRead', () {
-      final mockStream = Stream<List<int>>.empty();
+      const mockStream = Stream<List<int>>.empty();
       when(() => ioFile.openRead(any(), any())).thenAnswer((_) => mockStream);
 
       final stream = file.openRead();
@@ -716,7 +718,7 @@ void main() {
     });
 
     test('setLastAccessed', () async {
-      final lastAccessed = DateTime(2023, 8, 3, 12, 0, 0);
+      final lastAccessed = DateTime(2023, 8, 3, 12);
       when(() => ioFile.setLastAccessed(any())).thenAnswer((_) async => true);
 
       final result = await file.setLastAccessed(lastAccessed);
@@ -726,14 +728,14 @@ void main() {
     });
 
     test('setLastAccessedSync', () {
-      final lastAccessed = DateTime(2023, 8, 3, 12, 0, 0);
+      final lastAccessed = DateTime(2023, 8, 3, 12);
       file.setLastAccessedSync(lastAccessed);
 
       verify(() => ioFile.setLastAccessedSync(lastAccessed)).called(1);
     });
 
     test('setLastModified', () async {
-      final lastModified = DateTime(2023, 8, 2, 15, 30, 0);
+      final lastModified = DateTime(2023, 8, 2, 15, 30);
       when(() => ioFile.setLastModified(any())).thenAnswer((_) async => true);
 
       final result = await file.setLastModified(lastModified);
@@ -743,7 +745,7 @@ void main() {
     });
 
     test('setLastModifiedSync', () {
-      final lastModified = DateTime(2023, 8, 2, 15, 30, 0);
+      final lastModified = DateTime(2023, 8, 2, 15, 30);
 
       file.setLastModifiedSync(lastModified);
 
@@ -781,7 +783,7 @@ void main() {
     });
 
     test('watch', () {
-      final mockStream = Stream<FileSystemEvent>.empty();
+      const mockStream = Stream<FileSystemEvent>.empty();
       when(
         () => ioFile.watch(
           events: any(named: 'events'),
@@ -913,7 +915,7 @@ void main() {
           File('foo.yaml').writeAsStringSync('key:');
           final yamlFile = YamlFile('foo.yaml');
 
-          final value = yamlFile.read<String>('key');
+          final value = yamlFile.read<String?>('key');
           expect(value, equals(null));
         }),
       );
@@ -939,7 +941,7 @@ void main() {
 
           yamlFile.set(['key'], null, blankIfValueNull: true);
           expect(file.readAsStringSync(), 'key:');
-          expect(yamlFile.read<String>('key'), equals(null));
+          expect(yamlFile.read<String?>('key'), equals(null));
         }),
       );
     });
@@ -1253,7 +1255,7 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'import \'dart:io\';',
+                "import 'dart:io';",
                 '',
                 '// some code',
               ]),
@@ -1266,9 +1268,9 @@ void main() {
           expect(
             content,
             multiLine([
-              'import \'dart:io\';',
+              "import 'dart:io';",
               '',
-              'import \'package:flutter/material.dart\';',
+              "import 'package:flutter/material.dart';",
               '',
               '// some code',
               '',
@@ -1283,9 +1285,9 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'import \'dart:io\';',
+                "import 'dart:io';",
                 '',
-                'import \'package:flutter/material.dart\';',
+                "import 'package:flutter/material.dart';",
                 '',
                 '// some code',
               ]),
@@ -1298,9 +1300,9 @@ void main() {
           expect(
             content,
             multiLine([
-              'import \'dart:io\';',
+              "import 'dart:io';",
               '',
-              'import \'package:flutter/material.dart\';',
+              "import 'package:flutter/material.dart';",
               '',
               '// some code',
               '',
@@ -1315,13 +1317,13 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'import \'dart:io\';',
-                'import \'dart:async\';',
+                "import 'dart:io';",
+                "import 'dart:async';",
                 '',
-                'import \'package:aaa/aaa.dart\';',
+                "import 'package:aaa/aaa.dart';",
                 '',
-                'import \'injection.config.dart\';',
-                'import \'a.dart\';',
+                "import 'injection.config.dart';",
+                "import 'a.dart';",
                 '',
                 '// some code',
               ]),
@@ -1334,14 +1336,14 @@ void main() {
           expect(
             content,
             multiLine([
-              'import \'dart:async\';',
-              'import \'dart:io\';',
+              "import 'dart:async';",
+              "import 'dart:io';",
               '',
-              'import \'package:aaa/aaa.dart\';',
-              'import \'package:bbb/bbb.dart\';',
+              "import 'package:aaa/aaa.dart';",
+              "import 'package:bbb/bbb.dart';",
               '',
-              'import \'a.dart\';',
-              'import \'injection.config.dart\';',
+              "import 'a.dart';",
+              "import 'injection.config.dart';",
               '',
               '// some code',
               '',
@@ -1356,14 +1358,14 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'export \'dart:io\';',
+                "export 'dart:io';",
                 '',
-                'import \'b.dart\';',
-                'export \'package:aaa/aaa.dart\';',
-                'import \'dart:io\';',
-                'import \'dart:async\';',
-                'import \'a.dart\';',
-                'export \'dart:async\';',
+                "import 'b.dart';",
+                "export 'package:aaa/aaa.dart';",
+                "import 'dart:io';",
+                "import 'dart:async';",
+                "import 'a.dart';",
+                "export 'dart:async';",
                 '',
                 '// some code',
               ]),
@@ -1376,18 +1378,18 @@ void main() {
           expect(
             content,
             multiLine([
-              'import \'dart:async\';',
-              'import \'dart:io\';',
+              "import 'dart:async';",
+              "import 'dart:io';",
               '',
-              'import \'package:bbb/bbb.dart\';',
+              "import 'package:bbb/bbb.dart';",
               '',
-              'import \'a.dart\';',
-              'import \'b.dart\';',
+              "import 'a.dart';",
+              "import 'b.dart';",
               '',
-              'export \'dart:async\';',
-              'export \'dart:io\';',
+              "export 'dart:async';",
+              "export 'dart:io';",
               '',
-              'export \'package:aaa/aaa.dart\';',
+              "export 'package:aaa/aaa.dart';",
               '',
               '// some code',
               '',
@@ -1419,7 +1421,7 @@ void main() {
               '// Docs',
               'library foo_bar;',
               '',
-              'import \'package:aaa/aaa.dart\';',
+              "import 'package:aaa/aaa.dart';",
               '',
               '// some code',
               '',
@@ -1436,7 +1438,7 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'export \'dart:io\';',
+                "export 'dart:io';",
                 '',
                 '// some code',
               ]),
@@ -1449,9 +1451,9 @@ void main() {
           expect(
             content,
             multiLine([
-              'export \'dart:io\';',
+              "export 'dart:io';",
               '',
-              'export \'package:flutter/material.dart\';',
+              "export 'package:flutter/material.dart';",
               '',
               '// some code',
               '',
@@ -1466,9 +1468,9 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'export \'dart:io\';',
+                "export 'dart:io';",
                 '',
-                'export \'package:flutter/material.dart\';',
+                "export 'package:flutter/material.dart';",
                 '',
                 '// some code',
               ]),
@@ -1481,9 +1483,9 @@ void main() {
           expect(
             content,
             multiLine([
-              'export \'dart:io\';',
+              "export 'dart:io';",
               '',
-              'export \'package:flutter/material.dart\';',
+              "export 'package:flutter/material.dart';",
               '',
               '// some code',
               '',
@@ -1498,13 +1500,13 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'export \'dart:io\';',
-                'export \'dart:async\';',
+                "export 'dart:io';",
+                "export 'dart:async';",
                 '',
-                'export \'package:aaa/aaa.dart\';',
+                "export 'package:aaa/aaa.dart';",
                 '',
-                'export \'injection.config.dart\';',
-                'export \'a.dart\';',
+                "export 'injection.config.dart';",
+                "export 'a.dart';",
                 '',
                 '// some code',
               ]),
@@ -1517,14 +1519,14 @@ void main() {
           expect(
             content,
             multiLine([
-              'export \'dart:async\';',
-              'export \'dart:io\';',
+              "export 'dart:async';",
+              "export 'dart:io';",
               '',
-              'export \'package:aaa/aaa.dart\';',
-              'export \'package:bbb/bbb.dart\';',
+              "export 'package:aaa/aaa.dart';",
+              "export 'package:bbb/bbb.dart';",
               '',
-              'export \'a.dart\';',
-              'export \'injection.config.dart\';',
+              "export 'a.dart';",
+              "export 'injection.config.dart';",
               '',
               '// some code',
               '',
@@ -1539,12 +1541,12 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'export \'dart:io\';',
-                'export \'dart:async\';',
+                "export 'dart:io';",
+                "export 'dart:async';",
                 '',
-                'export \'package:aaa/aaa.dart\';',
-                'import \'dart:io\';',
-                'import \'dart:async\';',
+                "export 'package:aaa/aaa.dart';",
+                "import 'dart:io';",
+                "import 'dart:async';",
                 '',
                 '// some code',
               ]),
@@ -1557,14 +1559,14 @@ void main() {
           expect(
             content,
             multiLine([
-              'import \'dart:async\';',
-              'import \'dart:io\';',
+              "import 'dart:async';",
+              "import 'dart:io';",
               '',
-              'export \'dart:async\';',
-              'export \'dart:io\';',
+              "export 'dart:async';",
+              "export 'dart:io';",
               '',
-              'export \'package:aaa/aaa.dart\';',
-              'export \'package:bbb/bbb.dart\';',
+              "export 'package:aaa/aaa.dart';",
+              "export 'package:bbb/bbb.dart';",
               '',
               '// some code',
               '',
@@ -1596,7 +1598,7 @@ void main() {
               '// Docs',
               'library foo_bar;',
               '',
-              'export \'package:aaa/aaa.dart\';',
+              "export 'package:aaa/aaa.dart';",
               '',
               '// some code',
               '',
@@ -1613,7 +1615,7 @@ void main() {
           File('example.dart').writeAsStringSync(
             multiLine([
               'void main() {',
-              '  print(\'Hello, World!\');',
+              "  print('Hello, World!');",
               '}',
             ]),
           );
@@ -1712,9 +1714,9 @@ void main() {
         withMockFs(() {
           File('example.dart').writeAsStringSync(
             multiLine([
-              'import \'dart:io\';',
-              'import \'package:flutter/material.dart\';',
-              'import \'my_custom_package.dart\';',
+              "import 'dart:io';",
+              "import 'package:flutter/material.dart';",
+              "import 'my_custom_package.dart';",
               ''
             ]),
           );
@@ -1738,9 +1740,9 @@ void main() {
         withMockFs(() {
           File('example.dart').writeAsStringSync(
             multiLine([
-              'import \'dart:io\';',
+              "import 'dart:io';",
               '',
-              'import \'package:flutter/material.dart\';import \'my_custom_package.dart\';',
+              "import 'package:flutter/material.dart';import 'my_custom_package.dart';",
               ''
             ]),
           );
@@ -1780,8 +1782,8 @@ void main() {
             multiLine([
               'class MyClass {',
               '  static List<String> myList = [',
-              '    \'value1\',',
-              '    \'value2\',',
+              "    'value1',",
+              "    'value2',",
               '  ];',
               '}',
             ]),
@@ -1796,8 +1798,8 @@ void main() {
           expect(
             listVar,
             [
-              '\'value1\'',
-              '\'value2\'',
+              "'value1'",
+              "'value2'",
             ],
           );
         }),
@@ -1870,7 +1872,7 @@ void main() {
         withMockFs(() {
           File('example.dart').writeAsStringSync(
             multiLine([
-              '@MyAnnotation(values: [\'a\', \'b\', \'c\'])',
+              "@MyAnnotation(values: ['a', 'b', 'c'])",
               'void myFunction() {',
               '  // Function body',
               '}',
@@ -1888,9 +1890,9 @@ void main() {
           expect(
             typeList,
             [
-              '\'a\'',
-              '\'b\'',
-              '\'c\'',
+              "'a'",
+              "'b'",
+              "'c'",
             ],
           );
         }),
@@ -1904,12 +1906,12 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'import \'dart:io\';',
+                "import 'dart:io';",
                 '',
-                'import \'package:flutter/material.dart\';',
+                "import 'package:flutter/material.dart';",
                 '',
-                'import \'my_custom_package.dart\';',
-                'import \'some_other_package.dart\';',
+                "import 'my_custom_package.dart';",
+                "import 'some_other_package.dart';",
                 '',
               ]),
             );
@@ -1921,10 +1923,10 @@ void main() {
           expect(
             content,
             multiLine([
-              'import \'dart:io\';',
+              "import 'dart:io';",
               '',
-              'import \'my_custom_package.dart\';',
-              'import \'some_other_package.dart\';',
+              "import 'my_custom_package.dart';",
+              "import 'some_other_package.dart';",
               '',
             ]),
           );
@@ -1937,7 +1939,7 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'import \'dart:io\';',
+                "import 'dart:io';",
                 '',
               ]),
             );
@@ -1949,7 +1951,7 @@ void main() {
           expect(
             content,
             multiLine([
-              'import \'dart:io\';',
+              "import 'dart:io';",
               '',
             ]),
           );
@@ -1962,14 +1964,14 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'import \'dart:io\';',
-                'import \'dart:async\';',
+                "import 'dart:io';",
+                "import 'dart:async';",
                 '',
-                'import \'package:bbb/bbb.dart\';',
-                'import \'package:aaa/aaa.dart\';',
+                "import 'package:bbb/bbb.dart';",
+                "import 'package:aaa/aaa.dart';",
                 '',
-                'import \'injection.config.dart\';',
-                'import \'a.dart\';',
+                "import 'injection.config.dart';",
+                "import 'a.dart';",
                 '',
                 '// some code',
               ]),
@@ -1982,13 +1984,13 @@ void main() {
           expect(
             content,
             multiLine([
-              'import \'dart:async\';',
-              'import \'dart:io\';',
+              "import 'dart:async';",
+              "import 'dart:io';",
               '',
-              'import \'package:aaa/aaa.dart\';',
+              "import 'package:aaa/aaa.dart';",
               '',
-              'import \'a.dart\';',
-              'import \'injection.config.dart\';',
+              "import 'a.dart';",
+              "import 'injection.config.dart';",
               '',
               '// some code',
               '',
@@ -2003,14 +2005,14 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'export \'dart:io\';',
+                "export 'dart:io';",
                 '',
-                'export \'package:aaa/aaa.dart\';',
-                'import \'dart:io\';',
-                'import \'dart:async\';',
-                'export \'dart:async\';',
+                "export 'package:aaa/aaa.dart';",
+                "import 'dart:io';",
+                "import 'dart:async';",
+                "export 'dart:async';",
                 '',
-                'import \'package:bbb/bbb.dart\';',
+                "import 'package:bbb/bbb.dart';",
                 '// some code',
               ]),
             );
@@ -2022,13 +2024,13 @@ void main() {
           expect(
             content,
             multiLine([
-              'import \'dart:async\';',
-              'import \'dart:io\';',
+              "import 'dart:async';",
+              "import 'dart:io';",
               '',
-              'export \'dart:async\';',
-              'export \'dart:io\';',
+              "export 'dart:async';",
+              "export 'dart:io';",
               '',
-              'export \'package:aaa/aaa.dart\';',
+              "export 'package:aaa/aaa.dart';",
               '',
               '// some code',
               '',
@@ -2045,10 +2047,10 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'export \'package:flutter/material.dart\';',
+                "export 'package:flutter/material.dart';",
                 '',
-                'export \'my_custom_package.dart\';',
-                'export \'some_other_package.dart\';',
+                "export 'my_custom_package.dart';",
+                "export 'some_other_package.dart';",
               ]),
             );
           final dartFile = DartFile('example.dart');
@@ -2059,8 +2061,8 @@ void main() {
           expect(
             content,
             multiLine([
-              'export \'my_custom_package.dart\';',
-              'export \'some_other_package.dart\';',
+              "export 'my_custom_package.dart';",
+              "export 'some_other_package.dart';",
               '',
             ]),
           );
@@ -2073,7 +2075,7 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'export \'my_custom_package.dart\';',
+                "export 'my_custom_package.dart';",
                 '',
               ]),
             );
@@ -2085,7 +2087,7 @@ void main() {
           expect(
             content,
             multiLine([
-              'export \'my_custom_package.dart\';',
+              "export 'my_custom_package.dart';",
               '',
             ]),
           );
@@ -2098,15 +2100,15 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'export \'dart:io\';',
-                'export \'dart:async\';',
+                "export 'dart:io';",
+                "export 'dart:async';",
                 '',
-                'export \'package:aaa/aaa.dart\';',
+                "export 'package:aaa/aaa.dart';",
                 '',
-                'export \'injection.config.dart\';',
-                'export \'a.dart\';',
+                "export 'injection.config.dart';",
+                "export 'a.dart';",
                 '',
-                'export \'package:bbb/bbb.dart\';',
+                "export 'package:bbb/bbb.dart';",
                 '// some code',
               ]),
             );
@@ -2118,13 +2120,13 @@ void main() {
           expect(
             content,
             multiLine([
-              'export \'dart:async\';',
-              'export \'dart:io\';',
+              "export 'dart:async';",
+              "export 'dart:io';",
               '',
-              'export \'package:aaa/aaa.dart\';',
+              "export 'package:aaa/aaa.dart';",
               '',
-              'export \'a.dart\';',
-              'export \'injection.config.dart\';',
+              "export 'a.dart';",
+              "export 'injection.config.dart';",
               '',
               '// some code',
               '',
@@ -2139,13 +2141,13 @@ void main() {
           final file = File('example.dart')
             ..writeAsStringSync(
               multiLine([
-                'export \'dart:io\';',
-                'export \'dart:async\';',
+                "export 'dart:io';",
+                "export 'dart:async';",
                 '',
-                'export \'package:bbb/bbb.dart\';',
-                'export \'package:aaa/aaa.dart\';',
-                'import \'dart:io\';',
-                'import \'dart:async\';',
+                "export 'package:bbb/bbb.dart';",
+                "export 'package:aaa/aaa.dart';",
+                "import 'dart:io';",
+                "import 'dart:async';",
                 '',
                 '// some code',
               ]),
@@ -2158,13 +2160,13 @@ void main() {
           expect(
             content,
             multiLine([
-              'import \'dart:async\';',
-              'import \'dart:io\';',
+              "import 'dart:async';",
+              "import 'dart:io';",
               '',
-              'export \'dart:async\';',
-              'export \'dart:io\';',
+              "export 'dart:async';",
+              "export 'dart:io';",
               '',
-              'export \'package:aaa/aaa.dart\';',
+              "export 'package:aaa/aaa.dart';",
               '',
               '// some code',
               '',
@@ -2250,7 +2252,7 @@ void main() {
         withMockFs(() {
           File('example.dart').writeAsStringSync(
             multiLine([
-              '@MyAnnotation(values: [\'a\', \'b\', \'c\'])',
+              "@MyAnnotation(values: ['a', 'b', 'c'])",
               'void myFunction() {',
               '  // Function body',
               '}',
@@ -2262,14 +2264,14 @@ void main() {
             property: 'values',
             annotation: 'MyAnnotation',
             functionName: 'myFunction',
-            value: ['\'x\'', '\'y\'', '\'z\''],
+            value: ["'x'", "'y'", "'z'"],
           );
 
           final content = dartFile.readAsStringSync();
           expect(
             content,
             multiLine([
-              '@MyAnnotation(values: [\'x\',\'y\',\'z\',])',
+              "@MyAnnotation(values: ['x','y','z',])",
               'void myFunction() {',
               '  // Function body',
               '}',
@@ -2283,7 +2285,7 @@ void main() {
         withMockFs(() {
           File('example.dart').writeAsStringSync(
             multiLine([
-              '@MyAnnotation(values: [\'a\', \'b\', \'c\'])',
+              "@MyAnnotation(values: ['a', 'b', 'c'])",
               'void myFunction() {',
               '  // Function body',
               '}',
@@ -2316,7 +2318,7 @@ void main() {
         withMockFs(() {
           File('example.dart').writeAsStringSync(
             multiLine([
-              '@MyAnnotation(values: [\'a\', \'b\', \'c\'])',
+              "@MyAnnotation(values: ['a', 'b', 'c'])",
               'void myFunction() {',
               '  // Function body',
               '}',
@@ -2328,14 +2330,14 @@ void main() {
             property: 'values',
             annotation: 'MyAnnotation',
             functionName: 'myFunction',
-            value: ['\'x\''],
+            value: ["'x'"],
           );
 
           final content = dartFile.readAsStringSync();
           expect(
             content,
             multiLine([
-              '@MyAnnotation(values: [\'x\',])',
+              "@MyAnnotation(values: ['x',])",
               'void myFunction() {',
               '  // Function body',
               '}',
@@ -2388,7 +2390,7 @@ void main() {
           final plistFile = PlistFile('file.plist');
 
           expect(
-            () => plistFile.readDict(),
+            plistFile.readDict,
             throwsA(
               isA<PlistFileError>().having(
                 (e) => e.message,

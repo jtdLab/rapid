@@ -18,9 +18,7 @@ DiPackage _getDiPackage({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('DiPackage', () {
     test('.resolve', () {
@@ -44,7 +42,7 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final diPackage = _getDiPackage(
             projectName: 'test_project',
             path: '/path/to/di_package',

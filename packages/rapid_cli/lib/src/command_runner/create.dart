@@ -98,20 +98,21 @@ class CreateCommand extends RapidLeafCommand
     final mobile = argResults['mobile'] as bool? ?? false;
 
     return rapid.create(
-        projectName: projectName,
-        outputDir: outputDir,
-        description: description,
-        orgName: orgName,
-        language: language,
-        platforms: {
-          if (android) Platform.android,
-          if (ios) Platform.ios,
-          if (linux) Platform.linux,
-          if (macos) Platform.macos,
-          if (web) Platform.web,
-          if (windows) Platform.windows,
-          if (mobile) Platform.mobile,
-        });
+      projectName: projectName,
+      outputDir: outputDir,
+      description: description,
+      orgName: orgName,
+      language: language,
+      platforms: {
+        if (android) Platform.android,
+        if (ios) Platform.ios,
+        if (linux) Platform.linux,
+        if (macos) Platform.macos,
+        if (web) Platform.web,
+        if (windows) Platform.windows,
+        if (mobile) Platform.mobile,
+      },
+    );
   }
 
   /// Validates whether [args] contains ONLY a valid project name.

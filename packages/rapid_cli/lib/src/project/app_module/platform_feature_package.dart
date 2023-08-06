@@ -18,7 +18,8 @@ abstract class PlatformFeaturePackage extends DartPackage
   final String name;
 
   DartFile get barrelFile => DartFile(
-      p.join(path, 'lib', '${projectName}_${platform.name}_$name.dart'));
+        p.join(path, 'lib', '${projectName}_${platform.name}_$name.dart'),
+      );
 
   Directory get applicationDir =>
       Directory(p.join(path, 'lib', 'src', 'application'));
@@ -84,14 +85,14 @@ class PlatformAppFeaturePackage extends PlatformFeaturePackage {
       '${projectName}_${platform.name}_features',
       '${projectName}_${platform.name}_app',
     );
-    bloc({required String name}) => Bloc(
+    Bloc bloc({required String name}) => Bloc(
           projectName: projectName,
           platform: platform,
           name: name,
           path: path,
           featureName: 'app',
         );
-    cubit({required String name}) => Cubit(
+    Cubit cubit({required String name}) => Cubit(
           projectName: projectName,
           platform: platform,
           name: name,
@@ -146,14 +147,14 @@ class PlatformPageFeaturePackage extends PlatformRoutableFeaturePackage {
       '${projectName}_${platform.name}_features',
       '${projectName}_${platform.name}_${selfName}_page',
     );
-    bloc({required String name}) => Bloc(
+    Bloc bloc({required String name}) => Bloc(
           projectName: projectName,
           platform: platform,
           name: name,
           path: path,
           featureName: '${selfName}_page',
         );
-    cubit({required String name}) => Cubit(
+    Cubit cubit({required String name}) => Cubit(
           projectName: projectName,
           platform: platform,
           name: name,
@@ -218,14 +219,14 @@ class PlatformFlowFeaturePackage extends PlatformRoutableFeaturePackage {
       '${projectName}_${platform.name}_features',
       '${projectName}_${platform.name}_${selfName}_flow',
     );
-    bloc({required String name}) => Bloc(
+    Bloc bloc({required String name}) => Bloc(
           projectName: projectName,
           platform: platform,
           name: name,
           path: path,
           featureName: '${selfName}_flow',
         );
-    cubit({required String name}) => Cubit(
+    Cubit cubit({required String name}) => Cubit(
           projectName: projectName,
           platform: platform,
           name: name,
@@ -233,10 +234,11 @@ class PlatformFlowFeaturePackage extends PlatformRoutableFeaturePackage {
           featureName: '${selfName}_flow',
         );
     final navigatorImplementation = NavigatorImplementation(
-        projectName: projectName,
-        platform: platform,
-        path: path,
-        name: '${selfName}_flow');
+      projectName: projectName,
+      platform: platform,
+      path: path,
+      name: '${selfName}_flow',
+    );
 
     return PlatformFlowFeaturePackage(
       projectName: projectName,
@@ -289,14 +291,14 @@ class PlatformTabFlowFeaturePackage extends PlatformRoutableFeaturePackage {
       '${projectName}_${platform.name}_features',
       '${projectName}_${platform.name}_${selfName}_tab_flow',
     );
-    bloc({required String name}) => Bloc(
+    Bloc bloc({required String name}) => Bloc(
           projectName: projectName,
           platform: platform,
           name: name,
           path: path,
           featureName: '${selfName}_tab_flow',
         );
-    cubit({required String name}) => Cubit(
+    Cubit cubit({required String name}) => Cubit(
           projectName: projectName,
           platform: platform,
           name: name,
@@ -322,8 +324,8 @@ class PlatformTabFlowFeaturePackage extends PlatformRoutableFeaturePackage {
   }
 
   Future<void> generate({
-    String? description,
     required Set<String> subFeatures,
+    String? description,
   }) async {
     await mason.generate(
       bundle: platformTabFlowFeaturePackageBundle,
@@ -366,14 +368,14 @@ class PlatformWidgetFeaturePackage extends PlatformFeaturePackage {
       '${projectName}_${platform.name}_features',
       '${projectName}_${platform.name}_${selfName}_widget',
     );
-    bloc({required String name}) => Bloc(
+    Bloc bloc({required String name}) => Bloc(
           projectName: projectName,
           platform: platform,
           name: name,
           path: path,
           featureName: '${selfName}_widget',
         );
-    cubit({required String name}) => Cubit(
+    Cubit cubit({required String name}) => Cubit(
           projectName: projectName,
           platform: platform,
           name: name,

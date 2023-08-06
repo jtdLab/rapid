@@ -37,7 +37,7 @@ void main() {
 
           expect(
             commandGroup,
-            CommandGroup(
+            const CommandGroup(
               isActive: true,
               packagesToBootstrap: {'package_a', 'package_b'},
               packagesToCodeGen: {'package_c', 'package_d'},
@@ -55,7 +55,7 @@ void main() {
 
           expect(
             commandGroup,
-            CommandGroup(
+            const CommandGroup(
               isActive: false,
               packagesToBootstrap: {},
               packagesToCodeGen: {},
@@ -75,7 +75,7 @@ void main() {
 
           expect(
             tool.loadGroup(),
-            CommandGroup(
+            const CommandGroup(
               isActive: true,
               packagesToBootstrap: {},
               packagesToCodeGen: {},
@@ -102,7 +102,7 @@ void main() {
 
           expect(
             commandGroup,
-            CommandGroup(
+            const CommandGroup(
               isActive: false,
               packagesToBootstrap: {},
               packagesToCodeGen: {},
@@ -131,7 +131,7 @@ void main() {
 
           expect(
             tool.loadGroup(),
-            CommandGroup(
+            const CommandGroup(
               isActive: false,
               packagesToBootstrap: {},
               packagesToCodeGen: {},
@@ -156,14 +156,16 @@ void main() {
             );
           final tool = _getRapidTool(path: 'tool_path');
 
-          tool.markAsNeedBootstrap(packages: [
-            FakeDartPackage(packageName: 'package_a'),
-            FakeDartPackage(packageName: 'package_c'),
-          ]);
+          tool.markAsNeedBootstrap(
+            packages: [
+              FakeDartPackage(packageName: 'package_a'),
+              FakeDartPackage(packageName: 'package_c'),
+            ],
+          );
 
           expect(
             tool.loadGroup(),
-            CommandGroup(
+            const CommandGroup(
               isActive: true,
               packagesToBootstrap: {'package_a', 'package_b', 'package_c'},
               packagesToCodeGen: {},
@@ -194,7 +196,7 @@ void main() {
 
           expect(
             tool.loadGroup(),
-            CommandGroup(
+            const CommandGroup(
               isActive: true,
               packagesToBootstrap: {},
               packagesToCodeGen: {'package_a', 'package_b'},
@@ -217,7 +219,7 @@ void main() {
 
       expect(
         commandGroup,
-        CommandGroup(
+        const CommandGroup(
           isActive: true,
           packagesToBootstrap: {'package_a', 'package_b'},
           packagesToCodeGen: {'package_c', 'package_d'},
@@ -227,7 +229,7 @@ void main() {
 
     group('copyWith', () {
       test('isActive', () {
-        final commandGroup = CommandGroup(
+        const commandGroup = CommandGroup(
           isActive: false,
           packagesToBootstrap: {'package_a', 'package_b'},
           packagesToCodeGen: {'package_b', 'package_c'},
@@ -235,7 +237,7 @@ void main() {
 
         expect(
           commandGroup.copyWith(isActive: true),
-          CommandGroup(
+          const CommandGroup(
             isActive: true,
             packagesToBootstrap: {'package_a', 'package_b'},
             packagesToCodeGen: {'package_b', 'package_c'},
@@ -244,7 +246,7 @@ void main() {
       });
 
       test('packagesToBootstrap', () {
-        final commandGroup = CommandGroup(
+        const commandGroup = CommandGroup(
           isActive: false,
           packagesToBootstrap: {'package_a', 'package_b'},
           packagesToCodeGen: {'package_b', 'package_c'},
@@ -252,7 +254,7 @@ void main() {
 
         expect(
           commandGroup.copyWith(packagesToBootstrap: {}),
-          CommandGroup(
+          const CommandGroup(
             isActive: false,
             packagesToBootstrap: {},
             packagesToCodeGen: {'package_b', 'package_c'},
@@ -261,7 +263,7 @@ void main() {
       });
 
       test('packagesToCodeGen', () {
-        final commandGroup = CommandGroup(
+        const commandGroup = CommandGroup(
           isActive: false,
           packagesToBootstrap: {'package_a', 'package_b'},
           packagesToCodeGen: {'package_b', 'package_c'},
@@ -269,7 +271,7 @@ void main() {
 
         expect(
           commandGroup.copyWith(packagesToCodeGen: {}),
-          CommandGroup(
+          const CommandGroup(
             isActive: false,
             packagesToBootstrap: {'package_a', 'package_b'},
             packagesToCodeGen: {},
@@ -279,7 +281,7 @@ void main() {
     });
 
     test('toJson', () {
-      final commandGroup = CommandGroup(
+      const commandGroup = CommandGroup(
         isActive: true,
         packagesToBootstrap: {'package_a', 'package_b'},
         packagesToCodeGen: {'package_c', 'package_d'},
@@ -296,17 +298,17 @@ void main() {
   });
 
   test('hashCode', () {
-    final commandGroup1 = CommandGroup(
+    const commandGroup1 = CommandGroup(
       isActive: false,
       packagesToBootstrap: {'package_a', 'package_b'},
       packagesToCodeGen: {'package_b', 'package_c'},
     );
-    final commandGroup2 = CommandGroup(
+    const commandGroup2 = CommandGroup(
       isActive: false,
       packagesToBootstrap: {'package_b', 'package_a'},
       packagesToCodeGen: {'package_c', 'package_b'},
     );
-    final commandGroup3 = CommandGroup(
+    const commandGroup3 = CommandGroup(
       isActive: true,
       packagesToBootstrap: {'package_a', 'package_b'},
       packagesToCodeGen: {'package_b', 'package_c'},

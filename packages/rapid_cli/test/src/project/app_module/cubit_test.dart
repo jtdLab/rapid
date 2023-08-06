@@ -26,9 +26,7 @@ Cubit _getCubit({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('Cubit', () {
     test('file', () {
@@ -118,7 +116,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final cubit = _getCubit(
           projectName: 'test_project',
           platform: Platform.android,

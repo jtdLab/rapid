@@ -31,13 +31,11 @@ RapidProject _getRapidProject({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('RapidProject', () {
-    final projectName = 'test_project';
-    final projectPath = '/path/to/project';
+    const projectName = 'test_project';
+    const projectPath = '/path/to/project';
 
     test('.fromConfig', () {
       final config = RapidProjectConfig(
@@ -402,7 +400,7 @@ void main() {
             path: projectPath,
           );
 
-          expect(() => project.findByCwd(), throwsA(isA<StateError>()));
+          expect(project.findByCwd, throwsA(isA<StateError>()));
         }),
       );
     });

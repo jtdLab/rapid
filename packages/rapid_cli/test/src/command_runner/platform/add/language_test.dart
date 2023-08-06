@@ -20,9 +20,7 @@ List<String> expectedUsage(Platform platform) {
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   for (final platform in Platform.values) {
     group('${platform.name} add language', () {
@@ -101,7 +99,7 @@ void main() {
         verify(
           () => rapid.platformAddLanguage(
             platform,
-            language: Language(languageCode: 'de'),
+            language: const Language(languageCode: 'de'),
           ),
         ).called(1);
       });

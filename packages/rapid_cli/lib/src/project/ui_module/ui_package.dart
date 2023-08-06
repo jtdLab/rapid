@@ -13,10 +13,14 @@ class UiPackage extends DartPackage {
     required String projectPath,
   }) {
     final path = p.join(
-        projectPath, 'packages', '${projectName}_ui', '${projectName}_ui');
-    widget({required String name}) =>
+      projectPath,
+      'packages',
+      '${projectName}_ui',
+      '${projectName}_ui',
+    );
+    Widget widget({required String name}) =>
         Widget(projectName: projectName, name: name, path: path);
-    themedWidget({required String name}) =>
+    ThemedWidget themedWidget({required String name}) =>
         ThemedWidget(projectName: projectName, name: name, path: path);
 
     return UiPackage(

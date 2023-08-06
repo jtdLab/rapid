@@ -21,9 +21,7 @@ List<String> expectedUsage(String subDomainPackage) => [
     ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('domain <sub_domain> add value_object', () {
     test(
@@ -69,7 +67,8 @@ void main() {
 
           expect(
             () => commandRunner.run(
-                ['domain', 'package_a', 'add', 'value_object', 'Foo', 'Bar']),
+              ['domain', 'package_a', 'add', 'value_object', 'Foo', 'Bar'],
+            ),
             throwsUsageException(
               message: 'Multiple names specified.',
             ),

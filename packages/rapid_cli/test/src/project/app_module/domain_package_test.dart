@@ -23,9 +23,7 @@ DomainPackage _getDomainPackage({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('DomainPackage', () {
     test('.resolve', () {
@@ -87,7 +85,7 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final domainPackage = _getDomainPackage(
             projectName: 'test_project',
             path: '/path/to/domain_package',
@@ -118,7 +116,7 @@ void main() {
     );
 
     test('compareTo', () {
-      final domainPackage1 = _getDomainPackage(name: null);
+      final domainPackage1 = _getDomainPackage();
       final domainPackage2 = _getDomainPackage(name: 'cool');
       final domainPackage3 = _getDomainPackage(name: 'swag');
 

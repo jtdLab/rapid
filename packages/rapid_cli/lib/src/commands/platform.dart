@@ -799,7 +799,7 @@ mixin _PlatformMixin on _Rapid {
     if (navigatorImplementation.existsAny) {
       await task(
         'Deleting navigator implementation',
-        () => navigatorImplementation.delete(),
+        navigatorImplementation.delete,
       );
       await dartRunBuildRunnerBuildDeleteConflictingOutputsTask(
         package: featurePackage,
@@ -810,8 +810,9 @@ mixin _PlatformMixin on _Rapid {
 
 class FeatureAlreadyExistsException extends RapidException {
   FeatureAlreadyExistsException._(
-      PlatformFeaturePackage feature, Platform platform)
-      : super(
+    PlatformFeaturePackage feature,
+    Platform platform,
+  ) : super(
           'Feature ${feature.name} already exists. (${platform.prettyName})',
         );
 }
@@ -839,8 +840,9 @@ class SubFeaturesNotFoundException extends RapidException {
 
 class FeatureNotRoutableException extends RapidException {
   FeatureNotRoutableException._(
-      PlatformFeaturePackage feature, Platform platform)
-      : super(
+    PlatformFeaturePackage feature,
+    Platform platform,
+  ) : super(
           'The feature ${feature.name} is not routable. (${platform.prettyName})',
         );
 }
@@ -852,32 +854,40 @@ class LanguageAlreadyPresentException extends RapidException {
 
 class BlocAlreadyExistsException extends RapidException {
   BlocAlreadyExistsException._(
-      String name, PlatformFeaturePackage feature, Platform platform)
-      : super(
+    String name,
+    PlatformFeaturePackage feature,
+    Platform platform,
+  ) : super(
           'The ${name}Bloc does already exist in "${feature.name}". (${platform.prettyName})',
         );
 }
 
 class CubitAlreadyExistsException extends RapidException {
   CubitAlreadyExistsException._(
-      String name, PlatformFeaturePackage feature, Platform platform)
-      : super(
+    String name,
+    PlatformFeaturePackage feature,
+    Platform platform,
+  ) : super(
           'The ${name}Cubit does already exist in "${feature.name}". (${platform.prettyName})',
         );
 }
 
 class BlocNotFoundException extends RapidException {
   BlocNotFoundException._(
-      String name, PlatformFeaturePackage feature, Platform platform)
-      : super(
+    String name,
+    PlatformFeaturePackage feature,
+    Platform platform,
+  ) : super(
           '${name}Bloc not found in "${feature.name}". (${platform.prettyName})',
         );
 }
 
 class CubitNotFoundException extends RapidException {
   CubitNotFoundException._(
-      String name, PlatformFeaturePackage feature, Platform platform)
-      : super(
+    String name,
+    PlatformFeaturePackage feature,
+    Platform platform,
+  ) : super(
           '${name}Cubit not found in "${feature.name}". (${platform.prettyName})',
         );
 }

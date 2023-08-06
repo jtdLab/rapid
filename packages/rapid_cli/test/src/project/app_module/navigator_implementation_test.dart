@@ -24,9 +24,7 @@ NavigatorImplementation _getNavigatorImplementation({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('NavigatorImplementation', () {
     test('file', () {
@@ -81,7 +79,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final navigator = _getNavigatorImplementation(
           projectName: 'test_project',
           platform: Platform.android,

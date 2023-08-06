@@ -26,9 +26,7 @@ Bloc _getBloc({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('Bloc', () {
     test('file', () {
@@ -134,7 +132,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final bloc = _getBloc(
           platform: Platform.android,
           projectName: 'test_project',

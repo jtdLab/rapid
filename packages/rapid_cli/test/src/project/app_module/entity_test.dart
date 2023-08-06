@@ -23,9 +23,7 @@ Entity _getEntity({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('Entity', () {
     test('file', () {
@@ -91,7 +89,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final entity = _getEntity(
           projectName: 'test_project',
           path: '/path/to/domain_package',

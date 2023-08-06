@@ -18,9 +18,7 @@ List<String> expectedUsage(List<String> domainPackages) => [
     ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('domain', () {
     test(

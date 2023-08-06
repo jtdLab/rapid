@@ -21,7 +21,7 @@ class PlatformLocalizationPackage extends DartPackage {
       '${projectName}_${platform.name}',
       '${projectName}_${platform.name}_localization',
     );
-    languageArbFile({required Language language}) => ArbFile(
+    ArbFile languageArbFile({required Language language}) => ArbFile(
           p.join(
             path,
             'lib',
@@ -30,7 +30,8 @@ class PlatformLocalizationPackage extends DartPackage {
             '${projectName.snakeCase}_${language.toStringWithSeperator()}.arb',
           ),
         );
-    languageLocalizationsFile({required Language language}) => DartFile(
+    DartFile languageLocalizationsFile({required Language language}) =>
+        DartFile(
           p.join(
             path,
             'lib',
@@ -110,7 +111,7 @@ class PlatformLocalizationPackage extends DartPackage {
           name: 'supportedLocales',
           parentClass: '${projectName.pascalCase}Localizations',
         )
-        .map((e) => Language.fromDartUiLocal(e))
+        .map(Language.fromDartUiLocal)
         .toSet();
   }
 
@@ -119,8 +120,10 @@ class PlatformLocalizationPackage extends DartPackage {
 
     return Language.fromString(
       templateArbFile
-          .substring(templateArbFile.indexOf('${projectName}_') +
-              (projectName.length + 1))
+          .substring(
+            templateArbFile.indexOf('${projectName}_') +
+                (projectName.length + 1),
+          )
           .split('.')
           .first,
     );
@@ -143,11 +146,13 @@ class PlatformLocalizationPackage extends DartPackage {
     if (!existingLanguages.contains(language)) {
       final languageArbFile = this.languageArbFile(language: language);
       languageArbFile.createSync(recursive: true);
-      languageArbFile.writeAsStringSync([
-        '{',
-        '  "@@locale": "${language.toStringWithSeperator()}"',
-        '}',
-      ].join('\n'));
+      languageArbFile.writeAsStringSync(
+        [
+          '{',
+          '  "@@locale": "${language.toStringWithSeperator()}"',
+          '}',
+        ].join('\n'),
+      );
     }
   }
 

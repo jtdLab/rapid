@@ -44,17 +44,20 @@ void main() {
         'parse and returns the existing infrastructure packages',
         withMockFs(() {
           Directory(
-                  'path/to/infrastructure_directory/test_project_infrastructure')
-              .createSync(recursive: true);
+            'path/to/infrastructure_directory/test_project_infrastructure',
+          ).createSync(recursive: true);
           Directory(
-                  'path/to/infrastructure_directory/test_project_infrastructure_cool')
-              .createSync(recursive: true);
+            'path/to/infrastructure_directory/test_project_infrastructure_cool',
+          ).createSync(recursive: true);
           Directory(
-                  'path/to/infrastructure_directory/test_project_infrastructure_swag')
-              .createSync(recursive: true);
+            'path/to/infrastructure_directory/test_project_infrastructure_swag',
+          ).createSync(recursive: true);
           InfrastructurePackage infrastructurePackage({String? name}) =>
               InfrastructurePackage.resolve(
-                  projectName: 'xxx', projectPath: 'xxx', name: name);
+                projectName: 'xxx',
+                projectPath: 'xxx',
+                name: name,
+              );
           final defaultInfrastructurePackage = infrastructurePackage();
           final coolInfrastructurePackage = infrastructurePackage(name: 'cool');
           final swagInfrastructurePackage = infrastructurePackage(name: 'swag');

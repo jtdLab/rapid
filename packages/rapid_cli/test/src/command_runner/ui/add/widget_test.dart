@@ -18,9 +18,7 @@ const expectedUsage = [
 ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('ui add widget', () {
     test(

@@ -23,15 +23,15 @@ class DomainPackage extends DartPackage implements Comparable<DomainPackage> {
       '${projectName}_domain',
       '${projectName}_domain${name != null ? '_$name' : ''}',
     );
-    entity({required String name}) => Entity(
+    Entity entity({required String name}) => Entity(
           projectName: projectName,
           path: path,
           name: name,
           subDomainName: selfName,
         );
-    serviceInterface({required String name}) =>
+    ServiceInterface serviceInterface({required String name}) =>
         ServiceInterface(projectName: projectName, path: path, name: name);
-    valueObject({required String name}) => ValueObject(
+    ValueObject valueObject({required String name}) => ValueObject(
           projectName: projectName,
           path: path,
           name: name,
@@ -58,8 +58,13 @@ class DomainPackage extends DartPackage implements Comparable<DomainPackage> {
 
   final ValueObject Function({required String name}) valueObject;
 
-  DartFile get barrelFile => DartFile(p.join(path, 'lib',
-      '${projectName}_domain${name != null ? '_$name' : ''}.dart'));
+  DartFile get barrelFile => DartFile(
+        p.join(
+          path,
+          'lib',
+          '${projectName}_domain${name != null ? '_$name' : ''}.dart',
+        ),
+      );
 
   Future<void> generate() async {
     await mason.generate(

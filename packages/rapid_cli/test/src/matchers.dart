@@ -100,9 +100,8 @@ Matcher entityEquals(List<FileSystemEntity> expectedEntities) =>
     FileSystemEntitiesMatcher(expectedEntities);
 
 class FileSystemEntitiesMatcher extends Matcher {
-  final List<FileSystemEntity> expectedEntities;
-
   FileSystemEntitiesMatcher(this.expectedEntities);
+  final List<FileSystemEntity> expectedEntities;
 
   @override
   bool matches(dynamic item, Map<dynamic, dynamic> matchState) {

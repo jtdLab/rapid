@@ -19,9 +19,7 @@ List<String> expectedUsage(String subInfrastructurePackage) => [
     ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('infrastructure <sub_infrastructure> remove data_transfer_object', () {
     test(
@@ -102,7 +100,9 @@ void main() {
       when(() => argResults['entity']).thenReturn('Foo');
       final command =
           InfrastructureSubInfrastructureRemoveDataTransferObjectCommand(
-              'package_a', null)
+        'package_a',
+        null,
+      )
             ..argResultOverrides = argResults
             ..rapidOverrides = rapid;
 

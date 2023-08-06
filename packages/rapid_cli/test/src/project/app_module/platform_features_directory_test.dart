@@ -32,9 +32,7 @@ PlatformFeaturesDirectory _getPlatformFeaturesDirectory({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('PlatformFeaturesDirectory', () {
     test('.resolve', () {
@@ -120,7 +118,7 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final appFeaturePackage = MockPlatformAppFeaturePackage();
           final homePageFeaturePackage = MockPlatformPageFeaturePackage();
           T featurePackageBuilder<T extends PlatformFeaturePackage>({
@@ -144,78 +142,83 @@ void main() {
           await platformFeaturesDirectory.generate();
 
           verifyInOrder([
-            () => appFeaturePackage.generate(),
-            () => homePageFeaturePackage.generate(),
+            appFeaturePackage.generate,
+            homePageFeaturePackage.generate,
           ]);
         },
       ),
     );
 
     group('featurePackages', () {
-      test('parse and returns the existing platform feature packages',
-          withMockFs(() {
-        Directory('/path/to/platform_features_directory/test_project_cool_page')
-            .createSync(recursive: true);
-        Directory('/path/to/platform_features_directory/test_project_swag_flow')
-            .createSync(recursive: true);
-        Directory(
-                '/path/to/platform_features_directory/test_project_fresh_tab_flow')
-            .createSync(recursive: true);
-        Directory(
-                '/path/to/platform_features_directory/test_project_sunny_widget')
-            .createSync(recursive: true);
-        final coolPageFeaturePackage = PlatformPageFeaturePackage.resolve(
-          projectName: 'xxx',
-          projectPath: 'xxx',
-          platform: Platform.android,
-          name: 'test_project_cool_page',
-        );
-        final swagFlowFeaturePackage = PlatformFlowFeaturePackage.resolve(
-          projectName: 'xxx',
-          projectPath: 'xxx',
-          platform: Platform.android,
-          name: 'test_project_swag_flow',
-        );
-        final freshTabFlowFeaturePackage =
-            PlatformTabFlowFeaturePackage.resolve(
-          projectName: 'xxx',
-          projectPath: 'xxx',
-          platform: Platform.android,
-          name: 'test_project_fresh_tab_flow',
-        );
-        final sunnyWidgetFeaturePackage = PlatformWidgetFeaturePackage.resolve(
-          projectName: 'xxx',
-          projectPath: 'xxx',
-          platform: Platform.android,
-          name: 'test_project_sunny_widget',
-        );
+      test(
+        'parse and returns the existing platform feature packages',
+        withMockFs(() {
+          Directory(
+            '/path/to/platform_features_directory/test_project_cool_page',
+          ).createSync(recursive: true);
+          Directory(
+            '/path/to/platform_features_directory/test_project_swag_flow',
+          ).createSync(recursive: true);
+          Directory(
+            '/path/to/platform_features_directory/test_project_fresh_tab_flow',
+          ).createSync(recursive: true);
+          Directory(
+            '/path/to/platform_features_directory/test_project_sunny_widget',
+          ).createSync(recursive: true);
+          final coolPageFeaturePackage = PlatformPageFeaturePackage.resolve(
+            projectName: 'xxx',
+            projectPath: 'xxx',
+            platform: Platform.android,
+            name: 'test_project_cool_page',
+          );
+          final swagFlowFeaturePackage = PlatformFlowFeaturePackage.resolve(
+            projectName: 'xxx',
+            projectPath: 'xxx',
+            platform: Platform.android,
+            name: 'test_project_swag_flow',
+          );
+          final freshTabFlowFeaturePackage =
+              PlatformTabFlowFeaturePackage.resolve(
+            projectName: 'xxx',
+            projectPath: 'xxx',
+            platform: Platform.android,
+            name: 'test_project_fresh_tab_flow',
+          );
+          final sunnyWidgetFeaturePackage =
+              PlatformWidgetFeaturePackage.resolve(
+            projectName: 'xxx',
+            projectPath: 'xxx',
+            platform: Platform.android,
+            name: 'test_project_sunny_widget',
+          );
 
-        T featurePackageBuilder<T extends PlatformFeaturePackage>({
-          required String name,
-        }) =>
-            switch (name) {
-              'test_project_cool_page' => coolPageFeaturePackage,
-              'test_project_swag_flow' => swagFlowFeaturePackage,
-              'test_project_fresh_tab_flow' => freshTabFlowFeaturePackage,
-              'test_project_sunny_widget' => sunnyWidgetFeaturePackage,
-              _ => throw Error(),
-            } as T;
+          T featurePackageBuilder<T extends PlatformFeaturePackage>({
+            required String name,
+          }) =>
+              switch (name) {
+                'test_project_cool_page' => coolPageFeaturePackage,
+                'test_project_swag_flow' => swagFlowFeaturePackage,
+                'test_project_fresh_tab_flow' => freshTabFlowFeaturePackage,
+                'test_project_sunny_widget' => sunnyWidgetFeaturePackage,
+                _ => throw Error(),
+              } as T;
 
-        final platformFeaturesDirectory = _getPlatformFeaturesDirectory(
-          projectName: 'test_project',
-          platform: Platform.android,
-          path: '/path/to/platform_features_directory',
-          featurePackage: featurePackageBuilder,
-        );
+          final platformFeaturesDirectory = _getPlatformFeaturesDirectory(
+            projectName: 'test_project',
+            platform: Platform.android,
+            path: '/path/to/platform_features_directory',
+            featurePackage: featurePackageBuilder,
+          );
 
-        final featurePackages = platformFeaturesDirectory.featurePackages();
+          final featurePackages = platformFeaturesDirectory.featurePackages();
 
-        expect(featurePackages.length, 4);
-        expect(featurePackages[0], coolPageFeaturePackage);
-        expect(featurePackages[1], freshTabFlowFeaturePackage);
-        expect(featurePackages[2], sunnyWidgetFeaturePackage);
-        expect(featurePackages[3], swagFlowFeaturePackage);
-      }));
+          expect(featurePackages.length, 4);
+          expect(featurePackages[0], coolPageFeaturePackage);
+          expect(featurePackages[1], freshTabFlowFeaturePackage);
+          expect(featurePackages[2], sunnyWidgetFeaturePackage);
+          expect(featurePackages[3], swagFlowFeaturePackage);
+        }),
+      );
 
       test('returns empty list if platform features directory does not exist',
           () {

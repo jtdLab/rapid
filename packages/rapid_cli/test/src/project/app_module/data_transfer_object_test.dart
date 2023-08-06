@@ -23,9 +23,7 @@ DataTransferObject _getDataTransferObject({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('DataTransferObject', () {
     test('file', () {
@@ -105,7 +103,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final dto = _getDataTransferObject(
           projectName: 'test_project',
           path: '/path/to/infrastructure_package',

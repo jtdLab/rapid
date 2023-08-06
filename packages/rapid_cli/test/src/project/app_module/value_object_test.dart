@@ -23,9 +23,7 @@ ValueObject _getValueObject({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('ValueObject', () {
     test('file', () {
@@ -91,7 +89,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final valueObject = _getValueObject(
           projectName: 'test_project',
           path: '/path/to/domain_package',

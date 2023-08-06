@@ -19,11 +19,23 @@ class ServiceImplementation extends FileSystemEntityCollection {
 
   final String? subInfrastructureName;
 
-  File get file => File(p.join(path, 'lib', 'src',
-      '${name.snakeCase}_${serviceInterfaceName.snakeCase}_service.dart'));
+  File get file => File(
+        p.join(
+          path,
+          'lib',
+          'src',
+          '${name.snakeCase}_${serviceInterfaceName.snakeCase}_service.dart',
+        ),
+      );
 
-  File get testFile => File(p.join(path, 'test', 'src',
-      '${name.snakeCase}_${serviceInterfaceName.snakeCase}_service_test.dart'));
+  File get testFile => File(
+        p.join(
+          path,
+          'test',
+          'src',
+          '${name.snakeCase}_${serviceInterfaceName.snakeCase}_service_test.dart',
+        ),
+      );
 
   @override
   Iterable<FileSystemEntity> get entities => {

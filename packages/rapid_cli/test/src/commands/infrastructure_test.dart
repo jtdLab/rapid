@@ -22,9 +22,7 @@ void main() {
   late CommandGroup commandGroup;
   late RapidTool tool;
 
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   setUp(() {
     entity = MockEntity();
@@ -105,15 +103,15 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating data transfer object'),
           () => dataTransferObject.generate(),
           () => infrastructurePackageBarrelFile.addExport('src/cool_dto.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Data Transfer Object!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -170,22 +168,22 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating service implementation'),
           () => serviceImplementation.generate(),
           () => infrastructurePackageBarrelFile
               .addExport('src/fake_cool_service.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger
               .progress('Running code generation in infrastructure_package'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'infrastructure_package_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Service Implementation!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -253,16 +251,16 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Deleting data transfer object'),
           () =>
               infrastructurePackageBarrelFile.removeExport('src/cool_dto.dart'),
           () => dataTransferObject.delete(),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Data Transfer Object!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -303,22 +301,22 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Deleting service implementation'),
           () => infrastructurePackageBarrelFile
               .removeExport('src/fake_cool_service.dart'),
           () => serviceImplementation.delete(),
-          () => progress.complete(),
+          progress.complete,
           () => logger
               .progress('Running code generation in infrastructure_package'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'infrastructure_package_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Service Implementation!')
         ]);
         verifyNoMoreInteractions(manager);

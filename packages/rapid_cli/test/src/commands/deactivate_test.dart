@@ -7,9 +7,7 @@ import '../mocks.dart';
 import '../utils.dart';
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('deactivatePlatform', () {
     test(
@@ -45,14 +43,14 @@ void main() {
       await rapid.deactivatePlatform(platform);
 
       verifyInOrder([
-        () => logger.newLine(),
+        logger.newLine,
         () => logger.progress('Deleting Platform Directory'),
         () => project.appModule.platformDirectory(platform: platform),
         () => platformDirectory.deleteSync(recursive: true),
         () => logger.progress('Deleting Platform Ui Package'),
         () => project.uiModule.platformUiPackage(platform: platform),
         () => platformUiPackage.deleteSync(recursive: true),
-        () => logger.newLine(),
+        logger.newLine,
         () => logger.commandSuccess('Deactivated ${platform.prettyName}!')
       ]);
     });

@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 
 import '../base.dart';
 
-final _defaultOutputDir = '.';
+const _defaultOutputDir = '.';
 
 /// Adds output directory option.
 extension OutputDirOption on ArgParser {

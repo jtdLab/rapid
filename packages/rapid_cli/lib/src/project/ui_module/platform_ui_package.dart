@@ -20,10 +20,18 @@ class PlatformUiPackage extends UiPackage {
       '${projectName}_ui',
       '${projectName}_ui_${platform.name}',
     );
-    widget({required String name}) => Widget(
-        projectName: projectName, platform: platform, name: name, path: path);
-    themedWidget({required String name}) => ThemedWidget(
-        projectName: projectName, platform: platform, name: name, path: path);
+    Widget widget({required String name}) => Widget(
+          projectName: projectName,
+          platform: platform,
+          name: name,
+          path: path,
+        );
+    ThemedWidget themedWidget({required String name}) => ThemedWidget(
+          projectName: projectName,
+          platform: platform,
+          name: name,
+          path: path,
+        );
 
     return PlatformUiPackage(
       projectName: projectName,

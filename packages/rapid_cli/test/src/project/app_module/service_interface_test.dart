@@ -21,9 +21,7 @@ ServiceInterface _getServiceInterface({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('ServiceInterface', () {
     test('file', () {
@@ -75,7 +73,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final serviceInterface = _getServiceInterface(
           projectName: 'test_project',
           path: '/path/to/domain_package',

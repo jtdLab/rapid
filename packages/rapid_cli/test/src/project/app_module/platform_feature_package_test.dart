@@ -133,9 +133,7 @@ PlatformWidgetFeaturePackage _getPlatformWidgetFeaturePackage({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('PlatformFeaturePackage', () {
     test('compareTo', () {
@@ -303,7 +301,7 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final platformAppFeaturePackage = _getPlatformAppFeaturePackage(
             projectName: 'test_project',
             path: '/path/to/platform_app_feature_package',
@@ -381,8 +379,10 @@ void main() {
       expect(cubit.projectName, 'test_project');
       expect(cubit.platform, Platform.web);
       expect(cubit.name, 'Counter');
-      expect(cubit.path,
-          '/path/to/project/packages/test_project/test_project_web/test_project_web_features/test_project_web_foo_page');
+      expect(
+        cubit.path,
+        '/path/to/project/packages/test_project/test_project_web/test_project_web_features/test_project_web_foo_page',
+      );
       expect(cubit.featureName, 'foo_page');
       final navigatorImplementation =
           platformPageFeaturePackage.navigatorImplementation;
@@ -403,7 +403,7 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final platformPageFeaturePackage = _getPlatformPageFeaturePackage(
             projectName: 'test_project',
             path: '/path/to/platform_page_feature_package',
@@ -510,7 +510,7 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final platformFlowFeaturePackage = _getPlatformFlowFeaturePackage(
             projectName: 'test_project',
             path: '/path/to/platform_flow_feature_package',
@@ -563,7 +563,9 @@ void main() {
       );
 
       expect(
-          platformTabFlowFeaturePackage, isA<PlatformRoutableFeaturePackage>());
+        platformTabFlowFeaturePackage,
+        isA<PlatformRoutableFeaturePackage>(),
+      );
       expect(platformTabFlowFeaturePackage.projectName, 'test_project');
       expect(
         platformTabFlowFeaturePackage.path,
@@ -619,7 +621,7 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final platformTabFlowFeaturePackage =
               _getPlatformTabFlowFeaturePackage(
             projectName: 'test_project',
@@ -723,7 +725,7 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final platformWidgetFeaturePackage = _getPlatformWidgetFeaturePackage(
             projectName: 'test_project',
             path: '/path/to/platform_widget_feature_package',

@@ -34,7 +34,7 @@ _RapidToolSetup _setupTool() {
   final commandGroup = MockCommandGroup();
   when(() => commandGroup.isActive).thenReturn(false);
   final tool = MockRapidTool();
-  when(() => tool.loadGroup()).thenReturn(commandGroup);
+  when(tool.loadGroup).thenReturn(commandGroup);
 
   return (commandGroup: commandGroup, tool: tool);
 }
@@ -45,7 +45,7 @@ _ProjectSetup<T> _setupProjectWithPlatform<T extends PlatformRootPackage>() {
     path: 'non_default_infrastructure_package_path',
     isDefault: false,
   );
-  final T platformRootPackage = switch (T) {
+  final platformRootPackage = switch (T) {
     IosRootPackage => MockIosRootPackage(
         packageName: 'platform_root_package',
         path: 'platform_root_package_path',
@@ -150,15 +150,15 @@ void _verifyActivatePlatform<T extends PlatformRootPackage>(
   ) = loggerSetup;
 
   verifyInOrder([
-    () => logger.newLine(),
+    logger.newLine,
     () => logger.info('🚀 Activating ${platform.prettyName}'),
     () => logger.progress('Generating ${platform.prettyName} packages'),
-    () => platformAppFeaturePackage.generate(),
-    () => platformHomePageFeaturePackage.generate(),
+    platformAppFeaturePackage.generate,
+    platformHomePageFeaturePackage.generate,
     () => platformLocalizationPackage.generate(
-          defaultLanguage: Language(languageCode: 'fr'),
+          defaultLanguage: const Language(languageCode: 'fr'),
         ),
-    () => platformNavigationPackage.generate(),
+    platformNavigationPackage.generate,
     switch (platform) {
       Platform.android => () =>
           (platformRootPackage as NoneIosRootPackage).generate(
@@ -167,7 +167,7 @@ void _verifyActivatePlatform<T extends PlatformRootPackage>(
           ),
       Platform.ios => () => (platformRootPackage as IosRootPackage).generate(
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           ),
       Platform.linux => () =>
           (platformRootPackage as NoneIosRootPackage).generate(
@@ -189,42 +189,47 @@ void _verifyActivatePlatform<T extends PlatformRootPackage>(
           (platformRootPackage as MobileRootPackage).generate(
             description: 'Some desc.',
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           ),
     },
-    () => platformUiPackage.generate(),
-    () => progress.complete(),
+    platformUiPackage.generate,
+    progress.complete,
     () => platformRootPackage
         .registerInfrastructurePackage(nonDefaultInfrastructurePackage),
-    () => logger.progressGroup(null),
+    logger.progressGroup,
     () => progressGroup
         .progress('Running "dart pub get" in platform_app_feature_package'),
     () => manager.runDartPubGet(
-        workingDirectory: 'platform_app_feature_package_path'),
-    () => groupableProgress.complete(),
+          workingDirectory: 'platform_app_feature_package_path',
+        ),
+    groupableProgress.complete,
     () => progressGroup.progress(
-        'Running "dart pub get" in platform_home_page_feature_package'),
+          'Running "dart pub get" in platform_home_page_feature_package',
+        ),
     () => manager.runDartPubGet(
-        workingDirectory: 'platform_home_page_feature_package_path'),
-    () => groupableProgress.complete(),
+          workingDirectory: 'platform_home_page_feature_package_path',
+        ),
+    groupableProgress.complete,
     () => progressGroup
         .progress('Running "dart pub get" in platform_localization_package'),
     () => manager.runDartPubGet(
-        workingDirectory: 'platform_localization_package_path'),
-    () => groupableProgress.complete(),
+          workingDirectory: 'platform_localization_package_path',
+        ),
+    groupableProgress.complete,
     () => progressGroup
         .progress('Running "dart pub get" in platform_navigation_package'),
     () => manager.runDartPubGet(
-        workingDirectory: 'platform_navigation_package_path'),
-    () => groupableProgress.complete(),
+          workingDirectory: 'platform_navigation_package_path',
+        ),
+    groupableProgress.complete,
     () => progressGroup
         .progress('Running "dart pub get" in platform_root_package'),
     () => manager.runDartPubGet(workingDirectory: 'platform_root_package_path'),
-    () => groupableProgress.complete(),
+    groupableProgress.complete,
     () =>
         progressGroup.progress('Running "dart pub get" in platform_ui_package'),
     () => manager.runDartPubGet(workingDirectory: 'platform_ui_package_path'),
-    () => groupableProgress.complete(),
+    groupableProgress.complete,
     ...switch (commandGroupIsActive) {
       true => [
           () => tool.markAsNeedCodeGen(package: platformRootPackage),
@@ -235,70 +240,70 @@ void _verifyActivatePlatform<T extends PlatformRootPackage>(
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'platform_root_package_path',
               ),
-          () => progress.complete(),
+          progress.complete,
         ],
     },
     () => logger.progress(
-        'Running "flutter gen-l10n" in platform_localization_package'),
+          'Running "flutter gen-l10n" in platform_localization_package',
+        ),
     () => manager.runFlutterGenl10n(
-        workingDirectory: 'platform_localization_package_path'),
-    () => progress.complete(),
+          workingDirectory: 'platform_localization_package_path',
+        ),
+    progress.complete,
     ...switch (platform) {
       Platform.android => [
           () => logger.progress('Running "flutter config --enable-android"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.android),
-          () => progress.complete(),
+          progress.complete,
         ],
       Platform.ios => [
           () => logger.progress('Running "flutter config --enable-ios"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.ios),
-          () => progress.complete(),
+          progress.complete,
         ],
       Platform.linux => [
           () => logger
               .progress('Running "flutter config --enable-linux-desktop"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.linux),
-          () => progress.complete(),
+          progress.complete,
         ],
       Platform.macos => [
           () => logger
               .progress('Running "flutter config --enable-macos-desktop"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.macos),
-          () => progress.complete(),
+          progress.complete,
         ],
       Platform.web => [
           () => logger.progress('Running "flutter config --enable-web"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.web),
-          () => progress.complete(),
+          progress.complete,
         ],
       Platform.windows => [
           () => logger
               .progress('Running "flutter config --enable-windows-desktop"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.windows),
-          () => progress.complete(),
+          progress.complete,
         ],
       Platform.mobile => [
           () => logger.progress('Running "flutter config --enable-android"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.android),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "flutter config --enable-ios"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.ios),
-          () => progress.complete(),
+          progress.complete,
         ],
     },
-    () => logger.newLine(),
+    logger.newLine,
     () => logger.progress('Running "dart format . --fix" in project'),
     () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-    () => progress.complete(),
-    () => logger.newLine(),
+    progress.complete,
+    logger.newLine,
     () => logger.commandSuccess('Activated ${platform.prettyName}!'),
   ]);
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('activateAndroid', () {
     test(
@@ -313,7 +318,7 @@ void main() {
           () async => rapid.activateAndroid(
             description: 'Some desc.',
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           ),
           throwsA(isA<PlatformAlreadyActivatedException>()),
         );
@@ -336,7 +341,7 @@ void main() {
           await rapid.activateAndroid(
             description: 'Some desc.',
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           );
 
           _verifyActivatePlatform(
@@ -362,7 +367,7 @@ void main() {
         expect(
           () async => rapid.activateIos(
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           ),
           throwsA(isA<PlatformAlreadyActivatedException>()),
         );
@@ -384,7 +389,7 @@ void main() {
 
           await rapid.activateIos(
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           );
 
           _verifyActivatePlatform(
@@ -411,7 +416,7 @@ void main() {
         expect(
           () async => rapid.activateLinux(
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           ),
           throwsA(isA<PlatformAlreadyActivatedException>()),
         );
@@ -433,7 +438,7 @@ void main() {
 
           await rapid.activateLinux(
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           );
 
           _verifyActivatePlatform(
@@ -460,7 +465,7 @@ void main() {
         expect(
           () async => rapid.activateMacos(
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           ),
           throwsA(isA<PlatformAlreadyActivatedException>()),
         );
@@ -482,7 +487,7 @@ void main() {
 
           await rapid.activateMacos(
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           );
 
           _verifyActivatePlatform(
@@ -508,7 +513,7 @@ void main() {
         expect(
           () async => rapid.activateWeb(
             description: 'Some desc.',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           ),
           throwsA(isA<PlatformAlreadyActivatedException>()),
         );
@@ -530,7 +535,7 @@ void main() {
 
           await rapid.activateWeb(
             description: 'Some desc.',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           );
 
           _verifyActivatePlatform(
@@ -557,7 +562,7 @@ void main() {
         expect(
           () async => rapid.activateWindows(
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           ),
           throwsA(isA<PlatformAlreadyActivatedException>()),
         );
@@ -579,7 +584,7 @@ void main() {
 
           await rapid.activateWindows(
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           );
 
           _verifyActivatePlatform(
@@ -607,7 +612,7 @@ void main() {
           () async => rapid.activateMobile(
             description: 'Some desc.',
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           ),
           throwsA(isA<PlatformAlreadyActivatedException>()),
         );
@@ -630,7 +635,7 @@ void main() {
           await rapid.activateMobile(
             description: 'Some desc.',
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           );
 
           _verifyActivatePlatform(

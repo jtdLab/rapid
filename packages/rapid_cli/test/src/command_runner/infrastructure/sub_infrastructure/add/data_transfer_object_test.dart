@@ -19,9 +19,7 @@ List<String> expectedUsage(String subInfrastructurePackage) => [
     ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('infrastructure <sub_infrastructure> add data_transfer_object', () {
     test(
@@ -61,7 +59,8 @@ void main() {
 
           expect(
             () => commandRunner.run(
-                ['infrastructure', 'package_a', 'add', 'data_transfer_object']),
+              ['infrastructure', 'package_a', 'add', 'data_transfer_object'],
+            ),
             throwsUsageException(
               message: 'No option specified for the entity.',
             ),
@@ -98,7 +97,9 @@ void main() {
       when(() => argResults['entity']).thenReturn('Foo');
       final command =
           InfrastructureSubInfrastructureAddDataTransferObjectCommand(
-              'package_a', null)
+        'package_a',
+        null,
+      )
             ..argResultOverrides = argResults
             ..rapidOverrides = rapid;
 

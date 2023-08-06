@@ -24,8 +24,8 @@ class PubAddCommand extends RapidLeafCommand with PackageGetter {
       'rapid pub add [<section>:]<package>[:[descriptor]] [<section>:]<package2>[:[descriptor]] ...]';
 
   @override
-  String get description =>
-      '''Add dependencies to `pubspec.yaml` in a Rapid project.
+  String get description => r'''
+Add dependencies to `pubspec.yaml` in a Rapid project.
 
 This command works similiar to `dart pub add` or `flutter pub add` but takes care of
 dependent packages and updates their transitiv dependencies accordingly.
@@ -66,7 +66,7 @@ For example:
   * Add a dependency override:
     `dart pub add 'override:foo:1.0.0'`
   * Add a git dependency with a path and ref specified:
-    `dart pub add \\
+    `dart pub add \
       'foo:{"git":{"url":"../foo.git","ref":"<branch>","path":"<subdir>"}}'`''';
 
   @override

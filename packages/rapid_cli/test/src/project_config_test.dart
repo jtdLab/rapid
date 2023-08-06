@@ -9,7 +9,7 @@ void main() {
       test('throws if name is missing', () {
         expect(
           () => RapidProjectConfig.fromYaml(
-            {},
+            const {},
             path: 'foo',
           ),
           throwsRapidConfigException(),
@@ -19,7 +19,7 @@ void main() {
       test('throws if name is not a String', () {
         expect(
           () => RapidProjectConfig.fromYaml(
-            {
+            const {
               'rapid': {
                 'name': 22,
               }

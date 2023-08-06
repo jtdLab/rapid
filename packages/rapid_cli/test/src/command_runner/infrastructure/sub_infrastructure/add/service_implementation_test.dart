@@ -19,9 +19,7 @@ List<String> expectedUsage(String subInfrastructurePackage) => [
     ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('infrastructure <sub_infrastructure> add service_implementation', () {
     test(
@@ -164,7 +162,9 @@ void main() {
       when(() => argResults.rest).thenReturn(['My']);
       final command =
           InfrastructureSubInfrastructureAddServiceImplementationCommand(
-              'package_a', null)
+        'package_a',
+        null,
+      )
             ..argResultOverrides = argResults
             ..rapidOverrides = rapid;
 

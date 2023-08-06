@@ -23,9 +23,7 @@ const expectedUsage = [
 ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('activate mobile', () {
     test(
@@ -118,7 +116,7 @@ void main() {
         () => rapid.activateMobile(
           description: 'A description.',
           orgName: 'com.foo.bar',
-          language: Language(languageCode: 'de'),
+          language: const Language(languageCode: 'de'),
         ),
       ).called(1);
     });

@@ -16,9 +16,7 @@ const expectedUsage = [
 ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('domain remove sub_domain', () {
     test(

@@ -59,7 +59,7 @@ mixin _ActivateMixin on _Rapid {
     required Language language,
     bool calledFromCreate = false,
   }) async {
-    final platform = Platform.android;
+    const platform = Platform.android;
     await _wrapActivatePlatform(
       platform,
       calledFromCreate: calledFromCreate,
@@ -89,7 +89,7 @@ mixin _ActivateMixin on _Rapid {
     required Language language,
     bool calledFromCreate = false,
   }) async {
-    final platform = Platform.ios;
+    const platform = Platform.ios;
     await _wrapActivatePlatform(
       platform,
       calledFromCreate: calledFromCreate,
@@ -118,7 +118,7 @@ mixin _ActivateMixin on _Rapid {
     required Language language,
     bool calledFromCreate = false,
   }) async {
-    final platform = Platform.linux;
+    const platform = Platform.linux;
     await _wrapActivatePlatform(
       platform,
       calledFromCreate: calledFromCreate,
@@ -147,7 +147,7 @@ mixin _ActivateMixin on _Rapid {
     required Language language,
     bool calledFromCreate = false,
   }) async {
-    final platform = Platform.macos;
+    const platform = Platform.macos;
     return _wrapActivatePlatform(
       platform,
       calledFromCreate: calledFromCreate,
@@ -174,7 +174,7 @@ mixin _ActivateMixin on _Rapid {
     required Language language,
     bool calledFromCreate = false,
   }) async {
-    final platform = Platform.web;
+    const platform = Platform.web;
     return _wrapActivatePlatform(
       platform,
       calledFromCreate: calledFromCreate,
@@ -203,7 +203,7 @@ mixin _ActivateMixin on _Rapid {
     required Language language,
     bool calledFromCreate = false,
   }) async {
-    final platform = Platform.windows;
+    const platform = Platform.windows;
     return _wrapActivatePlatform(
       platform,
       calledFromCreate: calledFromCreate,
@@ -233,7 +233,7 @@ mixin _ActivateMixin on _Rapid {
     required Language language,
     bool calledFromCreate = false,
   }) async {
-    final platform = Platform.mobile;
+    const platform = Platform.mobile;
     return _wrapActivatePlatform(
       platform,
       calledFromCreate: calledFromCreate,
@@ -264,10 +264,8 @@ mixin _ActivateMixin on _Rapid {
 
   /// Checks whether [platform] can be activated.
   /// If true executes [activatePlatform].
-  /// Afterwards if [cleanup] runs cleanup and logs sucess.
-  ///
-  /// [cleanup] beeing false indicates the platform activate
-  ///  was issued from the create command.
+  /// The [calledFromCreate] prop indicates where this function is run from.
+  /// this is either from create or activate.
   Future<void> _wrapActivatePlatform(
     Platform platform, {
     required bool calledFromCreate,

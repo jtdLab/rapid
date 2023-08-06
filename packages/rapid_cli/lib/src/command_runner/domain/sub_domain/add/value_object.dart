@@ -53,11 +53,11 @@ class DomainSubDomainAddValueObjectCommand extends RapidLeafCommand
   }
 
   String get _type =>
-      argResults['type']?.replaceAll('#', '') as String? ?? _defaultType;
+      (argResults['type'] as String?)?.replaceAll('#', '') ?? _defaultType;
 
   String get _generics {
     final raw = argResults['type'] as String? ?? _defaultType;
-    StringBuffer buffer = StringBuffer();
+    final buffer = StringBuffer();
     buffer.write('<');
 
     final generics = raw
@@ -67,7 +67,7 @@ class DomainSubDomainAddValueObjectCommand extends RapidLeafCommand
         .map((element) => element.replaceAll('#', ''))
         .toSet();
 
-    for (int i = 0; i < generics.length; i++) {
+    for (var i = 0; i < generics.length; i++) {
       buffer.write(generics.elementAt(i));
       if (i != generics.length - 1) {
         buffer.write(', ');

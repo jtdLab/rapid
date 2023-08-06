@@ -19,9 +19,7 @@ NavigatorInterface _getNavigatorInterface({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('NavigatorInterface', () {
     test('file', () {
@@ -57,7 +55,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final navigator = _getNavigatorInterface(
           path: '/path/to/platform_navigation_package',
           name: 'HomePage',

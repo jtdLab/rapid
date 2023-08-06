@@ -18,9 +18,7 @@ LoggingPackage _getLoggingPackage({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('LoggingPackage', () {
     test('.resolve', () {
@@ -44,7 +42,7 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final loggingPackage = _getLoggingPackage(
             projectName: 'test_project',
             path: '/path/to/logging_package',

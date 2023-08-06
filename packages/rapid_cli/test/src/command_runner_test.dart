@@ -48,9 +48,7 @@ const expectedUsage = [
 ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('RapidCommandRunner', () {
     test(
@@ -80,7 +78,7 @@ void main() {
     setUp(() {
       logger = MockRapidLogger();
       commandRunner = MockRapidCommandRunner();
-      commandRunnerBuilder = MockRapidCommandRunnerBuilder();
+      commandRunnerBuilder = MockRapidCommandRunnerBuilder().call;
       when(() => commandRunnerBuilder(project: any(named: 'project')))
           .thenReturn(commandRunner);
       pubUpdater = MockPubUpdater();
@@ -96,16 +94,18 @@ void main() {
             .thenReturn(Directory('/some_path'));
         File('/some_path/pubspec.yaml')
           ..createSync(recursive: true)
-          ..writeAsStringSync(multiLine([
-            'name: cool',
-            '',
-            'environment:',
-            '  sdk: ">=3.0.0 <4.0.0"',
-            '',
-            'rapid:',
-            '  name: cool',
-            '  foo: [1, 2, 3]'
-          ]));
+          ..writeAsStringSync(
+            multiLine([
+              'name: cool',
+              '',
+              'environment:',
+              '  sdk: ">=3.0.0 <4.0.0"',
+              '',
+              'rapid:',
+              '  name: cool',
+              '  foo: [1, 2, 3]'
+            ]),
+          );
         when(() => launchContext.localInstallation).thenReturn(installation);
         await rapidEntryPoint(
           ['activate android'],
@@ -304,7 +304,7 @@ void main() {
         commandRunnerBuilder: commandRunnerBuilder,
       );
 
-      verify(() => commandRunnerBuilder(project: null)).called(1);
+      verify(() => commandRunnerBuilder()).called(1);
     });
 
     test('resolve project with null when will run create', () async {
@@ -314,7 +314,7 @@ void main() {
         commandRunnerBuilder: commandRunnerBuilder,
       );
 
-      verify(() => commandRunnerBuilder(project: null)).called(1);
+      verify(() => commandRunnerBuilder()).called(1);
     });
 
     test(
@@ -325,15 +325,17 @@ void main() {
             .thenReturn(Directory('/some_path'));
         File('/some_path/pubspec.yaml')
           ..createSync(recursive: true)
-          ..writeAsStringSync(multiLine([
-            'name: cool',
-            '',
-            'environment:',
-            '  sdk: ">=3.0.0 <4.0.0"',
-            '',
-            'rapid:',
-            '  name: cool',
-          ]));
+          ..writeAsStringSync(
+            multiLine([
+              'name: cool',
+              '',
+              'environment:',
+              '  sdk: ">=3.0.0 <4.0.0"',
+              '',
+              'rapid:',
+              '  name: cool',
+            ]),
+          );
         when(() => launchContext.localInstallation).thenReturn(installation);
         await rapidEntryPoint(
           ['activate'],
@@ -410,10 +412,12 @@ void main() {
             .thenReturn(Directory('/some_path'));
         File('/some_path/pubspec.yaml')
           ..createSync(recursive: true)
-          ..writeAsStringSync(multiLine([
-            'name: cool',
-            'name: cool',
-          ]));
+          ..writeAsStringSync(
+            multiLine([
+              'name: cool',
+              'name: cool',
+            ]),
+          );
         when(() => launchContext.localInstallation).thenReturn(installation);
         await rapidEntryPoint(
           ['activate android'],
@@ -466,15 +470,17 @@ void main() {
             .thenReturn(Directory('/some_path'));
         File('/some_path/pubspec.yaml')
           ..createSync(recursive: true)
-          ..writeAsStringSync(multiLine([
-            'name: cool',
-            '',
-            'environment:',
-            '  sdk: ">=3.0.0 <4.0.0"',
-            '',
-            'rapid:',
-            '  name: cool',
-          ]));
+          ..writeAsStringSync(
+            multiLine([
+              'name: cool',
+              '',
+              'environment:',
+              '  sdk: ">=3.0.0 <4.0.0"',
+              '',
+              'rapid:',
+              '  name: cool',
+            ]),
+          );
         when(() => launchContext.localInstallation).thenReturn(installation);
         when(() => commandRunner.run(any())).thenThrow(FakeRapidException());
 
@@ -486,7 +492,7 @@ void main() {
         );
 
         verify(
-          () => logger.err('Instance of \'FakeRapidException\''),
+          () => logger.err("Instance of 'FakeRapidException'"),
         ).called(1);
         expect(exitCode, 1);
       }),
@@ -500,15 +506,17 @@ void main() {
             .thenReturn(Directory('/some_path'));
         File('/some_path/pubspec.yaml')
           ..createSync(recursive: true)
-          ..writeAsStringSync(multiLine([
-            'name: cool',
-            '',
-            'environment:',
-            '  sdk: ">=3.0.0 <4.0.0"',
-            '',
-            'rapid:',
-            '  name: cool',
-          ]));
+          ..writeAsStringSync(
+            multiLine([
+              'name: cool',
+              '',
+              'environment:',
+              '  sdk: ">=3.0.0 <4.0.0"',
+              '',
+              'rapid:',
+              '  name: cool',
+            ]),
+          );
         when(() => launchContext.localInstallation).thenReturn(installation);
         when(() => commandRunner.run(any()))
             .thenThrow(UsageException('message', 'usage'));
@@ -541,15 +549,17 @@ void main() {
             .thenReturn(Directory('/some_path'));
         File('/some_path/pubspec.yaml')
           ..createSync(recursive: true)
-          ..writeAsStringSync(multiLine([
-            'name: cool',
-            '',
-            'environment:',
-            '  sdk: ">=3.0.0 <4.0.0"',
-            '',
-            'rapid:',
-            '  name: cool',
-          ]));
+          ..writeAsStringSync(
+            multiLine([
+              'name: cool',
+              '',
+              'environment:',
+              '  sdk: ">=3.0.0 <4.0.0"',
+              '',
+              'rapid:',
+              '  name: cool',
+            ]),
+          );
         when(() => launchContext.localInstallation).thenReturn(installation);
         when(() => commandRunner.run(any())).thenThrow(Error());
 

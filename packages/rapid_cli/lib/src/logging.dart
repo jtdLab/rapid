@@ -8,17 +8,17 @@ import 'package:mason/mason.dart' as mason;
 export 'package:ansi_styles/ansi_styles.dart';
 export 'package:io/ansi.dart';
 export 'package:mason/mason.dart'
-    show Level, ProgressOptions, ProgressAnimation, LogTheme;
+    show Level, LogTheme, ProgressAnimation, ProgressOptions;
 
 // TODO(jtdLab): use masons Progress if https://github.com/felangel/mason/issues/711 is fixed
 
 final successMessageColor = AnsiStyles.green;
 final successStyle = AnsiStyles.bold;
 final taskGroupTitleStyle = AnsiStyles.bold;
-final paket = '📦';
-final construction = '🚧';
-final rocket = '🚀';
-final tada = '🎉';
+const paket = '📦';
+const construction = '🚧';
+const rocket = '🚀';
+const tada = '🎉';
 
 class RapidLogger with _DelegateLogger {
   RapidLogger({

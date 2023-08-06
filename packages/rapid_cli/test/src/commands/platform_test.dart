@@ -35,9 +35,7 @@ void main() {
   late CommandGroup commandGroup;
   late RapidTool tool;
 
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   setUp(() {
     platform = randomPlatform();
@@ -63,8 +61,8 @@ void main() {
       path: 'cool_page_path',
     );
     when(() => platformFeaturePackage.existsSync()).thenReturn(true);
-    when(() => platformFeaturePackage.bloc).thenReturn(blocBuilder);
-    when(() => platformFeaturePackage.cubit).thenReturn(cubitBuilder);
+    when(() => platformFeaturePackage.bloc).thenReturn(blocBuilder.call);
+    when(() => platformFeaturePackage.cubit).thenReturn(cubitBuilder.call);
     when(() => platformFeaturePackage.applicationBarrelFile)
         .thenReturn(platformFeaturePackageApplicationBarrelFile);
     when(() => platformFeaturePackage.applicationDir)
@@ -76,18 +74,18 @@ void main() {
       () => platformFeaturePackageBuilder(name: any(named: 'name')),
     ).thenReturn(platformFeaturePackage);
     platformFeaturesDirectory = MockPlatformFeaturesDirectory(
-      featurePackage: platformFeaturePackageBuilder,
+      featurePackage: platformFeaturePackageBuilder.call,
     );
     platformLocalizationPackage = MockPlatformLocalizationPackage(
       packageName: 'platform_localization_package',
       path: 'platform_localization_package_path',
     );
     when(() => platformLocalizationPackage.supportedLanguages()).thenReturn({
-      Language(languageCode: 'en'),
-      Language(languageCode: 'fr'),
+      const Language(languageCode: 'en'),
+      const Language(languageCode: 'fr'),
     });
     when(() => platformLocalizationPackage.defaultLanguage())
-        .thenReturn(Language(languageCode: 'en'));
+        .thenReturn(const Language(languageCode: 'en'));
     navigatorInterface = MockNavigatorInterface();
     when(() => navigatorInterface.existsAny).thenReturn(false);
     navigatorInterfaceBuilder = MockNavigatorInterfaceBuilder();
@@ -95,7 +93,7 @@ void main() {
         .thenReturn(navigatorInterface);
     platformNavigationPackageBarrelFile = MockDartFile();
     platformNavigationPackage = MockPlatformNavigationPackage(
-      navigatorInterface: navigatorInterfaceBuilder,
+      navigatorInterface: navigatorInterfaceBuilder.call,
       barrelFile: platformNavigationPackageBarrelFile,
     );
     platformDirectory = MockPlatformDirectory(
@@ -195,29 +193,30 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating feature'),
           () => platformFeaturePackage.generate(description: 'Cool flow.'),
           () => platformRootPackage
               .registerFeaturePackage(platformFeaturePackage),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress(
-              'Running "melos bootstrap --scope none_ios_root_package,cool_flow"'),
+                'Running "melos bootstrap --scope none_ios_root_package,cool_flow"',
+              ),
           () => manager.runMelosBootstrap(
                 ['none_ios_root_package', 'cool_flow'],
                 workingDirectory: 'project_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger
               .progress('Running code generation in none_ios_root_package'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Flow Feature!'),
         ]);
         verifyNoMoreInteractions(manager);
@@ -251,19 +250,19 @@ void main() {
         verifyInOrder([
           () => logger.progress('Creating navigator implementation'),
           () => navigatorImplementation.generate(),
-          () => progress.complete(),
-          () => logger.progressGroup(null),
+          progress.complete,
+          logger.progressGroup,
           () => progressGroup
               .progress('Running code generation in none_ios_root_package'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => progressGroup.progress('Running code generation in cool_flow'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_flow_path',
               ),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
         ]);
       }),
     );
@@ -290,7 +289,7 @@ void main() {
           () => navigatorInterface.generate(),
           () => platformNavigationPackageBarrelFile
               .addExport('src/i_cool_flow_navigator.dart'),
-          () => progress.complete(),
+          progress.complete,
         ]);
       }),
     );
@@ -397,7 +396,7 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating feature'),
           () => platformFeaturePackage.generate(
                 description: 'Cool tab flow.',
@@ -405,24 +404,25 @@ void main() {
               ),
           () => platformRootPackage
               .registerFeaturePackage(platformFeaturePackage),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress(
-              'Running "melos bootstrap --scope none_ios_root_package,cool_tab_flow"'),
+                'Running "melos bootstrap --scope none_ios_root_package,cool_tab_flow"',
+              ),
           () => manager.runMelosBootstrap(
                 ['none_ios_root_package', 'cool_tab_flow'],
                 workingDirectory: 'project_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger
               .progress('Running code generation in none_ios_root_package'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Tab Flow Feature!'),
         ]);
         verifyNoMoreInteractions(manager);
@@ -457,20 +457,20 @@ void main() {
         verifyInOrder([
           () => logger.progress('Creating navigator implementation'),
           () => navigatorImplementation.generate(),
-          () => progress.complete(),
-          () => logger.progressGroup(null),
+          progress.complete,
+          logger.progressGroup,
           () => progressGroup
               .progress('Running code generation in none_ios_root_package'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => progressGroup
               .progress('Running code generation in cool_tab_flow'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_tab_flow_path',
               ),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
         ]);
       }),
     );
@@ -498,7 +498,7 @@ void main() {
           () => navigatorInterface.generate(),
           () => platformNavigationPackageBarrelFile
               .addExport('src/i_cool_tab_flow_navigator.dart'),
-          () => progress.complete(),
+          progress.complete,
         ]);
       }),
     );
@@ -583,29 +583,30 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating feature'),
           () => platformFeaturePackage.generate(description: 'Cool page.'),
           () => platformRootPackage
               .registerFeaturePackage(platformFeaturePackage),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress(
-              'Running "melos bootstrap --scope none_ios_root_package,cool_page"'),
+                'Running "melos bootstrap --scope none_ios_root_package,cool_page"',
+              ),
           () => manager.runMelosBootstrap(
                 ['none_ios_root_package', 'cool_page'],
                 workingDirectory: 'project_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger
               .progress('Running code generation in none_ios_root_package'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Page Feature!'),
         ]);
         verifyNoMoreInteractions(manager);
@@ -639,19 +640,19 @@ void main() {
         verifyInOrder([
           () => logger.progress('Creating navigator implementation'),
           () => navigatorImplementation.generate(),
-          () => progress.complete(),
-          () => logger.progressGroup(null),
+          progress.complete,
+          logger.progressGroup,
           () => progressGroup
               .progress('Running code generation in none_ios_root_package'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => progressGroup.progress('Running code generation in cool_page'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
         ]);
       }),
     );
@@ -678,7 +679,7 @@ void main() {
           () => navigatorInterface.generate(),
           () => platformNavigationPackageBarrelFile
               .addExport('src/i_cool_page_navigator.dart'),
-          () => progress.complete(),
+          progress.complete,
         ]);
       }),
     );
@@ -755,29 +756,30 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating feature'),
           () => platformFeaturePackage.generate(description: 'Cool widget.'),
           () => platformRootPackage
               .registerFeaturePackage(platformFeaturePackage),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress(
-              'Running "melos bootstrap --scope none_ios_root_package,cool_widget"'),
+                'Running "melos bootstrap --scope none_ios_root_package,cool_widget"',
+              ),
           () => manager.runMelosBootstrap(
                 ['none_ios_root_package', 'cool_widget'],
                 workingDirectory: 'project_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger
               .progress('Running code generation in none_ios_root_package'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Widget Feature!'),
         ]);
         verifyNoMoreInteractions(manager);
@@ -792,9 +794,9 @@ void main() {
 
     setUp(() {
       when(() => platformLocalizationPackage.supportedLanguages()).thenReturn({
-        Language(languageCode: 'en'),
-        Language(languageCode: 'fr'),
-        Language(languageCode: 'de'),
+        const Language(languageCode: 'en'),
+        const Language(languageCode: 'fr'),
+        const Language(languageCode: 'de'),
       });
       platformRootPackage = MockNoneIosRootPackage(
         packageName: 'none_ios_root_package',
@@ -810,7 +812,7 @@ void main() {
       expect(
         () => rapid.platformAddLanguage(
           platform,
-          language: Language(languageCode: 'fr'),
+          language: const Language(languageCode: 'fr'),
         ),
         throwsA(isA<LanguageAlreadyPresentException>()),
       );
@@ -825,7 +827,7 @@ void main() {
       expect(
         () => rapid.platformAddLanguage(
           platform,
-          language: Language(languageCode: 'en'),
+          language: const Language(languageCode: 'en'),
         ),
         throwsA(isA<PlatformNotActivatedException>()),
       );
@@ -839,24 +841,26 @@ void main() {
 
         await rapid.platformAddLanguage(
           platform,
-          language: Language(languageCode: 'es'),
+          language: const Language(languageCode: 'es'),
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Adding language'),
           () => platformLocalizationPackage
-              .addLanguage(Language(languageCode: 'es')),
-          () => progress.complete(),
+              .addLanguage(const Language(languageCode: 'es')),
+          progress.complete,
           () => logger.progress(
-              'Running "flutter gen-l10n" in platform_localization_package'),
+                'Running "flutter gen-l10n" in platform_localization_package',
+              ),
           () => manager.runFlutterGenl10n(
-              workingDirectory: 'platform_localization_package_path'),
-          () => progress.complete(),
+                workingDirectory: 'platform_localization_package_path',
+              ),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Language!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -873,28 +877,31 @@ void main() {
 
         await rapid.platformAddLanguage(
           platform,
-          language: Language(languageCode: 'zh', scriptCode: 'Hans'),
+          language: const Language(languageCode: 'zh', scriptCode: 'Hans'),
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
+          () => logger.progress('Adding language'),
+          () => platformLocalizationPackage.addLanguage(
+                const Language(languageCode: 'zh', scriptCode: 'Hans'),
+              ),
+          progress.complete,
           () => logger.progress('Adding language'),
           () => platformLocalizationPackage
-              .addLanguage(Language(languageCode: 'zh', scriptCode: 'Hans')),
-          () => progress.complete(),
-          () => logger.progress('Adding language'),
-          () => platformLocalizationPackage
-              .addLanguage(Language(languageCode: 'zh')),
-          () => progress.complete(),
+              .addLanguage(const Language(languageCode: 'zh')),
+          progress.complete,
           () => logger.progress(
-              'Running "flutter gen-l10n" in platform_localization_package'),
+                'Running "flutter gen-l10n" in platform_localization_package',
+              ),
           () => manager.runFlutterGenl10n(
-              workingDirectory: 'platform_localization_package_path'),
-          () => progress.complete(),
+                workingDirectory: 'platform_localization_package_path',
+              ),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Language!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -921,12 +928,12 @@ void main() {
 
           await rapid.platformAddLanguage(
             platform,
-            language: Language(languageCode: 'zh'),
+            language: const Language(languageCode: 'zh'),
           );
 
           verifyInOrder([
             () => (platformRootPackage as IosRootPackage).addLanguage(
-                  Language(languageCode: 'zh'),
+                  const Language(languageCode: 'zh'),
                 ),
           ]);
         }),
@@ -939,15 +946,15 @@ void main() {
 
           await rapid.platformAddLanguage(
             platform,
-            language: Language(languageCode: 'zh', scriptCode: 'Hans'),
+            language: const Language(languageCode: 'zh', scriptCode: 'Hans'),
           );
 
           verifyInOrder([
             () => (platformRootPackage as IosRootPackage).addLanguage(
-                  Language(languageCode: 'zh', scriptCode: 'Hans'),
+                  const Language(languageCode: 'zh', scriptCode: 'Hans'),
                 ),
             () => (platformRootPackage as IosRootPackage).addLanguage(
-                  Language(languageCode: 'zh'),
+                  const Language(languageCode: 'zh'),
                 ),
           ]);
         }),
@@ -972,12 +979,12 @@ void main() {
 
           await rapid.platformAddLanguage(
             platform,
-            language: Language(languageCode: 'zh'),
+            language: const Language(languageCode: 'zh'),
           );
 
           verifyInOrder([
             () => (platformRootPackage as MobileRootPackage).addLanguage(
-                  Language(languageCode: 'zh'),
+                  const Language(languageCode: 'zh'),
                 ),
           ]);
         }),
@@ -990,15 +997,15 @@ void main() {
 
           await rapid.platformAddLanguage(
             platform,
-            language: Language(languageCode: 'zh', scriptCode: 'Hans'),
+            language: const Language(languageCode: 'zh', scriptCode: 'Hans'),
           );
 
           verifyInOrder([
             () => (platformRootPackage as MobileRootPackage).addLanguage(
-                  Language(languageCode: 'zh', scriptCode: 'Hans'),
+                  const Language(languageCode: 'zh', scriptCode: 'Hans'),
                 ),
             () => (platformRootPackage as MobileRootPackage).addLanguage(
-                  Language(languageCode: 'zh'),
+                  const Language(languageCode: 'zh'),
                 ),
           ]);
         }),
@@ -1087,24 +1094,24 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating navigator interface'),
           () => navigatorInterface.generate(),
           () => platformNavigationPackageBarrelFile
               .addExport('src/i_cool_page_navigator.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Creating navigator implementation'),
           () => navigatorImplementation.generate(),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running code generation in cool_page'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Navigator!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -1177,21 +1184,21 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating bloc'),
           () => bloc.generate(),
           () => platformFeaturePackageApplicationBarrelFile
               .addExport('cool_bloc.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running code generation in cool_page'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Bloc!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -1219,16 +1226,17 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating bloc'),
           () => bloc.generate(),
           () => platformFeaturePackageApplicationBarrelFile.createSync(
-              recursive: true),
+                recursive: true,
+              ),
           () => platformFeaturePackageApplicationBarrelFile
               .addExport('cool_bloc.dart'),
           () => platformFeaturePackageBarrelFile
               .addExport('src/application/application.dart'),
-          () => progress.complete(),
+          progress.complete,
         ]);
       }),
     );
@@ -1299,21 +1307,21 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating cubit'),
           () => cubit.generate(),
           () => platformFeaturePackageApplicationBarrelFile
               .addExport('cool_cubit.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running code generation in cool_page'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Cubit!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -1341,16 +1349,17 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Creating cubit'),
           () => cubit.generate(),
           () => platformFeaturePackageApplicationBarrelFile.createSync(
-              recursive: true),
+                recursive: true,
+              ),
           () => platformFeaturePackageApplicationBarrelFile
               .addExport('cool_cubit.dart'),
           () => platformFeaturePackageBarrelFile
               .addExport('src/application/application.dart'),
-          () => progress.complete(),
+          progress.complete,
         ]);
       }),
     );
@@ -1419,21 +1428,21 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Removing bloc'),
           () => bloc.delete(),
           () => platformFeaturePackageApplicationBarrelFile
               .removeExport('cool_bloc.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running code generation in cool_page'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Bloc!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -1446,8 +1455,10 @@ void main() {
       'removes application barrel file if it does not contain any code',
       withMockEnv((manager) async {
         when(() => bloc.existsAny).thenReturn(true);
-        when(() => platformFeaturePackageApplicationBarrelFile
-            .containsStatements()).thenReturn(false);
+        when(
+          () =>
+              platformFeaturePackageApplicationBarrelFile.containsStatements(),
+        ).thenReturn(false);
         final rapid = getRapid(project: project, tool: tool);
 
         await rapid.platformFeatureRemoveBloc(
@@ -1468,8 +1479,10 @@ void main() {
       'removes application dir if it is empty',
       withMockEnv((manager) async {
         when(() => bloc.existsAny).thenReturn(true);
-        when(() => platformFeaturePackageApplicationBarrelFile
-            .containsStatements()).thenReturn(false);
+        when(
+          () =>
+              platformFeaturePackageApplicationBarrelFile.containsStatements(),
+        ).thenReturn(false);
         when(() => platformFeaturePackageApplicationDir.listSync())
             .thenReturn([]);
         final rapid = getRapid(project: project, tool: tool);
@@ -1553,21 +1566,21 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Removing cubit'),
           () => cubit.delete(),
           () => platformFeaturePackageApplicationBarrelFile
               .removeExport('cool_cubit.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running code generation in cool_page'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Cubit!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -1580,8 +1593,10 @@ void main() {
       'removes application barrel file if it does not contain any code',
       withMockEnv((manager) async {
         when(() => cubit.existsAny).thenReturn(true);
-        when(() => platformFeaturePackageApplicationBarrelFile
-            .containsStatements()).thenReturn(false);
+        when(
+          () =>
+              platformFeaturePackageApplicationBarrelFile.containsStatements(),
+        ).thenReturn(false);
         final rapid = getRapid(project: project, tool: tool);
 
         await rapid.platformFeatureRemoveCubit(
@@ -1602,8 +1617,10 @@ void main() {
       'removes application dir if it is empty',
       withMockEnv((manager) async {
         when(() => cubit.existsAny).thenReturn(true);
-        when(() => platformFeaturePackageApplicationBarrelFile
-            .containsStatements()).thenReturn(false);
+        when(
+          () =>
+              platformFeaturePackageApplicationBarrelFile.containsStatements(),
+        ).thenReturn(false);
         when(() => platformFeaturePackageApplicationDir.listSync())
             .thenReturn([]);
         final rapid = getRapid(project: project, tool: tool);
@@ -1708,7 +1725,7 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Deleting feature files'),
           () => platformRootPackage
               .unregisterFeaturePackage(platformFeaturePackage),
@@ -1716,24 +1733,25 @@ void main() {
                 name: 'cool_page',
               ),
           () => platformFeaturePackage.deleteSync(recursive: true),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress(
-              'Running "melos bootstrap --scope remaining_widget,none_ios_root_package"'),
+                'Running "melos bootstrap --scope remaining_widget,none_ios_root_package"',
+              ),
           () => manager.runMelosBootstrap(
                 ['remaining_widget', 'none_ios_root_package'],
                 workingDirectory: 'project_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger
               .progress('Running code generation in none_ios_root_package'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'none_ios_root_package_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Feature!'),
         ]);
         verifyNoMoreInteractions(manager);
@@ -1764,7 +1782,7 @@ void main() {
           () => navigatorInterface.delete(),
           () => platformNavigationPackageBarrelFile
               .removeExport('src/i_cool_page_navigator.dart'),
-          () => progress.complete(),
+          progress.complete,
         ]);
       }),
     );
@@ -1775,10 +1793,10 @@ void main() {
 
     setUp(() {
       when(() => platformLocalizationPackage.supportedLanguages()).thenReturn({
-        Language(languageCode: 'en'),
-        Language(languageCode: 'zh'),
-        Language(languageCode: 'zh', scriptCode: 'Hans'),
-        Language(languageCode: 'de'),
+        const Language(languageCode: 'en'),
+        const Language(languageCode: 'zh'),
+        const Language(languageCode: 'zh', scriptCode: 'Hans'),
+        const Language(languageCode: 'de'),
       });
       platformRootPackage = MockNoneIosRootPackage(
         packageName: 'none_ios_root_package',
@@ -1796,7 +1814,7 @@ void main() {
       expect(
         () => rapid.platformRemoveLanguage(
           platform,
-          language: Language(languageCode: 'en'),
+          language: const Language(languageCode: 'en'),
         ),
         throwsA(isA<PlatformNotActivatedException>()),
       );
@@ -1809,7 +1827,7 @@ void main() {
       expect(
         () => rapid.platformRemoveLanguage(
           platform,
-          language: Language(languageCode: 'es'),
+          language: const Language(languageCode: 'es'),
         ),
         throwsA(isA<LanguageNotFoundException>()),
       );
@@ -1818,13 +1836,13 @@ void main() {
     test('throws CantRemoveDefaultLanguageException for the default language',
         () async {
       when(() => platformLocalizationPackage.defaultLanguage())
-          .thenReturn(Language(languageCode: 'en'));
+          .thenReturn(const Language(languageCode: 'en'));
       final rapid = getRapid(project: project);
 
       expect(
         () => rapid.platformRemoveLanguage(
           platform,
-          language: Language(languageCode: 'en'),
+          language: const Language(languageCode: 'en'),
         ),
         throwsA(isA<CantRemoveDefaultLanguageException>()),
       );
@@ -1838,24 +1856,27 @@ void main() {
 
         await rapid.platformRemoveLanguage(
           platform,
-          language: Language(languageCode: 'zh', scriptCode: 'Hans'),
+          language: const Language(languageCode: 'zh', scriptCode: 'Hans'),
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Removing language'),
-          () => platformLocalizationPackage
-              .removeLanguage(Language(languageCode: 'zh', scriptCode: 'Hans')),
-          () => progress.complete(),
+          () => platformLocalizationPackage.removeLanguage(
+                const Language(languageCode: 'zh', scriptCode: 'Hans'),
+              ),
+          progress.complete,
           () => logger.progress(
-              'Running "flutter gen-l10n" in platform_localization_package'),
+                'Running "flutter gen-l10n" in platform_localization_package',
+              ),
           () => manager.runFlutterGenl10n(
-              workingDirectory: 'platform_localization_package_path'),
-          () => progress.complete(),
+                workingDirectory: 'platform_localization_package_path',
+              ),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Language!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -1872,28 +1893,31 @@ void main() {
 
         await rapid.platformRemoveLanguage(
           platform,
-          language: Language(languageCode: 'zh'),
+          language: const Language(languageCode: 'zh'),
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Removing language'),
           () => platformLocalizationPackage
-              .removeLanguage(Language(languageCode: 'zh')),
-          () => progress.complete(),
+              .removeLanguage(const Language(languageCode: 'zh')),
+          progress.complete,
           () => logger.progress('Removing language'),
-          () => platformLocalizationPackage
-              .removeLanguage(Language(languageCode: 'zh', scriptCode: 'Hans')),
-          () => progress.complete(),
+          () => platformLocalizationPackage.removeLanguage(
+                const Language(languageCode: 'zh', scriptCode: 'Hans'),
+              ),
+          progress.complete,
           () => logger.progress(
-              'Running "flutter gen-l10n" in platform_localization_package'),
+                'Running "flutter gen-l10n" in platform_localization_package',
+              ),
           () => manager.runFlutterGenl10n(
-              workingDirectory: 'platform_localization_package_path'),
-          () => progress.complete(),
+                workingDirectory: 'platform_localization_package_path',
+              ),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Language!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -1920,12 +1944,12 @@ void main() {
 
           await rapid.platformRemoveLanguage(
             platform,
-            language: Language(languageCode: 'zh', scriptCode: 'Hans'),
+            language: const Language(languageCode: 'zh', scriptCode: 'Hans'),
           );
 
           verifyInOrder([
             () => (platformRootPackage as IosRootPackage).removeLanguage(
-                  Language(languageCode: 'zh', scriptCode: 'Hans'),
+                  const Language(languageCode: 'zh', scriptCode: 'Hans'),
                 ),
           ]);
         }),
@@ -1939,15 +1963,15 @@ void main() {
 
           await rapid.platformRemoveLanguage(
             platform,
-            language: Language(languageCode: 'zh'),
+            language: const Language(languageCode: 'zh'),
           );
 
           verifyInOrder([
             () => (platformRootPackage as IosRootPackage).removeLanguage(
-                  Language(languageCode: 'zh'),
+                  const Language(languageCode: 'zh'),
                 ),
             () => (platformRootPackage as IosRootPackage).removeLanguage(
-                  Language(languageCode: 'zh', scriptCode: 'Hans'),
+                  const Language(languageCode: 'zh', scriptCode: 'Hans'),
                 ),
           ]);
         }),
@@ -1972,12 +1996,12 @@ void main() {
 
           await rapid.platformRemoveLanguage(
             platform,
-            language: Language(languageCode: 'zh', scriptCode: 'Hans'),
+            language: const Language(languageCode: 'zh', scriptCode: 'Hans'),
           );
 
           verifyInOrder([
             () => (platformRootPackage as MobileRootPackage).removeLanguage(
-                  Language(languageCode: 'zh', scriptCode: 'Hans'),
+                  const Language(languageCode: 'zh', scriptCode: 'Hans'),
                 ),
           ]);
         }),
@@ -1991,15 +2015,15 @@ void main() {
 
           await rapid.platformRemoveLanguage(
             platform,
-            language: Language(languageCode: 'zh'),
+            language: const Language(languageCode: 'zh'),
           );
 
           verifyInOrder([
             () => (platformRootPackage as MobileRootPackage).removeLanguage(
-                  Language(languageCode: 'zh'),
+                  const Language(languageCode: 'zh'),
                 ),
             () => (platformRootPackage as MobileRootPackage).removeLanguage(
-                  Language(languageCode: 'zh', scriptCode: 'Hans'),
+                  const Language(languageCode: 'zh', scriptCode: 'Hans'),
                 ),
           ]);
         }),
@@ -2090,24 +2114,24 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Deleting navigator interface'),
           () => navigatorInterface.delete(),
           () => platformNavigationPackageBarrelFile
               .removeExport('src/i_cool_page_navigator.dart'),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Deleting navigator implementation'),
           () => navigatorImplementation.delete(),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running code generation in cool_page'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'cool_page_path',
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Navigator!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -2127,7 +2151,7 @@ void main() {
       expect(
         () => rapid.platformSetDefaultLanguage(
           platform,
-          language: Language(languageCode: 'en'),
+          language: const Language(languageCode: 'en'),
         ),
         throwsA(isA<PlatformNotActivatedException>()),
       );
@@ -2140,7 +2164,7 @@ void main() {
       expect(
         () => rapid.platformSetDefaultLanguage(
           platform,
-          language: Language(languageCode: 'de'),
+          language: const Language(languageCode: 'de'),
         ),
         throwsA(isA<LanguageNotFoundException>()),
       );
@@ -2154,7 +2178,7 @@ void main() {
       expect(
         () => rapid.platformSetDefaultLanguage(
           platform,
-          language: Language(languageCode: 'en'),
+          language: const Language(languageCode: 'en'),
         ),
         throwsA(isA<LanguageIsAlreadyDefaultLanguageException>()),
       );
@@ -2168,25 +2192,27 @@ void main() {
 
         await rapid.platformSetDefaultLanguage(
           platform,
-          language: Language(languageCode: 'fr'),
+          language: const Language(languageCode: 'fr'),
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.progress('Setting default language'),
           () => platformLocalizationPackage.setDefaultLanguage(
-                Language(languageCode: 'fr'),
+                const Language(languageCode: 'fr'),
               ),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress(
-              'Running "flutter gen-l10n" in platform_localization_package'),
+                'Running "flutter gen-l10n" in platform_localization_package',
+              ),
           () => manager.runFlutterGenl10n(
-              workingDirectory: 'platform_localization_package_path'),
-          () => progress.complete(),
+                workingDirectory: 'platform_localization_package_path',
+              ),
+          progress.complete,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Set Default Language!')
         ]);
         verifyNoMoreInteractions(manager);

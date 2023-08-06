@@ -22,9 +22,7 @@ PlatformNavigationPackage _getPlatformNavigationPackage({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('PlatformNavigationPackage', () {
     test('.resolve', () {
@@ -69,7 +67,7 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final platformNavigationPackage = _getPlatformNavigationPackage(
             projectName: 'test_project',
             path: '/path/to/platform_navigation_package',

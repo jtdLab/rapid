@@ -39,35 +39,41 @@ void main() {
     });
 
     group('domainPackages', () {
-      test('parse and returns the existing domain packages', withMockFs(() {
-        Directory('path/to/domain_directory/test_project_domain')
-            .createSync(recursive: true);
-        Directory('path/to/domain_directory/test_project_domain_cool')
-            .createSync(recursive: true);
-        Directory('path/to/domain_directory/test_project_domain_swag')
-            .createSync(recursive: true);
-        DomainPackage domainPackage({String? name}) => DomainPackage.resolve(
-            projectName: 'xxx', projectPath: 'xxx', name: name);
-        final defaultDomainPackage = domainPackage();
-        final coolDomainPackage = domainPackage(name: 'cool');
-        final swagDomainPackage = domainPackage(name: 'swag');
-        final domainDirectory = _getDomainDirectory(
-          projectName: 'test_project',
-          path: 'path/to/domain_directory',
-          domainPackage: ({name}) => switch (name) {
-            null => defaultDomainPackage,
-            'cool' => coolDomainPackage,
-            _ => swagDomainPackage,
-          },
-        );
+      test(
+        'parse and returns the existing domain packages',
+        withMockFs(() {
+          Directory('path/to/domain_directory/test_project_domain')
+              .createSync(recursive: true);
+          Directory('path/to/domain_directory/test_project_domain_cool')
+              .createSync(recursive: true);
+          Directory('path/to/domain_directory/test_project_domain_swag')
+              .createSync(recursive: true);
+          DomainPackage domainPackage({String? name}) => DomainPackage.resolve(
+                projectName: 'xxx',
+                projectPath: 'xxx',
+                name: name,
+              );
+          final defaultDomainPackage = domainPackage();
+          final coolDomainPackage = domainPackage(name: 'cool');
+          final swagDomainPackage = domainPackage(name: 'swag');
+          final domainDirectory = _getDomainDirectory(
+            projectName: 'test_project',
+            path: 'path/to/domain_directory',
+            domainPackage: ({name}) => switch (name) {
+              null => defaultDomainPackage,
+              'cool' => coolDomainPackage,
+              _ => swagDomainPackage,
+            },
+          );
 
-        final domainPackages = domainDirectory.domainPackages();
+          final domainPackages = domainDirectory.domainPackages();
 
-        expect(domainPackages.length, 3);
-        expect(domainPackages[0], defaultDomainPackage);
-        expect(domainPackages[1], coolDomainPackage);
-        expect(domainPackages[2], swagDomainPackage);
-      }));
+          expect(domainPackages.length, 3);
+          expect(domainPackages[0], defaultDomainPackage);
+          expect(domainPackages[1], coolDomainPackage);
+          expect(domainPackages[2], swagDomainPackage);
+        }),
+      );
 
       test('returns empty list if domain directory does not exist', () {
         final domainDirectory = _getDomainDirectory(

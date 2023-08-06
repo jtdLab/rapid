@@ -31,7 +31,7 @@ void main() {
         IOOverrides.runZoned(
           () {
             RapidLogger().newLine();
-            verify(() => stdout.writeln('')).called(1);
+            verify(() => stdout.writeln()).called(1);
           },
           stdout: () => stdout,
         );
@@ -41,7 +41,7 @@ void main() {
         IOOverrides.runZoned(
           () {
             RapidLogger(level: Level.critical).newLine();
-            verifyNever(() => stdout.writeln(''));
+            verifyNever(() => stdout.writeln());
           },
           stdout: () => stdout,
         );
@@ -1918,7 +1918,8 @@ void main() {
                 any(
                   that: matches(
                     RegExp(
-                        r'\[92m⠙\[0m 1234567890123456xxxxxxxx... \[90m\(\d\dms\)\[0m'),
+                      r'\[92m⠙\[0m 1234567890123456xxxxxxxx... \[90m\(\d\dms\)\[0m',
+                    ),
                   ),
                 ),
               );
@@ -1959,7 +1960,8 @@ void main() {
                   any(
                     that: matches(
                       RegExp(
-                          r'\[92m⠙\[0m test message... \[90m\(\d\dms\)\[0m'),
+                        r'\[92m⠙\[0m test message... \[90m\(\d\dms\)\[0m',
+                      ),
                     ),
                   ),
                 );
@@ -2238,7 +2240,8 @@ void main() {
                   any(
                     that: matches(
                       RegExp(
-                          r'^\[92m⠙\[0m test message1... \[90m\(\d\dms\)\[0m\n$'),
+                        r'^\[92m⠙\[0m test message1... \[90m\(\d\dms\)\[0m\n$',
+                      ),
                     ),
                   ),
                 ),
@@ -2253,7 +2256,8 @@ void main() {
                   any(
                     that: matches(
                       RegExp(
-                          r'^\[92m⠙\[0m test message1... \[90m\(\d\dms\)\[0m\n\[92m⠙\[0m test message2... \[90m\(\d\dms\)\[0m\n$'),
+                        r'^\[92m⠙\[0m test message1... \[90m\(\d\dms\)\[0m\n\[92m⠙\[0m test message2... \[90m\(\d\dms\)\[0m\n$',
+                      ),
                     ),
                   ),
                 ),
@@ -2268,7 +2272,8 @@ void main() {
                   any(
                     that: matches(
                       RegExp(
-                          r'^\[92m✓\[0m test message1 \[90m\(0.1s\)\[0m\n\[92m⠙\[0m test message2... \[90m\(\d\dms\)\[0m\n$'),
+                        r'^\[92m✓\[0m test message1 \[90m\(0.1s\)\[0m\n\[92m⠙\[0m test message2... \[90m\(\d\dms\)\[0m\n$',
+                      ),
                     ),
                   ),
                 ),
@@ -2283,7 +2288,8 @@ void main() {
                   any(
                     that: matches(
                       RegExp(
-                          r'^\[92m✓\[0m test message1 \[90m\(0.1s\)\[0m\n\[92m✓\[0m test message2 \[90m\(0.1s\)\[0m\n$'),
+                        r'^\[92m✓\[0m test message1 \[90m\(0.1s\)\[0m\n\[92m✓\[0m test message2 \[90m\(0.1s\)\[0m\n$',
+                      ),
                     ),
                   ),
                 ),

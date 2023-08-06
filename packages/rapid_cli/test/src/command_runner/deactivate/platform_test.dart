@@ -18,9 +18,7 @@ List<String> expectedUsage(Platform platform) {
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('activate', () {
     for (final platform in Platform.values) {

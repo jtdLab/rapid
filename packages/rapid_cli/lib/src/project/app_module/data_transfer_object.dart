@@ -20,13 +20,15 @@ class DataTransferObject extends FileSystemEntityCollection {
       File(p.join(path, 'lib', 'src', '${entityName.snakeCase}_dto.dart'));
 
   File get freezedFile => File(
-      p.join(path, 'lib', 'src', '${entityName.snakeCase}_dto.freezed.dart'));
+        p.join(path, 'lib', 'src', '${entityName.snakeCase}_dto.freezed.dart'),
+      );
 
   File get gFile =>
       File(p.join(path, 'lib', 'src', '${entityName.snakeCase}_dto.g.dart'));
 
   File get testFile => File(
-      p.join(path, 'test', 'src', '${entityName.snakeCase}_dto_test.dart'));
+        p.join(path, 'test', 'src', '${entityName.snakeCase}_dto_test.dart'),
+      );
 
   @override
   Iterable<FileSystemEntity> get entities => {

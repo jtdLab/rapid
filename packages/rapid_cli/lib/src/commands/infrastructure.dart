@@ -184,7 +184,8 @@ class DataTransferObjectAlreadyExistsException extends RapidException {
 class ServiceImplementationAlreadyExistsException extends RapidException {
   ServiceImplementationAlreadyExistsException._(String name, String serviceName)
       : super(
-            'Service Implementation $name${serviceName}Service already exists.');
+          'Service Implementation $name${serviceName}Service already exists.',
+        );
 }
 
 class ServiceImplementationNotFoundException extends RapidException {

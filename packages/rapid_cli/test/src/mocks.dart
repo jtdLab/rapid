@@ -1,3 +1,5 @@
+// ignore_for_file: one_member_abstracts
+
 import 'dart:convert';
 import 'dart:io' as io;
 
@@ -232,7 +234,7 @@ class MockRapid extends Mock implements Rapid {
         language: any(named: 'language'),
       ),
     ).thenAnswer((_) async {});
-    when(() => begin()).thenAnswer((_) async {});
+    when(begin).thenAnswer((_) async {});
     when(
       () => create(
         projectName: any(named: 'projectName'),
@@ -288,7 +290,7 @@ class MockRapid extends Mock implements Rapid {
         subDomainName: any(named: 'subDomainName'),
       ),
     ).thenAnswer((_) async {});
-    when(() => end()).thenAnswer((_) async {});
+    when(end).thenAnswer((_) async {});
     when(
       () => infrastructureSubInfrastructureAddDataTransferObject(
         subInfrastructureName: any(named: 'subInfrastructureName'),
@@ -677,8 +679,10 @@ class MockInfrastructurePackage extends Mock implements InfrastructurePackage {
     path ??= 'infrastructure_package_path';
     dataTransferObject ??=
         ({required String entityName}) => MockDataTransferObject();
-    serviceImplementation ??= (
-            {required String name, required String serviceInterfaceName}) =>
+    serviceImplementation ??= ({
+      required String name,
+      required String serviceInterfaceName,
+    }) =>
         MockServiceImplementation();
     isDefault ??= false;
     pubSpec ??= MockPubspecYamlFile();
@@ -919,8 +923,8 @@ class MockPlatformLocalizationPackage extends Mock
         ({required Language language}) => MockDartFile();
     localizationsFile ??= MockDartFile();
     l10nFile ??= MockYamlFile();
-    supportedLanguages ??= {Language(languageCode: 'en')};
-    defaultLanguage ??= Language(languageCode: 'en');
+    supportedLanguages ??= {const Language(languageCode: 'en')};
+    defaultLanguage ??= const Language(languageCode: 'en');
     existsSync ??= false;
 
     when(() => this.packageName).thenReturn(packageName);

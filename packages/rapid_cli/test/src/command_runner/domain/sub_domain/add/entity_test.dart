@@ -16,9 +16,7 @@ List<String> expectedUsage(String subDomainPackage) => [
     ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('domain <sub_domain> add entity', () {
     test(

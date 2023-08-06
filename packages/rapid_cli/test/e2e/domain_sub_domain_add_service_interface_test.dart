@@ -18,10 +18,10 @@ dynamic Function() performTest({
           subDomain,
         ]);
       }
-      final name = 'FooBar';
+      const name = 'FooBar';
 
       // Act
-      tester.runRapidCommand([
+      await tester.runRapidCommand([
         'domain',
         subDomain,
         'add',

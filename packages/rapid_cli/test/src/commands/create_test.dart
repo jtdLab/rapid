@@ -108,7 +108,7 @@ _ProjectWithPlatformSetup
     uiPackage: uiPackage,
     project: _,
   ) = _setupProject();
-  final T platformRootPackage = switch (T) {
+  final platformRootPackage = switch (T) {
     IosRootPackage => MockIosRootPackage(
         packageName: 'platform_root_package',
         path: 'platform_root_package_path',
@@ -242,46 +242,46 @@ void _verifyCreateProjectAndActivatePlatform<T extends PlatformRootPackage>(
             name: 'test_app',
           ),
         ),
-    () => logger.newLine(),
+    logger.newLine,
     () => logger.info('📦 Creating project'),
     () => logger.progress('Generating platform-independent packages'),
-    () => rootPackage.generate(),
-    () => diPackage.generate(),
-    () => defaultDomainPackage.generate(),
-    () => defaultInfrastructurePackage.generate(),
-    () => loggingPackage.generate(),
-    () => uiPackage.generate(),
-    () => progress.complete(),
-    () => logger.progressGroup(null),
+    rootPackage.generate,
+    diPackage.generate,
+    defaultDomainPackage.generate,
+    defaultInfrastructurePackage.generate,
+    loggingPackage.generate,
+    uiPackage.generate,
+    progress.complete,
+    logger.progressGroup,
     () => progressGroup.progress('Running "dart pub get" in root_package'),
     () => manager.runDartPubGet(workingDirectory: 'root_package_path'),
-    () => groupableProgress.complete(),
+    groupableProgress.complete,
     () => progressGroup.progress('Running "dart pub get" in di_package'),
     () => manager.runDartPubGet(workingDirectory: 'di_package_path'),
-    () => groupableProgress.complete(),
+    groupableProgress.complete,
     () => progressGroup.progress('Running "dart pub get" in domain_package'),
     () => manager.runDartPubGet(workingDirectory: 'domain_package_path'),
-    () => groupableProgress.complete(),
+    groupableProgress.complete,
     () => progressGroup
         .progress('Running "dart pub get" in infrastructure_package'),
     () =>
         manager.runDartPubGet(workingDirectory: 'infrastructure_package_path'),
-    () => groupableProgress.complete(),
+    groupableProgress.complete,
     () => progressGroup.progress('Running "dart pub get" in logging_package'),
     () => manager.runDartPubGet(workingDirectory: 'logging_package_path'),
-    () => groupableProgress.complete(),
+    groupableProgress.complete,
     () => progressGroup.progress('Running "dart pub get" in ui_package'),
     () => manager.runDartPubGet(workingDirectory: 'ui_package_path'),
-    () => groupableProgress.complete(),
-    () => logger.newLine(),
+    groupableProgress.complete,
+    logger.newLine,
     () => logger.info('🚀 Activating ${platform.prettyName}'),
     () => logger.progress('Generating ${platform.prettyName} packages'),
-    () => platformAppFeaturePackage.generate(),
-    () => platformHomePageFeaturePackage.generate(),
+    platformAppFeaturePackage.generate,
+    platformHomePageFeaturePackage.generate,
     () => platformLocalizationPackage.generate(
-          defaultLanguage: Language(languageCode: 'fr'),
+          defaultLanguage: const Language(languageCode: 'fr'),
         ),
-    () => platformNavigationPackage.generate(),
+    platformNavigationPackage.generate,
     switch (platform) {
       Platform.android => () =>
           (platformRootPackage as NoneIosRootPackage).generate(
@@ -290,7 +290,7 @@ void _verifyCreateProjectAndActivatePlatform<T extends PlatformRootPackage>(
           ),
       Platform.ios => () => (platformRootPackage as IosRootPackage).generate(
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           ),
       Platform.linux => () =>
           (platformRootPackage as NoneIosRootPackage).generate(
@@ -312,93 +312,100 @@ void _verifyCreateProjectAndActivatePlatform<T extends PlatformRootPackage>(
           (platformRootPackage as MobileRootPackage).generate(
             description: 'Some desc.',
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
           ),
     },
-    () => platformUiPackage.generate(),
-    () => progress.complete(),
-    () => logger.progressGroup(null),
+    platformUiPackage.generate,
+    progress.complete,
+    logger.progressGroup,
     () => progressGroup
         .progress('Running "dart pub get" in platform_app_feature_package'),
     () => manager.runDartPubGet(
-        workingDirectory: 'platform_app_feature_package_path'),
-    () => groupableProgress.complete(),
+          workingDirectory: 'platform_app_feature_package_path',
+        ),
+    groupableProgress.complete,
     () => progressGroup.progress(
-        'Running "dart pub get" in platform_home_page_feature_package'),
+          'Running "dart pub get" in platform_home_page_feature_package',
+        ),
     () => manager.runDartPubGet(
-        workingDirectory: 'platform_home_page_feature_package_path'),
-    () => groupableProgress.complete(),
+          workingDirectory: 'platform_home_page_feature_package_path',
+        ),
+    groupableProgress.complete,
     () => progressGroup
         .progress('Running "dart pub get" in platform_localization_package'),
     () => manager.runDartPubGet(
-        workingDirectory: 'platform_localization_package_path'),
-    () => groupableProgress.complete(),
+          workingDirectory: 'platform_localization_package_path',
+        ),
+    groupableProgress.complete,
     () => progressGroup
         .progress('Running "dart pub get" in platform_navigation_package'),
     () => manager.runDartPubGet(
-        workingDirectory: 'platform_navigation_package_path'),
-    () => groupableProgress.complete(),
+          workingDirectory: 'platform_navigation_package_path',
+        ),
+    groupableProgress.complete,
     () => progressGroup
         .progress('Running "dart pub get" in platform_root_package'),
     () => manager.runDartPubGet(workingDirectory: 'platform_root_package_path'),
-    () => groupableProgress.complete(),
+    groupableProgress.complete,
     () =>
         progressGroup.progress('Running "dart pub get" in platform_ui_package'),
     () => manager.runDartPubGet(workingDirectory: 'platform_ui_package_path'),
-    () => groupableProgress.complete(),
+    groupableProgress.complete,
     () => logger.progress(
-        'Running "flutter gen-l10n" in platform_localization_package'),
+          'Running "flutter gen-l10n" in platform_localization_package',
+        ),
     () => manager.runFlutterGenl10n(
-        workingDirectory: 'platform_localization_package_path'),
-    () => progress.complete(),
+          workingDirectory: 'platform_localization_package_path',
+        ),
+    progress.complete,
     ...switch (platform) {
       Platform.android => [
           () => logger.progress('Running "flutter config --enable-android"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.android),
-          () => progress.complete(),
+          progress.complete,
         ],
       Platform.ios => [
           () => logger.progress('Running "flutter config --enable-ios"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.ios),
-          () => progress.complete(),
+          progress.complete,
         ],
       Platform.linux => [
           () => logger
               .progress('Running "flutter config --enable-linux-desktop"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.linux),
-          () => progress.complete(),
+          progress.complete,
         ],
       Platform.macos => [
           () => logger
               .progress('Running "flutter config --enable-macos-desktop"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.macos),
-          () => progress.complete(),
+          progress.complete,
         ],
       Platform.web => [
           () => logger.progress('Running "flutter config --enable-web"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.web),
-          () => progress.complete(),
+          progress.complete,
         ],
       Platform.windows => [
           () => logger
               .progress('Running "flutter config --enable-windows-desktop"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.windows),
-          () => progress.complete(),
+          progress.complete,
         ],
       Platform.mobile => [
           () => logger.progress('Running "flutter config --enable-android"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.android),
-          () => progress.complete(),
+          progress.complete,
           () => logger.progress('Running "flutter config --enable-ios"'),
           () => manager.runFlutterConfigEnablePlatform(NativePlatform.ios),
-          () => progress.complete(),
+          progress.complete,
         ],
     },
-    () => logger.newLine(),
+    logger.newLine,
     () => logger.progress('Running "dart format . --fix" in project'),
     () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-    () => progress.complete(),
-    () => logger.newLine(),
+    progress.complete,
+    logger.newLine,
     () => logger.commandSuccess('Created Project!'),
   ]);
   verifyNoMoreInteractions(manager);
@@ -409,15 +416,13 @@ void _verifyCreateProjectAndActivatePlatform<T extends PlatformRootPackage>(
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('create', () {
     test(
       'throws OutputDirNotEmptyException when output directory is not empty',
       withMockFs(() async {
-        final outputDir = 'some/path';
+        const outputDir = 'some/path';
         // simulate non empty output dir
         File(p.join(outputDir, 'foo')).createSync(recursive: true);
         final rapid = _getRapid();
@@ -428,7 +433,7 @@ void main() {
             outputDir: outputDir,
             description: 'Some desc.',
             orgName: 'test.example',
-            language: Language(languageCode: 'fr'),
+            language: const Language(languageCode: 'fr'),
             platforms: {},
           ),
           throwsA(isA<OutputDirNotEmptyException>()),
@@ -456,7 +461,7 @@ void main() {
           logger: logger
         ) = setupLogger();
         final rapid = _getRapid(
-          projectBuilder: projectBuilder,
+          projectBuilder: projectBuilder.call,
           logger: logger,
         );
 
@@ -465,7 +470,7 @@ void main() {
           outputDir: 'some/path',
           description: 'Some desc.',
           orgName: 'test.example',
-          language: Language(languageCode: 'fr'),
+          language: const Language(languageCode: 'fr'),
           platforms: {},
         );
 
@@ -476,45 +481,46 @@ void main() {
                   name: 'test_app',
                 ),
               ),
-          () => logger.newLine(),
+          logger.newLine,
           () => logger.info('📦 Creating project'),
           () => logger.progress('Generating platform-independent packages'),
-          () => rootPackage.generate(),
-          () => diPackage.generate(),
-          () => defaultDomainPackage.generate(),
-          () => defaultInfrastructurePackage.generate(),
-          () => loggingPackage.generate(),
-          () => uiPackage.generate(),
-          () => progress.complete(),
-          () => logger.progressGroup(null),
+          rootPackage.generate,
+          diPackage.generate,
+          defaultDomainPackage.generate,
+          defaultInfrastructurePackage.generate,
+          loggingPackage.generate,
+          uiPackage.generate,
+          progress.complete,
+          logger.progressGroup,
           () =>
               progressGroup.progress('Running "dart pub get" in root_package'),
           () => manager.runDartPubGet(workingDirectory: 'root_package_path'),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => progressGroup.progress('Running "dart pub get" in di_package'),
           () => manager.runDartPubGet(workingDirectory: 'di_package_path'),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => progressGroup
               .progress('Running "dart pub get" in domain_package'),
           () => manager.runDartPubGet(workingDirectory: 'domain_package_path'),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => progressGroup
               .progress('Running "dart pub get" in infrastructure_package'),
           () => manager.runDartPubGet(
-              workingDirectory: 'infrastructure_package_path'),
-          () => groupableProgress.complete(),
+                workingDirectory: 'infrastructure_package_path',
+              ),
+          groupableProgress.complete,
           () => progressGroup
               .progress('Running "dart pub get" in logging_package'),
           () => manager.runDartPubGet(workingDirectory: 'logging_package_path'),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => progressGroup.progress('Running "dart pub get" in ui_package'),
           () => manager.runDartPubGet(workingDirectory: 'ui_package_path'),
-          () => groupableProgress.complete(),
-          () => logger.newLine(),
+          groupableProgress.complete,
+          logger.newLine,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Created Project!'),
         ]);
         verifyNoMoreInteractions(manager);
@@ -533,7 +539,7 @@ void main() {
             MockRapidProjectBuilder(project: projectSetup.project);
         final loggerSetup = setupLogger();
         final rapid = _getRapid(
-          projectBuilder: projectBuilder,
+          projectBuilder: projectBuilder.call,
           logger: loggerSetup.logger,
         );
 
@@ -542,7 +548,7 @@ void main() {
           outputDir: 'some/path',
           description: 'Some desc.',
           orgName: 'test.example',
-          language: Language(languageCode: 'fr'),
+          language: const Language(languageCode: 'fr'),
           platforms: {Platform.android},
         );
 
@@ -564,7 +570,7 @@ void main() {
             MockRapidProjectBuilder(project: projectSetup.project);
         final loggerSetup = setupLogger();
         final rapid = _getRapid(
-          projectBuilder: projectBuilder,
+          projectBuilder: projectBuilder.call,
           logger: loggerSetup.logger,
         );
 
@@ -573,7 +579,7 @@ void main() {
           outputDir: 'some/path',
           description: 'Some desc.',
           orgName: 'test.example',
-          language: Language(languageCode: 'fr'),
+          language: const Language(languageCode: 'fr'),
           platforms: {Platform.ios},
         );
 
@@ -595,7 +601,7 @@ void main() {
             MockRapidProjectBuilder(project: projectSetup.project);
         final loggerSetup = setupLogger();
         final rapid = _getRapid(
-          projectBuilder: projectBuilder,
+          projectBuilder: projectBuilder.call,
           logger: loggerSetup.logger,
         );
 
@@ -604,7 +610,7 @@ void main() {
           outputDir: 'some/path',
           description: 'Some desc.',
           orgName: 'test.example',
-          language: Language(languageCode: 'fr'),
+          language: const Language(languageCode: 'fr'),
           platforms: {Platform.linux},
         );
 
@@ -626,7 +632,7 @@ void main() {
             MockRapidProjectBuilder(project: projectSetup.project);
         final loggerSetup = setupLogger();
         final rapid = _getRapid(
-          projectBuilder: projectBuilder,
+          projectBuilder: projectBuilder.call,
           logger: loggerSetup.logger,
         );
 
@@ -635,7 +641,7 @@ void main() {
           outputDir: 'some/path',
           description: 'Some desc.',
           orgName: 'test.example',
-          language: Language(languageCode: 'fr'),
+          language: const Language(languageCode: 'fr'),
           platforms: {Platform.macos},
         );
 
@@ -657,7 +663,7 @@ void main() {
             MockRapidProjectBuilder(project: projectSetup.project);
         final loggerSetup = setupLogger();
         final rapid = _getRapid(
-          projectBuilder: projectBuilder,
+          projectBuilder: projectBuilder.call,
           logger: loggerSetup.logger,
         );
 
@@ -666,7 +672,7 @@ void main() {
           outputDir: 'some/path',
           description: 'Some desc.',
           orgName: 'test.example',
-          language: Language(languageCode: 'fr'),
+          language: const Language(languageCode: 'fr'),
           platforms: {Platform.web},
         );
 
@@ -688,7 +694,7 @@ void main() {
             MockRapidProjectBuilder(project: projectSetup.project);
         final loggerSetup = setupLogger();
         final rapid = _getRapid(
-          projectBuilder: projectBuilder,
+          projectBuilder: projectBuilder.call,
           logger: loggerSetup.logger,
         );
 
@@ -697,7 +703,7 @@ void main() {
           outputDir: 'some/path',
           description: 'Some desc.',
           orgName: 'test.example',
-          language: Language(languageCode: 'fr'),
+          language: const Language(languageCode: 'fr'),
           platforms: {Platform.windows},
         );
 
@@ -719,7 +725,7 @@ void main() {
             MockRapidProjectBuilder(project: projectSetup.project);
         final loggerSetup = setupLogger();
         final rapid = _getRapid(
-          projectBuilder: projectBuilder,
+          projectBuilder: projectBuilder.call,
           logger: loggerSetup.logger,
         );
 
@@ -728,7 +734,7 @@ void main() {
           outputDir: 'some/path',
           description: 'Some desc.',
           orgName: 'test.example',
-          language: Language(languageCode: 'fr'),
+          language: const Language(languageCode: 'fr'),
           platforms: {Platform.mobile},
         );
 

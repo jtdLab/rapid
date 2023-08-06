@@ -19,9 +19,7 @@ List<String> expectedUsage(Platform platform) {
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('ui', () {
     for (final platform in Platform.values) {
@@ -66,7 +64,8 @@ void main() {
 
               expect(
                 () => commandRunner.run(
-                    ['ui', platform.name, 'remove', 'widget', 'Foo', 'Bar']),
+                  ['ui', platform.name, 'remove', 'widget', 'Foo', 'Bar'],
+                ),
                 throwsUsageException(message: 'Multiple names specified.'),
               );
             }),

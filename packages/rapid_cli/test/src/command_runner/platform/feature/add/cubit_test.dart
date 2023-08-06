@@ -22,9 +22,7 @@ List<String> expectedUsage(
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   for (final platform in Platform.values) {
     group('${platform.name} <feature> add cubit', () {
@@ -81,7 +79,8 @@ void main() {
 
             expect(
               () => commandRunner.run(
-                  [platform.name, 'package_a', 'add', 'cubit', 'Foo', 'Bar']),
+                [platform.name, 'package_a', 'add', 'cubit', 'Foo', 'Bar'],
+              ),
               throwsUsageException(message: 'Multiple names specified.'),
             );
           }),

@@ -5,9 +5,9 @@ part of '../project.dart';
 class Widget extends FileSystemEntityCollection {
   Widget({
     required this.projectName,
-    this.platform,
     required this.name,
     required this.path,
+    this.platform,
   });
 
   final String projectName;
@@ -45,9 +45,9 @@ class Widget extends FileSystemEntityCollection {
 class ThemedWidget extends Widget {
   ThemedWidget({
     required super.projectName,
-    super.platform,
     required super.name,
     required super.path,
+    super.platform,
   });
 
   Theme get theme => Theme(widgetName: name, path: path);
@@ -87,10 +87,12 @@ class Theme extends FileSystemEntityCollection {
       File(p.join(path, 'lib', 'src', '${widgetName.snakeCase}_theme.dart'));
 
   File get tailorFile => File(
-      p.join(path, 'lib', 'src', '${widgetName.snakeCase}_theme.tailor.dart'));
+        p.join(path, 'lib', 'src', '${widgetName.snakeCase}_theme.tailor.dart'),
+      );
 
   File get testFile => File(
-      p.join(path, 'test', 'src', '${widgetName.snakeCase}_theme_test.dart'));
+        p.join(path, 'test', 'src', '${widgetName.snakeCase}_theme_test.dart'),
+      );
 
   @override
   Iterable<FileSystemEntity> get entities => {

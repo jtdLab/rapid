@@ -45,7 +45,7 @@ const expectedUsage = [
       '  * Add a git dependency:\n'
       '    `dart pub add \'foo:{"git":"https://github.com/foo/foo"}\'`\n'
       '  * Add a dependency override:\n'
-      '    `dart pub add \'override:foo:1.0.0\'`\n'
+      "    `dart pub add 'override:foo:1.0.0'`\n"
       '  * Add a git dependency with a path and ref specified:\n'
       '    `dart pub add \\\n'
       '      \'foo:{"git":{"url":"../foo.git","ref":"<branch>","path":"<subdir>"}}\'`\n'
@@ -58,9 +58,7 @@ const expectedUsage = [
 ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('pub add', () {
     test(

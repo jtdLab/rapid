@@ -11,9 +11,7 @@ void main() {
   late CommandGroup commandGroup;
   late RapidTool tool;
 
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   setUp(() {
     commandGroup = MockCommandGroup();
@@ -50,7 +48,7 @@ void main() {
         await rapid.end();
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => tool.deactivateCommandGroup(),
           () => logger.commandSuccess('Completed Command Group!'),
         ]);
@@ -63,7 +61,7 @@ void main() {
       'completes with packages to bootstrap and no packages to codegen',
       withMockEnv((manager) async {
         final project = MockRapidProject(path: 'project_path');
-        when(() => project.packages()).thenReturn([
+        when(project.packages).thenReturn([
           FakeDartPackage(packageName: 'package_a'),
           FakeDartPackage(packageName: 'package_b'),
         ]);
@@ -80,16 +78,17 @@ void main() {
         await rapid.end();
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => tool.deactivateCommandGroup(),
           () => logger.progress(
-              'Running "melos bootstrap --scope package_a,package_b"'),
+                'Running "melos bootstrap --scope package_a,package_b"',
+              ),
           () => manager.runMelosBootstrap(
                 ['package_a', 'package_b'],
                 workingDirectory: 'project_path',
               ),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Completed Command Group!'),
         ]);
         verifyNoMoreInteractions(manager);
@@ -102,7 +101,7 @@ void main() {
       'completes with no packages to bootstrap and packages to codegen',
       withMockEnv((manager) async {
         final project = MockRapidProject(path: 'project_path');
-        when(() => project.packages()).thenReturn([
+        when(project.packages).thenReturn([
           FakeDartPackage(
             packageName: 'package_a',
             path: 'package_a_path',
@@ -130,25 +129,25 @@ void main() {
         await rapid.end();
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => tool.deactivateCommandGroup(),
-          () => logger.progressGroup(null),
+          logger.progressGroup,
           () => progressGroup.progress('Running code generation in package_a'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'package_a_path',
               ),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => progressGroup.progress('Running code generation in package_b'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'package_b_path',
               ),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => progressGroup.progress('Running code generation in package_c'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'package_c_path',
               ),
-          () => groupableProgress.complete(),
-          () => logger.newLine(),
+          groupableProgress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Completed Command Group!'),
         ]);
         verifyNoMoreInteractions(manager);
@@ -163,7 +162,7 @@ void main() {
       'completes with packages to bootstrap and packages to codegen',
       withMockEnv((manager) async {
         final project = MockRapidProject(path: 'project_path');
-        when(() => project.packages()).thenReturn([
+        when(project.packages).thenReturn([
           FakeDartPackage(packageName: 'package_a'),
           FakeDartPackage(packageName: 'package_b'),
           FakeDartPackage(
@@ -194,28 +193,29 @@ void main() {
         await rapid.end();
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => tool.deactivateCommandGroup(),
           () => logger.progress(
-              'Running "melos bootstrap --scope package_a,package_b"'),
+                'Running "melos bootstrap --scope package_a,package_b"',
+              ),
           () => manager.runMelosBootstrap(
                 ['package_a', 'package_b'],
                 workingDirectory: 'project_path',
               ),
-          () => progress.complete(),
-          () => logger.newLine(),
-          () => logger.progressGroup(null),
+          progress.complete,
+          logger.newLine,
+          logger.progressGroup,
           () => progressGroup.progress('Running code generation in package_c'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'package_c_path',
               ),
-          () => groupableProgress.complete(),
+          groupableProgress.complete,
           () => progressGroup.progress('Running code generation in package_d'),
           () => manager.runDartRunBuildRunnerBuildDeleteConflictingOutputs(
                 workingDirectory: 'package_d_path',
               ),
-          () => groupableProgress.complete(),
-          () => logger.newLine(),
+          groupableProgress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Completed Command Group!'),
         ]);
         verifyNoMoreInteractions(manager);

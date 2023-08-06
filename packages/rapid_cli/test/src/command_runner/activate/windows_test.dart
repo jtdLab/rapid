@@ -21,9 +21,7 @@ const expectedUsage = [
 ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('activate windows', () {
     test(
@@ -114,7 +112,7 @@ void main() {
       verify(
         () => rapid.activateWindows(
           orgName: 'com.foo.bar',
-          language: Language(languageCode: 'de'),
+          language: const Language(languageCode: 'de'),
         ),
       ).called(1);
     });

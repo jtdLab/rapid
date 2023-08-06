@@ -40,9 +40,9 @@ class Rapid extends _Rapid
         _PubMixin,
         _UiMixin {
   Rapid({
+    required this.logger,
     RapidProject? project,
     RapidTool? tool,
-    required this.logger,
   })  : _project = project,
         _tool = tool;
 
@@ -74,8 +74,9 @@ class Rapid extends _Rapid
   RapidProject Function({required RapidProjectConfig config})
       get projectBuilder =>
           projectBuilderOverrides ??
-          ({required RapidProjectConfig config}) =>
-              RapidProject.fromConfig(config);
+          RapidProject.fromConfig as RapidProject Function({
+            required RapidProjectConfig config,
+          });
   // coverage:ignore-end
 
   final RapidTool? _tool;
@@ -110,8 +111,8 @@ abstract class _Rapid {
 
   /// parallelism = 1 indicates sequentiell execution
   Future<void> taskGroup({
-    String? description,
     required List<(String description, FutureOr<void> Function() task)> tasks,
+    String? description,
     int? parallelism,
   }) async {
     if (parallelism == 1) {

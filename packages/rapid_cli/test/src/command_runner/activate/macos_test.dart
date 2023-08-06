@@ -21,9 +21,7 @@ const expectedUsage = [
 ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('activate macos', () {
     test(
@@ -114,7 +112,7 @@ void main() {
       verify(
         () => rapid.activateMacos(
           orgName: 'com.foo.bar',
-          language: Language(languageCode: 'de'),
+          language: const Language(languageCode: 'de'),
         ),
       ).called(1);
     });

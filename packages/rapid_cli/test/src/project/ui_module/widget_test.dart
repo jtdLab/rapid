@@ -48,9 +48,7 @@ Theme _getTheme({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('Widget', () {
     test('file', () {
@@ -84,7 +82,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final widget = _getWidget(
           projectName: 'test_project',
           name: 'CoolButton',
@@ -145,7 +143,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final widget = _getThemedWidget(
           projectName: 'test_project',
           name: 'CoolButton',

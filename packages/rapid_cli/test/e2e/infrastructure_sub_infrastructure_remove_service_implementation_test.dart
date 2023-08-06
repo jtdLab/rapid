@@ -18,9 +18,9 @@ dynamic Function() performTest({
           subInfrastructure,
         ]);
       }
-      final name = 'Fake';
-      final service = 'FooBar';
-      final outputDir = 'foo';
+      const name = 'Fake';
+      const service = 'FooBar';
+      const outputDir = 'foo';
       await tester.runRapidCommand([
         'domain',
         subInfrastructure,

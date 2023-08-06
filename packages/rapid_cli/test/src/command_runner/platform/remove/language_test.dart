@@ -20,9 +20,7 @@ List<String> expectedUsage(Platform platform) {
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   for (final platform in Platform.values) {
     group('${platform.name} remove language', () {
@@ -102,7 +100,7 @@ void main() {
         verify(
           () => rapid.platformRemoveLanguage(
             platform,
-            language: Language(languageCode: 'de'),
+            language: const Language(languageCode: 'de'),
           ),
         ).called(1);
       });

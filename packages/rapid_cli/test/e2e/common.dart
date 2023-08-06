@@ -10,7 +10,7 @@ import 'package:test/test.dart';
 
 /// Runs [fn] in a temporary directory.
 ///
-/// The directory from where the test is executed is passed to [fn] via [root].
+/// The directory from where the test is executed is passed to [fn].
 /// This can be used to access fixtures and more.
 dynamic Function() withTempDir(FutureOr<void> Function(Directory root) fn) {
   return () async {
@@ -37,9 +37,8 @@ dynamic Function() withTempDir(FutureOr<void> Function(Directory root) fn) {
 class FixtureNotFound implements Exception {}
 
 final class RapidE2ETester {
-  late final String projectName;
-
   RapidE2ETester(this.projectName);
+  late final String projectName;
 
   /// Create a [RapidE2ETester] having a project with [activatedPlatform] setup in cwd.
   ///
@@ -100,7 +99,8 @@ final class RapidE2ETester {
       Directory(p.join('packages', projectName, '${projectName}_domain'));
 
   Directory get infrastructureDirectory => Directory(
-      p.join('packages', projectName, '${projectName}_infrastructure'));
+        p.join('packages', projectName, '${projectName}_infrastructure'),
+      );
 
   Directory get loggingPackage =>
       Directory(p.join('packages', projectName, '${projectName}_logging'));
@@ -126,7 +126,8 @@ final class RapidE2ETester {
   }
 
   Directory platformDir(Platform platform) => Directory(
-      p.join('packages', projectName, '${projectName}_${platform.name}'));
+        p.join('packages', projectName, '${projectName}_${platform.name}'),
+      );
 
   Directory platformRootPackage(Platform platform) => Directory(
         p.join(
@@ -360,12 +361,33 @@ final class RapidE2ETester {
   }) {
     subDomainName = subDomainName == 'default' ? null : subDomainName;
     return [
-      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-          outputDir ?? '', '${name.snakeCase}.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-          outputDir ?? '', '${name.snakeCase}.freezed.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'test', 'src',
-          outputDir ?? '', '${name.snakeCase}_test.dart')),
+      File(
+        p.join(
+          domainPackage(subDomainName).path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          '${name.snakeCase}.dart',
+        ),
+      ),
+      File(
+        p.join(
+          domainPackage(subDomainName).path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          '${name.snakeCase}.freezed.dart',
+        ),
+      ),
+      File(
+        p.join(
+          domainPackage(subDomainName).path,
+          'test',
+          'src',
+          outputDir ?? '',
+          '${name.snakeCase}_test.dart',
+        ),
+      ),
     ];
   }
 
@@ -376,12 +398,33 @@ final class RapidE2ETester {
   }) {
     subDomainName = subDomainName == 'default' ? null : subDomainName;
     return [
-      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-          outputDir ?? '', '${name.snakeCase}.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-          outputDir ?? '', '${name.snakeCase}.freezed.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'test', 'src',
-          outputDir ?? '', '${name.snakeCase}_test.dart')),
+      File(
+        p.join(
+          domainPackage(subDomainName).path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          '${name.snakeCase}.dart',
+        ),
+      ),
+      File(
+        p.join(
+          domainPackage(subDomainName).path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          '${name.snakeCase}.freezed.dart',
+        ),
+      ),
+      File(
+        p.join(
+          domainPackage(subDomainName).path,
+          'test',
+          'src',
+          outputDir ?? '',
+          '${name.snakeCase}_test.dart',
+        ),
+      ),
     ];
   }
 
@@ -392,10 +435,24 @@ final class RapidE2ETester {
   }) {
     subDomainName = subDomainName == 'default' ? null : subDomainName;
     return [
-      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-          outputDir ?? '', 'i_${name.snakeCase}_service.dart')),
-      File(p.join(domainPackage(subDomainName).path, 'lib', 'src',
-          outputDir ?? '', 'i_${name.snakeCase}_service.freezed.dart')),
+      File(
+        p.join(
+          domainPackage(subDomainName).path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          'i_${name.snakeCase}_service.dart',
+        ),
+      ),
+      File(
+        p.join(
+          domainPackage(subDomainName).path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          'i_${name.snakeCase}_service.freezed.dart',
+        ),
+      ),
     ];
   }
 
@@ -407,14 +464,42 @@ final class RapidE2ETester {
     subInfrastructureName =
         subInfrastructureName == 'default' ? null : subInfrastructureName;
     return [
-      File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib',
-          'src', outputDir ?? '', '${entity.snakeCase}_dto.dart')),
-      File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib',
-          'src', outputDir ?? '', '${entity.snakeCase}_dto.freezed.dart')),
-      File(p.join(infrastructurePackage(subInfrastructureName).path, 'lib',
-          'src', outputDir ?? '', '${entity.snakeCase}_dto.g.dart')),
-      File(p.join(infrastructurePackage(subInfrastructureName).path, 'test',
-          'src', outputDir ?? '', '${entity.snakeCase}_dto_test.dart')),
+      File(
+        p.join(
+          infrastructurePackage(subInfrastructureName).path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          '${entity.snakeCase}_dto.dart',
+        ),
+      ),
+      File(
+        p.join(
+          infrastructurePackage(subInfrastructureName).path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          '${entity.snakeCase}_dto.freezed.dart',
+        ),
+      ),
+      File(
+        p.join(
+          infrastructurePackage(subInfrastructureName).path,
+          'lib',
+          'src',
+          outputDir ?? '',
+          '${entity.snakeCase}_dto.g.dart',
+        ),
+      ),
+      File(
+        p.join(
+          infrastructurePackage(subInfrastructureName).path,
+          'test',
+          'src',
+          outputDir ?? '',
+          '${entity.snakeCase}_dto_test.dart',
+        ),
+      ),
     ];
   }
 
@@ -688,7 +773,8 @@ Future<TestResult> _runFlutterOrDartTest({
   late ProcessResult result;
   if (hasFlutterTest) {
     _println(
-        'Run "flutter test --run-skipped --update-goldens${coverage ? ' --coverage' : ''}" in $cwd\n');
+      'Run "flutter test --run-skipped --update-goldens${coverage ? ' --coverage' : ''}" in $cwd\n',
+    );
 
     result = await Process.run(
       'flutter',
@@ -726,21 +812,21 @@ Future<TestResult> _runFlutterOrDartTest({
         '-f',
         p.join('coverage', 'lcov.info'),
         '-r',
-        '.freezed.dart\$',
+        r'.freezed.dart$',
         '-r',
-        '.g.dart\$',
+        r'.g.dart$',
         '-r',
-        '.config.dart\$',
+        r'.config.dart$',
         '-r',
-        '.module.dart\$',
+        r'.module.dart$',
         '-r',
-        '_localizations.dart\$',
+        r'_localizations.dart$',
         '-r',
-        '_localizations_[a-z]+.dart\$',
+        r'_localizations_[a-z]+.dart$',
         '-r',
-        '.gr.dart\$',
+        r'.gr.dart$',
         '-r',
-        '.tailor.dart\$',
+        r'.tailor.dart$',
       ],
       workingDirectory: cwd,
       runInShell: true,
@@ -761,25 +847,26 @@ Future<TestResult> _runFlutterOrDartTest({
 
   if (!stderr.contains('Some tests failed') &&
       (stdout.contains('All tests passed') ||
-          stdout.contains(RegExp(r'[1-9][0-9]* tests? passed')))) {
+          stdout.contains(RegExp('[1-9][0-9]* tests? passed')))) {
     return TestResult(0, totalCoverage);
   }
 
   _printSummary(result);
 
-  final regExp = RegExp(r'-([0-9]+): Some tests failed');
+  final regExp = RegExp('-([0-9]+): Some tests failed');
   final match = regExp.firstMatch(stderr) ?? regExp.firstMatch(stdout);
   return TestResult(int.parse(match?.group(1) ?? '0'), totalCoverage);
 }
 
-/// Runs integration tests at [pathToTests] from [cwd]  using the required mechanism described at https://docs.flutter.dev/testing/integration-tests
+/// Runs integration tests at [pathToTests] from [dir]
+/// using the required mechanism described at https://docs.flutter.dev/testing/integration-tests
 /// for the given [platform].
 ///
 /// Returns the amount of failed tests.
 Future<int> runFlutterIntegrationTest(
   Directory dir, {
-  String pathToTests = '.',
   required Platform platform,
+  String pathToTests = '.',
 }) async {
   final cwd = dir.path;
   late final ProcessResult result;
@@ -822,13 +909,13 @@ Future<int> runFlutterIntegrationTest(
 
   if (!stderr.contains('Some tests failed') &&
       (stdout.contains('All tests passed') ||
-          stdout.contains(RegExp(r'[1-9][0-9]* tests? passed')))) {
+          stdout.contains(RegExp('[1-9][0-9]* tests? passed')))) {
     return 0;
   }
 
   _printSummary(result);
 
-  final regExp = RegExp(r'-([0-9]+): Some tests failed');
+  final regExp = RegExp('-([0-9]+): Some tests failed');
   final match = regExp.firstMatch(stderr) ?? regExp.firstMatch(stdout)!;
   return int.parse(match.group(1)!);
 }
@@ -855,7 +942,7 @@ Future<int> _runFlutterAnalyze({
 
   _printSummary(result);
 
-  final regExp = RegExp(r'([0-9]+) issues? found');
+  final regExp = RegExp('([0-9]+) issues? found');
   final match = regExp.firstMatch(stderr)!;
   return int.parse(match.group(1)!);
 }
@@ -898,7 +985,7 @@ void _printSummary(ProcessResult result) {
   }
 }
 
-final _verbose = bool.fromEnvironment('verbose', defaultValue: true);
+const _verbose = bool.fromEnvironment('verbose', defaultValue: true);
 
 void _println(String? object) => _verbose ? stdout.writeln(object) : null;
 

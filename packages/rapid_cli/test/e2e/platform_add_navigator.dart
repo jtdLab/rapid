@@ -8,7 +8,7 @@ dynamic Function() performTest({
     withTempDir((root) async {
       // Arrange
       final tester = await RapidE2ETester.withProject(root, platform);
-      final featureName = 'home_page';
+      const featureName = 'home_page';
 
       // Act
       await tester.runRapidCommand([
@@ -34,6 +34,5 @@ dynamic Function() performTest({
       });
       await verifyTestsPass(
         tester.featurePackage(featureName, platform),
-        expectedCoverage: 100.0,
       );
     });

@@ -20,7 +20,8 @@ class PlatformNavigationPackage extends DartPackage {
       '${projectName}_${platform.name}',
       '${projectName}_${platform.name}_navigation',
     );
-    navigatorInterface({required String name}) => NavigatorInterface(
+    NavigatorInterface navigatorInterface({required String name}) =>
+        NavigatorInterface(
           path: path,
           name: name,
         );
@@ -40,7 +41,8 @@ class PlatformNavigationPackage extends DartPackage {
   final NavigatorInterface Function({required String name}) navigatorInterface;
 
   DartFile get barrelFile => DartFile(
-      p.join(path, 'lib', '${projectName}_${platform.name}_navigation.dart'));
+        p.join(path, 'lib', '${projectName}_${platform.name}_navigation.dart'),
+      );
 
   Future<void> generate() async {
     await mason.generate(

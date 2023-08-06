@@ -21,9 +21,7 @@ const expectedUsage = [
 ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('activate web', () {
     test(
@@ -75,7 +73,7 @@ void main() {
       verify(
         () => rapid.activateWeb(
           description: 'A description.',
-          language: Language(languageCode: 'de'),
+          language: const Language(languageCode: 'de'),
         ),
       ).called(1);
     });

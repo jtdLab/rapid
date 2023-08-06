@@ -34,33 +34,33 @@ void main() {
     });
 
     group('.fromDartUiLocal', () {
-      test('Locale(\'zh\')', () {
+      test("Locale('zh')", () {
         void test(String raw) {
           expect(
             Language.fromDartUiLocal(raw),
-            Language(languageCode: 'zh'),
+            const Language(languageCode: 'zh'),
           );
         }
 
-        test('Locale(\'zh\')');
-        test('Locale(\'zh\',)');
-        test('Locale( \'zh\' , ) ');
+        test("Locale('zh')");
+        test("Locale('zh',)");
+        test("Locale( 'zh' , ) ");
         test('Locale("zh")');
         test('Locale("zh",)');
         test('Locale( "zh" , ) ');
       });
 
-      test('Locale(\'zh\', \'CN\')', () {
+      test("Locale('zh', 'CN')", () {
         void test(String raw) {
           expect(
             Language.fromDartUiLocal(raw),
-            Language(languageCode: 'zh', countryCode: 'CN'),
+            const Language(languageCode: 'zh', countryCode: 'CN'),
           );
         }
 
-        test('Locale(\'zh\', \'CN\')');
-        test('Locale(\'zh\', \'CN\',)');
-        test(' Locale( \'zh\' ,  \'CN\' , ) ');
+        test("Locale('zh', 'CN')");
+        test("Locale('zh', 'CN',)");
+        test(" Locale( 'zh' ,  'CN' , ) ");
         test('Locale("zh", "CN")');
         test('Locale("zh", "CN",)');
         test(' Locale( "zh" ,  "CN" , ) ');
@@ -69,84 +69,96 @@ void main() {
       test('Locale.fromSubtags()', () {
         expect(
           Language.fromDartUiLocal('Locale.fromSubtags()'),
-          Language(languageCode: 'und'),
+          const Language(languageCode: 'und'),
         );
       });
 
-      test('Locale.fromSubtags(languageCode: \'zh\')', () {
+      test("Locale.fromSubtags(languageCode: 'zh')", () {
         void test(String raw) {
           expect(
             Language.fromDartUiLocal(raw),
-            Language(languageCode: 'zh'),
+            const Language(languageCode: 'zh'),
           );
         }
 
-        test('Locale.fromSubtags(languageCode: \'zh\')');
-        test('Locale.fromSubtags(languageCode: \'zh\',)');
-        test('Locale.fromSubtags( languageCode: \'zh\' , ) ');
+        test("Locale.fromSubtags(languageCode: 'zh')");
+        test("Locale.fromSubtags(languageCode: 'zh',)");
+        test("Locale.fromSubtags( languageCode: 'zh' , ) ");
         test('Locale.fromSubtags(languageCode: "zh")');
         test('Locale.fromSubtags(languageCode: "zh",)');
         test('Locale.fromSubtags( languageCode: "zh" , ) ');
       });
 
-      test('Locale.fromSubtags(languageCode: \'zh\', scriptCode: \'Hans\')',
-          () {
+      test("Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans')", () {
         void test(String raw) {
           expect(
             Language.fromDartUiLocal(raw),
-            Language(languageCode: 'zh', scriptCode: 'Hans'),
+            const Language(languageCode: 'zh', scriptCode: 'Hans'),
           );
         }
 
-        test('Locale.fromSubtags(languageCode: \'zh\', scriptCode: \'Hans\')');
-        test('Locale.fromSubtags(languageCode: \'zh\', scriptCode: \'Hans\',)');
+        test("Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans')");
+        test("Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans',)");
         test(
-            'Locale.fromSubtags( languageCode: \'zh\' , scriptCode: \'Hans\' , ) ');
+          "Locale.fromSubtags( languageCode: 'zh' , scriptCode: 'Hans' , ) ",
+        );
         test('Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans")');
         test('Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans",)');
         test(
-            'Locale.fromSubtags( languageCode: "zh" , scriptCode: "Hans" , ) ');
+          'Locale.fromSubtags( languageCode: "zh" , scriptCode: "Hans" , ) ',
+        );
       });
 
-      test('Locale.fromSubtags(languageCode: \'zh\', countryCode: \'CN\')', () {
+      test("Locale.fromSubtags(languageCode: 'zh', countryCode: 'CN')", () {
         void test(String raw) {
           expect(
             Language.fromDartUiLocal(raw),
-            Language(languageCode: 'zh', countryCode: 'CN'),
+            const Language(languageCode: 'zh', countryCode: 'CN'),
           );
         }
 
-        test('Locale.fromSubtags(languageCode: \'zh\', countryCode: \'CN\')');
-        test('Locale.fromSubtags(languageCode: \'zh\', countryCode: \'CN\',)');
+        test("Locale.fromSubtags(languageCode: 'zh', countryCode: 'CN')");
+        test("Locale.fromSubtags(languageCode: 'zh', countryCode: 'CN',)");
         test(
-            'Locale.fromSubtags( languageCode: \'zh\' , countryCode: \'CN\' , ) ');
+          "Locale.fromSubtags( languageCode: 'zh' , countryCode: 'CN' , ) ",
+        );
         test('Locale.fromSubtags(languageCode: "zh", countryCode: "CN")');
         test('Locale.fromSubtags(languageCode: "zh", countryCode: "CN",)');
         test('Locale.fromSubtags( languageCode: "zh" , countryCode: "CN" , ) ');
       });
 
       test(
-          'Locale.fromSubtags(languageCode: \'zh\', scriptCode: \'Hans\', countryCode: \'CN\')',
+          "Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN')",
           () {
         void test(String raw) {
           expect(
             Language.fromDartUiLocal(raw),
-            Language(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+            const Language(
+              languageCode: 'zh',
+              scriptCode: 'Hans',
+              countryCode: 'CN',
+            ),
           );
         }
 
         test(
-            'Locale.fromSubtags(languageCode: \'zh\', scriptCode: \'Hans\', countryCode: \'CN\')');
+          "Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN')",
+        );
         test(
-            'Locale.fromSubtags(languageCode: \'zh\', scriptCode: \'Hans\', countryCode: \'CN\',)');
+          "Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN',)",
+        );
         test(
-            'Locale.fromSubtags( languageCode: \'zh\' , scriptCode: \'Hans\' , countryCode: \'CN\', ) ');
+          "Locale.fromSubtags( languageCode: 'zh' , scriptCode: 'Hans' , countryCode: 'CN', ) ",
+        );
         test(
-            'Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans", countryCode: "CN")');
+          'Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans", countryCode: "CN")',
+        );
         test(
-            'Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans", countryCode: "CN",)');
+          'Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans", countryCode: "CN",)',
+        );
         test(
-            'Locale.fromSubtags( languageCode: "zh" , scriptCode: "Hans" , countryCode: "CN", ) ');
+          'Locale.fromSubtags( languageCode: "zh" , scriptCode: "Hans" , countryCode: "CN", ) ',
+        );
       });
 
       // TODO(jtdLab): maybe add more tests for param permuations of .subTags
@@ -158,24 +170,24 @@ void main() {
 
     group('hasScriptCode', () {
       test('should return true if script code exists', () {
-        final language = Language(languageCode: 'en', scriptCode: 'Latn');
+        const language = Language(languageCode: 'en', scriptCode: 'Latn');
         expect(language.hasScriptCode, true);
       });
 
       test('should return false if script code is null', () {
-        final language = Language(languageCode: 'en');
+        const language = Language(languageCode: 'en');
         expect(language.hasScriptCode, false);
       });
     });
 
     group('hasCountryCode', () {
       test('should return true if country code exists', () {
-        final language = Language(languageCode: 'en', countryCode: 'US');
+        const language = Language(languageCode: 'en', countryCode: 'US');
         expect(language.hasCountryCode, true);
       });
 
       test('should return false if country code is null', () {
-        final language = Language(languageCode: 'en');
+        const language = Language(languageCode: 'en');
         expect(language.hasCountryCode, false);
       });
     });
@@ -183,13 +195,13 @@ void main() {
     group('toStringWithSeperator', () {
       test('should return the string representation with default separator',
           () {
-        final language =
+        const language =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
         expect(language.toStringWithSeperator(), 'en_Latn_US');
       });
 
       test('should return the string representation with custom separator', () {
-        final language =
+        const language =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
         expect(language.toStringWithSeperator('-'), 'en-Latn-US');
       });
@@ -197,33 +209,33 @@ void main() {
 
     group('==', () {
       test('should return true for equal languages', () {
-        final language1 =
+        const language1 =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
-        final language2 =
+        const language2 =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
         expect(language1 == language2, true);
       });
 
       test('should return false for different language codes', () {
-        final language1 =
+        const language1 =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
-        final language2 =
+        const language2 =
             Language(languageCode: 'fr', scriptCode: 'Latn', countryCode: 'US');
         expect(language1 == language2, false);
       });
 
       test('should return false for different script codes', () {
-        final language1 =
+        const language1 =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
-        final language2 =
+        const language2 =
             Language(languageCode: 'en', scriptCode: 'Cyrl', countryCode: 'US');
         expect(language1 == language2, false);
       });
 
       test('should return false for different country codes', () {
-        final language1 =
+        const language1 =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
-        final language2 =
+        const language2 =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'CA');
         expect(language1 == language2, false);
       });
@@ -231,17 +243,17 @@ void main() {
 
     group('hashCode', () {
       test('should return the same value for equal languages', () {
-        final language1 =
+        const language1 =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
-        final language2 =
+        const language2 =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
         expect(language1.hashCode, language2.hashCode);
       });
 
       test('should return different values for different languages', () {
-        final language1 =
+        const language1 =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
-        final language2 =
+        const language2 =
             Language(languageCode: 'fr', scriptCode: 'Latn', countryCode: 'US');
         expect(language1.hashCode, isNot(language2.hashCode));
       });
@@ -249,7 +261,7 @@ void main() {
 
     group('toString', () {
       test('should return the string representation', () {
-        final language =
+        const language =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
         expect(language.toString(), 'en_Latn_US');
       });
@@ -257,9 +269,9 @@ void main() {
 
     group('compareTo', () {
       test('should compare languages based on language code', () {
-        final language1 =
+        const language1 =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
-        final language2 =
+        const language2 =
             Language(languageCode: 'fr', scriptCode: 'Latn', countryCode: 'US');
         expect(language1.compareTo(language2), isNegative);
         expect(language2.compareTo(language1), isPositive);
@@ -267,9 +279,9 @@ void main() {
       });
 
       test('should compare languages based on script code if available', () {
-        final language1 =
+        const language1 =
             Language(languageCode: 'en', scriptCode: 'Cyrl', countryCode: 'US');
-        final language2 =
+        const language2 =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
         expect(language1.compareTo(language2), isNegative);
         expect(language2.compareTo(language1), isPositive);
@@ -277,9 +289,9 @@ void main() {
       });
 
       test('should compare languages based on country code if available', () {
-        final language1 =
+        const language1 =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'CA');
-        final language2 =
+        const language2 =
             Language(languageCode: 'en', scriptCode: 'Latn', countryCode: 'US');
         expect(language1.compareTo(language2), isNegative);
         expect(language2.compareTo(language1), isPositive);

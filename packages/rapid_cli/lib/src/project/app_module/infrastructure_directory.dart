@@ -17,7 +17,8 @@ class InfrastructureDirectory extends Directory {
       projectName,
       '${projectName}_infrastructure',
     );
-    infrastructurePackage({String? name}) => InfrastructurePackage.resolve(
+    InfrastructurePackage infrastructurePackage({String? name}) =>
+        InfrastructurePackage.resolve(
           projectName: projectName,
           projectPath: projectPath,
           name: name,

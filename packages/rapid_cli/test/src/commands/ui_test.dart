@@ -31,9 +31,7 @@ void main() {
   late PlatformUiPackage platformUiPackage;
   late RapidProject project;
 
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   setUp(() {
     widget = MockWidget();
@@ -64,8 +62,8 @@ void main() {
       ),
     ).thenReturn(['TestProjectNiceButtonTheme.dark']);
     uiPackage = MockUiPackage(
-      widget: widgetBuilder,
-      themedWidget: themedWidgetBuilder,
+      widget: widgetBuilder.call,
+      themedWidget: themedWidgetBuilder.call,
       barrelFile: uiPackageBarrelFile,
       themeExtensionsFile: uiPackageThemeExtensionsFile,
     );
@@ -98,8 +96,8 @@ void main() {
       ),
     ).thenReturn(['TestProjectNiceButtonTheme.dark']);
     platformUiPackage = MockPlatformUiPackage(
-      widget: platformWidgetBuilder,
-      themedWidget: platformThemedWidgetBuilder,
+      widget: platformWidgetBuilder.call,
+      themedWidget: platformThemedWidgetBuilder.call,
       barrelFile: platformUiPackageBarrelFile,
       themeExtensionsFile: platformUiPackageThemeExtensionsFile,
     );
@@ -174,17 +172,17 @@ void main() {
         await rapid.uiAddWidget(name: 'CoolButton', theme: false);
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => widgetBuilder(name: 'CoolButton'),
           () => logger.progress('Creating widget'),
           () => widget.generate(),
           () => uiPackageBarrelFile.addExport('src/cool_button.dart'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Widget!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -203,7 +201,7 @@ void main() {
         await rapid.uiAddWidget(name: 'CoolButton', theme: true);
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => themedWidgetBuilder(name: 'CoolButton'),
           () => logger.progress('Creating widget'),
           () => themedWidget.generate(),
@@ -223,12 +221,12 @@ void main() {
                 ],
               ),
           () => uiPackageBarrelFile.addExport('src/cool_button_theme.dart'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Widget!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -314,17 +312,17 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => platformWidgetBuilder(name: 'CoolButton'),
           () => logger.progress('Creating widget'),
           () => platformWidget.generate(),
           () => platformUiPackageBarrelFile.addExport('src/cool_button.dart'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Widget!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -348,7 +346,7 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => platformThemedWidgetBuilder(name: 'CoolButton'),
           () => logger.progress('Creating widget'),
           () => platformThemedWidget.generate(),
@@ -369,12 +367,12 @@ void main() {
               ),
           () => platformUiPackageBarrelFile
               .addExport('src/cool_button_theme.dart'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Added Widget!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -410,17 +408,17 @@ void main() {
         await rapid.uiRemoveWidget(name: 'NiceButton');
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => widgetBuilder(name: 'NiceButton'),
           () => logger.progress('Deleting widget'),
           () => widget.delete(),
           () => uiPackageBarrelFile.removeExport('src/nice_button.dart'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Widget!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -440,7 +438,7 @@ void main() {
         await rapid.uiRemoveWidget(name: 'NiceButton');
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => themedWidgetBuilder(name: 'NiceButton'),
           () => logger.progress('Deleting widget'),
           () => themedWidget.delete(),
@@ -454,12 +452,12 @@ void main() {
                 value: [],
               ),
           () => uiPackageBarrelFile.removeExport('src/nice_button_theme.dart'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Widget!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -498,18 +496,18 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => platformWidgetBuilder(name: 'NiceButton'),
           () => logger.progress('Deleting widget'),
           () => platformWidget.delete(),
           () =>
               platformUiPackageBarrelFile.removeExport('src/nice_button.dart'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Widget!')
         ]);
         verifyNoMoreInteractions(manager);
@@ -533,7 +531,7 @@ void main() {
         );
 
         verifyInOrder([
-          () => logger.newLine(),
+          logger.newLine,
           () => platformThemedWidgetBuilder(name: 'NiceButton'),
           () => logger.progress('Deleting widget'),
           () => platformThemedWidget.delete(),
@@ -549,12 +547,12 @@ void main() {
               ),
           () => platformUiPackageBarrelFile
               .removeExport('src/nice_button_theme.dart'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.progress('Running "dart format . --fix" in project'),
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
-          () => progress.complete(),
-          () => logger.newLine(),
+          progress.complete,
+          logger.newLine,
           () => logger.commandSuccess('Removed Widget!')
         ]);
         verifyNoMoreInteractions(manager);

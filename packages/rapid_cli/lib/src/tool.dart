@@ -19,7 +19,7 @@ class RapidTool {
 
   CommandGroup loadGroup() {
     if (!_groupJson.existsSync()) {
-      return CommandGroup(
+      return const CommandGroup(
         isActive: false,
         packagesToBootstrap: {},
         packagesToCodeGen: {},
@@ -35,13 +35,13 @@ class RapidTool {
     if (!_groupJson.existsSync()) {
       _groupJson.createSync(recursive: true);
     }
-    JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    const encoder = JsonEncoder.withIndent('  ');
     _groupJson.writeAsStringSync(encoder.convert(group));
   }
 
   void activateCommandGroup() {
     _saveGroup(
-      CommandGroup(
+      const CommandGroup(
         isActive: true,
         packagesToBootstrap: {},
         packagesToCodeGen: {},
@@ -88,11 +88,7 @@ class RapidTool {
 
 @immutable
 class CommandGroup {
-  final bool isActive;
-  final Set<String> packagesToBootstrap;
-  final Set<String> packagesToCodeGen;
-
-  CommandGroup({
+  const CommandGroup({
     required this.isActive,
     required this.packagesToBootstrap,
     required this.packagesToCodeGen,
@@ -107,6 +103,9 @@ class CommandGroup {
           (json['packagesToCodeGen'] as List<dynamic>).cast<String>().toSet(),
     );
   }
+  final bool isActive;
+  final Set<String> packagesToBootstrap;
+  final Set<String> packagesToCodeGen;
 
   CommandGroup copyWith({
     bool? isActive,
@@ -139,5 +138,6 @@ class CommandGroup {
 
   @override
   int get hashCode => Object.hashAllUnordered(
-      [isActive, ...packagesToBootstrap, ...packagesToCodeGen]);
+        [isActive, ...packagesToBootstrap, ...packagesToCodeGen],
+      );
 }

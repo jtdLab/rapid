@@ -1,10 +1,10 @@
 import 'exception.dart';
 
 T assertIsA<T>({
+  required Object? value,
   int? index,
   Object? key,
   String? path,
-  required Object? value,
 }) {
   if (value is T) return value;
 
@@ -18,9 +18,9 @@ T assertIsA<T>({
 }
 
 T assertKeyIsA<T>({
-  String? path,
   required Object key,
   required Map<Object?, Object?> map,
+  String? path,
 }) {
   if (null is! T && !map.containsKey(key)) {
     throw RapidConfigException.missingKey(key: key, path: path);
@@ -43,9 +43,9 @@ class RapidConfigException extends RapidException {
 
   RapidConfigException.invalidType({
     required Object expectedType,
+    required Object? value,
     Object? key,
     int? index,
-    required Object? value,
     String? path,
   }) : this(
           '${_descriptor(key: key, index: index, path: path)} '

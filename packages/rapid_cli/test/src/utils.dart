@@ -35,8 +35,8 @@ Rapid getRapid({
 }
 
 Platform randomPlatform() {
-  final enumValues = Platform.values;
-  int randomIndex = Random().nextInt(enumValues.length);
+  const enumValues = Platform.values;
+  final randomIndex = Random().nextInt(enumValues.length);
   return enumValues[randomIndex];
 }
 

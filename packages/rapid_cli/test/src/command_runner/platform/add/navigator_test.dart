@@ -23,9 +23,7 @@ List<String> expectedUsage(Platform platform) {
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   for (final platform in Platform.values) {
     group('${platform.name} add navigator', () {
@@ -67,7 +65,8 @@ void main() {
 
             expect(
               () => commandRunner.run(
-                  [platform.name, 'add', 'navigator', '--feature', '+foo+']),
+                [platform.name, 'add', 'navigator', '--feature', '+foo+'],
+              ),
               throwsUsageException(
                 message: '"+foo+" is not a valid dart package name.\n\n'
                     'See https://dart.dev/tools/pub/pubspec#name for more information.',

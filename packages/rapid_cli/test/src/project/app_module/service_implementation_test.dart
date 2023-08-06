@@ -25,9 +25,7 @@ ServiceImplementation _getServiceImplementation({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('ServiceImplementation', () {
     test('file', () {
@@ -82,7 +80,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final service = _getServiceImplementation(
           projectName: 'test_project',
           path: '/path/to/infrastructure_package',

@@ -108,6 +108,7 @@ class MacosNativeDirectory extends PlatformNativeDirectory {
   }
 }
 
+// TODO: better names
 class NoneIosNativeDirectory extends PlatformNativeDirectory {
   NoneIosNativeDirectory({
     required super.projectName,
@@ -133,18 +134,12 @@ class NoneIosNativeDirectory extends PlatformNativeDirectory {
     String? orgName,
     String? description,
   }) async {
-    // TODO cleaner
-    final mason.MasonBundle bundle;
-    switch (platform) {
-      case NativePlatform.android:
-        bundle = androidNativeDirectoryBundle;
-      case NativePlatform.linux:
-        bundle = linuxNativeDirectoryBundle;
-      case NativePlatform.web:
-        bundle = webNativeDirectoryBundle;
-      default:
-        bundle = windowsNativeDirectoryBundle;
-    }
+    final bundle = switch (platform) {
+      NativePlatform.android => androidNativeDirectoryBundle,
+      NativePlatform.linux => linuxNativeDirectoryBundle,
+      NativePlatform.web => webNativeDirectoryBundle,
+      _ => windowsNativeDirectoryBundle,
+    };
 
     await mason.generate(
       bundle: bundle,

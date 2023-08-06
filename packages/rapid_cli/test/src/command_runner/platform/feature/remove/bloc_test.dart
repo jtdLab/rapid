@@ -22,9 +22,7 @@ List<String> expectedUsage(
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   for (final platform in Platform.values) {
     group('${platform.name} <feature> remove bloc', () {
@@ -77,7 +75,8 @@ void main() {
 
             expect(
               () => commandRunner.run(
-                  [platform.name, 'package_a', 'remove', 'bloc', 'Foo', 'Bar']),
+                [platform.name, 'package_a', 'remove', 'bloc', 'Foo', 'Bar'],
+              ),
               throwsUsageException(message: 'Multiple names specified.'),
             );
           }),

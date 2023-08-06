@@ -4,14 +4,14 @@ import 'common.dart';
 
 dynamic Function() performTest({
   required Platform platform,
-  String? outputDir,
   required double expectedCoverage,
+  String? outputDir,
 }) =>
     withTempDir((root) async {
       // Arrange
       final tester = await RapidE2ETester.withProject(root, platform);
-      final name = 'FooBar';
-      final featureName = 'home_page';
+      const name = 'FooBar';
+      const featureName = 'home_page';
 
       // Act
       await tester.runRapidCommand([

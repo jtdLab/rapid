@@ -31,9 +31,7 @@ PlatformLocalizationPackage _getPlatformLocalizationPackage({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('PlatformLocalizationPackage', () {
     test('.resolve', () {
@@ -49,7 +47,7 @@ void main() {
         '/path/to/project/packages/test_project/test_project_windows/test_project_windows_localization',
       );
       final languageArbFile = platformLocalizationPackage.languageArbFile(
-        language: Language(languageCode: 'en', countryCode: 'US'),
+        language: const Language(languageCode: 'en', countryCode: 'US'),
       );
       expect(
         languageArbFile.path,
@@ -57,7 +55,7 @@ void main() {
       );
       final languageLocalizationsFile =
           platformLocalizationPackage.languageLocalizationsFile(
-        language: Language(
+        language: const Language(
           languageCode: 'en',
           countryCode: 'US',
         ),
@@ -99,13 +97,13 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final platformLocalizationPackage = _getPlatformLocalizationPackage(
             projectName: 'test_project',
             path: '/path/to/localization_package',
             platform: Platform.linux,
             languageArbFile: ({required language}) {
-              if (language == Language(languageCode: 'en')) {
+              if (language == const Language(languageCode: 'en')) {
                 return ArbFile(
                   p.join(
                     '/path/to/localization_package',
@@ -130,7 +128,8 @@ void main() {
           );
 
           await platformLocalizationPackage.generate(
-            defaultLanguage: Language(languageCode: 'en', countryCode: 'US'),
+            defaultLanguage:
+                const Language(languageCode: 'en', countryCode: 'US'),
           );
 
           verifyInOrder([
@@ -202,14 +201,15 @@ void main() {
       'supportedLanguages',
       withMockFs(() {
         File(
-            '/path/to/localization_package/lib/src/test_project_localizations.dart')
+          '/path/to/localization_package/lib/src/test_project_localizations.dart',
+        )
           ..createSync(recursive: true)
           ..writeAsStringSync(
             multiLine([
               'class TestProjectLocalizations {',
               '  final supportedLocales = [',
-              '    Locale(\'en\', \'US\'),',
-              '    Locale(\'es\', \'ES\'),',
+              "    Locale('en', 'US'),",
+              "    Locale('es', 'ES'),",
               '  ];',
               '}'
             ]),
@@ -226,8 +226,8 @@ void main() {
         expect(
           supportedLanguages,
           containsAll([
-            Language(languageCode: 'en', countryCode: 'US'),
-            Language(languageCode: 'es', countryCode: 'ES'),
+            const Language(languageCode: 'en', countryCode: 'US'),
+            const Language(languageCode: 'es', countryCode: 'ES'),
           ]),
         );
       }),
@@ -248,7 +248,7 @@ void main() {
 
         expect(
           defaultLanguage,
-          Language(languageCode: 'en', countryCode: 'US'),
+          const Language(languageCode: 'en', countryCode: 'US'),
         );
       }),
     );
@@ -265,7 +265,7 @@ void main() {
         );
 
         platformLocalizationPackage.setDefaultLanguage(
-          Language(languageCode: 'es', countryCode: 'ES'),
+          const Language(languageCode: 'es', countryCode: 'ES'),
         );
 
         expect(
@@ -279,13 +279,14 @@ void main() {
       'addLanguage',
       withMockFs(() {
         File(
-            '/path/to/localization_package/lib/src/test_project_localizations.dart')
+          '/path/to/localization_package/lib/src/test_project_localizations.dart',
+        )
           ..createSync(recursive: true)
           ..writeAsStringSync(
             multiLine([
               'class TestProjectLocalizations {',
               '  final supportedLocales = [',
-              '    Locale(\'en\', \'US\'),',
+              "    Locale('en', 'US'),",
               '  ];',
               '}'
             ]),
@@ -300,7 +301,7 @@ void main() {
         );
 
         platformLocalizationPackage.addLanguage(
-          Language(languageCode: 'fr', countryCode: 'FR'),
+          const Language(languageCode: 'fr', countryCode: 'FR'),
         );
 
         expect(arbFile.existsSync(), true);
@@ -320,13 +321,14 @@ void main() {
         'removes arb file',
         withMockFs(() {
           File(
-              '/path/to/localization_package/lib/src/test_project_localizations.dart')
+            '/path/to/localization_package/lib/src/test_project_localizations.dart',
+          )
             ..createSync(recursive: true)
             ..writeAsStringSync(
               multiLine([
                 'class TestProjectLocalizations {',
                 '  final supportedLocales = [',
-                '    Locale(\'en\', \'US\'),',
+                "    Locale('en', 'US'),",
                 '  ];',
                 '}'
               ]),
@@ -341,7 +343,7 @@ void main() {
           );
 
           platformLocalizationPackage.removeLanguage(
-            Language(languageCode: 'en', countryCode: 'US'),
+            const Language(languageCode: 'en', countryCode: 'US'),
           );
 
           expect(arbFile.existsSync(), false);
@@ -352,14 +354,15 @@ void main() {
         'removes language localizations file when language has only language code',
         withMockFs(() {
           File(
-              '/path/to/localization_package/lib/src/test_project_localizations.dart')
+            '/path/to/localization_package/lib/src/test_project_localizations.dart',
+          )
             ..createSync(recursive: true)
             ..writeAsStringSync(
               multiLine([
                 'class TestProjectLocalizations {',
                 '  final supportedLocales = [',
-                '    Locale(\'en\'),',
-                '    Locale(\'fr\'),',
+                "    Locale('en'),",
+                "    Locale('fr'),",
                 '  ];',
                 '}'
               ]),
@@ -379,7 +382,7 @@ void main() {
           );
 
           platformLocalizationPackage
-              .removeLanguage(Language(languageCode: 'fr'));
+              .removeLanguage(const Language(languageCode: 'fr'));
 
           expect(arbFile.existsSync(), false);
           expect(languageLocalizationsFile.existsSync(), false);

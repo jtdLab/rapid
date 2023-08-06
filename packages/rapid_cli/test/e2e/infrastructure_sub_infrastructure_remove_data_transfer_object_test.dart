@@ -18,7 +18,7 @@ dynamic Function() performTest({
           subInfrastructure,
         ]);
       }
-      final entity = 'FooBar';
+      const entity = 'FooBar';
       await tester.runRapidCommand([
         'domain',
         subInfrastructure,

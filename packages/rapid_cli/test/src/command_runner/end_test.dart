@@ -15,9 +15,7 @@ const expectedUsage = [
 ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('end', () {
     test(
@@ -41,7 +39,7 @@ void main() {
 
       await command.run();
 
-      verify(() => rapid.end()).called(1);
+      verify(rapid.end).called(1);
     });
   });
 }

@@ -6,7 +6,7 @@ import 'common.dart';
 dynamic Function() performTest() => withTempDir((root) async {
       // Arrange
       final tester = await RapidE2ETester.withProject(root);
-      final name = 'FooBar';
+      const name = 'FooBar';
       await tester.runRapidCommand([
         'ui',
         'add',

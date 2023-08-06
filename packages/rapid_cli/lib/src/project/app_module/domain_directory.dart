@@ -17,7 +17,7 @@ class DomainDirectory extends Directory {
       projectName,
       '${projectName}_domain',
     );
-    domainPackage({String? name}) => DomainPackage.resolve(
+    DomainPackage domainPackage({String? name}) => DomainPackage.resolve(
           projectName: projectName,
           projectPath: projectPath,
           name: name,

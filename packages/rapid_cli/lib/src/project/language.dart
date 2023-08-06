@@ -1,10 +1,8 @@
 import 'package:mason/mason.dart';
+import 'package:meta/meta.dart';
 
+@immutable
 class Language implements Comparable<Language> {
-  final String languageCode;
-  final String? scriptCode;
-  final String? countryCode;
-
   const Language({
     required this.languageCode,
     this.scriptCode,
@@ -47,8 +45,8 @@ class Language implements Comparable<Language> {
     RegExpMatch? match;
 
     match = RegExp(
-            r'''Locale\((['"](?<languageCode>[A-z]+)['"]),?(['"](?<countryCode>[A-z]+)['"])?,?\)''')
-        .firstMatch(raw);
+      r'''Locale\((['"](?<languageCode>[A-z]+)['"]),?(['"](?<countryCode>[A-z]+)['"])?,?\)''',
+    ).firstMatch(raw);
     if (match != null) {
       return Language(
         languageCode: match.namedGroup('languageCode')!,
@@ -61,13 +59,13 @@ class Language implements Comparable<Language> {
     if (match != null) {
       final params = match.namedGroup('params')!;
       final languageCodeMatch =
-          RegExp(r'''languageCode:['"](?<languageCode>[A-z]+)['"]''')
+          RegExp('''languageCode:['"](?<languageCode>[A-z]+)['"]''')
               .firstMatch(params);
       final scriptCodeMatch =
-          RegExp(r'''scriptCode:['"](?<scriptCode>[A-z]+)['"]''')
+          RegExp('''scriptCode:['"](?<scriptCode>[A-z]+)['"]''')
               .firstMatch(params);
       final countryCodeMatch =
-          RegExp(r'''countryCode:['"](?<countryCode>[A-z]+)['"]''')
+          RegExp('''countryCode:['"](?<countryCode>[A-z]+)['"]''')
               .firstMatch(params);
 
       return Language(
@@ -79,6 +77,9 @@ class Language implements Comparable<Language> {
 
     throw ArgumentError.value(raw, 'raw', 'Does not contain parsable Locale');
   }
+  final String languageCode;
+  final String? scriptCode;
+  final String? countryCode;
 
   bool get hasScriptCode => scriptCode != null;
 

@@ -16,9 +16,7 @@ void main() {
   late CommandGroup commandGroup;
   late RapidTool tool;
 
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   setUp(() {
     project = MockRapidProject();
@@ -89,15 +87,16 @@ void main() {
           );
 
           verifyInOrder([
-            () => logger.newLine(),
+            logger.newLine,
             () => logger.progress(
-                'Running "dart pub add package_a package_b" in example_package'),
+                  'Running "dart pub add package_a package_b" in example_package',
+                ),
             () => manager.runDartPubAdd(
                   ['package_a', 'package_b'],
                   workingDirectory: 'example_package_path',
                 ),
-            () => progress.complete(),
-            () => logger.newLine(),
+            progress.complete,
+            logger.newLine,
             () => logger.commandSuccess('Added Dependencies!'),
           ]);
           verifyNoMoreInteractions(manager);
@@ -154,12 +153,13 @@ void main() {
 
           verifyInOrder([
             () => logger.progress(
-                'Running "melos bootstrap --scope package_c,package_d"'),
+                  'Running "melos bootstrap --scope package_c,package_d"',
+                ),
             () => manager.runMelosBootstrap(
                   ['package_c', 'package_d'],
                   workingDirectory: 'project_path',
                 ),
-            () => progress.complete(),
+            progress.complete,
           ]);
         }),
       );
@@ -185,11 +185,10 @@ void main() {
           );
 
           verifyInOrder([
-            () => logger.newLine(),
+            logger.newLine,
             () => packagePubSpecFile.setDependency(
                   name: 'package_a',
                   dependency: HostedReference(VersionConstraint.empty),
-                  dev: false,
                 ),
             () => packagePubSpecFile.setDependency(
                   name: 'package_b',
@@ -197,12 +196,13 @@ void main() {
                   dev: true,
                 ),
             () => logger.progress(
-                'Running "melos bootstrap --scope example_package,package_c,package_d"'),
+                  'Running "melos bootstrap --scope example_package,package_c,package_d"',
+                ),
             () => manager.runMelosBootstrap(
                   ['example_package', 'package_c', 'package_d'],
                   workingDirectory: 'project_path',
                 ),
-            () => progress.complete(),
+            progress.complete,
           ]);
           verifyNever(
             () => logger.progress(
@@ -273,15 +273,16 @@ void main() {
           );
 
           verifyInOrder([
-            () => logger.newLine(),
+            logger.newLine,
             () => logger.progress(
-                'Running "dart pub add package_a package_b" in example_package'),
+                  'Running "dart pub add package_a package_b" in example_package',
+                ),
             () => manager.runDartPubAdd(
                   ['package_a', 'package_b'],
                   workingDirectory: 'example_package_path',
                 ),
-            () => progress.complete(),
-            () => logger.newLine(),
+            progress.complete,
+            logger.newLine,
             () => logger.commandSuccess('Added Dependencies!'),
           ]);
           verifyNoMoreInteractions(manager);
@@ -338,12 +339,13 @@ void main() {
 
           verifyInOrder([
             () => logger.progress(
-                'Running "melos bootstrap --scope package_c,package_d"'),
+                  'Running "melos bootstrap --scope package_c,package_d"',
+                ),
             () => manager.runMelosBootstrap(
                   ['package_c', 'package_d'],
                   workingDirectory: 'project_path',
                 ),
-            () => progress.complete(),
+            progress.complete,
           ]);
         }),
       );
@@ -362,11 +364,10 @@ void main() {
           );
 
           verifyInOrder([
-            () => logger.newLine(),
+            logger.newLine,
             () => packagePubSpecFile.setDependency(
                   name: 'package_a',
                   dependency: HostedReference(VersionConstraint.empty),
-                  dev: false,
                 ),
             () => packagePubSpecFile.setDependency(
                   name: 'package_b',
@@ -481,15 +482,17 @@ void main() {
           );
 
           verifyInOrder([
-            () => logger.newLine(),
+            logger.newLine,
             () => manager.runDartPubGet(
-                workingDirectory: 'example_package_path', dryRun: true),
+                  workingDirectory: 'example_package_path',
+                  dryRun: true,
+                ),
             () => logger.progress('Running "dart pub get" in example_package'),
             () => manager.runDartPubGet(
                   workingDirectory: 'example_package_path',
                 ),
-            () => progress.complete(),
-            () => logger.newLine(),
+            progress.complete,
+            logger.newLine,
             () => logger.commandSuccess('Got Dependencies!'),
           ]);
           verifyNoMoreInteractions(manager);
@@ -517,12 +520,13 @@ void main() {
 
           verifyInOrder([
             () => logger.progress(
-                'Running "melos bootstrap --scope package_c,package_d"'),
+                  'Running "melos bootstrap --scope package_c,package_d"',
+                ),
             () => manager.runMelosBootstrap(
                   ['package_c', 'package_d'],
                   workingDirectory: 'project_path',
                 ),
-            () => progress.complete(),
+            progress.complete,
           ]);
         }),
       );
@@ -532,7 +536,9 @@ void main() {
         withMockEnv((manager) async {
           when(
             () => manager.runDartPubGet(
-                workingDirectory: 'example_package_path', dryRun: true),
+              workingDirectory: 'example_package_path',
+              dryRun: true,
+            ),
           ).thenAnswer(
             (_) async =>
                 ProcessResult(0, 0, 'No dependencies would change.', ''),
@@ -545,9 +551,11 @@ void main() {
           );
 
           verifyInOrder([
-            () => logger.newLine(),
+            logger.newLine,
             () => manager.runDartPubGet(
-                workingDirectory: 'example_package_path', dryRun: true),
+                  workingDirectory: 'example_package_path',
+                  dryRun: true,
+                ),
             () => logger.commandSuccess('Got Dependencies!'),
           ]);
           verifyNoMoreInteractions(manager);
@@ -608,15 +616,17 @@ void main() {
           );
 
           verifyInOrder([
-            () => logger.newLine(),
+            logger.newLine,
             () => manager.runDartPubGet(
-                workingDirectory: 'example_package_path', dryRun: true),
+                  workingDirectory: 'example_package_path',
+                  dryRun: true,
+                ),
             () => logger.progress('Running "dart pub get" in example_package'),
             () => manager.runDartPubGet(
                   workingDirectory: 'example_package_path',
                 ),
-            () => progress.complete(),
-            () => logger.newLine(),
+            progress.complete,
+            logger.newLine,
             () => logger.commandSuccess('Got Dependencies!'),
           ]);
           verifyNoMoreInteractions(manager);
@@ -644,12 +654,13 @@ void main() {
 
           verifyInOrder([
             () => logger.progress(
-                'Running "melos bootstrap --scope package_c,package_d"'),
+                  'Running "melos bootstrap --scope package_c,package_d"',
+                ),
             () => manager.runMelosBootstrap(
                   ['package_c', 'package_d'],
                   workingDirectory: 'project_path',
                 ),
-            () => progress.complete(),
+            progress.complete,
           ]);
         }),
       );
@@ -659,7 +670,9 @@ void main() {
         withMockEnv((manager) async {
           when(
             () => manager.runDartPubGet(
-                workingDirectory: 'example_package_path', dryRun: true),
+              workingDirectory: 'example_package_path',
+              dryRun: true,
+            ),
           ).thenAnswer(
             (_) async =>
                 ProcessResult(0, 0, 'No dependencies would change.', ''),
@@ -672,9 +685,11 @@ void main() {
           );
 
           verifyInOrder([
-            () => logger.newLine(),
+            logger.newLine,
             () => manager.runDartPubGet(
-                workingDirectory: 'example_package_path', dryRun: true),
+                  workingDirectory: 'example_package_path',
+                  dryRun: true,
+                ),
             () => logger.commandSuccess('Got Dependencies!'),
           ]);
           verifyNoMoreInteractions(manager);
@@ -777,15 +792,16 @@ void main() {
           );
 
           verifyInOrder([
-            () => logger.newLine(),
+            logger.newLine,
             () => logger.progress(
-                'Running "dart pub remove package_a package_b" in example_package'),
+                  'Running "dart pub remove package_a package_b" in example_package',
+                ),
             () => manager.runDartPubRemove(
                   ['package_a', 'package_b'],
                   workingDirectory: 'example_package_path',
                 ),
-            () => progress.complete(),
-            () => logger.newLine(),
+            progress.complete,
+            logger.newLine,
             () => logger.commandSuccess('Removed Dependencies!'),
           ]);
           verifyNoMoreInteractions(manager);
@@ -814,12 +830,13 @@ void main() {
 
           verifyInOrder([
             () => logger.progress(
-                'Running "melos bootstrap --scope package_c,package_d"'),
+                  'Running "melos bootstrap --scope package_c,package_d"',
+                ),
             () => manager.runMelosBootstrap(
                   ['package_c', 'package_d'],
                   workingDirectory: 'project_path',
                 ),
-            () => progress.complete(),
+            progress.complete,
           ]);
         }),
       );
@@ -879,15 +896,16 @@ void main() {
           );
 
           verifyInOrder([
-            () => logger.newLine(),
+            logger.newLine,
             () => logger.progress(
-                'Running "dart pub remove package_a package_b" in example_package'),
+                  'Running "dart pub remove package_a package_b" in example_package',
+                ),
             () => manager.runDartPubRemove(
                   ['package_a', 'package_b'],
                   workingDirectory: 'example_package_path',
                 ),
-            () => progress.complete(),
-            () => logger.newLine(),
+            progress.complete,
+            logger.newLine,
             () => logger.commandSuccess('Removed Dependencies!'),
           ]);
           verifyNoMoreInteractions(manager);
@@ -916,12 +934,13 @@ void main() {
 
           verifyInOrder([
             () => logger.progress(
-                'Running "melos bootstrap --scope package_c,package_d"'),
+                  'Running "melos bootstrap --scope package_c,package_d"',
+                ),
             () => manager.runMelosBootstrap(
                   ['package_c', 'package_d'],
                   workingDirectory: 'project_path',
                 ),
-            () => progress.complete(),
+            progress.complete,
           ]);
         }),
       );

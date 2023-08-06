@@ -14,7 +14,7 @@ class UiModule extends Directory {
     final path = p.join(projectPath, 'packages', '${projectName}_ui');
     final uiPackage =
         UiPackage.resolve(projectName: projectName, projectPath: projectPath);
-    platformUiPackage({required Platform platform}) =>
+    PlatformUiPackage platformUiPackage({required Platform platform}) =>
         PlatformUiPackage.resolve(
           projectName: projectName,
           projectPath: projectPath,

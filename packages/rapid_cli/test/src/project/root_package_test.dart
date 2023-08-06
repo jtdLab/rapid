@@ -18,9 +18,7 @@ RootPackage _getRootPackage({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('RootPackage', () {
     test('.resolve', () {
@@ -40,7 +38,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
 
         final rootPackage = _getRootPackage(
           projectName: 'test_app',

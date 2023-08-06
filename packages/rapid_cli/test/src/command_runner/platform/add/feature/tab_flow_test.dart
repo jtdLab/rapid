@@ -24,9 +24,7 @@ List<String> expectedUsage(Platform platform) {
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   for (final platform in Platform.values) {
     group('${platform.name} add feature flow', () {
@@ -70,7 +68,8 @@ void main() {
 
             expect(
               () => commandRunner.run(
-                  [platform.name, 'add', 'feature', 'tab_flow', 'Foo', 'Bar']),
+                [platform.name, 'add', 'feature', 'tab_flow', 'Foo', 'Bar'],
+              ),
               throwsUsageException(message: 'Multiple names specified.'),
             );
           }),
@@ -100,7 +99,8 @@ void main() {
 
           expect(
             () => commandRunner.run(
-                [platform.name, 'add', 'feature', 'tab_flow', 'package_a']),
+              [platform.name, 'add', 'feature', 'tab_flow', 'package_a'],
+            ),
             throwsUsageException(
               message: 'No option specified for the sub-features.',
             ),

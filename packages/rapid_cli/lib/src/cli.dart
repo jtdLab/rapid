@@ -39,8 +39,8 @@ Future<void> dartPubAdd({
 }
 
 Future<DartPubGetResult> dartPubGet({
-  bool dryRun = false,
   required DartPackage package,
+  bool dryRun = false,
 }) async {
   final result = await runCommand(
     ['dart', 'pub', 'get', if (dryRun) '--dry-run'],
@@ -64,9 +64,9 @@ Future<DartPubGetResult> dartPubGet({
 }
 
 class DartPubGetResult {
-  final bool wouldChangeDependencies;
-
   DartPubGetResult({required this.wouldChangeDependencies});
+
+  final bool wouldChangeDependencies;
 }
 
 Future<void> dartPubRemove({

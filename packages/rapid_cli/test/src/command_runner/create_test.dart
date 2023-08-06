@@ -39,9 +39,7 @@ const expectedUsage = [
 ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('create', () {
     test('c is a valid alias', () {
@@ -226,7 +224,7 @@ void main() {
           outputDir: '.',
           description: 'A description.',
           orgName: 'com.foo.bar',
-          language: Language(languageCode: 'de'),
+          language: const Language(languageCode: 'de'),
           platforms: {},
         ),
       ).called(1);
@@ -259,7 +257,7 @@ void main() {
           outputDir: '.',
           description: 'A description.',
           orgName: 'com.foo.bar',
-          language: Language(languageCode: 'de'),
+          language: const Language(languageCode: 'de'),
           platforms: {
             Platform.android,
             Platform.ios,

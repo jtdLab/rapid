@@ -20,9 +20,7 @@ UiPackage _getUiPackage({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('UiPackage', () {
     test('.resolve', () {
@@ -81,7 +79,7 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final uiPackage = _getUiPackage(
             projectName: 'test_project',
             path: '/path/to/ui_package',

@@ -44,9 +44,7 @@ NoneIosNativeDirectory _getNoneIosNativeDirectory({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('IosNativeDirectory', () {
     test('.resolve', () {
@@ -82,7 +80,7 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final iosNativeDirectory = _getIosNativeDirectory(
             projectName: 'test_project',
             path: '/path/to/ios_native_directory',
@@ -90,7 +88,7 @@ void main() {
 
           await iosNativeDirectory.generate(
             orgName: 'com.example',
-            language: Language(languageCode: 'en'),
+            language: const Language(languageCode: 'en'),
           );
 
           verifyInOrder([
@@ -145,7 +143,7 @@ void main() {
             path: 'ios_native_directory_path',
           );
 
-          iosNativeDirectory.addLanguage(Language(languageCode: 'en'));
+          iosNativeDirectory.addLanguage(const Language(languageCode: 'en'));
 
           expect(
             infoFile.readAsStringSync(),
@@ -194,8 +192,9 @@ void main() {
             path: 'ios_native_directory_path',
           );
 
-          iosNativeDirectory
-              .addLanguage(Language(languageCode: 'en', countryCode: 'US'));
+          iosNativeDirectory.addLanguage(
+            const Language(languageCode: 'en', countryCode: 'US'),
+          );
 
           expect(
             infoFile.readAsStringSync(),
@@ -224,26 +223,32 @@ void main() {
           final infoFile =
               File(p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
                 ..createSync(recursive: true)
-                ..writeAsStringSync(multiLine([
-                  '<?xml version="1.0" encoding="UTF-8"?>',
-                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
-                  '<plist version="1.0">',
-                  '  <dict>',
-                  '    <key>CFBundleLocalizations</key>',
-                  '    <array>',
-                  '      <string>fr</string>',
-                  '    </array>',
-                  '    <key>key</key>',
-                  '    <string>value</string>',
-                  '  </dict>',
-                  '</plist>'
-                ]));
+                ..writeAsStringSync(
+                  multiLine([
+                    '<?xml version="1.0" encoding="UTF-8"?>',
+                    '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                    '<plist version="1.0">',
+                    '  <dict>',
+                    '    <key>CFBundleLocalizations</key>',
+                    '    <array>',
+                    '      <string>fr</string>',
+                    '    </array>',
+                    '    <key>key</key>',
+                    '    <string>value</string>',
+                    '  </dict>',
+                    '</plist>'
+                  ]),
+                );
           final iosNativeDirectory = _getIosNativeDirectory(
             path: 'ios_native_directory_path',
           );
 
           iosNativeDirectory.addLanguage(
-            Language(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+            const Language(
+              languageCode: 'zh',
+              scriptCode: 'Hans',
+              countryCode: 'CN',
+            ),
           );
 
           expect(
@@ -273,26 +278,28 @@ void main() {
           final infoFile =
               File(p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
                 ..createSync(recursive: true)
-                ..writeAsStringSync(multiLine([
-                  '<?xml version="1.0" encoding="UTF-8"?>',
-                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
-                  '<plist version="1.0">',
-                  '  <dict>',
-                  '    <key>CFBundleLocalizations</key>',
-                  '    <array>',
-                  '      <string>zh-Hans-CN</string>',
-                  '      <string>fr</string>',
-                  '    </array>',
-                  '    <key>key</key>',
-                  '    <string>value</string>',
-                  '  </dict>',
-                  '</plist>'
-                ]));
+                ..writeAsStringSync(
+                  multiLine([
+                    '<?xml version="1.0" encoding="UTF-8"?>',
+                    '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                    '<plist version="1.0">',
+                    '  <dict>',
+                    '    <key>CFBundleLocalizations</key>',
+                    '    <array>',
+                    '      <string>zh-Hans-CN</string>',
+                    '      <string>fr</string>',
+                    '    </array>',
+                    '    <key>key</key>',
+                    '    <string>value</string>',
+                    '  </dict>',
+                    '</plist>'
+                  ]),
+                );
           final iosNativeDirectory = _getIosNativeDirectory(
             path: 'ios_native_directory_path',
           );
 
-          iosNativeDirectory.addLanguage(Language(languageCode: 'en'));
+          iosNativeDirectory.addLanguage(const Language(languageCode: 'en'));
 
           expect(
             infoFile.readAsStringSync(),
@@ -321,7 +328,8 @@ void main() {
           'en',
           withMockFs(() {
             final infoFile = File(
-                p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+              p.join('ios_native_directory_path', 'Runner', 'Info.plist'),
+            )
               ..createSync(recursive: true)
               ..writeAsStringSync(
                 multiLine([
@@ -339,7 +347,7 @@ void main() {
               path: 'ios_native_directory_path',
             );
 
-            iosNativeDirectory.addLanguage(Language(languageCode: 'en'));
+            iosNativeDirectory.addLanguage(const Language(languageCode: 'en'));
 
             expect(
               infoFile.readAsStringSync(),
@@ -365,7 +373,8 @@ void main() {
           'en-US',
           withMockFs(() {
             final infoFile = File(
-                p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+              p.join('ios_native_directory_path', 'Runner', 'Info.plist'),
+            )
               ..createSync(recursive: true)
               ..writeAsStringSync(
                 multiLine([
@@ -383,8 +392,9 @@ void main() {
               path: 'ios_native_directory_path',
             );
 
-            iosNativeDirectory
-                .addLanguage(Language(languageCode: 'en', countryCode: 'US'));
+            iosNativeDirectory.addLanguage(
+              const Language(languageCode: 'en', countryCode: 'US'),
+            );
 
             expect(
               infoFile.readAsStringSync(),
@@ -410,7 +420,8 @@ void main() {
           'zh-Hans-CN',
           withMockFs(() {
             final infoFile = File(
-                p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+              p.join('ios_native_directory_path', 'Runner', 'Info.plist'),
+            )
               ..createSync(recursive: true)
               ..writeAsStringSync(
                 multiLine([
@@ -429,8 +440,11 @@ void main() {
             );
 
             iosNativeDirectory.addLanguage(
-              Language(
-                  languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+              const Language(
+                languageCode: 'zh',
+                scriptCode: 'Hans',
+                countryCode: 'CN',
+              ),
             );
 
             expect(
@@ -483,7 +497,7 @@ void main() {
             path: 'ios_native_directory_path',
           );
 
-          iosNativeDirectory.removeLanguage(Language(languageCode: 'en'));
+          iosNativeDirectory.removeLanguage(const Language(languageCode: 'en'));
 
           expect(
             infoFile.readAsStringSync(),
@@ -532,8 +546,9 @@ void main() {
             path: 'ios_native_directory_path',
           );
 
-          iosNativeDirectory
-              .removeLanguage(Language(languageCode: 'en', countryCode: 'US'));
+          iosNativeDirectory.removeLanguage(
+            const Language(languageCode: 'en', countryCode: 'US'),
+          );
 
           expect(
             infoFile.readAsStringSync(),
@@ -561,27 +576,33 @@ void main() {
           final infoFile =
               File(p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
                 ..createSync(recursive: true)
-                ..writeAsStringSync(multiLine([
-                  '<?xml version="1.0" encoding="UTF-8"?>',
-                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
-                  '<plist version="1.0">',
-                  '  <dict>',
-                  '    <key>CFBundleLocalizations</key>',
-                  '    <array>',
-                  '      <string>fr</string>',
-                  '      <string>zh-Hans-CN</string>',
-                  '    </array>',
-                  '    <key>key</key>',
-                  '    <string>value</string>',
-                  '  </dict>',
-                  '</plist>'
-                ]));
+                ..writeAsStringSync(
+                  multiLine([
+                    '<?xml version="1.0" encoding="UTF-8"?>',
+                    '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                    '<plist version="1.0">',
+                    '  <dict>',
+                    '    <key>CFBundleLocalizations</key>',
+                    '    <array>',
+                    '      <string>fr</string>',
+                    '      <string>zh-Hans-CN</string>',
+                    '    </array>',
+                    '    <key>key</key>',
+                    '    <string>value</string>',
+                    '  </dict>',
+                    '</plist>'
+                  ]),
+                );
           final iosNativeDirectory = _getIosNativeDirectory(
             path: 'ios_native_directory_path',
           );
 
           iosNativeDirectory.removeLanguage(
-            Language(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+            const Language(
+              languageCode: 'zh',
+              scriptCode: 'Hans',
+              countryCode: 'CN',
+            ),
           );
 
           expect(
@@ -610,27 +631,29 @@ void main() {
           final infoFile =
               File(p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
                 ..createSync(recursive: true)
-                ..writeAsStringSync(multiLine([
-                  '<?xml version="1.0" encoding="UTF-8"?>',
-                  '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
-                  '<plist version="1.0">',
-                  '  <dict>',
-                  '    <key>CFBundleLocalizations</key>',
-                  '    <array>',
-                  '      <string>en</string>',
-                  '      <string>zh-Hans-CN</string>',
-                  '      <string>fr</string>',
-                  '    </array>',
-                  '    <key>key</key>',
-                  '    <string>value</string>',
-                  '  </dict>',
-                  '</plist>'
-                ]));
+                ..writeAsStringSync(
+                  multiLine([
+                    '<?xml version="1.0" encoding="UTF-8"?>',
+                    '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">',
+                    '<plist version="1.0">',
+                    '  <dict>',
+                    '    <key>CFBundleLocalizations</key>',
+                    '    <array>',
+                    '      <string>en</string>',
+                    '      <string>zh-Hans-CN</string>',
+                    '      <string>fr</string>',
+                    '    </array>',
+                    '    <key>key</key>',
+                    '    <string>value</string>',
+                    '  </dict>',
+                    '</plist>'
+                  ]),
+                );
           final iosNativeDirectory = _getIosNativeDirectory(
             path: 'ios_native_directory_path',
           );
 
-          iosNativeDirectory.removeLanguage(Language(languageCode: 'en'));
+          iosNativeDirectory.removeLanguage(const Language(languageCode: 'en'));
 
           expect(
             infoFile.readAsStringSync(),
@@ -658,7 +681,8 @@ void main() {
           'en',
           withMockFs(() {
             final infoFile = File(
-                p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+              p.join('ios_native_directory_path', 'Runner', 'Info.plist'),
+            )
               ..createSync(recursive: true)
               ..writeAsStringSync(
                 multiLine([
@@ -680,7 +704,8 @@ void main() {
               path: 'ios_native_directory_path',
             );
 
-            iosNativeDirectory.removeLanguage(Language(languageCode: 'en'));
+            iosNativeDirectory
+                .removeLanguage(const Language(languageCode: 'en'));
 
             expect(
               infoFile.readAsStringSync(),
@@ -704,7 +729,8 @@ void main() {
           'en-US',
           withMockFs(() {
             final infoFile = File(
-                p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+              p.join('ios_native_directory_path', 'Runner', 'Info.plist'),
+            )
               ..createSync(recursive: true)
               ..writeAsStringSync(
                 multiLine([
@@ -727,7 +753,8 @@ void main() {
             );
 
             iosNativeDirectory.removeLanguage(
-                Language(languageCode: 'en', countryCode: 'US'));
+              const Language(languageCode: 'en', countryCode: 'US'),
+            );
 
             expect(
               infoFile.readAsStringSync(),
@@ -751,7 +778,8 @@ void main() {
           'zh-Hans-CN',
           withMockFs(() {
             final infoFile = File(
-                p.join('ios_native_directory_path', 'Runner', 'Info.plist'))
+              p.join('ios_native_directory_path', 'Runner', 'Info.plist'),
+            )
               ..createSync(recursive: true)
               ..writeAsStringSync(
                 multiLine([
@@ -774,8 +802,11 @@ void main() {
             );
 
             iosNativeDirectory.removeLanguage(
-              Language(
-                  languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN'),
+              const Language(
+                languageCode: 'zh',
+                scriptCode: 'Hans',
+                countryCode: 'CN',
+              ),
             );
 
             expect(
@@ -820,7 +851,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final macosNativeDirectory = _getMacosNativeDirectory(
           projectName: 'test_project',
           path: '/path/to/macos_native_directory',
@@ -871,7 +902,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final noneIosNativeDirectory = _getNoneIosNativeDirectory(
           projectName: 'test_project',
           path: '/path/to/none_ios_native_directory',
@@ -910,7 +941,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final noneIosNativeDirectory = _getNoneIosNativeDirectory(
           projectName: 'test_project',
           path: '/path/to/none_ios_native_directory',
@@ -949,7 +980,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final noneIosNativeDirectory = _getNoneIosNativeDirectory(
           projectName: 'test_project',
           path: '/path/to/none_ios_native_directory',
@@ -988,7 +1019,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final noneIosNativeDirectory = _getNoneIosNativeDirectory(
           projectName: 'test_project',
           path: '/path/to/none_ios_native_directory',

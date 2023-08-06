@@ -23,9 +23,7 @@ PlatformUiPackage _getPlatformUiPackage({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('PlatformUiPackage', () {
     test('.resolve', () {
@@ -79,7 +77,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final platformUiPackage = _getPlatformUiPackage(
           projectName: 'test_project',
           path: '/path/to/platform_ui_package',

@@ -58,17 +58,16 @@ MobileRootPackage _getMobileRootPackage({
   IosNativeDirectory? iosNativeDirectory,
 }) {
   return MobileRootPackage(
-      projectName: projectName ?? 'projectName',
-      path: path ?? 'path',
-      androidNativeDirectory:
-          androidNativeDirectory ?? MockNoneIosNativeDirectory(),
-      iosNativeDirectory: iosNativeDirectory ?? MockIosNativeDirectory());
+    projectName: projectName ?? 'projectName',
+    path: path ?? 'path',
+    androidNativeDirectory:
+        androidNativeDirectory ?? MockNoneIosNativeDirectory(),
+    iosNativeDirectory: iosNativeDirectory ?? MockIosNativeDirectory(),
+  );
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('IosRootPackage', () {
     test('.resolve', () {
@@ -136,7 +135,7 @@ void main() {
                 ..createSync(recursive: true)
                 ..writeAsStringSync(
                   multiLine([
-                    'import \'package:auto_route/auto_route.dart\';',
+                    "import 'package:auto_route/auto_route.dart';",
                     '',
                     '@InjectableInit(',
                     '  externalPackageModules: [],',
@@ -169,8 +168,8 @@ void main() {
           expect(
             injectionFile.readAsStringSync(),
             multiLine([
-              'import \'package:auto_route/auto_route.dart\';',
-              'import \'package:test_widget/test_widget.dart\';',
+              "import 'package:auto_route/auto_route.dart';",
+              "import 'package:test_widget/test_widget.dart';",
               '',
               '@InjectableInit(',
               '  externalPackageModules: [TestWidgetPackageModule,],',
@@ -204,7 +203,7 @@ void main() {
                 ..createSync(recursive: true)
                 ..writeAsStringSync(
                   multiLine([
-                    'import \'package:injectable/injectable.dart\';',
+                    "import 'package:injectable/injectable.dart';",
                     '',
                     '@InjectableInit(',
                     '  externalPackageModules: [],',
@@ -219,13 +218,13 @@ void main() {
             ..createSync(recursive: true)
             ..writeAsStringSync(
               multiLine([
-                'import \'package:auto_route/auto_route.dart\';',
+                "import 'package:auto_route/auto_route.dart';",
                 '',
                 '@AutoRouterConfig(',
                 '  replaceInRouteName: null,',
                 '  modules: [],',
                 ')',
-                'class Router extends \$Router {',
+                r'class Router extends $Router {',
                 '  @override',
                 '  List<AutoRoute> get routes => [];',
                 '}',
@@ -254,8 +253,8 @@ void main() {
           expect(
             injectionFile.readAsStringSync(),
             multiLine([
-              'import \'package:injectable/injectable.dart\';',
-              'import \'package:test_page/test_page.dart\';',
+              "import 'package:injectable/injectable.dart';",
+              "import 'package:test_page/test_page.dart';",
               '',
               '@InjectableInit(',
               '  externalPackageModules: [TestPagePackageModule,],',
@@ -270,8 +269,8 @@ void main() {
           expect(
             routerFile.readAsStringSync(),
             multiLine([
-              'import \'package:auto_route/auto_route.dart\';',
-              'import \'package:test_page/test_page.dart\';',
+              "import 'package:auto_route/auto_route.dart';",
+              "import 'package:test_page/test_page.dart';",
               '',
               '',
               '// TODO: Add routes of TestPageModule to the router.',
@@ -280,7 +279,7 @@ void main() {
               '  replaceInRouteName: null,',
               '  modules: [TestPageModule,],',
               ')',
-              'class Router extends \$Router {',
+              r'class Router extends $Router {',
               '  @override',
               '  List<AutoRoute> get routes => [];',
               '}',
@@ -312,7 +311,7 @@ void main() {
                 ..createSync(recursive: true)
                 ..writeAsStringSync(
                   multiLine([
-                    'import \'package:test_widget/test_widget.dart\';',
+                    "import 'package:test_widget/test_widget.dart';",
                     '',
                     '@InjectableInit(',
                     '  externalPackageModules: [TestWidgetPackageModule,],',
@@ -377,7 +376,7 @@ void main() {
                 ..createSync(recursive: true)
                 ..writeAsStringSync(
                   multiLine([
-                    'import \'package:test_page/test_page.dart\';',
+                    "import 'package:test_page/test_page.dart';",
                     '',
                     '@InjectableInit(',
                     '  externalPackageModules: [TestPagePackageModule,],',
@@ -392,13 +391,13 @@ void main() {
             ..createSync(recursive: true)
             ..writeAsStringSync(
               multiLine([
-                'import \'package:test_page/test_page.dart\';',
+                "import 'package:test_page/test_page.dart';",
                 '',
                 '@AutoRouterConfig(',
                 '  replaceInRouteName: null,',
                 '  modules: [TestPageModule,],',
                 ')',
-                'class Router extends \$Router {',
+                r'class Router extends $Router {',
                 '  @override',
                 '  List<AutoRoute> get routes => [];',
                 '}',
@@ -442,7 +441,7 @@ void main() {
               '  replaceInRouteName: null,',
               '  modules: [],',
               ')',
-              'class Router extends \$Router {',
+              r'class Router extends $Router {',
               '  @override',
               '  List<AutoRoute> get routes => [];',
               '}',
@@ -473,7 +472,7 @@ void main() {
                 ..createSync(recursive: true)
                 ..writeAsStringSync(
                   multiLine([
-                    'import \'package:injectable/injectable.dart\';',
+                    "import 'package:injectable/injectable.dart';",
                     '',
                     '@InjectableInit(',
                     '  externalPackageModules: [],',
@@ -507,8 +506,8 @@ void main() {
           expect(
             injectionFile.readAsStringSync(),
             multiLine([
-              'import \'package:foo/foo.dart\';',
-              'import \'package:injectable/injectable.dart\';',
+              "import 'package:foo/foo.dart';",
+              "import 'package:injectable/injectable.dart';",
               '',
               '@InjectableInit(',
               '  externalPackageModules: [FooPackageModule,],',
@@ -545,7 +544,7 @@ void main() {
                 ..createSync(recursive: true)
                 ..writeAsStringSync(
                   multiLine([
-                    'import \'package:foo/foo.dart\';',
+                    "import 'package:foo/foo.dart';",
                     '',
                     '@InjectableInit(',
                     '  externalPackageModules: [FooPackageModule,],',
@@ -599,7 +598,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final iosRootPackage = _getIosRootPackage(
           projectName: 'test_project',
           path: '/path/to/ios_root_package',
@@ -607,7 +606,7 @@ void main() {
 
         await iosRootPackage.generate(
           orgName: 'test_org',
-          language: Language(languageCode: 'en'),
+          language: const Language(languageCode: 'en'),
         );
 
         verifyInOrder([
@@ -635,7 +634,7 @@ void main() {
               ),
           () => iosRootPackage.nativeDirectory.generate(
                 orgName: 'test_org',
-                language: Language(languageCode: 'en'),
+                language: const Language(languageCode: 'en'),
               ),
         ]);
       }),
@@ -649,10 +648,11 @@ void main() {
         nativeDirectory: nativeDirectory,
       );
 
-      iosRootPackage.addLanguage(Language(languageCode: 'fr'));
+      iosRootPackage.addLanguage(const Language(languageCode: 'fr'));
 
-      verify(() => nativeDirectory.addLanguage(Language(languageCode: 'fr')))
-          .called(1);
+      verify(
+        () => nativeDirectory.addLanguage(const Language(languageCode: 'fr')),
+      ).called(1);
     });
 
     test('removeLanguage', () {
@@ -663,10 +663,12 @@ void main() {
         nativeDirectory: nativeDirectory,
       );
 
-      iosRootPackage.removeLanguage(Language(languageCode: 'fr'));
+      iosRootPackage.removeLanguage(const Language(languageCode: 'fr'));
 
-      verify(() => nativeDirectory.removeLanguage(Language(languageCode: 'fr')))
-          .called(1);
+      verify(
+        () =>
+            nativeDirectory.removeLanguage(const Language(languageCode: 'fr')),
+      ).called(1);
     });
   });
 
@@ -699,7 +701,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final nativeDirectory = MockMacosNativeDirectory();
         final macosRootPackage = _getMacosRootPackage(
           projectName: 'test_project',
@@ -778,7 +780,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final androidNativeDirectory = MockNoneIosNativeDirectory();
         final iosNativeDirectory = MockIosNativeDirectory();
         final mobileRootPackage = _getMobileRootPackage(
@@ -791,7 +793,7 @@ void main() {
         await mobileRootPackage.generate(
           orgName: 'test_org',
           description: 'Test description',
-          language: Language(languageCode: 'en'),
+          language: const Language(languageCode: 'en'),
         );
 
         verifyInOrder([
@@ -823,7 +825,7 @@ void main() {
               ),
           () => iosNativeDirectory.generate(
                 orgName: 'test_org',
-                language: Language(languageCode: 'en'),
+                language: const Language(languageCode: 'en'),
               ),
         ]);
       }),
@@ -837,10 +839,12 @@ void main() {
         iosNativeDirectory: iosNativeDirectory,
       );
 
-      iosRootPackage.addLanguage(Language(languageCode: 'fr'));
+      iosRootPackage.addLanguage(const Language(languageCode: 'fr'));
 
-      verify(() => iosNativeDirectory.addLanguage(Language(languageCode: 'fr')))
-          .called(1);
+      verify(
+        () =>
+            iosNativeDirectory.addLanguage(const Language(languageCode: 'fr')),
+      ).called(1);
     });
 
     test('removeLanguage', () {
@@ -851,10 +855,11 @@ void main() {
         iosNativeDirectory: iosNativeDirectory,
       );
 
-      iosRootPackage.removeLanguage(Language(languageCode: 'fr'));
+      iosRootPackage.removeLanguage(const Language(languageCode: 'fr'));
 
       verify(
-        () => iosNativeDirectory.removeLanguage(Language(languageCode: 'fr')),
+        () => iosNativeDirectory
+            .removeLanguage(const Language(languageCode: 'fr')),
       ).called(1);
     });
   });
@@ -889,7 +894,7 @@ void main() {
         final generatorBuilder = MockMasonGeneratorBuilder(
           generator: generator,
         );
-        generatorOverrides = generatorBuilder;
+        generatorOverrides = generatorBuilder.call;
         final nativeDirectory = MockNoneIosNativeDirectory();
         final noneIosRootPackage = _getNoneIosRootPackage(
           projectName: 'test_project',

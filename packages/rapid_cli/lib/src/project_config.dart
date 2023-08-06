@@ -111,7 +111,8 @@ class RapidProjectConfig {
     final projectDir = Directory(path);
     if (!projectDir.isAbsolute) {
       throw RapidConfigException(
-          'path must be an absolute path but got $path.');
+        'path must be an absolute path but got $path.',
+      );
     }
   }
 

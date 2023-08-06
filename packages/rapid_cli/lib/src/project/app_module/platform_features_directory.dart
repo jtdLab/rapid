@@ -26,7 +26,7 @@ class PlatformFeaturesDirectory extends Directory {
       projectPath: projectPath,
       platform: platform,
     );
-    featurePackage<T extends PlatformFeaturePackage>({required String name}) {
+    T featurePackage<T extends PlatformFeaturePackage>({required String name}) {
       if (name.endsWith('page')) {
         return PlatformPageFeaturePackage.resolve(
           projectName: projectName,

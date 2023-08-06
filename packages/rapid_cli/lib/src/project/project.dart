@@ -109,8 +109,7 @@ class RapidProject {
         ...appModule.infrastructureDirectory.infrastructurePackages(),
         uiModule.uiPackage,
         // TODO good?
-        for (final platform
-            in Platform.values.where((e) => platformIsActivated(e))) ...[
+        for (final platform in Platform.values.where(platformIsActivated)) ...[
           appModule.platformDirectory(platform: platform).rootPackage,
           appModule.platformDirectory(platform: platform).localizationPackage,
           appModule.platformDirectory(platform: platform).navigationPackage,
@@ -127,7 +126,7 @@ class RapidProject {
       ];
 
   List<PlatformRootPackage> rootPackages() => Platform.values
-      .where((e) => platformIsActivated(e))
+      .where(platformIsActivated)
       .map((e) => appModule.platformDirectory(platform: e).rootPackage)
       .toList();
 
@@ -143,9 +142,11 @@ class RapidProject {
   ///
   /// This includes packages that have a transitive dependency on [package].
   List<DartPackage> dependentPackages(DartPackage package) {
-    return _dependentPackages(packages()
-        .where((e) => e.pubSpecFile.hasDependency(name: package.packageName))
-        .toList());
+    return _dependentPackages(
+      packages()
+          .where((e) => e.pubSpecFile.hasDependency(name: package.packageName))
+          .toList(),
+    );
   }
 
   List<DartPackage> _dependentPackages(List<DartPackage> initial) {

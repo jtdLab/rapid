@@ -16,9 +16,7 @@ List<String> expectedUsage(List<String> infrastructurePackages) => [
     ];
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('infrastructure', () {
     test(

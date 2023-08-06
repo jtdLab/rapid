@@ -31,7 +31,7 @@ class AppModule extends Directory {
       projectName: projectName,
       projectPath: projectPath,
     );
-    platformDirectory({required Platform platform}) =>
+    PlatformDirectory platformDirectory({required Platform platform}) =>
         PlatformDirectory.resolve(
           projectName: projectName,
           projectPath: projectPath,

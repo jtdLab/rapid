@@ -26,10 +26,10 @@ export 'package:pub_semver/pub_semver.dart';
 export 'package:pubspec/pubspec.dart'
     show
         DependencyReference,
-        GitReference,
-        PathReference,
-        HostedReference,
         ExternalHostedReference,
+        GitReference,
+        HostedReference,
+        PathReference,
         SdkReference;
 
 part 'platform.dart';
@@ -50,20 +50,21 @@ abstract class FileSystemEntityCollection {
 }
 
 class Directory implements io.Directory {
+  Directory(String path)
+      : _directory = directoryOverrides ?? io.Directory(p.normalize(path));
+
+  Directory._fromIO(io.Directory directory) : _directory = directory;
+
   /// Overrides the underlying directory from dart:io for testing.
   @visibleForTesting
   static io.Directory? directoryOverrides;
 
-  Directory(String path)
-      : _directory = directoryOverrides ?? io.Directory(p.normalize(path));
-
+  // ignore: prefer_constructors_over_static_methods
   static Directory get current => Directory._fromIO(io.Directory.current);
 
   static set current(dynamic path) {
     io.Directory.current = path;
   }
-
-  Directory._fromIO(io.Directory directory) : _directory = directory;
 
   static Future<Directory> _fromIOAsync(Future<io.Directory> directory) async =>
       Directory._fromIO(await directory);
@@ -98,6 +99,7 @@ class Directory implements io.Directory {
       _directory.deleteSync(recursive: recursive);
 
   @override
+  // ignore: avoid_slow_async_io
   Future<bool> exists() => _directory.exists();
 
   @override
@@ -146,6 +148,7 @@ class Directory implements io.Directory {
   String resolveSymbolicLinksSync() => _directory.resolveSymbolicLinksSync();
 
   @override
+  // ignore: avoid_slow_async_io
   Future<io.FileStat> stat() => _directory.stat();
 
   @override
@@ -163,13 +166,13 @@ class Directory implements io.Directory {
 }
 
 class File implements io.File {
-  /// Overrides the underlying file from dart:io for testing.
-  @visibleForTesting
-  static io.File? fileOverrides;
-
   File(String path) : _file = fileOverrides ?? io.File(p.normalize(path));
 
   File._fromIO(io.File file) : _file = file;
+
+  /// Overrides the underlying file from dart:io for testing.
+  @visibleForTesting
+  static io.File? fileOverrides;
 
   static Future<File> _fromIOAsync(Future<io.File> file) async =>
       File._fromIO(await file);
@@ -204,6 +207,7 @@ class File implements io.File {
       _file.deleteSync(recursive: recursive);
 
   @override
+  // ignore: avoid_slow_async_io
   Future<bool> exists() => _file.exists();
 
   @override
@@ -219,6 +223,7 @@ class File implements io.File {
   DateTime lastAccessedSync() => _file.lastAccessedSync();
 
   @override
+  // ignore: avoid_slow_async_io
   Future<DateTime> lastModified() => _file.lastModified();
 
   @override
@@ -303,6 +308,7 @@ class File implements io.File {
   void setLastModifiedSync(DateTime time) => _file.setLastModifiedSync(time);
 
   @override
+  // ignore: avoid_slow_async_io
   Future<io.FileStat> stat() => _file.stat();
 
   @override
@@ -389,7 +395,10 @@ abstract class DartPackage extends Directory {
 
 class YamlFile extends File {
   YamlFile(super.path)
-      : assert(path.endsWith('.yaml') || path.endsWith('.yml'));
+      : assert(
+          path.endsWith('.yaml') || path.endsWith('.yml'),
+          'YamlFile requires .yaml or .yml extension.',
+        );
 
   T read<T>(String key) => loadYaml(readAsStringSync())[key] as T;
 
@@ -416,7 +425,7 @@ class YamlFile extends File {
 }
 
 class PubspecYamlFile extends YamlFile {
-  PubspecYamlFile(super.path) : assert(path.endsWith('pubspec.yaml'));
+  PubspecYamlFile(super.path);
 
   PubSpec get _pubSpec => PubSpec.fromYamlString(readAsStringSync());
 
@@ -439,7 +448,7 @@ class PubspecYamlFile extends YamlFile {
     bool dev = false,
   }) {
     final editor = YamlEditor(readAsStringSync());
-    var json = dependency.toJson();
+    final json = dependency.toJson();
 
     if (dev) {
       editor.update(['dev_dependencies', name], json);
@@ -473,16 +482,20 @@ class PubspecYamlFile extends YamlFile {
 }
 
 class DartFile extends File {
-  DartFile(super.path) : assert(path.endsWith('.dart'));
+  DartFile(super.path)
+      : assert(
+          path.endsWith('.dart'),
+          'DartFile requires .dart extension.',
+        );
 
   final DartFormatter _formatter = DartFormatter();
 
   void addImport(String import) => _modifyImportsOrExports(
-        (importsAndExports) => [...importsAndExports, 'import \'$import\';'],
+        (importsAndExports) => [...importsAndExports, "import '$import';"],
       );
 
   void addExport(String export) => _modifyImportsOrExports(
-        (importsAndExports) => [...importsAndExports, 'export \'$export\';'],
+        (importsAndExports) => [...importsAndExports, "export '$export';"],
       );
 
   void _modifyImportsOrExports(
@@ -492,33 +505,36 @@ class DartFile extends File {
     final contents = _formatter.format(readAsStringSync());
     final lines = contents.split('\n');
 
-    final libraryDirectiveIndex =
-        lines.indexWhere((line) => _libraryRegExp.hasMatch(line));
+    final libraryDirectiveIndex = lines.indexWhere(_libraryRegExp.hasMatch);
 
     final firstExportLineIndex = lines
         .indexWhere(
-          (line) => _exportRegExp.hasMatch(line),
+          _exportRegExp.hasMatch,
         )
         .replaceWhenNegative(
-            libraryDirectiveIndex == -1 ? 0 : libraryDirectiveIndex + 1);
+          libraryDirectiveIndex == -1 ? 0 : libraryDirectiveIndex + 1,
+        );
     final firstImportLineIndex = lines
         .indexWhere(
-          (line) => _importRegExp.hasMatch(line),
+          _importRegExp.hasMatch,
         )
         .replaceWhenNegative(
-            libraryDirectiveIndex == -1 ? 0 : libraryDirectiveIndex + 1);
+          libraryDirectiveIndex == -1 ? 0 : libraryDirectiveIndex + 1,
+        );
     final lastExportLineIndex = lines
         .lastIndexWhere(
-          (line) => _exportRegExp.hasMatch(line),
+          _exportRegExp.hasMatch,
         )
         .replaceWhenNegative(
-            libraryDirectiveIndex == -1 ? 0 : libraryDirectiveIndex + 1);
+          libraryDirectiveIndex == -1 ? 0 : libraryDirectiveIndex + 1,
+        );
     final lastImportLineIndex = lines
         .lastIndexWhere(
-          (line) => _importRegExp.hasMatch(line),
+          _importRegExp.hasMatch,
         )
         .replaceWhenNegative(
-            libraryDirectiveIndex == -1 ? 0 : libraryDirectiveIndex + 1);
+          libraryDirectiveIndex == -1 ? 0 : libraryDirectiveIndex + 1,
+        );
 
     // All lines between the first import/export and the last import/export
     final firstExportOrImportLineIndex =
@@ -527,8 +543,10 @@ class DartFile extends File {
         max(lastExportLineIndex, lastImportLineIndex);
     var importExportLines = lines
         .getRange(firstExportOrImportLineIndex, lastExportOrImportLineIndex + 1)
-        .where((line) =>
-            _importRegExp.hasMatch(line) || _exportRegExp.hasMatch(line))
+        .where(
+          (line) =>
+              _importRegExp.hasMatch(line) || _exportRegExp.hasMatch(line),
+        )
         .toList();
 
     // Add new import/export
@@ -538,33 +556,37 @@ class DartFile extends File {
     // Separate dart and package imports/exports
     // Sort each section alphabetically
     final dartImportLines = importExportLines
-        .where((line) => line.startsWith('import \'dart:'))
+        .where((line) => line.startsWith("import 'dart:"))
         .sorted()
         .toSet();
     final packageImportLines = importExportLines
-        .where((line) => line.startsWith('import \'package:'))
+        .where((line) => line.startsWith("import 'package:"))
         .sorted()
         .toSet();
     final localImportLines = importExportLines
-        .where((line) =>
-            !line.startsWith('import \'dart:') &&
-            !line.startsWith('import \'package:') &&
-            line.startsWith('import \''))
+        .where(
+          (line) =>
+              !line.startsWith("import 'dart:") &&
+              !line.startsWith("import 'package:") &&
+              line.startsWith("import '"),
+        )
         .sorted()
         .toSet();
     final dartExportLines = importExportLines
-        .where((line) => line.startsWith('export \'dart:'))
+        .where((line) => line.startsWith("export 'dart:"))
         .sorted()
         .toSet();
     final packageExportLines = importExportLines
-        .where((line) => line.startsWith('export \'package:'))
+        .where((line) => line.startsWith("export 'package:"))
         .sorted()
         .toSet();
     final localExportLines = importExportLines
-        .where((line) =>
-            !line.startsWith('export \'dart:') &&
-            !line.startsWith('export \'package:') &&
-            line.startsWith('export \''))
+        .where(
+          (line) =>
+              !line.startsWith("export 'dart:") &&
+              !line.startsWith("export 'package:") &&
+              line.startsWith("export '"),
+        )
         .sorted()
         .toSet();
     importExportLines = [
@@ -637,9 +659,11 @@ class DartFile extends File {
 
     final fieldDeclaration =
         clazz.members.whereType<FieldDeclaration>().firstWhere(
-              (e) => e.childEntities.any((e) =>
-                  e is VariableDeclarationList &&
-                  e.variables.first.name.lexeme == name),
+              (e) => e.childEntities.any(
+                (e) =>
+                    e is VariableDeclarationList &&
+                    e.variables.first.name.lexeme == name,
+              ),
             );
 
     final declarationList = fieldDeclaration.childEntities
@@ -701,7 +725,8 @@ class DartFile extends File {
     );
     final anot = function.metadata.firstWhere((e) => e.name.name == annotation);
     final value = anot.arguments!.childEntities.firstWhere(
-        (e) => e is NamedExpression && e.name.label.name == property);
+      (e) => e is NamedExpression && e.name.label.name == property,
+    );
 
     return value
         .toString()
@@ -728,7 +753,8 @@ class DartFile extends File {
     );
     final anot = function.metadata.firstWhere((e) => e.name.name == annotation);
     final value = anot.arguments!.childEntities.firstWhere(
-        (e) => e is NamedExpression && e.name.label.name == property);
+      (e) => e is NamedExpression && e.name.label.name == property,
+    );
 
     return value
         .toString()
@@ -818,14 +844,17 @@ class DartFile extends File {
     );
     final anot = function.metadata.firstWhere((e) => e.name.name == annotation);
     final val = anot.arguments!.childEntities.firstWhere(
-            (e) => e is NamedExpression && e.name.label.name == property)
-        as NamedExpression;
+      (e) => e is NamedExpression && e.name.label.name == property,
+    ) as NamedExpression;
 
     final start = val.offset;
     final end = val.end;
 
-    final output = contents.replaceRange(start, end,
-        '$property: [${value.join(',')}${value.isEmpty ? '' : ','}]');
+    final output = contents.replaceRange(
+      start,
+      end,
+      '$property: [${value.join(',')}${value.isEmpty ? '' : ','}]',
+    );
 
     writeAsStringSync(output);
   }
@@ -845,14 +874,17 @@ class DartFile extends File {
     );
     final anot = function.metadata.firstWhere((e) => e.name.name == annotation);
     final val = anot.arguments!.childEntities.firstWhere(
-            (e) => e is NamedExpression && e.name.label.name == property)
-        as NamedExpression;
+      (e) => e is NamedExpression && e.name.label.name == property,
+    ) as NamedExpression;
 
     final start = val.offset;
     final end = val.end;
 
-    final output = contents.replaceRange(start, end,
-        '$property: [${value.join(',')}${value.isEmpty ? '' : ','}]');
+    final output = contents.replaceRange(
+      start,
+      end,
+      '$property: [${value.join(',')}${value.isEmpty ? '' : ','}]',
+    );
 
     writeAsStringSync(output);
   }
@@ -862,9 +894,9 @@ class DartFile extends File {
     return unit.declarations;
   }
 
-  final _importRegExp = RegExp('import \'([a-z_/.:]+)\'( as [a-z]+)?;');
+  final _importRegExp = RegExp("import '([a-z_/.:]+)'( as [a-z]+)?;");
   final _exportRegExp =
-      RegExp('export \'([a-z_/.:]+)\'( (:?hide|show) [A-Z]+[A-z1-9]*;)?');
+      RegExp("export '([a-z_/.:]+)'( (:?hide|show) [A-Z]+[A-z1-9]*;)?");
   final _libraryRegExp = RegExp(r'library[\s]+[A-z][A-z_]*;');
 }
 
@@ -898,15 +930,18 @@ class PlistFile extends File {
 }
 
 class ArbFile extends File {
-  ArbFile(super.path) : assert(path.endsWith('.arb'));
+  ArbFile(super.path)
+      : assert(path.endsWith('.arb'), 'ArbFile requires .arb extension.');
+
+  static const _encoder = JsonEncoder.withIndent('  ');
 
   void setValue<T extends Object?>(String key, T? value) {
     final contents = readAsStringSync();
 
-    final json = jsonDecode(contents);
+    final json = jsonDecode(contents) as Map<String, dynamic>;
     json[key] = value;
 
-    final output = JsonEncoder.withIndent('  ').convert(json);
+    final output = _encoder.convert(json);
     writeAsStringSync(output);
   }
 }
@@ -936,7 +971,8 @@ io.FileSystemEntity _entityFromIO(io.FileSystemEntity entity) =>
             : entity;
 
 Future<io.FileSystemEntity> _entityFromIOAsync(
-    Future<io.FileSystemEntity> entity) async {
+  Future<io.FileSystemEntity> entity,
+) async {
   final result = await entity;
   return result is io.Directory
       ? Directory._fromIO(result)

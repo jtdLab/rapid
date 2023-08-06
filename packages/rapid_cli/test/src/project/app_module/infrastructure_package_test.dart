@@ -27,9 +27,7 @@ InfrastructurePackage _getInfrastructurePackage({
 }
 
 void main() {
-  setUpAll(() {
-    registerFallbackValues();
-  });
+  setUpAll(registerFallbackValues);
 
   group('InfrastructurePackage', () {
     test('.resolve', () {
@@ -123,7 +121,7 @@ void main() {
           final generatorBuilder = MockMasonGeneratorBuilder(
             generator: generator,
           );
-          generatorOverrides = generatorBuilder;
+          generatorOverrides = generatorBuilder.call;
           final infrastructurePackage = _getInfrastructurePackage(
             projectName: 'test_project',
             path: '/path/to/infrastructure_package',
@@ -154,7 +152,7 @@ void main() {
     );
 
     test('compareTo', () {
-      final infrastructurePackage1 = _getInfrastructurePackage(name: null);
+      final infrastructurePackage1 = _getInfrastructurePackage();
       final infrastructurePackage2 = _getInfrastructurePackage(name: 'cool');
       final infrastructurePackage3 = _getInfrastructurePackage(name: 'swag');
 
@@ -170,7 +168,7 @@ void main() {
     });
 
     test('isDefault', () {
-      final infrastructurePackage1 = _getInfrastructurePackage(name: null);
+      final infrastructurePackage1 = _getInfrastructurePackage();
       final infrastructurePackage2 = _getInfrastructurePackage(name: 'cool');
 
       final result1 = infrastructurePackage1.isDefault;

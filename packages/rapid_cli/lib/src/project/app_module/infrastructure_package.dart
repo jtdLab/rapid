@@ -23,13 +23,14 @@ class InfrastructurePackage extends DartPackage
       '${projectName}_infrastructure',
       '${projectName}_infrastructure${name != null ? '_$name' : ''}',
     );
-    dataTransferObject({required String entityName}) => DataTransferObject(
+    DataTransferObject dataTransferObject({required String entityName}) =>
+        DataTransferObject(
           projectName: projectName,
           path: path,
           entityName: entityName,
           subInfrastructureName: selfName,
         );
-    serviceImplementation({
+    ServiceImplementation serviceImplementation({
       required String name,
       required String serviceInterfaceName,
     }) =>
@@ -62,8 +63,13 @@ class InfrastructurePackage extends DartPackage
     required String serviceInterfaceName,
   }) serviceImplementation;
 
-  DartFile get barrelFile => DartFile(p.join(path, 'lib',
-      '${projectName}_infrastructure${name != null ? '_$name' : ''}.dart'));
+  DartFile get barrelFile => DartFile(
+        p.join(
+          path,
+          'lib',
+          '${projectName}_infrastructure${name != null ? '_$name' : ''}.dart',
+        ),
+      );
 
   Future<void> generate() async {
     await mason.generate(

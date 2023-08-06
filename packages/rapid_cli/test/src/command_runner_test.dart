@@ -12,7 +12,6 @@ import 'package:rapid_cli/src/utils.dart';
 import 'package:rapid_cli/src/version.dart';
 import 'package:test/test.dart';
 
-import 'common.dart';
 import 'mock_env.dart';
 import 'mocks.dart';
 import 'utils.dart';

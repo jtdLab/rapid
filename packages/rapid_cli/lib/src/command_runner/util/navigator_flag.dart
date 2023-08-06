@@ -3,7 +3,6 @@ import 'package:meta/meta.dart';
 
 import '../base.dart';
 
-/// The default navigator.
 const _defaultNavigator = false;
 
 /// Adds navigator flag.
@@ -20,9 +19,9 @@ extension NavigatorFlag on ArgParser {
 
 /// Adds `navigator` getter.
 mixin NavigatorGetter on RapidLeafCommand {
-  /// Gets navigator specified by the user.
+  /// Returns the  navigator specified by the user.
   ///
-  /// Returns [_defaultNavigator] when no navigator specified.
+  /// Defaults to [_defaultNavigator] when no navigator specified.
   @protected
   bool get navigator => argResults['navigator'] ?? _defaultNavigator;
 }

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/cli.dart';
-import 'package:rapid_cli/src/io/io.dart' hide Platform;
+import 'package:rapid_cli/src/io/io.dart';
 import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
 

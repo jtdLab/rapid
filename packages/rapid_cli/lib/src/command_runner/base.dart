@@ -1,17 +1,16 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:meta/meta.dart';
-import 'package:rapid_cli/src/project/project.dart';
 
 import '../commands/runner.dart';
 import '../logging.dart';
+import '../project/project.dart';
 import '../utils.dart';
 
 /// {@template rapid_command}
 /// Base class for all Rapid commands.
 /// {@endtemplate}
 abstract class RapidCommand extends Command<void> {
-  /// {@macro rapid_command}
   RapidCommand([this.project]);
 
   final RapidProject? project;
@@ -22,11 +21,19 @@ abstract class RapidCommand extends Command<void> {
   );
 }
 
+/// {@template rapid_branch_command}
+/// Base class for all Rapid commands that handle branching.
+/// {@endtemplate}
 abstract class RapidBranchCommand extends RapidCommand {
+  /// {@macro rapid_branch_command}
   RapidBranchCommand([super.project]);
 }
 
+/// {@template rapid_leaf_command}
+/// Base class for all Rapid commands executing functionality.
+/// {@endtemplate}
 abstract class RapidLeafCommand extends RapidCommand {
+  /// {@macro rapid_leaf_command}
   RapidLeafCommand([super.project]);
 
   late final verbose = globalResults![globalOptionVerbose] as bool;

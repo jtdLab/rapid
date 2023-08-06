@@ -1,11 +1,11 @@
 import 'package:mason/mason.dart';
-import 'package:rapid_cli/src/command_runner/util/dart_package_name_rest.dart';
-import 'package:rapid_cli/src/command_runner/util/description_option.dart';
-import 'package:rapid_cli/src/command_runner/util/navigator_flag.dart';
-import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
-import 'package:rapid_cli/src/project/platform.dart';
 
+import '../../../../project/platform.dart';
 import '../../../base.dart';
+import '../../../util/dart_package_name_rest.dart';
+import '../../../util/description_option.dart';
+import '../../../util/navigator_flag.dart';
+import '../../../util/platform_x.dart';
 
 String _defaultDescription(String name) =>
     'The ${name.pascalCase} tab flow feature.';

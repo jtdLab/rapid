@@ -199,7 +199,7 @@ mixin _DomainMixin on _Rapid {
     }
   }
 
-  // TODO this does delete a value_object because they have same files
+  // TODO(jtdLab): this does delete a value_object because they have same files
   Future<void> domainSubDomainRemoveEntity({
     required String name,
     required String? subDomainName,
@@ -262,7 +262,7 @@ mixin _DomainMixin on _Rapid {
     }
   }
 
-  // TODO this does delete a entity because they have same files
+  // TODO(jtdLab): this does delete an entity because they have same files
   Future<void> domainSubDomainRemoveValueObject({
     required String name,
     required String? subDomainName,

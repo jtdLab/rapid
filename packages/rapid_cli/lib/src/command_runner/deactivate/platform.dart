@@ -1,9 +1,12 @@
-import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
-import 'package:rapid_cli/src/project/platform.dart';
-
+import '../../project/platform.dart';
 import '../base.dart';
+import '../util/platform_x.dart';
 
+/// {@template deactivate_command}
+/// `rapid deactivate` command removes support for a platform from an existing Rapid project.
+/// {@endtemplate}
 class DeactivatePlatformCommand extends RapidLeafCommand {
+  /// {@macro deactivate_command}
   DeactivatePlatformCommand(this.platform, super.project);
 
   final Platform platform;

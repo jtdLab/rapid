@@ -4,6 +4,7 @@ import 'base.dart';
 
 /// {@template begin_command}
 /// `rapid begin` command starts a group of Rapid command executions.
+/// {@endtemplate}
 class BeginCommand extends RapidLeafCommand {
   /// {@macro begin_command}
   BeginCommand(super.project);

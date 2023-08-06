@@ -5,9 +5,6 @@ import 'package:args/command_runner.dart';
 import 'package:cli_launcher/cli_launcher.dart';
 import 'package:meta/meta.dart';
 import 'package:pub_updater/pub_updater.dart';
-import 'package:rapid_cli/src/project/platform.dart';
-import 'package:rapid_cli/src/project/project.dart';
-import 'package:rapid_cli/src/utils.dart';
 
 import 'command_runner/activate.dart';
 import 'command_runner/begin.dart';
@@ -21,10 +18,15 @@ import 'command_runner/pub.dart';
 import 'command_runner/ui.dart';
 import 'exception.dart';
 import 'logging.dart';
+import 'project/platform.dart';
+import 'project/project.dart';
 import 'project_config.dart';
+import 'utils.dart';
 import 'version.dart';
 
 const packageName = 'rapid_cli';
+
+// TODO(jtdLab): reconsider how project is resolved
 
 /// {@template rapid_command_runner}
 /// A [CommandRunner] for the Rapid Command Line Interface.

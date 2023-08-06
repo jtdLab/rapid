@@ -74,6 +74,28 @@ Matcher throwsCliException({
   );
 }
 
+/// Returns a [Matcher] that checks whether a list of [FileSystemEntity]
+/// matches the [expectedEntities] list in any order. It compares the file paths
+/// of the entities for equality.
+///
+/// Example usage:
+///
+/// ```dart
+/// expect(
+///   [File('a'), Directory('b')],
+///   entityEquals([File('a'), Directory('b')]),
+/// ); // => true
+///
+/// expect(
+///   [File('a'), Directory('b')],
+///   entityEquals([Directory('b'), File('a')]),
+/// ); // => true
+///
+/// expect(
+///   [File('a'), Directory('a')],
+///   entityEquals([Directory('b'), File('b')]),
+/// ); // => false
+/// ```
 Matcher entityEquals(List<FileSystemEntity> expectedEntities) =>
     FileSystemEntitiesMatcher(expectedEntities);
 

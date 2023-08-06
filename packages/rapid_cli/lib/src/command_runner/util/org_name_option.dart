@@ -4,7 +4,6 @@ import 'package:meta/meta.dart';
 
 import '../base.dart';
 
-/// The default organization name.
 const _defaultOrgName = 'com.example';
 
 /// The regex for the organization name.
@@ -25,18 +24,15 @@ extension OrgNameOption on ArgParser {
 
 /// Adds `orgName` getter.
 mixin OrgNameGetter on RapidLeafCommand {
-  /// Gets the organization name specified by the user.
+  /// Returns the organization name specified by the user.
   ///
-  /// Returns [_defaultOrgName] when no organization name specified.
+  /// Defaults to [_defaultOrgName] when no organization name specified.
   @protected
   String get orgName =>
       _validateOrgName(argResults['org-name'] ?? _defaultOrgName);
 
-  /// Validates whether [name] is valid organization name.
-  ///
-  /// Returns [name] when valid.
   String _validateOrgName(String name) {
-    final isValid = _isValidOrgName(name);
+    final isValid = _orgNameRegExp.hasMatch(name);
 
     if (!isValid) {
       throw UsageException(
@@ -52,7 +48,4 @@ mixin OrgNameGetter on RapidLeafCommand {
 
     return name;
   }
-
-  /// Whether [name] is valid organization name.
-  bool _isValidOrgName(String name) => _orgNameRegExp.hasMatch(name);
 }

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -9,6 +10,7 @@ import 'package:rapid_cli/src/logging.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/tool.dart';
+import 'package:rapid_cli/src/utils.dart';
 
 import 'mocks.dart';
 
@@ -36,6 +38,70 @@ Platform randomPlatform() {
   final enumValues = Platform.values;
   int randomIndex = Random().nextInt(enumValues.length);
   return enumValues[randomIndex];
+}
+
+extension PlatformX on Platform {
+  String get prettyName {
+    switch (this) {
+      case Platform.android:
+        return 'Android';
+      case Platform.ios:
+        return 'iOS';
+      case Platform.web:
+        return 'Web';
+      case Platform.linux:
+        return 'Linux';
+      case Platform.macos:
+        return 'macOS';
+      case Platform.windows:
+        return 'Windows';
+      case Platform.mobile:
+        return 'Mobile';
+    }
+  }
+
+  List<String> get aliases {
+    switch (this) {
+      case Platform.android:
+        return ['a'];
+      case Platform.ios:
+        return ['i'];
+      case Platform.web:
+        return [];
+      case Platform.linux:
+        return ['l', 'lin'];
+      case Platform.macos:
+        return ['mac'];
+      case Platform.windows:
+        return ['win'];
+      case Platform.mobile:
+        return [];
+    }
+  }
+}
+
+void Function() overridePrint(void Function(List<String>) fn) {
+  return () {
+    final printLogs = <String>[];
+    final spec = ZoneSpecification(
+      print: (_, __, ___, String msg) {
+        printLogs.add(msg);
+      },
+    );
+
+    final platform = FakePlatform(
+      // Simulate terminal with width 1024 so line wrapping
+      // has not to be considered when unit testing
+      environment: {envKeyRapidTerminalWidth: '1024'},
+    );
+
+    return Zone.current.fork(
+      specification: spec,
+      zoneValues: {
+        currentPlatformZoneKey: platform,
+      },
+    ).run<void>(() => fn(printLogs));
+  };
 }
 
 typedef LoggerSetup = ({
@@ -150,17 +216,21 @@ extension ProcessManagerX on ProcessManager {
         workingDirectory: workingDirectory,
       );
 
-  Future<ProcessResult> runFlutterConfigEnablePlatform(Platform platform) =>
+  Future<ProcessResult> runFlutterConfigEnablePlatform(
+    NativePlatform platform,
+  ) =>
       _runProcess(
         [
           'flutter',
           'config',
-          if (platform == Platform.android) '--enable-android',
-          if (platform == Platform.ios) '--enable-ios',
-          if (platform == Platform.linux) '--enable-linux-desktop',
-          if (platform == Platform.macos) '--enable-macos-desktop',
-          if (platform == Platform.web) '--enable-web',
-          if (platform == Platform.windows) '--enable-windows-desktop',
+          switch (platform) {
+            NativePlatform.android => '--enable-android',
+            NativePlatform.ios => '--enable-ios',
+            NativePlatform.linux => '--enable-linux-desktop',
+            NativePlatform.macos => '--enable-macos-desktop',
+            NativePlatform.web => '--enable-web',
+            NativePlatform.windows => '--enable-windows-desktop',
+          }
         ],
         workingDirectory: any(named: 'workingDirectory'),
       );

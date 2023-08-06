@@ -1,12 +1,11 @@
 import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
 import 'package:meta/meta.dart';
-import 'package:rapid_cli/src/project/language.dart';
 
+import '../../project/language.dart';
 import '../base.dart';
 import 'validate_language.dart';
 
-/// The default language.
 const _defaultLanguage = 'en';
 
 /// Adds language option.
@@ -24,16 +23,13 @@ extension LanguageOption on ArgParser {
 
 /// Adds `language` getter.
 mixin LanguageGetter on RapidLeafCommand {
-  /// Gets language specified by the user.
+  /// Returns the language specified by the user.
   ///
-  /// Returns [_defaultLanguage] when no language specified.
+  /// Defaults to [_defaultLanguage] when no language specified.
   @protected
   Language get language =>
       _validateLanguage(argResults['language'] ?? _defaultLanguage);
 
-  /// Validates whether [raw] is valid language.
-  ///
-  /// Returns parsed language when valid.
   Language _validateLanguage(String raw) {
     final language = Language.fromString(raw);
     final isValid = isValidLanguage(language);

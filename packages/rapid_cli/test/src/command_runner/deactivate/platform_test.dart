@@ -3,7 +3,6 @@ import 'package:rapid_cli/src/command_runner/deactivate/platform.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:test/test.dart';
 
-import '../../common.dart';
 import '../../mocks.dart';
 import '../../utils.dart';
 

@@ -6,13 +6,10 @@ import 'validate_dart_package_name.dart';
 
 /// Adds `dartPackageName` getter.
 mixin DartPackageNameGetter on RapidLeafCommand {
-  /// Gets the dart package name specified as the first positional argument.
+  /// Returns the dart package name specified as the first positional argument.
   @protected
   String get dartPackageName => _validateDartPackageNameArg(argResults.rest);
 
-  /// Validates whether [args] contains a valid dart package name as the first element.
-  ///
-  /// Returns the dart package name when valid.
   String _validateDartPackageNameArg(List<String> args) {
     if (args.isEmpty) {
       throw UsageException(

@@ -1,11 +1,10 @@
-import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
-import 'package:rapid_cli/src/project/platform.dart';
-
+import '../project/platform.dart';
 import 'base.dart';
 import 'platform/add.dart';
 import 'platform/feature.dart';
 import 'platform/remove.dart';
 import 'platform/set.dart';
+import 'util/platform_x.dart';
 
 class PlatformCommand extends RapidBranchCommand {
   PlatformCommand(this.platform, super.project) {

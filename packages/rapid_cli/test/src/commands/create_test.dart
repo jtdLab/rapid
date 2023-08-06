@@ -8,9 +8,9 @@ import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/project_config.dart';
 import 'package:rapid_cli/src/tool.dart';
+import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
 
-import '../common.dart';
 import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
@@ -354,43 +354,43 @@ void _verifyCreateProjectAndActivatePlatform<T extends PlatformRootPackage>(
     ...switch (platform) {
       Platform.android => [
           () => logger.progress('Running "flutter config --enable-android"'),
-          () => manager.runFlutterConfigEnablePlatform(platform),
+          () => manager.runFlutterConfigEnablePlatform(NativePlatform.android),
           () => progress.complete(),
         ],
       Platform.ios => [
           () => logger.progress('Running "flutter config --enable-ios"'),
-          () => manager.runFlutterConfigEnablePlatform(platform),
+          () => manager.runFlutterConfigEnablePlatform(NativePlatform.ios),
           () => progress.complete(),
         ],
       Platform.linux => [
           () => logger
               .progress('Running "flutter config --enable-linux-desktop"'),
-          () => manager.runFlutterConfigEnablePlatform(platform),
+          () => manager.runFlutterConfigEnablePlatform(NativePlatform.linux),
           () => progress.complete(),
         ],
       Platform.macos => [
           () => logger
               .progress('Running "flutter config --enable-macos-desktop"'),
-          () => manager.runFlutterConfigEnablePlatform(platform),
+          () => manager.runFlutterConfigEnablePlatform(NativePlatform.macos),
           () => progress.complete(),
         ],
       Platform.web => [
           () => logger.progress('Running "flutter config --enable-web"'),
-          () => manager.runFlutterConfigEnablePlatform(platform),
+          () => manager.runFlutterConfigEnablePlatform(NativePlatform.web),
           () => progress.complete(),
         ],
       Platform.windows => [
           () => logger
               .progress('Running "flutter config --enable-windows-desktop"'),
-          () => manager.runFlutterConfigEnablePlatform(platform),
+          () => manager.runFlutterConfigEnablePlatform(NativePlatform.windows),
           () => progress.complete(),
         ],
       Platform.mobile => [
           () => logger.progress('Running "flutter config --enable-android"'),
-          () => manager.runFlutterConfigEnablePlatform(Platform.android),
+          () => manager.runFlutterConfigEnablePlatform(NativePlatform.android),
           () => progress.complete(),
           () => logger.progress('Running "flutter config --enable-ios"'),
-          () => manager.runFlutterConfigEnablePlatform(Platform.ios),
+          () => manager.runFlutterConfigEnablePlatform(NativePlatform.ios),
           () => progress.complete(),
         ],
     },

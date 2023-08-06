@@ -19,15 +19,10 @@ extension EntityOption on ArgParser {
 
 /// Adds `entity` getter.
 mixin EntityGetter on RapidLeafCommand {
-  /// Gets `entity` from [ArgResults].
-  ///
-  /// Throws [UsageException] when invalid entity name.
+  /// Returns the entity specified by the user.
   @protected
   String get entity => _validateEntity(argResults['entity']);
 
-  /// Validates whether `entity` is a valid entity name.
-  ///
-  /// Returns `entity` when valid.
   String _validateEntity(String? entity) {
     if (entity == null) {
       throw UsageException(

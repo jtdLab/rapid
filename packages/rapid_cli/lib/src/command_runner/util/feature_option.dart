@@ -19,15 +19,10 @@ extension FeatureOption on ArgParser {
 
 /// Adds `feature` getter.
 mixin FeatureGetter on RapidLeafCommand {
-  /// Gets `feature` from [ArgResults].
-  ///
-  /// Throws [UsageException] when invalid feature name.
+  /// Returns the feature specified by the user.
   @protected
   String get feature => _validateFeature(argResults['feature']);
 
-  /// Validates whether `feature` is a valid feature name.
-  ///
-  /// Returns `feature` when valid.
   String _validateFeature(String? feature) {
     if (feature == null) {
       throw UsageException(

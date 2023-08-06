@@ -20,15 +20,10 @@ extension ServiceOption on ArgParser {
 
 /// Adds `service` getter.
 mixin ServiceGetter on RapidLeafCommand {
-  /// Gets `service` from [ArgResults].
-  ///
-  /// Throws [UsageException] when invalid service interface name.
+  /// Returns the service specified by the user.
   @protected
   String get service => _validateService(argResults['service']);
 
-  /// Validates whether `service` is a valid service interface name.
-  ///
-  /// Returns `service` when valid.
   String _validateService(String? service) {
     if (service == null) {
       throw UsageException(

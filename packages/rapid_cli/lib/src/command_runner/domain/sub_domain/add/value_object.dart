@@ -1,7 +1,6 @@
 import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
-/// The default type.
 const _defaultType = 'String';
 
 /// {@template domain_sub_domain_add_value_object_command}

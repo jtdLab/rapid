@@ -1,4 +1,5 @@
 import 'package:mocktail/mocktail.dart';
+import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/io/io.dart' hide Platform;
 import 'package:rapid_cli/src/mason.dart';
 import 'package:rapid_cli/src/project/bundles/bundles.dart';
@@ -7,7 +8,6 @@ import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
-import 'package:path/path.dart' as p;
 
 import '../../mock_env.dart';
 import '../../mocks.dart';

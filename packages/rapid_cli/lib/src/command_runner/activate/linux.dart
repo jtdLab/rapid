@@ -1,7 +1,6 @@
 import 'dart:async';
 
-import 'package:rapid_cli/src/project/platform.dart';
-
+import '../../project/platform.dart';
 import '../util/language_option.dart';
 import '../util/org_name_option.dart';
 import 'platform.dart';

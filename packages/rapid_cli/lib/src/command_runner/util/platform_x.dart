@@ -1,4 +1,6 @@
-import 'package:rapid_cli/src/project/platform.dart';
+// TODO: move to utils or rename to something command specific ?
+
+import '../../project/platform.dart';
 
 extension PlatformX on Platform {
   List<String> get aliases {

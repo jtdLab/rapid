@@ -3,26 +3,35 @@ import 'io/io.dart' hide Platform;
 import 'project/project.dart';
 import 'utils.dart';
 
-export 'package:pubspec/pubspec.dart';
-
-Future<void> melosBootstrap({
-  required List<DartPackage> scope,
-  required RapidProject project,
-}) async {
+Future<void> dartFormatFix({required RapidProject project}) async {
   final result = await runCommand(
-    [
-      'melos',
-      'bootstrap',
-      '--scope',
-      scope.map((e) => e.packageName).toList().join(','),
-    ],
+    ['dart', 'format', '.', '--fix'],
     workingDirectory: project.path,
   );
 
   if (result.exitCode != 0) {
     throw CliException._(
-      'Failed to bootstrap',
+      'Failed to format',
       workingDirectory: project.path,
+      stdout: result.stdout,
+      stderr: result.stderr,
+    );
+  }
+}
+
+Future<void> dartPubAdd({
+  required List<String> dependenciesToAdd,
+  required DartPackage package,
+}) async {
+  final result = await runCommand(
+    ['dart', 'pub', 'add', ...dependenciesToAdd],
+    workingDirectory: package.path,
+  );
+
+  if (result.exitCode != 0) {
+    throw CliException._(
+      'Failed to add dependencies',
+      workingDirectory: package.path,
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -60,32 +69,19 @@ class DartPubGetResult {
   DartPubGetResult({required this.wouldChangeDependencies});
 }
 
-Future<void> flutterGenl10n({required DartPackage package}) async {
+Future<void> dartPubRemove({
+  required List<String> packagesToRemove,
+  required DartPackage package,
+}) async {
   final result = await runCommand(
-    ['flutter', 'gen-l10n'],
+    ['dart', 'pub', 'remove', ...packagesToRemove],
     workingDirectory: package.path,
   );
 
   if (result.exitCode != 0) {
     throw CliException._(
-      'Failed to generate localizations',
+      'Failed to remove dependencies',
       workingDirectory: package.path,
-      stdout: result.stdout,
-      stderr: result.stderr,
-    );
-  }
-}
-
-Future<void> dartFormatFix({required RapidProject project}) async {
-  final result = await runCommand(
-    ['dart', 'format', '.', '--fix'],
-    workingDirectory: project.path,
-  );
-
-  if (result.exitCode != 0) {
-    throw CliException._(
-      'Failed to format',
-      workingDirectory: project.path,
       stdout: result.stdout,
       stderr: result.stderr,
     );
@@ -116,44 +112,6 @@ Future<void> dartRunBuildRunnerBuildDeleteConflictingOutputs({
   }
 }
 
-Future<void> dartPubAdd({
-  required List<String> dependenciesToAdd,
-  required DartPackage package,
-}) async {
-  final result = await runCommand(
-    ['dart', 'pub', 'add', ...dependenciesToAdd],
-    workingDirectory: package.path,
-  );
-
-  if (result.exitCode != 0) {
-    throw CliException._(
-      'Failed to add dependencies',
-      workingDirectory: package.path,
-      stdout: result.stdout,
-      stderr: result.stderr,
-    );
-  }
-}
-
-Future<void> dartPubRemove({
-  required List<String> packagesToRemove,
-  required DartPackage package,
-}) async {
-  final result = await runCommand(
-    ['dart', 'pub', 'remove', ...packagesToRemove],
-    workingDirectory: package.path,
-  );
-
-  if (result.exitCode != 0) {
-    throw CliException._(
-      'Failed to remove dependencies',
-      workingDirectory: package.path,
-      stdout: result.stdout,
-      stderr: result.stderr,
-    );
-  }
-}
-
 Future<void> flutterConfigEnable({
   required NativePlatform platform,
   required RapidProject project,
@@ -173,6 +131,46 @@ Future<void> flutterConfigEnable({
     ],
     workingDirectory: project.path,
   );
+}
+
+Future<void> flutterGenl10n({required DartPackage package}) async {
+  final result = await runCommand(
+    ['flutter', 'gen-l10n'],
+    workingDirectory: package.path,
+  );
+
+  if (result.exitCode != 0) {
+    throw CliException._(
+      'Failed to generate localizations',
+      workingDirectory: package.path,
+      stdout: result.stdout,
+      stderr: result.stderr,
+    );
+  }
+}
+
+Future<void> melosBootstrap({
+  required List<DartPackage> scope,
+  required RapidProject project,
+}) async {
+  final result = await runCommand(
+    [
+      'melos',
+      'bootstrap',
+      '--scope',
+      scope.map((e) => e.packageName).toList().join(','),
+    ],
+    workingDirectory: project.path,
+  );
+
+  if (result.exitCode != 0) {
+    throw CliException._(
+      'Failed to bootstrap',
+      workingDirectory: project.path,
+      stdout: result.stdout,
+      stderr: result.stderr,
+    );
+  }
 }
 
 class CliException extends RapidException {

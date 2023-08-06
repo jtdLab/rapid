@@ -2,7 +2,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner/domain/sub_domain/remove/entity.dart';
 import 'package:test/test.dart';
 
-import '../../../../common.dart';
 import '../../../../matchers.dart';
 import '../../../../mocks.dart';
 import '../../../../utils.dart';

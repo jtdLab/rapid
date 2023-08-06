@@ -1,6 +1,7 @@
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
-import 'package:rapid_cli/src/io/io.dart';
+
+import 'io/io.dart';
 
 export 'package:mason/mason.dart' hide Logger, Progress;
 

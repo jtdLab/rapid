@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:rapid_cli/src/project/language.dart';
-import 'package:rapid_cli/src/project/platform.dart';
 import 'package:yaml/yaml.dart';
 
 import 'io/io.dart' hide Platform;
+import 'project/language.dart';
+import 'project/platform.dart';
 
 export 'package:pubspec/pubspec.dart';
 
@@ -123,11 +123,8 @@ extension LanguageUtils on Language {
 
 extension DartPackageListUtils on List<DartPackage> {
   List<DartPackage> without(List<DartPackage> packages) {
-    // TODO maybe override equality in DartPackage
-    return this
-      ..removeWhere(
-        (e) => packages.map((e) => e.packageName).contains(e.packageName),
-      );
+    final packageNames = packages.map((e) => e.packageName);
+    return where((e) => !packageNames.contains(e.packageName)).toList();
   }
 }
 

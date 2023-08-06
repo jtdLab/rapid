@@ -2,14 +2,13 @@ import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/command_runner/pub/add.dart';
 import 'package:test/test.dart';
 
-import '../../common.dart';
 import '../../mocks.dart';
 import '../../utils.dart';
 
 const expectedUsage = [
   'Add dependencies to `pubspec.yaml` in a Rapid project.\n'
       '\n'
-      'This command works similiar to `dart pub add` or `dart pub add` but takes care of\n'
+      'This command works similiar to `dart pub add` or `flutter pub add` but takes care of\n'
       'dependent packages and updates their transitiv dependencies accordingly.\n'
       '\n'
       'Invoking `rapid pub add foo bar` will add `foo` and `bar` to `pubspec.yaml`\n'

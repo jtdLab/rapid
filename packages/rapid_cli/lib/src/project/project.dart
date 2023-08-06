@@ -6,14 +6,14 @@
 
 import 'package:collection/collection.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/project/language.dart';
-import 'package:rapid_cli/src/project/platform.dart';
-import 'package:rapid_cli/src/utils.dart';
 
 import '../io/io.dart' hide Platform;
 import '../mason.dart' as mason;
 import '../project_config.dart';
+import '../utils.dart';
 import 'bundles/bundles.dart';
+import 'language.dart';
+import 'platform.dart';
 
 part 'app_module/app_module.dart';
 part 'app_module/bloc.dart';

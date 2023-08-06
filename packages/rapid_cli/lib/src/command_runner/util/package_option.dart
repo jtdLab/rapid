@@ -17,7 +17,7 @@ extension PackageOption on ArgParser {
 
 /// Adds `package` getter.
 mixin PackageGetter on RapidLeafCommand {
-  /// Gets the package specified by the user.
+  /// Returns the package specified by the user.
   @protected
   String? get package => argResults['package'];
 }

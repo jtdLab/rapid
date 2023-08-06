@@ -1,14 +1,13 @@
 import 'package:args/command_runner.dart';
-import 'package:rapid_cli/src/command_runner/util/description_option.dart';
 
 import '../project/platform.dart';
 import 'base.dart';
+import 'util/description_option.dart';
 import 'util/language_option.dart';
 import 'util/org_name_option.dart';
 import 'util/output_dir_option.dart';
 import 'util/validate_dart_package_name.dart';
 
-/// The default description.
 const _defaultDescription = 'A Rapid app.';
 
 /// {@template create_command}

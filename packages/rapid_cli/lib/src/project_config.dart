@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:ansi_styles/ansi_styles.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/utils.dart';
 import 'package:yaml/yaml.dart';
 
 import 'exception.dart';
+import 'utils.dart';
 import 'validation.dart';
 
 @immutable

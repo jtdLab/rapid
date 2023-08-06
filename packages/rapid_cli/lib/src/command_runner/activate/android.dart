@@ -1,13 +1,11 @@
 import 'dart:async';
 
-import 'package:rapid_cli/src/command_runner/util/description_option.dart';
-import 'package:rapid_cli/src/project/platform.dart';
-
+import '../../project/platform.dart';
+import '../util/description_option.dart';
 import '../util/language_option.dart';
 import '../util/org_name_option.dart';
 import 'platform.dart';
 
-/// The default description.
 const _defaultDescription = 'A Rapid app.';
 
 /// {@template activate_android_command}
@@ -16,7 +14,7 @@ const _defaultDescription = 'A Rapid app.';
 class ActivateAndroidCommand extends ActivatePlatformCommand
     with DescriptionGetter, OrgNameGetter, LanguageGetter {
   /// {@macro activate_android_command}
-  ActivateAndroidCommand(super.project) // TODO not nullable
+  ActivateAndroidCommand(super.project)
       : super(
           platform: Platform.android,
         ) {

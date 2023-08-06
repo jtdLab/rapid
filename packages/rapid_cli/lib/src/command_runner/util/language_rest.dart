@@ -1,19 +1,16 @@
 import 'package:args/command_runner.dart';
 import 'package:meta/meta.dart';
-import 'package:rapid_cli/src/project/language.dart';
 
+import '../../project/language.dart';
 import '../base.dart';
 import 'validate_language.dart';
 
 /// Adds `language` getter.
 mixin LanguageGetter on RapidLeafCommand {
-  /// Gets the language specified as the first positional argument.
+  /// Returns the language specified as the first positional argument.
   @protected
   Language get language => _validateLanguageArg(argResults.rest);
 
-  /// Validates whether [args] contains a valid language as the first element.
-  ///
-  /// Returns the language when valid.
   Language _validateLanguageArg(List<String> args) {
     if (args.isEmpty) {
       throw UsageException(

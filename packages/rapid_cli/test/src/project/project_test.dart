@@ -36,7 +36,6 @@ void main() {
   });
 
   group('RapidProject', () {
-    // TODO good ?
     final projectName = 'test_project';
     final projectPath = '/path/to/project';
 

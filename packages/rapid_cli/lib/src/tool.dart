@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 
 import 'io/io.dart';
@@ -84,6 +85,7 @@ class RapidTool {
   }
 }
 
+@immutable
 class CommandGroup {
   final bool isActive;
   final Set<String> packagesToBootstrap;

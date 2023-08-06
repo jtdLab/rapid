@@ -9,14 +9,14 @@ sealed class PlatformNativeDirectory extends Directory {
 
   final String projectName;
 
-  final Platform platform;
+  final NativePlatform platform;
 }
 
 class IosNativeDirectory extends PlatformNativeDirectory {
   IosNativeDirectory({
     required super.projectName,
     required super.path,
-  }) : super(platform: Platform.ios);
+  }) : super(platform: NativePlatform.ios);
 
   factory IosNativeDirectory.resolve({
     required String projectName,
@@ -82,7 +82,7 @@ class MacosNativeDirectory extends PlatformNativeDirectory {
   MacosNativeDirectory({
     required super.projectName,
     required super.path,
-  }) : super(platform: Platform.macos);
+  }) : super(platform: NativePlatform.macos);
 
   factory MacosNativeDirectory.resolve({
     required String projectName,
@@ -108,7 +108,6 @@ class MacosNativeDirectory extends PlatformNativeDirectory {
   }
 }
 
-// TODO better name
 class NoneIosNativeDirectory extends PlatformNativeDirectory {
   NoneIosNativeDirectory({
     required super.projectName,
@@ -119,7 +118,7 @@ class NoneIosNativeDirectory extends PlatformNativeDirectory {
   factory NoneIosNativeDirectory.resolve({
     required String projectName,
     required String platformRootPackagePath,
-    required Platform platform,
+    required NativePlatform platform,
   }) {
     final path = p.join(platformRootPackagePath, platform.name);
 
@@ -137,11 +136,11 @@ class NoneIosNativeDirectory extends PlatformNativeDirectory {
     // TODO cleaner
     final mason.MasonBundle bundle;
     switch (platform) {
-      case Platform.android:
+      case NativePlatform.android:
         bundle = androidNativeDirectoryBundle;
-      case Platform.linux:
+      case NativePlatform.linux:
         bundle = linuxNativeDirectoryBundle;
-      case Platform.web:
+      case NativePlatform.web:
         bundle = webNativeDirectoryBundle;
       default:
         bundle = windowsNativeDirectoryBundle;

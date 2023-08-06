@@ -1,13 +1,12 @@
 import 'package:mocktail/mocktail.dart';
+import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/io/io.dart' hide Platform;
 import 'package:rapid_cli/src/mason.dart';
 import 'package:rapid_cli/src/project/bundles/bundles.dart';
 import 'package:rapid_cli/src/project/language.dart';
-import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
-import 'package:path/path.dart' as p;
 
 import '../../mock_env.dart';
 import '../../mocks.dart';
@@ -35,12 +34,12 @@ MacosNativeDirectory _getMacosNativeDirectory({
 NoneIosNativeDirectory _getNoneIosNativeDirectory({
   String? projectName,
   String? path,
-  Platform? platform,
+  NativePlatform? platform,
 }) {
   return NoneIosNativeDirectory(
     projectName: projectName ?? 'projectName',
     path: path ?? 'path',
-    platform: platform ?? Platform.android,
+    platform: platform ?? NativePlatform.android,
   );
 }
 
@@ -854,7 +853,7 @@ void main() {
       final noneIosNativeDirectory = NoneIosNativeDirectory.resolve(
         projectName: 'test_project',
         platformRootPackagePath: '/path/to/platform_root_package',
-        platform: Platform.android,
+        platform: NativePlatform.android,
       );
 
       expect(noneIosNativeDirectory.projectName, 'test_project');
@@ -862,7 +861,7 @@ void main() {
         noneIosNativeDirectory.path,
         '/path/to/platform_root_package/android',
       );
-      expect(noneIosNativeDirectory.platform, Platform.android);
+      expect(noneIosNativeDirectory.platform, NativePlatform.android);
     });
 
     test(
@@ -876,7 +875,7 @@ void main() {
         final noneIosNativeDirectory = _getNoneIosNativeDirectory(
           projectName: 'test_project',
           path: '/path/to/none_ios_native_directory',
-          platform: Platform.android,
+          platform: NativePlatform.android,
         );
 
         await noneIosNativeDirectory.generate(
@@ -915,7 +914,7 @@ void main() {
         final noneIosNativeDirectory = _getNoneIosNativeDirectory(
           projectName: 'test_project',
           path: '/path/to/none_ios_native_directory',
-          platform: Platform.linux,
+          platform: NativePlatform.linux,
         );
 
         await noneIosNativeDirectory.generate(
@@ -954,7 +953,7 @@ void main() {
         final noneIosNativeDirectory = _getNoneIosNativeDirectory(
           projectName: 'test_project',
           path: '/path/to/none_ios_native_directory',
-          platform: Platform.web,
+          platform: NativePlatform.web,
         );
 
         await noneIosNativeDirectory.generate(
@@ -993,7 +992,7 @@ void main() {
         final noneIosNativeDirectory = _getNoneIosNativeDirectory(
           projectName: 'test_project',
           path: '/path/to/none_ios_native_directory',
-          platform: Platform.windows,
+          platform: NativePlatform.windows,
         );
 
         await noneIosNativeDirectory.generate(

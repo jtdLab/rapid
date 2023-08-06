@@ -15,6 +15,9 @@ final dartPackageRegExp = RegExp('[a-z_][a-z0-9_]*');
 const globalOptionVersion = 'version';
 const globalOptionVerbose = 'verbose';
 
+/// The native platforms a Flutter project might support.
+enum NativePlatform { android, ios, linux, macos, web, windows }
+
 String multiLine(List<String> lines) => lines.join('\n');
 
 const envKeyRapidTerminalWidth = 'RAPID_TERMINAL_WIDTH';

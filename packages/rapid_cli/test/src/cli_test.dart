@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/cli.dart';
 import 'package:rapid_cli/src/io/io.dart' hide Platform;
-import 'package:rapid_cli/src/project/platform.dart';
+import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
 
 import 'matchers.dart';
@@ -381,7 +381,7 @@ void main() {
       'completes (android)',
       withMockEnv((manager) async {
         await flutterConfigEnable(
-          platform: Platform.android,
+          platform: NativePlatform.android,
           project: FakeRapidProject(path: 'project_path'),
         );
 
@@ -401,7 +401,7 @@ void main() {
       'completes (ios)',
       withMockEnv((manager) async {
         await flutterConfigEnable(
-          platform: Platform.ios,
+          platform: NativePlatform.ios,
           project: FakeRapidProject(path: 'project_path'),
         );
 
@@ -421,7 +421,7 @@ void main() {
       'completes (linux)',
       withMockEnv((manager) async {
         await flutterConfigEnable(
-          platform: Platform.linux,
+          platform: NativePlatform.linux,
           project: FakeRapidProject(path: 'project_path'),
         );
 
@@ -441,7 +441,7 @@ void main() {
       'completes (macos)',
       withMockEnv((manager) async {
         await flutterConfigEnable(
-          platform: Platform.macos,
+          platform: NativePlatform.macos,
           project: FakeRapidProject(path: 'project_path'),
         );
 
@@ -461,7 +461,7 @@ void main() {
       'completes (web)',
       withMockEnv((manager) async {
         await flutterConfigEnable(
-          platform: Platform.web,
+          platform: NativePlatform.web,
           project: FakeRapidProject(path: 'project_path'),
         );
 
@@ -481,7 +481,7 @@ void main() {
       'completes (windows)',
       withMockEnv((manager) async {
         await flutterConfigEnable(
-          platform: Platform.windows,
+          platform: NativePlatform.windows,
           project: FakeRapidProject(path: 'project_path'),
         );
 

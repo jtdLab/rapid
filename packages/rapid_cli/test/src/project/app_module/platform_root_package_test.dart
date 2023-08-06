@@ -89,7 +89,7 @@ void main() {
         nativeDirectory.path,
         '/path/to/project/packages/test_project/test_project_ios/test_project_ios/ios',
       );
-      expect(nativeDirectory.platform, Platform.ios);
+      expect(nativeDirectory.platform, NativePlatform.ios);
     });
 
     test('injectionFile', () {
@@ -689,7 +689,7 @@ void main() {
         nativeDirectory.path,
         '/path/to/project/packages/test_project/test_project_macos/test_project_macos/macos',
       );
-      expect(nativeDirectory.platform, Platform.macos);
+      expect(nativeDirectory.platform, NativePlatform.macos);
     });
 
     test(
@@ -761,14 +761,14 @@ void main() {
         androidNativeDirectory.path,
         '/path/to/project/packages/test_project/test_project_mobile/test_project_mobile/android',
       );
-      expect(androidNativeDirectory.platform, Platform.android);
+      expect(androidNativeDirectory.platform, NativePlatform.android);
       final iosNativeDirectory = mobileRootPackage.iosNativeDirectory;
       expect(iosNativeDirectory.projectName, 'test_project');
       expect(
         iosNativeDirectory.path,
         '/path/to/project/packages/test_project/test_project_mobile/test_project_mobile/ios',
       );
-      expect(iosNativeDirectory.platform, Platform.ios);
+      expect(iosNativeDirectory.platform, NativePlatform.ios);
     });
 
     test(
@@ -879,7 +879,7 @@ void main() {
         nativeDirectory.path,
         '/path/to/project/packages/test_project/test_project_android/test_project_android/android',
       );
-      expect(nativeDirectory.platform, Platform.android);
+      expect(nativeDirectory.platform, NativePlatform.android);
     });
 
     test(

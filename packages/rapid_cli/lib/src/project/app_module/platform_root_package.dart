@@ -299,7 +299,7 @@ class MobileRootPackage extends PlatformRootPackage {
     final androidNativeDirectory = NoneIosNativeDirectory.resolve(
       projectName: projectName,
       platformRootPackagePath: path,
-      platform: Platform.android,
+      platform: NativePlatform.android,
     );
     final iosNativeDirectory = IosNativeDirectory.resolve(
       projectName: projectName,
@@ -372,7 +372,12 @@ class NoneIosRootPackage extends PlatformRootPackage {
     final nativeDirectory = NoneIosNativeDirectory.resolve(
       projectName: projectName,
       platformRootPackagePath: path,
-      platform: platform,
+      platform: switch (platform) {
+        Platform.android => NativePlatform.android,
+        Platform.linux => NativePlatform.linux,
+        Platform.web => NativePlatform.web,
+        _ => NativePlatform.windows,
+      },
     );
 
     return NoneIosRootPackage(

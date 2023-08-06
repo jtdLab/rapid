@@ -75,9 +75,9 @@ mixin _ActivateMixin on _Rapid {
             description: description,
           ),
           flutterConfigEnablePlatformTasks: [
-            // TODO use task and do same for other platforms
-
-            () => _flutterConfigEnablePlatformTask(platform: platform)
+            () => _flutterConfigEnablePlatformTask(
+                  platform: NativePlatform.android,
+                )
           ],
         );
       },
@@ -105,7 +105,8 @@ mixin _ActivateMixin on _Rapid {
             language: language,
           ),
           flutterConfigEnablePlatformTasks: [
-            () => _flutterConfigEnablePlatformTask(platform: platform),
+            () =>
+                _flutterConfigEnablePlatformTask(platform: NativePlatform.ios),
           ],
         );
       },
@@ -132,7 +133,9 @@ mixin _ActivateMixin on _Rapid {
             orgName: orgName,
           ),
           flutterConfigEnablePlatformTasks: [
-            () => _flutterConfigEnablePlatformTask(platform: platform),
+            () => _flutterConfigEnablePlatformTask(
+                  platform: NativePlatform.linux,
+                ),
           ],
         );
       },
@@ -157,7 +160,9 @@ mixin _ActivateMixin on _Rapid {
           language: language,
           generateRootPackage: () => rootPackage.generate(orgName: orgName),
           flutterConfigEnablePlatformTasks: [
-            () => _flutterConfigEnablePlatformTask(platform: platform),
+            () => _flutterConfigEnablePlatformTask(
+                  platform: NativePlatform.macos,
+                ),
           ],
         );
       },
@@ -184,7 +189,9 @@ mixin _ActivateMixin on _Rapid {
             description: description,
           ),
           flutterConfigEnablePlatformTasks: [
-            () => _flutterConfigEnablePlatformTask(platform: platform),
+            () => _flutterConfigEnablePlatformTask(
+                  platform: NativePlatform.web,
+                ),
           ],
         );
       },
@@ -211,7 +218,9 @@ mixin _ActivateMixin on _Rapid {
             orgName: orgName,
           ),
           flutterConfigEnablePlatformTasks: [
-            () => _flutterConfigEnablePlatformTask(platform: platform),
+            () => _flutterConfigEnablePlatformTask(
+                  platform: NativePlatform.windows,
+                ),
           ],
         );
       },
@@ -241,8 +250,12 @@ mixin _ActivateMixin on _Rapid {
             language: language,
           ),
           flutterConfigEnablePlatformTasks: [
-            () => _flutterConfigEnablePlatformTask(platform: Platform.android),
-            () => _flutterConfigEnablePlatformTask(platform: Platform.ios),
+            () => _flutterConfigEnablePlatformTask(
+                  platform: NativePlatform.android,
+                ),
+            () => _flutterConfigEnablePlatformTask(
+                  platform: NativePlatform.ios,
+                ),
           ],
         );
       },
@@ -355,15 +368,15 @@ mixin _ActivateMixin on _Rapid {
   }
 
   Future<void> _flutterConfigEnablePlatformTask({
-    required Platform platform,
+    required NativePlatform platform,
   }) async {
     final commandString = switch (platform) {
-      Platform.android => 'flutter config --enable-android',
-      Platform.ios => 'flutter config --enable-ios',
-      Platform.linux => 'flutter config --enable-linux-desktop',
-      Platform.macos => 'flutter config --enable-macos-desktop',
-      Platform.web => 'flutter config --enable-web',
-      _ => 'flutter config --enable-windows-desktop',
+      NativePlatform.android => 'flutter config --enable-android',
+      NativePlatform.ios => 'flutter config --enable-ios',
+      NativePlatform.linux => 'flutter config --enable-linux-desktop',
+      NativePlatform.macos => 'flutter config --enable-macos-desktop',
+      NativePlatform.web => 'flutter config --enable-web',
+      NativePlatform.windows => 'flutter config --enable-windows-desktop',
     };
     return task(
       'Running "$commandString"',

@@ -1,5 +1,3 @@
-import 'package:rapid_cli/src/project/platform.dart';
-
 import 'exception.dart';
 import 'io/io.dart' hide Platform;
 import 'project/project.dart';
@@ -157,21 +155,20 @@ Future<void> dartPubRemove({
 }
 
 Future<void> flutterConfigEnable({
-  required Platform platform,
+  required NativePlatform platform,
   required RapidProject project,
 }) async {
-  assert(platform != Platform.mobile);
   await runCommand(
     [
       'flutter',
       'config',
       switch (platform) {
-        Platform.android => '--enable-android',
-        Platform.ios => '--enable-ios',
-        Platform.linux => '--enable-linux-desktop',
-        Platform.macos => '--enable-macos-desktop',
-        Platform.web => '--enable-web',
-        _ => '--enable-windows-desktop',
+        NativePlatform.android => '--enable-android',
+        NativePlatform.ios => '--enable-ios',
+        NativePlatform.linux => '--enable-linux-desktop',
+        NativePlatform.macos => '--enable-macos-desktop',
+        NativePlatform.web => '--enable-web',
+        NativePlatform.windows => '--enable-windows-desktop',
       }
     ],
     workingDirectory: project.path,

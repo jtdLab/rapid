@@ -1,4 +1,3 @@
-// TODO maybe rename to targets
 const platforms = [
   'android',
   'ios',

@@ -13,8 +13,8 @@ Future<void> dartFormatFix({required RapidProject project}) async {
     throw CliException._(
       'Failed to format',
       workingDirectory: project.path,
-      stdout: result.stdout,
-      stderr: result.stderr,
+      stdout: result.stdout as String?,
+      stderr: result.stderr as String?,
     );
   }
 }
@@ -32,8 +32,8 @@ Future<void> dartPubAdd({
     throw CliException._(
       'Failed to add dependencies',
       workingDirectory: package.path,
-      stdout: result.stdout,
-      stderr: result.stderr,
+      stdout: result.stdout as String?,
+      stderr: result.stderr as String?,
     );
   }
 }
@@ -51,8 +51,8 @@ Future<DartPubGetResult> dartPubGet({
     throw CliException._(
       'Failed to install',
       workingDirectory: package.path,
-      stdout: result.stdout,
-      stderr: result.stderr,
+      stdout: result.stdout as String?,
+      stderr: result.stderr as String?,
     );
   }
 
@@ -82,8 +82,8 @@ Future<void> dartPubRemove({
     throw CliException._(
       'Failed to remove dependencies',
       workingDirectory: package.path,
-      stdout: result.stdout,
-      stderr: result.stderr,
+      stdout: result.stdout as String?,
+      stderr: result.stderr as String?,
     );
   }
 }
@@ -106,8 +106,8 @@ Future<void> dartRunBuildRunnerBuildDeleteConflictingOutputs({
     throw CliException._(
       'Failed to run code generation',
       workingDirectory: package.path,
-      stdout: result.stdout,
-      stderr: result.stderr,
+      stdout: result.stdout as String?,
+      stderr: result.stderr as String?,
     );
   }
 }
@@ -143,8 +143,8 @@ Future<void> flutterGenl10n({required DartPackage package}) async {
     throw CliException._(
       'Failed to generate localizations',
       workingDirectory: package.path,
-      stdout: result.stdout,
-      stderr: result.stderr,
+      stdout: result.stdout as String?,
+      stderr: result.stderr as String?,
     );
   }
 }
@@ -167,8 +167,8 @@ Future<void> melosBootstrap({
     throw CliException._(
       'Failed to bootstrap',
       workingDirectory: project.path,
-      stdout: result.stdout,
-      stderr: result.stderr,
+      stdout: result.stdout as String?,
+      stderr: result.stderr as String?,
     );
   }
 }

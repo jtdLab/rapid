@@ -23,5 +23,5 @@ mixin NavigatorGetter on RapidLeafCommand {
   ///
   /// Defaults to [_defaultNavigator] when no navigator specified.
   @protected
-  bool get navigator => argResults['navigator'] ?? _defaultNavigator;
+  bool get navigator => argResults['navigator'] as bool? ?? _defaultNavigator;
 }

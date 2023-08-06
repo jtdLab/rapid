@@ -712,8 +712,8 @@ Future<TestResult> _runFlutterOrDartTest({
     );
   }
 
-  final String stderr = result.stderr;
-  final String stdout = result.stdout;
+  final stderr = result.stderr as String;
+  final stdout = result.stdout as String;
   if (stderr.contains('Test directory "test" not found')) {
     throw TestDirNotFound();
   }
@@ -814,8 +814,8 @@ Future<int> runFlutterIntegrationTest(
     );
   }
 
-  final String stderr = result.stderr;
-  final String stdout = result.stdout;
+  final stderr = result.stderr as String;
+  final stdout = result.stdout as String;
   if (stderr.contains('Test directory "test" not found')) {
     throw TestDirNotFound();
   }
@@ -848,7 +848,7 @@ Future<int> _runFlutterAnalyze({
     runInShell: true,
   );
 
-  final String stderr = result.stderr;
+  final stderr = result.stderr as String;
   if (stderr.isEmpty) {
     return 0;
   }
@@ -882,8 +882,8 @@ Future<int> _runDartFormat({
 
 void _printSummary(ProcessResult result) {
   final exitCode = result.exitCode;
-  final String stdout = result.stdout;
-  final String stderr = result.stderr;
+  final stdout = result.stdout as String;
+  final stderr = result.stderr as String;
 
   if (exitCode == 0) {
     _println('Exited with 0.');

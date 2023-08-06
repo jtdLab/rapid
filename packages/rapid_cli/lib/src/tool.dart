@@ -26,7 +26,8 @@ class RapidTool {
       );
     }
 
-    final json = jsonDecode(_groupJson.readAsStringSync());
+    final json =
+        jsonDecode(_groupJson.readAsStringSync()) as Map<String, dynamic>;
     return CommandGroup.fromJson(json);
   }
 
@@ -99,7 +100,7 @@ class CommandGroup {
 
   factory CommandGroup.fromJson(Map<String, dynamic> json) {
     return CommandGroup(
-      isActive: json['isActive'],
+      isActive: json['isActive'] as bool,
       packagesToBootstrap:
           (json['packagesToBootstrap'] as List<dynamic>).cast<String>().toSet(),
       packagesToCodeGen:

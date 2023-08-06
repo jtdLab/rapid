@@ -1,3 +1,4 @@
+import '../project/project.dart';
 import 'base.dart';
 import 'infrastructure/sub_infrastructure.dart';
 
@@ -9,7 +10,8 @@ class InfrastructureCommand extends RapidBranchCommand {
   InfrastructureCommand(super.project) {
     final infrastructurePackages =
         project?.appModule.infrastructureDirectory.infrastructurePackages();
-    for (final infrastructurePackage in infrastructurePackages ?? []) {
+    for (final infrastructurePackage
+        in infrastructurePackages ?? <InfrastructurePackage>[]) {
       addSubcommand(
         InfrastructureSubinfrastructureCommand(
           infrastructurePackage.name ?? 'default',

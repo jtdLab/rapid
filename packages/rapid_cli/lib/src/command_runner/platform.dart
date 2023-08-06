@@ -1,4 +1,5 @@
 import '../project/platform.dart';
+import '../project/project.dart';
 import 'base.dart';
 import 'platform/add.dart';
 import 'platform/feature.dart';
@@ -14,7 +15,8 @@ class PlatformCommand extends RapidBranchCommand {
         .platformDirectory(platform: platform)
         .featuresDirectory
         .featurePackages();
-    for (final featurePackage in featurePackages ?? []) {
+    for (final featurePackage
+        in featurePackages ?? <PlatformFeaturePackage>[]) {
       addSubcommand(
         PlatformFeatureCommand(
           platform,

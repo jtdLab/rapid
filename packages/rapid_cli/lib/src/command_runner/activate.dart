@@ -1,4 +1,3 @@
-import 'base.dart';
 import 'activate/android.dart';
 import 'activate/ios.dart';
 import 'activate/linux.dart';
@@ -6,6 +5,7 @@ import 'activate/macos.dart';
 import 'activate/mobile.dart';
 import 'activate/web.dart';
 import 'activate/windows.dart';
+import 'base.dart';
 
 /// {@template activate_command}
 /// `rapid activate` command adds support for a platform to an existing Rapid project.

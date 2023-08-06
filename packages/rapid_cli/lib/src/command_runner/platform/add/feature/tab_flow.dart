@@ -45,7 +45,8 @@ class PlatformAddFeatureTabFlowCommand extends RapidLeafCommand
     final description = super.desc ?? _defaultDescription(name);
     final navigator = super.navigator;
 
-    final subFeatures = _validateSubFeatures(argResults['sub-features']);
+    final subFeatures =
+        _validateSubFeatures(argResults['sub-features'] as String?);
 
     return rapid.platformAddFeatureTabFlow(
       platform,

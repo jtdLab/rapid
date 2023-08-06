@@ -89,13 +89,13 @@ class CreateCommand extends RapidLeafCommand
     final description = super.desc ?? _defaultDescription;
     final orgName = super.orgName;
     final language = super.language;
-    final android = argResults['android'] ?? false;
-    final ios = argResults['ios'] ?? false;
-    final linux = argResults['linux'] ?? false;
-    final macos = argResults['macos'] ?? false;
-    final web = argResults['web'] ?? false;
-    final windows = argResults['windows'] ?? false;
-    final mobile = argResults['mobile'] ?? false;
+    final android = argResults['android'] as bool? ?? false;
+    final ios = argResults['ios'] as bool? ?? false;
+    final linux = argResults['linux'] as bool? ?? false;
+    final macos = argResults['macos'] as bool? ?? false;
+    final web = argResults['web'] as bool? ?? false;
+    final windows = argResults['windows'] as bool? ?? false;
+    final mobile = argResults['mobile'] as bool? ?? false;
 
     return rapid.create(
         projectName: projectName,

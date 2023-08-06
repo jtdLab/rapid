@@ -67,7 +67,7 @@ extension YamlUtils on YamlNode {
       return node.nodes.map((node) => node.toPlainObject()).toList();
     }
 
-    return (node as YamlScalar).value;
+    return (node as YamlScalar).value as Object;
   }
 }
 

@@ -2,7 +2,7 @@ import 'package:rapid_cli/src/project/platform.dart';
 
 import 'common.dart';
 
-dynamic performTest({
+dynamic Function() performTest({
   required Platform platform,
 }) =>
     withTempDir((root) async {

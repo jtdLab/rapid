@@ -29,7 +29,7 @@ class UiAddWidgetCommand extends RapidLeafCommand with ClassNameGetter {
   @override
   Future<void> run() {
     final name = super.className;
-    final theme = argResults['theme'] ?? _defaultTheme;
+    final theme = argResults['theme'] as bool? ?? _defaultTheme;
 
     return rapid.uiAddWidget(name: name, theme: theme);
   }

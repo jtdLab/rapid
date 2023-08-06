@@ -22,7 +22,7 @@ extension ServiceOption on ArgParser {
 mixin ServiceGetter on RapidLeafCommand {
   /// Returns the service specified by the user.
   @protected
-  String get service => _validateService(argResults['service']);
+  String get service => _validateService(argResults['service'] as String?);
 
   String _validateService(String? service) {
     if (service == null) {

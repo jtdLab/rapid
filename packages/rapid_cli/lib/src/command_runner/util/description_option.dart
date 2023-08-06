@@ -19,5 +19,5 @@ extension DescriptionOption on ArgParser {
 mixin DescriptionGetter on RapidLeafCommand {
   /// Returns the description specified by the user.
   @protected
-  String? get desc => argResults['desc'];
+  String? get desc => argResults['desc'] as String?;
 }

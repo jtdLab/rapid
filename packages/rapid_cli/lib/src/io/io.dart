@@ -59,7 +59,7 @@ class Directory implements io.Directory {
 
   static Directory get current => Directory._fromIO(io.Directory.current);
 
-  static set current(path) {
+  static set current(dynamic path) {
     io.Directory.current = path;
   }
 
@@ -291,13 +291,13 @@ class File implements io.File {
   String resolveSymbolicLinksSync() => _file.resolveSymbolicLinksSync();
 
   @override
-  Future setLastAccessed(DateTime time) => _file.setLastAccessed(time);
+  Future<dynamic> setLastAccessed(DateTime time) => _file.setLastAccessed(time);
 
   @override
   void setLastAccessedSync(DateTime time) => _file.setLastAccessedSync(time);
 
   @override
-  Future setLastModified(DateTime time) => _file.setLastModified(time);
+  Future<dynamic> setLastModified(DateTime time) => _file.setLastModified(time);
 
   @override
   void setLastModifiedSync(DateTime time) => _file.setLastModifiedSync(time);

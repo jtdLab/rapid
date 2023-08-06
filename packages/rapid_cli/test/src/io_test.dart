@@ -902,7 +902,7 @@ void main() {
           File('foo.yaml').writeAsStringSync('key: value');
           final yamlFile = YamlFile('foo.yaml');
 
-          final value = yamlFile.read('key');
+          final value = yamlFile.read<String>('key');
           expect(value, equals('value'));
         }),
       );
@@ -913,7 +913,7 @@ void main() {
           File('foo.yaml').writeAsStringSync('key:');
           final yamlFile = YamlFile('foo.yaml');
 
-          final value = yamlFile.read('key');
+          final value = yamlFile.read<String>('key');
           expect(value, equals(null));
         }),
       );
@@ -927,7 +927,7 @@ void main() {
           final yamlFile = YamlFile('foo.yaml');
 
           yamlFile.set(['key'], 'updatedValue');
-          expect(yamlFile.read('key'), equals('updatedValue'));
+          expect(yamlFile.read<String>('key'), equals('updatedValue'));
         }),
       );
 
@@ -939,7 +939,7 @@ void main() {
 
           yamlFile.set(['key'], null, blankIfValueNull: true);
           expect(file.readAsStringSync(), 'key:');
-          expect(yamlFile.read('key'), equals(null));
+          expect(yamlFile.read<String>('key'), equals(null));
         }),
       );
     });

@@ -28,7 +28,7 @@ mixin LanguageGetter on RapidLeafCommand {
   /// Defaults to [_defaultLanguage] when no language specified.
   @protected
   Language get language =>
-      _validateLanguage(argResults['language'] ?? _defaultLanguage);
+      _validateLanguage(argResults['language'] as String? ?? _defaultLanguage);
 
   Language _validateLanguage(String raw) {
     final language = Language.fromString(raw);

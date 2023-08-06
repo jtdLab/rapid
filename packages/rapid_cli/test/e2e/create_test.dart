@@ -4,7 +4,7 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
-dynamic performTest({
+dynamic Function() performTest({
   required String flag,
 }) =>
     withTempDir((_) async {

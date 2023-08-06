@@ -3,7 +3,7 @@ import 'package:test/test.dart';
 
 import 'common.dart';
 
-dynamic performTest() => withTempDir((root) async {
+dynamic Function() performTest() => withTempDir((root) async {
       // Arrange
       final tester = await RapidE2ETester.withProject(root);
       await tester.runRapidCommand(['begin']);

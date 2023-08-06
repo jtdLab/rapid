@@ -52,7 +52,8 @@ class DomainSubDomainAddValueObjectCommand extends RapidLeafCommand
     );
   }
 
-  String get _type => argResults['type']?.replaceAll('#', '') ?? _defaultType;
+  String get _type =>
+      argResults['type']?.replaceAll('#', '') as String? ?? _defaultType;
 
   String get _generics {
     final raw = argResults['type'] as String? ?? _defaultType;

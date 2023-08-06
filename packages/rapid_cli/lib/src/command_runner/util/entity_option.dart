@@ -21,7 +21,7 @@ extension EntityOption on ArgParser {
 mixin EntityGetter on RapidLeafCommand {
   /// Returns the entity specified by the user.
   @protected
-  String get entity => _validateEntity(argResults['entity']);
+  String get entity => _validateEntity(argResults['entity'] as String?);
 
   String _validateEntity(String? entity) {
     if (entity == null) {

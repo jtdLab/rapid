@@ -21,7 +21,7 @@ extension FeatureOption on ArgParser {
 mixin FeatureGetter on RapidLeafCommand {
   /// Returns the feature specified by the user.
   @protected
-  String get feature => _validateFeature(argResults['feature']);
+  String get feature => _validateFeature(argResults['feature'] as String?);
 
   String _validateFeature(String? feature) {
     if (feature == null) {

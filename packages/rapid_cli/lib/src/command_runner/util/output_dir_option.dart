@@ -24,5 +24,6 @@ mixin OutputDirGetter on RapidLeafCommand {
   ///
   /// Defaults to [_defaultOutputDir] when no output directory was specified.
   @protected
-  String get outputDir => argResults['output-dir'] ?? _defaultOutputDir;
+  String get outputDir =>
+      argResults['output-dir'] as String? ?? _defaultOutputDir;
 }

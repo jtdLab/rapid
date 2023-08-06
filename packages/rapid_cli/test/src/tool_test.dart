@@ -121,8 +121,8 @@ void main() {
             ..writeAsStringSync(
               jsonEncode({
                 'isActive': true,
-                'packagesToBootstrap': [],
-                'packagesToCodeGen': [],
+                'packagesToBootstrap': const <String>[],
+                'packagesToCodeGen': const <String>[],
               }),
             );
           final tool = _getRapidTool(path: 'tool_path');
@@ -151,7 +151,7 @@ void main() {
               jsonEncode({
                 'isActive': true,
                 'packagesToBootstrap': ['package_b'],
-                'packagesToCodeGen': [],
+                'packagesToCodeGen': const <String>[],
               }),
             );
           final tool = _getRapidTool(path: 'tool_path');
@@ -182,7 +182,7 @@ void main() {
             ..writeAsStringSync(
               jsonEncode({
                 'isActive': true,
-                'packagesToBootstrap': [],
+                'packagesToBootstrap': const <String>[],
                 'packagesToCodeGen': ['package_b'],
               }),
             );

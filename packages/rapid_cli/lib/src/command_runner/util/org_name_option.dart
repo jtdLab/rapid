@@ -29,7 +29,7 @@ mixin OrgNameGetter on RapidLeafCommand {
   /// Defaults to [_defaultOrgName] when no organization name specified.
   @protected
   String get orgName =>
-      _validateOrgName(argResults['org-name'] ?? _defaultOrgName);
+      _validateOrgName(argResults['org-name'] as String? ?? _defaultOrgName);
 
   String _validateOrgName(String name) {
     final isValid = _orgNameRegExp.hasMatch(name);

@@ -1,3 +1,4 @@
+import '../project/project.dart';
 import 'base.dart';
 import 'domain/add.dart';
 import 'domain/remove.dart';
@@ -12,7 +13,7 @@ class DomainCommand extends RapidBranchCommand {
     addSubcommand(DomainAddCommand(project));
     addSubcommand(DomainRemoveCommand(project));
     final domainPackages = project?.appModule.domainDirectory.domainPackages();
-    for (final domainPackage in domainPackages ?? []) {
+    for (final domainPackage in domainPackages ?? <DomainPackage>[]) {
       addSubcommand(
         DomainSubdomainCommand(domainPackage.name ?? 'default', project),
       );

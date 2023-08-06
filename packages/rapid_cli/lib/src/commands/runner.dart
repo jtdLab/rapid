@@ -74,9 +74,8 @@ class Rapid extends _Rapid
   RapidProject Function({required RapidProjectConfig config})
       get projectBuilder =>
           projectBuilderOverrides ??
-          RapidProject.fromConfig as RapidProject Function({
-            required RapidProjectConfig config,
-          });
+          // ignore: unnecessary_lambdas
+          ({required config}) => RapidProject.fromConfig(config);
   // coverage:ignore-end
 
   final RapidTool? _tool;

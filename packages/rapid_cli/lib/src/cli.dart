@@ -1,5 +1,6 @@
 import 'exception.dart';
 import 'io/io.dart' hide Platform;
+import 'native_platform.dart';
 import 'project/project.dart';
 import 'utils.dart';
 

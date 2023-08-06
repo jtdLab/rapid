@@ -1,7 +1,7 @@
 import '../../../project/platform.dart';
+import '../../../utils.dart';
 import '../../base.dart';
 import '../../util/feature_option.dart';
-import '../../util/platform_x.dart';
 
 class PlatformRemoveNavigatorCommand extends RapidLeafCommand
     with FeatureGetter {

@@ -1,6 +1,6 @@
 import '../../../project/platform.dart';
+import '../../../utils.dart';
 import '../../base.dart';
-import '../../util/platform_x.dart';
 import 'add/widget.dart';
 
 class UiPlatformAddCommand extends RapidBranchCommand {

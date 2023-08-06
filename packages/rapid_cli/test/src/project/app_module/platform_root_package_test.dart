@@ -1,6 +1,7 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/io/io.dart' hide Platform;
 import 'package:rapid_cli/src/mason.dart';
+import 'package:rapid_cli/src/native_platform.dart';
 import 'package:rapid_cli/src/project/bundles/bundles.dart';
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';

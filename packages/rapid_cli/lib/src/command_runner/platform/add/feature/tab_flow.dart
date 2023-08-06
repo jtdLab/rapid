@@ -2,11 +2,11 @@ import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 
 import '../../../../project/platform.dart';
+import '../../../../utils.dart';
 import '../../../base.dart';
 import '../../../util/dart_package_name_rest.dart';
 import '../../../util/description_option.dart';
 import '../../../util/navigator_flag.dart';
-import '../../../util/platform_x.dart';
 
 String _defaultDescription(String name) =>
     'The ${name.pascalCase} flow feature.';

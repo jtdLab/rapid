@@ -1,7 +1,7 @@
 import '../../../../project/platform.dart';
+import '../../../../utils.dart';
 import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
-import '../../../util/platform_x.dart';
 
 const _defaultTheme = true;
 

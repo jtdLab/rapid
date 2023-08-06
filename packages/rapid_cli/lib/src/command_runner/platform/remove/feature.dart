@@ -1,7 +1,7 @@
 import '../../../project/platform.dart';
+import '../../../utils.dart';
 import '../../base.dart';
 import '../../util/dart_package_name_rest.dart';
-import '../../util/platform_x.dart';
 
 class PlatformRemoveFeatureCommand extends RapidLeafCommand
     with DartPackageNameGetter {

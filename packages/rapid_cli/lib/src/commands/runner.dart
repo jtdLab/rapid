@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
-import 'package:rapid_cli/src/command_runner/util/platform_x.dart';
-import 'package:rapid_cli/src/project/platform.dart';
 
 import '../cli.dart';
 import '../exception.dart';
 import '../io/io.dart' hide Platform;
 import '../logging.dart';
 import '../mason.dart';
+import '../native_platform.dart';
 import '../project/language.dart';
+import '../project/platform.dart';
 import '../project/project.dart';
 import '../project_config.dart';
 import '../tool.dart';

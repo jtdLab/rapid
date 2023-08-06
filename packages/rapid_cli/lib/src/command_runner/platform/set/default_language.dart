@@ -1,7 +1,7 @@
 import '../../../project/platform.dart';
+import '../../../utils.dart';
 import '../../base.dart';
 import '../../util/language_rest.dart';
-import '../../util/platform_x.dart';
 
 class PlatformSetDefaultLanguageCommand extends RapidLeafCommand
     with LanguageGetter {

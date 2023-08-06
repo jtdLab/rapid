@@ -2,6 +2,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:path/path.dart' as p;
 import 'package:rapid_cli/src/io/io.dart';
 import 'package:rapid_cli/src/mason.dart';
+import 'package:rapid_cli/src/native_platform.dart';
 import 'package:rapid_cli/src/project/bundles/bundles.dart';
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/project.dart';

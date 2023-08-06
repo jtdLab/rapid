@@ -7,6 +7,7 @@ import 'package:rapid_cli/src/command_runner.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
 import 'package:rapid_cli/src/io/io.dart' hide Platform;
 import 'package:rapid_cli/src/logging.dart';
+import 'package:rapid_cli/src/native_platform.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/tool.dart';
@@ -40,7 +41,7 @@ Platform randomPlatform() {
   return enumValues[randomIndex];
 }
 
-extension PlatformX on Platform {
+extension PlatformUtils on Platform {
   String get prettyName {
     switch (this) {
       case Platform.android:

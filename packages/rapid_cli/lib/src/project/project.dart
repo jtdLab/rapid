@@ -9,6 +9,7 @@ import 'package:path/path.dart' as p;
 
 import '../io/io.dart' hide Platform;
 import '../mason.dart' as mason;
+import '../native_platform.dart';
 import '../project_config.dart';
 import '../utils.dart';
 import 'bundles/bundles.dart';

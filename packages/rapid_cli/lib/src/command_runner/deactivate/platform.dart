@@ -1,6 +1,6 @@
 import '../../project/platform.dart';
+import '../../utils.dart';
 import '../base.dart';
-import '../util/platform_x.dart';
 
 /// {@template deactivate_command}
 /// `rapid deactivate` command removes support for a platform from an existing Rapid project.

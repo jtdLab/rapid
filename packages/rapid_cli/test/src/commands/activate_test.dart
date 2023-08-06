@@ -1,11 +1,11 @@
 import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/commands/runner.dart';
 import 'package:rapid_cli/src/io/io.dart' hide Platform;
+import 'package:rapid_cli/src/native_platform.dart';
 import 'package:rapid_cli/src/project/language.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:rapid_cli/src/tool.dart';
-import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
 
 import '../mock_env.dart';

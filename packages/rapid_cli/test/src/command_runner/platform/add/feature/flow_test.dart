@@ -96,7 +96,7 @@ void main() {
         when(() => argResults['navigator']).thenReturn(true);
         when(() => argResults['desc']).thenReturn('Some description.');
         when(() => argResults.rest).thenReturn(['package_a']);
-        final command = PlatformAddFeatureFlowCommand(platform, null)
+        final command = PlatformAddFeatureFlowCommand(null, platform: platform)
           ..argResultOverrides = argResults
           ..rapidOverrides = rapid;
 
@@ -116,7 +116,7 @@ void main() {
         final rapid = MockRapid();
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['package_a']);
-        final command = PlatformAddFeatureFlowCommand(platform, null)
+        final command = PlatformAddFeatureFlowCommand(null, platform: platform)
           ..argResultOverrides = argResults
           ..rapidOverrides = rapid;
 

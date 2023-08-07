@@ -1,4 +1,3 @@
-import '../../../project/platform.dart';
 import '../../../utils.dart';
 import '../../base.dart';
 import '../../util/dart_package_name_rest.dart';
@@ -6,12 +5,10 @@ import '../../util/dart_package_name_rest.dart';
 /// {@template platform_remove_feature_command}
 /// `rapid <platform> remove feature` remove a feature from the platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformRemoveFeatureCommand extends RapidLeafCommand
+class PlatformRemoveFeatureCommand extends RapidPlatformLeafCommand
     with DartPackageNameGetter {
   /// {@macro platform_remove_feature_command}
-  PlatformRemoveFeatureCommand(this.platform, super.project);
-
-  final Platform platform;
+  PlatformRemoveFeatureCommand(super.project, {required super.platform});
 
   @override
   String get name => 'feature';

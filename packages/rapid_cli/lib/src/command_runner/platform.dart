@@ -1,4 +1,3 @@
-import '../project/platform.dart';
 import '../project/project.dart';
 import '../utils.dart';
 import 'base.dart';
@@ -10,10 +9,10 @@ import 'platform/set.dart';
 /// {@template platform_command}
 /// `rapid <platform>` work with a platform part of a Rapid environment.
 /// {@endtemplate}
-class PlatformCommand extends RapidBranchCommand {
+class PlatformCommand extends RapidPlatformBranchCommand {
   /// {@macro platform_command}
-  PlatformCommand(this.platform, super.project) {
-    addSubcommand(PlatformAddCommand(platform, project));
+  PlatformCommand(super.project, {required super.platform}) {
+    addSubcommand(PlatformAddCommand(project, platform: platform));
 
     final featurePackages = project?.appModule
         .platformDirectory(platform: platform)
@@ -23,18 +22,16 @@ class PlatformCommand extends RapidBranchCommand {
         in featurePackages ?? <PlatformFeaturePackage>[]) {
       addSubcommand(
         PlatformFeatureCommand(
-          platform,
           featurePackage.name,
           project,
+          platform: platform,
         ),
       );
     }
 
-    addSubcommand(PlatformRemoveCommand(platform, project));
-    addSubcommand(PlatformSetCommand(platform, project));
+    addSubcommand(PlatformRemoveCommand(project, platform: platform));
+    addSubcommand(PlatformSetCommand(project, platform: platform));
   }
-
-  final Platform platform;
 
   @override
   String get name => platform.name;

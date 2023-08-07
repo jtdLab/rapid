@@ -52,7 +52,7 @@ class RapidProjectConfig {
     final pubspecYamlFile = File(p.join(projectRoot.path, 'pubspec.yaml'));
     if (!pubspecYamlFile.existsSync()) {
       throw UnresolvedProject(
-        // TODO: is link correct ?
+        // TODO(jtdLab): is link correct ?
         multiLine([
           'Found no pubspec.yaml file in "${projectRoot.path}".',
           '',
@@ -89,7 +89,7 @@ class RapidProjectConfig {
   /// or a parent directory by throwing an error with a helpful message.
   static Future<Never> handleProjectNotFound(Directory current) async {
     throw UnresolvedProject(
-      // TODO is link correct ?
+      // TODO(jtdLab): is link correct ?
       multiLine([
         'Your current directory does not appear to be within a Rapid ',
         'project.',

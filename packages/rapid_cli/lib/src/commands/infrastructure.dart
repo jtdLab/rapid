@@ -80,7 +80,7 @@ mixin _InfrastructureMixin on _Rapid {
 
         await dartFormatFixTask();
 
-        // TODO better hint containg related service etc
+        // TODO(jtdLab): better hint containg related service etc
         logger
           ..newLine()
           ..commandSuccess('Added Service Implementation!');

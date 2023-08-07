@@ -80,7 +80,7 @@ void main() {
         final rapid = MockRapid();
         final argResults = MockArgResults();
         when(() => argResults['feature']).thenReturn('package_a');
-        final command = PlatformRemoveNavigatorCommand(platform, null)
+        final command = PlatformRemoveNavigatorCommand(null, platform: platform)
           ..argResultOverrides = argResults
           ..rapidOverrides = rapid;
 

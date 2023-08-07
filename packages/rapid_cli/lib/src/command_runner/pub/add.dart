@@ -1,9 +1,9 @@
 import '../base.dart';
 import '../util/package_option.dart';
 
-// TODO consider adding ALL options of `dart pub add`
-// TODO description sync with other pub commands
-// TODO consider updating all descs of pub commands
+// TODO(jtdLab): consider adding ALL options of `dart pub add`
+// TODO(jtdLab): description sync with other pub commands
+// TODO(jtdLab): consider updating all descs of pub commands
 
 /// {@template pub_add_command}
 /// `rapid pub add` add packages in a Rapid environment.

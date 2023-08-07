@@ -9,10 +9,10 @@ import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
-// TODO when adding and removing domains the errors are not realy good abstracted the command needs some reconsideration
-// TODO is it good to use global setup instead of setup fcts with records
-// TODO are defaults set usefully and minimalistic ?
-// TODO is the right package used foo_bar -> domain package is not verified same for other commands in other files
+// TODO(jtdLab): when adding and removing domains the errors are not realy good abstracted the command needs some reconsideration
+// TODO(jtdLab): is it good to use global setup instead of setup fcts with records
+// TODO(jtdLab): are defaults set usefully and minimalistic ?
+// TODO(jtdLab): is the right package used foo_bar -> domain package is not verified same for other commands in other files
 
 void main() {
   late Entity entity;

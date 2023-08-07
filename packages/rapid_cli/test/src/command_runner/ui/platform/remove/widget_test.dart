@@ -91,9 +91,10 @@ void main() {
           final rapid = MockRapid();
           final argResults = MockArgResults();
           when(() => argResults.rest).thenReturn(['Foo']);
-          final command = UiPlatformRemoveWidgetCommand(platform, null)
-            ..argResultOverrides = argResults
-            ..rapidOverrides = rapid;
+          final command =
+              UiPlatformRemoveWidgetCommand(null, platform: platform)
+                ..argResultOverrides = argResults
+                ..rapidOverrides = rapid;
 
           await command.run();
 

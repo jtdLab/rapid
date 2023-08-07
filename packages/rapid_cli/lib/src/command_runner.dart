@@ -24,14 +24,16 @@ import 'project_config.dart';
 import 'utils.dart';
 import 'version.dart';
 
-const packageName = 'rapid_cli';
-
 // TODO(jtdLab): reconsider how project is resolved
+
+/// The name of this package.
+const packageName = 'rapid_cli';
 
 /// {@template rapid_command_runner}
 /// A [CommandRunner] for the Rapid Command Line Interface.
 /// {@endtemplate}
 class RapidCommandRunner extends CommandRunner<void> {
+  /// {@macro rapid_command_runner}
   RapidCommandRunner({
     RapidProject? project,
   }) : super(
@@ -53,27 +55,28 @@ class RapidCommandRunner extends CommandRunner<void> {
       );
 
     addCommand(ActivateCommand(project));
-    addCommand(PlatformCommand(Platform.android, project));
+    addCommand(PlatformCommand(project, platform: Platform.android));
     addCommand(BeginCommand(project));
     addCommand(CreateCommand());
     addCommand(DeactivateCommand(project));
     addCommand(DomainCommand(project));
     addCommand(EndCommand(project));
     addCommand(InfrastructureCommand(project));
-    addCommand(PlatformCommand(Platform.ios, project));
-    addCommand(PlatformCommand(Platform.linux, project));
-    addCommand(PlatformCommand(Platform.macos, project));
-    addCommand(PlatformCommand(Platform.mobile, project));
+    addCommand(PlatformCommand(project, platform: Platform.ios));
+    addCommand(PlatformCommand(project, platform: Platform.linux));
+    addCommand(PlatformCommand(project, platform: Platform.macos));
+    addCommand(PlatformCommand(project, platform: Platform.mobile));
     addCommand(PubCommand(project));
     addCommand(UiCommand(project));
-    addCommand(PlatformCommand(Platform.web, project));
-    addCommand(PlatformCommand(Platform.windows, project));
+    addCommand(PlatformCommand(project, platform: Platform.web));
+    addCommand(PlatformCommand(project, platform: Platform.windows));
   }
 
   @override
   String get invocation => 'rapid <command>';
 }
 
+/// The entry point to start Rapid command-line interface (CLI).
 FutureOr<void> rapidEntryPoint(
   List<String> arguments,
   LaunchContext context, {

@@ -90,7 +90,7 @@ void main() {
         final rapid = MockRapid();
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['de']);
-        final command = PlatformAddLanguageCommand(platform, null)
+        final command = PlatformAddLanguageCommand(null, platform: platform)
           ..argResultOverrides = argResults
           ..rapidOverrides = rapid;
 

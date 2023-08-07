@@ -1,4 +1,3 @@
-import '../../../project/platform.dart';
 import '../../../utils.dart';
 import '../../base.dart';
 import 'remove/widget.dart';
@@ -6,13 +5,11 @@ import 'remove/widget.dart';
 /// {@template ui_platform_remove_command}
 /// `rapid ui <platform> remove` remove a component from the platform UI part of a Rapid project.
 /// {@endtemplate}
-class UiPlatformRemoveCommand extends RapidBranchCommand {
+class UiPlatformRemoveCommand extends RapidPlatformBranchCommand {
   /// {@macro ui_platform_remove_command}
-  UiPlatformRemoveCommand(this.platform, super.project) {
-    addSubcommand(UiPlatformRemoveWidgetCommand(platform, project));
+  UiPlatformRemoveCommand(super.project, {required super.platform}) {
+    addSubcommand(UiPlatformRemoveWidgetCommand(project, platform: platform));
   }
-
-  final Platform platform;
 
   @override
   String get name => 'remove';

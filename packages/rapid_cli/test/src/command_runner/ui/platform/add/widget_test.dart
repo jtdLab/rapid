@@ -92,7 +92,7 @@ void main() {
           final argResults = MockArgResults();
           when(() => argResults['theme']).thenReturn(false);
           when(() => argResults.rest).thenReturn(['Foo']);
-          final command = UiPlatformAddWidgetCommand(platform, null)
+          final command = UiPlatformAddWidgetCommand(null, platform: platform)
             ..argResultOverrides = argResults
             ..rapidOverrides = rapid;
 

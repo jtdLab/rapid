@@ -1,4 +1,3 @@
-import '../../project/platform.dart';
 import '../../utils.dart';
 import '../base.dart';
 import 'android.dart';
@@ -26,14 +25,12 @@ import 'windows.dart';
 ///
 ///  * [ActivateWindowsCommand]
 /// {@endtemplate}
-abstract class ActivatePlatformCommand extends RapidLeafCommand {
+abstract class ActivatePlatformCommand extends RapidPlatformLeafCommand {
   /// {@macro activate_platform_command}
   ActivatePlatformCommand(
     super.project, {
-    required this.platform,
+    required super.platform,
   });
-
-  final Platform platform;
 
   @override
   String get name => platform.name;

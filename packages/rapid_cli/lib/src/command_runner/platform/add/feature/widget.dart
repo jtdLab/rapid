@@ -1,12 +1,11 @@
 import 'package:mason/mason.dart';
 
-import '../../../../project/platform.dart';
 import '../../../../utils.dart';
 import '../../../base.dart';
 import '../../../util/dart_package_name_rest.dart';
 import '../../../util/description_option.dart';
 
-// TODO: maybe add a option to specify features that want a dependency before melos bs runs
+// TODO(jtdLab): maybe add a option to specify features that want a dependency before melos bs runs
 
 String _defaultDescription(String name) =>
     'The ${name.pascalCase} widget feature.';
@@ -14,18 +13,16 @@ String _defaultDescription(String name) =>
 /// {@template platform_add_feature_widget_command}
 /// `rapid <platform> add feature widget` add a widget feature to the platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformAddFeatureWidgetCommand extends RapidLeafCommand
+class PlatformAddFeatureWidgetCommand extends RapidPlatformLeafCommand
     with DartPackageNameGetter, DescriptionGetter {
   /// {@macro platform_add_feature_widget_command}
-  PlatformAddFeatureWidgetCommand(this.platform, super.project) {
+  PlatformAddFeatureWidgetCommand(super.project, {required super.platform}) {
     argParser
       ..addSeparator('')
       ..addDescriptionOption(
         help: 'The description of the new feature.',
       );
   }
-
-  final Platform platform;
 
   @override
   String get name => 'widget';

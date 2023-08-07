@@ -9,8 +9,8 @@ import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
-// TODO is it good to use global setup instead of setup fcts with records
-// TODO can platform and non platform arrange or verify be shared ?
+// TODO(jtdLab): is it good to use global setup instead of setup fcts with records
+// TODO(jtdLab): can platform and non platform arrange or verify be shared ?
 
 void main() {
   late Widget widget;

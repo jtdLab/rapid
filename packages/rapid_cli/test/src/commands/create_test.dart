@@ -15,7 +15,7 @@ import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
-// TODO refactor using global setup and share some logic with activate
+// TODO(jtdLab): refactor using global setup and share some logic with activate
 
 typedef _ProjectSetup<T extends PlatformRootPackage> = ({
   RootPackage rootPackage,
@@ -748,7 +748,8 @@ void main() {
       }),
     );
 
-    // TODO
+    // TODO(jtdLab): uncomment
+
 /*     test(
       'creates project and activates all platforms',
       withMockEnv((manager) async {

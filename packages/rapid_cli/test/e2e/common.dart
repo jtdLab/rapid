@@ -27,7 +27,7 @@ dynamic Function() withTempDir(FutureOr<void> Function(Directory root) fn) {
     } catch (_) {
       rethrow;
     } finally {
-      // TODO this might influence exceptions that dependen on file system
+      // TODO(jtdLab): this might influence exceptions that dependen on file system
       // We used to delete dir here but that lead to some tests fail in ci
       Directory.current = cwd;
     }
@@ -83,7 +83,7 @@ final class RapidE2ETester {
   /// Runs `rapid activate android` for `args = ['activate', 'android']`
   Future<void> runRapidCommand(List<String> args) async {
     final commandRunner = RapidCommandRunner(
-      // TODO this is not perfact as resolveProject should be private
+      // TODO(jtdLab): this is not perfact as resolveProject should be private
       project: await resolveProject(
         args,
         args.first == 'create' ? null : Directory.current,

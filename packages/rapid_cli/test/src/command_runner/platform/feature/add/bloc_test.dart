@@ -108,7 +108,7 @@ void main() {
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['Foo']);
         final command =
-            PlatformFeatureAddBlocCommand(platform, 'package_a', null)
+            PlatformFeatureAddBlocCommand('package_a', null, platform: platform)
               ..argResultOverrides = argResults
               ..rapidOverrides = rapid;
 

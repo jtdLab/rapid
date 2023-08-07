@@ -24,7 +24,7 @@ abstract class PlatformFeaturePackage extends DartPackage
   Directory get applicationDir =>
       Directory(p.join(path, 'lib', 'src', 'application'));
 
-  // TODO move to application dir?
+  // TODO(jtdLab): move to application dir?
   DartFile get applicationBarrelFile =>
       DartFile(p.join(path, 'lib', 'src', 'application', 'application.dart'));
 
@@ -184,8 +184,8 @@ class PlatformPageFeaturePackage extends PlatformRoutableFeaturePackage {
       bundle: platformPageFeaturePackageBundle,
       target: this,
       vars: <String, dynamic>{
-        'name': name, // TODO this is foo_page shouldnt it just be foo?
-        'description': description, // TODO default inside template
+        'name': name, // TODO(jtdLab): this is foo_page shouldnt it just be foo?
+        'description': description, // TODO(jtdLab): default inside template
         'project_name': projectName,
         ...platformVars(platform),
       },
@@ -337,7 +337,7 @@ class PlatformTabFlowFeaturePackage extends PlatformRoutableFeaturePackage {
         ...platformVars(platform),
         'subRoutes': subFeatures
             .mapIndexed((i, e) => {'name': e.pascalCase, 'isFirst': i == 0})
-            .toList(), // TODO needed at all? needed to upper case?
+            .toList(), // TODO(jtdLab): needed at all? needed to upper case?
       },
     );
   }

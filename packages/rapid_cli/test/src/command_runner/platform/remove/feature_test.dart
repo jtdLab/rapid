@@ -88,7 +88,7 @@ void main() {
         final rapid = MockRapid();
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['package_a']);
-        final command = PlatformRemoveFeatureCommand(platform, null)
+        final command = PlatformRemoveFeatureCommand(null, platform: platform)
           ..argResultOverrides = argResults
           ..rapidOverrides = rapid;
 

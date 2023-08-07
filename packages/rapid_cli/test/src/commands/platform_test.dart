@@ -11,10 +11,10 @@ import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
-// TODO is it good to use global setup instead of setup fcts with records
+// TODO(jtdLab): is it good to use global setup instead of setup fcts with records
 
 void main() {
-  late Platform platform; // TODO better test all platforms
+  late Platform platform; // TODO(jtdLab): better test all platforms
   late Bloc bloc;
   late BlocBuilder blocBuilder;
   late Cubit cubit;

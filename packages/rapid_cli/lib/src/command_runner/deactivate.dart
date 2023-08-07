@@ -8,13 +8,27 @@ import 'deactivate/platform.dart';
 class DeactivateCommand extends RapidBranchCommand {
   /// {@macro deactivate_command}
   DeactivateCommand(super.project) {
-    addSubcommand(DeactivatePlatformCommand(Platform.android, project));
-    addSubcommand(DeactivatePlatformCommand(Platform.ios, project));
-    addSubcommand(DeactivatePlatformCommand(Platform.linux, project));
-    addSubcommand(DeactivatePlatformCommand(Platform.macos, project));
-    addSubcommand(DeactivatePlatformCommand(Platform.mobile, project));
-    addSubcommand(DeactivatePlatformCommand(Platform.web, project));
-    addSubcommand(DeactivatePlatformCommand(Platform.windows, project));
+    addSubcommand(
+      DeactivatePlatformCommand(project, platform: Platform.android),
+    );
+    addSubcommand(
+      DeactivatePlatformCommand(project, platform: Platform.ios),
+    );
+    addSubcommand(
+      DeactivatePlatformCommand(project, platform: Platform.linux),
+    );
+    addSubcommand(
+      DeactivatePlatformCommand(project, platform: Platform.macos),
+    );
+    addSubcommand(
+      DeactivatePlatformCommand(project, platform: Platform.mobile),
+    );
+    addSubcommand(
+      DeactivatePlatformCommand(project, platform: Platform.web),
+    );
+    addSubcommand(
+      DeactivatePlatformCommand(project, platform: Platform.windows),
+    );
   }
 
   @override

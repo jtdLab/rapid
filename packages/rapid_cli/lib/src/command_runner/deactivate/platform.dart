@@ -1,15 +1,15 @@
-import '../../project/platform.dart';
 import '../../utils.dart';
 import '../base.dart';
 
 /// {@template deactivate_command}
 /// `rapid deactivate` removes support for a platform from a Rapid project.
 /// {@endtemplate}
-class DeactivatePlatformCommand extends RapidLeafCommand {
+class DeactivatePlatformCommand extends RapidPlatformLeafCommand {
   /// {@macro deactivate_command}
-  DeactivatePlatformCommand(this.platform, super.project);
-
-  final Platform platform;
+  DeactivatePlatformCommand(
+    super.project, {
+    required super.platform,
+  });
 
   @override
   String get name => platform.name;

@@ -10,8 +10,10 @@ List<String> expectedUsage(List<String> infrastructurePackages) => [
       '-h, --help    Print this usage information.',
       '',
       'Available subcommands:',
-      ...infrastructurePackages.map((infrastructurePackage) =>
-          '  $infrastructurePackage   Work with the subinfrastructure $infrastructurePackage.'),
+      ...infrastructurePackages.map(
+        (infrastructurePackage) =>
+            '  $infrastructurePackage   Work with the subinfrastructure $infrastructurePackage.',
+      ),
       '',
       'Run "rapid help" to see global options.'
     ];

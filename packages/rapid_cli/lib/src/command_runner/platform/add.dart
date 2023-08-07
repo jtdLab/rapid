@@ -1,24 +1,21 @@
-import '../../project/platform.dart';
 import '../../utils.dart';
 import '../base.dart';
 import 'add/feature.dart';
 import 'add/language.dart';
 import 'add/navigator.dart';
 
-// TODO better description
+// TODO(jtdLab): better description
 
 /// {@template platform_add_command}
 /// `rapid <platform> add` add features or languages to the platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformAddCommand extends RapidBranchCommand {
+class PlatformAddCommand extends RapidPlatformBranchCommand {
   /// {@macro platform_add_command}
-  PlatformAddCommand(this.platform, super.project) {
-    addSubcommand(PlatformAddFeatureCommand(platform, project));
-    addSubcommand(PlatformAddLanguageCommand(platform, project));
-    addSubcommand(PlatformAddNavigatorCommand(platform, project));
+  PlatformAddCommand(super.project, {required super.platform}) {
+    addSubcommand(PlatformAddFeatureCommand(project, platform: platform));
+    addSubcommand(PlatformAddLanguageCommand(project, platform: platform));
+    addSubcommand(PlatformAddNavigatorCommand(project, platform: platform));
   }
-
-  final Platform platform;
 
   @override
   String get name => 'add';

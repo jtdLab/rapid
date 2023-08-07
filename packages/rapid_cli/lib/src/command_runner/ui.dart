@@ -11,14 +11,14 @@ class UiCommand extends RapidBranchCommand {
   /// {@macro ui_command}
   UiCommand(super.project) {
     addSubcommand(UiAddCommand(project));
-    addSubcommand(UiPlatformCommand(Platform.android, project));
-    addSubcommand(UiPlatformCommand(Platform.ios, project));
-    addSubcommand(UiPlatformCommand(Platform.linux, project));
-    addSubcommand(UiPlatformCommand(Platform.macos, project));
-    addSubcommand(UiPlatformCommand(Platform.mobile, project));
+    addSubcommand(UiPlatformCommand(project, platform: Platform.android));
+    addSubcommand(UiPlatformCommand(project, platform: Platform.ios));
+    addSubcommand(UiPlatformCommand(project, platform: Platform.linux));
+    addSubcommand(UiPlatformCommand(project, platform: Platform.macos));
+    addSubcommand(UiPlatformCommand(project, platform: Platform.mobile));
     addSubcommand(UiRemoveCommand(project));
-    addSubcommand(UiPlatformCommand(Platform.web, project));
-    addSubcommand(UiPlatformCommand(Platform.windows, project));
+    addSubcommand(UiPlatformCommand(project, platform: Platform.web));
+    addSubcommand(UiPlatformCommand(project, platform: Platform.windows));
   }
 
   @override

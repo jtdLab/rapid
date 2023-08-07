@@ -109,7 +109,7 @@ sealed class PlatformRootPackage extends DartPackage {
     String packageName, {
     required DartFile routerFile,
   }) {
-    // TODO rm mulitple reads to the file
+    // TODO(jtdLab): rm mulitple reads to the file
     routerFile.addImport('package:$packageName/$packageName.dart');
 
     final moduleName =
@@ -121,7 +121,7 @@ sealed class PlatformRootPackage extends DartPackage {
         lines.lastIndexWhere((e) => e.startsWith(RegExp('import|export')));
     lines.insertAll(
       lastImportOrExportIndex + 1,
-      ['\n', '// TODO: Add routes of $moduleName to the router.'],
+      ['\n', '// TODO(jtdLab): Add routes of $moduleName to the router.'],
     );
     routerFile.writeAsStringSync(lines.join('\n'));
 
@@ -348,7 +348,7 @@ class MobileRootPackage extends PlatformRootPackage {
   }
 }
 
-// TODO better name
+// TODO(jtdLab): better name
 class NoneIosRootPackage extends PlatformRootPackage {
   NoneIosRootPackage({
     required super.projectName,

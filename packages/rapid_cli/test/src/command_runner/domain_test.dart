@@ -11,8 +11,10 @@ List<String> expectedUsage(List<String> domainPackages) => [
       '',
       'Available subcommands:',
       '  add         Add subdomains to the domain part of a Rapid project.',
-      ...domainPackages.map((domainPackage) =>
-          '  $domainPackage   Work with the subdomain $domainPackage.'),
+      ...domainPackages.map(
+        (domainPackage) =>
+            '  $domainPackage   Work with the subdomain $domainPackage.',
+      ),
       '  remove      Remove subdomains from the domain part of a Rapid project.',
       '',
       'Run "rapid help" to see global options.'

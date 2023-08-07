@@ -107,10 +107,13 @@ void main() {
         final rapid = MockRapid();
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['Foo']);
-        final command =
-            PlatformFeatureAddCubitCommand(platform, 'package_a', null)
-              ..argResultOverrides = argResults
-              ..rapidOverrides = rapid;
+        final command = PlatformFeatureAddCubitCommand(
+          'package_a',
+          null,
+          platform: platform,
+        )
+          ..argResultOverrides = argResults
+          ..rapidOverrides = rapid;
 
         await command.run();
 

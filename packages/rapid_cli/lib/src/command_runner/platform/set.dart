@@ -1,4 +1,3 @@
-import '../../project/platform.dart';
 import '../../utils.dart';
 import '../base.dart';
 import 'set/default_language.dart';
@@ -6,13 +5,13 @@ import 'set/default_language.dart';
 /// {@template platform_set_command}
 /// `rapid <platform> set` set properties of the platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformSetCommand extends RapidBranchCommand {
+class PlatformSetCommand extends RapidPlatformBranchCommand {
   /// {@macro platform_set_command}
-  PlatformSetCommand(this.platform, super.project) {
-    addSubcommand(PlatformSetDefaultLanguageCommand(platform, project));
+  PlatformSetCommand(super.project, {required super.platform}) {
+    addSubcommand(
+      PlatformSetDefaultLanguageCommand(project, platform: platform),
+    );
   }
-
-  final Platform platform;
 
   @override
   String get name => 'set';

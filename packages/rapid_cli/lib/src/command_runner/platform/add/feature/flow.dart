@@ -1,6 +1,5 @@
 import 'package:mason/mason.dart';
 
-import '../../../../project/platform.dart';
 import '../../../../utils.dart';
 import '../../../base.dart';
 import '../../../util/dart_package_name_rest.dart';
@@ -13,10 +12,10 @@ String _defaultDescription(String name) =>
 /// {@template platform_add_feature_flow_command}
 /// `rapid <platform> add feature flow` add a flow feature to the platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformAddFeatureFlowCommand extends RapidLeafCommand
+class PlatformAddFeatureFlowCommand extends RapidPlatformLeafCommand
     with DartPackageNameGetter, DescriptionGetter, NavigatorGetter {
   /// {@macro platform_add_feature_flow_command}
-  PlatformAddFeatureFlowCommand(this.platform, super.project) {
+  PlatformAddFeatureFlowCommand(super.project, {required super.platform}) {
     argParser
       ..addSeparator('')
       ..addDescriptionOption(
@@ -24,8 +23,6 @@ class PlatformAddFeatureFlowCommand extends RapidLeafCommand
       )
       ..addNavigatorFlag();
   }
-
-  final Platform platform;
 
   @override
   String get name => 'flow';

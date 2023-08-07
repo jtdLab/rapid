@@ -1,6 +1,6 @@
 import '../../utils.dart';
 
-// TODO move to utils and share
+// TODO(jtdLab): move to utils and share
 
 /// Whether [name] is valid project name.
 bool isValidPackageName(String name) {

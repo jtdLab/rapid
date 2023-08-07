@@ -8,7 +8,7 @@ import '../matchers.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
-// TODO consider sharing test logic for flags with other commands
+// TODO(jtdLab): consider sharing test logic for flags with other commands
 
 const expectedUsage = [
   'Create a new Rapid project.',

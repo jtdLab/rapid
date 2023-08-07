@@ -1,6 +1,6 @@
 part of '../project.dart';
 
-// TODO rethink abstraction of themed widget
+// TODO(jtdLab): rethink abstraction of themed widget
 
 class Widget extends FileSystemEntityCollection {
   Widget({

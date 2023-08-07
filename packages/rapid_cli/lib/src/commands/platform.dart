@@ -53,7 +53,7 @@ mixin _PlatformMixin on _Rapid {
 
     await dartFormatFixTask();
 
-    // TODO add link doc to navigation and routing approach
+    // TODO(jtdLab): add link doc to navigation and routing approach
     logger
       ..newLine()
       ..commandSuccess('Added Flow Feature!');
@@ -132,7 +132,7 @@ mixin _PlatformMixin on _Rapid {
 
     await dartFormatFixTask();
 
-    // TODO add link doc to navigation and routing approach
+    // TODO(jtdLab): add link doc to navigation and routing approach
     logger
       ..newLine()
       ..commandSuccess('Added Tab Flow Feature!');
@@ -193,7 +193,7 @@ mixin _PlatformMixin on _Rapid {
 
     await dartFormatFixTask();
 
-    // TODO add link doc to navigation and routing approach
+    // TODO(jtdLab): add link doc to navigation and routing approach
     logger
       ..newLine()
       ..commandSuccess('Added Page Feature!');
@@ -221,7 +221,7 @@ mixin _PlatformMixin on _Rapid {
 
     logger.newLine();
 
-    // TODO more expressive
+    // TODO(jtdLab): more expressive
     await task('Creating feature', () async {
       await featurePackage.generate(description: description);
       await rootPackage.registerFeaturePackage(featurePackage);
@@ -235,7 +235,7 @@ mixin _PlatformMixin on _Rapid {
 
     await dartFormatFixTask();
 
-    // TODO add link doc to navigation and routing approach
+    // TODO(jtdLab): add link doc to navigation and routing approach
     logger
       ..newLine()
       ..commandSuccess('Added Widget Feature!');
@@ -290,7 +290,7 @@ mixin _PlatformMixin on _Rapid {
 
     await dartFormatFixTask();
 
-    // TODO add hint how to work with localization
+    // TODO(jtdLab): add hint how to work with localization
     logger
       ..newLine()
       ..commandSuccess('Added Language!');
@@ -622,12 +622,12 @@ mixin _PlatformMixin on _Rapid {
     final supportedLanguages = localizationPackage.supportedLanguages();
 
     if (!supportedLanguages.contains(language)) {
-      // TODO better hint
+      // TODO(jtdLab): better hint
       throw LanguageNotFoundException._(language);
     }
 
     if (localizationPackage.defaultLanguage() == language) {
-      // TODO add hint how to change default language
+      // TODO(jtdLab): add hint how to change default language
       throw CantRemoveDefaultLanguageException._(language);
     }
 
@@ -644,7 +644,7 @@ mixin _PlatformMixin on _Rapid {
     }
 
     for (final languageToRemove in languagesToRemove) {
-      // TODO more expressive
+      // TODO(jtdLab): more expressive
       await task('Removing language', () {
         final rootPackage = platformDirectory.rootPackage;
         switch (rootPackage) {
@@ -733,7 +733,7 @@ mixin _PlatformMixin on _Rapid {
 
     await dartFormatFixTask();
 
-    // TODO add hint how to work with localization
+    // TODO(jtdLab): add hint how to work with localization
 
     logger
       ..newLine()

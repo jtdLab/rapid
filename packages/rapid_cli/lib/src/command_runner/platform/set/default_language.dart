@@ -1,4 +1,3 @@
-import '../../../project/platform.dart';
 import '../../../utils.dart';
 import '../../base.dart';
 import '../../util/language_rest.dart';
@@ -6,15 +5,13 @@ import '../../util/language_rest.dart';
 /// {@template platform_set_default_language_command}
 /// `rapid <platform> set default_language` set the default language of the platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformSetDefaultLanguageCommand extends RapidLeafCommand
+class PlatformSetDefaultLanguageCommand extends RapidPlatformLeafCommand
     with LanguageGetter {
   /// {@macro platform_set_default_language_command}
   PlatformSetDefaultLanguageCommand(
-    this.platform,
-    super.project,
-  );
-
-  final Platform platform;
+    super.project, {
+    required super.platform,
+  });
 
   @override
   String get name => 'default_language';

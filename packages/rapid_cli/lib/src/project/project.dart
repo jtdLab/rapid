@@ -1,8 +1,8 @@
-// TODO: currently its not possible to resolve a project completly because
+// TODO(jtdLab): currently its not possible to resolve a project completly because
 // 1. cant distinct feature types and custom feature, entity and value objects, widgets and not widgets files
 // -> could be solved by maintaining a graph of the project in a  .lock file or smth
 
-// TODO maybe rename AppModule to AppDirectory
+// TODO(jtdLab): maybe rename AppModule to AppDirectory
 
 import 'package:collection/collection.dart';
 import 'package:path/path.dart' as p;
@@ -109,7 +109,7 @@ class RapidProject {
         ...appModule.domainDirectory.domainPackages(),
         ...appModule.infrastructureDirectory.infrastructurePackages(),
         uiModule.uiPackage,
-        // TODO good?
+        // TODO(jtdLab): good?
         for (final platform in Platform.values.where(platformIsActivated)) ...[
           appModule.platformDirectory(platform: platform).rootPackage,
           appModule.platformDirectory(platform: platform).localizationPackage,

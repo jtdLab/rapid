@@ -498,7 +498,7 @@ void main() {
     test(
       'handles RapidException',
       withMockEnv((_) async {
-        // TODO share setup valid project cwd is used in more cases
+        // TODO(jtdLab): share setup valid project cwd is used in more cases
         final installation = MockExecutableInstallation();
         when(() => installation.packageRoot)
             .thenReturn(Directory('/some_path'));

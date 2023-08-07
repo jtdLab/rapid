@@ -95,9 +95,10 @@ void main() {
         final argResults = MockArgResults();
         when(() => argResults['desc']).thenReturn('Some description.');
         when(() => argResults.rest).thenReturn(['package_a']);
-        final command = PlatformAddFeatureWidgetCommand(platform, null)
-          ..argResultOverrides = argResults
-          ..rapidOverrides = rapid;
+        final command =
+            PlatformAddFeatureWidgetCommand(null, platform: platform)
+              ..argResultOverrides = argResults
+              ..rapidOverrides = rapid;
 
         await command.run();
 
@@ -114,9 +115,10 @@ void main() {
         final rapid = MockRapid();
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['package_a']);
-        final command = PlatformAddFeatureWidgetCommand(platform, null)
-          ..argResultOverrides = argResults
-          ..rapidOverrides = rapid;
+        final command =
+            PlatformAddFeatureWidgetCommand(null, platform: platform)
+              ..argResultOverrides = argResults
+              ..rapidOverrides = rapid;
 
         await command.run();
 

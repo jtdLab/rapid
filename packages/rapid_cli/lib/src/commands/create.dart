@@ -108,7 +108,7 @@ mixin _CreateMixin on _ActivateMixin {
 
     await dartFormatFixTask();
 
-    // TODO log better summary + refs to doc
+    // TODO(jtdLab): log better summary + refs to doc
     logger
       ..newLine()
       ..commandSuccess('Created Project!');

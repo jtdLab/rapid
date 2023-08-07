@@ -1,4 +1,3 @@
-import '../../../project/platform.dart';
 import '../../../utils.dart';
 import '../../base.dart';
 import 'feature/flow.dart';
@@ -9,16 +8,16 @@ import 'feature/widget.dart';
 /// {@template platform_add_feature_command}
 /// `rapid <platform> add feature` add a feature to the platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformAddFeatureCommand extends RapidBranchCommand {
+class PlatformAddFeatureCommand extends RapidPlatformBranchCommand {
   /// {@macro platform_add_feature_command}
-  PlatformAddFeatureCommand(this.platform, super.project) {
-    addSubcommand(PlatformAddFeatureFlowCommand(platform, project));
-    addSubcommand(PlatformAddFeaturePageCommand(platform, project));
-    addSubcommand(PlatformAddFeatureTabFlowCommand(platform, project));
-    addSubcommand(PlatformAddFeatureWidgetCommand(platform, project));
+  PlatformAddFeatureCommand(super.project, {required super.platform}) {
+    addSubcommand(PlatformAddFeatureFlowCommand(project, platform: platform));
+    addSubcommand(PlatformAddFeaturePageCommand(project, platform: platform));
+    addSubcommand(
+      PlatformAddFeatureTabFlowCommand(project, platform: platform),
+    );
+    addSubcommand(PlatformAddFeatureWidgetCommand(project, platform: platform));
   }
-
-  final Platform platform;
 
   @override
   String get name => 'feature';

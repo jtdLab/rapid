@@ -1,4 +1,3 @@
-import '../../../../project/platform.dart';
 import '../../../../utils.dart';
 import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
@@ -6,16 +5,15 @@ import '../../../util/class_name_rest.dart';
 /// {@template platform_feature_remove_cubit_command}
 /// `rapid <platform> <feature> remove cubit` remove a cubit from a feature of the platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformFeatureRemoveCubitCommand extends RapidLeafCommand
+class PlatformFeatureRemoveCubitCommand extends RapidPlatformLeafCommand
     with ClassNameGetter {
   /// {@macro platform_feature_remove_cubit_command}
   PlatformFeatureRemoveCubitCommand(
-    this.platform,
     this.featureName,
-    super.project,
-  );
+    super.project, {
+    required super.platform,
+  });
 
-  final Platform platform;
   final String featureName;
 
   @override

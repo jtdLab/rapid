@@ -48,7 +48,7 @@ mixin _UiMixin on _Rapid {
         if (widget is ThemedWidget) {
           final themeExtensionsFile = uiPackage.themeExtensionsFile;
           final projectName = project.name;
-          // TODO read from theme tailor config file
+          // TODO(jtdLab): read from theme tailor config file
           final themes = ['light', 'dark'];
           for (final theme in themes) {
             final extension =
@@ -114,7 +114,7 @@ mixin _UiMixin on _Rapid {
           final themeExtensionsFile = uiPackage.themeExtensionsFile;
           final projectName = project.name;
 
-          // TODO read from theme tailor config file
+          // TODO(jtdLab): read from theme tailor config file
           final themes = ['light', 'dark'];
           for (final theme in themes) {
             final extension =

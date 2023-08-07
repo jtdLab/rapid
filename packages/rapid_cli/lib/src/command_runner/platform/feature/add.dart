@@ -1,4 +1,3 @@
-import '../../../project/platform.dart';
 import '../../../utils.dart';
 import '../../base.dart';
 import 'add/bloc.dart';
@@ -7,22 +6,28 @@ import 'add/cubit.dart';
 /// {@template platform_feature_add_command}
 /// `rapid <platform> <feature> add` add a component to a feature of the platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformFeatureAddCommand extends RapidBranchCommand {
+class PlatformFeatureAddCommand extends RapidPlatformBranchCommand {
   /// {@macro platform_feature_add_command}
   PlatformFeatureAddCommand(
-    this.platform,
     this.featureName,
-    super.project,
-  ) {
+    super.project, {
+    required super.platform,
+  }) {
     addSubcommand(
-      PlatformFeatureAddBlocCommand(platform, featureName, project),
+      PlatformFeatureAddBlocCommand(
+        featureName,
+        project,
+        platform: platform,
+      ),
     );
     addSubcommand(
-      PlatformFeatureAddCubitCommand(platform, featureName, project),
+      PlatformFeatureAddCubitCommand(
+        featureName,
+        project,
+        platform: platform,
+      ),
     );
   }
-
-  final Platform platform;
 
   final String featureName;
 

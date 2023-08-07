@@ -91,7 +91,7 @@ void main() {
         final rapid = MockRapid();
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['de']);
-        final command = PlatformRemoveLanguageCommand(platform, null)
+        final command = PlatformRemoveLanguageCommand(null, platform: platform)
           ..argResultOverrides = argResults
           ..rapidOverrides = rapid;
 

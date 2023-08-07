@@ -1,4 +1,3 @@
-import '../../project/platform.dart';
 import '../../utils.dart';
 import '../base.dart';
 import 'feature/add.dart';
@@ -7,26 +6,29 @@ import 'feature/remove.dart';
 /// {@template platform_feature_command}
 /// `rapid <platform> <feature>` work with a feature of the platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformFeatureCommand extends RapidBranchCommand {
+class PlatformFeatureCommand extends RapidPlatformBranchCommand {
   /// {@macro platform_feature_command}
-  PlatformFeatureCommand(this.platform, this.featureName, super.project) {
+  PlatformFeatureCommand(
+    this.featureName,
+    super.project, {
+    required super.platform,
+  }) {
     addSubcommand(
       PlatformFeatureAddCommand(
-        platform,
         featureName,
         project,
+        platform: platform,
       ),
     );
     addSubcommand(
       PlatformFeatureRemoveCommand(
-        platform,
         featureName,
         project,
+        platform: platform,
       ),
     );
   }
 
-  final Platform platform;
   final String featureName;
 
   @override

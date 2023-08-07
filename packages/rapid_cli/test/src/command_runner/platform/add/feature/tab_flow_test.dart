@@ -115,9 +115,10 @@ void main() {
         when(() => argResults['sub-features'])
             .thenReturn('package_b, package_c');
         when(() => argResults.rest).thenReturn(['package_a']);
-        final command = PlatformAddFeatureTabFlowCommand(platform, null)
-          ..argResultOverrides = argResults
-          ..rapidOverrides = rapid;
+        final command =
+            PlatformAddFeatureTabFlowCommand(null, platform: platform)
+              ..argResultOverrides = argResults
+              ..rapidOverrides = rapid;
 
         await command.run();
 

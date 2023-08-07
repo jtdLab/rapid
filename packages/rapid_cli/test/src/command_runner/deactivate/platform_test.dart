@@ -40,7 +40,7 @@ void main() {
 
         test('completes', () async {
           final rapid = MockRapid();
-          final command = DeactivatePlatformCommand(platform, null)
+          final command = DeactivatePlatformCommand(null, platform: platform)
             ..rapidOverrides = rapid;
 
           await command.run();

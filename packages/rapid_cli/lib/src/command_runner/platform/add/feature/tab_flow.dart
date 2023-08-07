@@ -1,7 +1,6 @@
 import 'package:args/command_runner.dart';
 import 'package:mason/mason.dart';
 
-import '../../../../project/platform.dart';
 import '../../../../utils.dart';
 import '../../../base.dart';
 import '../../../util/dart_package_name_rest.dart';
@@ -14,10 +13,10 @@ String _defaultDescription(String name) =>
 /// {@template platform_add_feature_tab_flow_command}
 /// `rapid <platform> add feature tab_flow` add a tab flow feature to the platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformAddFeatureTabFlowCommand extends RapidLeafCommand
+class PlatformAddFeatureTabFlowCommand extends RapidPlatformLeafCommand
     with DartPackageNameGetter, DescriptionGetter, NavigatorGetter {
   /// {@macro platform_add_feature_tab_flow_command}
-  PlatformAddFeatureTabFlowCommand(this.platform, super.project) {
+  PlatformAddFeatureTabFlowCommand(super.project, {required super.platform}) {
     argParser
       ..addSeparator('')
       ..addOption(
@@ -29,8 +28,6 @@ class PlatformAddFeatureTabFlowCommand extends RapidLeafCommand
       )
       ..addNavigatorFlag();
   }
-
-  final Platform platform;
 
   @override
   String get name => 'tab_flow';

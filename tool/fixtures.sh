@@ -1,13 +1,13 @@
 #!/bin/bash
 
 ############################################################################################
-# Run from root
-# bash tool/fixtures.sh
+# Run from rapid_cli
+# bash ../../tool/fixtures.sh
 ############################################################################################
 # Generates fresh fixtures projects used for e2e testing.
 ############################################################################################
 
-cd packages/rapid_cli/test/e2e/fixtures
+cd test/e2e/fixtures
 
 echo "Generating fixture project without a platform activated..."
 rapid create project_none -o project_none

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ############################################################################################
-# Run root
+# Run from root
 # bash tool/bundles.sh
 # bash tool/bundles.sh --dry-run (to see which template dependencies have updates available)
 ############################################################################################

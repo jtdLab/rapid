@@ -12,7 +12,7 @@ import 'package:test/test.dart';
 import '../../mock_env.dart';
 import '../../mocks.dart';
 
-// TODO share tests among platforms register etc?
+// TODO(jtdLab): share tests among platforms register etc?
 
 IosRootPackage _getIosRootPackage({
   String? projectName,
@@ -274,7 +274,7 @@ void main() {
               "import 'package:test_page/test_page.dart';",
               '',
               '',
-              '// TODO: Add routes of TestPageModule to the router.',
+              '// TODO(jtdLab): Add routes of TestPageModule to the router.',
               '',
               '@AutoRouterConfig(',
               '  replaceInRouteName: null,',

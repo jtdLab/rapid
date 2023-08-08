@@ -2,7 +2,8 @@ import '../base.dart';
 import 'remove/widget.dart';
 
 /// {@template ui_remove_command}
-/// `rapid ui remove` remove a component from the platform independent UI part of a Rapid project.
+/// `rapid ui remove` remove a component from the platform independent UI part
+/// of a Rapid project.
 /// {@endtemplate}
 class UiRemoveCommand extends RapidBranchCommand {
   /// {@macro ui_remove_command}
@@ -18,5 +19,6 @@ class UiRemoveCommand extends RapidBranchCommand {
 
   @override
   String get description =>
-      'Remove a component from the platform independent UI part of a Rapid project.';
+      'Remove a component from the platform independent UI part of a Rapid '
+      'project.';
 }

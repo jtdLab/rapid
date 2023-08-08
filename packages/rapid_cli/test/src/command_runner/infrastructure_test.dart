@@ -12,7 +12,7 @@ List<String> expectedUsage(List<String> infrastructurePackages) => [
       'Available subcommands:',
       ...infrastructurePackages.map(
         (infrastructurePackage) =>
-            '  $infrastructurePackage   Work with the subinfrastructure $infrastructurePackage.',
+            '''  $infrastructurePackage   Work with the subinfrastructure $infrastructurePackage.''',
       ),
       '',
       'Run "rapid help" to see global options.'

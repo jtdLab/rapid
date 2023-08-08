@@ -307,7 +307,7 @@ void main() {
 
   group('activateAndroid', () {
     test(
-      'throws PlatformAlreadyActivatedException when Android is already activated',
+      '''throws PlatformAlreadyActivatedException when Android is already activated''',
       () async {
         final project = MockRapidProject();
         when(() => project.platformIsActivated(Platform.android))
@@ -406,7 +406,7 @@ void main() {
 
   group('activateLinux', () {
     test(
-      'throws PlatformAlreadyActivatedException when Linux is already activated',
+      '''throws PlatformAlreadyActivatedException when Linux is already activated''',
       () async {
         final project = MockRapidProject();
         when(() => project.platformIsActivated(Platform.linux))
@@ -455,7 +455,7 @@ void main() {
 
   group('activateMacos', () {
     test(
-      'throws PlatformAlreadyActivatedException when macOS is already activated',
+      '''throws PlatformAlreadyActivatedException when macOS is already activated''',
       () async {
         final project = MockRapidProject();
         when(() => project.platformIsActivated(Platform.macos))
@@ -552,7 +552,7 @@ void main() {
 
   group('activateWindows', () {
     test(
-      'throws PlatformAlreadyActivatedException when Windows is already activated',
+      '''throws PlatformAlreadyActivatedException when Windows is already activated''',
       () async {
         final project = MockRapidProject();
         when(() => project.platformIsActivated(Platform.windows))
@@ -601,7 +601,7 @@ void main() {
 
   group('activateMobile', () {
     test(
-      'throws PlatformAlreadyActivatedException when Mobile is already activated',
+      '''throws PlatformAlreadyActivatedException when Mobile is already activated''',
       () async {
         final project = MockRapidProject();
         when(() => project.platformIsActivated(Platform.mobile))

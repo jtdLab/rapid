@@ -1929,14 +1929,14 @@ void main() {
           verify(
             () {
               stdout.write(
-                '[2K[1A[2K[1A[2K\r[92m⠹[0m 1234567890123456xxxxxxxx... [90m(0.2s)[0m',
+                '''[2K[1A[2K[1A[2K\r[92m⠹[0m 1234567890123456xxxxxxxx... [90m(0.2s)[0m''',
               );
             },
           ).called(1);
           verify(
             () {
               stdout.write(
-                '[2K[1A[2K[1A[2K\r[92m✓[0m 1234567890123456xxxxxxxx [90m(0.2s)[0m\n',
+                '''[2K[1A[2K[1A[2K\r[92m✓[0m 1234567890123456xxxxxxxx [90m(0.2s)[0m\n''',
               );
             },
           ).called(1);

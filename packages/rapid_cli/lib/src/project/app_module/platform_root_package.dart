@@ -1,20 +1,46 @@
 part of '../project.dart';
 
+// TODO(jtdLab): better name for none ios root package
+
+/// {@template platform_root_package}
+/// Base class for:
+///
+///  * [IosRootPackage]
+///
+///  * [MacosRootPackage]
+///
+///  * [MobileRootPackage]
+///
+///  * [NoneIosRootPackage]
+/// {@endtemplate}
 sealed class PlatformRootPackage extends DartPackage {
+  /// {@macro platform_root_package}
   PlatformRootPackage({
     required this.projectName,
     required this.platform,
     required String path,
   }) : super(path);
 
+  /// The name of the project this package is part of.
   final String projectName;
 
+  /// The platform.
   final Platform platform;
 
+  /// The `lib/injection.dart` file.
   DartFile get injectionFile => DartFile(p.join(path, 'lib', 'injection.dart'));
 
+  /// The `lib/router.dart` file.
   DartFile get routerFile => DartFile(p.join(path, 'lib', 'router.dart'));
 
+  /// Registers [featurePackage] with this package.
+  ///
+  /// This adds the [featurePackage] as a dependency to the [pubSpecFile]
+  /// and its [injectable module](https://pub.dev/packages/injectable#including-micropackages-and-external-modules)
+  /// to the [injectionFile].
+  ///
+  /// If [featurePackage] is routable this also adds its [auto_router module](https://pub.dev/packages/auto_route#including-microexternal-packages)
+  /// to the [routerFile].
   Future<void> registerFeaturePackage(
     PlatformFeaturePackage featurePackage,
   ) async {
@@ -29,6 +55,14 @@ sealed class PlatformRootPackage extends DartPackage {
     }
   }
 
+  /// Unregisters [featurePackage] from this package.
+  ///
+  /// This removes the [featurePackage] dependency from the [pubSpecFile]
+  /// and its [injectable module](https://pub.dev/packages/injectable#including-micropackages-and-external-modules)
+  /// from the [injectionFile].
+  ///
+  /// If [featurePackage] is routable this also removes its [auto_router module](https://pub.dev/packages/auto_route#including-microexternal-packages)
+  /// from the [routerFile].
   Future<void> unregisterFeaturePackage(
     PlatformFeaturePackage featurePackage,
   ) async {
@@ -40,6 +74,11 @@ sealed class PlatformRootPackage extends DartPackage {
     }
   }
 
+  /// Registers [infrastructurePackage] with this package.
+  ///
+  /// This adds the [infrastructurePackage] as a dependency to the [pubSpecFile]
+  /// and its [injectable module](https://pub.dev/packages/injectable#including-micropackages-and-external-modules)
+  /// to the [injectionFile].
   Future<void> registerInfrastructurePackage(
     InfrastructurePackage infrastructurePackage,
   ) async {
@@ -51,6 +90,11 @@ sealed class PlatformRootPackage extends DartPackage {
     _addFeaturePackage(packageName, injectionFile: injectionFile);
   }
 
+  /// Unregisters [infrastructurePackage] from this package.
+  ///
+  /// This removes the [infrastructurePackage] dependency from the [pubSpecFile]
+  /// and its [injectable module](https://pub.dev/packages/injectable#including-micropackages-and-external-modules)
+  /// from the [injectionFile].
   Future<void> unregisterInfrastructurePackage(
     InfrastructurePackage infrastructurePackage,
   ) async {
@@ -113,7 +157,7 @@ sealed class PlatformRootPackage extends DartPackage {
     routerFile.addImport('package:$packageName/$packageName.dart');
 
     final moduleName =
-        '${packageName.replaceAll('${projectName}_${platform.name}_', '').pascalCase}Module';
+        '''${packageName.replaceAll('${projectName}_${platform.name}_', '').pascalCase}Module''';
 
     final content = routerFile.readAsStringSync();
     final lines = content.split('\n');
@@ -174,13 +218,20 @@ sealed class PlatformRootPackage extends DartPackage {
       );
 }
 
+/// {@template ios_root_package}
+/// Abstraction of the ios root package of a Rapid project.
+///
+// TODO(jtdLab): more docs.
+/// {@endtemplate}
 class IosRootPackage extends PlatformRootPackage {
+  /// {@macro ios_root_package}
   IosRootPackage({
     required super.projectName,
     required super.path,
     required this.nativeDirectory,
   }) : super(platform: Platform.ios);
 
+  /// Returns a [IosRootPackage] from given [projectName] and [projectPath].
   factory IosRootPackage.resolve({
     required String projectName,
     required String projectPath,
@@ -204,8 +255,10 @@ class IosRootPackage extends PlatformRootPackage {
     );
   }
 
+  /// The native directory of this package.
   final IosNativeDirectory nativeDirectory;
 
+  /// Generate this package on disk.
   Future<void> generate({
     required String orgName,
     required Language language,
@@ -222,22 +275,31 @@ class IosRootPackage extends PlatformRootPackage {
     await nativeDirectory.generate(orgName: orgName, language: language);
   }
 
+  /// Adds [language] to this package.
   void addLanguage(Language language) {
     nativeDirectory.addLanguage(language);
   }
 
+  /// Removes [language] from this package.
   void removeLanguage(Language language) {
     nativeDirectory.removeLanguage(language);
   }
 }
 
+/// {@template macos_root_package}
+/// Abstraction of the macos root package of a Rapid project.
+///
+// TODO(jtdLab): more docs.
+/// {@endtemplate}
 class MacosRootPackage extends PlatformRootPackage {
+  /// {@macro macos_root_package}
   MacosRootPackage({
     required super.projectName,
     required super.path,
     required this.nativeDirectory,
   }) : super(platform: Platform.macos);
 
+  /// Returns a [MacosRootPackage] from given [projectName] and [projectPath].
   factory MacosRootPackage.resolve({
     required String projectName,
     required String projectPath,
@@ -261,8 +323,10 @@ class MacosRootPackage extends PlatformRootPackage {
     );
   }
 
+  /// The native directory of this package.
   final MacosNativeDirectory nativeDirectory;
 
+  /// Generate this package on disk.
   Future<void> generate({required String orgName}) async {
     await mason.generate(
       bundle: platformRootPackageBundle,
@@ -277,7 +341,13 @@ class MacosRootPackage extends PlatformRootPackage {
   }
 }
 
+/// {@template mobile_root_package}
+/// Abstraction of the mobile root package of a Rapid project.
+///
+// TODO(jtdLab): more docs.
+/// {@endtemplate}
 class MobileRootPackage extends PlatformRootPackage {
+  /// {@macro mobile_root_package}
   MobileRootPackage({
     required super.projectName,
     required super.path,
@@ -285,6 +355,7 @@ class MobileRootPackage extends PlatformRootPackage {
     required this.iosNativeDirectory,
   }) : super(platform: Platform.mobile);
 
+  /// Returns a [MobileRootPackage] from given [projectName] and [projectPath].
   factory MobileRootPackage.resolve({
     required String projectName,
     required String projectPath,
@@ -314,10 +385,13 @@ class MobileRootPackage extends PlatformRootPackage {
     );
   }
 
+  /// The native directory of this package. (Android)
   final NoneIosNativeDirectory androidNativeDirectory;
 
+  /// The native directory of this package. (iOS)
   final IosNativeDirectory iosNativeDirectory;
 
+  /// Generate this package on disk.
   Future<void> generate({
     required String orgName,
     required String description,
@@ -339,17 +413,24 @@ class MobileRootPackage extends PlatformRootPackage {
     await iosNativeDirectory.generate(orgName: orgName, language: language);
   }
 
+  /// Adds [language] to this package.
   void addLanguage(Language language) {
     iosNativeDirectory.addLanguage(language);
   }
 
+  /// Removes [language] from this package.
   void removeLanguage(Language language) {
     iosNativeDirectory.removeLanguage(language);
   }
 }
 
-// TODO(jtdLab): better name
+/// {@template none_ios_root_package}
+/// Abstraction of a none ios root package of a Rapid project.
+///
+// TODO(jtdLab): more docs.
+/// {@endtemplate}
 class NoneIosRootPackage extends PlatformRootPackage {
+  /// {@macro none_ios_root_package}
   NoneIosRootPackage({
     required super.projectName,
     required super.platform,
@@ -357,6 +438,8 @@ class NoneIosRootPackage extends PlatformRootPackage {
     required this.nativeDirectory,
   });
 
+  /// Returns a [NoneIosRootPackage] with [platform] from given [projectName]
+  /// and [projectPath].
   factory NoneIosRootPackage.resolve({
     required String projectName,
     required String projectPath,
@@ -388,8 +471,10 @@ class NoneIosRootPackage extends PlatformRootPackage {
     );
   }
 
+  /// The native directory of this package.
   final NoneIosNativeDirectory nativeDirectory;
 
+  /// Generate this package on disk.
   Future<void> generate({
     String? description,
     String? orgName,

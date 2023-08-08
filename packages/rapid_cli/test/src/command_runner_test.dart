@@ -426,8 +426,8 @@ void main() {
             multiLine([
               'Found no pubspec.yaml file in "some_path".',
               '',
-              'You must have a ${AnsiStyles.bold('pubspec.yaml')} file in the root ',
-              'of your project.',
+              'You must have a ${AnsiStyles.bold('pubspec.yaml')} file in the ',
+              'root of your project.',
               '',
               'For more information, see: ',
               'https://docs.page/jtdLab/rapid/cli/create',

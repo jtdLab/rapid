@@ -98,16 +98,21 @@ mixin _PubMixin on _Rapid {
   }
 }
 
+/// An exception thrown when a package does not exist.
 class PackageNotFoundException extends RapidException {
   PackageNotFoundException._(String packageName)
       : super(
-          'Could not find a dart package with $packageName that is part of a Rapid project.',
+          'Could not find a dart package with $packageName that is part of a '
+          'Rapid project.',
         );
 }
 
+/// An exception thrown when a package does not exist at the current working
+/// directory.
 class PackageAtCwdNotFoundException extends RapidException {
   PackageAtCwdNotFoundException._(String cwdPath)
       : super(
-          'Could not find a dart package at $cwdPath that is part of a Rapid project.',
+          'Could not find a dart package at $cwdPath that is part of a '
+          'Rapid project.',
         );
 }

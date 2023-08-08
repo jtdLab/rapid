@@ -6,8 +6,13 @@ import 'io/io.dart';
 export 'package:mason/mason.dart' hide Logger, Progress;
 
 @visibleForTesting
+// ignore: public_member_api_docs
 Future<MasonGenerator> Function(MasonBundle)? generatorOverrides;
 
+/// Generates files specified in [bundle] based on the provided
+/// [target] and [vars].
+///
+/// Returns the generated files.
 Future<List<GeneratedFile>> generate({
   required MasonBundle bundle,
   required Directory target,

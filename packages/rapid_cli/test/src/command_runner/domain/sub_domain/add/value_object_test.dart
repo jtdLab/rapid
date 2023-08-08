@@ -9,7 +9,7 @@ import '../../../../utils.dart';
 List<String> expectedUsage(String subDomainPackage) => [
       'Add a value object to the subdomain $subDomainPackage.',
       '',
-      'Usage: rapid domain $subDomainPackage add value_object <name> [arguments]',
+      '''Usage: rapid domain $subDomainPackage add value_object <name> [arguments]''',
       '-h, --help    Print this usage information.',
       '',
       '',
@@ -98,7 +98,10 @@ void main() {
       final argResults = MockArgResults();
       when(() => argResults['type']).thenReturn('Triple<#A, int, #B>');
       when(() => argResults.rest).thenReturn(['Foo']);
-      final command = DomainSubDomainAddValueObjectCommand('package_a', null)
+      final command = DomainSubDomainAddValueObjectCommand(
+        null,
+        subDomainName: 'package_a',
+      )
         ..argResultOverrides = argResults
         ..rapidOverrides = rapid;
 

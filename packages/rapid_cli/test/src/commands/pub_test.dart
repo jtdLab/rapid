@@ -45,7 +45,8 @@ void main() {
     });
 
     test(
-      'throws PackageAtCwdNotFoundException when package is not found at current working directory',
+      'throws PackageAtCwdNotFoundException when package is not found '
+      'at current working directory',
       () {
         when(() => project.findByCwd()).thenThrow(Exception());
         final rapid = getRapid(project: project);
@@ -89,7 +90,7 @@ void main() {
           verifyInOrder([
             logger.newLine,
             () => logger.progress(
-                  'Running "dart pub add package_a package_b" in example_package',
+                  '''Running "dart pub add package_a package_b" in example_package''',
                 ),
             () => manager.runDartPubAdd(
                   ['package_a', 'package_b'],
@@ -196,7 +197,7 @@ void main() {
                   dev: true,
                 ),
             () => logger.progress(
-                  'Running "melos bootstrap --scope example_package,package_c,package_d"',
+                  '''Running "melos bootstrap --scope example_package,package_c,package_d"''',
                 ),
             () => manager.runMelosBootstrap(
                   ['example_package', 'package_c', 'package_d'],
@@ -275,7 +276,7 @@ void main() {
           verifyInOrder([
             logger.newLine,
             () => logger.progress(
-                  'Running "dart pub add package_a package_b" in example_package',
+                  '''Running "dart pub add package_a package_b" in example_package''',
                 ),
             () => manager.runDartPubAdd(
                   ['package_a', 'package_b'],
@@ -442,7 +443,8 @@ void main() {
     );
 
     test(
-      'throws PackageAtCwdNotFoundException when package is not found at current working directory',
+      'throws PackageAtCwdNotFoundException when package is not found '
+      'at current working directory',
       () {
         when(() => project.findByCwd()).thenThrow(Exception());
         final rapid = getRapid(project: project);
@@ -750,7 +752,8 @@ void main() {
     );
 
     test(
-      'throws PackageAtCwdNotFoundException when package is not found at current working directory',
+      'throws PackageAtCwdNotFoundException when package is not found '
+      'at current working directory',
       () {
         when(() => project.findByCwd()).thenThrow(Exception());
         final rapid = getRapid(project: project);
@@ -794,7 +797,7 @@ void main() {
           verifyInOrder([
             logger.newLine,
             () => logger.progress(
-                  'Running "dart pub remove package_a package_b" in example_package',
+                  '''Running "dart pub remove package_a package_b" in example_package''',
                 ),
             () => manager.runDartPubRemove(
                   ['package_a', 'package_b'],
@@ -898,7 +901,7 @@ void main() {
           verifyInOrder([
             logger.newLine,
             () => logger.progress(
-                  'Running "dart pub remove package_a package_b" in example_package',
+                  '''Running "dart pub remove package_a package_b" in example_package''',
                 ),
             () => manager.runDartPubRemove(
                   ['package_a', 'package_b'],

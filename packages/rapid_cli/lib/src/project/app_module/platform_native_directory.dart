@@ -1,23 +1,45 @@
 part of '../project.dart';
 
+// TODO(jtdLab): find better name for NoneIosNativeDirectory.
+
+/// {@template platform_native_directory}
+/// Base class for:
+///
+///  * [IosNativeDirectory]
+///
+///  * [MacosNativeDirectory]
+///
+///  * [NoneIosNativeDirectory]
+/// {@endtemplate}
 sealed class PlatformNativeDirectory extends Directory {
+  /// {@macro platform_native_directory}
   PlatformNativeDirectory({
     required this.projectName,
     required this.platform,
     required String path,
   }) : super(path);
 
+  /// The name of the project this directory is part of.
   final String projectName;
 
+  /// The platform.
   final NativePlatform platform;
 }
 
+/// {@template ios_native_directory}
+/// Abstraction of a ios native directory of a Rapid project.
+///
+// TODO(jtdLab): more docs.
+/// {@endtemplate}
 class IosNativeDirectory extends PlatformNativeDirectory {
+  /// {@macro ios_native_directory}
   IosNativeDirectory({
     required super.projectName,
     required super.path,
   }) : super(platform: NativePlatform.ios);
 
+  /// Returns a [IosNativeDirectory] from given [projectName]
+  /// and [platformRootPackagePath].
   factory IosNativeDirectory.resolve({
     required String projectName,
     required String platformRootPackagePath,
@@ -30,8 +52,10 @@ class IosNativeDirectory extends PlatformNativeDirectory {
     );
   }
 
+  /// The `Runner/Info.plist` file.
   PlistFile get infoFile => PlistFile(p.join(path, 'Runner', 'Info.plist'));
 
+  /// Generate this directory on disk.
   Future<void> generate({
     required String orgName,
     required Language language,
@@ -51,6 +75,9 @@ class IosNativeDirectory extends PlatformNativeDirectory {
     );
   }
 
+  /// Adds [language] to this directory.
+  ///
+  /// This updates the [infoFile].
   void addLanguage(Language language) {
     final dict = infoFile.readDict();
 
@@ -65,6 +92,9 @@ class IosNativeDirectory extends PlatformNativeDirectory {
     infoFile.setDict(dict);
   }
 
+  /// Removes [language] from this directory.
+  ///
+  /// This updates the [infoFile].
   void removeLanguage(Language language) {
     final dict = infoFile.readDict();
     final localizations =
@@ -78,12 +108,20 @@ class IosNativeDirectory extends PlatformNativeDirectory {
   }
 }
 
+/// {@template macos_native_directory}
+/// Abstraction of a macos native directory of a Rapid project.
+///
+// TODO(jtdLab): more docs.
+/// {@endtemplate}
 class MacosNativeDirectory extends PlatformNativeDirectory {
+  /// {@macro macos_native_directory}
   MacosNativeDirectory({
     required super.projectName,
     required super.path,
   }) : super(platform: NativePlatform.macos);
 
+  /// Returns a [MacosNativeDirectory] from given [projectName]
+  /// and [platformRootPackagePath].
   factory MacosNativeDirectory.resolve({
     required String projectName,
     required String platformRootPackagePath,
@@ -96,6 +134,7 @@ class MacosNativeDirectory extends PlatformNativeDirectory {
     );
   }
 
+  /// Generate this directory on disk.
   Future<void> generate({required String orgName}) async {
     await mason.generate(
       bundle: macosNativeDirectoryBundle,
@@ -108,14 +147,21 @@ class MacosNativeDirectory extends PlatformNativeDirectory {
   }
 }
 
-// TODO(jtdLab): better names
+/// {@template none_ios_native_directory}
+/// Abstraction of a none ios native directory of a Rapid project.
+///
+// TODO(jtdLab): more docs.
+/// {@endtemplate}
 class NoneIosNativeDirectory extends PlatformNativeDirectory {
+  /// {@macro none_ios_native_directory}
   NoneIosNativeDirectory({
     required super.projectName,
     required super.platform,
     required super.path,
   });
 
+  /// Returns a [NoneIosNativeDirectory] with [platform] from
+  /// given [projectName] and [platformRootPackagePath].
   factory NoneIosNativeDirectory.resolve({
     required String projectName,
     required String platformRootPackagePath,
@@ -130,6 +176,7 @@ class NoneIosNativeDirectory extends PlatformNativeDirectory {
     );
   }
 
+  /// Generate this directory on disk.
   Future<void> generate({
     String? orgName,
     String? description,

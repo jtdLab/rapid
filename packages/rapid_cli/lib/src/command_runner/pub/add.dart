@@ -21,7 +21,7 @@ class PubAddCommand extends RapidLeafCommand with PackageGetter {
 
   @override
   String get invocation =>
-      'rapid pub add [<section>:]<package>[:[descriptor]] [<section>:]<package2>[:[descriptor]] ...]';
+      '''rapid pub add [<section>:]<package>[:[descriptor]] [<section>:]<package2>[:[descriptor]] ...]''';
 
   @override
   String get description => r'''

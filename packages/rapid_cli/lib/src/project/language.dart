@@ -1,15 +1,26 @@
 import 'package:mason/mason.dart';
 import 'package:meta/meta.dart';
 
+// TODO(jtdLab): .fromUnicodeCLDRLocaleIdentifier is not implemented 100%
+
+/// {@template language}
+/// Abstraction of a language.
+/// {@endtemplate}
 @immutable
 class Language implements Comparable<Language> {
+  /// {@macro language}
   const Language({
     required this.languageCode,
     this.scriptCode,
     this.countryCode,
   });
 
-  factory Language.fromString(String raw) {
+  /// Returns a language from a
+  /// [Unicode CLDR locale identifier](https://www.unicode.org/reports/tr35/#Unicode_language_identifier).
+  ///
+  /// Hint: language code should be specified in order for current
+  /// implementation to work properly.
+  factory Language.fromUnicodeCLDRLocaleIdentifier(String raw) {
     final parts = raw.split('_');
     if (parts.length == 1) {
       return Language(
@@ -36,10 +47,11 @@ class Language implements Comparable<Language> {
     }
   }
 
-  /// Creates a [Language] by extracting it from the provided [raw] string.
+  /// Returns a [Language] from the provided [raw] string.
   ///
   /// The [raw] string is expected to be a representation
-  /// of a [Locale](https://api.flutter.dev/flutter/dart-ui/Locale-class.html) in dart code.
+  /// of a [Locale](https://api.flutter.dev/flutter/dart-ui/Locale-class.html)
+  /// in dart source code.
   factory Language.fromDartUiLocal(String raw) {
     raw = raw.replaceAll('\r', '').replaceAll(RegExp(r'\s*'), '');
     RegExpMatch? match;
@@ -77,14 +89,27 @@ class Language implements Comparable<Language> {
 
     throw ArgumentError.value(raw, 'raw', 'Does not contain parsable Locale');
   }
+
+  /// The language code.
+  /// See valid values [here](https://github.com/unicode-org/cldr/blob/maint/maint-41/common/validity/language.xml).
   final String languageCode;
+
+  /// The optional script code.
+  /// See valid values [here](https://github.com/unicode-org/cldr/blob/maint/maint-41/common/validity/script.xml).
   final String? scriptCode;
+
+  /// The optional country code.
+  /// See valid values [here](https://github.com/unicode-org/cldr/blob/maint/maint-41/common/validity/region.xml).
   final String? countryCode;
 
+  /// Wheter this language has a script code.
   bool get hasScriptCode => scriptCode != null;
 
+  /// Wheter this language has a country code.
   bool get hasCountryCode => countryCode != null;
 
+  /// Returns a string representation of this language
+  /// with the specified [seperator].
   String toStringWithSeperator([String seperator = '_']) {
     final scriptCodeSegment = scriptCode != null ? '$seperator$scriptCode' : '';
     final countryCodeSegment =

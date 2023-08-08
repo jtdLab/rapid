@@ -14,8 +14,8 @@ class InfrastructureCommand extends RapidBranchCommand {
         in infrastructurePackages ?? <InfrastructurePackage>[]) {
       addSubcommand(
         InfrastructureSubinfrastructureCommand(
-          infrastructurePackage.name ?? 'default',
           project,
+          subInfrastructureName: infrastructurePackage.name ?? 'default',
         ),
       );
     }

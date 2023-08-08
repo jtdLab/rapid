@@ -4,7 +4,8 @@ import '../../util/class_name_rest.dart';
 const _defaultTheme = true;
 
 /// {@template ui_add_widget_command}
-/// `rapid ui add widget` add a widget to the platform independent UI part of a Rapid project.
+/// `rapid ui add widget` add a widget to the platform independent UI part of
+/// a Rapid project.
 /// {@endtemplate}
 class UiAddWidgetCommand extends RapidLeafCommand with ClassNameGetter {
   /// {@macro ui_add_widget_command}

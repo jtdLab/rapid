@@ -2,13 +2,16 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
 /// {@template domain_sub_domain_add_service_interface_command}
-/// `rapid domain sub_domain add service_interface` add a service_interface to the domain part of a Rapid project.
+/// `rapid domain sub_domain add service_interface` add a service_interface
+/// to the domain part of a Rapid project.
 /// {@endtemplate}
-class DomainSubDomainAddServiceInterfaceCommand extends RapidLeafCommand
-    with ClassNameGetter {
+class DomainSubDomainAddServiceInterfaceCommand
+    extends RapidSubDomainLeafCommand with ClassNameGetter {
   /// {@macro domain_sub_domain_add_service_interface_command}
-  DomainSubDomainAddServiceInterfaceCommand(this.subDomainName, super.project);
-  final String subDomainName;
+  DomainSubDomainAddServiceInterfaceCommand(
+    super.project, {
+    required super.subDomainName,
+  });
 
   @override
   String get name => 'service_interface';

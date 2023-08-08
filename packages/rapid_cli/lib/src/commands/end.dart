@@ -37,6 +37,7 @@ mixin _EndMixin on _Rapid {
   }
 }
 
+/// An exception thrown when no command group is active.
 class NoActiveGroupException extends RapidException {
   NoActiveGroupException._()
       : super(

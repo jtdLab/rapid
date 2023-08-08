@@ -2,7 +2,8 @@ import '../base.dart';
 import 'add/widget.dart';
 
 /// {@template ui_add_command}
-/// `rapid ui add` add a component to the platform independent UI part of a Rapid project.
+/// `rapid ui add` add a component to the platform independent UI part of a
+/// Rapid project.
 /// {@endtemplate}
 class UiAddCommand extends RapidBranchCommand {
   /// {@macro ui_add_command}

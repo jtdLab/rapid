@@ -3,7 +3,8 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
 /// {@template ui_platform_remove_widget_command}
-/// `rapid ui <platform> remove widget` remove a widget from the platform UI part of a Rapid project.
+/// `rapid ui <platform> remove widget` remove a widget from the platform UI
+/// part of a Rapid project.
 /// {@endtemplate}
 class UiPlatformRemoveWidgetCommand extends RapidPlatformLeafCommand
     with ClassNameGetter {
@@ -19,7 +20,8 @@ class UiPlatformRemoveWidgetCommand extends RapidPlatformLeafCommand
 
   @override
   String get description =>
-      'Remove a widget from the ${platform.prettyName} UI part of a Rapid project.';
+      'Remove a widget from the ${platform.prettyName} UI part of a Rapid '
+      'project.';
 
   @override
   Future<void> run() {

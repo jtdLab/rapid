@@ -31,7 +31,7 @@ mixin LanguageGetter on RapidLeafCommand {
       _validateLanguage(argResults['language'] as String? ?? _defaultLanguage);
 
   Language _validateLanguage(String raw) {
-    final language = Language.fromString(raw);
+    final language = Language.fromUnicodeCLDRLocaleIdentifier(raw);
     final isValid = isValidLanguage(language);
 
     if (!isValid) {

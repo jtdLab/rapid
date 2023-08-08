@@ -9,14 +9,14 @@ import '../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Remove a navigator from the ${platform.prettyName} part of a Rapid project.',
+    '''Remove a navigator from the ${platform.prettyName} part of a Rapid project.''',
     '',
     'Usage: rapid ${platform.name} remove navigator [arguments]',
     '-h, --help       Print this usage information.',
     '',
     '',
     '-f, --feature    The name of the feature the navigator is related to.',
-    '                 This must be the name of an existing ${platform.prettyName} feature.',
+    '''                 This must be the name of an existing ${platform.prettyName} feature.''',
     '',
     'Run "rapid help" to see global options.'
   ];

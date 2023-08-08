@@ -351,7 +351,7 @@ void main() {
       );
 
       test(
-        'removes language localizations file when language has only language code',
+        '''removes language localizations file when language has only language code''',
         withMockFs(() {
           File(
             '/path/to/localization_package/lib/src/test_project_localizations.dart',

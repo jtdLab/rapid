@@ -9,7 +9,8 @@ import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
-// TODO(jtdLab): is it good to use global setup instead of setup fcts with records
+// TODO(jtdLab): is it good to use global setup instead
+// of setup fcts with records
 
 void main() {
   late Entity entity;
@@ -63,8 +64,8 @@ void main() {
 
   group('infrastructureSubInfrastructureAddDataTransferObject', () {
     test(
-        'throws DataTransferObjectAlreadyExistsException when data transfer object already exists',
-        () async {
+        'throws DataTransferObjectAlreadyExistsException when data transfer '
+        'object already exists', () async {
       when(() => dataTransferObject.existsAny).thenReturn(true);
       final rapid = getRapid(project: project);
 
@@ -123,8 +124,8 @@ void main() {
 
   group('infrastructureSubInfrastructureAddServiceImplementation', () {
     test(
-        'throws ServiceImplementationAlreadyExistsException when implementation already exists',
-        () async {
+        'throws ServiceImplementationAlreadyExistsException when '
+        'implementation already exists', () async {
       when(() => serviceImplementation.existsAny).thenReturn(true);
       final rapid = getRapid(project: project);
 
@@ -139,8 +140,8 @@ void main() {
     });
 
     test(
-        'throws ServiceInterfaceNotFoundException when service interface does not exist',
-        () async {
+        'throws ServiceInterfaceNotFoundException when service interface '
+        'does not exist', () async {
       when(() => serviceInterface.existsAll).thenReturn(false);
       final rapid = getRapid(project: project);
 
@@ -224,8 +225,8 @@ void main() {
 
   group('infrastructureSubInfrastructureRemoveDataTransferObject', () {
     test(
-        'throws DataTransferObjectNotFoundException when data transfer object does not exist',
-        () async {
+        'throws DataTransferObjectNotFoundException when data transfer object '
+        'does not exist', () async {
       when(() => dataTransferObject.existsAny).thenReturn(false);
       final rapid = getRapid(project: project);
 
@@ -272,8 +273,8 @@ void main() {
 
   group('infrastructureSubInfrastructureRemoveServiceImplementation', () {
     test(
-        'throws ServiceImplementationNotFoundException when service implementation does not exist',
-        () async {
+        'throws ServiceImplementationNotFoundException when service '
+        'implementation does not exist', () async {
       when(() => serviceImplementation.existsAny).thenReturn(false);
       final rapid = getRapid(project: project);
 

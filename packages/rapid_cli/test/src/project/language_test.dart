@@ -5,28 +5,28 @@ void main() {
   group('Language', () {
     group('.fromString', () {
       test('should parse language code', () {
-        final language = Language.fromString('en');
+        final language = Language.fromUnicodeCLDRLocaleIdentifier('en');
         expect(language.languageCode, 'en');
         expect(language.scriptCode, isNull);
         expect(language.countryCode, isNull);
       });
 
       test('should parse language code and script code', () {
-        final language = Language.fromString('en_Latn');
+        final language = Language.fromUnicodeCLDRLocaleIdentifier('en_Latn');
         expect(language.languageCode, 'en');
         expect(language.scriptCode, 'Latn');
         expect(language.countryCode, isNull);
       });
 
       test('should parse language code and country code', () {
-        final language = Language.fromString('en_US');
+        final language = Language.fromUnicodeCLDRLocaleIdentifier('en_US');
         expect(language.languageCode, 'en');
         expect(language.scriptCode, isNull);
         expect(language.countryCode, 'US');
       });
 
       test('should parse language code, script code, and country code', () {
-        final language = Language.fromString('en_Latn_US');
+        final language = Language.fromUnicodeCLDRLocaleIdentifier('en_Latn_US');
         expect(language.languageCode, 'en');
         expect(language.scriptCode, 'Latn');
         expect(language.countryCode, 'US');
@@ -128,7 +128,7 @@ void main() {
       });
 
       test(
-          "Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN')",
+          """Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN')""",
           () {
         void test(String raw) {
           expect(
@@ -142,22 +142,22 @@ void main() {
         }
 
         test(
-          "Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN')",
+          """Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN')""",
         );
         test(
-          "Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN',)",
+          """Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans', countryCode: 'CN',)""",
         );
         test(
-          "Locale.fromSubtags( languageCode: 'zh' , scriptCode: 'Hans' , countryCode: 'CN', ) ",
+          """Locale.fromSubtags( languageCode: 'zh' , scriptCode: 'Hans' , countryCode: 'CN', ) """,
         );
         test(
-          'Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans", countryCode: "CN")',
+          '''Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans", countryCode: "CN")''',
         );
         test(
-          'Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans", countryCode: "CN",)',
+          '''Locale.fromSubtags(languageCode: "zh", scriptCode: "Hans", countryCode: "CN",)''',
         );
         test(
-          'Locale.fromSubtags( languageCode: "zh" , scriptCode: "Hans" , countryCode: "CN", ) ',
+          '''Locale.fromSubtags( languageCode: "zh" , scriptCode: "Hans" , countryCode: "CN", ) ''',
         );
       });
 

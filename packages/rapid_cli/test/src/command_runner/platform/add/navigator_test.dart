@@ -15,8 +15,8 @@ List<String> expectedUsage(Platform platform) {
     '-h, --help       Print this usage information.',
     '',
     '',
-    '-f, --feature    The name of the feature this new navigator is related to.',
-    '                 This must be the name of an existing ${platform.prettyName} feature.',
+    '''-f, --feature    The name of the feature this new navigator is related to.''',
+    '''                 This must be the name of an existing ${platform.prettyName} feature.''',
     '',
     'Run "rapid help" to see global options.'
   ];

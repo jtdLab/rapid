@@ -2,7 +2,8 @@ import '../../base.dart';
 import '../../util/dart_package_name_rest.dart';
 
 /// {@template domain_remove_sub_domain_command}
-/// `rapid domain remove sub_domain` remove a subdomain from the domain part of a Rapid project.
+/// `rapid domain remove sub_domain` remove a subdomain from the domain part of
+/// a Rapid project.
 /// {@endtemplate}
 class DomainRemoveSubDomainCommand extends RapidLeafCommand
     with DartPackageNameGetter {

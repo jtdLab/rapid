@@ -7,7 +7,8 @@ import 'add/navigator.dart';
 // TODO(jtdLab): better description
 
 /// {@template platform_add_command}
-/// `rapid <platform> add` add features or languages to the platform part of a Rapid project.
+/// `rapid <platform> add` add features or languages to the platform part
+/// of a Rapid project.
 /// {@endtemplate}
 class PlatformAddCommand extends RapidPlatformBranchCommand {
   /// {@macro platform_add_command}
@@ -25,5 +26,6 @@ class PlatformAddCommand extends RapidPlatformBranchCommand {
 
   @override
   String get description =>
-      'Add features or languages to the ${platform.prettyName} part of a Rapid project.';
+      'Add features or languages to the ${platform.prettyName} part '
+      'of a Rapid project.';
 }

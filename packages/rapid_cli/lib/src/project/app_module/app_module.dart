@@ -1,6 +1,12 @@
 part of '../project.dart';
 
+/// {@template app_module}
+/// Abstraction of the app module of a Rapid project.
+///
+// TODO(jtdLab): more docs
+/// {@endtemplate}
 class AppModule extends Directory {
+  /// {@macro app_module}
   AppModule({
     required String path,
     required this.diPackage,
@@ -10,6 +16,7 @@ class AppModule extends Directory {
     required this.platformDirectory,
   }) : super(path);
 
+  /// Returns a [AppModule] from given [projectName] and [projectPath].
   factory AppModule.resolve({
     required String projectName,
     required String projectPath,
@@ -48,14 +55,19 @@ class AppModule extends Directory {
     );
   }
 
+  /// The di package.
   final DiPackage diPackage;
 
+  /// The domain directory.
   final DomainDirectory domainDirectory;
 
+  /// The infrastructure directory.
   final InfrastructureDirectory infrastructureDirectory;
 
+  /// The logging package.
   final LoggingPackage loggingPackage;
 
+  /// The platform directory builder.
   final PlatformDirectory Function({required Platform platform})
       platformDirectory;
 }

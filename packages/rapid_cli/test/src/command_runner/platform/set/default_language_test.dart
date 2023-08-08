@@ -10,7 +10,7 @@ import '../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Set the default language of the ${platform.prettyName} part of a Rapid project.',
+    '''Set the default language of the ${platform.prettyName} part of a Rapid project.''',
     '',
     'Usage: rapid ${platform.name} set default_language <language>',
     '-h, --help    Print this usage information.',

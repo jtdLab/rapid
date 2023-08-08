@@ -3,7 +3,8 @@ import '../../base.dart';
 import 'add/widget.dart';
 
 /// {@template ui_platform_add_command}
-/// `rapid ui <platform> add` add a component to the platform UI part of a Rapid project.
+/// `rapid ui <platform> add` add a component to the platform UI part of
+/// a Rapid project.
 /// {@endtemplate}
 class UiPlatformAddCommand extends RapidPlatformBranchCommand {
   /// {@macro ui_platform_add_command}
@@ -19,5 +20,6 @@ class UiPlatformAddCommand extends RapidPlatformBranchCommand {
 
   @override
   String get description =>
-      'Add a component to the ${platform.prettyName} UI part of a Rapid project.';
+      'Add a component to the ${platform.prettyName} UI part of a Rapid '
+      'project.';
 }

@@ -1,7 +1,15 @@
 part of '../project.dart';
 
+// TODO(jtdLab): doc nullable infrastructue name -> default.
+
+/// {@template infrastructure_package}
+/// Abstraction of an infrastructure package of a Rapid project.
+///
+// TODO(jtdLab): more docs.
+/// {@endtemplate}
 class InfrastructurePackage extends DartPackage
     implements Comparable<InfrastructurePackage> {
+  /// {@macro infrastructure_package}
   InfrastructurePackage({
     required this.projectName,
     required String path,
@@ -10,6 +18,8 @@ class InfrastructurePackage extends DartPackage
     required this.serviceImplementation,
   }) : super(path);
 
+  /// Returns a [InfrastructurePackage] with [name] from given [projectName]
+  /// and [projectPath].
   factory InfrastructurePackage.resolve({
     required String projectName,
     required String projectPath,
@@ -51,18 +61,23 @@ class InfrastructurePackage extends DartPackage
     );
   }
 
+  /// The name of the project this package is part of.
   final String projectName;
 
+  /// The name of this infrastructure package.
   final String? name;
 
+  /// The data transfer object builder.
   final DataTransferObject Function({required String entityName})
       dataTransferObject;
 
+  /// The service implementation builder.
   final ServiceImplementation Function({
     required String name,
     required String serviceInterfaceName,
   }) serviceImplementation;
 
+  /// The `lib/<project-name>_infrastructure[_<name>].dart` file.
   DartFile get barrelFile => DartFile(
         p.join(
           path,
@@ -71,6 +86,7 @@ class InfrastructurePackage extends DartPackage
         ),
       );
 
+  /// Generate this package on disk.
   Future<void> generate() async {
     await mason.generate(
       bundle: infrastructurePackageBundle,
@@ -96,5 +112,6 @@ class InfrastructurePackage extends DartPackage
     return name!.compareTo(other.name!);
   }
 
+  /// Returns `true` if this is the default infrastructure package.
   bool get isDefault => name == null;
 }

@@ -6,7 +6,8 @@ import 'feature/tab_flow.dart';
 import 'feature/widget.dart';
 
 /// {@template platform_add_feature_command}
-/// `rapid <platform> add feature` add a feature to the platform part of a Rapid project.
+/// `rapid <platform> add feature` add a feature to the platform part
+/// of a Rapid project.
 /// {@endtemplate}
 class PlatformAddFeatureCommand extends RapidPlatformBranchCommand {
   /// {@macro platform_add_feature_command}

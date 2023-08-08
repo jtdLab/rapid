@@ -2,7 +2,8 @@ import '../base.dart';
 import 'remove/sub_domain.dart';
 
 /// {@template domain_remove_command}
-/// `rapid domain remove` remove subdomains from the domain part of a Rapid project.
+/// `rapid domain remove` remove subdomains from the domain part of
+/// a Rapid project.
 /// {@endtemplate}
 class DomainRemoveCommand extends RapidBranchCommand {
   /// {@macro domain_remove_command}

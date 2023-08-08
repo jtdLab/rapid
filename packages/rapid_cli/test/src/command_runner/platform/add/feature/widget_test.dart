@@ -9,7 +9,7 @@ import '../../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Add a widget feature to the ${platform.prettyName} part of a Rapid project.',
+    '''Add a widget feature to the ${platform.prettyName} part of a Rapid project.''',
     '',
     'Usage: rapid ${platform.name} add feature widget <name> [arguments]',
     '-h, --help    Print this usage information.',

@@ -7,7 +7,8 @@ import 'remove/navigator.dart';
 // TODO(jtdLab): better description
 
 /// {@template platform_remove_command}
-/// `rapid <platform> remove` remove features or languages from the platform part of a Rapid project.
+/// `rapid <platform> remove` remove features or languages from the platform
+/// part of a Rapid project.
 /// {@endtemplate}
 class PlatformRemoveCommand extends RapidPlatformBranchCommand {
   /// {@macro platform_remove_command}
@@ -25,5 +26,6 @@ class PlatformRemoveCommand extends RapidPlatformBranchCommand {
 
   @override
   String get description =>
-      'Remove features or languages from the ${platform.prettyName} part of a Rapid project.';
+      'Remove features or languages from the ${platform.prettyName} part of a '
+      'Rapid project.';
 }

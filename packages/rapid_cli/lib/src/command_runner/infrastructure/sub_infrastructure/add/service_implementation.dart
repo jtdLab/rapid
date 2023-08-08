@@ -2,22 +2,22 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 import '../../../util/service_option.dart';
 
-/// {@template infrastructure_sub_infrastructure_add_service_implementation_command}
-/// `rapid infrastructure sub_infrastructure add service_implementation` adds service_implementation to the infrastructure part of a Rapid project.
+/// {@template infra_sub_infrastructure_add_service_implementation_command}
+/// `rapid infrastructure sub_infrastructure add service_implementation`
+/// adds service_implementation to the infrastructure part of a Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureAddServiceImplementationCommand
-    extends RapidLeafCommand with ClassNameGetter, ServiceGetter {
-  /// {@macro infrastructure_sub_infrastructure_add_service_implementation_command}
+    extends RapidSubInfrastructureLeafCommand
+    with ClassNameGetter, ServiceGetter {
+  /// {@macro infra_sub_infrastructure_add_service_implementation_command}
   InfrastructureSubInfrastructureAddServiceImplementationCommand(
-    this.subInfrastructureName,
-    super.project,
-  ) {
+    super.project, {
+    required super.subInfrastructureName,
+  }) {
     argParser
       ..addSeparator('')
       ..addServiceOption();
   }
-
-  final String subInfrastructureName;
 
   @override
   String get name => 'service_implementation';
@@ -27,11 +27,12 @@ class InfrastructureSubInfrastructureAddServiceImplementationCommand
 
   @override
   String get invocation =>
-      'rapid infrastructure $subInfrastructureName add service_implementation <name> [arguments]';
+      '''rapid infrastructure $subInfrastructureName add service_implementation <name> [arguments]''';
 
   @override
   String get description =>
-      'Add a service implementation to the subinfrastructure $subInfrastructureName.';
+      'Add a service implementation to the subinfrastructure '
+      '$subInfrastructureName.';
 
   @override
   Future<void> run() {

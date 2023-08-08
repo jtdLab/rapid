@@ -3,26 +3,29 @@ import 'sub_infrastructure/add.dart';
 import 'sub_infrastructure/remove.dart';
 
 /// {@template infrastructure_sub_infrastructure_command}
-/// `rapid infrastructure sub_infrastructure` work with a subinfrastructure of the infrastructure part of a Rapid project.
+/// `rapid infrastructure sub_infrastructure` work with a subinfrastructure
+/// of the infrastructure part of a Rapid project.
 /// {@endtemplate}
-class InfrastructureSubinfrastructureCommand extends RapidBranchCommand {
+class InfrastructureSubinfrastructureCommand
+    extends RapidSubInfrastructureBranchCommand {
   /// {@macro infrastructure_sub_infrastructure_command}
   InfrastructureSubinfrastructureCommand(
-    this.subInfrastructureName,
-    super.project,
-  ) {
+    super.project, {
+    required super.subInfrastructureName,
+  }) {
     addSubcommand(
-      InfrastructureSubInfrastructureAddCommand(subInfrastructureName, project),
+      InfrastructureSubInfrastructureAddCommand(
+        project,
+        subInfrastructureName: subInfrastructureName,
+      ),
     );
     addSubcommand(
       InfrastructureSubInfrastructureRemoveCommand(
-        subInfrastructureName,
         project,
+        subInfrastructureName: subInfrastructureName,
       ),
     );
   }
-
-  final String subInfrastructureName;
 
   @override
   String get name => subInfrastructureName;

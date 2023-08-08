@@ -3,7 +3,8 @@ import '../base.dart';
 import 'set/default_language.dart';
 
 /// {@template platform_set_command}
-/// `rapid <platform> set` set properties of the platform part of a Rapid project.
+/// `rapid <platform> set` set properties of the platform part of a Rapid
+/// project.
 /// {@endtemplate}
 class PlatformSetCommand extends RapidPlatformBranchCommand {
   /// {@macro platform_set_command}

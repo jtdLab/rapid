@@ -1,5 +1,11 @@
 import 'exception.dart';
 
+/// Asserts that the provided [value] is of type [T].
+///
+/// The [index], [key] and [path] parameters, if provided,
+/// give additional context about the location of the [value].
+///
+/// Throws [RapidConfigException] if [key] is not of type [T].
 T assertIsA<T>({
   required Object? value,
   int? index,
@@ -17,6 +23,13 @@ T assertIsA<T>({
   );
 }
 
+/// Asserts that the value associated with the provided [key] in the given [map]
+/// is of type [T].
+///
+/// The [path] parameter, if provided,
+/// gives additional context about the location of the [key].
+///
+/// Throws [RapidConfigException] if [key] is not of type [T] or missing.
 T assertKeyIsA<T>({
   required Object key,
   required Map<Object?, Object?> map,
@@ -29,9 +42,14 @@ T assertKeyIsA<T>({
   return assertIsA<T>(value: map[key], key: key);
 }
 
+/// {@template rapid_config_exception}
+/// An exception for handling project configuration related errors.
+/// {@endtemplate}
 class RapidConfigException extends RapidException {
+  /// {@macro rapid_config_exception}
   RapidConfigException(super.message);
 
+  /// Create a [RapidConfigException] indicating [key] is missing.
   RapidConfigException.missingKey({
     Object? key,
     int? index,
@@ -41,6 +59,8 @@ class RapidConfigException extends RapidException {
           'is required but missing',
         );
 
+  /// Create a [RapidConfigException] indicating [value] did not
+  /// match [expectedType].
   RapidConfigException.invalidType({
     required Object expectedType,
     required Object? value,

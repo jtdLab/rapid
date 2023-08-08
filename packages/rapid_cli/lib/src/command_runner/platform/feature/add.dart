@@ -4,32 +4,31 @@ import 'add/bloc.dart';
 import 'add/cubit.dart';
 
 /// {@template platform_feature_add_command}
-/// `rapid <platform> <feature> add` add a component to a feature of the platform part of a Rapid project.
+/// `rapid <platform> <feature> add` add a component to a feature of the
+/// platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformFeatureAddCommand extends RapidPlatformBranchCommand {
+class PlatformFeatureAddCommand extends RapidPlatformFeatureBranchCommand {
   /// {@macro platform_feature_add_command}
   PlatformFeatureAddCommand(
-    this.featureName,
     super.project, {
     required super.platform,
+    required super.featureName,
   }) {
     addSubcommand(
       PlatformFeatureAddBlocCommand(
-        featureName,
         project,
         platform: platform,
+        featureName: featureName,
       ),
     );
     addSubcommand(
       PlatformFeatureAddCubitCommand(
-        featureName,
         project,
         platform: platform,
+        featureName: featureName,
       ),
     );
   }
-
-  final String featureName;
 
   @override
   String get name => 'add';
@@ -40,5 +39,6 @@ class PlatformFeatureAddCommand extends RapidPlatformBranchCommand {
 
   @override
   String get description =>
-      'Add a component to $featureName of the ${platform.prettyName} part of a Rapid project.';
+      'Add a component to $featureName of the ${platform.prettyName} part of a '
+      'Rapid project.';
 }

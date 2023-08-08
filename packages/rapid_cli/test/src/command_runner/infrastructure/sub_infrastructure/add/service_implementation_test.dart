@@ -7,13 +7,13 @@ import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
 List<String> expectedUsage(String subInfrastructurePackage) => [
-      'Add a service implementation to the subinfrastructure $subInfrastructurePackage.',
+      '''Add a service implementation to the subinfrastructure $subInfrastructurePackage.''',
       '',
-      'Usage: rapid infrastructure $subInfrastructurePackage add service_implementation <name> [arguments]',
+      '''Usage: rapid infrastructure $subInfrastructurePackage add service_implementation <name> [arguments]''',
       '-h, --help       Print this usage information.',
       '',
       '',
-      '-s, --service    The name of the service interface the service implementation is related to.',
+      '''-s, --service    The name of the service interface the service implementation is related to.''',
       '',
       'Run "rapid help" to see global options.'
     ];
@@ -162,8 +162,8 @@ void main() {
       when(() => argResults.rest).thenReturn(['My']);
       final command =
           InfrastructureSubInfrastructureAddServiceImplementationCommand(
-        'package_a',
         null,
+        subInfrastructureName: 'package_a',
       )
             ..argResultOverrides = argResults
             ..rapidOverrides = rapid;

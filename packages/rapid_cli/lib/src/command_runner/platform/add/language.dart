@@ -3,7 +3,8 @@ import '../../base.dart';
 import '../../util/language_rest.dart';
 
 /// {@template platform_add_language_command}
-/// `rapid <platform> add language` add a language to the platform part of a Rapid project.
+/// `rapid <platform> add language` add a language to the platform part of a
+/// Rapid project.
 /// {@endtemplate}
 class PlatformAddLanguageCommand extends RapidPlatformLeafCommand
     with LanguageGetter {

@@ -148,6 +148,7 @@ mixin _UiMixin on _Rapid {
   }
 }
 
+/// An exception thrown when a widget already exists.
 class WidgetAlreadyExistsException extends RapidException {
   WidgetAlreadyExistsException._({
     required String name,
@@ -166,6 +167,7 @@ class WidgetAlreadyExistsException extends RapidException {
         );
 }
 
+/// An exception thrown when a widget does not exist.
 class WidgetNotFoundException extends RapidException {
   WidgetNotFoundException._(String name) : super('Widget $name not found.');
 }

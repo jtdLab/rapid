@@ -2,14 +2,16 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
 /// {@template domain_sub_domain_add_entity_command}
-/// `rapid domain sub_domain add entity` add an entity to the domain part of a Rapid project.
+/// `rapid domain sub_domain add entity` add an entity to the domain part of
+/// a Rapid project.
 /// {@endtemplate}
-class DomainSubDomainAddEntityCommand extends RapidLeafCommand
+class DomainSubDomainAddEntityCommand extends RapidSubDomainLeafCommand
     with ClassNameGetter {
   /// {@macro domain_sub_domain_add_entity_command}
-  DomainSubDomainAddEntityCommand(this.subDomainName, super.project);
-
-  final String subDomainName;
+  DomainSubDomainAddEntityCommand(
+    super.project, {
+    required super.subDomainName,
+  });
 
   @override
   String get name => 'entity';

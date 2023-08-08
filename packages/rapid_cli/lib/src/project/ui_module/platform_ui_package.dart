@@ -1,6 +1,12 @@
 part of '../project.dart';
 
+/// {@template platform_ui_package}
+/// Abstraction of a platform ui package of a Rapid project.
+///
+// TODO(jtdLab): more docs.
+/// {@endtemplate}
 class PlatformUiPackage extends UiPackage {
+  /// {@macro platform_ui_package}
   PlatformUiPackage({
     required super.projectName,
     required this.platform,
@@ -9,6 +15,8 @@ class PlatformUiPackage extends UiPackage {
     required super.themedWidget,
   });
 
+  /// Returns a [PlatformUiPackage] with [platform] from
+  /// given [projectName] and [projectPath].
   factory PlatformUiPackage.resolve({
     required String projectName,
     required String projectPath,
@@ -42,6 +50,7 @@ class PlatformUiPackage extends UiPackage {
     );
   }
 
+  /// The platform.
   final Platform platform;
 
   @override

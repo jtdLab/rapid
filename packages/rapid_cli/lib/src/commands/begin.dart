@@ -14,6 +14,7 @@ mixin _BeginMixin on _Rapid {
   }
 }
 
+/// An exception thrown when a command group is already active.
 class GroupAlreadyActiveException extends RapidException {
   GroupAlreadyActiveException._()
       : super(

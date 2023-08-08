@@ -1,6 +1,7 @@
 part of 'io.dart';
 
 @visibleForTesting
+// ignore: public_member_api_docs
 const currentPlatformZoneKey = #currentPlatform;
 
 /// The system's platform. Should be used in place of `io`'s [Platform].

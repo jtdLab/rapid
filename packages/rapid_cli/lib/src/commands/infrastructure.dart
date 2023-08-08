@@ -68,7 +68,7 @@ mixin _InfrastructureMixin on _Rapid {
             barrelFile.addExport(
               p.join(
                 'src',
-                '${name.snakeCase}_${serviceInterfaceName.snakeCase}_service.dart',
+                '''${name.snakeCase}_${serviceInterfaceName.snakeCase}_service.dart''',
               ),
             );
           },
@@ -151,7 +151,7 @@ mixin _InfrastructureMixin on _Rapid {
           barrelFile.removeExport(
             p.join(
               'src',
-              '${name.snakeCase}_${serviceInterfaceName.snakeCase}_service.dart',
+              '''${name.snakeCase}_${serviceInterfaceName.snakeCase}_service.dart''',
             ),
           );
           serviceImplementation.delete();
@@ -176,11 +176,13 @@ mixin _InfrastructureMixin on _Rapid {
   }
 }
 
+/// An exception thrown when a data transfer object already exists.
 class DataTransferObjectAlreadyExistsException extends RapidException {
   DataTransferObjectAlreadyExistsException._(String name)
       : super('Data Transfer Object ${name}Dto already exists.');
 }
 
+/// An exception thrown when a service implementation already exists.
 class ServiceImplementationAlreadyExistsException extends RapidException {
   ServiceImplementationAlreadyExistsException._(String name, String serviceName)
       : super(
@@ -188,12 +190,14 @@ class ServiceImplementationAlreadyExistsException extends RapidException {
         );
 }
 
-class ServiceImplementationNotFoundException extends RapidException {
-  ServiceImplementationNotFoundException._(String name, String serviceName)
-      : super('Service Implementation $name${serviceName}Service not found.');
-}
-
+/// An exception thrown when a data transfer object does not exist.
 class DataTransferObjectNotFoundException extends RapidException {
   DataTransferObjectNotFoundException._(String name)
       : super('DataTransferObject ${name}Dto not found.');
+}
+
+/// An exception thrown when a service implementation does not exist.
+class ServiceImplementationNotFoundException extends RapidException {
+  ServiceImplementationNotFoundException._(String name, String serviceName)
+      : super('Service Implementation $name${serviceName}Service not found.');
 }

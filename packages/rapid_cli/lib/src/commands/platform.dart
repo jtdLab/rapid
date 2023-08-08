@@ -808,6 +808,7 @@ mixin _PlatformMixin on _Rapid {
   }
 }
 
+/// An exception thrown when a feature already exists.
 class FeatureAlreadyExistsException extends RapidException {
   FeatureAlreadyExistsException._(
     PlatformFeaturePackage feature,
@@ -817,11 +818,13 @@ class FeatureAlreadyExistsException extends RapidException {
         );
 }
 
+/// An exception thrown when a feature does not exist.
 class FeatureNotFoundException extends RapidException {
   FeatureNotFoundException._(PlatformFeaturePackage feature, Platform platform)
       : super('Feature ${feature.name} not found. (${platform.prettyName})');
 }
 
+/// An exception thrown when sub features do not exist.
 class SubFeaturesNotFoundException extends RapidException {
   SubFeaturesNotFoundException._(
     Iterable<String> subFeatures,
@@ -838,81 +841,98 @@ class SubFeaturesNotFoundException extends RapidException {
         );
 }
 
+/// An exception thrown when a feature is not routable.
 class FeatureNotRoutableException extends RapidException {
   FeatureNotRoutableException._(
     PlatformFeaturePackage feature,
     Platform platform,
   ) : super(
-          'The feature ${feature.name} is not routable. (${platform.prettyName})',
+          'The feature ${feature.name} is not routable. '
+          '(${platform.prettyName})',
         );
 }
 
+/// An exception thrown when a language is already present.
 class LanguageAlreadyPresentException extends RapidException {
   LanguageAlreadyPresentException._(Language language)
       : super('The language "$language" is already present.');
 }
 
+/// An exception thrown when a bloc already exists.
 class BlocAlreadyExistsException extends RapidException {
   BlocAlreadyExistsException._(
     String name,
     PlatformFeaturePackage feature,
     Platform platform,
   ) : super(
-          'The ${name}Bloc does already exist in "${feature.name}". (${platform.prettyName})',
+          'The ${name}Bloc does already exist in "${feature.name}". '
+          '(${platform.prettyName})',
         );
 }
 
+/// An exception thrown when a cubit already exists.
 class CubitAlreadyExistsException extends RapidException {
   CubitAlreadyExistsException._(
     String name,
     PlatformFeaturePackage feature,
     Platform platform,
   ) : super(
-          'The ${name}Cubit does already exist in "${feature.name}". (${platform.prettyName})',
+          'The ${name}Cubit does already exist in "${feature.name}". '
+          '(${platform.prettyName})',
         );
 }
 
+/// An exception thrown when a bloc does not exist.
 class BlocNotFoundException extends RapidException {
   BlocNotFoundException._(
     String name,
     PlatformFeaturePackage feature,
     Platform platform,
   ) : super(
-          '${name}Bloc not found in "${feature.name}". (${platform.prettyName})',
+          '${name}Bloc not found in "${feature.name}". '
+          '(${platform.prettyName})',
         );
 }
 
+/// An exception thrown when a cubit does not exist.
 class CubitNotFoundException extends RapidException {
   CubitNotFoundException._(
     String name,
     PlatformFeaturePackage feature,
     Platform platform,
   ) : super(
-          '${name}Cubit not found in "${feature.name}". (${platform.prettyName})',
+          '${name}Cubit not found in "${feature.name}". '
+          '(${platform.prettyName})',
         );
 }
 
+/// An exception thrown when a language does not exist.
 class LanguageNotFoundException extends RapidException {
   LanguageNotFoundException._(Language language)
       : super('Language "$language" not found.');
 }
 
+/// An exception thrown when tried to remove the default language.
 class CantRemoveDefaultLanguageException extends RapidException {
   CantRemoveDefaultLanguageException._(Language language)
       : super(
-          'Can not remove language "$language" because it is the default language.',
+          'Can not remove language "$language" because it is the default '
+          'language.',
         );
 }
 
+/// An exception thrown when new default language is already default language.
 class LanguageIsAlreadyDefaultLanguageException extends RapidException {
   LanguageIsAlreadyDefaultLanguageException._(Language language)
       : super('The language "$language" already is the default language.');
 }
 
+/// An exception thrown when a platform is not activated.
 class PlatformNotActivatedException extends RapidException {
   PlatformNotActivatedException._(Platform platform)
       : super(
           'The platform ${platform.prettyName} is not activated. '
-          'Use "rapid activate ${platform.prettyName}" to activate the platform first.',
+          'Use "rapid activate ${platform.prettyName}" to activate the '
+          'platform first.',
         );
 }

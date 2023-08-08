@@ -8,17 +8,39 @@ import 'project/platform.dart';
 
 export 'package:pubspec/pubspec.dart';
 
-// The regex for a dart package name, i.e. no capital letters.
-// https://dart.dev/guides/language/language-tour#important-concepts
+/// The regex for a dart package name, i.e. no capital letters.
+/// https://dart.dev/guides/language/language-tour#important-concepts
 final dartPackageRegExp = RegExp('[a-z_][a-z0-9_]*');
 
+/// A constant representing the `version` global option of the CLI.
 const globalOptionVersion = 'version';
+
+/// A constant representing the `verbose` global option of the CLI.
 const globalOptionVerbose = 'verbose';
 
+/// Joins [lines] into a single multi-line string using '\n' as the separator.
 String multiLine(List<String> lines) => lines.join('\n');
 
+/// The environment variable key for specifying the terminal width.
+///
+/// Used to overrides terminal width in tests.
 const envKeyRapidTerminalWidth = 'RAPID_TERMINAL_WIDTH';
 
+/// Gets the terminal width for the current environment.
+///
+/// Can be overriden for testing by setting [envKeyRapidTerminalWidth] like:
+///
+/// ```dart main
+/// runZoned(
+///   () { /* code with custom terminal width here */ },
+///   zoneValues: {
+///     currentPlatformZoneKey: FakePlatform(
+///       // Simulate terminal with width 1024
+///       environment: {envKeyRapidTerminalWidth: '1024'},
+///     ),
+///   },
+/// );
+/// ```
 int get terminalWidth {
   if (currentPlatform.environment.containsKey(envKeyRapidTerminalWidth)) {
     return int.tryParse(
@@ -31,6 +53,21 @@ int get terminalWidth {
   return stdout.hasTerminal ? stdout.terminalColumns : 80;
 }
 
+/// Runs [cmd] asynchronously and returns the process result.
+///
+/// Use [workingDirectory] to set the working directory for the process.
+///
+/// Can be overriden for testing by setting [currentProcessManagerZoneKey] like:
+///
+/// ```dart main
+/// final processManager = MockProcessManager();
+/// runZoned(
+///   () { /* code with mock process manager here */ },
+///   zoneValues: {
+///     currentProcessManagerZoneKey: processManager,
+///   },
+/// );
+/// ```
 Future<ProcessResult> runCommand(
   List<String> cmd, {
   String? workingDirectory,
@@ -44,7 +81,10 @@ Future<ProcessResult> runCommand(
   );
 }
 
+/// Extension on the [Platform] class to provide some utility functions.
 extension PlatformUtils on Platform {
+  /// Returns a list of aliases for this platform used by commands to make
+  /// their invocation simpler.
   List<String> get aliases {
     switch (this) {
       case Platform.android:
@@ -64,6 +104,7 @@ extension PlatformUtils on Platform {
     }
   }
 
+  /// Returns a human-readable representation of this platform.
   String get prettyName {
     switch (this) {
       case Platform.android:
@@ -84,14 +125,17 @@ extension PlatformUtils on Platform {
   }
 }
 
+/// Extension on the [Directory] class to provide some utility functions.
 extension DirectoryUtils on Directory {
+  /// Returns `true` if this directory contains nothing.
   bool isEmpty() {
     return listSync().isEmpty;
   }
 }
 
+/// Extension on the [YamlNode] class to provide some utility functions.
 extension YamlUtils on YamlNode {
-  /// Converts a YAML node to a regular mutable Dart object.
+  /// Converts this yaml node to a regular mutable Dart object.
   Object toPlainObject() {
     final node = this;
     if (node is YamlMap) {
@@ -108,12 +152,14 @@ extension YamlUtils on YamlNode {
   }
 }
 
+/// Extension on the [Stream] class to provide some utility functions.
 extension StreamUtils<T> on Stream<T> {
   /// Runs [convert] for each event in this stream and emits the result, while
   /// ensuring that no more events than specified by [parallelism] are being
   /// processed at any given time.
   ///
-  /// If [parallelism] is `null`, [Platform.numberOfProcessors] is used.
+  /// If [parallelism] is `null`, the [currentPlatform]s `numberOfProcessors`
+  /// is used.
   Stream<R> parallel<R>(
     Future<R> Function(T) convert, {
     int? parallelism,
@@ -152,19 +198,31 @@ extension StreamUtils<T> on Stream<T> {
   }
 }
 
+/// Extension on the [Language] class to provide some utility functions.
 extension LanguageUtils on Language {
+  /// Returns `true` if this language requires a fallback language.
   bool get needsFallback => hasScriptCode || hasCountryCode;
 
+  /// Returns the fallback language of this language.
   Language fallback() => Language(languageCode: languageCode);
 }
 
+/// Extension class to provide utility functions for lists of [DartPackage].
 extension DartPackageListUtils on List<DartPackage> {
+  /// Returns this list of [DartPackage]s without [packages].
+  ///
+  /// Elements are considered equal if their `packageName` matches.
   List<DartPackage> without(List<DartPackage> packages) {
     final packageNames = packages.map((e) => e.packageName);
     return where((e) => !packageNames.contains(e.packageName)).toList();
   }
 }
 
+/// Helper to generate a map of [platform]-related variables used when
+/// generating files from templates using [mason](https://pub.dev/packages/mason).
+///
+/// If platform is `null` the returned map only contains an entry for each
+/// platform name set to ` false`.
 Map<String, dynamic> platformVars(Platform? platform) {
   return {
     if (platform != null) 'platform': platform.name,

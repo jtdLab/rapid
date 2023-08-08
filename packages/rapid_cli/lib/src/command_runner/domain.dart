@@ -15,7 +15,10 @@ class DomainCommand extends RapidBranchCommand {
     final domainPackages = project?.appModule.domainDirectory.domainPackages();
     for (final domainPackage in domainPackages ?? <DomainPackage>[]) {
       addSubcommand(
-        DomainSubdomainCommand(domainPackage.name ?? 'default', project),
+        DomainSubdomainCommand(
+          project,
+          subDomainName: domainPackage.name ?? 'default',
+        ),
       );
     }
   }

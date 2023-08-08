@@ -11,7 +11,7 @@ void main() {
 
   group('deactivatePlatform', () {
     test(
-        'throws PlatformAlreadyDeactivatedException when platform is already deactivated',
+        '''throws PlatformAlreadyDeactivatedException when platform is already deactivated''',
         () async {
       final platform = randomPlatform();
       final project = MockRapidProject();

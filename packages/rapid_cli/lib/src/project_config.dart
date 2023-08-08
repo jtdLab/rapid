@@ -9,8 +9,13 @@ import 'exception.dart';
 import 'utils.dart';
 import 'validation.dart';
 
+/// {@template rapid_project_config}
+/// Represents the configuration of a Rapid project which is typically stored
+/// inside the root `pubspec.yaml`.
+/// {@endtemplate}
 @immutable
 class RapidProjectConfig {
+  /// {@macro rapid_project_config}
   RapidProjectConfig({
     required this.path,
     required this.name,
@@ -18,6 +23,7 @@ class RapidProjectConfig {
     _validate();
   }
 
+  /// Returns a [RapidProjectConfig] located at [path] from given [yaml].
   factory RapidProjectConfig.fromYaml(
     Map<Object?, Object?> yaml, {
     required String path,
@@ -51,13 +57,13 @@ class RapidProjectConfig {
   ) async {
     final pubspecYamlFile = File(p.join(projectRoot.path, 'pubspec.yaml'));
     if (!pubspecYamlFile.existsSync()) {
-      throw UnresolvedProject(
+      throw UnresolvedProject._(
         // TODO(jtdLab): is link correct ?
         multiLine([
           'Found no pubspec.yaml file in "${projectRoot.path}".',
           '',
-          'You must have a ${AnsiStyles.bold('pubspec.yaml')} file in the root ',
-          'of your project.',
+          'You must have a ${AnsiStyles.bold('pubspec.yaml')} file in the ',
+          'root of your project.',
           '',
           'For more information, see: ',
           'https://docs.page/jtdLab/rapid/cli/create',
@@ -88,7 +94,7 @@ class RapidProjectConfig {
   /// Handles the case where a project could not be found in the [current]
   /// or a parent directory by throwing an error with a helpful message.
   static Future<Never> handleProjectNotFound(Directory current) async {
-    throw UnresolvedProject(
+    throw UnresolvedProject._(
       // TODO(jtdLab): is link correct ?
       multiLine([
         'Your current directory does not appear to be within a Rapid ',
@@ -131,5 +137,5 @@ class RapidProjectConfig {
 
 /// An exception thrown when a Rapid project could not be resolved.
 class UnresolvedProject extends RapidException {
-  UnresolvedProject(super.message);
+  UnresolvedProject._(super.message);
 }

@@ -10,9 +10,9 @@ List<String> expectedUsage(String subDomainPackage) => [
       '-h, --help    Print this usage information.',
       '',
       'Available subcommands:',
-      '  entity              Remove an entity from the subdomain $subDomainPackage.',
-      '  service_interface   Remove a service interface from the subdomain $subDomainPackage.',
-      '  value_object        Remove a value object from the subdomain $subDomainPackage.',
+      '''  entity              Remove an entity from the subdomain $subDomainPackage.''',
+      '''  service_interface   Remove a service interface from the subdomain $subDomainPackage.''',
+      '''  value_object        Remove a value object from the subdomain $subDomainPackage.''',
       '',
       'Run "rapid help" to see global options.'
     ];

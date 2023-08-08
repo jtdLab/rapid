@@ -12,8 +12,8 @@ List<String> expectedUsage(Platform platform) {
     '-h, --help    Print this usage information.',
     '',
     'Available subcommands:',
-    '  add      Add a component to the ${platform.prettyName} UI part of a Rapid project.',
-    '  remove   Remove a component from the ${platform.prettyName} UI part of a Rapid project.',
+    '''  add      Add a component to the ${platform.prettyName} UI part of a Rapid project.''',
+    '''  remove   Remove a component from the ${platform.prettyName} UI part of a Rapid project.''',
     '',
     'Run "rapid help" to see global options.'
   ];

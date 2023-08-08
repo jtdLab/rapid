@@ -4,12 +4,16 @@ import '../../../util/class_name_rest.dart';
 const _defaultType = 'String';
 
 /// {@template domain_sub_domain_add_value_object_command}
-/// `rapid domain sub_domain add value_object` add a value object to the domain part of a Rapid project.
+/// `rapid domain sub_domain add value_object` add a value object
+/// to the domain part of a Rapid project.
 /// {@endtemplate}
-class DomainSubDomainAddValueObjectCommand extends RapidLeafCommand
+class DomainSubDomainAddValueObjectCommand extends RapidSubDomainLeafCommand
     with ClassNameGetter {
   /// {@macro domain_sub_domain_add_value_object_command}
-  DomainSubDomainAddValueObjectCommand(this.subDomainName, super.project) {
+  DomainSubDomainAddValueObjectCommand(
+    super.project, {
+    required super.subDomainName,
+  }) {
     argParser
       ..addSeparator('')
       ..addOption(
@@ -19,8 +23,6 @@ class DomainSubDomainAddValueObjectCommand extends RapidLeafCommand
         defaultsTo: _defaultType,
       );
   }
-
-  final String subDomainName;
 
   @override
   String get name => 'value_object';

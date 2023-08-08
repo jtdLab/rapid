@@ -5,7 +5,8 @@ import '../../util/feature_option.dart';
 // TODO(jtdLab): refactor this
 
 /// {@template platform_remove_navigator_command}
-/// `rapid <platform> remove navigator` remove a navigator from the platform part of a Rapid project.
+/// `rapid <platform> remove navigator` remove a navigator from the platform
+/// part of a Rapid project.
 /// {@endtemplate}
 class PlatformRemoveNavigatorCommand extends RapidPlatformLeafCommand
     with FeatureGetter {
@@ -13,10 +14,12 @@ class PlatformRemoveNavigatorCommand extends RapidPlatformLeafCommand
   PlatformRemoveNavigatorCommand(super.project, {required super.platform}) {
     argParser
       ..addSeparator('')
-      // TODO(jtdLab): add hint that its a dart package nameish string but not the full name of the related package
+      // TODO(jtdLab): add hint that its a dart package nameish string
+      // but not the full name of the related package.
       ..addFeatureOption(
         help: 'The name of the feature the navigator is related to.\n'
-            'This must be the name of an existing ${platform.prettyName} feature.',
+            'This must be the name of an existing ${platform.prettyName} '
+            'feature.',
       );
   }
 
@@ -32,7 +35,8 @@ class PlatformRemoveNavigatorCommand extends RapidPlatformLeafCommand
 
   @override
   String get description =>
-      'Remove a navigator from the ${platform.prettyName} part of a Rapid project.';
+      'Remove a navigator from the ${platform.prettyName} part of a Rapid '
+      'project.';
 
   @override
   Future<void> run() {

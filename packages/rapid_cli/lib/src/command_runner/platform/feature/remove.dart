@@ -4,32 +4,31 @@ import 'remove/bloc.dart';
 import 'remove/cubit.dart';
 
 /// {@template platform_feature_remove_command}
-/// `rapid <platform> <feature> remove` remove a component from a feature of the platform part of a Rapid project.
+/// `rapid <platform> <feature> remove` remove a component from a feature of
+/// the platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformFeatureRemoveCommand extends RapidPlatformBranchCommand {
+class PlatformFeatureRemoveCommand extends RapidPlatformFeatureBranchCommand {
   /// {@macro platform_feature_remove_command}
   PlatformFeatureRemoveCommand(
-    this.featureName,
     super.project, {
     required super.platform,
+    required super.featureName,
   }) {
     addSubcommand(
       PlatformFeatureRemoveBlocCommand(
-        featureName,
         project,
         platform: platform,
+        featureName: featureName,
       ),
     );
     addSubcommand(
       PlatformFeatureRemoveCubitCommand(
-        featureName,
         project,
         platform: platform,
+        featureName: featureName,
       ),
     );
   }
-
-  final String featureName;
 
   @override
   String get name => 'remove';
@@ -40,5 +39,6 @@ class PlatformFeatureRemoveCommand extends RapidPlatformBranchCommand {
 
   @override
   String get description =>
-      'Remove a component from $featureName of the ${platform.prettyName} part of a Rapid project.';
+      'Remove a component from $featureName of the ${platform.prettyName} part '
+      'of a Rapid project.';
 }

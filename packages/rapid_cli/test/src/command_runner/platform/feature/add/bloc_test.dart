@@ -12,7 +12,7 @@ List<String> expectedUsage(
   required Platform platform,
 }) {
   return [
-    'Add a bloc to $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    '''Add a bloc to $featurePackage of the ${platform.prettyName} part of a Rapid project.''',
     '',
     'Usage: rapid ${platform.name} $featurePackage add bloc <name> [arguments]',
     '-h, --help    Print this usage information.',
@@ -107,10 +107,13 @@ void main() {
         final rapid = MockRapid();
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['Foo']);
-        final command =
-            PlatformFeatureAddBlocCommand('package_a', null, platform: platform)
-              ..argResultOverrides = argResults
-              ..rapidOverrides = rapid;
+        final command = PlatformFeatureAddBlocCommand(
+          null,
+          platform: platform,
+          featureName: 'package_a',
+        )
+          ..argResultOverrides = argResults
+          ..rapidOverrides = rapid;
 
         await command.run();
 

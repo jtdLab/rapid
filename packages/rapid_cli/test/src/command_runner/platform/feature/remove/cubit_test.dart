@@ -12,9 +12,9 @@ List<String> expectedUsage(
   required Platform platform,
 }) {
   return [
-    'Remove a cubit from $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    '''Remove a cubit from $featurePackage of the ${platform.prettyName} part of a Rapid project.''',
     '',
-    'Usage: rapid ${platform.name} $featurePackage remove cubit <name> [arguments]',
+    '''Usage: rapid ${platform.name} $featurePackage remove cubit <name> [arguments]''',
     '-h, --help    Print this usage information.',
     '',
     'Run "rapid help" to see global options.'
@@ -111,9 +111,9 @@ void main() {
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['Foo']);
         final command = PlatformFeatureRemoveCubitCommand(
-          'package_a',
           null,
           platform: platform,
+          featureName: 'package_a',
         )
           ..argResultOverrides = argResults
           ..rapidOverrides = rapid;

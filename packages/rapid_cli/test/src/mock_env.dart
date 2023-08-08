@@ -10,7 +10,8 @@ import 'mocks.dart';
 ///
 /// Swaps the underlying file system with an in memory filesystem.
 ///
-/// Overrides the process mangager with a mock that can be used for verification.
+/// Overrides the process mangager with a mock that can be used for
+/// verification.
 ///
 /// Clients might provide a [platform] to simulate different target platorms.
 FutureOr<void> Function() withMockEnv(

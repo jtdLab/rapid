@@ -383,10 +383,7 @@ mixin _ActivateMixin on _Rapid {
   }
 }
 
-typedef PlatformDirectoryBuilder = Future<PlatformDirectory> Function(
-  RapidProject project,
-);
-
+/// An exception thrown when platform is already activated.
 class PlatformAlreadyActivatedException extends RapidException {
   PlatformAlreadyActivatedException._(Platform platform)
       : super('The platform ${platform.prettyName} is already activated.');

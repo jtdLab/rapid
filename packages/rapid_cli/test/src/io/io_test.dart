@@ -5,8 +5,8 @@ import 'package:rapid_cli/src/io/io.dart';
 import 'package:rapid_cli/src/utils.dart';
 import 'package:test/test.dart';
 
-import 'mock_env.dart';
-import 'mocks.dart';
+import '../mock_env.dart';
+import '../mocks.dart';
 
 class _FileSystemEntityCollection extends FileSystemEntityCollection {
   _FileSystemEntityCollection({required this.entities});
@@ -1628,7 +1628,8 @@ void main() {
       );
 
       test(
-        'should return true if the file contains Dart statements (enclosed within comments)',
+        'should return true if the file contains Dart statements '
+        '(enclosed within comments)',
         withMockFs(() {
           File('example.dart').writeAsStringSync(
             multiLine([
@@ -1644,7 +1645,8 @@ void main() {
       );
 
       test(
-        'should return false if the file does not contain Dart statements (empty)',
+        'should return false if the file does not contain Dart statements '
+        '(empty)',
         withMockFs(() {
           File('example.dart').writeAsStringSync('');
           final dartFile = DartFile('example.dart');
@@ -1656,7 +1658,8 @@ void main() {
       );
 
       test(
-        'should return false if the file does not contain Dart statements (line comment)',
+        'should return false if the file does not contain Dart statements '
+        '(line comment)',
         withMockFs(() {
           File('example.dart').writeAsStringSync(
             multiLine([
@@ -1672,7 +1675,8 @@ void main() {
       );
 
       test(
-        'should return false if the file does not contain Dart statements (multi line comment)',
+        'should return false if the file does not contain Dart statements '
+        '(multi line comment)',
         withMockFs(() {
           File('example.dart').writeAsStringSync(
             multiLine([
@@ -1689,7 +1693,8 @@ void main() {
       );
 
       test(
-        'should return false if the file does not contain Dart statements (mixed)',
+        'should return false if the file does not contain Dart statements '
+        '(mixed)',
         withMockFs(() {
           File('example.dart').writeAsStringSync(
             multiLine([
@@ -1781,7 +1786,7 @@ void main() {
           File('example.dart').writeAsStringSync(
             multiLine([
               'class MyClass {',
-              '  static List<String> myList = [',
+              '  List<String> myList = [',
               "    'value1',",
               "    'value2',",
               '  ];',
@@ -1836,7 +1841,7 @@ void main() {
 
     group('readTypeListFromAnnotationParamOfClass', () {
       test(
-        'should return a list of values from an annotation parameter in a class',
+        '''should return a list of values from an annotation parameter in a class''',
         withMockFs(() {
           File('example.dart').writeAsStringSync(
             multiLine([
@@ -1868,7 +1873,8 @@ void main() {
 
     group('readTypeListFromAnnotationParamOfTopLevelFunction', () {
       test(
-        'should return a list of values from an annotation parameter in a top-level function',
+        'should return a list of values from an annotation parameter '
+        'in a top-level function',
         withMockFs(() {
           File('example.dart').writeAsStringSync(
             multiLine([
@@ -2248,7 +2254,8 @@ void main() {
 
     group('setTypeListOfAnnotationParamOfTopLevelFunction', () {
       test(
-        'should update the value of an annotation parameter in a top-level function',
+        'should update the value of an annotation parameter '
+        'in a top-level function',
         withMockFs(() {
           File('example.dart').writeAsStringSync(
             multiLine([
@@ -2374,7 +2381,7 @@ void main() {
       );
 
       test(
-        'should throw PlistFileError if the root of the plist is not a dictionary',
+        '''should throw PlistFileError if the root of the plist is not a dictionary''',
         withMockFs(() {
           final plistContent = multiLine([
             '<?xml version="1.0" encoding="UTF-8"?>',
@@ -2392,10 +2399,11 @@ void main() {
           expect(
             plistFile.readDict,
             throwsA(
-              isA<PlistFileError>().having(
+              isA<PlistFileException>().having(
                 (e) => e.message,
                 'message',
-                'Invalid Plist file: Root element in file.plist must be a dictionary, but a non-dictionary element was found.',
+                'Invalid Plist file: Root element in file.plist must be '
+                    'a dictionary, but a non-dictionary element was found.',
               ),
             ),
           );
@@ -2449,7 +2457,7 @@ void main() {
       );
 
       test(
-        'should throw PlistFileError if the root of the plist is not a dictionary',
+        '''should throw PlistFileError if the root of the plist is not a dictionary''',
         withMockFs(() {
           final plistContent = multiLine([
             '<?xml version="1.0" encoding="UTF-8"?>',
@@ -2467,10 +2475,11 @@ void main() {
           expect(
             () => plistFile.setDict({'key': 'value'}),
             throwsA(
-              isA<PlistFileError>().having(
+              isA<PlistFileException>().having(
                 (e) => e.toString(),
                 'toString',
-                'Invalid Plist file: Root element in file.plist must be a dictionary, but a non-dictionary element was found.',
+                'Invalid Plist file: Root element in file.plist must be a '
+                    'dictionary, but a non-dictionary element was found.',
               ),
             ),
           );

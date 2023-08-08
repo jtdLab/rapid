@@ -89,9 +89,10 @@ void main() {
       final rapid = MockRapid();
       final argResults = MockArgResults();
       when(() => argResults.rest).thenReturn(['Foo']);
-      final command = DomainSubDomainAddEntityCommand('package_a', null)
-        ..argResultOverrides = argResults
-        ..rapidOverrides = rapid;
+      final command =
+          DomainSubDomainAddEntityCommand(null, subDomainName: 'package_a')
+            ..argResultOverrides = argResults
+            ..rapidOverrides = rapid;
 
       await command.run();
 

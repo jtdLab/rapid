@@ -10,7 +10,7 @@ import '../../../utils.dart';
 
 List<String> expectedUsage(Platform platform) {
   return [
-    'Remove a language from the ${platform.prettyName} part of a Rapid project.',
+    '''Remove a language from the ${platform.prettyName} part of a Rapid project.''',
     '',
     'Usage: rapid ${platform.name} remove language <language>',
     '-h, --help    Print this usage information.',

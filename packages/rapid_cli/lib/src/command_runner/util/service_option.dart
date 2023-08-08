@@ -11,8 +11,8 @@ extension ServiceOption on ArgParser {
   void addServiceOption() {
     addOption(
       'service',
-      help:
-          'The name of the service interface the service implementation is related to.',
+      help: 'The name of the service interface the service implementation is '
+          'related to.',
       abbr: 's',
     );
   }

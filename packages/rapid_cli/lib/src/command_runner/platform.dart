@@ -22,9 +22,9 @@ class PlatformCommand extends RapidPlatformBranchCommand {
         in featurePackages ?? <PlatformFeaturePackage>[]) {
       addSubcommand(
         PlatformFeatureCommand(
-          featurePackage.name,
           project,
           platform: platform,
+          featureName: featurePackage.name,
         ),
       );
     }

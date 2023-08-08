@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'dart:async';
 import 'dart:io' as io;
 
@@ -20,7 +22,11 @@ const construction = '🚧';
 const rocket = '🚀';
 const tada = '🎉';
 
+/// {@template rapid_logger}
+/// The logger of the Rapid CLI.
+/// {@endtemplate}
 class RapidLogger with _DelegateLogger {
+  /// {@macro rapid_logger}
   RapidLogger({
     mason.LogTheme theme = const mason.LogTheme(),
     mason.Level level = mason.Level.info,
@@ -34,22 +40,30 @@ class RapidLogger with _DelegateLogger {
   @override
   final mason.Logger _logger;
 
+  /// Writes a new line to stdout.
   void newLine() => info('');
 
+  /// Write a command success message to stdout.
+  ///
+  /// message -> ✅ message
   void commandSuccess(String message) {
     info(successMessageColor(successStyle('✅ $message')));
   }
 
+  /// Writes progress group messages to stdout.
+  ///
+  /// Provide [description] the give the group a descriptive title that gets
+  /// printed before the other messages.
   ProgressGroup progressGroup([String? description]) =>
       ProgressGroup._(description, level, options: progressOptions);
 }
 
-// Implements a custom version of masons progress
-// which fixes https://github.com/felangel/mason/issues/711.
-// This is done to allow using the offical release of mason from
-// pub.dev without the issues of #711 as long its not fixed there.
-// Using the offical mason release is required when publishing rapid_cli
-// to pub.dev as non pub dependencies are not allowed.
+/// Implements a custom version of masons progress
+/// which fixes https://github.com/felangel/mason/issues/711.
+/// This is done to allow using the offical release of mason from
+/// pub.dev without the issues of #711 as long its not fixed there.
+/// Using the offical mason release is required when publishing rapid_cli
+/// to pub.dev as non pub dependencies are not allowed.
 class Progress implements mason.Progress {
   Progress._(
     this._message,
@@ -218,6 +232,9 @@ class ProgressGroup {
 
   final io.Stdout _stdout = io.stdout;
 
+  /// Reports progress message to the parent [ProgressGroup].
+  ///
+  /// Returns the generated [GroupableProgress].
   GroupableProgress progress(String message) =>
       GroupableProgress._(message, this, _level, options: _options);
 

@@ -5,13 +5,15 @@ import '../../../base.dart';
 import '../../../util/dart_package_name_rest.dart';
 import '../../../util/description_option.dart';
 
-// TODO(jtdLab): maybe add a option to specify features that want a dependency before melos bs runs
+// TODO(jtdLab): maybe add a option to specify features that want a dependency
+// before melos bs runs.
 
 String _defaultDescription(String name) =>
     'The ${name.pascalCase} widget feature.';
 
 /// {@template platform_add_feature_widget_command}
-/// `rapid <platform> add feature widget` add a widget feature to the platform part of a Rapid project.
+/// `rapid <platform> add feature widget` add a widget feature to the platform
+/// part of a Rapid project.
 /// {@endtemplate}
 class PlatformAddFeatureWidgetCommand extends RapidPlatformLeafCommand
     with DartPackageNameGetter, DescriptionGetter {
@@ -33,7 +35,8 @@ class PlatformAddFeatureWidgetCommand extends RapidPlatformLeafCommand
 
   @override
   String get description =>
-      'Add a widget feature to the ${platform.prettyName} part of a Rapid project.';
+      'Add a widget feature to the ${platform.prettyName} part of a Rapid '
+      'project.';
 
   @override
   Future<void> run() {

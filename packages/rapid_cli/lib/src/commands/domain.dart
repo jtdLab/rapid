@@ -294,45 +294,54 @@ mixin _DomainMixin on _Rapid {
   }
 }
 
+/// An exception thrown when a service interface already exists.
 class ServiceInterfaceAlreadyExistsException extends RapidException {
   ServiceInterfaceAlreadyExistsException._(String name)
       : super('Service Interface I${name}Service already exists.');
 }
 
+/// An exception thrown when a infrastructure package already exists.
 class SubInfrastructureAlreadyExistsException extends RapidException {
   SubInfrastructureAlreadyExistsException._(String name)
       : super('The subinfrastructure "$name" already exists.');
 }
 
+/// An exception thrown when a domain package already exists.
 class SubDomainAlreadyExistsException extends RapidException {
   SubDomainAlreadyExistsException._(String name)
       : super('The subdomain "$name" already exists.');
 }
 
+/// An exception thrown when a infrastructure package does not exist.
 class SubInfrastructureNotFoundException extends RapidException {
   SubInfrastructureNotFoundException._(String name)
       : super('Subinfrastructure "$name" not found.');
 }
 
+/// An exception thrown when a domain package does not exist.
 class SubDomainNotFoundException extends RapidException {
   SubDomainNotFoundException._(String name)
       : super('Subdomain "$name" not found.');
 }
 
+/// An exception thrown when a entity or value object already exists.
 class EntityOrValueObjectAlreadyExistsException extends RapidException {
   EntityOrValueObjectAlreadyExistsException._(String name)
       : super('Entity or ValueObject $name already exists.');
 }
 
+/// An exception thrown when entity does not exist.
 class EntityNotFoundException extends RapidException {
   EntityNotFoundException._(String name) : super('Entity $name not found.');
 }
 
+/// An exception thrown when service interface does not exist.
 class ServiceInterfaceNotFoundException extends RapidException {
   ServiceInterfaceNotFoundException._(String name)
       : super('Service Interface I${name}Service not found.');
 }
 
+/// An exception thrown when value object does not exist.
 class ValueObjectNotFoundException extends RapidException {
   ValueObjectNotFoundException._(String name)
       : super('Value Object $name not found.');

@@ -3,29 +3,29 @@ import 'add/data_transfer_object.dart';
 import 'add/service_implementation.dart';
 
 /// {@template infrastructure_sub_infrastructure_add_command}
-/// `rapid infrastructure sub_infrastructure add` add a component to the infrastructure part of a Rapid project.
+/// `rapid infrastructure sub_infrastructure add` add a component to
+/// the infrastructure part of a Rapid project.
 /// {@endtemplate}
-class InfrastructureSubInfrastructureAddCommand extends RapidBranchCommand {
+class InfrastructureSubInfrastructureAddCommand
+    extends RapidSubInfrastructureBranchCommand {
   /// {@macro infrastructure_sub_infrastructure_add_command}
   InfrastructureSubInfrastructureAddCommand(
-    this.subInfrastructureName,
-    super.project,
-  ) {
+    super.project, {
+    required super.subInfrastructureName,
+  }) {
     addSubcommand(
       InfrastructureSubInfrastructureAddDataTransferObjectCommand(
-        subInfrastructureName,
         project,
+        subInfrastructureName: subInfrastructureName,
       ),
     );
     addSubcommand(
       InfrastructureSubInfrastructureAddServiceImplementationCommand(
-        subInfrastructureName,
         project,
+        subInfrastructureName: subInfrastructureName,
       ),
     );
   }
-
-  final String subInfrastructureName;
 
   @override
   String get name => 'add';

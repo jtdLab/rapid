@@ -27,7 +27,8 @@ dynamic Function() withTempDir(FutureOr<void> Function(Directory root) fn) {
     } catch (_) {
       rethrow;
     } finally {
-      // TODO(jtdLab): this might influence exceptions that dependen on file system
+      // TODO(jtdLab): this might influence exceptions that dependen on
+      // file system
       // We used to delete dir here but that lead to some tests fail in ci
       Directory.current = cwd;
     }

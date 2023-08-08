@@ -2,4 +2,5 @@ include: ../../analysis_options.yaml
 
 analyzer:
   exclude:
+    - lib/src/version.dart
     - test/e2e/fixtures/**

@@ -18,6 +18,8 @@ import 'package:xml/xml.dart';
 import 'package:yaml/yaml.dart';
 import 'package:yaml_edit/yaml_edit.dart';
 
+import '../exception.dart';
+
 export 'dart:io' hide Directory, File, Platform;
 
 export 'package:platform/platform.dart';
@@ -35,13 +37,18 @@ export 'package:pubspec/pubspec.dart'
 part 'platform.dart';
 part 'process.dart';
 
+/// Represents a collection of [io.FileSystemEntity]s
 abstract class FileSystemEntityCollection {
+  /// The entities of this collection.
   Iterable<io.FileSystemEntity> get entities;
 
+  /// Wheter any entity of this collection exists on disk.
   bool get existsAny => entities.any((e) => e.existsSync());
 
+  /// Wheter all entity of this collection exists on disk.
   bool get existsAll => entities.every((e) => e.existsSync());
 
+  /// Deletes all existing entities of this collection from disk.
   void delete() {
     for (final entity in entities.where((e) => e.existsSync())) {
       entity.deleteSync(recursive: true);
@@ -49,7 +56,18 @@ abstract class FileSystemEntityCollection {
   }
 }
 
+/// Wraps [io.Directory].
+///
+/// This should be used instead of `dart:io`s directory.
+///
+/// Main purpose of this class is allow using inheritance to implement custom
+/// directories.
+///
+/// See [DartPackage] for an example.
 class Directory implements io.Directory {
+  /// Creates a new directory with [path].
+  ///
+  /// The [path] is normalized while creating the directory.
   Directory(String path)
       : _directory = directoryOverrides ?? io.Directory(p.normalize(path));
 
@@ -59,9 +77,11 @@ class Directory implements io.Directory {
   @visibleForTesting
   static io.Directory? directoryOverrides;
 
+  /// Creates a directory object pointing to the current working directory.
   // ignore: prefer_constructors_over_static_methods
   static Directory get current => Directory._fromIO(io.Directory.current);
 
+  /// Sets the current working directory of the Dart process.
   static set current(dynamic path) {
     io.Directory.current = path;
   }
@@ -165,7 +185,18 @@ class Directory implements io.Directory {
       _directory.watch(events: events, recursive: recursive);
 }
 
+/// Wraps [io.File].
+///
+/// This should be used instead of `dart:io`s file.
+///
+/// Main purpose of this class is allow using inheritance to implement custom
+/// directories.
+///
+/// See [DartFile], [YamlFile], etc for example.
 class File implements io.File {
+  /// Creates a new file with [path].
+  ///
+  /// The [path] is normalized while creating the file.
   File(String path) : _file = fileOverrides ?? io.File(p.normalize(path));
 
   File._fromIO(io.File file) : _file = file;
@@ -384,27 +415,39 @@ class File implements io.File {
       );
 }
 
+/// Represents a dart package.
 abstract class DartPackage extends Directory {
+  /// Creates a new [DartPackage] at path.
+  ///
+  /// The [path] is normalized while creating the package.
   DartPackage(super.path);
 
+  /// The `pubspec.yaml` file of this dart package.
   PubspecYamlFile get pubSpecFile =>
       PubspecYamlFile(p.join(path, 'pubspec.yaml'));
 
+  /// The name specified in the `pubspec.yaml`.
   String get packageName => pubSpecFile.name;
 }
 
+/// Represents a yaml file.
 class YamlFile extends File {
+  /// Creates a new [YamlFile] at path.
+  ///
+  /// The [path] is normalized while creating the file.
   YamlFile(super.path)
       : assert(
           path.endsWith('.yaml') || path.endsWith('.yml'),
           'YamlFile requires .yaml or .yml extension.',
         );
 
+  /// Reads returns the value stored at [key].
   T read<T>(String key) => loadYaml(readAsStringSync())[key] as T;
 
   /// Sets the field at [path] to [value].
   ///
-  /// Hint: The [path] must exists. This method can not create not existing paths.
+  /// Hint: The [path] must exist. This method can not create not existing
+  /// paths.
   void set<T>(
     List<String> path,
     T? value, {
@@ -424,11 +467,16 @@ class YamlFile extends File {
   }
 }
 
+/// Represents a `pubspec.yaml` file.
 class PubspecYamlFile extends YamlFile {
+  /// Creates a new [PubspecYamlFile] at path.
+  ///
+  /// The [path] is normalized while creating the file.
   PubspecYamlFile(super.path);
 
   PubSpec get _pubSpec => PubSpec.fromYamlString(readAsStringSync());
 
+  /// Returns the name.
   String get name {
     final name = _pubSpec.name;
     if (name != null) {
@@ -438,10 +486,15 @@ class PubspecYamlFile extends YamlFile {
     throw StateError('Name not found.');
   }
 
+  /// Returns `true` when a dependency (including dev dependencies) on package
+  /// with [name] is present.
   bool hasDependency({required String name}) {
     return _pubSpec.allDependencies.containsKey(name);
   }
 
+  /// Sets the dependency with [name] to [dependency].
+  ///
+  /// If [dev] is `true` this function sets dev dependencies instead.
   void setDependency({
     required String name,
     required DependencyReference dependency,
@@ -464,9 +517,9 @@ class PubspecYamlFile extends YamlFile {
     writeAsStringSync(output);
   }
 
-  void removeDependency({
-    required String name,
-  }) {
+  /// Removes the dependency with [name] from bot dependencies and
+  /// dev dependencies.
+  void removeDependency({required String name}) {
     final editor = YamlEditor(readAsStringSync());
 
     try {
@@ -481,7 +534,11 @@ class PubspecYamlFile extends YamlFile {
   }
 }
 
+/// Represents a dart file.
 class DartFile extends File {
+  /// Creates a new [DartFile] at path.
+  ///
+  /// The [path] is normalized while creating the file.
   DartFile(super.path)
       : assert(
           path.endsWith('.dart'),
@@ -490,10 +547,12 @@ class DartFile extends File {
 
   final DartFormatter _formatter = DartFormatter();
 
+  /// Adds [import] to this file.
   void addImport(String import) => _modifyImportsOrExports(
         (importsAndExports) => [...importsAndExports, "import '$import';"],
       );
 
+  /// Adds [export] to this file.
   void addExport(String export) => _modifyImportsOrExports(
         (importsAndExports) => [...importsAndExports, "export '$export';"],
       );
@@ -630,6 +689,7 @@ class DartFile extends File {
     return lines.isNotEmpty;
   }
 
+  /// Returns all imports of this file.
   Set<String> readImports() {
     final content = _formatter.format(readAsStringSync());
     final lines = content.split('\n');
@@ -645,6 +705,24 @@ class DartFile extends File {
     return output;
   }
 
+  /// Returns the value of the list [name] that is member of a [parentClass].
+  ///
+  /// Give the code:
+  ///
+  /// ```dart
+  /// class MyClass {
+  ///   List<String> myList = [
+  ///     'value1',
+  ///     'value2',
+  ///   ];
+  /// }
+  /// ```
+  /// Using:
+  ///
+  /// ```dart
+  /// readListVarOfClass(name: 'myList', parentClass: 'MyClass');
+  /// // -> ["'value1'", "'value2'"]
+  /// ```
   List<String> readListVarOfClass({
     required String name,
     required String parentClass,
@@ -678,6 +756,19 @@ class DartFile extends File {
         .toList();
   }
 
+  /// Returns the value of the list [name] that is a top level member of a
+  /// library.
+  ///
+  /// Give the code:
+  ///
+  /// ```dart
+  /// List<int> myTopLevelList = [1, 2, 3];
+  /// ```
+  /// Using:
+  ///
+  /// ```dart
+  /// readTopLevelListVar(name: 'myTopLevelList'); // -> ['1', '2', '3']
+  /// ```
   List<String> readTopLevelListVar({required String name}) {
     final contents = readAsStringSync();
 
@@ -711,6 +802,26 @@ class DartFile extends File {
         .toList();
   }
 
+  /// Returns the value of the list named [property] that is a parameter of
+  /// [annotation] on class with [className].
+  ///
+  /// Give the code:
+  ///
+  /// ```dart
+  /// @MyAnnotation(values: [1, 2, 3])
+  /// class MyClass {
+  ///   // Class definition
+  /// }
+  /// ```
+  /// Using:
+  ///
+  /// ```dart
+  /// readTypeListFromAnnotationParamOfClass(
+  ///   property: 'values',
+  ///   annotation: 'MyAnnotation',
+  ///   className: 'MyClass',
+  /// ); // -> ['1', '2', '3']
+  /// ```
   List<String> readTypeListFromAnnotationParamOfClass({
     required String property,
     required String annotation,
@@ -739,6 +850,26 @@ class DartFile extends File {
         .toList();
   }
 
+  /// Returns the value of the list named [property] that is a parameter of
+  /// [annotation] on top level function with [functionName].
+  ///
+  /// Give the code:
+  ///
+  /// ```dart
+  /// @MyAnnotation(values: [1, 2, 3])
+  /// void myFunction() {
+  ///   // Function body
+  /// }
+  /// ```
+  /// Using:
+  ///
+  /// ```dart
+  /// readTypeListFromAnnotationParamOfTopLevelFunction(
+  ///   property: 'values',
+  ///   annotation: 'MyAnnotation',
+  ///   functionName: 'myFunction',
+  /// ); // -> ['1', '2', '3']
+  /// ```
   List<String> readTypeListFromAnnotationParamOfTopLevelFunction({
     required String property,
     required String annotation,
@@ -767,6 +898,7 @@ class DartFile extends File {
         .toList();
   }
 
+  /// Removes [import] from this file.
   void removeImport(String import) {
     final regExp = RegExp(
       r"import[\s]+\'" + import + r"\'([\s]+as[\s]+[a-z]+)?;",
@@ -777,6 +909,7 @@ class DartFile extends File {
     );
   }
 
+  /// Removes [export] from this file.
   void removeExport(String export) {
     final regExp = RegExp(
       r"export[\s]+\'" +
@@ -789,6 +922,24 @@ class DartFile extends File {
     );
   }
 
+  /// Sets the list with [name] that is a top level member of a
+  /// library to [value].
+  ///
+  /// Give the code:
+  ///
+  /// ```dart
+  /// List<int> myTopLevelList = [1, 2, 3];
+  /// ```
+  ///
+  /// Using:
+  /// ```dart
+  /// setTopLevelListVar(name: 'myTopLevelList', value: ['1', '2']);
+  /// ```
+  ///
+  /// Leads to the code:
+  /// ```dart
+  /// List<int> myTopLevelList = [1, 2];
+  /// ```
   void setTopLevelListVar({required String name, required List<String> value}) {
     final contents = readAsStringSync();
 
@@ -818,7 +969,7 @@ class DartFile extends File {
         variableDeclaration.childEntities.whereType<ListLiteral>().first;
 
     final listText =
-        '${listLiteral.typeArguments ?? ''}[${value.join(',')}${value.isEmpty ? '' : ','}]';
+        '''${listLiteral.typeArguments ?? ''}[${value.join(',')}${value.isEmpty ? '' : ','}]''';
 
     final output = contents.replaceRange(
       listLiteral.offset,
@@ -829,6 +980,35 @@ class DartFile extends File {
     writeAsStringSync(output);
   }
 
+  /// Sets the list named [property] that is a parameter of [annotation] on
+  /// class with [className] to [value].
+  ///
+  /// Give the code:
+  ///
+  /// ```dart
+  /// @MyAnnotation(values: [1, 2, 3])
+  /// class MyClass {
+  ///   // Class definition
+  /// }
+  /// ```
+  ///
+  /// Using:
+  /// ```dart
+  /// setTypeListOfAnnotationParamOfClass(
+  ///   property: 'values',
+  ///   annotation: 'MyAnnotation',
+  ///   className: 'MyClass',
+  ///   value: ['1', '2']
+  /// );
+  /// ````
+  ///
+  /// Leads to the code:
+  /// ```dart
+  /// @MyAnnotation(values: [1, 2])
+  /// class MyClass {
+  ///   // Class definition
+  /// }
+  /// ```
   void setTypeListOfAnnotationParamOfClass({
     required String property,
     required String annotation,
@@ -859,6 +1039,35 @@ class DartFile extends File {
     writeAsStringSync(output);
   }
 
+  /// Sets the list named [property] that is a parameter of [annotation]
+  /// on top level function with [functionName] to [value].
+  ///
+  /// Give the code:
+  ///
+  /// ```dart
+  /// @MyAnnotation(values: [1, 2, 3])
+  /// void myFunction() {
+  ///   // Function body
+  /// }
+  /// ```
+  ///
+  /// Using:
+  /// ```dart
+  /// setTypeListOfAnnotationParamOfTopLevelFunction(
+  ///   property: 'values',
+  ///   annotation: 'MyAnnotation',
+  ///   functionName: 'myFunction',
+  ///   value: ['1', '2']
+  /// );
+  /// ```
+  ///
+  /// Leads to the code:
+  /// ```dart
+  /// @MyAnnotation(values: [1, 2])
+  /// void myFunction() {
+  ///   // Function body
+  /// }
+  /// ```
   void setTypeListOfAnnotationParamOfTopLevelFunction({
     required String property,
     required String annotation,
@@ -900,9 +1109,16 @@ class DartFile extends File {
   final _libraryRegExp = RegExp(r'library[\s]+[A-z][A-z_]*;');
 }
 
+/// Represents a property list file.
 class PlistFile extends File {
+  /// Creates a new [PlistFile] at path.
+  ///
+  /// The [path] is normalized while creating the file.
   PlistFile(super.path);
 
+  /// Returns the top level dictionary stored in this file as a map.
+  ///
+  /// Throws [PlistFileException] if the operation files.
   Map<String, Object> readDict() {
     final contents = readAsStringSync();
 
@@ -910,18 +1126,19 @@ class PlistFile extends File {
 
     if (PropertyListSerialization.propertyListWithString(contents)
         is! Map<String, Object>) {
-      throw PlistFileError.rootIsNotDict(plistFile: this);
+      throw PlistFileException.rootIsNotDict(plistFile: this);
     }
 
     return plist as Map<String, Object>;
   }
 
+  /// Sets the top level dictionary of this file to [map].
   void setDict(Map<String, Object> map) {
     final contents = readAsStringSync();
 
     if (PropertyListSerialization.propertyListWithString(contents)
         is! Map<String, Object>) {
-      throw PlistFileError.rootIsNotDict(plistFile: this);
+      throw PlistFileException.rootIsNotDict(plistFile: this);
     }
 
     final output = PropertyListSerialization.stringWithPropertyList(map);
@@ -929,12 +1146,17 @@ class PlistFile extends File {
   }
 }
 
+/// Represents a flutter arb file.
 class ArbFile extends File {
+  /// Creates a new [ArbFile] at path.
+  ///
+  /// The [path] is normalized while creating the file.
   ArbFile(super.path)
       : assert(path.endsWith('.arb'), 'ArbFile requires .arb extension.');
 
   static const _encoder = JsonEncoder.withIndent('  ');
 
+  /// Sets the field at [key] to [value].
   void setValue<T extends Object?>(String key, T? value) {
     final contents = readAsStringSync();
 
@@ -946,21 +1168,19 @@ class ArbFile extends File {
   }
 }
 
-class PlistFileError extends Error {
-  PlistFileError._(this.message);
+/// An exception thrown when an error occured working with a [PlistFile].
+class PlistFileException extends RapidException {
+  PlistFileException._(super.message);
 
-  factory PlistFileError.rootIsNotDict({
+  /// Thrown when [plistFile] has no root dictionary.
+  factory PlistFileException.rootIsNotDict({
     required PlistFile plistFile,
   }) =>
-      PlistFileError._(
-        'Invalid Plist file: Root element in ${plistFile.path} must be a dictionary, '
+      PlistFileException._(
+        'Invalid Plist file: Root element in ${plistFile.path} must be a '
+        'dictionary, '
         'but a non-dictionary element was found.',
       );
-
-  final String message;
-
-  @override
-  String toString() => message;
 }
 
 io.FileSystemEntity _entityFromIO(io.FileSystemEntity entity) =>

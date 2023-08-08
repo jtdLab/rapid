@@ -141,9 +141,9 @@ void main() {
                     '@InjectableInit(',
                     '  externalPackageModules: [],',
                     ')',
-                    'Future<void> configureDependencies(String environment, String platform) async =>',
+                    '''Future<void> configureDependencies(String environment, String platform) async =>''',
                     '    await getIt.init(',
-                    '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
+                    '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
                     '    );'
                   ]),
                 );
@@ -175,9 +175,9 @@ void main() {
               '@InjectableInit(',
               '  externalPackageModules: [TestWidgetPackageModule,],',
               ')',
-              'Future<void> configureDependencies(String environment, String platform) async =>',
+              '''Future<void> configureDependencies(String environment, String platform) async =>''',
               '    await getIt.init(',
-              '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
+              '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
               '    );',
               '',
             ]),
@@ -186,7 +186,8 @@ void main() {
       );
 
       test(
-        'updates pubspec, injection and router files accordingly if feature package is routable',
+        'updates pubspec, injection and router files accordingly if feature '
+        'package is routable',
         withMockFs(() async {
           final pubSpecFile = File('/path/to_ios_root_package/pubspec.yaml')
             ..createSync(recursive: true)
@@ -209,9 +210,9 @@ void main() {
                     '@InjectableInit(',
                     '  externalPackageModules: [],',
                     ')',
-                    'Future<void> configureDependencies(String environment, String platform) async =>',
+                    '''Future<void> configureDependencies(String environment, String platform) async =>''',
                     '    await getIt.init(',
-                    '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
+                    '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
                     '    );'
                   ]),
                 );
@@ -260,9 +261,9 @@ void main() {
               '@InjectableInit(',
               '  externalPackageModules: [TestPagePackageModule,],',
               ')',
-              'Future<void> configureDependencies(String environment, String platform) async =>',
+              '''Future<void> configureDependencies(String environment, String platform) async =>''',
               '    await getIt.init(',
-              '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
+              '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
               '    );',
               '',
             ]),
@@ -317,9 +318,9 @@ void main() {
                     '@InjectableInit(',
                     '  externalPackageModules: [TestWidgetPackageModule,],',
                     ')',
-                    'Future<void> configureDependencies(String environment, String platform) async =>',
+                    '''Future<void> configureDependencies(String environment, String platform) async =>''',
                     '    await getIt.init(',
-                    '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
+                    '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
                     '    );'
                   ]),
                 );
@@ -347,9 +348,9 @@ void main() {
               '@InjectableInit(',
               '  externalPackageModules: [],',
               ')',
-              'Future<void> configureDependencies(String environment, String platform) async =>',
+              '''Future<void> configureDependencies(String environment, String platform) async =>''',
               '    await getIt.init(',
-              '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
+              '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
               '    );',
               '',
             ]),
@@ -358,7 +359,8 @@ void main() {
       );
 
       test(
-        'updates pubspec, injection and router files accordingly if feature package is routable',
+        'updates pubspec, injection and router files accordingly '
+        'if feature package is routable',
         withMockFs(() async {
           final pubSpecFile = File('/path/to_ios_root_package/pubspec.yaml')
             ..createSync(recursive: true)
@@ -382,9 +384,9 @@ void main() {
                     '@InjectableInit(',
                     '  externalPackageModules: [TestPagePackageModule,],',
                     ')',
-                    'Future<void> configureDependencies(String environment, String platform) async =>',
+                    '''Future<void> configureDependencies(String environment, String platform) async =>''',
                     '    await getIt.init(',
-                    '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
+                    '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
                     '    );'
                   ]),
                 );
@@ -428,9 +430,9 @@ void main() {
               '@InjectableInit(',
               '  externalPackageModules: [],',
               ')',
-              'Future<void> configureDependencies(String environment, String platform) async =>',
+              '''Future<void> configureDependencies(String environment, String platform) async =>''',
               '    await getIt.init(',
-              '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
+              '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
               '    );',
               '',
             ]),
@@ -478,9 +480,9 @@ void main() {
                     '@InjectableInit(',
                     '  externalPackageModules: [],',
                     ')',
-                    'Future<void> configureDependencies(String environment, String platform) async =>',
+                    '''Future<void> configureDependencies(String environment, String platform) async =>''',
                     '    await getIt.init(',
-                    '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
+                    '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
                     '    );',
                   ]),
                 );
@@ -513,9 +515,9 @@ void main() {
               '@InjectableInit(',
               '  externalPackageModules: [FooPackageModule,],',
               ')',
-              'Future<void> configureDependencies(String environment, String platform) async =>',
+              '''Future<void> configureDependencies(String environment, String platform) async =>''',
               '    await getIt.init(',
-              '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
+              '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
               '    );',
               '',
             ]),
@@ -550,9 +552,9 @@ void main() {
                     '@InjectableInit(',
                     '  externalPackageModules: [FooPackageModule,],',
                     ')',
-                    'Future<void> configureDependencies(String environment, String platform) async =>',
+                    '''Future<void> configureDependencies(String environment, String platform) async =>''',
                     '    await getIt.init(',
-                    '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
+                    '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
                     '    );'
                   ]),
                 );
@@ -581,9 +583,9 @@ void main() {
               '@InjectableInit(',
               '  externalPackageModules: [],',
               ')',
-              'Future<void> configureDependencies(String environment, String platform) async =>',
+              '''Future<void> configureDependencies(String environment, String platform) async =>''',
               '    await getIt.init(',
-              '      environmentFilter: NoEnvOrContainsAny({environment, platform}),',
+              '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
               '    );',
               '',
             ]),

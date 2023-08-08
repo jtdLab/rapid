@@ -3,18 +3,17 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
 /// {@template platform_feature_add_cubit_command}
-/// `rapid <platform> <feature> add cubit` add a cubit to a feature of the platform part of a Rapid project.
+/// `rapid <platform> <feature> add cubit` add a cubit to a feature of the
+/// platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformFeatureAddCubitCommand extends RapidPlatformLeafCommand
+class PlatformFeatureAddCubitCommand extends RapidPlatformFeatureLeafCommand
     with ClassNameGetter {
   /// {@macro platform_feature_add_cubit_command}
   PlatformFeatureAddCubitCommand(
-    this.featureName,
     super.project, {
     required super.platform,
+    required super.featureName,
   });
-
-  final String featureName;
 
   @override
   String get name => 'cubit';
@@ -25,7 +24,8 @@ class PlatformFeatureAddCubitCommand extends RapidPlatformLeafCommand
 
   @override
   String get description =>
-      'Add a cubit to $featureName of the ${platform.prettyName} part of a Rapid project.';
+      'Add a cubit to $featureName of the ${platform.prettyName} part of a '
+      'Rapid project.';
 
   @override
   Future<void> run() {

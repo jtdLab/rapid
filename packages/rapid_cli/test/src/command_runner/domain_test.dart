@@ -15,7 +15,7 @@ List<String> expectedUsage(List<String> domainPackages) => [
         (domainPackage) =>
             '  $domainPackage   Work with the subdomain $domainPackage.',
       ),
-      '  remove      Remove subdomains from the domain part of a Rapid project.',
+      '''  remove      Remove subdomains from the domain part of a Rapid project.''',
       '',
       'Run "rapid help" to see global options.'
     ];

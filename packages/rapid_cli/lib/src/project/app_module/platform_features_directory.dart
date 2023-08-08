@@ -1,6 +1,12 @@
 part of '../project.dart';
 
+/// {@template platform_features_directory}
+/// Abstraction of a platform features directory of a Rapid project.
+///
+// TODO(jtdLab): more docs.
+/// {@endtemplate}
 class PlatformFeaturesDirectory extends Directory {
+  /// {@macro platform_features_directory}
   PlatformFeaturesDirectory({
     required this.projectName,
     required this.platform,
@@ -9,6 +15,8 @@ class PlatformFeaturesDirectory extends Directory {
     required this.featurePackage,
   }) : super(path);
 
+  /// Returns a [PlatformFeaturesDirectory] with [platform] from
+  /// given [projectName] and [projectPath].
   factory PlatformFeaturesDirectory.resolve({
     required String projectName,
     required String projectPath,
@@ -56,7 +64,7 @@ class PlatformFeaturesDirectory extends Directory {
           name: name.replaceAll('_widget', ''),
         ) as T;
       } else {
-        throw FeaturePackageParseError._('${projectName}_$name');
+        throw ArgumentError.value(name, 'name', 'is invalid');
       }
     }
 
@@ -69,20 +77,24 @@ class PlatformFeaturesDirectory extends Directory {
     );
   }
 
+  /// The name of the project this directory is part of.
   final String projectName;
 
+  /// The platform.
   final Platform platform;
 
+  /// The platform app feature package.
   final PlatformAppFeaturePackage appFeaturePackage;
 
+  /// The platform feature package builder.
   T Function<T extends PlatformFeaturePackage>({required String name})
       featurePackage;
 
-  Future<void> generate() async {
-    await appFeaturePackage.generate();
-    await featurePackage<PlatformPageFeaturePackage>(name: 'home').generate();
-  }
-
+  /// Returns all platform feature packages of this platform features directory.
+  ///
+  /// This function interprets every direct sub directory as a platform feature
+  /// package and expects it to have the following name pattern
+  /// `<project-name>_<platform>_[_<feature-name>_[page|flow|tab_flow|widget]]`.
   List<PlatformFeaturePackage> featurePackages() {
     return (existsSync()
         ? listSync()
@@ -104,13 +116,4 @@ class PlatformFeaturesDirectory extends Directory {
         : [])
       ..sort();
   }
-}
-
-class FeaturePackageParseError extends Error {
-  FeaturePackageParseError._(this.name);
-
-  final String name;
-
-  @override
-  String toString() => 'Could not resolve feature package $name.';
 }

@@ -12,7 +12,7 @@ List<String> expectedUsage(Platform platform) {
     '-h, --help    Print this usage information.',
     '',
     'Available subcommands:',
-    '  default_language   Set the default language of the ${platform.prettyName} part of a Rapid project.',
+    '''  default_language   Set the default language of the ${platform.prettyName} part of a Rapid project.''',
     '',
     'Run "rapid help" to see global options.'
   ];

@@ -23,7 +23,7 @@ mixin LanguageGetter on RapidLeafCommand {
       throw UsageException('Multiple languages specified.', usage);
     }
 
-    final language = Language.fromString(args.first);
+    final language = Language.fromUnicodeCLDRLocaleIdentifier(args.first);
     final isValid = isValidLanguage(language);
     if (!isValid) {
       throw UsageException(

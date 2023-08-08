@@ -2,14 +2,16 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
 /// {@template domain_sub_domain_remove_entity_command}
-/// `rapid domain sub_domain remove entity` remove an entity from the domain part of a Rapid project.
+/// `rapid domain sub_domain remove entity` remove an entity from the
+/// domain part of a Rapid project.
 /// {@endtemplate}
-class DomainSubDomainRemoveEntityCommand extends RapidLeafCommand
+class DomainSubDomainRemoveEntityCommand extends RapidSubDomainLeafCommand
     with ClassNameGetter {
   /// {@macro domain_sub_domain_remove_entity_command}
-  DomainSubDomainRemoveEntityCommand(this.subDomainName, super.project);
-
-  final String subDomainName;
+  DomainSubDomainRemoveEntityCommand(
+    super.project, {
+    required super.subDomainName,
+  });
 
   @override
   String get name => 'entity';

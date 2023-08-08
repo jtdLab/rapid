@@ -9,7 +9,7 @@ import '../../../../utils.dart';
 List<String> expectedUsage(String subDomainPackage) => [
       'Remove a value object from the subdomain $subDomainPackage.',
       '',
-      'Usage: rapid domain $subDomainPackage remove value_object <name> [arguments]',
+      '''Usage: rapid domain $subDomainPackage remove value_object <name> [arguments]''',
       '-h, --help    Print this usage information.',
       '',
       'Run "rapid help" to see global options.'
@@ -93,7 +93,10 @@ void main() {
       final rapid = MockRapid();
       final argResults = MockArgResults();
       when(() => argResults.rest).thenReturn(['Foo']);
-      final command = DomainSubDomainRemoveValueObjectCommand('package_a', null)
+      final command = DomainSubDomainRemoveValueObjectCommand(
+        null,
+        subDomainName: 'package_a',
+      )
         ..argResultOverrides = argResults
         ..rapidOverrides = rapid;
 

@@ -7,13 +7,13 @@ import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
 List<String> expectedUsage(String subInfrastructurePackage) => [
-      'Remove a data transfer object from the subinfrastructure $subInfrastructurePackage.',
+      '''Remove a data transfer object from the subinfrastructure $subInfrastructurePackage.''',
       '',
-      'Usage: rapid infrastructure $subInfrastructurePackage remove data_transfer_object <name> [arguments]',
+      '''Usage: rapid infrastructure $subInfrastructurePackage remove data_transfer_object <name> [arguments]''',
       '-h, --help      Print this usage information.',
       '',
       '',
-      '-e, --entity    The name of the entity the data transfer object is related to.',
+      '''-e, --entity    The name of the entity the data transfer object is related to.''',
       '',
       'Run "rapid help" to see global options.'
     ];
@@ -100,8 +100,8 @@ void main() {
       when(() => argResults['entity']).thenReturn('Foo');
       final command =
           InfrastructureSubInfrastructureRemoveDataTransferObjectCommand(
-        'package_a',
         null,
+        subInfrastructureName: 'package_a',
       )
             ..argResultOverrides = argResults
             ..rapidOverrides = rapid;

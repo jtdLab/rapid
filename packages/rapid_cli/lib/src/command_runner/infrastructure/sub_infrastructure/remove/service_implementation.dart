@@ -2,22 +2,23 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 import '../../../util/service_option.dart';
 
-/// {@template infrastructure_sub_infrastructure_remove_service_implementation_command}
-/// `rapid infrastructure sub_infrastructure remove service_implementation` remove a service implementation from the infrastructure part of a Rapid project.
+/// {@template infra_sub_infrastructure_remove_service_implementation_command}
+/// `rapid infrastructure sub_infrastructure remove service_implementation`
+/// remove a service implementation from the infrastructure part
+/// of a Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
-    extends RapidLeafCommand with ClassNameGetter, ServiceGetter {
-  /// {@macro infrastructure_sub_infrastructure_remove_service_implementation_command}
+    extends RapidSubInfrastructureLeafCommand
+    with ClassNameGetter, ServiceGetter {
+  /// {@macro infra_sub_infrastructure_remove_service_implementation_command}
   InfrastructureSubInfrastructureRemoveServiceImplementationCommand(
-    this.subInfrastructureName,
-    super.project,
-  ) {
+    super.project, {
+    required super.subInfrastructureName,
+  }) {
     argParser
       ..addSeparator('')
       ..addServiceOption();
   }
-
-  final String subInfrastructureName;
 
   @override
   String get name => 'service_implementation';
@@ -27,11 +28,12 @@ class InfrastructureSubInfrastructureRemoveServiceImplementationCommand
 
   @override
   String get invocation =>
-      'rapid infrastructure $subInfrastructureName remove service_implementation <name> [arguments]';
+      '''rapid infrastructure $subInfrastructureName remove service_implementation <name> [arguments]''';
 
   @override
   String get description =>
-      'Remove a service implementation from the subinfrastructure $subInfrastructureName.';
+      'Remove a service implementation from the subinfrastructure '
+      '$subInfrastructureName.';
 
   @override
   Future<void> run() {

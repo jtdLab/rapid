@@ -1,6 +1,4 @@
-import 'package:mocktail/mocktail.dart';
 import 'package:rapid_cli/src/io/io.dart' hide Platform;
-import 'package:rapid_cli/src/mason.dart';
 import 'package:rapid_cli/src/project/platform.dart';
 import 'package:rapid_cli/src/project/project.dart';
 import 'package:test/test.dart';
@@ -101,53 +99,25 @@ void main() {
       expect(
         () => platformFeaturesDirectory.featurePackage(name: 'other'),
         throwsA(
-          isA<FeaturePackageParseError>().having(
-            (e) => e.toString(),
-            'toString',
-            'Could not resolve feature package test_project_other.',
-          ),
+          isA<ArgumentError>()
+              .having(
+                (e) => e.invalidValue,
+                'invalidValue',
+                'other',
+              )
+              .having(
+                (e) => e.name,
+                'name',
+                'name',
+              )
+              .having(
+                (e) => e.message,
+                'message',
+                'is invalid',
+              ),
         ),
       );
     });
-
-    test(
-      'generate',
-      withMockFs(
-        () async {
-          final generator = MockMasonGenerator();
-          final generatorBuilder = MockMasonGeneratorBuilder(
-            generator: generator,
-          );
-          generatorOverrides = generatorBuilder.call;
-          final appFeaturePackage = MockPlatformAppFeaturePackage();
-          final homePageFeaturePackage = MockPlatformPageFeaturePackage();
-          T featurePackageBuilder<T extends PlatformFeaturePackage>({
-            required String name,
-          }) {
-            return switch (name) {
-              'app' => appFeaturePackage,
-              'home' => homePageFeaturePackage,
-              _ => throw Error()
-            } as T;
-          }
-
-          final platformFeaturesDirectory = _getPlatformFeaturesDirectory(
-            projectName: 'test_project',
-            platform: Platform.web,
-            path: '/path/to/platform_features_directory',
-            appFeaturePackage: appFeaturePackage,
-            featurePackage: featurePackageBuilder,
-          );
-
-          await platformFeaturesDirectory.generate();
-
-          verifyInOrder([
-            appFeaturePackage.generate,
-            homePageFeaturePackage.generate,
-          ]);
-        },
-      ),
-    );
 
     group('featurePackages', () {
       test(

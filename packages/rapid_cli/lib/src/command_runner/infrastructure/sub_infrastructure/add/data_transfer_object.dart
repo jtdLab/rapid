@@ -1,22 +1,21 @@
 import '../../../base.dart';
 import '../../../util/entity_option.dart';
 
-/// {@template infrastructure_sub_infrastructure_add_data_transfer_object_command}
-/// `rapid infrastructure sub_infrastructure add data_transfer_object` adds data_transfer_object to the infrastructure part of a Rapid project.
+/// {@template infra_sub_infrastructure_add_data_transfer_object_command}
+/// `rapid infrastructure sub_infrastructure add data_transfer_object`
+/// adds data_transfer_object to the infrastructure part of a Rapid project.
 /// {@endtemplate}
 class InfrastructureSubInfrastructureAddDataTransferObjectCommand
-    extends RapidLeafCommand with EntityGetter {
-  /// {@macro infrastructure_sub_infrastructure_add_data_transfer_object_command}
+    extends RapidSubInfrastructureLeafCommand with EntityGetter {
+  /// {@macro infra_sub_infrastructure_add_data_transfer_object_command}
   InfrastructureSubInfrastructureAddDataTransferObjectCommand(
-    this.subInfrastructureName,
-    super.project,
-  ) {
+    super.project, {
+    required super.subInfrastructureName,
+  }) {
     argParser
       ..addSeparator('')
       ..addEntityOption();
   }
-
-  final String subInfrastructureName;
 
   @override
   String get name => 'data_transfer_object';
@@ -26,11 +25,12 @@ class InfrastructureSubInfrastructureAddDataTransferObjectCommand
 
   @override
   String get invocation =>
-      'rapid infrastructure $subInfrastructureName add data_transfer_object [arguments]';
+      '''rapid infrastructure $subInfrastructureName add data_transfer_object [arguments]''';
 
   @override
   String get description =>
-      'Add a data transfer object to the subinfrastructure $subInfrastructureName.';
+      'Add a data transfer object to the subinfrastructure '
+      '$subInfrastructureName.';
 
   @override
   Future<void> run() {

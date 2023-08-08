@@ -4,19 +4,31 @@ import 'add/service_interface.dart';
 import 'add/value_object.dart';
 
 /// {@template domain_sub_domain_add_command}
-/// `rapid domain sub_domain add` add a component to the domain part of a Rapid project.
+/// `rapid domain sub_domain add` add a component to the domain part
+/// of a Rapid project.
 /// {@endtemplate}
-class DomainSubDomainAddCommand extends RapidBranchCommand {
+class DomainSubDomainAddCommand extends RapidSubDomainBranchCommand {
   /// {@macro domain_sub_domain_add_command}
-  DomainSubDomainAddCommand(this.subDomainName, super.project) {
-    addSubcommand(DomainSubDomainAddEntityCommand(subDomainName, project));
+  DomainSubDomainAddCommand(super.project, {required super.subDomainName}) {
     addSubcommand(
-      DomainSubDomainAddServiceInterfaceCommand(subDomainName, project),
+      DomainSubDomainAddEntityCommand(
+        project,
+        subDomainName: subDomainName,
+      ),
     );
-    addSubcommand(DomainSubDomainAddValueObjectCommand(subDomainName, project));
+    addSubcommand(
+      DomainSubDomainAddServiceInterfaceCommand(
+        project,
+        subDomainName: subDomainName,
+      ),
+    );
+    addSubcommand(
+      DomainSubDomainAddValueObjectCommand(
+        project,
+        subDomainName: subDomainName,
+      ),
+    );
   }
-
-  final String subDomainName;
 
   @override
   String get name => 'add';

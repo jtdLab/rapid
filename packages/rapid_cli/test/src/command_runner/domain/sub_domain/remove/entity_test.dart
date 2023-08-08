@@ -87,7 +87,10 @@ void main() {
       final rapid = MockRapid();
       final argResults = MockArgResults();
       when(() => argResults.rest).thenReturn(['Foo']);
-      final command = DomainSubDomainRemoveEntityCommand('package_a', null)
+      final command = DomainSubDomainRemoveEntityCommand(
+        null,
+        subDomainName: 'package_a',
+      )
         ..argResultOverrides = argResults
         ..rapidOverrides = rapid;
 

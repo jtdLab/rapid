@@ -11,8 +11,8 @@ List<String> expectedUsage(String subDomainPackage) => [
       '',
       'Available subcommands:',
       '  entity              Add an entity to the subdomain $subDomainPackage.',
-      '  service_interface   Add a service interface to the subdomain $subDomainPackage.',
-      '  value_object        Add a value object to the subdomain $subDomainPackage.',
+      '''  service_interface   Add a service interface to the subdomain $subDomainPackage.''',
+      '''  value_object        Add a value object to the subdomain $subDomainPackage.''',
       '',
       'Run "rapid help" to see global options.'
     ];

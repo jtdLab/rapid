@@ -11,7 +11,8 @@ String _defaultDescription(String name) =>
     'The ${name.pascalCase} flow feature.';
 
 /// {@template platform_add_feature_tab_flow_command}
-/// `rapid <platform> add feature tab_flow` add a tab flow feature to the platform part of a Rapid project.
+/// `rapid <platform> add feature tab_flow` add a tab flow feature to the
+/// platform part of a Rapid project.
 /// {@endtemplate}
 class PlatformAddFeatureTabFlowCommand extends RapidPlatformLeafCommand
     with DartPackageNameGetter, DescriptionGetter, NavigatorGetter {
@@ -38,7 +39,8 @@ class PlatformAddFeatureTabFlowCommand extends RapidPlatformLeafCommand
 
   @override
   String get description =>
-      'Add a tab flow feature to the ${platform.prettyName} part of a Rapid project.';
+      'Add a tab flow feature to the ${platform.prettyName} part of a Rapid '
+      'project.';
 
   @override
   Future<void> run() {

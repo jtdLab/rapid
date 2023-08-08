@@ -98,3 +98,97 @@ abstract class RapidPlatformLeafCommand extends RapidLeafCommand {
   /// The platform this command is associated with.
   final Platform platform;
 }
+
+/// {@template rapid_platform_feature_branch_command}
+/// Base class for all Rapid branch commands which are associated with a
+/// platform and feature.
+/// {@endtemplate}
+abstract class RapidPlatformFeatureBranchCommand
+    extends RapidPlatformBranchCommand {
+  /// {@macro rapid_platform_feature_branch_command}
+  RapidPlatformFeatureBranchCommand(
+    super.project, {
+    required super.platform,
+    required this.featureName,
+  });
+
+  /// The name of the feature this command is associated with.
+  final String featureName;
+}
+
+/// {@template rapid_platform_feature_leaf_command}
+/// Base class for all Rapid leaf commands which are associated with a platform
+/// and feature.
+/// {@endtemplate}
+abstract class RapidPlatformFeatureLeafCommand
+    extends RapidPlatformLeafCommand {
+  /// {@macro rapid_platform_feature_leaf_command}
+  RapidPlatformFeatureLeafCommand(
+    super.project, {
+    required super.platform,
+    required this.featureName,
+  });
+
+  /// The name of the feature this command is associated with.
+  final String featureName;
+}
+
+/// {@template rapid_sub_domain_branch_command}
+/// Base class for all Rapid branch commands which are associated with a
+/// subdomain.
+/// {@endtemplate}
+abstract class RapidSubDomainBranchCommand extends RapidBranchCommand {
+  /// {@macro rapid_sub_domain_branch_command}
+  RapidSubDomainBranchCommand(
+    super.project, {
+    required this.subDomainName,
+  });
+
+  /// The name of subdomain this command is associated with.
+  final String subDomainName;
+}
+
+/// {@template rapid_sub_domain_leaf_command}
+/// Base class for all Rapid leaf commands which are associated with a
+/// subdomain.
+/// {@endtemplate}
+abstract class RapidSubDomainLeafCommand extends RapidLeafCommand {
+  /// {@macro rapid_sub_domain_leaf_command}
+  RapidSubDomainLeafCommand(
+    super.project, {
+    required this.subDomainName,
+  });
+
+  /// The name of subdomain this command is associated with.
+  final String subDomainName;
+}
+
+/// {@template rapid_sub_infrastructure_branch_command}
+/// Base class for all Rapid branch commands which are associated with a
+/// subinfrastructure.
+/// {@endtemplate}
+abstract class RapidSubInfrastructureBranchCommand extends RapidBranchCommand {
+  /// {@macro rapid_sub_infrastructure_branch_command}
+  RapidSubInfrastructureBranchCommand(
+    super.project, {
+    required this.subInfrastructureName,
+  });
+
+  /// The name of subinfrastructure this command is associated with.
+  final String subInfrastructureName;
+}
+
+/// {@template rapid_sub_infrastructure_leaf_command}
+/// Base class for all Rapid leaf commands which are associated with a
+/// subinfrastructure.
+/// {@endtemplate}
+abstract class RapidSubInfrastructureLeafCommand extends RapidLeafCommand {
+  /// {@macro rapid_sub_infrastructure_leaf_command}
+  RapidSubInfrastructureLeafCommand(
+    super.project, {
+    required this.subInfrastructureName,
+  });
+
+  /// The name of subinfrastructure this command is associated with.
+  final String subInfrastructureName;
+}

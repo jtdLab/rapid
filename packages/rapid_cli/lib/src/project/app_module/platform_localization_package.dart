@@ -1,6 +1,12 @@
 part of '../project.dart';
 
+/// {@template platform_localization_package}
+/// Abstraction of a platform localization package of a Rapid project.
+///
+// TODO(jtdLab): more docs.
+/// {@endtemplate}
 class PlatformLocalizationPackage extends DartPackage {
+  /// {@macro platform_localization_package}
   PlatformLocalizationPackage({
     required this.projectName,
     required this.platform,
@@ -9,6 +15,8 @@ class PlatformLocalizationPackage extends DartPackage {
     required this.languageLocalizationsFile,
   }) : super(path);
 
+  /// Returns a [PlatformLocalizationPackage] with [platform] from
+  /// given [projectName] and [projectPath].
   factory PlatformLocalizationPackage.resolve({
     required String projectName,
     required String projectPath,
@@ -36,7 +44,7 @@ class PlatformLocalizationPackage extends DartPackage {
             path,
             'lib',
             'src',
-            '${projectName.snakeCase}_localizations_${language.languageCode}.dart',
+            '''${projectName.snakeCase}_localizations_${language.languageCode}.dart''',
           ),
         );
 
@@ -49,20 +57,27 @@ class PlatformLocalizationPackage extends DartPackage {
     );
   }
 
+  /// The name of the project this package is part of.
   final String projectName;
 
+  /// The platform.
   final Platform platform;
 
+  /// The language arb file builder.
   final ArbFile Function({required Language language}) languageArbFile;
 
+  /// The language localizations file builder.
   final DartFile Function({required Language language})
       languageLocalizationsFile;
 
+  /// The `lib/src/<project-name>_localizations.dart` file.
   DartFile get localizationsFile =>
       DartFile(p.join(path, 'lib', 'src', '${projectName}_localizations.dart'));
 
+  /// The `l10n.yaml` file.
   YamlFile get l10nFile => YamlFile(p.join(path, 'l10n.yaml'));
 
+  /// Generate this package on disk.
   Future<void> generate({required Language defaultLanguage}) async {
     final fallbackLanguage =
         defaultLanguage.needsFallback ? defaultLanguage.fallback() : null;
@@ -105,6 +120,9 @@ class PlatformLocalizationPackage extends DartPackage {
     }
   }
 
+  /// Returns the supported language of this package.
+  ///
+  /// The language are read from the [localizationsFile].
   Set<Language> supportedLanguages() {
     return localizationsFile
         .readListVarOfClass(
@@ -115,10 +133,13 @@ class PlatformLocalizationPackage extends DartPackage {
         .toSet();
   }
 
+  /// Returns the default language of this package.
+  ///
+  /// The default language is read from the [l10nFile].
   Language defaultLanguage() {
     final templateArbFile = l10nFile.read<String>('template-arb-file');
 
-    return Language.fromString(
+    return Language.fromUnicodeCLDRLocaleIdentifier(
       templateArbFile
           .substring(
             templateArbFile.indexOf('${projectName}_') +
@@ -129,6 +150,9 @@ class PlatformLocalizationPackage extends DartPackage {
     );
   }
 
+  /// Sets the default language of this package to [language].
+  ///
+  /// This updates the [l10nFile].
   void setDefaultLanguage(Language language) {
     final templateArbFile = l10nFile.read<String>('template-arb-file');
     final newTemplateArbFile = templateArbFile.replaceRange(
@@ -139,6 +163,7 @@ class PlatformLocalizationPackage extends DartPackage {
     l10nFile.set(['template-arb-file'], newTemplateArbFile);
   }
 
+  /// Adds the [language] to this package.
   void addLanguage(Language language) {
     // TODO(jtdLab): impl cleaner
     final existingLanguages = supportedLanguages();
@@ -156,6 +181,7 @@ class PlatformLocalizationPackage extends DartPackage {
     }
   }
 
+  /// Removes the [language] from this package.
   void removeLanguage(Language language) {
     // TODO(jtdLab): impl cleaner
     final existingLanguages = supportedLanguages();

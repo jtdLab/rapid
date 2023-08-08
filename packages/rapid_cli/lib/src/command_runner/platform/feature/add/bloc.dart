@@ -3,18 +3,17 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
 /// {@template platform_feature_add_bloc_command}
-/// `rapid <platform> <feature> add bloc` add a bloc to a feature of the platform part of a Rapid project.
+/// `rapid <platform> <feature> add bloc` add a bloc to a feature of the
+/// platform part of a Rapid project.
 /// {@endtemplate}
-class PlatformFeatureAddBlocCommand extends RapidPlatformLeafCommand
+class PlatformFeatureAddBlocCommand extends RapidPlatformFeatureLeafCommand
     with ClassNameGetter {
   /// {@macro platform_feature_add_bloc_command}
   PlatformFeatureAddBlocCommand(
-    this.featureName,
     super.project, {
     required super.platform,
+    required super.featureName,
   });
-
-  final String featureName;
 
   @override
   String get name => 'bloc';
@@ -25,7 +24,8 @@ class PlatformFeatureAddBlocCommand extends RapidPlatformLeafCommand
 
   @override
   String get description =>
-      'Add a bloc to $featureName of the ${platform.prettyName} part of a Rapid project.';
+      'Add a bloc to $featureName of the ${platform.prettyName} part of a '
+      'Rapid project.';
 
   @override
   Future<void> run() {

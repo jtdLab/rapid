@@ -10,7 +10,7 @@ const expectedUsage = [
   '-h, --help    Print this usage information.',
   '',
   'Available subcommands:',
-  '  widget   Add a widget to the platform independent UI part of a Rapid project.',
+  '''  widget   Add a widget to the platform independent UI part of a Rapid project.''',
   '',
   'Run "rapid help" to see global options.'
 ];

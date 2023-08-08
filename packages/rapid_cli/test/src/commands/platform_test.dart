@@ -11,7 +11,8 @@ import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
-// TODO(jtdLab): is it good to use global setup instead of setup fcts with records
+// TODO(jtdLab): is it good to use global setup instead of setup
+// fcts with records
 
 void main() {
   late Platform platform; // TODO(jtdLab): better test all platforms
@@ -142,7 +143,7 @@ void main() {
     });
 
     test(
-        'throws PlatformNotActivatedException when the platform is not activated',
+        '''throws PlatformNotActivatedException when the platform is not activated''',
         () async {
       when(() => project.platformIsActivated(any())).thenReturn(false);
       final rapid = getRapid(project: project);
@@ -159,7 +160,7 @@ void main() {
     });
 
     test(
-        'throws FeatureAlreadyExistsException when feature package already exists',
+        '''throws FeatureAlreadyExistsException when feature package already exists''',
         () async {
       when(() => platformFeaturePackage.existsSync()).thenReturn(true);
       final rapid = getRapid(project: project);
@@ -200,7 +201,7 @@ void main() {
               .registerFeaturePackage(platformFeaturePackage),
           progress.complete,
           () => logger.progress(
-                'Running "melos bootstrap --scope none_ios_root_package,cool_flow"',
+                '''Running "melos bootstrap --scope none_ios_root_package,cool_flow"''',
               ),
           () => manager.runMelosBootstrap(
                 ['none_ios_root_package', 'cool_flow'],
@@ -226,7 +227,7 @@ void main() {
     );
 
     test(
-      'adds a navigator implementation to the flow feature when navigator is true',
+      '''adds a navigator implementation to the flow feature when navigator is true''',
       withMockEnv((manager) async {
         final (
           progress: progress,
@@ -268,7 +269,8 @@ void main() {
     );
 
     test(
-      'adds a navigator interface to the platform navigation package when navigator is true',
+      'adds a navigator interface to the platform navigation package when '
+      'navigator is true',
       withMockEnv((manager) async {
         final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
         final rapid = getRapid(
@@ -326,7 +328,7 @@ void main() {
     });
 
     test(
-        'throws PlatformNotActivatedException when the platform is not activated',
+        '''throws PlatformNotActivatedException when the platform is not activated''',
         () async {
       when(() => project.platformIsActivated(any())).thenReturn(false);
       final rapid = getRapid(project: project);
@@ -344,7 +346,7 @@ void main() {
     });
 
     test(
-        'throws FeatureAlreadyExistsException when feature package already exists',
+        '''throws FeatureAlreadyExistsException when feature package already exists''',
         () async {
       when(() => platformFeaturePackage.existsSync()).thenReturn(true);
       final rapid = getRapid(project: project);
@@ -406,7 +408,7 @@ void main() {
               .registerFeaturePackage(platformFeaturePackage),
           progress.complete,
           () => logger.progress(
-                'Running "melos bootstrap --scope none_ios_root_package,cool_tab_flow"',
+                '''Running "melos bootstrap --scope none_ios_root_package,cool_tab_flow"''',
               ),
           () => manager.runMelosBootstrap(
                 ['none_ios_root_package', 'cool_tab_flow'],
@@ -432,7 +434,8 @@ void main() {
     );
 
     test(
-      'adds a navigator implementation to the tab flow feature when navigator is true',
+      'adds a navigator implementation to the tab flow feature when '
+      'navigator is true',
       withMockEnv((manager) async {
         final (
           progress: progress,
@@ -476,7 +479,8 @@ void main() {
     );
 
     test(
-      'adds a navigator interface to the platform navigation package when navigator is true',
+      'adds a navigator interface to the platform navigation package when '
+      'navigator is true',
       withMockEnv((manager) async {
         final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
         final rapid = getRapid(
@@ -532,7 +536,7 @@ void main() {
     });
 
     test(
-        'throws PlatformNotActivatedException when the platform is not activated',
+        '''throws PlatformNotActivatedException when the platform is not activated''',
         () async {
       when(() => project.platformIsActivated(any())).thenReturn(false);
       final rapid = getRapid(project: project);
@@ -549,7 +553,7 @@ void main() {
     });
 
     test(
-        'throws FeatureAlreadyExistsException when feature package already exists',
+        '''throws FeatureAlreadyExistsException when feature package already exists''',
         () async {
       when(() => platformFeaturePackage.existsSync()).thenReturn(true);
       final rapid = getRapid(project: project);
@@ -590,7 +594,7 @@ void main() {
               .registerFeaturePackage(platformFeaturePackage),
           progress.complete,
           () => logger.progress(
-                'Running "melos bootstrap --scope none_ios_root_package,cool_page"',
+                '''Running "melos bootstrap --scope none_ios_root_package,cool_page"''',
               ),
           () => manager.runMelosBootstrap(
                 ['none_ios_root_package', 'cool_page'],
@@ -616,7 +620,7 @@ void main() {
     );
 
     test(
-      'adds a navigator implementation to the page feature when navigator is true',
+      '''adds a navigator implementation to the page feature when navigator is true''',
       withMockEnv((manager) async {
         final (
           progress: progress,
@@ -658,7 +662,8 @@ void main() {
     );
 
     test(
-      'adds a navigator interface to the platform navigation package when navigator is true',
+      'adds a navigator interface to the platform navigation package when '
+      'navigator is true',
       withMockEnv((_) async {
         final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
         final rapid = getRapid(
@@ -708,7 +713,7 @@ void main() {
     });
 
     test(
-        'throws PlatformNotActivatedException when the platform is not activated',
+        '''throws PlatformNotActivatedException when the platform is not activated''',
         () async {
       when(() => project.platformIsActivated(any())).thenReturn(false);
       final rapid = getRapid(project: project);
@@ -724,7 +729,7 @@ void main() {
     });
 
     test(
-        'throws FeatureAlreadyExistsException when feature package already exists',
+        '''throws FeatureAlreadyExistsException when feature package already exists''',
         () async {
       when(() => platformFeaturePackage.existsSync()).thenReturn(true);
       final rapid = getRapid(project: project);
@@ -763,7 +768,7 @@ void main() {
               .registerFeaturePackage(platformFeaturePackage),
           progress.complete,
           () => logger.progress(
-                'Running "melos bootstrap --scope none_ios_root_package,cool_widget"',
+                '''Running "melos bootstrap --scope none_ios_root_package,cool_widget"''',
               ),
           () => manager.runMelosBootstrap(
                 ['none_ios_root_package', 'cool_widget'],
@@ -1695,7 +1700,7 @@ void main() {
     });
 
     test(
-        'throws FeatureNotFoundException when the feature package does not exist',
+        '''throws FeatureNotFoundException when the feature package does not exist''',
         () async {
       when(() => platformFeaturePackage.existsSync()).thenReturn(false);
       final rapid = getRapid(project: project);
@@ -1735,7 +1740,7 @@ void main() {
           () => platformFeaturePackage.deleteSync(recursive: true),
           progress.complete,
           () => logger.progress(
-                'Running "melos bootstrap --scope remaining_widget,none_ios_root_package"',
+                '''Running "melos bootstrap --scope remaining_widget,none_ios_root_package"''',
               ),
           () => manager.runMelosBootstrap(
                 ['remaining_widget', 'none_ios_root_package'],
@@ -1886,7 +1891,8 @@ void main() {
     );
 
     test(
-      'removes all language with same language code when language is fallback language',
+      'removes all language with same language code when language '
+      'is fallback language',
       withMockEnv((manager) async {
         final (logger: logger, progress: progress) = setupLoggerWithoutGroup();
         final rapid = getRapid(project: project, logger: logger);
@@ -1956,8 +1962,8 @@ void main() {
       );
 
       test(
-        'removes all language with same language code when language is fallback language '
-        'from platform root package',
+        'removes all language with same language code when language is '
+        'fallback language from platform root package',
         withMockEnv((manager) async {
           final rapid = getRapid(project: project);
 
@@ -2008,8 +2014,8 @@ void main() {
       );
 
       test(
-        'removes all language with same language code when language is fallback language '
-        'from platform root package',
+        'removes all language with same language code when language '
+        'is fallback language from platform root package',
         withMockEnv((manager) async {
           final rapid = getRapid(project: project);
 
@@ -2171,8 +2177,8 @@ void main() {
     });
 
     test(
-        'throws LanguageIsAlreadyDefaultLanguageException for an already default language',
-        () async {
+        'throws LanguageIsAlreadyDefaultLanguageException for '
+        'an already default language', () async {
       final rapid = getRapid(project: project);
 
       expect(

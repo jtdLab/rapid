@@ -4,8 +4,8 @@ import 'package:test/test.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
-// TODO(jtdLab): consider not using a for loop instead share a method with test logic and give each
-// platform its own test invocation
+// TODO(jtdLab): consider not using a for loop instead share a method with
+// test logic and give each platform its own test invocation
 
 List<String> expectedUsage(
   List<String> featurePackages, {
@@ -18,13 +18,13 @@ List<String> expectedUsage(
     '-h, --help    Print this usage information.',
     '',
     'Available subcommands:',
-    '  add         Add features or languages to the ${platform.prettyName} part of a Rapid project.',
+    '''  add         Add features or languages to the ${platform.prettyName} part of a Rapid project.''',
     ...featurePackages.map(
       (featurePackage) =>
-          '  $featurePackage   Work with $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+          '''  $featurePackage   Work with $featurePackage of the ${platform.prettyName} part of a Rapid project.''',
     ),
-    '  remove      Remove features or languages from the ${platform.prettyName} part of a Rapid project.',
-    '  set         Set properties of the ${platform.prettyName} part of a Rapid project.',
+    '''  remove      Remove features or languages from the ${platform.prettyName} part of a Rapid project.''',
+    '''  set         Set properties of the ${platform.prettyName} part of a Rapid project.''',
     '',
     'Run "rapid help" to see global options.'
   ];

@@ -9,7 +9,7 @@ import '../../../../utils.dart';
 List<String> expectedUsage(String subDomainPackage) => [
       'Remove a service interface from the subdomain $subDomainPackage.',
       '',
-      'Usage: rapid domain $subDomainPackage remove service_interface <name> [arguments]',
+      '''Usage: rapid domain $subDomainPackage remove service_interface <name> [arguments]''',
       '-h, --help    Print this usage information.',
       '',
       'Run "rapid help" to see global options.'
@@ -95,10 +95,12 @@ void main() {
       final rapid = MockRapid();
       final argResults = MockArgResults();
       when(() => argResults.rest).thenReturn(['Foo']);
-      final command =
-          DomainSubDomainRemoveServiceInterfaceCommand('package_a', null)
-            ..argResultOverrides = argResults
-            ..rapidOverrides = rapid;
+      final command = DomainSubDomainRemoveServiceInterfaceCommand(
+        null,
+        subDomainName: 'package_a',
+      )
+        ..argResultOverrides = argResults
+        ..rapidOverrides = rapid;
 
       await command.run();
 

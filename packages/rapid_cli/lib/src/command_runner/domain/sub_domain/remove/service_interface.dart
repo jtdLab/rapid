@@ -2,17 +2,16 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
 /// {@template domain_sub_domain_remove_service_interface_command}
-/// `rapid domain sub_domain remove service_interface` remove a service interface from the domain part of a Rapid project.
+/// `rapid domain sub_domain remove service_interface` remove a service
+/// interface from the domain part of a Rapid project.
 /// {@endtemplate}
-class DomainSubDomainRemoveServiceInterfaceCommand extends RapidLeafCommand
-    with ClassNameGetter {
+class DomainSubDomainRemoveServiceInterfaceCommand
+    extends RapidSubDomainLeafCommand with ClassNameGetter {
   /// {@macro domain_sub_domain_remove_service_interface_command}
   DomainSubDomainRemoveServiceInterfaceCommand(
-    this.subDomainName,
-    super.project,
-  );
-
-  final String subDomainName;
+    super.project, {
+    required super.subDomainName,
+  });
 
   @override
   String get name => 'service_interface';

@@ -2,14 +2,16 @@ import '../../../base.dart';
 import '../../../util/class_name_rest.dart';
 
 /// {@template domain_sub_domain_remove_value_object_command}
-/// `rapid domain sub_domain remove value_object` remove a value object from the domain part of a Rapid project.
+/// `rapid domain sub_domain remove value_object` remove a value object
+/// from the domain part of a Rapid project.
 /// {@endtemplate}
-class DomainSubDomainRemoveValueObjectCommand extends RapidLeafCommand
+class DomainSubDomainRemoveValueObjectCommand extends RapidSubDomainLeafCommand
     with ClassNameGetter {
   /// {@macro domain_sub_domain_remove_value_object_command}
-  DomainSubDomainRemoveValueObjectCommand(this.subDomainName, super.project);
-
-  final String subDomainName;
+  DomainSubDomainRemoveValueObjectCommand(
+    super.project, {
+    required super.subDomainName,
+  });
 
   @override
   String get name => 'value_object';

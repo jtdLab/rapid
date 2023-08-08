@@ -9,10 +9,13 @@ import '../mock_env.dart';
 import '../mocks.dart';
 import '../utils.dart';
 
-// TODO(jtdLab): when adding and removing domains the errors are not realy good abstracted the command needs some reconsideration
-// TODO(jtdLab): is it good to use global setup instead of setup fcts with records
+// TODO(jtdLab): when adding and removing domains the errors are
+// not realy good abstracted the command needs some reconsideration
+// TODO(jtdLab): is it good to use global setup instead of setup fcts
+// with records
 // TODO(jtdLab): are defaults set usefully and minimalistic ?
-// TODO(jtdLab): is the right package used foo_bar -> domain package is not verified same for other commands in other files
+// TODO(jtdLab): is the right package used foo_bar -> domain package
+// is not verified same for other commands in other files
 
 void main() {
   late Entity entity;
@@ -73,7 +76,7 @@ void main() {
 
   group('domainAddSubDomain', () {
     test(
-        'throws SubDomainAlreadyExistsException when domain package already exists',
+        '''throws SubDomainAlreadyExistsException when domain package already exists''',
         () async {
       when(() => domainPackage.existsSync()).thenReturn(true);
       final rapid = getRapid(project: project);
@@ -85,8 +88,8 @@ void main() {
     });
 
     test(
-        'throws SubInfrastructureAlreadyExistsException when infrastructure package already exists',
-        () async {
+        'throws SubInfrastructureAlreadyExistsException when infrastructure '
+        'package already exists', () async {
       when(() => domainPackage.existsSync()).thenReturn(false);
       when(() => infrastructurePackage.existsSync()).thenReturn(true);
       final rapid = getRapid(project: project);
@@ -129,7 +132,8 @@ void main() {
               rootPackageB.registerInfrastructurePackage(infrastructurePackage),
           progress.complete,
           () => logger.progress(
-                'Running "melos bootstrap --scope domain_package,infrastructure_package,root_package_a,root_package_b"',
+                'Running "melos bootstrap --scope '
+                '''domain_package,infrastructure_package,root_package_a,root_package_b"''',
               ),
           () => manager.runMelosBootstrap(
                 [
@@ -174,7 +178,8 @@ void main() {
       });
 
       test(
-        'marks domain package, infrastructure package and root packages as need bootstrap',
+        'marks domain package, infrastructure package and root packages '
+        'as need bootstrap',
         withMockEnv((_) async {
           when(() => domainPackage.existsSync()).thenReturn(false);
           when(() => infrastructurePackage.existsSync()).thenReturn(false);
@@ -226,8 +231,8 @@ void main() {
     });
 
     test(
-        'throws SubInfrastructureNotFoundException when infrastructure package does not exist',
-        () async {
+        'throws SubInfrastructureNotFoundException when infrastructure package '
+        'does not exist', () async {
       when(() => infrastructurePackage.existsSync()).thenReturn(false);
       final rapid = getRapid(project: project);
 
@@ -269,7 +274,7 @@ void main() {
           () => infrastructurePackage.deleteSync(recursive: true),
           progress.complete,
           () => logger.progress(
-                'Running "melos bootstrap --scope root_package_a,root_package_b"',
+                '''Running "melos bootstrap --scope root_package_a,root_package_b"''',
               ),
           () => manager.runMelosBootstrap(
                 ['root_package_a', 'root_package_b'],
@@ -340,7 +345,7 @@ void main() {
 
   group('domainSubDomainAddEntity', () {
     test(
-        'throws EntityOrValueObjectAlreadyExistsException when entity already exists',
+        '''throws EntityOrValueObjectAlreadyExistsException when entity already exists''',
         () async {
       when(() => entity.existsAny).thenReturn(true);
       final rapid = getRapid(project: project);
@@ -387,8 +392,8 @@ void main() {
 
   group('domainSubDomainAddServiceInterface', () {
     test(
-        'throws ServiceInterfaceAlreadyExistsException when service interface already exists',
-        () async {
+        'throws ServiceInterfaceAlreadyExistsException when service interface '
+        'already exists', () async {
       when(() => serviceInterface.existsAny).thenReturn(true);
       final rapid = getRapid(project: project);
 
@@ -434,8 +439,8 @@ void main() {
 
   group('domainSubDomainAddValueObject', () {
     test(
-        'throws EntityOrValueObjectAlreadyExistsException when value object already exists',
-        () async {
+        'throws EntityOrValueObjectAlreadyExistsException when value object '
+        'already exists', () async {
       when(() => valueObject.existsAny).thenReturn(true);
       final rapid = getRapid(project: project);
 
@@ -569,8 +574,8 @@ void main() {
 
   group('domainSubDomainRemoveServiceInterface', () {
     test(
-        'throws ServiceInterfaceNotFoundException when service interface does not exist',
-        () async {
+        'throws ServiceInterfaceNotFoundException when service interface does '
+        'not exist', () async {
       when(() => serviceInterface.existsAny).thenReturn(false);
       final rapid = getRapid(project: project);
 

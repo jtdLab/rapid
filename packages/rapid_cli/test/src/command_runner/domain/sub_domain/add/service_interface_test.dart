@@ -9,7 +9,7 @@ import '../../../../utils.dart';
 List<String> expectedUsage(String subDomainPackage) => [
       'Add a service interface to the subdomain $subDomainPackage.',
       '',
-      'Usage: rapid domain $subDomainPackage add service_interface <name> [arguments]',
+      '''Usage: rapid domain $subDomainPackage add service_interface <name> [arguments]''',
       '-h, --help    Print this usage information.',
       '',
       'Run "rapid help" to see global options.'
@@ -98,10 +98,12 @@ void main() {
       final rapid = MockRapid();
       final argResults = MockArgResults();
       when(() => argResults.rest).thenReturn(['Foo']);
-      final command =
-          DomainSubDomainAddServiceInterfaceCommand('package_a', null)
-            ..argResultOverrides = argResults
-            ..rapidOverrides = rapid;
+      final command = DomainSubDomainAddServiceInterfaceCommand(
+        null,
+        subDomainName: 'package_a',
+      )
+        ..argResultOverrides = argResults
+        ..rapidOverrides = rapid;
 
       await command.run();
 

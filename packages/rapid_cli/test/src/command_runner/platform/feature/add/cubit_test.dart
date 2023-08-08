@@ -12,9 +12,9 @@ List<String> expectedUsage(
   required Platform platform,
 }) {
   return [
-    'Add a cubit to $featurePackage of the ${platform.prettyName} part of a Rapid project.',
+    '''Add a cubit to $featurePackage of the ${platform.prettyName} part of a Rapid project.''',
     '',
-    'Usage: rapid ${platform.name} $featurePackage add cubit <name> [arguments]',
+    '''Usage: rapid ${platform.name} $featurePackage add cubit <name> [arguments]''',
     '-h, --help    Print this usage information.',
     '',
     'Run "rapid help" to see global options.'
@@ -108,9 +108,9 @@ void main() {
         final argResults = MockArgResults();
         when(() => argResults.rest).thenReturn(['Foo']);
         final command = PlatformFeatureAddCubitCommand(
-          'package_a',
           null,
           platform: platform,
+          featureName: 'package_a',
         )
           ..argResultOverrides = argResults
           ..rapidOverrides = rapid;

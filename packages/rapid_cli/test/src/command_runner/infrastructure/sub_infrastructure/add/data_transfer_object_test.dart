@@ -7,13 +7,13 @@ import '../../../../mocks.dart';
 import '../../../../utils.dart';
 
 List<String> expectedUsage(String subInfrastructurePackage) => [
-      'Add a data transfer object to the subinfrastructure $subInfrastructurePackage.',
+      '''Add a data transfer object to the subinfrastructure $subInfrastructurePackage.''',
       '',
-      'Usage: rapid infrastructure $subInfrastructurePackage add data_transfer_object [arguments]',
+      '''Usage: rapid infrastructure $subInfrastructurePackage add data_transfer_object [arguments]''',
       '-h, --help      Print this usage information.',
       '',
       '',
-      '-e, --entity    The name of the entity the data transfer object is related to.',
+      '''-e, --entity    The name of the entity the data transfer object is related to.''',
       '',
       'Run "rapid help" to see global options.'
     ];
@@ -97,8 +97,8 @@ void main() {
       when(() => argResults['entity']).thenReturn('Foo');
       final command =
           InfrastructureSubInfrastructureAddDataTransferObjectCommand(
-        'package_a',
         null,
+        subInfrastructureName: 'package_a',
       )
             ..argResultOverrides = argResults
             ..rapidOverrides = rapid;

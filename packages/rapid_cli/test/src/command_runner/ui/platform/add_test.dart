@@ -12,7 +12,7 @@ List<String> expectedUsage(Platform platform) {
     '-h, --help    Print this usage information.',
     '',
     'Available subcommands:',
-    '  widget   Add a widget to the ${platform.prettyName} UI part of a Rapid project.',
+    '''  widget   Add a widget to the ${platform.prettyName} UI part of a Rapid project.''',
     '',
     'Run "rapid help" to see global options.'
   ];

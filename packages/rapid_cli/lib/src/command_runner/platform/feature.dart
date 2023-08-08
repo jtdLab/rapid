@@ -4,32 +4,31 @@ import 'feature/add.dart';
 import 'feature/remove.dart';
 
 /// {@template platform_feature_command}
-/// `rapid <platform> <feature>` work with a feature of the platform part of a Rapid project.
+/// `rapid <platform> <feature>` work with a feature of the platform part of a
+/// Rapid project.
 /// {@endtemplate}
-class PlatformFeatureCommand extends RapidPlatformBranchCommand {
+class PlatformFeatureCommand extends RapidPlatformFeatureBranchCommand {
   /// {@macro platform_feature_command}
   PlatformFeatureCommand(
-    this.featureName,
     super.project, {
     required super.platform,
+    required super.featureName,
   }) {
     addSubcommand(
       PlatformFeatureAddCommand(
-        featureName,
         project,
         platform: platform,
+        featureName: featureName,
       ),
     );
     addSubcommand(
       PlatformFeatureRemoveCommand(
-        featureName,
         project,
         platform: platform,
+        featureName: featureName,
       ),
     );
   }
-
-  final String featureName;
 
   @override
   String get name => featureName;
@@ -39,5 +38,6 @@ class PlatformFeatureCommand extends RapidPlatformBranchCommand {
 
   @override
   String get description =>
-      'Work with $featureName of the ${platform.prettyName} part of a Rapid project.';
+      'Work with $featureName of the ${platform.prettyName} part of a Rapid '
+      'project.';
 }

@@ -10,8 +10,8 @@ List<String> expectedUsage(String subInfrastructurePackage) => [
       '-h, --help    Print this usage information.',
       '',
       'Available subcommands:',
-      '  add      Add a component to the subinfrastructure $subInfrastructurePackage.',
-      '  remove   Remove a component from the subinfrastructure $subInfrastructurePackage.',
+      '''  add      Add a component to the subinfrastructure $subInfrastructurePackage.''',
+      '''  remove   Remove a component from the subinfrastructure $subInfrastructurePackage.''',
       '',
       'Run "rapid help" to see global options.'
     ];

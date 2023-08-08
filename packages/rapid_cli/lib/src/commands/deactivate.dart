@@ -28,6 +28,7 @@ mixin _DeactivateMixin on _Rapid {
   }
 }
 
+/// An exception thrown when platform is already deactivated.
 class PlatformAlreadyDeactivatedException extends RapidException {
   PlatformAlreadyDeactivatedException._(Platform platform)
       : super('The platform ${platform.prettyName} is already deactivated.');

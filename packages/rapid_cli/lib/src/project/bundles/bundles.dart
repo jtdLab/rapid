@@ -1,4 +1,5 @@
-// TODO(jtdLab): maybe change all bundles variable names to be in pov of the template and not the project
+// TODO(jtdLab): maybe change all bundles variable names to be in pov
+// of the template and not the project.
 export 'android_native_directory_bundle.dart';
 export 'bloc_bundle.dart';
 export 'cubit_bundle.dart';

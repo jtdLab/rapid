@@ -10,7 +10,8 @@ String _defaultDescription(String name) =>
     'The ${name.pascalCase} page feature.';
 
 /// {@template platform_add_feature_page_command}
-/// `rapid <platform> add feature page` add a page feature to the platform part of a Rapid project.
+/// `rapid <platform> add feature page` add a page feature to the platform part
+/// of a Rapid project.
 /// {@endtemplate}
 class PlatformAddFeaturePageCommand extends RapidPlatformLeafCommand
     with DartPackageNameGetter, DescriptionGetter, NavigatorGetter {
@@ -33,7 +34,8 @@ class PlatformAddFeaturePageCommand extends RapidPlatformLeafCommand
 
   @override
   String get description =>
-      'Add a page feature to the ${platform.prettyName} part of a Rapid project.';
+      'Add a page feature to the ${platform.prettyName} part of a Rapid '
+      'project.';
 
   @override
   Future<void> run() {

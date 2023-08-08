@@ -1,6 +1,9 @@
-// TODO(jtdLab): currently its not possible to resolve a project completly because
-// 1. cant distinct feature types and custom feature, entity and value objects, widgets and not widgets files
-// -> could be solved by maintaining a graph of the project in a  .lock file or smth
+// TODO(jtdLab): currently its not possible to resolve a project
+// completly because
+// 1. cant distinct feature types and custom feature, entity and value objects,
+// widgets and not widgets files
+// -> could be solved by maintaining a graph of the project in a .lock file or
+// smth
 
 // TODO(jtdLab): maybe rename AppModule to AppDirectory
 
@@ -45,7 +48,13 @@ part 'ui_module/ui_module.dart';
 part 'ui_module/ui_package.dart';
 part 'ui_module/widget.dart';
 
+/// {@template rapid_project}
+/// Abstraction of a Rapid project.
+///
+// TODO(jtdLab): more docs
+/// {@endtemplate}
 class RapidProject {
+  /// {@macro rapid_project}
   RapidProject({
     required this.name,
     required this.path,
@@ -54,6 +63,7 @@ class RapidProject {
     required this.appModule,
   });
 
+  /// Returns a [RapidProject] from specified [config].
   factory RapidProject.fromConfig(RapidProjectConfig config) {
     final name = config.name;
     final path = config.path;
@@ -71,16 +81,22 @@ class RapidProject {
     );
   }
 
+  /// The root path of this project.
   final String path;
 
+  /// The name of this project.
   final String name;
 
+  /// The root package of this project.
   final RootPackage rootPackage;
 
+  /// The app module of this project.
   final AppModule appModule;
 
+  /// The ui module of this project.
   final UiModule uiModule;
 
+  /// Returns wheter [platform] is activated in this project.
   bool platformIsActivated(Platform platform) {
     return appModule
             .platformDirectory(platform: platform)
@@ -102,6 +118,10 @@ class RapidProject {
         uiModule.platformUiPackage(platform: platform).existsSync();
   }
 
+  /// Returns all packages of this project.
+  ///
+  /// This cotains platform independent packages as well as
+  /// platform dependent packages based on which platform is activated.
   List<DartPackage> packages() => [
         rootPackage,
         appModule.diPackage,
@@ -109,7 +129,6 @@ class RapidProject {
         ...appModule.domainDirectory.domainPackages(),
         ...appModule.infrastructureDirectory.infrastructurePackages(),
         uiModule.uiPackage,
-        // TODO(jtdLab): good?
         for (final platform in Platform.values.where(platformIsActivated)) ...[
           appModule.platformDirectory(platform: platform).rootPackage,
           appModule.platformDirectory(platform: platform).localizationPackage,
@@ -126,15 +145,23 @@ class RapidProject {
         ],
       ];
 
+  /// Returns the [PlatformRootPackage]s of all activated platforms.
   List<PlatformRootPackage> rootPackages() => Platform.values
       .where(platformIsActivated)
       .map((e) => appModule.platformDirectory(platform: e).rootPackage)
       .toList();
 
+  /// Returns the package with [packageName].
+  ///
+  /// Throws [StateError] if the package does not exist.
   DartPackage findByPackageName(String packageName) {
     return packages().firstWhere((e) => e.packageName == packageName);
   }
 
+  /// Returns the package with at the current working directory.
+  ///
+  /// Throws [StateError] if no package is found at the current working
+  /// directory.
   DartPackage findByCwd() {
     return packages().firstWhere((e) => e.path == Directory.current.path);
   }

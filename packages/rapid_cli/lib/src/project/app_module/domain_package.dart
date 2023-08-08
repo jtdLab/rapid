@@ -1,6 +1,14 @@
 part of '../project.dart';
 
+// TODO(jtdLab): doc nullable domain name -> default.
+
+/// {@template domain_package}
+/// Abstraction of a domain package of a Rapid project.
+///
+// TODO(jtdLab): more docs.
+/// {@endtemplate}
 class DomainPackage extends DartPackage implements Comparable<DomainPackage> {
+  /// {@macro domain_package}
   DomainPackage({
     required this.projectName,
     required String path,
@@ -10,6 +18,8 @@ class DomainPackage extends DartPackage implements Comparable<DomainPackage> {
     required this.valueObject,
   }) : super(path);
 
+  /// Returns a [DomainPackage] with [name] from given [projectName]
+  /// and [projectPath].
   factory DomainPackage.resolve({
     required String projectName,
     required String projectPath,
@@ -48,16 +58,22 @@ class DomainPackage extends DartPackage implements Comparable<DomainPackage> {
     );
   }
 
+  /// The name of the project this package is part of.
   final String projectName;
 
+  /// The name of this domain package.
   final String? name;
 
+  /// The entity builder.
   final Entity Function({required String name}) entity;
 
+  /// The service interface builder.
   final ServiceInterface Function({required String name}) serviceInterface;
 
+  /// The value object builder.
   final ValueObject Function({required String name}) valueObject;
 
+  /// The `lib/<project-name>_domain[_<name>].dart` file.
   DartFile get barrelFile => DartFile(
         p.join(
           path,
@@ -66,6 +82,7 @@ class DomainPackage extends DartPackage implements Comparable<DomainPackage> {
         ),
       );
 
+  /// Generate this package on disk.
   Future<void> generate() async {
     await mason.generate(
       bundle: domainPackageBundle,

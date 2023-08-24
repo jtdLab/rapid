@@ -201,6 +201,11 @@ jobs:
       - name: Install Rapid CLI locally
         run: melos dev:activate
 
+      - uses: actions/setup-java@v3
+        with:
+          distribution: zulu
+          java-version: 17
+
       - name: Create Mobile App
         run: rapid create test_app --mobile -o tmp_mobile
 

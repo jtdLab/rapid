@@ -243,7 +243,7 @@ jobs:
         run: cd tmp_web/packages/test_app/test_app_web/test_app_web && flutter build web -t lib/main_development.dart
 
   build_windows:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v3

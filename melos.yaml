@@ -86,6 +86,10 @@ scripts:
       git push --force origin dev
     description: Reset dev to main branch. (This must be run from dev branch)
 
+  github:actions:local:
+    run: act -W ./.github/workflows/rapid_cli.yaml -P macos-latest=-self-hosted
+    description: Runs GitHub Actions locally (requires macOS and `act` which can be installed via `brew install act`)
+
   test:
     exec: flutter test test/src
     description: Run `flutter test test/src` in a package.

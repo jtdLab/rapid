@@ -211,7 +211,7 @@ void main() {
               "    Locale('en', 'US'),",
               "    Locale('es', 'ES'),",
               '  ];',
-              '}'
+              '}',
             ]),
           );
         final platformLocalizationPackage = _getPlatformLocalizationPackage(
@@ -288,7 +288,7 @@ void main() {
               '  final supportedLocales = [',
               "    Locale('en', 'US'),",
               '  ];',
-              '}'
+              '}',
             ]),
           );
         final arbFile = ArbFile(
@@ -330,7 +330,7 @@ void main() {
                 '  final supportedLocales = [',
                 "    Locale('en', 'US'),",
                 '  ];',
-                '}'
+                '}',
               ]),
             );
           final arbFile = ArbFile(
@@ -364,7 +364,7 @@ void main() {
                 "    Locale('en'),",
                 "    Locale('fr'),",
                 '  ];',
-                '}'
+                '}',
               ]),
             );
           final arbFile = ArbFile(

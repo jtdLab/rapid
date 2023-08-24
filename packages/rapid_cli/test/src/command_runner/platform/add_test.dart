@@ -16,7 +16,7 @@ List<String> expectedUsage(Platform platform) {
     '''  language    Add a language to the ${platform.prettyName} part of a Rapid project.''',
     '''  navigator   Add a navigator to the ${platform.prettyName} part of a Rapid project.''',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 

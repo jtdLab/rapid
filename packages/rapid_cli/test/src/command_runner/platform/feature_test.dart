@@ -18,7 +18,7 @@ List<String> expectedUsage(
     '''  add      Add a component to $featurePackage of the ${platform.prettyName} part of a Rapid project.''',
     '''  remove   Remove a component from $featurePackage of the ${platform.prettyName} part of a Rapid project.''',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 

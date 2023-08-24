@@ -12,7 +12,7 @@ List<String> expectedUsage(String subDomainPackage) => [
       '''Usage: rapid domain $subDomainPackage remove value_object <name> [arguments]''',
       '-h, --help    Print this usage information.',
       '',
-      'Run "rapid help" to see global options.'
+      'Run "rapid help" to see global options.',
     ];
 
 void main() {
@@ -65,7 +65,7 @@ void main() {
               'remove',
               'value_object',
               'Foo',
-              'Bar'
+              'Bar',
             ]),
             throwsUsageException(message: 'Multiple names specified.'),
           );

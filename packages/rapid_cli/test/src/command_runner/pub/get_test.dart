@@ -12,7 +12,7 @@ const expectedUsage = [
   '-h, --help       Print this usage information.',
   '-p, --package    The package where the command is run.',
   '',
-  'Run "rapid help" to see global options.'
+  'Run "rapid help" to see global options.',
 ];
 
 void main() {

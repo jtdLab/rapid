@@ -38,7 +38,7 @@ final domainPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZToge3twcm9qZWN0X25hbWV9fV9kb21haW57eyNoYXNfbmFtZX19X3t7bmFtZX19e3svaGFzX25hbWV9fQpkZXNjcmlwdGlvbjogVE9ETwp2ZXJzaW9uOiAwLjAuMQpwdWJsaXNoX3RvOiBub25lCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMC4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBmYWtlcjogXjIuMS4wCiAgZnJlZXplZF9hbm5vdGF0aW9uOiBeMi40LjEKCmRldl9kZXBlbmRlbmNpZXM6CiAgbGludHM6IF4yLjEuMQogIHRlc3Q6IF4xLjI0LjUKICBidWlsZF9ydW5uZXI6IF4yLjQuNgogIGZyZWV6ZWQ6IF4yLjQuMQogIGJ1aWxkX3ZlcmlmeTogXjMuMS4wCg==",
+          "bmFtZToge3twcm9qZWN0X25hbWV9fV9kb21haW57eyNoYXNfbmFtZX19X3t7bmFtZX19e3svaGFzX25hbWV9fQpkZXNjcmlwdGlvbjogVE9ETwp2ZXJzaW9uOiAwLjAuMQpwdWJsaXNoX3RvOiBub25lCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMS4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBmYWtlcjogXjIuMS4wCiAgZnJlZXplZF9hbm5vdGF0aW9uOiBeMi40LjEKCmRldl9kZXBlbmRlbmNpZXM6CiAgbGludHM6IF4yLjEuMQogIHRlc3Q6IF4xLjI0LjYKICBidWlsZF9ydW5uZXI6IF4yLjQuNgogIGZyZWV6ZWQ6IF4yLjQuMQogIGJ1aWxkX3ZlcmlmeTogXjMuMS4wCg==",
       "type": "text"
     },
     {

@@ -6,7 +6,7 @@ on:
       - packages/rapid_cli/**
 
 env:
-  FLUTTER_VERSION: 3.10.0
+  FLUTTER_VERSION: 3.13.0
 
 jobs:
   test:
@@ -51,6 +51,222 @@ jobs:
         with:
           min_coverage: 100
           path: packages/rapid_cli/coverage/lcov.info
+
+  build_android:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Install Rapid CLI locally
+        run: melos dev:activate
+
+      - name: Create Android App
+        run: rapid create test_app --android -o tmp_android
+
+      - name: Build APK
+        run: cd tmp_android/packages/test_app/test_app_android/test_app_android && flutter build apk -t lib/main_development.dart
+
+      - name: Build App Bundle
+        run: cd tmp_android/packages/test_app/test_app_android/test_app_android && flutter build appbundle -t lib/main_development.dart
+
+  build_ios:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Install Rapid CLI locally
+        run: melos dev:activate
+
+      - name: Create iOS App
+        run: rapid create test_app --ios -o tmp_ios
+
+      - name: Build
+        run: cd tmp_ios/packages/test_app/test_app_ios/test_app_ios && flutter build ios --release --no-codesign -t lib/main_development.dart
+
+  build_linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Install Rapid CLI locally
+        run: melos dev:activate
+
+      - name: Create Linux App
+        run: rapid create test_app --linux -o tmp_linux
+
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ninja-build libgtk-3-dev
+
+      - name: Build
+        run: cd tmp_linux/packages/test_app/test_app_linux/test_app_linux && flutter build linux -t lib/main_development.dart
+
+  build_macos:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Install Rapid CLI locally
+        run: melos dev:activate
+
+      - name: Create macOS App
+        run: rapid create test_app --macos -o tmp_macos
+
+      - name: Build
+        run: cd tmp_macos/packages/test_app/test_app_macos/test_app_macos && flutter build macos -t lib/main_development.dart
+
+  build_mobile:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Install Rapid CLI locally
+        run: melos dev:activate
+
+      - name: Create Mobile App
+        run: rapid create test_app --mobile -o tmp_mobile
+
+      - name: Build APK
+        run: cd tmp_mobile/packages/test_app/test_app_mobile/test_app_mobile && flutter build apk -t lib/main_development.dart
+
+      - name: Build App Bundle
+        run: cd tmp_mobile/packages/test_app/test_app_mobile/test_app_mobile && flutter build appbundle -t lib/main_development.dart
+
+      - name: Build iOS
+        run: cd tmp_mobile/packages/test_app/test_app_mobile/test_app_mobile && flutter build ios --release --no-codesign -t lib/main_development.dart
+
+  build_web:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Install Rapid CLI locally
+        run: melos dev:activate
+
+      - name: Create Web App
+        run: rapid create test_app --web -o tmp_web
+
+      - name: Build
+        run: cd tmp_web/packages/test_app/test_app_web/test_app_web && flutter build web -t lib/main_development.dart
+
+  build_windows:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+          cache-key: "flutter-:os:-:channel:-:version:-:arch:"
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Setup Melos
+        run: flutter pub global activate melos
+
+      - name: Install Rapid CLI locally
+        run: melos dev:activate
+
+      - name: Create Windows App
+        run: rapid create test_app --windows -o tmp_windows
+
+      - name: Build
+        run: cd tmp_windows/packages/test_app/test_app_windows/test_app_windows && flutter build windows -t lib/main_development.dart
 
   pana:
     defaults:

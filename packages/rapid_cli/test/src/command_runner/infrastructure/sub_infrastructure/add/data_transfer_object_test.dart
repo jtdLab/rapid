@@ -15,7 +15,7 @@ List<String> expectedUsage(String subInfrastructurePackage) => [
       '',
       '''-e, --entity    The name of the entity the data transfer object is related to.''',
       '',
-      'Run "rapid help" to see global options.'
+      'Run "rapid help" to see global options.',
     ];
 
 void main() {
@@ -33,7 +33,7 @@ void main() {
           'package_a',
           'add',
           'data_transfer_object',
-          '--help'
+          '--help',
         ]);
         expect(printLogs, equals(expectedUsage('package_a')));
 
@@ -44,7 +44,7 @@ void main() {
           'package_a',
           'add',
           'data_transfer_object',
-          '-h'
+          '-h',
         ]);
         expect(printLogs, equals(expectedUsage('package_a')));
       }),
@@ -81,7 +81,7 @@ void main() {
               'add',
               'data_transfer_object',
               '--entity',
-              'foo'
+              'foo',
             ]),
             throwsUsageException(
               message: '"foo" is not a valid dart class name.',

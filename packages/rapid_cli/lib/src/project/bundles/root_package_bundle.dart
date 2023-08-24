@@ -20,7 +20,7 @@ final rootPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZToge3twcm9qZWN0X25hbWV9fQoKZW52aXJvbm1lbnQ6CiAgc2RrOiAiPj0zLjAuMCA8NC4wLjAiCgpkZXZfZGVwZW5kZW5jaWVzOgogIG1lbG9zOiBeMy4xLjEKICByYXBpZF9jbGk6CiAgICBnaXQ6CiAgICAgIHVybDogaHR0cHM6Ly9naXRodWIuY29tL2p0ZExhYi9yYXBpZC5naXQKICAgICAgcGF0aDogcGFja2FnZXMvcmFwaWRfY2xpCgpyYXBpZDoKICBuYW1lOiB7e3Byb2plY3RfbmFtZX19Cg==",
+          "bmFtZToge3twcm9qZWN0X25hbWV9fQoKZW52aXJvbm1lbnQ6CiAgc2RrOiAiPj0zLjEuMCA8NC4wLjAiCgpkZXZfZGVwZW5kZW5jaWVzOgogIG1lbG9zOiBeMy4xLjEKICByYXBpZF9jbGk6CiAgICBnaXQ6CiAgICAgIHVybDogaHR0cHM6Ly9naXRodWIuY29tL2p0ZExhYi9yYXBpZC5naXQKICAgICAgcGF0aDogcGFja2FnZXMvcmFwaWRfY2xpCgpyYXBpZDoKICBuYW1lOiB7e3Byb2plY3RfbmFtZX19Cg==",
       "type": "text"
     },
     {"path": "README.md", "data": "VE9ETwo=", "type": "text"}

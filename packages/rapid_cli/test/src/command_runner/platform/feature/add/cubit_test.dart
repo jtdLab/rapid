@@ -17,7 +17,7 @@ List<String> expectedUsage(
     '''Usage: rapid ${platform.name} $featurePackage add cubit <name> [arguments]''',
     '-h, --help    Print this usage information.',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 

@@ -14,7 +14,7 @@ List<String> expectedUsage(Platform platform) {
     'Usage: rapid ui ${platform.name} remove widget <name> [arguments]',
     '-h, --help    Print this usage information.',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 

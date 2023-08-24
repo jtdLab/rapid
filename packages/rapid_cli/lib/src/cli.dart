@@ -172,7 +172,7 @@ Future<void> flutterConfigEnable({
         NativePlatform.macos => '--enable-macos-desktop',
         NativePlatform.web => '--enable-web',
         NativePlatform.windows => '--enable-windows-desktop',
-      }
+      },
     ],
     workingDirectory: project.path,
   );
@@ -257,7 +257,7 @@ class CliException extends RapidException {
       if (stderr != null) ...[
         '',
         stderr!,
-      ]
+      ],
     ]);
   }
 }

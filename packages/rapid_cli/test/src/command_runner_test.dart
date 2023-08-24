@@ -44,7 +44,7 @@ const expectedUsage = [
   '  web              Work with the Web part of a Rapid project.',
   '  windows          Work with the Windows part of a Rapid project.',
   '',
-  'Run "rapid help <command>" for more information about a command.'
+  'Run "rapid help <command>" for more information about a command.',
 ];
 
 /* 
@@ -137,7 +137,7 @@ void main() {
               '',
               'rapid:',
               '  name: cool',
-              '  foo: [1, 2, 3]'
+              '  foo: [1, 2, 3]',
             ]),
           );
         when(() => launchContext.localInstallation).thenReturn(installation);

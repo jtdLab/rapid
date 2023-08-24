@@ -36,7 +36,7 @@ void main() {
       verifyInOrder([
         tool.activateCommandGroup,
         logger.newLine,
-        () => logger.commandSuccess('Started Command Group!')
+        () => logger.commandSuccess('Started Command Group!'),
       ]);
     });
   });

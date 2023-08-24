@@ -233,6 +233,6 @@ Map<String, dynamic> platformVars(Platform? platform) {
     'web': false,
     'windows': false,
     'mobile': false,
-    if (platform != null) platform.name: true
+    if (platform != null) platform.name: true,
   };
 }

@@ -866,7 +866,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Language!')
+          () => logger.commandSuccess('Added Language!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -907,7 +907,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Language!')
+          () => logger.commandSuccess('Added Language!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -1117,7 +1117,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Navigator!')
+          () => logger.commandSuccess('Added Navigator!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -1204,7 +1204,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Bloc!')
+          () => logger.commandSuccess('Added Bloc!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -1327,7 +1327,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Cubit!')
+          () => logger.commandSuccess('Added Cubit!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -1448,7 +1448,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Bloc!')
+          () => logger.commandSuccess('Removed Bloc!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -1586,7 +1586,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Cubit!')
+          () => logger.commandSuccess('Removed Cubit!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -1882,7 +1882,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Language!')
+          () => logger.commandSuccess('Removed Language!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -1924,7 +1924,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Language!')
+          () => logger.commandSuccess('Removed Language!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -2138,7 +2138,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Navigator!')
+          () => logger.commandSuccess('Removed Navigator!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -2219,7 +2219,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Set Default Language!')
+          () => logger.commandSuccess('Set Default Language!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);

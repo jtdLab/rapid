@@ -17,7 +17,7 @@ List<String> expectedUsage(String subDomainPackage) => [
       '              Generics get escaped via "#" e.g Tuple<#A, #B, String>.',
       '              (defaults to "String")',
       '',
-      'Run "rapid help" to see global options.'
+      'Run "rapid help" to see global options.',
     ];
 
 void main() {

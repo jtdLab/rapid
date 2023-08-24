@@ -18,7 +18,7 @@ const expectedUsage = [
   '  web       Remove support for Web from this project.',
   '  windows   Remove support for Windows from this project.',
   '',
-  'Run "rapid help" to see global options.'
+  'Run "rapid help" to see global options.',
 ];
 
 void main() {

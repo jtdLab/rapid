@@ -14,7 +14,7 @@ List<String> expectedUsage(Platform platform) {
     'Available subcommands:',
     '''  default_language   Set the default language of the ${platform.prettyName} part of a Rapid project.''',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 

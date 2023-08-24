@@ -14,7 +14,7 @@ const expectedUsage = [
   '    --[no-]theme    Whether the new widget has its own theme.',
   '                    (defaults to on)',
   '',
-  'Run "rapid help" to see global options.'
+  'Run "rapid help" to see global options.',
 ];
 
 void main() {

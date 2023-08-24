@@ -17,7 +17,7 @@ const expectedUsage = [
   '    --language    The default language for Linux',
   '                  (defaults to "en")',
   '',
-  'Run "rapid help" to see global options.'
+  'Run "rapid help" to see global options.',
 ];
 
 void main() {

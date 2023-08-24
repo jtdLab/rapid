@@ -18,7 +18,7 @@ List<String> expectedUsage(Platform platform) {
     '-f, --feature    The name of the feature the navigator is related to.',
     '''                 This must be the name of an existing ${platform.prettyName} feature.''',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 

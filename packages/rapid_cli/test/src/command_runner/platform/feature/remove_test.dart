@@ -18,7 +18,7 @@ List<String> expectedUsage(
     '''  bloc    Remove a bloc from $featurePackage of the ${platform.prettyName} part of a Rapid project.''',
     '''  cubit   Remove a cubit from $featurePackage of the ${platform.prettyName} part of a Rapid project.''',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 

@@ -13,7 +13,7 @@ List<String> expectedUsage(String subDomainPackage) => [
       '  add      Add a component to the subdomain $subDomainPackage.',
       '  remove   Remove a component from the subdomain $subDomainPackage.',
       '',
-      'Run "rapid help" to see global options.'
+      'Run "rapid help" to see global options.',
     ];
 
 void main() {

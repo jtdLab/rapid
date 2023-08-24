@@ -15,7 +15,7 @@ List<String> expectedUsage(Platform platform) {
     'Usage: rapid ${platform.name} add language <language>',
     '-h, --help    Print this usage information.',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 

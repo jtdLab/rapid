@@ -36,14 +36,14 @@ void main() {
 
       final platformPackages = [
         for (final platform in Platform.values) ...[
-          ...tester.platformDependentPackages(platform)
-        ]
+          ...tester.platformDependentPackages(platform),
+        ],
       ];
       final featurePackages = [
         for (final platform in Platform.values) ...[
           tester.featurePackage('app', platform),
           tester.featurePackage('home_page', platform),
-        ]
+        ],
       ];
       verifyDoExist([
         ...tester.platformIndependentPackages,

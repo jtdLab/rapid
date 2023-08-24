@@ -39,7 +39,7 @@ dynamic Function() performTest({
         'value_object',
         name,
         if (dir != null) '--dir',
-        if (dir != null) dir
+        if (dir != null) dir,
       ]);
 
       // Assert

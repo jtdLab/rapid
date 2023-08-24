@@ -12,7 +12,7 @@ const expectedUsage = [
   'Usage: rapid domain add sub_domain <name>',
   '-h, --help    Print this usage information.',
   '',
-  'Run "rapid help" to see global options.'
+  'Run "rapid help" to see global options.',
 ];
 
 void main() {

@@ -113,7 +113,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Data Transfer Object!')
+          () => logger.commandSuccess('Added Data Transfer Object!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -185,7 +185,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Service Implementation!')
+          () => logger.commandSuccess('Added Service Implementation!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -262,7 +262,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Data Transfer Object!')
+          () => logger.commandSuccess('Removed Data Transfer Object!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -318,7 +318,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Service Implementation!')
+          () => logger.commandSuccess('Removed Service Implementation!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);

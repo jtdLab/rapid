@@ -12,7 +12,7 @@ List<String> expectedUsage(String subDomainPackage) => [
       '''Usage: rapid domain $subDomainPackage add service_interface <name> [arguments]''',
       '-h, --help    Print this usage information.',
       '',
-      'Run "rapid help" to see global options.'
+      'Run "rapid help" to see global options.',
     ];
 
 void main() {
@@ -67,7 +67,7 @@ void main() {
               'add',
               'service_interface',
               'Foo',
-              'Bar'
+              'Bar',
             ]),
             throwsUsageException(
               message: 'Multiple names specified.',

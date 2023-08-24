@@ -15,7 +15,7 @@ List<String> expectedUsage(List<String> infrastructurePackages) => [
             '''  $infrastructurePackage   Work with the subinfrastructure $infrastructurePackage.''',
       ),
       '',
-      'Run "rapid help" to see global options.'
+      'Run "rapid help" to see global options.',
     ];
 
 void main() {

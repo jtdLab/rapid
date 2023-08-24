@@ -54,7 +54,7 @@ dynamic Function() performTest({
         '--service',
         service,
         if (dir != null) '--dir',
-        if (dir != null) outputDir
+        if (dir != null) outputDir,
       ]);
 
       // Assert

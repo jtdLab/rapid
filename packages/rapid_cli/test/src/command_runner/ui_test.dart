@@ -20,7 +20,7 @@ const expectedUsage = [
   '  web       Work with the Web UI part of a Rapid project.',
   '  windows   Work with the Windows UI part of a Rapid project.',
   '',
-  'Run "rapid help" to see global options.'
+  'Run "rapid help" to see global options.',
 ];
 
 void main() {

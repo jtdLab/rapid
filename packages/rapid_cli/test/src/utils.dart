@@ -231,7 +231,7 @@ extension ProcessManagerX on ProcessManager {
             NativePlatform.macos => '--enable-macos-desktop',
             NativePlatform.web => '--enable-web',
             NativePlatform.windows => '--enable-windows-desktop',
-          }
+          },
         ],
         workingDirectory: any(named: 'workingDirectory'),
       );

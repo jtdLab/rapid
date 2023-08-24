@@ -16,7 +16,7 @@ List<String> expectedUsage(Platform platform) {
     '''  language    Remove a language from the ${platform.prettyName} part of a Rapid project.''',
     '''  navigator   Remove a navigator from the ${platform.prettyName} part of a Rapid project.''',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 

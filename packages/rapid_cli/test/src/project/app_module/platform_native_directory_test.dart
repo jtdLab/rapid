@@ -137,7 +137,7 @@ void main() {
                     '  <key>key</key>',
                     '  <string>value</string>',
                     '  </dict>',
-                    '</plist>'
+                    '</plist>',
                   ]),
                 );
           final iosNativeDirectory = _getIosNativeDirectory(
@@ -161,7 +161,7 @@ void main() {
               '    <key>key</key>',
               '    <string>value</string>',
               '  </dict>',
-              '</plist>'
+              '</plist>',
             ]),
           );
         }),
@@ -186,7 +186,7 @@ void main() {
                     '  <key>key</key>',
                     '  <string>value</string>',
                     '  </dict>',
-                    '</plist>'
+                    '</plist>',
                   ]),
                 );
           final iosNativeDirectory = _getIosNativeDirectory(
@@ -212,7 +212,7 @@ void main() {
               '    <key>key</key>',
               '    <string>value</string>',
               '  </dict>',
-              '</plist>'
+              '</plist>',
             ]),
           );
         }),
@@ -237,7 +237,7 @@ void main() {
                     '    <key>key</key>',
                     '    <string>value</string>',
                     '  </dict>',
-                    '</plist>'
+                    '</plist>',
                   ]),
                 );
           final iosNativeDirectory = _getIosNativeDirectory(
@@ -267,7 +267,7 @@ void main() {
               '    <key>key</key>',
               '    <string>value</string>',
               '  </dict>',
-              '</plist>'
+              '</plist>',
             ]),
           );
         }),
@@ -293,7 +293,7 @@ void main() {
                     '    <key>key</key>',
                     '    <string>value</string>',
                     '  </dict>',
-                    '</plist>'
+                    '</plist>',
                   ]),
                 );
           final iosNativeDirectory = _getIosNativeDirectory(
@@ -318,7 +318,7 @@ void main() {
               '    <key>key</key>',
               '    <string>value</string>',
               '  </dict>',
-              '</plist>'
+              '</plist>',
             ]),
           );
         }),
@@ -341,7 +341,7 @@ void main() {
                   '    <key>key</key>',
                   '    <string>value</string>',
                   '  </dict>',
-                  '</plist>'
+                  '</plist>',
                 ]),
               );
             final iosNativeDirectory = _getIosNativeDirectory(
@@ -364,7 +364,7 @@ void main() {
                 '    <key>key</key>',
                 '    <string>value</string>',
                 '  </dict>',
-                '</plist>'
+                '</plist>',
               ]),
             );
           }),
@@ -386,7 +386,7 @@ void main() {
                   '    <key>key</key>',
                   '    <string>value</string>',
                   '  </dict>',
-                  '</plist>'
+                  '</plist>',
                 ]),
               );
             final iosNativeDirectory = _getIosNativeDirectory(
@@ -411,7 +411,7 @@ void main() {
                 '    <key>key</key>',
                 '    <string>value</string>',
                 '  </dict>',
-                '</plist>'
+                '</plist>',
               ]),
             );
           }),
@@ -433,7 +433,7 @@ void main() {
                   '    <key>key</key>',
                   '    <string>value</string>',
                   '  </dict>',
-                  '</plist>'
+                  '</plist>',
                 ]),
               );
             final iosNativeDirectory = _getIosNativeDirectory(
@@ -462,7 +462,7 @@ void main() {
                 '    <key>key</key>',
                 '    <string>value</string>',
                 '  </dict>',
-                '</plist>'
+                '</plist>',
               ]),
             );
           }),
@@ -491,7 +491,7 @@ void main() {
                     '    <key>key</key>',
                     '    <string>value</string>',
                     '  </dict>',
-                    '</plist>'
+                    '</plist>',
                   ]),
                 );
           final iosNativeDirectory = _getIosNativeDirectory(
@@ -514,7 +514,7 @@ void main() {
               '    <key>key</key>',
               '    <string>value</string>',
               '  </dict>',
-              '</plist>'
+              '</plist>',
             ]),
           );
         }),
@@ -540,7 +540,7 @@ void main() {
                     '    <key>key</key>',
                     '    <string>value</string>',
                     '  </dict>',
-                    '</plist>'
+                    '</plist>',
                   ]),
                 );
           final iosNativeDirectory = _getIosNativeDirectory(
@@ -565,7 +565,7 @@ void main() {
               '    <key>key</key>',
               '    <string>value</string>',
               '  </dict>',
-              '</plist>'
+              '</plist>',
             ]),
           );
         }),
@@ -591,7 +591,7 @@ void main() {
                     '    <key>key</key>',
                     '    <string>value</string>',
                     '  </dict>',
-                    '</plist>'
+                    '</plist>',
                   ]),
                 );
           final iosNativeDirectory = _getIosNativeDirectory(
@@ -620,7 +620,7 @@ void main() {
               '    <key>key</key>',
               '    <string>value</string>',
               '  </dict>',
-              '</plist>'
+              '</plist>',
             ]),
           );
         }),
@@ -647,7 +647,7 @@ void main() {
                     '    <key>key</key>',
                     '    <string>value</string>',
                     '  </dict>',
-                    '</plist>'
+                    '</plist>',
                   ]),
                 );
           final iosNativeDirectory = _getIosNativeDirectory(
@@ -671,7 +671,7 @@ void main() {
               '    <key>key</key>',
               '    <string>value</string>',
               '  </dict>',
-              '</plist>'
+              '</plist>',
             ]),
           );
         }),
@@ -698,7 +698,7 @@ void main() {
                   '    <key>key</key>',
                   '    <string>value</string>',
                   '  </dict>',
-                  '</plist>'
+                  '</plist>',
                 ]),
               );
             final iosNativeDirectory = _getIosNativeDirectory(
@@ -720,7 +720,7 @@ void main() {
                 '    <key>key</key>',
                 '    <string>value</string>',
                 '  </dict>',
-                '</plist>'
+                '</plist>',
               ]),
             );
           }),
@@ -746,7 +746,7 @@ void main() {
                   '    <key>key</key>',
                   '    <string>value</string>',
                   '  </dict>',
-                  '</plist>'
+                  '</plist>',
                 ]),
               );
             final iosNativeDirectory = _getIosNativeDirectory(
@@ -769,7 +769,7 @@ void main() {
                 '    <key>key</key>',
                 '    <string>value</string>',
                 '  </dict>',
-                '</plist>'
+                '</plist>',
               ]),
             );
           }),
@@ -795,7 +795,7 @@ void main() {
                   '    <key>key</key>',
                   '    <string>value</string>',
                   '  </dict>',
-                  '</plist>'
+                  '</plist>',
                 ]),
               );
             final iosNativeDirectory = _getIosNativeDirectory(
@@ -822,7 +822,7 @@ void main() {
                 '    <key>key</key>',
                 '    <string>value</string>',
                 '  </dict>',
-                '</plist>'
+                '</plist>',
               ]),
             );
           }),

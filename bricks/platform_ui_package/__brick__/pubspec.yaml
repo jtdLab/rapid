@@ -4,8 +4,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.10.0"
+  sdk: ">=3.1.0 <4.0.0"
+  flutter: ">=3.13.0"
 
 dependencies:
   flutter:
@@ -79,8 +79,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.10.0"
+  sdk: ">=3.1.0 <4.0.0"
+  flutter: ">=3.13.0"
 
 dependencies:
   flutter:
@@ -152,8 +152,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.10.0"
+  sdk: ">=3.1.0 <4.0.0"
+  flutter: ">=3.13.0"
 
 dependencies:
   flutter:
@@ -161,8 +161,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   theme_tailor_annotation: ^2.0.0
-  yaru: ^0.9.0
-  yaru_icons: ^2.1.0
+  yaru: ^1.0.0
+  yaru_icons: ^2.2.1
   {{project_name}}_ui:
 
 dev_dependencies:
@@ -229,8 +229,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.10.0"
+  sdk: ">=3.1.0 <4.0.0"
+  flutter: ">=3.13.0"
 
 dependencies:
   flutter:
@@ -303,8 +303,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.10.0"
+  sdk: ">=3.1.0 <4.0.0"
+  flutter: ">=3.13.0"
 
 dependencies:
   flutter:
@@ -378,8 +378,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.10.0"
+  sdk: ">=3.1.0 <4.0.0"
+  flutter: ">=3.13.0"
 
 dependencies:
   flutter:
@@ -387,7 +387,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   theme_tailor_annotation: ^2.0.0
-  fluent_ui: ^4.7.1
+  fluent_ui: ^4.7.3
   {{project_name}}_ui:
 
 dev_dependencies:
@@ -454,8 +454,8 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.10.0"
+  sdk: ">=3.1.0 <4.0.0"
+  flutter: ">=3.13.0"
 
 dependencies:
   flutter:

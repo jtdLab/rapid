@@ -50,7 +50,7 @@ dynamic Function() performTest({
         '--entity',
         entity,
         if (dir != null) '--dir',
-        if (dir != null) dir
+        if (dir != null) dir,
       ]);
 
       // Assert

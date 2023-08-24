@@ -151,7 +151,7 @@ class Progress implements mason.Progress {
             '\r', // bring cursor to the start of the current line
           ] else ...[
             '\u001b[1A', // move cursor up one line
-          ]
+          ],
         ],
       ].join(); // for each line of previous message
     }
@@ -163,7 +163,7 @@ class Progress implements mason.Progress {
   final RegExp _stripRegex = RegExp(
     [
       r'[\u001B\u009B][[\]()#;?]*(?:(?:(?:[a-zA-Z\d]*(?:;[-a-zA-Z\d\/#&.:=?%@~_]*)*)?\u0007)',
-      r'(?:(?:\d{1,4}(?:;\\d{0,4})*)?[\dA-PR-TZcf-ntqry=><~]))'
+      r'(?:(?:\d{1,4}(?:;\\d{0,4})*)?[\dA-PR-TZcf-ntqry=><~]))',
     ].join('|'),
   );
 

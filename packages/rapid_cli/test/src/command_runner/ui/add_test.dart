@@ -12,7 +12,7 @@ const expectedUsage = [
   'Available subcommands:',
   '''  widget   Add a widget to the platform independent UI part of a Rapid project.''',
   '',
-  'Run "rapid help" to see global options.'
+  'Run "rapid help" to see global options.',
 ];
 
 void main() {

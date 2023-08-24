@@ -891,7 +891,7 @@ Future<int> runFlutterIntegrationTest(
         '--target',
         pathToTests,
         '-d',
-        'web-server'
+        'web-server',
       ],
       workingDirectory: cwd,
       runInShell: true,

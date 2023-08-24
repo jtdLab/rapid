@@ -7,12 +7,12 @@ const platforms = [
   'windows',
   'mobile'
 ];
-const dart = DartDependency('3.0.0', '4.0.0');
-const flutter = FlutterDependency('3.10.0');
+const dart = DartDependency('3.1.0', '4.0.0');
+const flutter = FlutterDependency('3.13.0');
 final packages = [
   PackageDependency('alchemist', '0.6.1'),
-  PackageDependency('auto_route', '7.8.0'),
-  PackageDependency('auto_route_generator', '7.3.0'),
+  PackageDependency('auto_route', '7.8.2'),
+  PackageDependency('auto_route_generator', '7.3.1'),
   PackageDependency('bloc_concurrency', '0.2.2'),
   PackageDependency('bloc_test', '9.1.4'),
   PackageDependency('bloc', '8.1.2'),
@@ -20,15 +20,15 @@ final packages = [
   PackageDependency('build_verify', '3.1.0'),
   PackageDependency('cupertino_icons', '1.0.5'),
   PackageDependency('faker', '2.1.0'),
-  PackageDependency('fluent_ui', '4.7.1'),
+  PackageDependency('fluent_ui', '4.7.3'),
   PackageDependency('flutter_bloc', '8.1.3'),
   PackageDependency('flutter_gen_runner', '5.3.1'),
   PackageDependency('flutter_lints', '2.0.2'),
   PackageDependency('freezed_annotation', '2.4.1'),
   PackageDependency('freezed', '2.4.1'),
   PackageDependency('get_it', '7.6.0'),
-  PackageDependency('injectable_generator', '2.1.6'),
-  PackageDependency('injectable', '2.1.2'),
+  PackageDependency('injectable_generator', '2.4.0'),
+  PackageDependency('injectable', '2.3.0'),
   PackageDependency('json_annotation', '4.8.1'),
   PackageDependency('json_serializable', '6.7.1'),
   PackageDependency('lints', '2.1.1'),
@@ -36,12 +36,12 @@ final packages = [
   PackageDependency('melos', '3.1.1'),
   PackageDependency('meta', '1.9.1'),
   PackageDependency('mocktail', '1.0.0'),
-  PackageDependency('test', '1.24.5'),
+  PackageDependency('test', '1.24.6'),
   PackageDependency('theme_tailor_annotation', '2.0.0'),
   PackageDependency('theme_tailor', '2.0.0'),
   PackageDependency('url_strategy', '0.2.0'),
-  PackageDependency('yaru_icons', '2.1.0'),
-  PackageDependency('yaru', '0.9.0'),
+  PackageDependency('yaru_icons', '2.2.1'),
+  PackageDependency('yaru', '1.0.0'),
 ];
 
 const androidNativeDirectory = Template(

@@ -13,7 +13,7 @@ List<String> expectedUsage(String subInfrastructurePackage) => [
       '''  add      Add a component to the subinfrastructure $subInfrastructurePackage.''',
       '''  remove   Remove a component from the subinfrastructure $subInfrastructurePackage.''',
       '',
-      'Run "rapid help" to see global options.'
+      'Run "rapid help" to see global options.',
     ];
 
 void main() {

@@ -77,7 +77,7 @@ mixin _ActivateMixin on _Rapid {
           flutterConfigEnablePlatformTasks: [
             () => _flutterConfigEnablePlatformTask(
                   platform: NativePlatform.android,
-                )
+                ),
           ],
         );
       },

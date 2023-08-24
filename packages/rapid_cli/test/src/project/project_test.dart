@@ -253,7 +253,7 @@ void main() {
             infrastructureDirectory: MockInfrastructureDirectory(
               infrastructurePackages: [
                 infrastructurePackage1,
-                infrastructurePackage2
+                infrastructurePackage2,
               ],
             ),
             loggingPackage: loggingPackage,
@@ -434,7 +434,7 @@ void main() {
               domainPackages: [
                 rootDomainPackage,
                 dependentDomainPackage1,
-                dependentDomainPackage2
+                dependentDomainPackage2,
               ],
             ),
           ),
@@ -478,7 +478,7 @@ void main() {
               domainPackages: [
                 rootDomainPackage,
                 dependentDomainPackage1,
-                dependentDomainPackage2
+                dependentDomainPackage2,
               ],
             ),
           ),

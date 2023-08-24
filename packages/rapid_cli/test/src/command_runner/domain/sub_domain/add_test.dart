@@ -14,7 +14,7 @@ List<String> expectedUsage(String subDomainPackage) => [
       '''  service_interface   Add a service interface to the subdomain $subDomainPackage.''',
       '''  value_object        Add a value object to the subdomain $subDomainPackage.''',
       '',
-      'Run "rapid help" to see global options.'
+      'Run "rapid help" to see global options.',
     ];
 
 void main() {

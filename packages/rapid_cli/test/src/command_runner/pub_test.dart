@@ -14,7 +14,7 @@ const expectedUsage = [
   '  get      Get packages in a Rapid environment.',
   '  remove   Remove packages in a Rapid environment.',
   '',
-  'Run "rapid help" to see global options.'
+  'Run "rapid help" to see global options.',
 ];
 
 void main() {

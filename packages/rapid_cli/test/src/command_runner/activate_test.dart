@@ -18,7 +18,7 @@ const expectedUsage = [
   '  web       Add support for Web to this project.',
   '  windows   Add support for Windows to this project.',
   '',
-  'Run "rapid help" to see global options.'
+  'Run "rapid help" to see global options.',
 ];
 
 void main() {

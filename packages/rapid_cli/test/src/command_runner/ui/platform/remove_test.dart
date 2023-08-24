@@ -14,7 +14,7 @@ List<String> expectedUsage(Platform platform) {
     'Available subcommands:',
     '''  widget   Remove a widget from the ${platform.prettyName} UI part of a Rapid project.''',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 

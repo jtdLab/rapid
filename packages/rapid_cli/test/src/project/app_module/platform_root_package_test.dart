@@ -144,7 +144,7 @@ void main() {
                     '''Future<void> configureDependencies(String environment, String platform) async =>''',
                     '    await getIt.init(',
                     '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
-                    '    );'
+                    '    );',
                   ]),
                 );
           final iosRootPackage = _getIosRootPackage(
@@ -213,7 +213,7 @@ void main() {
                     '''Future<void> configureDependencies(String environment, String platform) async =>''',
                     '    await getIt.init(',
                     '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
-                    '    );'
+                    '    );',
                   ]),
                 );
           final routerFile = File('/path/to_ios_root_package/lib/router.dart')
@@ -321,7 +321,7 @@ void main() {
                     '''Future<void> configureDependencies(String environment, String platform) async =>''',
                     '    await getIt.init(',
                     '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
-                    '    );'
+                    '    );',
                   ]),
                 );
           final iosRootPackage = _getIosRootPackage(
@@ -387,7 +387,7 @@ void main() {
                     '''Future<void> configureDependencies(String environment, String platform) async =>''',
                     '    await getIt.init(',
                     '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
-                    '    );'
+                    '    );',
                   ]),
                 );
           final routerFile = File('/path/to_ios_root_package/lib/router.dart')
@@ -555,7 +555,7 @@ void main() {
                     '''Future<void> configureDependencies(String environment, String platform) async =>''',
                     '    await getIt.init(',
                     '''      environmentFilter: NoEnvOrContainsAny({environment, platform}),''',
-                    '    );'
+                    '    );',
                   ]),
                 );
           final iosRootPackage = _getIosRootPackage(

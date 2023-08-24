@@ -113,7 +113,7 @@ void main() {
           FakeDartPackage(
             packageName: 'package_c',
             path: 'package_c_path',
-          )
+          ),
         ]);
         when(() => commandGroup.packagesToBootstrap).thenReturn({});
         when(() => commandGroup.packagesToCodeGen)
@@ -172,7 +172,7 @@ void main() {
           FakeDartPackage(
             packageName: 'package_d',
             path: 'package_d_path',
-          )
+          ),
         ]);
         when(() => commandGroup.packagesToBootstrap)
             .thenReturn({'package_a', 'package_b'});

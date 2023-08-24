@@ -12,7 +12,7 @@ const expectedUsage = [
   'Usage: rapid ui remove widget <name> [arguments]',
   '-h, --help    Print this usage information.',
   '',
-  'Run "rapid help" to see global options.'
+  'Run "rapid help" to see global options.',
 ];
 
 void main() {

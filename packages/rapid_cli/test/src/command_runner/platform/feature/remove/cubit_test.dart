@@ -17,7 +17,7 @@ List<String> expectedUsage(
     '''Usage: rapid ${platform.name} $featurePackage remove cubit <name> [arguments]''',
     '-h, --help    Print this usage information.',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 
@@ -82,7 +82,7 @@ void main() {
                 'remove',
                 'cubit',
                 'Foo',
-                'Bar'
+                'Bar',
               ]),
               throwsUsageException(message: 'Multiple names specified.'),
             );

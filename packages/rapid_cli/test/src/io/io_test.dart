@@ -1701,7 +1701,7 @@ void main() {
               '/* This is a multi',
               '   line comment */',
               '',
-              '// This is a comment'
+              '// This is a comment',
             ]),
           );
           final dartFile = DartFile('example.dart');
@@ -1722,7 +1722,7 @@ void main() {
               "import 'dart:io';",
               "import 'package:flutter/material.dart';",
               "import 'my_custom_package.dart';",
-              ''
+              '',
             ]),
           );
           final dartFile = DartFile('example.dart');
@@ -1748,7 +1748,7 @@ void main() {
               "import 'dart:io';",
               '',
               "import 'package:flutter/material.dart';import 'my_custom_package.dart';",
-              ''
+              '',
             ]),
           );
           final dartFile = DartFile('example.dart');
@@ -2370,7 +2370,7 @@ void main() {
             '    <key>key2</key>',
             '    <integer>42</integer>',
             '</dict>',
-            '</plist>'
+            '</plist>',
           ]);
           File('file.plist').writeAsStringSync(plistContent);
           final plistFile = PlistFile('file.plist');
@@ -2391,7 +2391,7 @@ void main() {
             '    <string>value1</string>',
             '    <integer>42</integer>',
             '</array>',
-            '</plist>'
+            '</plist>',
           ]);
           File('file.plist').writeAsStringSync(plistContent);
           final plistFile = PlistFile('file.plist');
@@ -2425,7 +2425,7 @@ void main() {
             '  <key>key2</key>',
             '  <integer>42</integer>',
             '</dict>',
-            '</plist>'
+            '</plist>',
           ]);
           final updatedPlistContent = multiLine([
             '<?xml version="1.0" encoding="UTF-8"?>',
@@ -2439,7 +2439,7 @@ void main() {
             '    <key>newKey</key>',
             '    <true/>',
             '  </dict>',
-            '</plist>'
+            '</plist>',
           ]);
 
           File('file.plist').writeAsStringSync(plistContent);
@@ -2467,7 +2467,7 @@ void main() {
             '  <string>value1</string>',
             '  <integer>42</integer>',
             '</array>',
-            '</plist>'
+            '</plist>',
           ]);
           File('file.plist').writeAsStringSync(plistContent);
           final plistFile = PlistFile('file.plist');

@@ -12,7 +12,7 @@ const expectedUsage = [
   'Available subcommands:',
   '  sub_domain   Remove a subdomain from the domain part of a Rapid project.',
   '',
-  'Run "rapid help" to see global options.'
+  'Run "rapid help" to see global options.',
 ];
 
 void main() {

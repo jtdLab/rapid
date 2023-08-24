@@ -35,7 +35,7 @@ const expectedUsage = [
   '    --windows       Whether the new project supports the Windows platform.',
   '    --mobile        Whether the new project supports the Mobile platform.',
   '',
-  'Run "rapid help" to see global options.'
+  'Run "rapid help" to see global options.',
 ];
 
 void main() {

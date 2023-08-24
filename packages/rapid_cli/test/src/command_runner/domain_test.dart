@@ -17,7 +17,7 @@ List<String> expectedUsage(List<String> domainPackages) => [
       ),
       '''  remove      Remove subdomains from the domain part of a Rapid project.''',
       '',
-      'Run "rapid help" to see global options.'
+      'Run "rapid help" to see global options.',
     ];
 
 void main() {

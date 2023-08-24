@@ -26,7 +26,7 @@ List<String> expectedUsage(
     '''  remove      Remove features or languages from the ${platform.prettyName} part of a Rapid project.''',
     '''  set         Set properties of the ${platform.prettyName} part of a Rapid project.''',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 

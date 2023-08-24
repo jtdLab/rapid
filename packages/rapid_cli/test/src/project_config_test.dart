@@ -22,7 +22,7 @@ void main() {
             const {
               'rapid': {
                 'name': 22,
-              }
+              },
             },
             path: 'foo',
           ),
@@ -37,7 +37,7 @@ void main() {
               {
                 'rapid': {
                   'name': name,
-                }
+                },
               },
               path: 'foo',
             ),

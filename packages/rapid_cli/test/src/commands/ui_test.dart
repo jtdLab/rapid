@@ -184,7 +184,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Widget!')
+          () => logger.commandSuccess('Added Widget!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -228,7 +228,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Widget!')
+          () => logger.commandSuccess('Added Widget!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -324,7 +324,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Widget!')
+          () => logger.commandSuccess('Added Widget!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -374,7 +374,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Widget!')
+          () => logger.commandSuccess('Added Widget!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -420,7 +420,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Widget!')
+          () => logger.commandSuccess('Removed Widget!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -459,7 +459,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Widget!')
+          () => logger.commandSuccess('Removed Widget!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -509,7 +509,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Widget!')
+          () => logger.commandSuccess('Removed Widget!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -554,7 +554,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Widget!')
+          () => logger.commandSuccess('Removed Widget!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);

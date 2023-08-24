@@ -15,7 +15,7 @@ List<String> expectedUsage(String subInfrastructurePackage) => [
       '',
       '''-s, --service    The name of the service interface the service implementation is related to.''',
       '',
-      'Run "rapid help" to see global options.'
+      'Run "rapid help" to see global options.',
     ];
 
 void main() {
@@ -34,7 +34,7 @@ void main() {
           'package_a',
           'remove',
           'service_implementation',
-          '--help'
+          '--help',
         ]);
         expect(printLogs, equals(expectedUsage('package_a')));
 
@@ -45,7 +45,7 @@ void main() {
           'package_a',
           'remove',
           'service_implementation',
-          '-h'
+          '-h',
         ]);
         expect(printLogs, equals(expectedUsage('package_a')));
       }),
@@ -64,7 +64,7 @@ void main() {
               'package_a',
               'remove',
               'service_implementation',
-              'Foo'
+              'Foo',
             ]),
             throwsUsageException(
               message: 'No option specified for the service.',
@@ -87,7 +87,7 @@ void main() {
               'service_implementation',
               'Foo',
               '--service',
-              'foo'
+              'foo',
             ]),
             throwsUsageException(
               message: '"foo" is not a valid dart class name.',
@@ -127,7 +127,7 @@ void main() {
               'remove',
               'service_implementation',
               'Foo',
-              'Bar'
+              'Bar',
             ]),
             throwsUsageException(message: 'Multiple names specified.'),
           );
@@ -146,7 +146,7 @@ void main() {
               'package_a',
               'remove',
               'service_implementation',
-              'foo'
+              'foo',
             ]),
             throwsUsageException(
               message: '"foo" is not a valid dart class name.',

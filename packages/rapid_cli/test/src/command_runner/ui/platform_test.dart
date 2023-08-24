@@ -15,7 +15,7 @@ List<String> expectedUsage(Platform platform) {
     '''  add      Add a component to the ${platform.prettyName} UI part of a Rapid project.''',
     '''  remove   Remove a component from the ${platform.prettyName} UI part of a Rapid project.''',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 

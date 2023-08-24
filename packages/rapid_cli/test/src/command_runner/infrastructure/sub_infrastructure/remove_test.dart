@@ -13,7 +13,7 @@ List<String> expectedUsage(String subInfrastructurePackage) => [
       '''  data_transfer_object     Remove a data transfer object from the subinfrastructure $subInfrastructurePackage.''',
       '''  service_implementation   Remove a service implementation from the subinfrastructure $subInfrastructurePackage.''',
       '',
-      'Run "rapid help" to see global options.'
+      'Run "rapid help" to see global options.',
     ];
 
 void main() {

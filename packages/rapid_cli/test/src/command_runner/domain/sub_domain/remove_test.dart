@@ -14,7 +14,7 @@ List<String> expectedUsage(String subDomainPackage) => [
       '''  service_interface   Remove a service interface from the subdomain $subDomainPackage.''',
       '''  value_object        Remove a value object from the subdomain $subDomainPackage.''',
       '',
-      'Run "rapid help" to see global options.'
+      'Run "rapid help" to see global options.',
     ];
 
 void main() {

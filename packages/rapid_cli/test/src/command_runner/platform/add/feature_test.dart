@@ -17,7 +17,7 @@ List<String> expectedUsage(Platform platform) {
     '''  tab_flow   Add a tab flow feature to the ${platform.prettyName} part of a Rapid project.''',
     '''  widget     Add a widget feature to the ${platform.prettyName} part of a Rapid project.''',
     '',
-    'Run "rapid help" to see global options.'
+    'Run "rapid help" to see global options.',
   ];
 }
 

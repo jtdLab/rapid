@@ -51,7 +51,7 @@ void main() {
         () => project.uiModule.platformUiPackage(platform: platform),
         () => platformUiPackage.deleteSync(recursive: true),
         logger.newLine,
-        () => logger.commandSuccess('Deactivated ${platform.prettyName}!')
+        () => logger.commandSuccess('Deactivated ${platform.prettyName}!'),
       ]);
     });
   });

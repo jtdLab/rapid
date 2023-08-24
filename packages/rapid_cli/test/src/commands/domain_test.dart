@@ -162,7 +162,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Sub Domain!')
+          () => logger.commandSuccess('Added Sub Domain!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(progress);
@@ -298,7 +298,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Sub Domain!')
+          () => logger.commandSuccess('Removed Sub Domain!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(progress);
@@ -381,7 +381,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Entity!')
+          () => logger.commandSuccess('Added Entity!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -428,7 +428,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Service Interface!')
+          () => logger.commandSuccess('Added Service Interface!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -488,7 +488,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Added Value Object!')
+          () => logger.commandSuccess('Added Value Object!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -563,7 +563,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Entity!')
+          () => logger.commandSuccess('Removed Entity!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -610,7 +610,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Service Interface!')
+          () => logger.commandSuccess('Removed Service Interface!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);
@@ -657,7 +657,7 @@ void main() {
           () => manager.runDartFormatFix(workingDirectory: 'project_path'),
           progress.complete,
           logger.newLine,
-          () => logger.commandSuccess('Removed Value Object!')
+          () => logger.commandSuccess('Removed Value Object!'),
         ]);
         verifyNoMoreInteractions(manager);
         verifyNoMoreInteractions(logger);

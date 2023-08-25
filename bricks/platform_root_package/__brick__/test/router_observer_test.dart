@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'mocks.dart';
 
-{{project_name.pascalCase()}}RouterObserver _get{{project_name.pascalCase()}}RouterObserver({{project_name.pascalCase()}}Logger logger) {
+{{project_name.pascalCase()}}RouterObserver _get{{project_name.pascalCase()}}RouterObserver({{project_name.pascalCase()}}Logger logger,) {
   return {{project_name.pascalCase()}}RouterObserver(logger);
 }
 
@@ -79,7 +79,7 @@ void main() {
       final {{project_name.camelCase()}}RouterObserver = _get{{project_name.pascalCase()}}RouterObserver(logger);
 
       // Act
-      {{project_name.camelCase()}}RouterObserver.didInitTabRoute(makeTabPageRoute('MyRoute'), null);
+      {{project_name.camelCase()}}RouterObserver.didInitTabRoute(makeTabPageRoute('MyRoute'), null,);
 
       // Assert
       verify(() => logger.debug('Tab route visited: MyRoute'));

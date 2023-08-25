@@ -49,7 +49,7 @@ final uiPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "lib/{{project_name}}_ui.dart",
       "data":
-          "Ly8vIFdpZGdldHMgYW5kIHRoZW1lcyBpbXBsZW1lbnRpbmcgcGxhdGZvcm0gaW5kZXBlbmRlbnQge3twcm9qZWN0X25hbWUudGl0bGVDYXNlKCl9fSBkZXNpZ24gbGFuZ3VhZ2UuCi8vLwovLy8gVG8gdXNlLCBpbXBvcnQgYHBhY2thZ2U6e3twcm9qZWN0X25hbWV9fV91aS97e3Byb2plY3RfbmFtZX19X3VpLmRhcnRgLgpsaWJyYXJ5IHt7cHJvamVjdF9uYW1lfX1fdWk7CgpleHBvcnQgJ3NyYy9jb2xvcl90aGVtZS5kYXJ0JzsKZXhwb3J0ICdzcmMvdGhlbWVfZXh0ZW5zaW9ucy5kYXJ0JzsK",
+          "Ly8vIFdpZGdldHMgYW5kIHRoZW1lcyBpbXBsZW1lbnRpbmcgcGxhdGZvcm0gaW5kZXBlbmRlbnQKLy8vIHt7cHJvamVjdF9uYW1lLnRpdGxlQ2FzZSgpfX0gZGVzaWduIGxhbmd1YWdlLgovLy8KLy8vIFRvIHVzZSwgaW1wb3J0IGBwYWNrYWdlOnt7cHJvamVjdF9uYW1lfX1fdWkve3twcm9qZWN0X25hbWV9fV91aS5kYXJ0YC4KbGlicmFyeSB7e3Byb2plY3RfbmFtZX19X3VpOwoKZXhwb3J0ICdzcmMvY29sb3JfdGhlbWUuZGFydCc7CmV4cG9ydCAnc3JjL3RoZW1lX2V4dGVuc2lvbnMuZGFydCc7Cg==",
       "type": "text"
     },
     {

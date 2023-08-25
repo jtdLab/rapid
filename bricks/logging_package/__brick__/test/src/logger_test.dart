@@ -108,7 +108,7 @@ void main() {
         );
 
         // Act
-        {{project_name.camelCase()}}LoggerDevelopment.verbose('foo', {'code': 404}, MockStackTrace());
+        {{project_name.camelCase()}}LoggerDevelopment.verbose('foo', {'code': 404}, MockStackTrace(),);
 
         // Assert
         verifyNever(() => logCommand(any()));
@@ -125,7 +125,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerDevelopment.debug('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerDevelopment.debug('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -168,7 +168,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerDevelopment.info('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerDevelopment.info('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -211,7 +211,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerDevelopment.warning('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerDevelopment.warning('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -254,7 +254,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerDevelopment.error('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerDevelopment.error('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -297,7 +297,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerDevelopment.wtf('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerDevelopment.wtf('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -341,7 +341,7 @@ void main() {
         );
 
         // Act
-        {{project_name.camelCase()}}LoggerTest.verbose('foo', {'code': 404}, MockStackTrace());
+        {{project_name.camelCase()}}LoggerTest.verbose('foo', {'code': 404}, MockStackTrace(),);
 
         // Assert
         verifyNever(() => logCommand(any()));
@@ -358,7 +358,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerTest.debug('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerTest.debug('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -401,7 +401,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerTest.info('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerTest.info('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -444,7 +444,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerTest.warning('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerTest.warning('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -487,7 +487,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerTest.error('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerTest.error('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -530,7 +530,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerTest.wtf('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerTest.wtf('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -574,7 +574,7 @@ void main() {
         );
 
         // Act
-        {{project_name.camelCase()}}LoggerProduction.verbose('foo', {'code': 404}, MockStackTrace());
+        {{project_name.camelCase()}}LoggerProduction.verbose('foo', {'code': 404}, MockStackTrace(),);
 
         // Assert
         verifyNever(() => logCommand(any()));
@@ -591,7 +591,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerProduction.debug('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerProduction.debug('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -634,7 +634,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerProduction.info('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerProduction.info('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -677,7 +677,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerProduction.warning('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerProduction.warning('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -720,7 +720,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerProduction.error('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerProduction.error('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(
@@ -763,7 +763,7 @@ void main() {
 
         // Act
         final stackTrace = MockStackTrace();
-        {{project_name.camelCase()}}LoggerProduction.wtf('foo', {'code': 404}, stackTrace);
+        {{project_name.camelCase()}}LoggerProduction.wtf('foo', {'code': 404}, stackTrace,);
 
         // Assert
         verify(

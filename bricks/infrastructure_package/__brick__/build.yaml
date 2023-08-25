@@ -3,4 +3,6 @@ targets:
     builders:
       source_gen:combining_builder:
         options:
-          preamble: "// coverage:ignore-file"
+          preamble: |
+            // ignore_for_file: type=lint
+            // coverage:ignore-file

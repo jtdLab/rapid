@@ -5,7 +5,7 @@ import 'package:mocktail/mocktail.dart';
 
 import 'mocks.dart';
 
-{{project_name.pascalCase()}}BlocObserver _get{{project_name.pascalCase()}}BlocObserver({{project_name.pascalCase()}}Logger logger) {
+{{project_name.pascalCase()}}BlocObserver _get{{project_name.pascalCase()}}BlocObserver({{project_name.pascalCase()}}Logger logger,) {
   return {{project_name.pascalCase()}}BlocObserver(logger);
 }
 

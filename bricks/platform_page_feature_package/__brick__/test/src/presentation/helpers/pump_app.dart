@@ -17,7 +17,8 @@ import 'package:{{project_name}}_ui_{{platform}}/{{project_name}}_ui_{{platform}
 /// The [providers] parameter enables injection of blocs or cubits
 /// into the widget tree above [widget].
 ///
-/// Set the [withScaffold] option to wrap [widget] with an [{{project_name.pascalCase()}}Scaffold].
+/// Set the [withScaffold] option to wrap [widget] with a
+/// [{{project_name.pascalCase()}}Scaffold].
 /// This is particularly useful when testing subwidgets within a page or flow.
 Widget appWrapper({
   Locale? locale,

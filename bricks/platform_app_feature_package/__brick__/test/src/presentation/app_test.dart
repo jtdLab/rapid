@@ -63,7 +63,7 @@ void main() {
       final {{project_name.camelCase()}}App = tester.widget<{{project_name.pascalCase()}}App>(
         find.byWidgetPredicate((widget) => widget is {{project_name.pascalCase()}}App),
       );
-      expect({{project_name.camelCase()}}App.supportedLocales, {{project_name.pascalCase()}}Localizations.supportedLocales);
+      expect({{project_name.camelCase()}}App.supportedLocales, {{project_name.pascalCase()}}Localizations.supportedLocales,);
       expect(
         {{project_name.camelCase()}}App.localizationsDelegates,
         contains({{project_name.pascalCase()}}Localizations.delegate),
@@ -120,8 +120,8 @@ void main() {
       final {{project_name.camelCase()}}App = tester.widget<{{project_name.pascalCase()}}App>(
         find.byWidgetPredicate((widget) => widget is {{project_name.pascalCase()}}App),
       );
-      expect({{project_name.camelCase()}}App.locale, {{project_name.pascalCase()}}Localizations.supportedLocales.first);
-      expect({{project_name.camelCase()}}App.supportedLocales, {{project_name.pascalCase()}}Localizations.supportedLocales);
+      expect({{project_name.camelCase()}}App.locale, {{project_name.pascalCase()}}Localizations.supportedLocales.first,);
+      expect({{project_name.camelCase()}}App.supportedLocales, {{project_name.pascalCase()}}Localizations.supportedLocales,);
       expect(
         {{project_name.camelCase()}}App.localizationsDelegates,
         contains({{project_name.pascalCase()}}Localizations.delegate),
@@ -182,8 +182,8 @@ void main() {
         find.byWidgetPredicate((widget) => widget is {{project_name.pascalCase()}}App),
       );
       expect({{project_name.camelCase()}}App.home, widget);
-      expect({{project_name.camelCase()}}App.locale, {{project_name.pascalCase()}}Localizations.supportedLocales.first);
-      expect({{project_name.camelCase()}}App.supportedLocales, {{project_name.pascalCase()}}Localizations.supportedLocales);
+      expect({{project_name.camelCase()}}App.locale, {{project_name.pascalCase()}}Localizations.supportedLocales.first,);
+      expect({{project_name.camelCase()}}App.supportedLocales, {{project_name.pascalCase()}}Localizations.supportedLocales,);
       expect(
         {{project_name.camelCase()}}App.localizationsDelegates,
         contains({{project_name.pascalCase()}}Localizations.delegate),

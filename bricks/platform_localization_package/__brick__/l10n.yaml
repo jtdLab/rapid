@@ -6,5 +6,5 @@ output-localization-file: {{project_name}}_localizations.dart
 nullable-getter: false
 synthetic-package: false
 header: |
-  // coverage:ignore-file
   // ignore_for_file: type=lint
+  // coverage:ignore-file

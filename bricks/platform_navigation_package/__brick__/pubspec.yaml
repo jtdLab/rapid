@@ -1,16 +1,16 @@
 name: {{project_name}}_{{platform}}_navigation
 description: Navigation of {{project_name.titleCase()}}.
 publish_to: none
-version: 1.0.0
+version: 0.1.0
 
 environment:
   sdk: ">=3.1.0 <4.0.0"
   flutter: ">=3.13.0"
 
 dependencies:
+  auto_route: ^7.8.2
   flutter:
     sdk: flutter
-  auto_route: ^7.8.2
 
 dev_dependencies:
   test: ^1.24.6

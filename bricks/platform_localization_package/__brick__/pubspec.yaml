@@ -1,7 +1,7 @@
 name: {{project_name}}_{{platform}}_localization
 description: Localization of {{project_name.titleCase()}}.
 publish_to: none
-version: 1.0.0
+version: 0.1.0
 
 environment:
   sdk: ">=3.1.0 <4.0.0"

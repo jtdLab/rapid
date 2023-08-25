@@ -1,16 +1,14 @@
-# tinker_io_macos_navigation
+## Navigation Package ({{platform.titleCase()}})
 
-A new Flutter project.
+### Responsibilities
 
-## Getting Started
+🎯 Provide Navigator Interfaces to navigate between Platform Feature Packages.
 
-This project is a starting point for a Flutter application.
+### Components
 
-A few resources to get you started if this is your first Flutter project:
+📦 [Navigator Interface][2]
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+For more information click [here][1].
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+[1]: https://docs.page/jtdLab/rapid/architecture/app-module#platform-navigation-package
+[2]: https://docs.page/jtdLab/rapid/architecture/app-module#navigator-interface

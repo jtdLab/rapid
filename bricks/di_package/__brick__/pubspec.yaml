@@ -1,6 +1,6 @@
 name: {{ project_name }}_di
 description: Dependency injection of {{project_name.titleCase()}}.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:

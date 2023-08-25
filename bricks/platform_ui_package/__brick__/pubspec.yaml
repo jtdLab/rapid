@@ -1,6 +1,6 @@
 {{#android}}name: {{project_name}}_ui_android
 description: Widgets and themes implementing {{project_name.titleCase()}} design language for Android.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -16,13 +16,13 @@ dependencies:
   {{project_name}}_ui:
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   alchemist: ^0.6.1
   build_runner: ^2.4.6
-  theme_tailor: ^2.0.0
-  flutter_gen_runner: ^5.3.1
   build_verify: ^3.1.0
+  flutter_gen_runner: ^5.3.1
+  flutter_test:
+    sdk: flutter
+  theme_tailor: ^2.0.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file
@@ -31,7 +31,6 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
-
   assets:
     outputs:
       package_parameter_enabled: true
@@ -74,7 +73,7 @@ flutter:
   # https://flutter.dev/custom-fonts/#from-packages
 {{/android}}{{#ios}}name: {{project_name}}_ui_ios
 description: Widgets and themes implementing {{project_name.titleCase()}} design language for iOS.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -82,22 +81,22 @@ environment:
   flutter: ">=3.13.0"
 
 dependencies:
+  cupertino_icons: ^1.0.5
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
   theme_tailor_annotation: ^2.0.0
-  cupertino_icons: ^1.0.5
   {{project_name}}_ui:
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   alchemist: ^0.6.1
   build_runner: ^2.4.6
-  theme_tailor: ^2.0.0
-  flutter_gen_runner: ^5.3.1
   build_verify: ^3.1.0
+  flutter_gen_runner: ^5.3.1
+  flutter_test:
+    sdk: flutter
+  theme_tailor: ^2.0.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file
@@ -106,14 +105,12 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
-
   assets:
     outputs:
       package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # To add assets to your package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -146,7 +143,7 @@ flutter:
   # https://flutter.dev/custom-fonts/#from-packages
 {{/ios}}{{#linux}}name: {{project_name}}_ui_linux
 description: Widgets and themes implementing {{project_name.titleCase()}} design language for Linux.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -164,13 +161,13 @@ dependencies:
   {{project_name}}_ui:
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   alchemist: ^0.6.1
   build_runner: ^2.4.6
-  theme_tailor: ^2.0.0
-  flutter_gen_runner: ^5.3.1
   build_verify: ^3.1.0
+  flutter_gen_runner: ^5.3.1
+  flutter_test:
+    sdk: flutter
+  theme_tailor: ^2.0.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file
@@ -179,7 +176,6 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
-
   assets:
     outputs:
       package_parameter_enabled: true
@@ -222,7 +218,7 @@ flutter:
   # https://flutter.dev/custom-fonts/#from-packages
 {{/linux}}{{#macos}}name: {{project_name}}_ui_macos
 description: Widgets and themes implementing {{project_name.titleCase()}} design language for macOS.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -230,23 +226,23 @@ environment:
   flutter: ">=3.13.0"
 
 dependencies:
+  cupertino_icons: ^1.0.5
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  theme_tailor_annotation: ^2.0.0
-  cupertino_icons: ^1.0.5
   macos_ui: ^2.0.0
+  theme_tailor_annotation: ^2.0.0
   {{project_name}}_ui:
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   alchemist: ^0.6.1
   build_runner: ^2.4.6
-  theme_tailor: ^2.0.0
-  flutter_gen_runner: ^5.3.1
   build_verify: ^3.1.0
+  flutter_gen_runner: ^5.3.1
+  flutter_test:
+    sdk: flutter
+  theme_tailor: ^2.0.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file
@@ -255,14 +251,12 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
-
   assets:
     outputs:
       package_parameter_enabled: true
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # To add assets to your package, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
@@ -295,7 +289,7 @@ flutter:
   # https://flutter.dev/custom-fonts/#from-packages
 {{/macos}}{{#web}}name: {{project_name}}_ui_web
 description: Widgets and themes implementing {{project_name.titleCase()}} design language for Web.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -311,13 +305,13 @@ dependencies:
   {{project_name}}_ui:
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   alchemist: ^0.6.1
   build_runner: ^2.4.6
-  theme_tailor: ^2.0.0
-  flutter_gen_runner: ^5.3.1
   build_verify: ^3.1.0
+  flutter_gen_runner: ^5.3.1
+  flutter_test:
+    sdk: flutter
+  theme_tailor: ^2.0.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file
@@ -326,7 +320,6 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
-
   assets:
     outputs:
       package_parameter_enabled: true
@@ -369,7 +362,7 @@ flutter:
   # https://flutter.dev/custom-fonts/#from-packages
 {{/web}}{{#windows}}name: {{project_name}}_ui_windows
 description: Widgets and themes implementing {{project_name.titleCase()}} design language for Windows.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -377,22 +370,22 @@ environment:
   flutter: ">=3.13.0"
 
 dependencies:
+  fluent_ui: ^4.7.3
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
   theme_tailor_annotation: ^2.0.0
-  fluent_ui: ^4.7.3
   {{project_name}}_ui:
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   alchemist: ^0.6.1
   build_runner: ^2.4.6
-  theme_tailor: ^2.0.0
-  flutter_gen_runner: ^5.3.1
   build_verify: ^3.1.0
+  flutter_gen_runner: ^5.3.1
+  flutter_test:
+    sdk: flutter
+  theme_tailor: ^2.0.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file
@@ -401,7 +394,6 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
-
   assets:
     outputs:
       package_parameter_enabled: true
@@ -444,7 +436,7 @@ flutter:
   # https://flutter.dev/custom-fonts/#from-packages
 {{/windows}}{{#mobile}}name: {{project_name}}_ui_mobile
 description: Widgets and themes implementing {{project_name.titleCase()}} design language for Mobile.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -460,13 +452,13 @@ dependencies:
   {{project_name}}_ui:
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
   alchemist: ^0.6.1
   build_runner: ^2.4.6
-  theme_tailor: ^2.0.0
-  flutter_gen_runner: ^5.3.1
   build_verify: ^3.1.0
+  flutter_gen_runner: ^5.3.1
+  flutter_test:
+    sdk: flutter
+  theme_tailor: ^2.0.0
 
 # The following section is specific to the FlutterGen package.
 # See: https://pub.dev/packages/flutter_gen#configuration-file
@@ -475,7 +467,6 @@ flutter_gen:
   # To add support for svg via flutter_svg package
   # integrations:
   #   flutter_svg: true
-
   assets:
     outputs:
       package_parameter_enabled: true

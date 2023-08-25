@@ -8,18 +8,17 @@ final platformNavigationPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": ".gitignore",
       "data":
-          "IyBNaXNjZWxsYW5lb3VzCiouY2xhc3MKKi5sb2cKKi5weWMKKi5zd3AKLkRTX1N0b3JlCi5hdG9tLwouYnVpbGRsb2cvCi5oaXN0b3J5Ci5zdm4vCm1pZ3JhdGVfd29ya2luZ19kaXIvCgojIEludGVsbGlKIHJlbGF0ZWQKKi5pbWwKKi5pcHIKKi5pd3MKLmlkZWEvCgojIFRoZSAudnNjb2RlIGZvbGRlciBjb250YWlucyBsYXVuY2ggY29uZmlndXJhdGlvbiBhbmQgdGFza3MgeW91IGNvbmZpZ3VyZSBpbgojIFZTIENvZGUgd2hpY2ggeW91IG1heSB3aXNoIHRvIGJlIGluY2x1ZGVkIGluIHZlcnNpb24gY29udHJvbCwgc28gdGhpcyBsaW5lCiMgaXMgY29tbWVudGVkIG91dCBieSBkZWZhdWx0LgojLnZzY29kZS8KCiMgRmx1dHRlci9EYXJ0L1B1YiByZWxhdGVkCioqL2RvYy9hcGkvCioqL2lvcy9GbHV0dGVyLy5sYXN0X2J1aWxkX2lkCi5kYXJ0X3Rvb2wvCi5mbHV0dGVyLXBsdWdpbnMKLmZsdXR0ZXItcGx1Z2lucy1kZXBlbmRlbmNpZXMKLnBhY2thZ2VzCi5wdWItY2FjaGUvCi5wdWIvCi9idWlsZC8KL2NvdmVyYWdlCg==",
+          "IyBNaXNjZWxsYW5lb3VzCiouY2xhc3MKKi5sb2cKKi5weWMKKi5zd3AKLkRTX1N0b3JlCi5hdG9tLwouYnVpbGRsb2cvCi5oaXN0b3J5Ci5zdm4vCm1pZ3JhdGVfd29ya2luZ19kaXIvCgojIEludGVsbGlKIHJlbGF0ZWQKKi5pbWwKKi5pcHIKKi5pd3MKLmlkZWEvCgojIEZsdXR0ZXIvRGFydC9QdWIgcmVsYXRlZAoqKi9kb2MvYXBpLwoqKi9pb3MvRmx1dHRlci8ubGFzdF9idWlsZF9pZAouZGFydF90b29sLwouZmx1dHRlci1wbHVnaW5zCi5mbHV0dGVyLXBsdWdpbnMtZGVwZW5kZW5jaWVzCi5wYWNrYWdlcwoucHViLWNhY2hlLwoucHViLwovYnVpbGQvCi9jb3ZlcmFnZQo=",
       "type": "text"
     },
     {
       "path": "analysis_options.yaml",
-      "data":
-          "aW5jbHVkZTogLi4vLi4vLi4vLi4vYW5hbHlzaXNfb3B0aW9ucy55YW1sCiMgVW5jb21tZW50IHRoZSBmb2xsb3dpbmcgc2VjdGlvbiB0byBzcGVjaWZ5IGFkZGl0aW9uYWwgcnVsZXMuCgojIGxpbnRlcjoKIyAgIHJ1bGVzOgojICAgICAtIGNhbWVsX2Nhc2VfdHlwZXMK",
+      "data": "aW5jbHVkZTogLi4vLi4vLi4vLi4vYW5hbHlzaXNfb3B0aW9ucy55YW1sCg==",
       "type": "text"
     },
     {
       "path": "CHANGELOG.md",
-      "data": "IyMgMS4wLjAKCi0gSW5pdGlhbCB2ZXJzaW9uLgo=",
+      "data": "IyMgMC4xLjAKCi0gSW5pdGlhbCB2ZXJzaW9uLgo=",
       "type": "text"
     },
     {
@@ -31,15 +30,10 @@ final platformNavigationPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZToge3twcm9qZWN0X25hbWV9fV97e3BsYXRmb3JtfX1fbmF2aWdhdGlvbgpkZXNjcmlwdGlvbjogTmF2aWdhdGlvbiBvZiB7e3Byb2plY3RfbmFtZS50aXRsZUNhc2UoKX19LgpwdWJsaXNoX3RvOiBub25lCnZlcnNpb246IDEuMC4wCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMS4wIDw0LjAuMCIKICBmbHV0dGVyOiAiPj0zLjEzLjAiCgpkZXBlbmRlbmNpZXM6CiAgZmx1dHRlcjoKICAgIHNkazogZmx1dHRlcgogIGF1dG9fcm91dGU6IF43LjguMgoKZGV2X2RlcGVuZGVuY2llczoKICB0ZXN0OiBeMS4yNC42Cg==",
+          "bmFtZToge3twcm9qZWN0X25hbWV9fV97e3BsYXRmb3JtfX1fbmF2aWdhdGlvbgpkZXNjcmlwdGlvbjogTmF2aWdhdGlvbiBvZiB7e3Byb2plY3RfbmFtZS50aXRsZUNhc2UoKX19LgpwdWJsaXNoX3RvOiBub25lCnZlcnNpb246IDAuMS4wCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMS4wIDw0LjAuMCIKICBmbHV0dGVyOiAiPj0zLjEzLjAiCgpkZXBlbmRlbmNpZXM6CiAgYXV0b19yb3V0ZTogXjcuOC4yCiAgZmx1dHRlcjoKICAgIHNkazogZmx1dHRlcgoKZGV2X2RlcGVuZGVuY2llczoKICB0ZXN0OiBeMS4yNC42Cg==",
       "type": "text"
     },
-    {
-      "path": "README.md",
-      "data":
-          "IyB0aW5rZXJfaW9fbWFjb3NfbmF2aWdhdGlvbgoKQSBuZXcgRmx1dHRlciBwcm9qZWN0LgoKIyMgR2V0dGluZyBTdGFydGVkCgpUaGlzIHByb2plY3QgaXMgYSBzdGFydGluZyBwb2ludCBmb3IgYSBGbHV0dGVyIGFwcGxpY2F0aW9uLgoKQSBmZXcgcmVzb3VyY2VzIHRvIGdldCB5b3Ugc3RhcnRlZCBpZiB0aGlzIGlzIHlvdXIgZmlyc3QgRmx1dHRlciBwcm9qZWN0OgoKLSBbTGFiOiBXcml0ZSB5b3VyIGZpcnN0IEZsdXR0ZXIgYXBwXShodHRwczovL2RvY3MuZmx1dHRlci5kZXYvZ2V0LXN0YXJ0ZWQvY29kZWxhYikKLSBbQ29va2Jvb2s6IFVzZWZ1bCBGbHV0dGVyIHNhbXBsZXNdKGh0dHBzOi8vZG9jcy5mbHV0dGVyLmRldi9jb29rYm9vaykKCkZvciBoZWxwIGdldHRpbmcgc3RhcnRlZCB3aXRoIEZsdXR0ZXIgZGV2ZWxvcG1lbnQsIHZpZXcgdGhlCltvbmxpbmUgZG9jdW1lbnRhdGlvbl0oaHR0cHM6Ly9kb2NzLmZsdXR0ZXIuZGV2LyksIHdoaWNoIG9mZmVycyB0dXRvcmlhbHMsCnNhbXBsZXMsIGd1aWRhbmNlIG9uIG1vYmlsZSBkZXZlbG9wbWVudCwgYW5kIGEgZnVsbCBBUEkgcmVmZXJlbmNlLgo=",
-      "type": "text"
-    }
+    {"path": "README.md", "data": "", "type": "text"}
   ],
   "hooks": [],
   "name": "platform_navigation_package",

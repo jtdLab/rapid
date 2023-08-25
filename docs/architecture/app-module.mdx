@@ -13,19 +13,22 @@
 
 🎯 Provide platform annotations for dependency injection.
 
+This package uses [get_it](https://pub.dev/packages/get_it) to offer the applications central dependency injection container. Other packages will retrieve dependencies from it and use [injectable](https://pub.dev/packages/injectable) to register them beforehand.
+In addition to providing the dependency container, this package introduces annotations that enable the registration of specific dependencies for particular platforms.
+
 ## Logging Package
 
 🎯 Provide a logger.
 
+The primary goal of this package is to offer a single, dedicated logger that can be effortlessly employed throughout the entire application. By default, an implementation is provided, yet developers have the freedom to either create their own customized logger or use existing solutions like for example [logger](https://pub.dev/packages/logger) or [logging](https://pub.dev/packages/logging).
+
 ## Platform Root Package
 
-🎯 Provide entrypoints to run the application in diffrent environments.
+🎯 Provide entrypoints to run the application in different environments.
 
 🎯 Setup Dependency Injection.
 
 🎯 Setup Routing.
-
-🎯 Setup Localization.
 
 🎯 Provide a BlocObserver.
 
@@ -42,6 +45,10 @@ More information about testing a [Platform Root Package](/architecture/app-modul
 ```dart
 TODO
 ```
+
+## Platform Localization Package
+
+🎯 Provide translations for different languages.
 
 ## Platform Feature Package
 

@@ -13,7 +13,7 @@ description: {{ description }}
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -27,13 +27,13 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  auto_route: ^7.8.2
+  bloc: ^8.1.2
+  bloc_concurrency: ^0.2.2
   flutter:
     sdk: flutter
   get_it: ^7.6.0
   injectable: ^2.3.0
-  auto_route: ^7.8.2
-  bloc: ^8.1.2
-  bloc_concurrency: ^0.2.2
   {{project_name}}_di:
   {{project_name}}_logging:
   {{project_name}}_infrastructure:
@@ -41,15 +41,15 @@ dependencies:
   {{project_name}}_android_home_page:
 
 dev_dependencies:
+  auto_route_generator: ^7.3.1
+  build_runner: ^2.4.6
+  build_verify: ^3.1.0
   flutter_test:
     sdk: flutter
+  injectable_generator: ^2.4.0
   integration_test:
     sdk: flutter
   mocktail: ^1.0.0
-  build_runner: ^2.4.6
-  injectable_generator: ^2.4.0
-  auto_route_generator: ^7.3.1
-  build_verify: ^3.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -75,7 +75,7 @@ description: {{ description }}
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -89,14 +89,14 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  flutter:
-    sdk: flutter
-  get_it: ^7.6.0
-  injectable: ^2.3.0
   auto_route: ^7.8.2
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
   cupertino_icons: ^1.0.5
+  flutter:
+    sdk: flutter
+  get_it: ^7.6.0
+  injectable: ^2.3.0
   {{project_name}}_di:
   {{project_name}}_logging:
   {{project_name}}_infrastructure:
@@ -104,15 +104,15 @@ dependencies:
   {{project_name}}_ios_home_page:
 
 dev_dependencies:
+  auto_route_generator: ^7.3.1
+  build_runner: ^2.4.6
+  build_verify: ^3.1.0
   flutter_test:
     sdk: flutter
+  injectable_generator: ^2.4.0
   integration_test:
     sdk: flutter
   mocktail: ^1.0.0
-  build_runner: ^2.4.6
-  injectable_generator: ^2.4.0
-  auto_route_generator: ^7.3.1
-  build_verify: ^3.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -134,7 +134,7 @@ description: {{ description }}
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -148,13 +148,13 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  auto_route: ^7.8.2
+  bloc: ^8.1.2
+  bloc_concurrency: ^0.2.2
   flutter:
     sdk: flutter
   get_it: ^7.6.0
   injectable: ^2.3.0
-  auto_route: ^7.8.2
-  bloc: ^8.1.2
-  bloc_concurrency: ^0.2.2
   {{project_name}}_di:
   {{project_name}}_logging:
   {{project_name}}_infrastructure:
@@ -162,15 +162,15 @@ dependencies:
   {{project_name}}_linux_home_page:
 
 dev_dependencies:
+  auto_route_generator: ^7.3.1
+  build_runner: ^2.4.6
+  build_verify: ^3.1.0
   flutter_test:
     sdk: flutter
+  injectable_generator: ^2.4.0
   integration_test:
     sdk: flutter
   mocktail: ^1.0.0
-  build_runner: ^2.4.6
-  injectable_generator: ^2.4.0
-  auto_route_generator: ^7.3.1
-  build_verify: ^3.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -196,7 +196,7 @@ description: {{ description }}
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -210,14 +210,14 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  flutter:
-    sdk: flutter
-  get_it: ^7.6.0
-  injectable: ^2.3.0
   auto_route: ^7.8.2
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
   cupertino_icons: ^1.0.5
+  flutter:
+    sdk: flutter
+  get_it: ^7.6.0
+  injectable: ^2.3.0
   {{project_name}}_di:
   {{project_name}}_logging:
   {{project_name}}_infrastructure:
@@ -225,15 +225,15 @@ dependencies:
   {{project_name}}_macos_home_page:
 
 dev_dependencies:
+  auto_route_generator: ^7.3.1
+  build_runner: ^2.4.6
+  build_verify: ^3.1.0
   flutter_test:
     sdk: flutter
+  injectable_generator: ^2.4.0
   integration_test:
     sdk: flutter
   mocktail: ^1.0.0
-  build_runner: ^2.4.6
-  injectable_generator: ^2.4.0
-  auto_route_generator: ^7.3.1
-  build_verify: ^3.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -255,7 +255,7 @@ description: {{ description }}
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -269,15 +269,15 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  auto_route: ^7.8.2
+  bloc: ^8.1.2
+  bloc_concurrency: ^0.2.2
   flutter:
     sdk: flutter
   flutter_web_plugins:
     sdk: flutter
   get_it: ^7.6.0
   injectable: ^2.3.0
-  auto_route: ^7.8.2
-  bloc: ^8.1.2
-  bloc_concurrency: ^0.2.2
   {{project_name}}_di:
   {{project_name}}_logging:
   {{project_name}}_infrastructure:
@@ -285,15 +285,15 @@ dependencies:
   {{project_name}}_web_home_page:
 
 dev_dependencies:
+  auto_route_generator: ^7.3.1
+  build_runner: ^2.4.6
+  build_verify: ^3.1.0
   flutter_test:
     sdk: flutter
+  injectable_generator: ^2.4.0
   integration_test:
     sdk: flutter
   mocktail: ^1.0.0
-  build_runner: ^2.4.6
-  injectable_generator: ^2.4.0
-  auto_route_generator: ^7.3.1
-  build_verify: ^3.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -319,7 +319,7 @@ description: {{ description }}
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -333,13 +333,13 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  auto_route: ^7.8.2
+  bloc: ^8.1.2
+  bloc_concurrency: ^0.2.2
   flutter:
     sdk: flutter
   get_it: ^7.6.0
   injectable: ^2.3.0
-  auto_route: ^7.8.2
-  bloc: ^8.1.2
-  bloc_concurrency: ^0.2.2
   {{project_name}}_di:
   {{project_name}}_logging:
   {{project_name}}_infrastructure:
@@ -347,15 +347,15 @@ dependencies:
   {{project_name}}_windows_home_page:
 
 dev_dependencies:
+  auto_route_generator: ^7.3.1
+  build_runner: ^2.4.6
+  build_verify: ^3.1.0
   flutter_test:
     sdk: flutter
+  injectable_generator: ^2.4.0
   integration_test:
     sdk: flutter
   mocktail: ^1.0.0
-  build_runner: ^2.4.6
-  injectable_generator: ^2.4.0
-  auto_route_generator: ^7.3.1
-  build_verify: ^3.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -381,7 +381,7 @@ description: {{ description }}
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -395,13 +395,13 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  auto_route: ^7.8.2
+  bloc: ^8.1.2
+  bloc_concurrency: ^0.2.2
   flutter:
     sdk: flutter
   get_it: ^7.6.0
   injectable: ^2.3.0
-  auto_route: ^7.8.2
-  bloc: ^8.1.2
-  bloc_concurrency: ^0.2.2
   {{project_name}}_di:
   {{project_name}}_logging:
   {{project_name}}_infrastructure:
@@ -409,15 +409,15 @@ dependencies:
   {{project_name}}_mobile_home_page:
 
 dev_dependencies:
+  auto_route_generator: ^7.3.1
+  build_runner: ^2.4.6
+  build_verify: ^3.1.0
   flutter_test:
     sdk: flutter
+  injectable_generator: ^2.4.0
   integration_test:
     sdk: flutter
   mocktail: ^1.0.0
-  build_runner: ^2.4.6
-  injectable_generator: ^2.4.0
-  auto_route_generator: ^7.3.1
-  build_verify: ^3.1.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

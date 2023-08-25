@@ -34,16 +34,23 @@ The primary goal of this package is to offer a single, dedicated logger that can
 
 🎯 Provide a RouterObserver.
 
+TODO
+
 More information about testing a [Platform Root Package](/architecture/app-module#platform-root-package) can be found [here](/architecture/testing#testing-platform-root-package).
 
 ## Platform Navigation Package
 
 🎯 Provide [Navigator Interfaces](/architecture/app-module#navigator-interface) to navigate between [Platform Feature Packages](/architecture/app-module#platform-feature-package).
 
+TODO
+
 ### Navigator Interface
 
 ```dart
-TODO
+// i_home_page_navigator.dart
+abstract class IHomePageNavigator {
+  // TODO: add navigation methods here
+}
 ```
 
 ## Platform Localization Package
@@ -57,67 +64,241 @@ TODO
 ### Bloc
 
 ```dart
-TODO
+// counter_bloc.dart
+@android
+@injectable
+class CounterBloc extends Bloc<CounterEvent, CounterState> {
+  CounterBloc()
+      : super(
+          // Set initial state
+          const CounterInitial(),
+        ) {
+    // Register handlers
+    on<CounterStarted>(_onStarted);
+  }
+
+  /// Handle incoming [CounterStarted] event.
+  void _onStarted(
+    CounterStarted event,
+    Emitter<CounterState> emit,
+  ) {
+    // TODO: implement
+    throw UnimplementedError();
+  }
+}
+
+// counter_event.dart
+@freezed
+sealed class CounterEvent with _$CounterEvent {
+  const factory CounterEvent.started() = CounterStarted;
+}
+
+// counter_state.dart
+@freezed
+sealed class CounterState with _$CounterState {
+  const factory CounterState.initial() = CounterInitial;
+}
 ```
 
 ### Cubit
 
 ```dart
-TODO
+// counter_cubit.dart
+@android
+@injectable
+class CounterCubit extends Cubit<CounterState> {
+  CounterCubit()
+      : super(
+          // Set initial state
+          const CounterInitial(),
+        );
+
+  void started() {
+    // TODO: implement
+    throw UnimplementedError();
+  }
+}
+
+// counter_state.dart
+@freezed
+sealed class CounterState with _$CounterState {
+  const factory CounterState.initial() = CounterInitial;
+}
 ```
 
 ### Navigator Implementation
 
 ```dart
-TODO
+// navigator.dart
+@android
+@LazySingleton(as: IHomePageNavigator)
+class HomePageNavigator implements IHomePageNavigator {
+  // TODO: implement
+}
 ```
 
 More information about testing a [Platform Feature Package](/architecture/app-module#platform-feature-package) can be found [here](/architecture/testing#testing-platform-feature-package).
 
 ## Domain Package
 
-🎯 Abstract a domain using [Entities](/architecture/app-module#entity), [Service Interfaces](/architecture/app-module#service-interface), [Value Objects](/architecture/app-module#value-object) and [Failures](/architecture/app-module#failure).
+🎯 Represent a domain using [Entities](/architecture/app-module#entity), [Service Interfaces](/architecture/app-module#service-interface) and [Value Objects](/architecture/app-module#value-object).
 
 ### Entity
 
 ```dart
-TODO
+// user.dart
+@freezed
+class User with _$User {
+  const factory User({
+    required String id,
+    // TODO: add more fields here
+  }) = _User;
+
+  factory User.random() {
+    final faker = Faker();
+
+    return User(
+      id: faker.randomGenerator.string(16, min: 16),
+    );
+  }
+}
 ```
 
 ### Service Interface
 
 ```dart
-TODO
+// i_authentication_service.dart
+abstract class IAuthenticationService {
+  MyMethodResult myMethod();
+
+  // TODO: add more service methods
+}
+
+sealed class MyMethodResult {
+  const MyMethodResult();
+}
+
+@freezed
+class MyMethodSuccess extends MyMethodResult with _$MyMethodSuccess {
+  const factory MyMethodSuccess(String value) = _MyMethodSuccess;
+  const MyMethodSuccess._();
+}
+
+@freezed
+sealed class MyMethodFailure extends MyMethodResult with _$MyMethodFailure {
+  const MyMethodFailure._();
+  const factory MyMethodFailure.foo() = MyMethodFailureFoo;
+  // TODO: add more failure cases here
+}
+
+// TODO: add more service method results here
 ```
 
 ### Value Object
 
 ```dart
-TODO
-```
+// email_address.dart
+sealed class EmailAddress {
+  factory EmailAddress(String raw) {
+    return _validate(raw);
+  }
 
-### Failure
+  factory EmailAddress.random({bool valid = true}) {
+    final faker = Faker();
 
-```dart
-TODO
+    if (valid) {
+      return faker.randomGenerator.element([
+        // TODO: insert random valid instances here
+      ]);
+    } else {
+      return faker.randomGenerator.element([
+        // TODO: insert random invalid instances here
+      ]);
+    }
+  }
+
+  const EmailAddress._();
+
+  static EmailAddress _validate(String raw) {
+    // TODO: implement validation here
+    throw UnimplementedError();
+  }
+
+  String getOrCrash() {
+    return switch (this) {
+      final ValidEmailAddress valid => valid.value,
+      final EmailAddressFailure failure =>
+        throw StateError('Unexpected $failure at unrecoverable point.'),
+    };
+  }
+
+  bool isValid() => this is ValidEmailAddress;
+}
+
+@freezed
+class ValidEmailAddress extends EmailAddress with _$ValidEmailAddress {
+  const factory ValidEmailAddress(String value) = _ValidEmailAddress;
+  const ValidEmailAddress._() : super._();
+}
+
+@freezed
+sealed class EmailAddressFailure extends EmailAddress
+    with _$EmailAddressFailure {
+  const EmailAddressFailure._() : super._();
+  const factory EmailAddressFailure.foo() = EmailAddressFailureFoo;
+  // TODO: add more failures here
+}
 ```
 
 More information about testing a [Domain Package](/architecture/app-module#domain-package) can be found [here](/architecture/testing#testing-domain-package).
 
 ## Infrastructure Package
 
-🎯 Implement [Service Interfaces](/architecture/app-module#service-interface) of its associated [Domain Package](/architecture/app-module#domain-package).
+🎯 Implement its associated [Domain Package](/architecture/app-module#domain-package).
 
 ### Data Transfer Object
 
 ```dart
-TODO
+// user_dto.dart
+@freezed
+class UserDto with _$UserDto {
+  const factory UserDto({
+    required String id,
+    // TODO: add more fields here
+  }) = _UserDto;
+
+  factory UserDto.fromDomain(User domain) {
+    return UserDto(
+      id: domain.id,
+    );
+  }
+
+  factory UserDto.fromJson(Map<String, dynamic> json) =>
+      _$UserDtoFromJson(json);
+
+  const UserDto._();
+
+  User toDomain() {
+    return User(
+      id: id,
+    );
+  }
+}
 ```
 
 ### Service Implementation
 
 ```dart
-TODO
+// fake_authentication_service.dart
+@dev
+@LazySingleton(as: IAuthenticationService)
+class FakeAuthenticationService implements IAuthenticationService {
+  @override
+  MyMethodResult myMethod() {
+    // TODO: implement
+    throw UnimplementedError();
+  }
+}
 ```
 
 More information about testing an [Infrastructure Package](/architecture/app-module#infrastructure-package) can be found [here](/architecture/testing#testing-infrastructure-package).

@@ -45,7 +45,12 @@ final diPackageBundle = MasonBundle.fromJson(<String, dynamic>{
           "bmFtZToge3sgcHJvamVjdF9uYW1lIH19X2RpCmRlc2NyaXB0aW9uOiBEZXBlbmRlbmN5IGluamVjdGlvbiBvZiB7e3Byb2plY3RfbmFtZS50aXRsZUNhc2UoKX19Lgp2ZXJzaW9uOiAwLjEuMApwdWJsaXNoX3RvOiBub25lCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMS4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBnZXRfaXQ6IF43LjYuMAogIGluamVjdGFibGU6IF4yLjMuMAoKZGV2X2RlcGVuZGVuY2llczoKICB0ZXN0OiBeMS4yNC42Cg==",
       "type": "text"
     },
-    {"path": "README.md", "data": "", "type": "text"},
+    {
+      "path": "README.md",
+      "data":
+          "IyMgRGVwZW5kZW5jeSBJbmplY3Rpb24gUGFja2FnZQoKIyMjIFJlc3BvbnNpYmlsaXRpZXMKCvCfjq8gUHJvdmlkZSBhIGRlcGVuZGVuY3kgaW5qZWN0aW9uIGNvbnRhaW5lci4KCvCfjq8gUHJvdmlkZSBwbGF0Zm9ybSBhbm5vdGF0aW9ucyBmb3IgZGVwZW5kZW5jeSBpbmplY3Rpb24uCgpGb3IgbW9yZSBpbmZvcm1hdGlvbiBjbGljayBbaGVyZV1bMV0uCgpbMV06IGh0dHBzOi8vZG9jcy5wYWdlL2p0ZExhYi9yYXBpZC9hcmNoaXRlY3R1cmUvYXBwLW1vZHVsZSNkZXBlbmRlbmN5LWluamVjdGlvbi1wYWNrYWdlCg==",
+      "type": "text"
+    },
     {
       "path": "test/src/annotations_test.dart",
       "data":

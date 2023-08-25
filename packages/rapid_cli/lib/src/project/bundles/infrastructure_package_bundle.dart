@@ -64,7 +64,12 @@ final infrastructurePackageBundle = MasonBundle.fromJson(<String, dynamic>{
           "IyBtZWxvc19tYW5hZ2VkX2RlcGVuZGVuY3lfb3ZlcnJpZGVzOiB7e3Byb2plY3RfbmFtZX19X2RvbWFpbix7e3Byb2plY3RfbmFtZX19X2xvZ2dpbmcKZGVwZW5kZW5jeV9vdmVycmlkZXM6CiAge3twcm9qZWN0X25hbWV9fV9kb21haW46CiAgICBwYXRoOiAuLi8uLi97e3Byb2plY3RfbmFtZX19X2RvbWFpbi97e3Byb2plY3RfbmFtZX19X2RvbWFpbgogIHt7cHJvamVjdF9uYW1lfX1fbG9nZ2luZzoKICAgIHBhdGg6IC4uLy4uL3t7cHJvamVjdF9uYW1lfX1fbG9nZ2luZwo=",
       "type": "text"
     },
-    {"path": "README.md", "data": "", "type": "text"},
+    {
+      "path": "README.md",
+      "data":
+          "IyMgSW5mcmFzdHJ1Y3R1cmUgUGFja2FnZQoKIyMjIFJlc3BvbnNpYmlsaXRpZXMKCvCfjq8gSW1wbGVtZW50IGEgZG9tYWluLgoKIyMjIENvbXBvbmVudHMKCvCfk6YgW0RhdGEgVHJhbnNmZXIgT2JqZWN0XVsyXQoK8J+TpiBbU2VydmljZSBJbXBsZW1lbnRhdGlvbl1bM10KCkZvciBtb3JlIGluZm9ybWF0aW9uIGNsaWNrIFtoZXJlXVsxXS4KClsxXTogaHR0cHM6Ly9kb2NzLnBhZ2UvanRkTGFiL3JhcGlkL2FyY2hpdGVjdHVyZS9hcHAtbW9kdWxlI2luZnJhc3RydWN0dXJlLXBhY2thZ2UKWzJdOiBodHRwczovL2RvY3MucGFnZS9qdGRMYWIvcmFwaWQvYXJjaGl0ZWN0dXJlL2FwcC1tb2R1bGUjZGF0YS10cmFuc2Zlci1vYmplY3QKWzNdOiBodHRwczovL2RvY3MucGFnZS9qdGRMYWIvcmFwaWQvYXJjaGl0ZWN0dXJlL2FwcC1tb2R1bGUjc2VydmljZS1pbXBsZW1lbnRhdGlvbgo=",
+      "type": "text"
+    },
     {
       "path": "test/ensure_build_test.dart",
       "data":

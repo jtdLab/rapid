@@ -29,7 +29,12 @@ final rootPackageBundle = MasonBundle.fromJson(<String, dynamic>{
           "bmFtZToge3twcm9qZWN0X25hbWV9fQoKZW52aXJvbm1lbnQ6CiAgc2RrOiAiPj0zLjEuMCA8NC4wLjAiCgpkZXZfZGVwZW5kZW5jaWVzOgogIG1lbG9zOiBeMy4xLjEKICByYXBpZF9jbGk6CiAgICBnaXQ6CiAgICAgIHVybDogaHR0cHM6Ly9naXRodWIuY29tL2p0ZExhYi9yYXBpZC5naXQKICAgICAgcGF0aDogcGFja2FnZXMvcmFwaWRfY2xpCgpyYXBpZDoKICBuYW1lOiB7e3Byb2plY3RfbmFtZX19Cg==",
       "type": "text"
     },
-    {"path": "README.md", "data": "", "type": "text"}
+    {
+      "path": "README.md",
+      "data":
+          "IyMge3twcm9qZWN0X25hbWUudGl0bGVDYXNlKCl9fQoKVE9ETzogQWRkIGFsbCByZWxldmFudCBpbmZvcm1hdGlvbiBhYm91dCB0aGUgcHJvamVjdCBoZXJlLgo=",
+      "type": "text"
+    }
   ],
   "hooks": [],
   "name": "root_package",

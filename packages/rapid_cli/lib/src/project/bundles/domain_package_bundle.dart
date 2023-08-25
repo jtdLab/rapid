@@ -40,7 +40,12 @@ final domainPackageBundle = MasonBundle.fromJson(<String, dynamic>{
           "bmFtZToge3twcm9qZWN0X25hbWV9fV9kb21haW57eyNoYXNfbmFtZX19X3t7bmFtZX19e3svaGFzX25hbWV9fQpkZXNjcmlwdGlvbjogVE9ETwp2ZXJzaW9uOiAwLjEuMApwdWJsaXNoX3RvOiBub25lCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMS4wIDw0LjAuMCIKCmRlcGVuZGVuY2llczoKICBmYWtlcjogXjIuMS4wCiAgZnJlZXplZF9hbm5vdGF0aW9uOiBeMi40LjEKCmRldl9kZXBlbmRlbmNpZXM6CiAgdGVzdDogXjEuMjQuNgogIGJ1aWxkX3J1bm5lcjogXjIuNC42CiAgYnVpbGRfdmVyaWZ5OiBeMy4xLjAKICBmcmVlemVkOiBeMi40LjEKIAo=",
       "type": "text"
     },
-    {"path": "README.md", "data": "", "type": "text"},
+    {
+      "path": "README.md",
+      "data":
+          "IyMgRG9tYWluIFBhY2thZ2UKCiMjIyBSZXNwb25zaWJpbGl0aWVzCgrwn46vIFJlcHJlc2VudCBhIGRvbWFpbi4KCiMjIyBDb21wb25lbnRzCgrwn5OmIFtFbnRpdHldWzJdCgrwn5OmIFtWYWx1ZSBPYmplY3RdWzNdCgrwn5OmIFtTZXJ2aWNlIEludGVyZmFjZV1bNF0KCvCfk6YgW0ZhaWx1cmVdWzVdCgpGb3IgbW9yZSBpbmZvcm1hdGlvbiBjbGljayBbaGVyZV1bMV0uCgpbMV06IGh0dHBzOi8vZG9jcy5wYWdlL2p0ZExhYi9yYXBpZC9hcmNoaXRlY3R1cmUvYXBwLW1vZHVsZSNkb21haW4tcGFja2FnZQpbMl06IGh0dHBzOi8vZG9jcy5wYWdlL2p0ZExhYi9yYXBpZC9hcmNoaXRlY3R1cmUvYXBwLW1vZHVsZSNlbnRpdHkKWzNdOiBodHRwczovL2RvY3MucGFnZS9qdGRMYWIvcmFwaWQvYXJjaGl0ZWN0dXJlL2FwcC1tb2R1bGUjdmFsdWUtb2JqZWN0Cls0XTogaHR0cHM6Ly9kb2NzLnBhZ2UvanRkTGFiL3JhcGlkL2FyY2hpdGVjdHVyZS9hcHAtbW9kdWxlI3NlcnZpY2UtaW50ZXJmYWNlCls1XTogaHR0cHM6Ly9kb2NzLnBhZ2UvanRkTGFiL3JhcGlkL2FyY2hpdGVjdHVyZS9hcHAtbW9kdWxlI2ZhaWx1cmUK",
+      "type": "text"
+    },
     {
       "path": "test/ensure_build_test.dart",
       "data":

@@ -33,7 +33,12 @@ final platformNavigationPackageBundle = MasonBundle.fromJson(<String, dynamic>{
           "bmFtZToge3twcm9qZWN0X25hbWV9fV97e3BsYXRmb3JtfX1fbmF2aWdhdGlvbgpkZXNjcmlwdGlvbjogTmF2aWdhdGlvbiBvZiB7e3Byb2plY3RfbmFtZS50aXRsZUNhc2UoKX19LgpwdWJsaXNoX3RvOiBub25lCnZlcnNpb246IDAuMS4wCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMS4wIDw0LjAuMCIKICBmbHV0dGVyOiAiPj0zLjEzLjAiCgpkZXBlbmRlbmNpZXM6CiAgYXV0b19yb3V0ZTogXjcuOC4yCiAgZmx1dHRlcjoKICAgIHNkazogZmx1dHRlcgoKZGV2X2RlcGVuZGVuY2llczoKICB0ZXN0OiBeMS4yNC42Cg==",
       "type": "text"
     },
-    {"path": "README.md", "data": "", "type": "text"}
+    {
+      "path": "README.md",
+      "data":
+          "IyMgTmF2aWdhdGlvbiBQYWNrYWdlICh7e3BsYXRmb3JtLnRpdGxlQ2FzZSgpfX0pCgojIyMgUmVzcG9uc2liaWxpdGllcwoK8J+OryBQcm92aWRlIE5hdmlnYXRvciBJbnRlcmZhY2VzIHRvIG5hdmlnYXRlIGJldHdlZW4gUGxhdGZvcm0gRmVhdHVyZSBQYWNrYWdlcy4KCiMjIyBDb21wb25lbnRzCgrwn5OmIFtOYXZpZ2F0b3IgSW50ZXJmYWNlXVsyXQoKRm9yIG1vcmUgaW5mb3JtYXRpb24gY2xpY2sgW2hlcmVdWzFdLgoKWzFdOiBodHRwczovL2RvY3MucGFnZS9qdGRMYWIvcmFwaWQvYXJjaGl0ZWN0dXJlL2FwcC1tb2R1bGUjcGxhdGZvcm0tbmF2aWdhdGlvbi1wYWNrYWdlClsyXTogaHR0cHM6Ly9kb2NzLnBhZ2UvanRkTGFiL3JhcGlkL2FyY2hpdGVjdHVyZS9hcHAtbW9kdWxlI25hdmlnYXRvci1pbnRlcmZhY2UK",
+      "type": "text"
+    }
   ],
   "hooks": [],
   "name": "platform_navigation_package",

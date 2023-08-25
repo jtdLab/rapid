@@ -57,7 +57,12 @@ final loggingPackageBundle = MasonBundle.fromJson(<String, dynamic>{
           "bmFtZToge3twcm9qZWN0X25hbWV9fV9sb2dnaW5nCmRlc2NyaXB0aW9uOiBMb2dnaW5nIG9mIHt7cHJvamVjdF9uYW1lLnRpdGxlQ2FzZSgpfX0uCnZlcnNpb246IDAuMS4wCnB1Ymxpc2hfdG86IG5vbmUKCmVudmlyb25tZW50OgogIHNkazogIj49My4xLjAgPDQuMC4wIgoKZGVwZW5kZW5jaWVzOgogIGluamVjdGFibGU6IF4yLjMuMAogIG1ldGE6IF4xLjkuMQoKZGV2X2RlcGVuZGVuY2llczoKICBidWlsZF9ydW5uZXI6IF4yLjQuNgogIGJ1aWxkX3ZlcmlmeTogXjMuMS4wCiAgaW5qZWN0YWJsZV9nZW5lcmF0b3I6IF4yLjQuMAogIG1vY2t0YWlsOiBeMS4wLjAKICB0ZXN0OiBeMS4yNC42Cg==",
       "type": "text"
     },
-    {"path": "README.md", "data": "", "type": "text"},
+    {
+      "path": "README.md",
+      "data":
+          "IyMgTG9nZ2luZyBQYWNrYWdlCgojIyMgUmVzcG9uc2liaWxpdGllcwoK8J+OryBQcm92aWRlIGEgbG9nZ2VyLgoKRm9yIG1vcmUgaW5mb3JtYXRpb24gY2xpY2sgW2hlcmVdWzFdLgoKWzFdOiBodHRwczovL2RvY3MucGFnZS9qdGRMYWIvcmFwaWQvYXJjaGl0ZWN0dXJlL2FwcC1tb2R1bGUjbG9nZ2luZy1wYWNrYWdlCg==",
+      "type": "text"
+    },
     {
       "path": "test/ensure_build_test.dart",
       "data":

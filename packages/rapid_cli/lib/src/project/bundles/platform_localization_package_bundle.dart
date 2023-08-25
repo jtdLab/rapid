@@ -48,7 +48,8 @@ final platformLocalizationPackageBundle =
     },
     {
       "path": "README.md",
-      "data": "IyB7e3Byb2plY3RfbmFtZX19X3t7cGxhdGZvcm19fV9sb2NhbGl6YXRpb24K",
+      "data":
+          "IyMgTG9jYWxpemF0aW9uIFBhY2thZ2UgKHt7cGxhdGZvcm0udGl0bGVDYXNlKCl9fSkKCiMjIyBSZXNwb25zaWJpbGl0aWVzCgrwn46vIFByb3ZpZGUgdHJhbnNsYXRpb25zIGZvciBkaWZmZXJlbnQgbGFuZ3VhZ2VzLgoKRm9yIG1vcmUgaW5mb3JtYXRpb24gY2xpY2sgW2hlcmVdWzFdLgoKWzFdOiBodHRwczovL2RvY3MucGFnZS9qdGRMYWIvcmFwaWQvYXJjaGl0ZWN0dXJlL2FwcC1tb2R1bGUjcGxhdGZvcm0tbG9jYWxpemF0aW9uLXBhY2thZ2UK",
       "type": "text"
     }
   ],

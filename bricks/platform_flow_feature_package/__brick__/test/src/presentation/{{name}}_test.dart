@@ -13,7 +13,11 @@ void main() {
       // inside the build() method of the widget under test here.
       // E.g
       // final myCubit = MockMyCubit();
-      // whenListen(myCubit, const Stream<MyState>.empty(), initialState: MyInitial());
+      // whenListen(
+      //   myCubit,
+      //   const Stream<MyState>.empty(),
+      //   initialState: MyInitial(),
+      // );
       // getIt.registerFactory<MyCubit>(() => myCubit);
     });
 
@@ -66,6 +70,6 @@ void main() {
       ),
     );
 
-    // TODO: verify actions and events are handled correctly via standard widget tests.
+    // TODO: verify actions and events are handled correctly via widget tests.
   });
 }

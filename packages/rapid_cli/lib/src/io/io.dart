@@ -442,7 +442,7 @@ class YamlFile extends File {
         );
 
   /// Reads returns the value stored at [key].
-  T read<T>(String key) => loadYaml(readAsStringSync())[key] as T;
+  T read<T>(String key) => (loadYaml(readAsStringSync()) as Map)[key] as T;
 
   /// Sets the field at [path] to [value].
   ///

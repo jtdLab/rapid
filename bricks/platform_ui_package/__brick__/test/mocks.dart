@@ -6,10 +6,10 @@ import 'package:flutter_test/flutter_test.dart';
   bool isSupported(Locale locale) => true;
 
   @override
-  Future load(Locale locale) async {}
+  Future<dynamic> load(Locale locale) async {}
 
   @override
-  bool shouldReload(covariant LocalizationsDelegate old) => false;
+  bool shouldReload(covariant LocalizationsDelegate<dynamic> old) => false;
 }
 
 class FakeRouteInformationProvider extends Fake
@@ -46,10 +46,10 @@ class FakeRouterConfig extends RouterConfig<Object> {
   bool isSupported(Locale locale) => true;
 
   @override
-  Future load(Locale locale) async {}
+  Future<dynamic> load(Locale locale) async {}
 
   @override
-  bool shouldReload(covariant LocalizationsDelegate old) => false;
+  bool shouldReload(covariant LocalizationsDelegate<dynamic> old) => false;
 }
 
 class FakeRouterDelegate extends RouterDelegate<Object> {
@@ -79,11 +79,11 @@ class FakeRouterDelegate extends RouterDelegate<Object> {
 }
 
 class FakeRouterConfig extends RouterConfig<Object> {
-  final RouteInformationParser<Object> _routeInformationParser;
-
   FakeRouterConfig()
       : _routeInformationParser = FakeRouteInformationParser(),
         super(routerDelegate: FakeRouterDelegate());
+
+  final RouteInformationParser<Object> _routeInformationParser;
 
   @override
   RouteInformationParser<Object>? get routeInformationParser =>

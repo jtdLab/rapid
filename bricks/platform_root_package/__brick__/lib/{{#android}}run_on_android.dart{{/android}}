@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 
 class TargetPlatformError implements Exception {
-  final String msg;
-
   TargetPlatformError() : msg = 'TargetPlatform must be Android';
+
+  final String msg;
 }
 
 /// Runs [callback] when on Android.

@@ -12,10 +12,10 @@ void main() {
 
       // Act
       final callback = MockFunction();
-      await runOnWeb(callback);
+      await runOnWeb(callback.call);
 
       // Assert
-      verify(() => callback()).called(1);
+      verify(callback.call).called(1);
     });
 
     test('throws when platform is not Web', () async {
@@ -24,7 +24,10 @@ void main() {
 
       // Act + Assert
       final callback = MockFunction();
-      expect(() => runOnWeb(callback), throwsA(isA<TargetPlatformError>()));
+      expect(
+        () => runOnWeb(callback.call),
+        throwsA(isA<TargetPlatformError>()),
+      );
     });
   });
 }

@@ -13,10 +13,10 @@ void main() {
 
       // Act
       final callback = MockFunction();
-      await runOnIos(callback);
+      await runOnIos(callback.call);
 
       // Assert
-      verify(() => callback()).called(1);
+      verify(callback.call).called(1);
     });
 
     test('throws when platform is not iOS', () async {
@@ -25,7 +25,10 @@ void main() {
 
       // Act + Assert
       final callback = MockFunction();
-      expect(() => runOnIos(callback), throwsA(isA<TargetPlatformError>()));
+      expect(
+        () => runOnIos(callback.call),
+        throwsA(isA<TargetPlatformError>()),
+      );
     });
   });
 }

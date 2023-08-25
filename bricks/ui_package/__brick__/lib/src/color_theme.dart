@@ -9,11 +9,11 @@ part 'color_theme.tailor.dart';
 class _${{project_name.pascalCase()}}ColorTheme {
   static List<Color> primary = [
     const Color(0xFFFFFFFF),
-    const Color(0xFF222222)
+    const Color(0xFF222222),
   ];
 
   static List<Color> secondary = [
     const Color(0xFF3277B4),
-    const Color(0xFF284D72)
+    const Color(0xFF284D72),
   ];
 }

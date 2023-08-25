@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:meta/meta.dart';
 import 'package:path/path.dart' as p;
 
 import 'io/io.dart';
@@ -102,6 +103,7 @@ class RapidTool {
 /// {@template command_group}
 /// Represents a configuration for a command group.
 /// {@endtemplate}
+@immutable
 class CommandGroup {
   /// {@macro command_group}
   const CommandGroup({

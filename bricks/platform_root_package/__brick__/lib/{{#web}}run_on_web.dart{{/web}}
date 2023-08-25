@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
 
 class TargetPlatformError implements Exception {
-  final String msg;
-
   TargetPlatformError() : msg = 'TargetPlatform must be Web';
+
+  final String msg;
 }
 
 /// Override this in tests when simulating web as the current platform.

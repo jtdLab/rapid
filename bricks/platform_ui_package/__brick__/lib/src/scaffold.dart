@@ -1,15 +1,17 @@
 {{#android}}import 'package:flutter/material.dart';
-import 'package:{{project_name}}_ui_android/src/scaffold_theme.dart';
+
+import 'scaffold_theme.dart';
 
 class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
-  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
-  final Widget body;
-
   const {{project_name.pascalCase()}}Scaffold({
     super.key,
     this.theme,
     required this.body,
   });
+
+  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
+
+  final Widget body;
 
   @override
   Widget build(BuildContext context) {
@@ -24,17 +26,19 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 }
 {{/android}}{{#ios}}
 import 'package:flutter/cupertino.dart';
-import 'package:{{project_name}}_ui_ios/src/scaffold_theme.dart';
+
+import 'scaffold_theme.dart';
 
 class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
-  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
-  final Widget body;
-
   const {{project_name.pascalCase()}}Scaffold({
     super.key,
     this.theme,
     required this.body,
   });
+
+  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
+
+  final Widget body;
 
   @override
   Widget build(BuildContext context) {
@@ -49,17 +53,19 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 }
 {{/ios}}{{#linux}}
 import 'package:flutter/material.dart';
-import 'package:{{project_name}}_ui_linux/src/scaffold_theme.dart';
+
+import 'scaffold_theme.dart';
 
 class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
-  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
-  final Widget body;
-
   const {{project_name.pascalCase()}}Scaffold({
     super.key,
     this.theme,
     required this.body,
   });
+
+  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
+
+  final Widget body;
 
   @override
   Widget build(BuildContext context) {
@@ -74,18 +80,20 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 }
 {{/linux}}{{#macos}}
 import 'package:flutter/cupertino.dart';
-import 'package:{{project_name}}_ui_macos/src/scaffold_theme.dart';
 import 'package:macos_ui/macos_ui.dart';
 
-class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
-  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
-  final List<Widget> children;
+import 'scaffold_theme.dart';
 
+class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
   const {{project_name.pascalCase()}}Scaffold({
     super.key,
     this.theme,
     required this.children,
   });
+
+  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
+
+  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
@@ -105,17 +113,19 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 }
 {{/macos}}{{#web}}
 import 'package:flutter/material.dart';
-import 'package:{{project_name}}_ui_web/src/scaffold_theme.dart';
+
+import 'scaffold_theme.dart';
 
 class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
-  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
-  final Widget body;
-
   const {{project_name.pascalCase()}}Scaffold({
     super.key,
     this.theme,
     required this.body,
   });
+
+  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
+
+  final Widget body;
 
   @override
   Widget build(BuildContext context) {
@@ -130,17 +140,19 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
 }
 {{/web}}{{#windows}}
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:{{project_name}}_ui_windows/src/scaffold_theme.dart';
+
+import 'scaffold_theme.dart';
 
 class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
-  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
-  final Widget body;
-
   const {{project_name.pascalCase()}}Scaffold({
     super.key,
     this.theme,
-    required this.body,
+   required this.body,
   });
+
+  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
+
+  final Widget body;
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +160,7 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
     final backgroundColor = theme.backgroundColor;
 
     return NavigationView(
-      content: Container(
+      content: ColoredBox(
         color: backgroundColor,
         child: body,
       ),
@@ -156,17 +168,19 @@ class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
   }
 }
 {{/windows}}{{#mobile}}import 'package:flutter/material.dart';
-import 'package:{{project_name}}_ui_mobile/src/scaffold_theme.dart';
+
+import 'scaffold_theme.dart';
 
 class {{project_name.pascalCase()}}Scaffold extends StatelessWidget {
-  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
-  final Widget body;
-
   const {{project_name.pascalCase()}}Scaffold({
     super.key,
     this.theme,
     required this.body,
   });
+
+  final {{project_name.pascalCase()}}ScaffoldTheme? theme;
+
+  final Widget body;
 
   @override
   Widget build(BuildContext context) {

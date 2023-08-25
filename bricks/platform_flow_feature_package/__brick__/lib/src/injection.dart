@@ -4,4 +4,4 @@ import 'package:injectable/injectable.dart';
 ///
 /// For more info see: https://pub.dev/packages/injectable#including-micropackages-and-external-modules
 @InjectableInit.microPackage()
-initMicroPackage() {}
+void initMicroPackage() {}

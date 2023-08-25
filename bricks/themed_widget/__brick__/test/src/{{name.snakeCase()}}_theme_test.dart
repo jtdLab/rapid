@@ -1,4 +1,5 @@
 {{^android}}{{^ios}}{{^linux}}{{^macos}}{{^web}}{{^windows}}{{^mobile}}import 'dart:ui';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:{{project_name.snakeCase()}}_ui/src/{{name.snakeCase()}}_theme.dart';
 

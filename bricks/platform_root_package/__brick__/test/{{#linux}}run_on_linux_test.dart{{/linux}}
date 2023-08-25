@@ -13,10 +13,10 @@ void main() {
 
       // Act
       final callback = MockFunction();
-      await runOnLinux(callback);
+      await runOnLinux(callback.call);
 
       // Assert
-      verify(() => callback()).called(1);
+      verify(callback.call).called(1);
     });
 
     test('throws when platform is not Linux', () async {
@@ -25,7 +25,10 @@ void main() {
 
       // Act + Assert
       final callback = MockFunction();
-      expect(() => runOnLinux(callback), throwsA(isA<TargetPlatformError>()));
+      expect(
+        () => runOnLinux(callback.call),
+        throwsA(isA<TargetPlatformError>()),
+      );
     });
   });
 }

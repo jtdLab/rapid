@@ -8,9 +8,9 @@ import 'package:{{project_name}}_ui/src/theme_extensions.dart';
 ///
 /// Use the [themeMode] parameter to customize the app's appearance.
 Widget appWrapper({
+  required Widget widget,
   Locale? locale,
   ThemeMode? themeMode,
-  required Widget widget,
 }) {
   return MaterialApp(
     locale: locale ?? const Locale('en'),
@@ -26,7 +26,7 @@ extension WidgetTesterX on WidgetTester {
   ///
   /// Specify [locale] to test localization.
   ///
-  /// Specify [brightness] to test different appearances.
+  /// Specify [themeMode] to test different appearances.
   Future<void> pumpApp(
     Widget widget, {
     Locale? locale,

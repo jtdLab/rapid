@@ -13,8 +13,9 @@ enum Level {
   wtf(1200),
   nothing(2000);
 
-  final int value;
   const Level(this.value);
+
+  final int value;
 
   bool operator >=(Level level) => value >= level.value;
 }
@@ -29,12 +30,12 @@ typedef LogCommand = void Function(
 
 /// The logger of the application.
 abstract class {{project_name.pascalCase()}}Logger {
+  {{project_name.pascalCase()}}Logger(this.level);
+
   final Level level;
 
   @visibleForTesting
   LogCommand? logCommandOverrides;
-
-  {{project_name.pascalCase()}}Logger(this.level);
 
   LogCommand get _logCommand => logCommandOverrides ?? log;
 

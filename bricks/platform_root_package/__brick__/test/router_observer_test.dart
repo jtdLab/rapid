@@ -12,7 +12,7 @@ import 'mocks.dart';
 
 void main() {
   group('{{project_name.pascalCase()}}RouterObserver', () {
-    Route makeRoute(String name) {
+    Route<dynamic> makeRoute(String name) {
       final settings = MockRouteSettings();
       when(() => settings.name).thenReturn(name);
       final route = MockRoute();

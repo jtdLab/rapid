@@ -25,7 +25,7 @@ import '../mocks.dart';
 void main() {
   group('Level', () {
     group('.verbose', () {
-      final verbose = Level.verbose;
+      const verbose = Level.verbose;
 
       test('.value', () {
         expect(verbose.value, 0);
@@ -33,7 +33,7 @@ void main() {
     });
 
     group('.debug', () {
-      final debug = Level.debug;
+      const debug = Level.debug;
 
       test('.value', () {
         expect(debug.value, 500);
@@ -41,7 +41,7 @@ void main() {
     });
 
     group('.info', () {
-      final info = Level.info;
+      const info = Level.info;
 
       test('.value', () {
         expect(info.value, 800);
@@ -49,7 +49,7 @@ void main() {
     });
 
     group('.warning', () {
-      final warning = Level.warning;
+      const warning = Level.warning;
 
       test('.value', () {
         expect(warning.value, 900);
@@ -57,7 +57,7 @@ void main() {
     });
 
     group('.error', () {
-      final error = Level.error;
+      const error = Level.error;
 
       test('.value', () {
         expect(error.value, 1000);
@@ -65,7 +65,7 @@ void main() {
     });
 
     group('.wtf', () {
-      final wtf = Level.wtf;
+      const wtf = Level.wtf;
 
       test('.value', () {
         expect(wtf.value, 1200);
@@ -73,7 +73,7 @@ void main() {
     });
 
     group('.nothing', () {
-      final nothing = Level.nothing;
+      const nothing = Level.nothing;
 
       test('.value', () {
         expect(nothing.value, 2000);
@@ -104,7 +104,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerDevelopment = _get{{project_name.pascalCase()}}LoggerDevelopment(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -120,7 +120,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerDevelopment = _get{{project_name.pascalCase()}}LoggerDevelopment(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -142,7 +142,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerDevelopment = _get{{project_name.pascalCase()}}LoggerDevelopment(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -163,7 +163,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerDevelopment = _get{{project_name.pascalCase()}}LoggerDevelopment(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -185,7 +185,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerDevelopment = _get{{project_name.pascalCase()}}LoggerDevelopment(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -206,7 +206,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerDevelopment = _get{{project_name.pascalCase()}}LoggerDevelopment(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -228,7 +228,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerDevelopment = _get{{project_name.pascalCase()}}LoggerDevelopment(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -249,7 +249,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerDevelopment = _get{{project_name.pascalCase()}}LoggerDevelopment(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -271,7 +271,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerDevelopment = _get{{project_name.pascalCase()}}LoggerDevelopment(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -292,7 +292,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerDevelopment = _get{{project_name.pascalCase()}}LoggerDevelopment(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -314,7 +314,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerDevelopment = _get{{project_name.pascalCase()}}LoggerDevelopment(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -337,7 +337,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerTest = _get{{project_name.pascalCase()}}LoggerTest(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -353,7 +353,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerTest = _get{{project_name.pascalCase()}}LoggerTest(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -375,7 +375,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerTest = _get{{project_name.pascalCase()}}LoggerTest(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -396,7 +396,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerTest = _get{{project_name.pascalCase()}}LoggerTest(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -418,7 +418,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerTest = _get{{project_name.pascalCase()}}LoggerTest(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -439,7 +439,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerTest = _get{{project_name.pascalCase()}}LoggerTest(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -461,7 +461,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerTest = _get{{project_name.pascalCase()}}LoggerTest(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -482,7 +482,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerTest = _get{{project_name.pascalCase()}}LoggerTest(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -504,7 +504,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerTest = _get{{project_name.pascalCase()}}LoggerTest(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -525,7 +525,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerTest = _get{{project_name.pascalCase()}}LoggerTest(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -547,7 +547,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerTest = _get{{project_name.pascalCase()}}LoggerTest(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -570,7 +570,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerProduction = _get{{project_name.pascalCase()}}LoggerProduction(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -586,7 +586,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerProduction = _get{{project_name.pascalCase()}}LoggerProduction(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -608,7 +608,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerProduction = _get{{project_name.pascalCase()}}LoggerProduction(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -629,7 +629,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerProduction = _get{{project_name.pascalCase()}}LoggerProduction(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -651,7 +651,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerProduction = _get{{project_name.pascalCase()}}LoggerProduction(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -672,7 +672,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerProduction = _get{{project_name.pascalCase()}}LoggerProduction(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -694,7 +694,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerProduction = _get{{project_name.pascalCase()}}LoggerProduction(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -715,7 +715,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerProduction = _get{{project_name.pascalCase()}}LoggerProduction(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -737,7 +737,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerProduction = _get{{project_name.pascalCase()}}LoggerProduction(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -758,7 +758,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerProduction = _get{{project_name.pascalCase()}}LoggerProduction(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act
@@ -780,7 +780,7 @@ void main() {
         // Arrange
         final logCommand = MockLogCommand();
         final {{project_name.camelCase()}}LoggerProduction = _get{{project_name.pascalCase()}}LoggerProduction(
-          logCommand: logCommand,
+          logCommand: logCommand.call,
         );
 
         // Act

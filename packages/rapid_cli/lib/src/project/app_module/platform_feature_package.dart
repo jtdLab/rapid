@@ -53,17 +53,6 @@ abstract class PlatformFeaturePackage extends DartPackage
   int compareTo(PlatformFeaturePackage other) {
     return name.compareTo(other.name);
   }
-
-  @override
-  bool operator ==(Object other) =>
-      other is PlatformFeaturePackage &&
-      projectName == other.projectName &&
-      platform == other.platform &&
-      name == other.name;
-
-  @override
-  int get hashCode =>
-      Object.hash(projectName.hashCode, platform.hashCode, name.hashCode);
 }
 
 /// {@template platform_routable_feature_package}

@@ -4,8 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part '{{name.snakeCase()}}.freezed.dart';
 
 sealed class {{name.pascalCase()}}{{{generics}}} {
-  const {{name.pascalCase()}}._();
-
   factory {{name.pascalCase()}}({{{type}}} raw) {
     return _validate(raw);
   }
@@ -24,6 +22,8 @@ sealed class {{name.pascalCase()}}{{{generics}}} {
     }
   }
 
+  const {{name.pascalCase()}}._();
+
   static {{name.pascalCase()}}{{{generics}}} _validate{{{generics}}}({{{type}}} raw) {
     // TODO: implement validation here
     throw UnimplementedError();
@@ -31,8 +31,8 @@ sealed class {{name.pascalCase()}}{{{generics}}} {
 
   {{{type}}} getOrCrash() {
     return switch (this) {
-      Valid{{name.pascalCase()}}{{{generics}}} valid => valid.value,
-      {{name.pascalCase()}}Failure failure =>
+      final Valid{{name.pascalCase()}}{{{generics}}} valid => valid.value,
+      final {{name.pascalCase()}}Failure failure =>
         throw StateError('Unexpected $failure at unrecoverable point.'),
     };
   }
@@ -42,8 +42,8 @@ sealed class {{name.pascalCase()}}{{{generics}}} {
 
 @freezed
 class Valid{{name.pascalCase()}}{{{generics}}} extends {{name.pascalCase()}}{{{generics}}} with _$Valid{{name.pascalCase()}}{{{generics}}} {
-  const Valid{{name.pascalCase()}}._() : super._();
   const factory Valid{{name.pascalCase()}}({{{type}}} value) = _Valid{{name.pascalCase()}};
+  const Valid{{name.pascalCase()}}._() : super._();
 }
 
 @freezed

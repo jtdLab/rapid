@@ -1,20 +1,10 @@
 {{#android}}import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
-import 'package:{{project_name}}_ui_android/src/theme_extensions.dart';
+
+import 'theme_extensions.dart';
 
 abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
-  const {{project_name.pascalCase()}}App._({
-    super.key,
-    this.locale,
-    Iterable<Locale>? supportedLocales,
-    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routerConfig,
-    this.themeMode,
-    this.home,
-  }) : _localizationsDelegates = localizationsDelegates,
-        _supportedLocales = supportedLocales;
-
   const factory {{project_name.pascalCase()}}App({
     Key? key,
     Locale? locale,
@@ -33,25 +23,45 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     required Widget home,
   }) = _{{project_name.pascalCase()}}AppTest;
 
+  const {{project_name.pascalCase()}}App._({
+    super.key,
+    this.locale,
+    Iterable<Locale>? supportedLocales,
+    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
+    this.routerConfig,
+    this.themeMode,
+    this.home,
+  }) : _localizationsDelegates = localizationsDelegates,
+        _supportedLocales = supportedLocales;
+
   final Locale? locale;
+
   final Iterable<Locale>? _supportedLocales;
+
   Iterable<Locale> get supportedLocales =>
       _supportedLocales ?? [locale ?? const Locale('en')];
+
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
+
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
+
   final RouterConfig<Object>? routerConfig;
+
   ThemeData get lightTheme => ThemeData(
         brightness: Brightness.light,
         extensions: [...lightExtensions, ...ui.lightExtensions],
         // TODO: override material light themes here.
       );
+
   ThemeData get darkTheme => ThemeData(
         brightness: Brightness.dark,
         extensions: [...darkExtensions, ...ui.darkExtensions],
         // TODO: override material light themes here.
       );
+
   final ThemeMode? themeMode;
+
   final Widget? home;
 }
 
@@ -105,20 +115,10 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
 import 'package:flutter/material.dart' show Theme, ThemeData;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
-import 'package:{{project_name}}_ui_ios/src/theme_extensions.dart';
+
+import 'theme_extensions.dart';
 
 abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
-  const {{project_name.pascalCase()}}App._({
-    super.key,
-    this.locale,
-    Iterable<Locale>? supportedLocales,
-    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routerConfig,
-    this.brightness,
-    this.home,
-  }) : _localizationsDelegates = localizationsDelegates,
-        _supportedLocales = supportedLocales;
-
   const factory {{project_name.pascalCase()}}App({
     Key? key,
     Locale? locale,
@@ -137,20 +137,39 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     required Widget home,
   }) = _{{project_name.pascalCase()}}AppTest;
 
+  const {{project_name.pascalCase()}}App._({
+    super.key,
+    this.locale,
+    Iterable<Locale>? supportedLocales,
+    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
+    this.routerConfig,
+    this.brightness,
+    this.home,
+  }) : _localizationsDelegates = localizationsDelegates,
+        _supportedLocales = supportedLocales;
+
   final Locale? locale;
+
   final Iterable<Locale>? _supportedLocales;
+
   Iterable<Locale> get supportedLocales =>
       _supportedLocales ?? [locale ?? const Locale('en')];
+
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
+
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
+
   final RouterConfig<Object>? routerConfig;
+
   CupertinoThemeData get theme => CupertinoThemeData(
         brightness: brightness,
         // TODO: override cupertino themes here.
         // Hint: Use CupertinoDynamicColor.withBrightness
       );
+
   final Brightness? brightness;
+
   final Widget? home;
 
   Widget _builder(BuildContext context, Widget? child) {
@@ -225,20 +244,10 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
 {{/ios}}{{#linux}}import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
-import 'package:{{project_name}}_ui_linux/src/theme_extensions.dart';
+
+import 'theme_extensions.dart';
 
 abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
-  const {{project_name.pascalCase()}}App._({
-    super.key,
-    this.locale,
-    Iterable<Locale>? supportedLocales,
-    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routerConfig,
-    this.themeMode,
-    this.home,
-  }) : _localizationsDelegates = localizationsDelegates,
-        _supportedLocales = supportedLocales;
-
   const factory {{project_name.pascalCase()}}App({
     Key? key,
     Locale? locale,
@@ -257,25 +266,45 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     required Widget home,
   }) = _{{project_name.pascalCase()}}AppTest;
 
+  const {{project_name.pascalCase()}}App._({
+    super.key,
+    this.locale,
+    Iterable<Locale>? supportedLocales,
+    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
+    this.routerConfig,
+    this.themeMode,
+    this.home,
+  }) : _localizationsDelegates = localizationsDelegates,
+        _supportedLocales = supportedLocales;
+
   final Locale? locale;
+
   final Iterable<Locale>? _supportedLocales;
+
   Iterable<Locale> get supportedLocales =>
       _supportedLocales ?? [locale ?? const Locale('en')];
+
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
+
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
+
   final RouterConfig<Object>? routerConfig;
+
   ThemeData get lightTheme => ThemeData(
         brightness: Brightness.light,
         extensions: [...lightExtensions, ...ui.lightExtensions],
         // TODO: override material light themes here.
       );
+
   ThemeData get darkTheme => ThemeData(
         brightness: Brightness.dark,
         extensions: [...darkExtensions, ...ui.darkExtensions],
         // TODO: override material dark themes here.
       );
+
   final ThemeMode? themeMode;
+
   final Widget? home;
 }
 
@@ -330,21 +359,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' show Theme, ThemeData, ThemeMode;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
-import 'package:{{project_name}}_ui_macos/src/theme_extensions.dart';
 import 'package:macos_ui/macos_ui.dart';
 
-abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
-  const {{project_name.pascalCase()}}App._({
-    super.key,
-    this.locale,
-    Iterable<Locale>? supportedLocales,
-    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routerConfig,
-    this.themeMode,
-    this.home,
-  }) : _localizationsDelegates = localizationsDelegates,
-        _supportedLocales = supportedLocales;
+import 'theme_extensions.dart';
 
+abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
   const factory {{project_name.pascalCase()}}App({
     Key? key,
     Locale? locale,
@@ -363,23 +382,43 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     required Widget home,
   }) = _{{project_name.pascalCase()}}AppTest;
 
+ const {{project_name.pascalCase()}}App._({
+    super.key,
+    this.locale,
+    Iterable<Locale>? supportedLocales,
+    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
+    this.routerConfig,
+    this.themeMode,
+    this.home,
+  }) : _localizationsDelegates = localizationsDelegates,
+        _supportedLocales = supportedLocales;
+
   final Locale? locale;
+
   final Iterable<Locale>? _supportedLocales;
+
   Iterable<Locale> get supportedLocales =>
       _supportedLocales ?? [locale ?? const Locale('en')];
+
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
+
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
+
   final RouterConfig<Object>? routerConfig;
+
   MacosThemeData get lightTheme => MacosThemeData(
         brightness: Brightness.light,
         // TODO: override macos_ui light themes here.
       );
+
   MacosThemeData get darkTheme => MacosThemeData(
         brightness: Brightness.dark,
         // TODO: override macos_ui dark themes here.
       );
+
   final ThemeMode? themeMode;
+
   final Widget? home;
 
   Widget _builder(BuildContext context, Widget? child) {
@@ -468,20 +507,10 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
-import 'package:{{project_name}}_ui_web/src/theme_extensions.dart';
+
+import 'theme_extensions.dart';
 
 abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
-  const {{project_name.pascalCase()}}App._({
-    super.key,
-    this.locale,
-    Iterable<Locale>? supportedLocales,
-    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routerConfig,
-    this.themeMode,
-    this.home,
-  }) : _localizationsDelegates = localizationsDelegates,
-        _supportedLocales = supportedLocales;
-
   const factory {{project_name.pascalCase()}}App({
     Key? key,
     Locale? locale,
@@ -500,25 +529,45 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     required Widget home,
   }) = _{{project_name.pascalCase()}}AppTest;
 
+  const {{project_name.pascalCase()}}App._({
+    super.key,
+    this.locale,
+    Iterable<Locale>? supportedLocales,
+    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
+    this.routerConfig,
+    this.themeMode,
+    this.home,
+  }) : _localizationsDelegates = localizationsDelegates,
+        _supportedLocales = supportedLocales;
+
   final Locale? locale;
+
   final Iterable<Locale>? _supportedLocales;
+
   Iterable<Locale> get supportedLocales =>
       _supportedLocales ?? [locale ?? const Locale('en')];
+
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
+
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
+
   final RouterConfig<Object>? routerConfig;
+
   ThemeData get lightTheme => ThemeData(
         brightness: Brightness.light,
         extensions: [...lightExtensions, ...ui.lightExtensions],
         // TODO: override material light themes here.
       );
+
   ThemeData get darkTheme => ThemeData(
         brightness: Brightness.dark,
         extensions: [...darkExtensions, ...ui.darkExtensions],
         // TODO: override material light themes here.
       );
+
   final ThemeMode? themeMode;
+
   final Widget? home;
 }
 
@@ -572,20 +621,10 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
-import 'package:{{project_name}}_ui_windows/src/theme_extensions.dart';
+
+import 'theme_extensions.dart';
 
 abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
-  const {{project_name.pascalCase()}}App._({
-    super.key,
-    this.locale,
-    Iterable<Locale>? supportedLocales,
-    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routerConfig,
-    this.themeMode,
-    this.home,
-  }) : _localizationsDelegates = localizationsDelegates,
-        _supportedLocales = supportedLocales;
-
   const factory {{project_name.pascalCase()}}App({
     Key? key,
     Locale? locale,
@@ -604,25 +643,45 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     required Widget home,
   }) = _{{project_name.pascalCase()}}AppTest;
 
+  const {{project_name.pascalCase()}}App._({
+    super.key,
+    this.locale,
+    Iterable<Locale>? supportedLocales,
+    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
+    this.routerConfig,
+    this.themeMode,
+    this.home,
+  }) : _localizationsDelegates = localizationsDelegates,
+        _supportedLocales = supportedLocales;
+
   final Locale? locale;
+
   final Iterable<Locale>? _supportedLocales;
+
   Iterable<Locale> get supportedLocales =>
       _supportedLocales ?? [locale ?? const Locale('en')];
+
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
+  
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
+
   final RouterConfig<Object>? routerConfig;
+
   FluentThemeData get lightTheme => FluentThemeData(
         brightness: Brightness.light,
         extensions: [...lightExtensions, ...ui.lightExtensions],
         // TODO: override fluent_ui light themes here.
       );
+
   FluentThemeData get darkTheme => FluentThemeData(
         brightness: Brightness.dark,
         extensions: [...darkExtensions, ...ui.darkExtensions],
         // TODO: override fluent_ui light themes here.
       );
+
   final ThemeMode? themeMode;
+
   final Widget? home;
 }
 
@@ -675,20 +734,10 @@ class _{{project_name.pascalCase()}}AppTest extends {{project_name.pascalCase()}
 {{/windows}}{{#mobile}}import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:{{project_name}}_ui/{{project_name}}_ui.dart' as ui;
-import 'package:{{project_name}}_ui_mobile/src/theme_extensions.dart';
+
+import 'theme_extensions.dart';
 
 abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
-  const {{project_name.pascalCase()}}App._({
-    super.key,
-    this.locale,
-    Iterable<Locale>? supportedLocales,
-    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    this.routerConfig,
-    this.themeMode,
-    this.home,
-  }) : _localizationsDelegates = localizationsDelegates,
-        _supportedLocales = supportedLocales;
-
   const factory {{project_name.pascalCase()}}App({
     Key? key,
     Locale? locale,
@@ -707,25 +756,45 @@ abstract class {{project_name.pascalCase()}}App extends StatelessWidget {
     required Widget home,
   }) = _{{project_name.pascalCase()}}AppTest;
 
+  const {{project_name.pascalCase()}}App._({
+    super.key,
+    this.locale,
+    Iterable<Locale>? supportedLocales,
+    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
+    this.routerConfig,
+    this.themeMode,
+    this.home,
+  }) : _localizationsDelegates = localizationsDelegates,
+        _supportedLocales = supportedLocales;
+
   final Locale? locale;
+
   final Iterable<Locale>? _supportedLocales;
+
   Iterable<Locale> get supportedLocales =>
       _supportedLocales ?? [locale ?? const Locale('en')];
+
   final Iterable<LocalizationsDelegate<dynamic>>? _localizationsDelegates;
+
   Iterable<LocalizationsDelegate<dynamic>> get localizationsDelegates =>
       [...GlobalMaterialLocalizations.delegates, ...?_localizationsDelegates];
+
   final RouterConfig<Object>? routerConfig;
+
   ThemeData get lightTheme => ThemeData(
         brightness: Brightness.light,
         extensions: [...lightExtensions, ...ui.lightExtensions],
         // TODO: override material light themes here.
       );
+
   ThemeData get darkTheme => ThemeData(
         brightness: Brightness.dark,
         extensions: [...darkExtensions, ...ui.darkExtensions],
         // TODO: override material light themes here.
       );
+
   final ThemeMode? themeMode;
+  
   final Widget? home;
 }
 

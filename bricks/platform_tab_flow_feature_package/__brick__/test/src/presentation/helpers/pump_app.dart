@@ -75,9 +75,9 @@ extension WidgetTesterX on WidgetTester {
 }
 
 class _TestRouter extends RootStackRouter {
-  final Widget widget;
-
   _TestRouter(this.widget);
+
+  final Widget widget;
 
   @override
   Map<String, PageFactory> get pagesMap => {
@@ -111,9 +111,9 @@ class _TestRouter extends RootStackRouter {
 }
 
 class _Placeholder extends StatelessWidget {
-  final String name;
-
   const _Placeholder({required this.name});
+
+  final String name;
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +125,7 @@ class _Placeholder extends StatelessWidget {
               children: [
                 const Placeholder(),
                 Center(
-                  child: Container(
+                  child: ColoredBox(
                     color: const Color(0xFFFFFFFF),
                     child: Text(
                       name,
@@ -144,7 +144,7 @@ class _Placeholder extends StatelessWidget {
         children: [
           const Placeholder(),
           Center(
-            child: Container(
+            child: ColoredBox(
               color: const Color(0xFFFFFFFF),
               child: Text(
                 name,

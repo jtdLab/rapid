@@ -59,7 +59,7 @@ void main() {
     'E2E',
     () {
       test(
-        'domain default remove entity',
+        'domain default remove service_interface',
         performTest(
           subDomain: 'default',
         ),
@@ -76,7 +76,7 @@ void main() {
       ); */
 
       test(
-        'domain <sub_domain> remove entity',
+        'domain <sub_domain> remove service_interface',
         performTest(
           subDomain: 'foo_bar',
         ),

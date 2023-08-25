@@ -1,13 +1,14 @@
 {{^android}}{{^ios}}{{^linux}}{{^macos}}{{^web}}{{^windows}}{{^mobile}}import 'package:flutter/widgets.dart';
-import 'package:{{project_name.snakeCase()}}_ui/src/{{name.snakeCase()}}_theme.dart';
+
+import '{{name.snakeCase()}}_theme.dart';
 
 class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget {
-  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
-
   const {{project_name.pascalCase()}}{{name.pascalCase()}}({
     super.key,
     this.theme,
   });
+
+  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +22,16 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget
   }
 }{{/mobile}}{{/windows}}{{/web}}{{/macos}}{{/linux}}{{/ios}}{{/android}}
 {{#android}}import 'package:flutter/material.dart';
-import 'package:{{project_name.snakeCase()}}_ui_android/src/{{name.snakeCase()}}_theme.dart';
+
+import '{{name.snakeCase()}}_theme.dart';
 
 class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget {
-  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
-
   const {{project_name.pascalCase()}}{{name.pascalCase()}}({
     super.key,
     this.theme,
   });
+
+  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
 
   @override
   Widget build(BuildContext context) {
@@ -42,15 +44,16 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget
     );
   }
 }{{/android}}{{#ios}}import 'package:flutter/cupertino.dart';
-import 'package:{{project_name.snakeCase()}}_ui_ios/src/{{name.snakeCase()}}_theme.dart';
+
+import '{{name.snakeCase()}}_theme.dart';
 
 class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget {
-  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
-
   const {{project_name.pascalCase()}}{{name.pascalCase()}}({
     super.key,
     this.theme,
   });
+
+  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
 
   @override
   Widget build(BuildContext context) {
@@ -63,15 +66,16 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget
     );
   }
 }{{/ios}}{{#linux}}import 'package:flutter/material.dart';
-import 'package:{{project_name.snakeCase()}}_ui_linux/src/{{name.snakeCase()}}_theme.dart';
+
+import '{{name.snakeCase()}}_theme.dart';
 
 class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget {
-  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
-
   const {{project_name.pascalCase()}}{{name.pascalCase()}}({
     super.key,
     this.theme,
   });
+
+  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
 
   @override
   Widget build(BuildContext context) {
@@ -84,15 +88,16 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget
     );
   }
 }{{/linux}}{{#macos}}import 'package:flutter/cupertino.dart';
-import 'package:{{project_name.snakeCase()}}_ui_macos/src/{{name.snakeCase()}}_theme.dart';
+
+import '{{name.snakeCase()}}_theme.dart';
 
 class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget {
-  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
-
   const {{project_name.pascalCase()}}{{name.pascalCase()}}({
     super.key,
     this.theme,
   });
+
+  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
 
   @override
   Widget build(BuildContext context) {
@@ -105,15 +110,16 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget
     );
   }
 }{{/macos}}{{#web}}import 'package:flutter/material.dart';
-import 'package:{{project_name.snakeCase()}}_ui_web/src/{{name.snakeCase()}}_theme.dart';
+
+import '{{name.snakeCase()}}_theme.dart';
 
 class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget {
-  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
-
   const {{project_name.pascalCase()}}{{name.pascalCase()}}({
     super.key,
     this.theme,
   });
+
+  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
 
   @override
   Widget build(BuildContext context) {
@@ -126,15 +132,16 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget
     );
   }
 }{{/web}}{{#windows}}import 'package:fluent_ui/fluent_ui.dart';
-import 'package:{{project_name.snakeCase()}}_ui_windows/src/{{name.snakeCase()}}_theme.dart';
+
+import '{{name.snakeCase()}}_theme.dart';
 
 class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget {
-  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
-
   const {{project_name.pascalCase()}}{{name.pascalCase()}}({
     super.key,
     this.theme,
   });
+
+  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
 
   @override
   Widget build(BuildContext context) {
@@ -147,15 +154,16 @@ class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget
     );
   }
 }{{/windows}}{{#mobile}}import 'package:flutter/material.dart';
-import 'package:{{project_name.snakeCase()}}_ui_mobile/src/{{name.snakeCase()}}_theme.dart';
+
+import '{{name.snakeCase()}}_theme.dart';
 
 class {{project_name.pascalCase()}}{{name.pascalCase()}} extends StatelessWidget {
-  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
-
   const {{project_name.pascalCase()}}{{name.pascalCase()}}({
     super.key,
     this.theme,
   });
+
+  final {{project_name.pascalCase()}}{{name.pascalCase()}}Theme? theme;
 
   @override
   Widget build(BuildContext context) {

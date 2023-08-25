@@ -11,20 +11,20 @@ class {{entity_name.pascalCase()}}Dto with _${{entity_name.pascalCase()}}Dto {
     // TODO: add more fields here
   }) = _{{entity_name.pascalCase()}}Dto;
 
-  const {{entity_name.pascalCase()}}Dto._();
-
   factory {{entity_name.pascalCase()}}Dto.fromDomain({{entity_name.pascalCase()}} domain) {
     return {{entity_name.pascalCase()}}Dto(
       id: domain.id,
     );
   }
 
+  factory {{entity_name.pascalCase()}}Dto.fromJson(Map<String, dynamic> json) =>
+      _${{entity_name.pascalCase()}}DtoFromJson(json);
+
+  const {{entity_name.pascalCase()}}Dto._();
+
   {{entity_name.pascalCase()}} toDomain() {
     return {{entity_name.pascalCase()}}(
       id: id,
     );
   }
-
-  factory {{entity_name.pascalCase()}}Dto.fromJson(Map<String, dynamic> json) =>
-      _${{entity_name.pascalCase()}}DtoFromJson(json);
 }

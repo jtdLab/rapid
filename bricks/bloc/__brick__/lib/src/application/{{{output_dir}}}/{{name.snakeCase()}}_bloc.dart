@@ -16,9 +16,7 @@ class {{name.pascalCase()}}Bloc extends Bloc<{{name.pascalCase()}}Event, {{name.
           const {{name.pascalCase()}}Initial(),
         ) {
     // Register handlers
-    on<{{name.pascalCase()}}Started>(
-      (event, emit) => _onStarted(event, emit),
-    );
+    on<{{name.pascalCase()}}Started>(_onStarted);
   }
 
   /// Handle incoming [{{name.pascalCase()}}Started] event.

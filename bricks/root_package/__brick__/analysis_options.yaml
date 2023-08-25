@@ -1,7 +1,10 @@
+# This file configures the analyzer, which statically analyzes Dart code to
+# check for errors, warnings, and lints.
+#
+# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
+# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
+# invoked from the command line by running `flutter analyze`.
 analyzer:
-  exclude:
-    - bricks/**
-
   language:
     strict-casts: true
     strict-inference: true
@@ -15,9 +18,19 @@ analyzer:
     record_literal_one_positional_no_trailing_comma: error
 
 linter:
+  # The lint rules applied to this project can be customized in the
+  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
+  # included above or to enable additional rules. A list of all available lints
+  # and their documentation is published at
+  # https://dart-lang.github.io/linter/lints/index.html.
+  #
+  # Instead of disabling a lint rule for the entire project in the
+  # section below, it can also be suppressed for a single line of code
+  # or a specific dart file by using the `// ignore: name_of_lint` and
+  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
+  # producing the lint.
   rules:
     - always_declare_return_types
-    - always_put_required_named_parameters_first
     - annotate_overrides
     - avoid_bool_literals_in_conditional_expressions
     - avoid_catching_errors
@@ -56,7 +69,6 @@ linter:
     - camel_case_extensions
     - camel_case_types
     - cancel_subscriptions
-    #    - cascade_invocations TODO good in source bad in test code
     - cast_nullable_to_non_nullable
     - collection_methods_unrelated_type
     - combinators_ordering
@@ -68,14 +80,12 @@ linter:
     - dangling_library_doc_comments
     - depend_on_referenced_packages
     - deprecated_consistency
-    - directives_ordering
     - empty_catches
     - empty_constructor_bodies
     - empty_statements
     - eol_at_end_of_file
     - exhaustive_cases
     - file_names
-    - flutter_style_todos
     - hash_and_equals
     - implementation_imports
     - implicit_call_tearoffs
@@ -105,7 +115,6 @@ linter:
     - one_member_abstracts
     - only_throw_errors
     - overridden_fields
-    - package_api_docs
     - package_names
     - package_prefixed_library_names
     - parameter_assignments
@@ -144,7 +153,6 @@ linter:
     - prefer_typing_uninitialized_variables
     - prefer_void_to_null
     - provide_deprecation_message
-    - public_member_api_docs
     - recursive_getters
     - require_trailing_commas
     - secure_pubspec_urls
@@ -153,7 +161,6 @@ linter:
     - slash_for_doc_comments
     - sort_child_properties_last
     - sort_constructors_first
-    - sort_pub_dependencies
     - sort_unnamed_constructors_first
     - test_types_in_equals
     - throw_in_finally
@@ -204,3 +211,5 @@ linter:
     - use_to_and_as_if_applicable
     - valid_regexps
     - void_checks
+# Additional information about this file can be found at
+# https://dart.dev/guides/language/analysis-options

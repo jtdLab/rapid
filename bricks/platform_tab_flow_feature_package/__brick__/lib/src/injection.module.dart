@@ -1,7 +1,6 @@
 //@GeneratedMicroModule;{{project_name.pascalCase()}}{{platform.pascalCase()}}{{name.pascalCase()}}PackageModule;package:{{project_name}}_{{platform}}_{{name}}/src/injection.module.dart
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unnecessary_lambdas
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: type=lint
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes

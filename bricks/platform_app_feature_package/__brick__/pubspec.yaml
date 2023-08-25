@@ -30,7 +30,6 @@ dev_dependencies:
   freezed: ^2.4.1
   injectable_generator: ^2.4.0
   flutter_gen_runner: ^5.3.1
-  flutter_lints: ^2.0.2
   build_verify: ^3.1.0
 
 # The following section is specific to the FlutterGen package.

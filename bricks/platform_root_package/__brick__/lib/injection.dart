@@ -26,7 +26,7 @@ import 'injection.config.dart';
   ],
 )
 Future<void> configureDependencies(String environment, String platform) async =>
-    await getIt.init(
+    getIt.init(
       environmentFilter: NoEnvOrContainsAny({environment, platform}),
     );
 

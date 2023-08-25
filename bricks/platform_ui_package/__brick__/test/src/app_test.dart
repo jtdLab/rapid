@@ -4,10 +4,10 @@ import '../mocks.dart';
 
 {{#android}}
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}App({
-  Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RouterConfig<Object> routerConfig,
+  Locale? locale,
   ThemeMode? themeMode,
 }) {
   return {{project_name.pascalCase()}}App(
@@ -20,10 +20,10 @@ import '../mocks.dart';
 }
 
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}AppTest({
+  required Widget home,
   Locale? locale,
   Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
   ThemeMode? themeMode,
-  required Widget home,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale,
@@ -124,10 +124,10 @@ void main() {
 }
 {{/android}}{{#ios}}
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}App({
-  Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RouterConfig<Object> routerConfig,
+  Locale? locale,
   Brightness? brightness,
 }) {
   return {{project_name.pascalCase()}}App(
@@ -140,10 +140,10 @@ void main() {
 }
 
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}AppTest({
+  required Widget home,
   Locale? locale,
   Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
   Brightness? brightness,
-  required Widget home,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale,
@@ -294,10 +294,10 @@ void main() {
 }
 {{/ios}}{{#linux}}
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}App({
-  Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RouterConfig<Object> routerConfig,
+  Locale? locale, 
   ThemeMode? themeMode,
 }) {
   return {{project_name.pascalCase()}}App(
@@ -310,10 +310,10 @@ void main() {
 }
 
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}AppTest({
+  required Widget home,
   Locale? locale,
   Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
   ThemeMode? themeMode,
-  required Widget home,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale,
@@ -414,10 +414,10 @@ void main() {
 }
 {{/linux}}{{#macos}}
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}App({
-  Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RouterConfig<Object> routerConfig,
+  Locale? locale,
   ThemeMode? themeMode,
 }) {
   return {{project_name.pascalCase()}}App(
@@ -430,10 +430,10 @@ void main() {
 }
 
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}AppTest({
+  required Widget home,
   Locale? locale,
   Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
   ThemeMode? themeMode,
-  required Widget home,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale,
@@ -651,10 +651,10 @@ void main() {
 }
 {{/macos}}{{#web}}
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}App({
-  Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RouterConfig<Object> routerConfig,
+  Locale? locale,
   ThemeMode? themeMode,
 }) {
   return {{project_name.pascalCase()}}App(
@@ -667,10 +667,10 @@ void main() {
 }
 
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}AppTest({
+  required Widget home,
   Locale? locale,
   Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
   ThemeMode? themeMode,
-  required Widget home,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale,
@@ -771,10 +771,10 @@ void main() {
 }
 {{/web}}{{#windows}}
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}App({
-  Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RouterConfig<Object> routerConfig,
+  Locale? locale,
   ThemeMode? themeMode,
 }) {
   return {{project_name.pascalCase()}}App(
@@ -787,10 +787,10 @@ void main() {
 }
 
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}AppTest({
+  required Widget home,
   Locale? locale,
   Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
   ThemeMode? themeMode,
-  required Widget home,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale,
@@ -891,10 +891,10 @@ void main() {
 }
 {{/windows}}{{#mobile}}
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}App({
-  Locale? locale,
   required Iterable<Locale> supportedLocales,
   required Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
   required RouterConfig<Object> routerConfig,
+  Locale? locale,
   ThemeMode? themeMode,
 }) {
   return {{project_name.pascalCase()}}App(
@@ -907,10 +907,10 @@ void main() {
 }
 
 {{project_name.pascalCase()}}App _get{{project_name.pascalCase()}}AppTest({
+  required Widget home,
   Locale? locale,
   Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
   ThemeMode? themeMode,
-  required Widget home,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale,

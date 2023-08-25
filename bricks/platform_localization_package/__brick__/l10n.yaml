@@ -5,4 +5,6 @@ template-arb-file: {{project_name}}_{{default_language_code}}{{#default_has_scri
 output-localization-file: {{project_name}}_localizations.dart
 nullable-getter: false
 synthetic-package: false
-header: // coverage:ignore-file
+header: |
+  // coverage:ignore-file
+  // ignore_for_file: type=lint

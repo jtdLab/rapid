@@ -3,22 +3,22 @@ import 'package:flutter/widgets.dart';
 import 'package:{{project_name}}_logging/{{project_name}}_logging.dart';
 
 class {{project_name.pascalCase()}}RouterObserver extends AutoRouterObserver {
-  final {{project_name.pascalCase()}}Logger logger;
-
   {{project_name.pascalCase()}}RouterObserver(this.logger);
 
+  final {{project_name.pascalCase()}}Logger logger;
+
   @override
-  void didPush(Route route, Route? previousRoute) {
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     logger.debug('New route pushed: ${route.settings.name}');
   }
 
   @override
-  void didPop(Route route, Route? previousRoute) {
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     logger.debug('Route popped: ${route.settings.name}');
   }
 
   @override
-  void didRemove(Route route, Route? previousRoute) {
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
     logger.debug('Route removed: ${route.settings.name}');
   }
 

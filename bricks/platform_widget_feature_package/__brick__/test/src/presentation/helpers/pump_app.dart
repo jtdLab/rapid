@@ -73,9 +73,9 @@ extension WidgetTesterX on WidgetTester {
 }
 
 class _TestRouter extends RootStackRouter {
-  final Widget widget;
-
   _TestRouter(this.widget);
+
+  final Widget widget;
 
   @override
   Map<String, PageFactory> get pagesMap => {

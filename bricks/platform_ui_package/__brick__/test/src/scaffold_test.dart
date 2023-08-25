@@ -7,16 +7,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'helpers/helpers.dart';
 
 {{^macos}}{{project_name.pascalCase()}}Scaffold _get{{project_name.pascalCase()}}Scaffold({
-  {{project_name.pascalCase()}}ScaffoldTheme? theme,
   required Widget body,
+  {{project_name.pascalCase()}}ScaffoldTheme? theme,
 }) {
   return {{project_name.pascalCase()}}Scaffold(
     theme: theme,
     body: body,
   );
 }{{/macos}}{{#macos}}{{project_name.pascalCase()}}Scaffold _get{{project_name.pascalCase()}}Scaffold({
-  {{project_name.pascalCase()}}ScaffoldTheme? theme,
   required List<Widget> children,
+  {{project_name.pascalCase()}}ScaffoldTheme? theme,
 }) {
   return {{project_name.pascalCase()}}Scaffold(
     theme: theme,
@@ -40,7 +40,8 @@ import 'helpers/helpers.dart';
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(
+                      backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
               ),
             ),
@@ -60,7 +61,7 @@ import 'helpers/helpers.dart';
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
               ),
             ),
@@ -95,7 +96,7 @@ import 'helpers/helpers.dart';
               brightness: Brightness.light,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
               ),
             ),
@@ -115,7 +116,7 @@ import 'helpers/helpers.dart';
               brightness: Brightness.light,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
               ),
             ),
@@ -152,7 +153,7 @@ import 'helpers/helpers.dart';
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
               ),
             ),
@@ -172,7 +173,7 @@ import 'helpers/helpers.dart';
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
               ),
             ),
@@ -213,7 +214,7 @@ import 'helpers/helpers.dart';
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}                children: [
                   ContentArea(
                     builder: (context, _) => const Placeholder(),
@@ -241,7 +242,7 @@ import 'helpers/helpers.dart';
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}                children: [
                   ContentArea(
                     builder: (context, _) => const Placeholder(),
@@ -286,7 +287,7 @@ import 'helpers/helpers.dart';
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
               ),
             ),
@@ -306,7 +307,7 @@ import 'helpers/helpers.dart';
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
               ),
             ),
@@ -343,7 +344,7 @@ import 'helpers/helpers.dart';
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
               ),
             ),
@@ -363,7 +364,7 @@ import 'helpers/helpers.dart';
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
               ),
             ),
@@ -398,7 +399,7 @@ import 'helpers/helpers.dart';
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
               ),
             ),
@@ -418,7 +419,7 @@ import 'helpers/helpers.dart';
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}Scaffold(
                 theme:
-                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}ScaffoldTheme(backgroundColor: Color(0xFF12FF12),),
                 {{^macos}}body: const Placeholder(),{{/macos}}{{#macos}}children: [const Placeholder()],{{/macos}}
               ),
             ),

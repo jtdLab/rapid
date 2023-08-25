@@ -87,7 +87,7 @@ void main() {
         () => logger.debug(
           'onError -- MockBloc\n'
           '\n'
-          'Instance of \'Error\'',
+          "Instance of 'Error'",
         ),
       ).called(1);
     });

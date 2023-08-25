@@ -5,7 +5,7 @@ BlocProvider provider<T extends BlocBase<S>, S>(
   T bloc, {
   required S initialState,
 }) {
-  assert(bloc is MockBloc || bloc is MockCubit);
+  assert(bloc is MockBloc || bloc is MockCubit, '"bloc" must be a Mock.');
   whenListen(bloc, Stream<S>.empty(), initialState: initialState);
   return BlocProvider<T>(create: (_) => bloc);
 }

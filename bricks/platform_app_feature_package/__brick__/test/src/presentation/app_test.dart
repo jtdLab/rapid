@@ -17,8 +17,8 @@ App _getApp({
 }
 
 App _getAppTest({
-  Locale? locale,
   required RootStackRouter router,
+  Locale? locale,
   List<PageRouteInfo<dynamic>>? initialRoutes,
   AutoRouterObserver? navigatorObserver,
   {{#android}}ThemeMode? themeMode{{/android}}{{#ios}}Brightness? brightness{{/ios}}{{#linux}}ThemeMode? themeMode{{/linux}}{{#macos}}ThemeMode? themeMode{{/macos}}{{#web}}ThemeMode? themeMode{{/web}}{{#windows}}ThemeMode? themeMode{{/windows}}{{#mobile}}ThemeMode? themeMode{{/mobile}},
@@ -49,7 +49,8 @@ void main() {
     testWidgets('renders {{project_name.pascalCase()}}App correctly', (tester) async {
       // Arrange
       final router = FakeRouter();
-      navigatorObserverBuilder() => <AutoRouterObserver>[];
+      List<AutoRouterObserver> navigatorObserverBuilder() =>
+          <AutoRouterObserver>[];
       final app = _getApp(
         router: router,
         navigatorObserverBuilder: navigatorObserverBuilder,

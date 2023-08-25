@@ -6,12 +6,12 @@ import 'package:flutter_test/flutter_test.dart';
 Matcher isRoute(String name) => _IsRoute(name);
 
 class _IsRoute extends Matcher {
-  final String _name;
-
   const _IsRoute(this._name);
 
+  final String _name;
+
   @override
-  bool matches(Object? item, Map matchState) {
+  bool matches(Object? item, Map<dynamic, dynamic>matchState) {
     final name = _name;
 
     if (item is Route) {
@@ -29,7 +29,7 @@ class _IsRoute extends Matcher {
   Description describeMismatch(
     Object? item,
     Description mismatchDescription,
-    Map matchState,
+    Map<dynamic, dynamic>matchState,
     bool verbose,
   ) {
     if (item is Route) {
@@ -45,12 +45,12 @@ class _IsRoute extends Matcher {
 Matcher isTabPageRoute(String name) => _IsTabPageRoute(name);
 
 class _IsTabPageRoute extends Matcher {
-  final String _name;
-
   const _IsTabPageRoute(this._name);
 
+  final String _name;
+
   @override
-  bool matches(Object? item, Map matchState) {
+  bool matches(Object? item, Map<dynamic, dynamic>matchState) {
     final name = _name;
 
     if (item is TabPageRoute) {
@@ -68,7 +68,7 @@ class _IsTabPageRoute extends Matcher {
   Description describeMismatch(
     Object? item,
     Description mismatchDescription,
-    Map matchState,
+    Map<dynamic, dynamic>matchState,
     bool verbose,
   ) {
     if (item is Route) {

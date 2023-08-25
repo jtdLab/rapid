@@ -10,7 +10,7 @@ part 'scaffold_theme.tailor.dart';
 class _${{project_name.pascalCase()}}ScaffoldTheme {
   static List<Color> backgroundColor = [
     {{project_name.pascalCase()}}ColorTheme.light.primary,
-    {{project_name.pascalCase()}}ColorTheme.dark.primary
+    {{project_name.pascalCase()}}ColorTheme.dark.primary,
   ];
 }
 {{/android}}{{#ios}}import 'package:flutter/foundation.dart';
@@ -25,7 +25,7 @@ part 'scaffold_theme.tailor.dart';
 class _${{project_name.pascalCase()}}ScaffoldTheme {
   static List<Color> backgroundColor = [
     {{project_name.pascalCase()}}ColorTheme.light.primary,
-    {{project_name.pascalCase()}}ColorTheme.dark.primary
+    {{project_name.pascalCase()}}ColorTheme.dark.primary,
   ];
 }
 {{/ios}}{{#linux}}import 'package:flutter/foundation.dart';
@@ -40,7 +40,7 @@ part 'scaffold_theme.tailor.dart';
 class _${{project_name.pascalCase()}}ScaffoldTheme {
   static List<Color> backgroundColor = [
     {{project_name.pascalCase()}}ColorTheme.light.primary,
-    {{project_name.pascalCase()}}ColorTheme.dark.primary
+    {{project_name.pascalCase()}}ColorTheme.dark.primary,
   ];
 }
 {{/linux}}{{#macos}}import 'package:flutter/foundation.dart';
@@ -55,7 +55,7 @@ part 'scaffold_theme.tailor.dart';
 class _${{project_name.pascalCase()}}ScaffoldTheme {
   static List<Color> backgroundColor = [
     {{project_name.pascalCase()}}ColorTheme.light.primary,
-    {{project_name.pascalCase()}}ColorTheme.dark.primary
+    {{project_name.pascalCase()}}ColorTheme.dark.primary,
   ];
 }
 {{/macos}}{{#web}}import 'package:flutter/foundation.dart';
@@ -70,7 +70,7 @@ part 'scaffold_theme.tailor.dart';
 class _${{project_name.pascalCase()}}ScaffoldTheme {
   static List<Color> backgroundColor = [
     {{project_name.pascalCase()}}ColorTheme.light.primary,
-    {{project_name.pascalCase()}}ColorTheme.dark.primary
+    {{project_name.pascalCase()}}ColorTheme.dark.primary,
   ];
 }
 {{/web}}{{#windows}}import 'package:fluent_ui/fluent_ui.dart';
@@ -84,7 +84,7 @@ part 'scaffold_theme.tailor.dart';
 class _${{project_name.pascalCase()}}ScaffoldTheme {
   static List<Color> backgroundColor = [
     {{project_name.pascalCase()}}ColorTheme.light.primary,
-    {{project_name.pascalCase()}}ColorTheme.dark.primary
+    {{project_name.pascalCase()}}ColorTheme.dark.primary,
   ];
 }
 
@@ -105,7 +105,7 @@ part 'scaffold_theme.tailor.dart';
 class _${{project_name.pascalCase()}}ScaffoldTheme {
   static List<Color> backgroundColor = [
     {{project_name.pascalCase()}}ColorTheme.light.primary,
-    {{project_name.pascalCase()}}ColorTheme.dark.primary
+    {{project_name.pascalCase()}}ColorTheme.dark.primary,
   ];
 }
 {{/mobile}}

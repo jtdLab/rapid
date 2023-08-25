@@ -1,5 +1,6 @@
 import 'package:mocktail/mocktail.dart';
 
+// ignore: one_member_abstracts
 abstract class _LogCommand {
   void call(
     String message, {

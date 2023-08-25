@@ -7,7 +7,7 @@ void main() {
     group('.()', () {
       test('returns correct instance', () {
         // Act
-        final {{entity_name.camelCase()}}Dto = {{entity_name.pascalCase()}}Dto(id: 'some_id');
+        const {{entity_name.camelCase()}}Dto = {{entity_name.pascalCase()}}Dto(id: 'some_id');
 
         // Assert
         expect({{entity_name.camelCase()}}Dto.id, 'some_id');
@@ -17,10 +17,10 @@ void main() {
     group('.fromDomain()', () {
       test('returns correct instance', () {
         // Arrange
-        final {{entity_name.camelCase()}} = {{entity_name.pascalCase()}}(id: 'some_id');
+        const {{entity_name.camelCase()}} = {{entity_name.pascalCase()}}(id: 'some_id');
 
         // Act + Assert
-        expect({{entity_name.pascalCase()}}Dto.fromDomain({{entity_name.camelCase()}}), {{entity_name.pascalCase()}}Dto(id: 'some_id'));
+        expect({{entity_name.pascalCase()}}Dto.fromDomain({{entity_name.camelCase()}}), const {{entity_name.pascalCase()}}Dto(id: 'some_id'));
       });
     });
 
@@ -30,7 +30,7 @@ void main() {
         final {{entity_name.camelCase()}}Json = {'id': 'some_id'};
 
         // Act + Assert
-        expect({{entity_name.pascalCase()}}Dto.fromJson({{entity_name.camelCase()}}Json), {{entity_name.pascalCase()}}Dto(id: 'some_id'));
+        expect({{entity_name.pascalCase()}}Dto.fromJson({{entity_name.camelCase()}}Json), const {{entity_name.pascalCase()}}Dto(id: 'some_id'));
       });
 
       test('throws when json is invalid', () {
@@ -42,17 +42,17 @@ void main() {
     group('.toDomain()', () {
       test('returns correct entity', () {
         // Arrange
-        final {{entity_name.camelCase()}}Dto = {{entity_name.pascalCase()}}Dto(id: 'some_id');
+        const {{entity_name.camelCase()}}Dto = {{entity_name.pascalCase()}}Dto(id: 'some_id');
 
         // Act + Assert
-        expect({{entity_name.camelCase()}}Dto.toDomain(), {{entity_name.pascalCase()}}(id: 'some_id'));
+        expect({{entity_name.camelCase()}}Dto.toDomain(), const {{entity_name.pascalCase()}}(id: 'some_id'));
       });
     });
 
     group('.toJson()', () {
       test('returns correct json', () {
         // Arrange
-        final {{entity_name.camelCase()}}Dto = {{entity_name.pascalCase()}}Dto(id: 'some_id');
+        const {{entity_name.camelCase()}}Dto = {{entity_name.pascalCase()}}Dto(id: 'some_id');
 
         // Act + Assert
         expect({{entity_name.camelCase()}}Dto.toJson(), {'id': 'some_id'});

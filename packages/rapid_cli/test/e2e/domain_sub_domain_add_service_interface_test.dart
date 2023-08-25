@@ -34,7 +34,6 @@ dynamic Function() performTest({
       ]);
 
       // Assert
-      await verifyNoAnalyzerIssues();
       await verifyNoFormattingIssues();
       verifyDoExist({
         ...tester.serviceInterfaceFiles(

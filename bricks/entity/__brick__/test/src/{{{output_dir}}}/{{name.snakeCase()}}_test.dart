@@ -6,7 +6,7 @@ void main() {
     group('.()', () {
       test('returns correct instance', () {
         // Arrange + Act
-        final {{name.camelCase()}} = {{name.pascalCase()}}(id: 'some_id');
+        const {{name.camelCase()}} = {{name.pascalCase()}}(id: 'some_id');
 
         // Assert
         expect({{name.camelCase()}}.id, 'some_id');

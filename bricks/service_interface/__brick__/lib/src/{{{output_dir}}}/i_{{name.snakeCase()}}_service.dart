@@ -14,8 +14,8 @@ sealed class MyMethodResult {
 
 @freezed
 class MyMethodSuccess extends MyMethodResult with _$MyMethodSuccess {
-  const MyMethodSuccess._();
   const factory MyMethodSuccess(String value) = _MyMethodSuccess;
+  const MyMethodSuccess._();
 }
 
 @freezed

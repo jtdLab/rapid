@@ -1,7 +1,6 @@
 {{#android}}//@GeneratedMicroModule;{{project_name.pascalCase()}}AndroidAppPackageModule;package:{{project_name}}_android_app/src/injection.module.dart
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unnecessary_lambdas
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: type=lint
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
@@ -16,8 +15,7 @@ class {{project_name.pascalCase()}}AndroidAppPackageModule extends _i1.MicroPack
 }
 {{/android}}{{#ios}}//@GeneratedMicroModule;{{project_name.pascalCase()}}IosAppPackageModule;package:{{project_name}}_ios_app/src/injection.module.dart
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unnecessary_lambdas
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: type=lint
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
@@ -32,8 +30,7 @@ class {{project_name.pascalCase()}}IosAppPackageModule extends _i1.MicroPackageM
 }
 {{/ios}}{{#linux}}//@GeneratedMicroModule;{{project_name.pascalCase()}}LinuxAppPackageModule;package:{{project_name}}_linux_app/src/injection.module.dart
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unnecessary_lambdas
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: type=lint
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
@@ -48,8 +45,7 @@ class {{project_name.pascalCase()}}LinuxAppPackageModule extends _i1.MicroPackag
 }
 {{/linux}}{{#macos}}//@GeneratedMicroModule;{{project_name.pascalCase()}}MacosAppPackageModule;package:{{project_name}}_macos_app/src/injection.module.dart
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unnecessary_lambdas
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: type=lint
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
@@ -64,8 +60,7 @@ class {{project_name.pascalCase()}}MacosAppPackageModule extends _i1.MicroPackag
 }
 {{/macos}}{{#web}}//@GeneratedMicroModule;{{project_name.pascalCase()}}WebAppPackageModule;package:{{project_name}}_web_app/src/injection.module.dart
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unnecessary_lambdas
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: type=lint
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
@@ -80,8 +75,7 @@ class {{project_name.pascalCase()}}WebAppPackageModule extends _i1.MicroPackageM
 }
 {{/web}}{{#windows}}//@GeneratedMicroModule;{{project_name.pascalCase()}}WindowsAppPackageModule;package:{{project_name}}_windows_app/src/injection.module.dart
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unnecessary_lambdas
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: type=lint
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
@@ -96,8 +90,7 @@ class {{project_name.pascalCase()}}WindowsAppPackageModule extends _i1.MicroPack
 }
 {{/windows}}{{#mobile}}//@GeneratedMicroModule;{{project_name.pascalCase()}}MobileAppPackageModule;package:{{project_name}}_mobile_app/src/injection.module.dart
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: unnecessary_lambdas
-// ignore_for_file: lines_longer_than_80_chars
+// ignore_for_file: type=lint
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes

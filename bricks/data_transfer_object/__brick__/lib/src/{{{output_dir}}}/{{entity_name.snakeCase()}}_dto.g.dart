@@ -1,5 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+// ignore_for_file: type=lint
 // coverage:ignore-file
 
 part of '{{entity_name.snakeCase()}}_dto.dart';

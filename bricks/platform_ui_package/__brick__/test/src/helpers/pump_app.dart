@@ -8,9 +8,9 @@ import 'package:{{project_name}}_ui_android/src/app.dart';
 ///
 /// Use the [themeMode] parameter to customize the app's appearance.
 Widget appWrapper({
+  required Widget widget,
   Locale? locale,
   ThemeMode? themeMode,
-  required Widget widget,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale ?? const Locale('en'),
@@ -44,9 +44,9 @@ import 'package:{{project_name}}_ui_ios/src/app.dart';
 ///
 /// Use the [brightness] parameter to customize the app's appearance.
 Widget appWrapper({
+  required Widget widget,
   Locale? locale,
   Brightness? brightness,
-  required Widget widget,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale ?? const Locale('en'),
@@ -80,9 +80,9 @@ import 'package:{{project_name}}_ui_linux/src/app.dart';
 ///
 /// Use the [themeMode] parameter to customize the app's appearance.
 Widget appWrapper({
+  required Widget widget,
   Locale? locale,
   ThemeMode? themeMode,
-  required Widget widget,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale ?? const Locale('en'),
@@ -117,9 +117,9 @@ import 'package:{{project_name}}_ui_macos/src/app.dart';
 ///
 /// Use the [themeMode] parameter to customize the app's appearance.
 Widget appWrapper({
+  required Widget widget,
   Locale? locale,
   ThemeMode? themeMode,
-  required Widget widget,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale ?? const Locale('en'),
@@ -153,9 +153,9 @@ import 'package:{{project_name}}_ui_web/src/app.dart';
 ///
 /// Use the [themeMode] parameter to customize the app's appearance.
 Widget appWrapper({
+  required Widget widget,
   Locale? locale,
   ThemeMode? themeMode,
-  required Widget widget,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale ?? const Locale('en'),
@@ -189,9 +189,9 @@ import 'package:{{project_name}}_ui_windows/src/app.dart';
 ///
 /// Use the [themeMode] parameter to customize the app's appearance.
 Widget appWrapper({
+  required Widget widget,
   Locale? locale,
   ThemeMode? themeMode,
-  required Widget widget,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale ?? const Locale('en'),
@@ -224,9 +224,9 @@ import 'package:{{project_name}}_ui_mobile/src/app.dart';
 ///
 /// Use the [themeMode] parameter to customize the app's appearance.
 Widget appWrapper({
+  required Widget widget,
   Locale? locale,
   ThemeMode? themeMode,
-  required Widget widget,
 }) {
   return {{project_name.pascalCase()}}App.test(
     locale: locale ?? const Locale('en'),

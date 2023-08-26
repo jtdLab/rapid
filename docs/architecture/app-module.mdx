@@ -6,6 +6,28 @@ export const BoldText = (props) => {
   );
 };
 
+export const Chip = (props) => {
+  const chipStyle = {
+    display: 'inline-block',
+    backgroundColor: props.color,
+    color: 'white',
+    fontWeight: 'bold',
+    borderRadius: '4px',
+    borderRadius: '4px',
+    padding: '4px 8px',
+    marginRight: '4px',
+    marginBottom: '4px',
+    cursor: 'pointer',
+    textDecoration: 'none',
+  };
+
+  return (
+    <a href={props.link} style={chipStyle} target="_blank" rel="noopener noreferrer">
+      {props.children}
+    </a>
+  );
+};
+
 # App Module
 
 <Image
@@ -17,9 +39,11 @@ export const BoldText = (props) => {
 
 ## Dependency Injection Package
 
+<Chip color="green">get_it</Chip><Chip color="green" link="https://pub.dev/packages/injectable">injectable</Chip>
+
 <BoldText>🎯 Provide a dependency injection container.</BoldText>
 
-🎯 Provide platform annotations for dependency injection.
+ **🎯 Provide platform annotations for dependency injection.**
 
 This package uses [get_it](https://pub.dev/packages/get_it) to offer the applications central dependency injection container. Other packages will retrieve dependencies from it and use [injectable](https://pub.dev/packages/injectable) to register them beforehand.
 In addition to providing the dependency container, this package introduces annotations that enable the registration of specific dependencies for particular platforms.
@@ -52,7 +76,8 @@ More information about testing a [Platform Root Package](/architecture/app-modul
 
 🎯 Provide interfaces to navigate between feature packages.
 
-The primary goal of this package is to decouple [Platform Feature Packages](/architecture/app-module#platform-feature-package) and allow navigation between them. This is achieved by defining [Navigator Interfaces](/architecture/app-module#navigator-interface) for each feature package that will be navigated to from within another feature package. The interface will then be implemented in the associated feature package using a [Navigator Implementation](/architecture/app-module#navigator-implementation).
+The primary goal of this package is to decouple [Platform Feature Packages](/architecture/app-module#platform-feature-package) and allow navigation between them. This is achieved by defining [Navigator Interfaces](/architecture/app-module#navigator-interface) for each feature package that will be navigated to from within another feature package. The interface will then be implemented in the associated feature package using a [Navigator Implementation](/architecture/app-module#navigator-implementation) which is registred to the dependency injection container.
+Feature packages that want to navigate to the feature package can then use the injected implementation instead of depending on the feature package directly.
 
 ### Navigator Interface
 

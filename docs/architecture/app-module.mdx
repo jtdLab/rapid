@@ -430,15 +430,20 @@ class FakeAuthenticationService implements IAuthenticationService {
 }
 ```
 
-<Accordion title="Click here to see detailed explanation">
+<Accordion title="Hints to understand the code">
 ```dart
 @dev
 @LazySingleton(as: IAuthenticationService)
 ```
-This registers the an instance of `FakeAuthenticationService` under the development
+This registers an instance of `FakeAuthenticationService` under the development
 environment to the dependency injection container.
-The instance can now be retrived within the application using `getIt<IAuthenticationService>()`
-</Accordion>
+The instance can now be retrived within the application using `getIt<IAuthenticationService>()`.
 
+For more information see:
+
+[Binding abstract classes to implementations](https://pub.dev/packages/injectable#binding-abstract-classes-to-implementations)
+
+[Register under different environments](https://pub.dev/packages/injectable#register-under-different-environments)
+</Accordion>
 
 More information about testing an [Infrastructure Package](/architecture/app-module#infrastructure-package) can be found [here](/architecture/testing#testing-infrastructure-package).

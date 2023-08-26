@@ -1,3 +1,11 @@
+export const BoldText = (props) => {
+  return (
+    <span style={{ color: props.color, fontWeight: "bold" }}>
+      {props.children}
+    </span>
+  );
+};
+
 # App Module
 
 <Image
@@ -9,7 +17,7 @@
 
 ## Dependency Injection Package
 
-🎯 Provide a dependency injection container.
+<BoldText>🎯 Provide a dependency injection container.</BoldText>
 
 🎯 Provide platform annotations for dependency injection.
 
@@ -34,15 +42,17 @@ The primary goal of this package is to offer a single, dedicated logger that can
 
 🎯 Provide a RouterObserver.
 
-TODO
+🎯 Integration Testing.
+
+This package provides entry points for different environments via `main_development.dart`, `main_test.dart`, and `main_prod.dart`, where the application gets set up depending on the needs of each environment. It initializes dependency injection, routing, logging and hosts the native application. The package is also the location where integration tests take place.
 
 More information about testing a [Platform Root Package](/architecture/app-module#platform-root-package) can be found [here](/architecture/testing#testing-platform-root-package).
 
 ## Platform Navigation Package
 
-🎯 Provide [Navigator Interfaces](/architecture/app-module#navigator-interface) to navigate between [Platform Feature Packages](/architecture/app-module#platform-feature-package).
+🎯 Provide interfaces to navigate between feature packages.
 
-TODO
+The primary goal of this package is to decouple [Platform Feature Packages](/architecture/app-module#platform-feature-package) and allow navigation between them. This is achieved by defining [Navigator Interfaces](/architecture/app-module#navigator-interface) for each feature package that will be navigated to from within another feature package. The interface will then be implemented in the associated feature package using a [Navigator Implementation](/architecture/app-module#navigator-implementation).
 
 ### Navigator Interface
 
@@ -57,6 +67,8 @@ abstract class IHomePageNavigator {
 
 🎯 Provide translations for different languages.
 
+The main purpose of this package is to provide localization for the application. This is done using `.arb` files via [flutter_localizations](https://docs.flutter.dev/ui/accessibility-and-localization/internationalization) and [intl](https://pub.dev/packages/intl).
+
 ## Platform Feature Package
 
 🎯 Implement states and user interface of a feature.
@@ -67,37 +79,33 @@ abstract class IHomePageNavigator {
 // counter_bloc.dart
 @android
 @injectable
-class CounterBloc extends Bloc<CounterEvent, CounterState> {
+class CounterBloc extends Bloc<CounterEvent, int> {
   CounterBloc()
       : super(
           // Set initial state
-          const CounterInitial(),
+          0,
         ) {
     // Register handlers
-    on<CounterStarted>(_onStarted);
+    on<CounterStarted>(_onIncrement);
   }
 
-  /// Handle incoming [CounterStarted] event.
-  void _onStarted(
-    CounterStarted event,
-    Emitter<CounterState> emit,
+  /// Handle incoming [CounterIncrement] event.
+  void _onIncrement(
+    CounterIncrement event,
+    Emitter<int> emit,
   ) {
-    // TODO: implement
-    throw UnimplementedError();
+    emit(state + 1);
   }
 }
 
 // counter_event.dart
 @freezed
 sealed class CounterEvent with _$CounterEvent {
-  const factory CounterEvent.started() = CounterStarted;
+  const factory CounterEvent.increment() = CounterIncrement;
 }
 
 // counter_state.dart
-@freezed
-sealed class CounterState with _$CounterState {
-  const factory CounterState.initial() = CounterInitial;
-}
+// (not needed in this example)
 ```
 
 ### Cubit
@@ -106,24 +114,20 @@ sealed class CounterState with _$CounterState {
 // counter_cubit.dart
 @android
 @injectable
-class CounterCubit extends Cubit<CounterState> {
+class CounterCubit extends Cubit<int> {
   CounterCubit()
       : super(
           // Set initial state
-          const CounterInitial(),
+          0,
         );
 
   void started() {
-    // TODO: implement
-    throw UnimplementedError();
+    emit(state + 1);
   }
 }
 
 // counter_state.dart
-@freezed
-sealed class CounterState with _$CounterState {
-  const factory CounterState.initial() = CounterInitial;
-}
+// (not needed in this example)
 ```
 
 ### Navigator Implementation
@@ -142,6 +146,14 @@ More information about testing a [Platform Feature Package](/architecture/app-mo
 ## Domain Package
 
 🎯 Represent a domain using [Entities](/architecture/app-module#entity), [Service Interfaces](/architecture/app-module#service-interface) and [Value Objects](/architecture/app-module#value-object).
+
+A domain package models a specific domain using domain components. It serves as the boundary to the external world and is implemented by its associated [Infrastructure Package](/architecture/app-module#infrastructure-package). Objects exposed by this package are immutable, and exceptions are represented by seperate failure classes (see [Value Object](/architecture/app-module#value-object), [Service Interface](/architecture/app-module#service-interface)) to achieve domain safety.
+
+<Info>
+  Domain Safety refers to the domain being designed in an expressive way,
+  mitigating possible errors introduced by mutable models and uncaught
+  exceptions.
+</Info>
 
 ### Entity
 
@@ -255,6 +267,8 @@ More information about testing a [Domain Package](/architecture/app-module#domai
 ## Infrastructure Package
 
 🎯 Implement its associated [Domain Package](/architecture/app-module#domain-package).
+
+A infrastructure package implements the interface defined in its associated [Domain Package](/architecture/app-module#domain-package). This is done interacting with external or local data sources and services, such as databases or APIs, to fetch or store data as needed. Every infrastructure package can provide multiple [Service Implementations](/architecture/app-module#service-implementation) per [Service Interface](/architecture/app-module#service-interface) which can be easily injected depending on environment.
 
 ### Data Transfer Object
 

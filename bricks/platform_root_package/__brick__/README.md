@@ -12,6 +12,8 @@
 
 🎯 Provide a RouterObserver.
 
+🎯 Integration Testing.
+
 For more information click [here][1].
 
 [1]: https://docs.page/jtdLab/rapid/architecture/app-module#platform-root-package

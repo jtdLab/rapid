@@ -2,7 +2,7 @@
 
 ### Responsibilities
 
-🎯 Provide Navigator Interfaces to navigate between Platform Feature Packages.
+🎯 Provide interfaces to navigate between feature packages.
 
 ### Components
 

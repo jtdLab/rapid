@@ -217,7 +217,7 @@ More information about testing a [Platform Feature Package](/architecture/app-mo
 A domain package models a specific domain using domain components. It serves as the boundary to the external world and is implemented by its associated [Infrastructure Package](/architecture/app-module#infrastructure-package). Objects exposed by this package are immutable, and exceptions are represented by seperate failure classes (see [Value Object](/architecture/app-module#value-object), [Service Interface](/architecture/app-module#service-interface)) to achieve domain safety.
 
 <Info>
-  Domain Safety refers to the domain being designed in an expressive way,
+  Domain safety refers to the domain being designed in an safe way,
   mitigating possible errors introduced by mutable models and uncaught
   exceptions.
 </Info>

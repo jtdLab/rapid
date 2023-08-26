@@ -8,8 +8,7 @@ export const BoldText = (props) => {
 
 export const Chip = (props) => {
   const chipStyle = {
-    display: 'flex',
-    justifyContent: center,
+    display: 'inline',
     backgroundColor: props.color,
     color: 'white',
     fontWeight: 'bold',
@@ -19,7 +18,6 @@ export const Chip = (props) => {
     cursor: props.link ? 'pointer' : 'default',
     textDecoration: 'none',
     fontSize: '12px',
-    minWidth: '80px',
     verticalAlign: 'middle'
   };
 

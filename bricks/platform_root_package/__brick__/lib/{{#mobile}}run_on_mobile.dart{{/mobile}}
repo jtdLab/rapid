@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-class TargetPlatformError implements Exception {
+class TargetPlatformError extends Error {
   TargetPlatformError() : msg = 'TargetPlatform must be Mobile (Android or iOS)';
 
   final String msg;

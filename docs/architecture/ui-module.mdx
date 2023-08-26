@@ -14,7 +14,35 @@
 ### Widget
 
 ```dart
-TODO
+// button.dart
+class MyAppButton extends StatelessWidget {
+  const MyAppButton({
+    super.key,
+    this.theme,
+  });
+
+  final MyAppButtonTheme? theme;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = this.theme ?? context.MyAppButtonTheme;
+    final backgroundColor = theme.backgroundColor;
+
+    // TODO: implement
+    return Container(
+      color: backgroundColor,
+    );
+  }
+}
+
+// button_theme.dart (optional)
+@Tailor(themeGetter: ThemeGetter.onBuildContext)
+class _$MyAppButtonTheme {
+  static List<Color> backgroundColor = [
+    const Color(0xFFFFFFFF),
+    const Color(0xFF000000),
+  ];
+}
 ```
 
 More information about testing the [UI Package](/architecture/ui-module#ui-package) can be found [here](/architecture/testing#testing-ui-package).
@@ -25,26 +53,36 @@ More information about testing the [UI Package](/architecture/ui-module#ui-packa
 
 ### Widget
 
-#### `<name>.dart`
-
 ```dart
-TODO
+// button.dart
+class MyAppButton extends StatelessWidget {
+  const MyAppButton({
+    super.key,
+    this.theme,
+  });
+
+  final MyAppButtonTheme? theme;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = this.theme ?? context.MyAppButtonTheme;
+    final backgroundColor = theme.backgroundColor;
+
+    // TODO: implement
+    return Container(
+      color: backgroundColor,
+    );
+  }
+}
+
+// button_theme.dart (optional)
+@Tailor(themeGetter: ThemeGetter.onBuildContext)
+class _$MyAppButtonTheme {
+  static List<Color> backgroundColor = [
+    const Color(0xFFFFFFFF),
+    const Color(0xFF000000),
+  ];
+}
 ```
-
-#### `<name>_theme.dart`
-
-```dart
-TODO
-```
-
-#### `<name>_theme.tailor.dart`
-
-Type: Generated
-
-Generator: [theme_tailor](https://pub.dev/packages/theme_tailor)
-
----
-Find more information about adding here and removing [Widgets] here.
----
 
 More information about testing a [Platform UI Package](/architecture/ui-module#platform-ui-package) can be found [here](/architecture/testing#testing-ui-package).

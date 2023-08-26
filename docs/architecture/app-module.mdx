@@ -19,6 +19,7 @@ export const Chip = (props) => {
     cursor: props.link ? 'pointer' : 'default',
     textDecoration: 'none',
     fontSize: '12px',
+    lineHeight: '12px',
     boxSizing: 'border-box'
   };
 
@@ -48,6 +49,7 @@ export const Chip = (props) => {
 ## Dependency Injection Package
 
 <div>
+  <Chip color="grey">core</Chip>
   <Chip color="#28A745">get_it</Chip>
   <Chip color="#007BFF" link="https://pub.dev/packages/injectable">
     injectable

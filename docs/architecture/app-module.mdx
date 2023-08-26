@@ -47,15 +47,16 @@ export const Chip = (props) => {
 
 ## Dependency Injection Package
 
-<Chip color="grey">core</Chip>
-<Chip color="#28A745">get_it</Chip>
-<Chip color="#007BFF" link="https://pub.dev/packages/injectable">
-  injectable
-</Chip>
+<div>
+  <Chip color="#CCCCCC">core</Chip>
+  <Chip color="#FF66CC">get_it</Chip>
+  <Chip color="#FF66CC">injectable</Chip>
+</div>
 
-<BoldText>🎯 Provide a dependency injection container.</BoldText>
-
-<BoldText>🎯 Provide platform annotations for dependency injection.</BoldText>
+<div>
+  <BoldText>🎯 Provide a dependency injection container.</BoldText>
+  <BoldText>🎯 Provide platform annotations for dependency injection.</BoldText>
+</div>
 
 This package uses [get_it](https://pub.dev/packages/get_it) to offer the applications central dependency injection container. Other packages will retrieve dependencies from it and use [injectable](https://pub.dev/packages/injectable) to register them beforehand.
 In addition to providing the dependency container, this package introduces annotations that enable the registration of specific dependencies for particular platforms.

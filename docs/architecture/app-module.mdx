@@ -268,7 +268,7 @@ class User with _$User {
 #### Service Interface
 
 A service interface component defines an interface for actions the application needs to perform its
-business logic. The interface should only use domain-level (primitives, collections or other entities or value objects) parameter types and return values. Also every method of a service interface should define its own result union type and map possbile exceptions thrown by the method to failure cases. (Hint errors should not be mapped only exceptions as they are intended to be handled by client using the domain package)
+business logic. Every method of a service interface defines its own result union type and map possbile exceptions thrown by the method to failure cases. (Hint errors should not be mapped only exceptions should as they are intended to be handled by clients using the domain package)
 
 ```dart
 // i_authentication_service.dart
@@ -429,5 +429,16 @@ class FakeAuthenticationService implements IAuthenticationService {
   }
 }
 ```
+
+<Accordion title="Click here to see detailed explanation">
+```dart
+@dev
+@LazySingleton(as: IAuthenticationService)
+```
+This registers the an instance of `FakeAuthenticationService` under the development
+environment to the dependency injection container.
+The instance can now be retrived within the application using `getIt<IAuthenticationService>()`
+</Accordion>
+
 
 More information about testing an [Infrastructure Package](/architecture/app-module#infrastructure-package) can be found [here](/architecture/testing#testing-infrastructure-package).

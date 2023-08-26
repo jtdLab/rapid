@@ -14,17 +14,17 @@ export const Chip = (props) => {
     minWidth: '64px'
   };
 
-  return (
-    props.link ? (
-      <a href={props.link} style={chipStyle} target="_blank" rel="noopener noreferrer">
-        {props.children}
-      </a>
-    ) : (
-      <span style={chipStyle}>
-        {props.children}
-      </span>
-    )
-  );
+return (
+props.link ? (
+<a href={props.link} style={chipStyle} target="_blank" rel="noopener noreferrer">
+{props.children}
+</a>
+) : (
+<span style={chipStyle}>
+{props.children}
+</span>
+)
+);
 };
 
 # UI Module
@@ -45,7 +45,11 @@ export const Chip = (props) => {
 
 🎯 Provide platform independent design language.
 
-### Widget
+### Components
+
+#### Widget
+
+The widget component represents a reusable fraction of the UI. It can have an associated theme that allows easy styling and a scalable design system. The themes are realized using [`ThemeExtensions`](https://api.flutter.dev/flutter/material/ThemeExtension-class.html) via [theme_tailor](https://pub.dev/packages/theme_tailor).
 
 ```dart
 // button.dart
@@ -87,35 +91,8 @@ More information about testing the [UI Package](/architecture/ui-module#ui-packa
 
 🎯 Provide platform dependent design language.
 
-### Widget
+### Components
 
-```dart
-// button.dart
-class MyAppButton extends StatelessWidget {
-  const MyAppButton({
-    super.key,
-    this.theme,
-  });
-
-  final MyAppButtonTheme? theme;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = this.theme ?? context.MyAppButtonTheme;
-    final backgroundColor = theme.backgroundColor;
-
-    // implement the button
-  }
-}
-
-// button_theme.dart (optional)
-@Tailor(themeGetter: ThemeGetter.onBuildContext)
-class _$MyAppButtonTheme {
-  static List<Color> backgroundColor = [
-    const Color(0xFFFFFFFF),
-    const Color(0xFF000000),
-  ];
-}
-```
+See [UI Package](/architecture/ui-module#components).
 
 More information about testing a [Platform UI Package](/architecture/ui-module#platform-ui-package) can be found [here](/architecture/testing#testing-ui-package).

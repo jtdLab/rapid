@@ -1,3 +1,32 @@
+export const Chip = (props) => {
+  const chipStyle = {
+    display: 'inline-flex', 
+    justifyContent: 'center',
+    backgroundColor: props.color,
+    color: 'white',
+    fontWeight: 'bold',
+    borderRadius: '16px',
+    padding: '4px 12px',
+    margin: '4px',
+    cursor: props.link ? 'pointer' : 'default',
+    textDecoration: 'none',
+    fontSize: '12px',
+    minWidth: '64px'
+  };
+
+  return (
+    props.link ? (
+      <a href={props.link} style={chipStyle} target="_blank" rel="noopener noreferrer">
+        {props.children}
+      </a>
+    ) : (
+      <span style={chipStyle}>
+        {props.children}
+      </span>
+    )
+  );
+};
+
 # UI Module
 
 <Image
@@ -11,7 +40,7 @@
 
 <div>
   <Chip color="#F9C809">presentation</Chip>
-  <Chip color="#FF66CC">theme_tailor</Chip>
+  <Chip color="#A52A2A">theme_tailor</Chip>
 </div>
 
 🎯 Provide platform independent design language.
@@ -56,7 +85,7 @@ More information about testing the [UI Package](/architecture/ui-module#ui-packa
 
 <div>
   <Chip color="#F9C809">presentation</Chip>
-  <Chip color="#FF66CC">theme_tailor</Chip>
+  <Chip color="#A52A2A">theme_tailor</Chip>
 </div>
 
 🎯 Provide platform dependent design language.

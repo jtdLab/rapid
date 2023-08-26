@@ -100,12 +100,14 @@ More information about testing a [Platform Root Package](/architecture/app-modul
 The primary goal of this package is to decouple [Platform Feature Packages](/architecture/app-module#platform-feature-package) and allow navigation between them. This is achieved by defining [Navigator Interfaces](/architecture/app-module#navigator-interface) for each feature package that will be navigated to from within another feature package. The interface will then be implemented in the associated feature package using a [Navigator Implementation](/architecture/app-module#navigator-implementation) which is registred to the dependency injection container.
 Feature packages that want to navigate to the feature package can then use the injected implementation instead of depending on the feature package directly.
 
-### Navigator Interface
+### Components
+
+#### Navigator Interface
 
 ```dart
 // i_home_page_navigator.dart
 abstract class IHomePageNavigator {
-  // TODO: add navigation methods here
+  // add navigation methods (e.g push, replace, pop) here
 }
 ```
 
@@ -134,7 +136,9 @@ The main purpose of this package is to provide localization for the application.
 
 **🎯 Implement states and user interface of a feature.**
 
-### Bloc
+### Components
+
+#### Bloc
 
 ```dart
 // counter_bloc.dart
@@ -169,7 +173,7 @@ sealed class CounterEvent with _$CounterEvent {
 // (not needed in this example)
 ```
 
-### Cubit
+#### Cubit
 
 ```dart
 // counter_cubit.dart
@@ -191,14 +195,14 @@ class CounterCubit extends Cubit<int> {
 // (not needed in this example)
 ```
 
-### Navigator Implementation
+#### Navigator Implementation
 
 ```dart
 // navigator.dart
 @android
 @LazySingleton(as: IHomePageNavigator)
 class HomePageNavigator implements IHomePageNavigator {
-  // TODO: implement
+  // implement navigation methods (e.g push, replace, pop) here
 }
 ```
 
@@ -222,7 +226,9 @@ A domain package models a specific domain using domain components. It serves as 
   exceptions.
 </Info>
 
-### Entity
+### Components
+
+#### Entity
 
 ```dart
 // user.dart
@@ -230,7 +236,7 @@ A domain package models a specific domain using domain components. It serves as 
 class User with _$User {
   const factory User({
     required String id,
-    // TODO: add more fields here
+    // add more fields here
   }) = _User;
 
   factory User.random() {
@@ -243,37 +249,42 @@ class User with _$User {
 }
 ```
 
-### Service Interface
+#### Service Interface
 
 ```dart
 // i_authentication_service.dart
 abstract class IAuthenticationService {
-  MyMethodResult myMethod();
+  SingInResult signIn({
+    required EmailAddress email,
+    required Password password,
+  });
 
-  // TODO: add more service methods
+  // add more service methods
 }
 
-sealed class MyMethodResult {
-  const MyMethodResult();
-}
-
-@freezed
-class MyMethodSuccess extends MyMethodResult with _$MyMethodSuccess {
-  const factory MyMethodSuccess(String value) = _MyMethodSuccess;
-  const MyMethodSuccess._();
+sealed class SingInResult {
+  const SingInResult();
 }
 
 @freezed
-sealed class MyMethodFailure extends MyMethodResult with _$MyMethodFailure {
-  const MyMethodFailure._();
-  const factory MyMethodFailure.foo() = MyMethodFailureFoo;
-  // TODO: add more failure cases here
+class SignInSuccess extends SingInResult with _$SignInSuccess {
+  const factory SignInSuccess(String value) = _SignInSuccess;
+  const SignInSuccess._();
 }
 
-// TODO: add more service method results here
+@freezed
+sealed class SignInFailure extends SignInResult with _$SignInFailure {
+  const SignInFailure._();
+  const factory SignInFailure.invalidEmail() = SignInFailureInvalidEmail;
+  const factory SignInFailure.invalidPassword() = SignInFailureInvalidPassword;
+  const factory SignInFailure.serverNotReachable() = SignInFailureServerNotReachable;
+  // add more failure cases here
+}
+
+// add more service method results here
 ```
 
-### Value Object
+#### Value Object
 
 ```dart
 // email_address.dart
@@ -287,11 +298,11 @@ sealed class EmailAddress {
 
     if (valid) {
       return faker.randomGenerator.element([
-        // TODO: insert random valid instances here
+        // insert random valid instances here
       ]);
     } else {
       return faker.randomGenerator.element([
-        // TODO: insert random invalid instances here
+        // insert random invalid instances here
       ]);
     }
   }
@@ -299,8 +310,7 @@ sealed class EmailAddress {
   const EmailAddress._();
 
   static EmailAddress _validate(String raw) {
-    // TODO: implement validation here
-    throw UnimplementedError();
+    // implement validation here
   }
 
   String getOrCrash() {
@@ -324,8 +334,9 @@ class ValidEmailAddress extends EmailAddress with _$ValidEmailAddress {
 sealed class EmailAddressFailure extends EmailAddress
     with _$EmailAddressFailure {
   const EmailAddressFailure._() : super._();
-  const factory EmailAddressFailure.foo() = EmailAddressFailureFoo;
-  // TODO: add more failures here
+  const factory EmailAddressFailure.missingLocalPart() = EmailAddressFailureFoo;
+  const factory EmailAddressFailure.missingDomainPart() = EmailAddressFailureFoo;
+  // add more failures here
 }
 ```
 
@@ -342,9 +353,11 @@ More information about testing a [Domain Package](/architecture/app-module#domai
 
 **🎯 Implement its associated [Domain Package](/architecture/app-module#domain-package).**
 
-A infrastructure package implements the interface defined in its associated [Domain Package](/architecture/app-module#domain-package). This is done interacting with external or local data sources and services, such as databases or APIs, to fetch or store data as needed. Every infrastructure package can provide multiple [Service Implementations](/architecture/app-module#service-implementation) per [Service Interface](/architecture/app-module#service-interface) which can be easily injected depending on environment.
+An infrastructure package implements the interface defined in its associated [Domain Package](/architecture/app-module#domain-package). This is done interacting with external or local data sources and services, such as databases or APIs, to fetch or store data as needed. Every infrastructure package can provide multiple [Service Implementations](/architecture/app-module#service-implementation) per [Service Interface](/architecture/app-module#service-interface) which can be easily injected depending on environment.
 
-### Data Transfer Object
+### Components
+
+#### Data Transfer Object
 
 ```dart
 // user_dto.dart
@@ -352,7 +365,7 @@ A infrastructure package implements the interface defined in its associated [Dom
 class UserDto with _$UserDto {
   const factory UserDto({
     required String id,
-    // TODO: add more fields here
+    // add more fields here
   }) = _UserDto;
 
   factory UserDto.fromDomain(User domain) {
@@ -374,7 +387,7 @@ class UserDto with _$UserDto {
 }
 ```
 
-### Service Implementation
+#### Service Implementation
 
 ```dart
 // fake_authentication_service.dart
@@ -382,9 +395,11 @@ class UserDto with _$UserDto {
 @LazySingleton(as: IAuthenticationService)
 class FakeAuthenticationService implements IAuthenticationService {
   @override
-  MyMethodResult myMethod() {
-    // TODO: implement
-    throw UnimplementedError();
+  SingInResult signIn({
+    required EmailAddress email,
+    required Password password,
+  }){
+    // implement
   }
 }
 ```

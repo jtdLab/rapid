@@ -41,10 +41,8 @@ export const Chip = (props) => {
 
 <div>
   <Chip color="#CCCCCC">core</Chip>
-  <Chip color="#FF66CC">get_it</Chip>
-  <Chip color="#FF66CC">injectable</Chip>
+  <Chip color="#FF66CC">get_it, injectable</Chip>
 </div>
-
 
 **🎯 Provide a dependency injection container.**
   
@@ -55,11 +53,24 @@ In addition to providing the dependency container, this package introduces annot
 
 ## Logging Package
 
+<div>
+  <Chip color="#CCCCCC">core</Chip>
+</div>
+
 **🎯 Provide a logger.**
 
 The primary goal of this package is to offer a single, dedicated logger that can be effortlessly employed throughout the entire application. By default, an implementation is provided, yet developers have the freedom to either create their own customized logger or use existing solutions like for example [logger](https://pub.dev/packages/logger) or [logging](https://pub.dev/packages/logging).
 
 ## Platform Root Package
+
+<div>
+  <Chip color="#CCCCCC">core</Chip>
+  <Chip color="#F9C909">presentation</Chip>
+  <Chip color="#FF5252">application</Chip>
+  <Chip color="#FF66CC">auto_route</Chip>
+  <Chip color="#FF66CC">bloc, bloc_concurrency</Chip>
+  <Chip color="#FF66CC">get_it, injectable</Chip>
+</div>
 
 **🎯 Provide entrypoints to run the application in different environments.**
 
@@ -79,6 +90,11 @@ More information about testing a [Platform Root Package](/architecture/app-modul
 
 ## Platform Navigation Package
 
+<div>
+  <Chip color="#CCCCCC">core</Chip>
+  <Chip color="#FF66CC">auto_route</Chip>
+</div>
+
 **🎯 Provide interfaces to navigate between feature packages.**
 
 The primary goal of this package is to decouple [Platform Feature Packages](/architecture/app-module#platform-feature-package) and allow navigation between them. This is achieved by defining [Navigator Interfaces](/architecture/app-module#navigator-interface) for each feature package that will be navigated to from within another feature package. The interface will then be implemented in the associated feature package using a [Navigator Implementation](/architecture/app-module#navigator-implementation) which is registred to the dependency injection container.
@@ -95,11 +111,26 @@ abstract class IHomePageNavigator {
 
 ## Platform Localization Package
 
+<div>
+  <Chip color="#CCCCCC">core</Chip>
+  <Chip color="#FF66CC">flutter_localizations</Chip>
+  <Chip color="#FF66CC">intl</Chip>
+</div>
+
 **🎯 Provide translations for different languages.**
 
 The main purpose of this package is to provide localization for the application. This is done using `.arb` files via [flutter_localizations](https://docs.flutter.dev/ui/accessibility-and-localization/internationalization) and [intl](https://pub.dev/packages/intl).
 
 ## Platform Feature Package
+
+<div>
+  <Chip color="#F9C909">presentation</Chip>
+  <Chip color="#FF5252">application</Chip>
+  <Chip color="#FF66CC">auto_route</Chip>
+  <Chip color="#FF66CC">bloc, flutter_bloc</Chip>
+  <Chip color="#FF66CC">freezed</Chip>
+  <Chip color="#FF66CC">injectable</Chip>
+</div>
 
 **🎯 Implement states and user interface of a feature.**
 
@@ -174,6 +205,12 @@ class HomePageNavigator implements IHomePageNavigator {
 More information about testing a [Platform Feature Package](/architecture/app-module#platform-feature-package) can be found [here](/architecture/testing#testing-platform-feature-package).
 
 ## Domain Package
+
+<div>
+  <Chip color="#2FCC71">domain</Chip>
+  <Chip color="#FF66CC">faker</Chip>
+  <Chip color="#FF66CC">freezed</Chip>
+</div>
 
 **🎯 Represent a domain using [Entities](/architecture/app-module#entity), [Service Interfaces](/architecture/app-module#service-interface) and [Value Objects](/architecture/app-module#value-object).**
 
@@ -295,6 +332,13 @@ sealed class EmailAddressFailure extends EmailAddress
 More information about testing a [Domain Package](/architecture/app-module#domain-package) can be found [here](/architecture/testing#testing-domain-package).
 
 ## Infrastructure Package
+
+<div>
+  <Chip color="#3498DA">infrastructure</Chip>
+  <Chip color="#FF66CC">injectable</Chip>
+  <Chip color="#FF66CC">freezed</Chip>
+  <Chip color="#FF66CC">json_serializable</Chip>
+</div>
 
 **🎯 Implement its associated [Domain Package](/architecture/app-module#domain-package).**
 

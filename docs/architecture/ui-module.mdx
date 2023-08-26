@@ -14,17 +14,17 @@ export const Chip = (props) => {
     minWidth: '64px'
   };
 
-return (
-props.link ? (
-<a href={props.link} style={chipStyle} target="_blank" rel="noopener noreferrer">
-{props.children}
-</a>
-) : (
-<span style={chipStyle}>
-{props.children}
-</span>
-)
-);
+  return (
+    props.link ? (
+      <a href={props.link} style={chipStyle} target="_blank" rel="noopener noreferrer">
+        {props.children}
+      </a>
+    ) : (
+      <span style={chipStyle}>
+        {props.children}
+      </span>
+    )
+  );
 };
 
 # UI Module

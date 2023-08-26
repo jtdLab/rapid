@@ -104,10 +104,13 @@ Feature packages that want to navigate to the feature package can then use the i
 
 #### Navigator Interface
 
+A navigator interface is a component which defines an interface to navigate to a feature package.
+This can be common navigation methods like `push`, `replace` and more.
+
 ```dart
 // i_home_page_navigator.dart
 abstract class IHomePageNavigator {
-  // add navigation methods (e.g push, replace, pop) here
+  // add navigation methods (e.g push, replace, ...) here
 }
 ```
 
@@ -139,6 +142,11 @@ The main purpose of this package is to provide localization for the application.
 ### Components
 
 #### Bloc
+
+A bloc is a component which manages the state of a feature package.
+Events can be added to the bloc and states are emitted by the bloc.
+The UI of a feature package can then listen to these state changes and rebuild
+properly. See [bloc](https://pub.dev/packages/bloc) and [flutter_bloc](https://pub.dev/packages/flutter_bloc) for more information.
 
 ```dart
 // counter_bloc.dart
@@ -175,6 +183,8 @@ sealed class CounterEvent with _$CounterEvent {
 
 #### Cubit
 
+Cubit is a less complex version of a bloc where events are not represented by a seperate class but using methods instead. It has the same purpose and can be used interchangeably.
+
 ```dart
 // counter_cubit.dart
 @android
@@ -197,12 +207,15 @@ class CounterCubit extends Cubit<int> {
 
 #### Navigator Implementation
 
+A navigator implementation is a component which implements its associated [Navigator Interface](/architecture/app-module#navigator-interface).
+By implementing the interface from within the feature package and registering it in the dependency injection container decoupling between feature packages is achieved.
+
 ```dart
 // navigator.dart
 @android
 @LazySingleton(as: IHomePageNavigator)
 class HomePageNavigator implements IHomePageNavigator {
-  // implement navigation methods (e.g push, replace, pop) here
+  // implement navigation methods (e.g push, replace, ...) here
 }
 ```
 
@@ -230,6 +243,9 @@ A domain package models a specific domain using domain components. It serves as 
 
 #### Entity
 
+An entity is a component which represents a immutable model which is part of a domain.
+Entities should only hold primitives, collections or other entities or value objects.
+
 ```dart
 // user.dart
 @freezed
@@ -250,6 +266,9 @@ class User with _$User {
 ```
 
 #### Service Interface
+
+A service interface component defines an interface for actions the application needs to perform its
+business logic. The interface should only use domain-level (primitives, collections or other entities or value objects) parameter types and return values. Also every method of a service interface should define its own result union type and map possbile exceptions thrown by the method to failure cases. (Hint errors should not be mapped only exceptions as they are intended to be handled by client using the domain package)
 
 ```dart
 // i_authentication_service.dart
@@ -285,6 +304,8 @@ sealed class SignInFailure extends SignInResult with _$SignInFailure {
 ```
 
 #### Value Object
+
+A value object is a component which wraps an other type (primitives, collections or other entities) and validates its value. Based on the provided value the value object union is either mapped to a valid or failure state. This allows to build a more expressive domain language and write safer code.
 
 ```dart
 // email_address.dart
@@ -359,6 +380,9 @@ An infrastructure package implements the interface defined in its associated [Do
 
 #### Data Transfer Object
 
+A data transfer object is a component which is associated to an [Entity](/architecture/app-module#entity).
+Its only purpose is to transform data from the outside world (mostly json) to an [Entity](/architecture/app-module#entity) and back.
+
 ```dart
 // user_dto.dart
 @freezed
@@ -388,6 +412,8 @@ class UserDto with _$UserDto {
 ```
 
 #### Service Implementation
+
+A service implementation implements the interface specified by its corresponding [Service Interface](/architecture/app-module#service-interface), handling all the technical details, using SDKS, Rest APIs or other ways to communicated with the external world or the device. When implementing the interface it is important to map exceptions to the correct failures of the respective result and let errors bubble up to be handled at the root level.
 
 ```dart
 // fake_authentication_service.dart

@@ -1,11 +1,3 @@
-export const BoldText = (props) => {
-  return (
-    <span style={{ fontWeight: "bold" }}>
-      {props.children}
-    </span>
-  );
-};
-
 export const Chip = (props) => {
   const chipStyle = {
     display: 'inline-flex', 
@@ -53,33 +45,33 @@ export const Chip = (props) => {
   <Chip color="#FF66CC">injectable</Chip>
 </div>
 
-<div>
-  <BoldText>🎯 Provide a dependency injection container.</BoldText>
-  <BoldText>🎯 Provide platform annotations for dependency injection.</BoldText>
-</div>
+
+**🎯 Provide a dependency injection container.**
+  
+**🎯 Provide platform annotations for dependency injection.**
 
 This package uses [get_it](https://pub.dev/packages/get_it) to offer the applications central dependency injection container. Other packages will retrieve dependencies from it and use [injectable](https://pub.dev/packages/injectable) to register them beforehand.
 In addition to providing the dependency container, this package introduces annotations that enable the registration of specific dependencies for particular platforms.
 
 ## Logging Package
 
-<BoldText>🎯 Provide a logger.</BoldText>
+**🎯 Provide a logger.**
 
 The primary goal of this package is to offer a single, dedicated logger that can be effortlessly employed throughout the entire application. By default, an implementation is provided, yet developers have the freedom to either create their own customized logger or use existing solutions like for example [logger](https://pub.dev/packages/logger) or [logging](https://pub.dev/packages/logging).
 
 ## Platform Root Package
 
-<BoldText>🎯 Provide entrypoints to run the application in different environments.</BoldText>
+**🎯 Provide entrypoints to run the application in different environments.**
 
-<BoldText>🎯 Setup Dependency Injection.</BoldText>
+**🎯 Setup Dependency Injection.**
 
-<BoldText>🎯 Setup Routing.</BoldText>
+**🎯 Setup Routing.**
 
-<BoldText>🎯 Provide a BlocObserver.</BoldText>
+**🎯 Provide a BlocObserver.**
 
-<BoldText>🎯 Provide a RouterObserver.</BoldText>
+**🎯 Provide a RouterObserver.**
 
-<BoldText>🎯 Integration Testing.</BoldText>
+**🎯 Integration Testing.**
 
 This package provides entry points for different environments via `main_development.dart`, `main_test.dart`, and `main_prod.dart`, where the application gets set up depending on the needs of each environment. It initializes dependency injection, routing, logging and hosts the native application. The package is also the location where integration tests take place.
 
@@ -87,7 +79,7 @@ More information about testing a [Platform Root Package](/architecture/app-modul
 
 ## Platform Navigation Package
 
-<BoldText>🎯 Provide interfaces to navigate between feature packages.</BoldText>
+**🎯 Provide interfaces to navigate between feature packages.**
 
 The primary goal of this package is to decouple [Platform Feature Packages](/architecture/app-module#platform-feature-package) and allow navigation between them. This is achieved by defining [Navigator Interfaces](/architecture/app-module#navigator-interface) for each feature package that will be navigated to from within another feature package. The interface will then be implemented in the associated feature package using a [Navigator Implementation](/architecture/app-module#navigator-implementation) which is registred to the dependency injection container.
 Feature packages that want to navigate to the feature package can then use the injected implementation instead of depending on the feature package directly.
@@ -103,13 +95,13 @@ abstract class IHomePageNavigator {
 
 ## Platform Localization Package
 
-<BoldText>🎯 Provide translations for different languages.</BoldText>
+**🎯 Provide translations for different languages.**
 
 The main purpose of this package is to provide localization for the application. This is done using `.arb` files via [flutter_localizations](https://docs.flutter.dev/ui/accessibility-and-localization/internationalization) and [intl](https://pub.dev/packages/intl).
 
 ## Platform Feature Package
 
-<BoldText>🎯 Implement states and user interface of a feature.</BoldText>
+**🎯 Implement states and user interface of a feature.**
 
 ### Bloc
 
@@ -183,7 +175,7 @@ More information about testing a [Platform Feature Package](/architecture/app-mo
 
 ## Domain Package
 
-<BoldText>🎯 Represent a domain using [Entities](/architecture/app-module#entity), [Service Interfaces](/architecture/app-module#service-interface) and [Value Objects](/architecture/app-module#value-object).</BoldText>
+**🎯 Represent a domain using [Entities](/architecture/app-module#entity), [Service Interfaces](/architecture/app-module#service-interface) and [Value Objects](/architecture/app-module#value-object).**
 
 A domain package models a specific domain using domain components. It serves as the boundary to the external world and is implemented by its associated [Infrastructure Package](/architecture/app-module#infrastructure-package). Objects exposed by this package are immutable, and exceptions are represented by seperate failure classes (see [Value Object](/architecture/app-module#value-object), [Service Interface](/architecture/app-module#service-interface)) to achieve domain safety.
 
@@ -304,7 +296,7 @@ More information about testing a [Domain Package](/architecture/app-module#domai
 
 ## Infrastructure Package
 
-<BoldText>🎯 Implement its associated [Domain Package](/architecture/app-module#domain-package).</BoldText>
+**🎯 Implement its associated [Domain Package](/architecture/app-module#domain-package).**
 
 A infrastructure package implements the interface defined in its associated [Domain Package](/architecture/app-module#domain-package). This is done interacting with external or local data sources and services, such as databases or APIs, to fetch or store data as needed. Every infrastructure package can provide multiple [Service Implementations](/architecture/app-module#service-implementation) per [Service Interface](/architecture/app-module#service-interface) which can be easily injected depending on environment.
 

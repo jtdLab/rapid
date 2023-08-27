@@ -63,7 +63,7 @@ class MyAppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = this.theme ?? context.MyAppButtonTheme;
+    final theme = this.theme ?? context.myAppButtonTheme;
     final backgroundColor = theme.backgroundColor;
 
     // implement the button
@@ -81,7 +81,16 @@ class _$MyAppButtonTheme {
 ```
 
 <Accordion title="Context to understand the code">
-TODO
+```dart
+@Tailor(themeGetter: ThemeGetter.onBuildContext)
+````
+Creates a `theme_tailor` theme.
+
+For more information see:
+
+[Create Theme class](https://pub.dev/packages/theme_tailor#create-theme-class)
+
+[Change generated extensions](https://pub.dev/packages/theme_tailor#change-generated-extensions)
 </Accordion>
 
 More information about testing the [UI Package](/architecture/ui-module#ui-package) can be found [here](/architecture/testing#testing-ui-package).

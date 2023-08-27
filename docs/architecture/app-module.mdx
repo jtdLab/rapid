@@ -14,19 +14,18 @@ export const Chip = (props) => {
     minWidth: '64px'
   };
 
-  return (
-    props.link ? (
-      <a href={props.link} style={chipStyle} target="_blank" rel="noopener noreferrer">
-        {props.children}
-      </a>
-    ) : (
-      <span style={chipStyle}>
-        {props.children}
-      </span>
-    )
-  );
-};
+return (
+props.link ? (
 
+<a
+  href={props.link}
+  style={chipStyle}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  {props.children}
+</a>
+) : (<span style={chipStyle}>{props.children}</span>) ); };
 
 # App Module
 
@@ -45,7 +44,7 @@ export const Chip = (props) => {
 </div>
 
 **🎯 Provide a dependency injection container.**
-  
+
 **🎯 Provide platform annotations for dependency injection.**
 
 This package uses [get_it](https://pub.dev/packages/get_it) to offer the applications central dependency injection container. Other packages will retrieve dependencies from it and use [injectable](https://pub.dev/packages/injectable) to register them beforehand.
@@ -182,7 +181,31 @@ sealed class CounterEvent with _$CounterEvent {
 ```
 
 <Accordion title="Context to understand the code">
-TODO
+```dart
+@android
+@injectable
+```
+
+Registers an factory of `CounterBloc` under the `android`
+environment to the dependency injection container.
+The factory can now be used to retrive fresh instances within the application using `getIt<CounterBloc>()`.
+
+```dart
+@freezed
+sealed class CounterEvent with _$CounterEvent {
+  const factory CounterEvent.increment() = CounterIncrement;
+}
+```
+
+Defines a sealed union class for events with immutable cases.
+
+For more information see:
+
+[Registering factories](https://pub.dev/packages/injectable#registering-factories)
+
+[Register under different environments](https://pub.dev/packages/injectable#register-under-different-environments)
+
+[Union types and Sealed classes](https://pub.dev/packages/freezed#legacy-union-types-and-sealed-classes)
 </Accordion>
 
 #### Cubit
@@ -210,7 +233,21 @@ class CounterCubit extends Cubit<int> {
 ```
 
 <Accordion title="Context to understand the code">
-TODO
+```dart
+@android
+@injectable
+```
+
+Registers an factory of `CounterCubit` under the `android`
+environment to the dependency injection container.
+The factory can now be used to retrive fresh instances within the application using `getIt<CounterCubit>()`.
+
+For more information see:
+
+[Registering factories](https://pub.dev/packages/injectable#registering-factories)
+
+[Register under different environments](https://pub.dev/packages/injectable#register-under-different-environments)
+
 </Accordion>
 
 #### Navigator Implementation
@@ -259,9 +296,8 @@ More information about testing a [Platform Feature Package](/architecture/app-mo
 A domain package models a specific domain using domain components. It serves as the boundary to the external world and is implemented by its associated [Infrastructure Package](/architecture/app-module#infrastructure-package). Objects exposed by this package are immutable, and exceptions are represented by seperate failure classes (see [Value Object](/architecture/app-module#value-object), [Service Interface](/architecture/app-module#service-interface)) to achieve domain safety.
 
 <Info>
-  Domain safety refers to the domain being designed in an safe way,
-  mitigating possible errors introduced by mutable models and uncaught
-  exceptions.
+  Domain safety refers to the domain being designed in an safe way, mitigating
+  possible errors introduced by mutable models and uncaught exceptions.
 </Info>
 
 ### Components
@@ -298,6 +334,7 @@ Marks the class as a `freezed` model.
 ```dart
 final faker = Faker();
 ```
+
 Creates an instance of `Faker` used to generated fake data.
 
 For more information see:
@@ -346,7 +383,33 @@ sealed class SignInFailure extends SignInResult with _$SignInFailure {
 ```
 
 <Accordion title="Context to understand the code">
-TODO
+
+```dart
+sealed class SingInResult {
+  const SingInResult();
+}
+
+@freezed
+class SignInSuccess extends SingInResult with _$SignInSuccess {
+  const factory SignInSuccess(String value) = _SignInSuccess;
+  const SignInSuccess._();
+}
+
+@freezed
+sealed class SignInFailure extends SignInResult with _$SignInFailure {
+  const SignInFailure._();
+  const factory SignInFailure.invalidEmail() = SignInFailureInvalidEmail;
+  const factory SignInFailure.invalidPassword() = SignInFailureInvalidPassword;
+  const factory SignInFailure.serverNotReachable() = SignInFailureServerNotReachable;
+  // add more failure cases here
+}
+```
+
+Definies a sealed class for immutable success and failure return cases of the `signIn` method. Clients can then switch over each case and handle them explicitly.
+
+For more information see:
+
+[Union types and Sealed classes](https://pub.dev/packages/freezed#legacy-union-types-and-sealed-classes)
 </Accordion>
 
 #### Value Object
@@ -406,9 +469,42 @@ sealed class EmailAddressFailure extends EmailAddress
   // add more failures here
 }
 ```
-
 <Accordion title="Context to understand the code">
-TODO
+
+```dart
+sealed class EmailAddress {
+  ...
+}
+
+@freezed
+class ValidEmailAddress extends EmailAddress with _$ValidEmailAddress {
+  const factory ValidEmailAddress(String value) = _ValidEmailAddress;
+  const ValidEmailAddress._() : super._();
+}
+
+@freezed
+sealed class EmailAddressFailure extends EmailAddress
+    with _$EmailAddressFailure {
+  const EmailAddressFailure._() : super._();
+  const factory EmailAddressFailure.missingLocalPart() = EmailAddressFailureFoo;
+  const factory EmailAddressFailure.missingDomainPart() = EmailAddressFailureFoo;
+  // add more failures here
+}
+```
+
+Definies a sealed class for immutable success and failure return cases of the value object. Clients can then switch over each case and handle them explicitly.
+
+```dart
+final faker = Faker();
+```
+
+Creates an instance of `Faker` used to generated fake data.
+
+For more information see:
+
+[Union types and Sealed classes](https://pub.dev/packages/freezed#legacy-union-types-and-sealed-classes)
+
+[Faker](https://pub.dev/packages/faker)
 </Accordion>
 
 More information about testing a [Domain Package](/architecture/app-module#domain-package) can be found [here](/architecture/testing#testing-domain-package).
@@ -487,6 +583,7 @@ For more information see:
 [FromJson/ToJson](https://pub.dev/packages/freezed#fromjsontojson)
 
 [Adding getters and methods to our models](https://pub.dev/packages/freezed#adding-getters-and-methods-to-our-models)
+
 </Accordion>
 
 #### Service Implementation
@@ -523,6 +620,7 @@ For more information see:
 [Binding abstract classes to implementations](https://pub.dev/packages/injectable#binding-abstract-classes-to-implementations)
 
 [Register under different environments](https://pub.dev/packages/injectable#register-under-different-environments)
+
 </Accordion>
 
 More information about testing an [Infrastructure Package](/architecture/app-module#infrastructure-package) can be found [here](/architecture/testing#testing-infrastructure-package).

@@ -228,7 +228,20 @@ class HomePageNavigator implements IHomePageNavigator {
 ```
 
 <Accordion title="Context to understand the code">
-TODO
+```dart
+@android
+@LazySingleton(as: IHomePageNavigator)
+```
+
+Registers an instance of `IHomePageNavigator` under the `android`
+environment to the dependency injection container.
+The instance can now be retrived within the application using `getIt<IHomePageNavigator>()`.
+
+For more information see:
+
+[Binding abstract classes to implementations](https://pub.dev/packages/injectable#binding-abstract-classes-to-implementations)
+
+[Register under different environments](https://pub.dev/packages/injectable#register-under-different-environments)
 </Accordion>
 
 More information about testing a [Platform Feature Package](/architecture/app-module#platform-feature-package) can be found [here](/architecture/testing#testing-platform-feature-package).
@@ -255,8 +268,7 @@ A domain package models a specific domain using domain components. It serves as 
 
 #### Entity
 
-An entity is a component which represents a immutable model which is part of a domain.
-Entities should only hold primitives, collections or other entities or value objects.
+An entity is a component which represents a immutable unit which is part of a domain.
 
 ```dart
 // user.dart
@@ -283,9 +295,16 @@ class User with _$User {
 ```
 Marks the class as a `freezed` model.
 
+```dart
+final faker = Faker();
+```
+Creates an instance of `Faker` used to generated fake data.
+
 For more information see:
 
 [Creating a model using freezed](https://pub.dev/packages/freezed#creating-a-model-using-freezed)
+
+[Faker](https://pub.dev/packages/faker)
 </Accordion>
 
 #### Service Interface
@@ -494,6 +513,7 @@ class FakeAuthenticationService implements IAuthenticationService {
 @dev
 @LazySingleton(as: IAuthenticationService)
 ```
+
 Registers an instance of `FakeAuthenticationService` under the `development`
 environment to the dependency injection container.
 The instance can now be retrived within the application using `getIt<IAuthenticationService>()`.

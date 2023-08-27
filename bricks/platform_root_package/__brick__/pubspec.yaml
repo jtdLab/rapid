@@ -27,7 +27,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  auto_route: ^7.8.2
+  auto_route: ^7.8.3
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
   flutter:
@@ -89,7 +89,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  auto_route: ^7.8.2
+  auto_route: ^7.8.3
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
   cupertino_icons: ^1.0.5
@@ -148,7 +148,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  auto_route: ^7.8.2
+  auto_route: ^7.8.3
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
   flutter:
@@ -210,7 +210,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  auto_route: ^7.8.2
+  auto_route: ^7.8.3
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
   cupertino_icons: ^1.0.5
@@ -269,7 +269,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  auto_route: ^7.8.2
+  auto_route: ^7.8.3
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
   flutter:
@@ -333,7 +333,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  auto_route: ^7.8.2
+  auto_route: ^7.8.3
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
   flutter:
@@ -395,7 +395,7 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  auto_route: ^7.8.2
+  auto_route: ^7.8.3
   bloc: ^8.1.2
   bloc_concurrency: ^0.2.2
   flutter:

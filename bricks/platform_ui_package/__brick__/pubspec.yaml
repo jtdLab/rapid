@@ -156,7 +156,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   theme_tailor_annotation: ^2.0.0
-  yaru: ^1.0.0
+  yaru: ^1.1.0
   yaru_icons: ^2.2.1
   {{project_name}}_ui:
 

@@ -30,7 +30,7 @@ final platformNavigationPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": "pubspec.yaml",
       "data":
-          "bmFtZToge3twcm9qZWN0X25hbWV9fV97e3BsYXRmb3JtfX1fbmF2aWdhdGlvbgpkZXNjcmlwdGlvbjogTmF2aWdhdGlvbiBvZiB7e3Byb2plY3RfbmFtZS50aXRsZUNhc2UoKX19LgpwdWJsaXNoX3RvOiBub25lCnZlcnNpb246IDAuMS4wCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMS4wIDw0LjAuMCIKICBmbHV0dGVyOiAiPj0zLjEzLjAiCgpkZXBlbmRlbmNpZXM6CiAgYXV0b19yb3V0ZTogXjcuOC4yCiAgZmx1dHRlcjoKICAgIHNkazogZmx1dHRlcgoKZGV2X2RlcGVuZGVuY2llczoKICB0ZXN0OiBeMS4yNC42Cg==",
+          "bmFtZToge3twcm9qZWN0X25hbWV9fV97e3BsYXRmb3JtfX1fbmF2aWdhdGlvbgpkZXNjcmlwdGlvbjogTmF2aWdhdGlvbiBvZiB7e3Byb2plY3RfbmFtZS50aXRsZUNhc2UoKX19LgpwdWJsaXNoX3RvOiBub25lCnZlcnNpb246IDAuMS4wCgplbnZpcm9ubWVudDoKICBzZGs6ICI+PTMuMS4wIDw0LjAuMCIKICBmbHV0dGVyOiAiPj0zLjEzLjAiCgpkZXBlbmRlbmNpZXM6CiAgYXV0b19yb3V0ZTogXjcuOC4zCiAgZmx1dHRlcjoKICAgIHNkazogZmx1dHRlcgoKZGV2X2RlcGVuZGVuY2llczoKICB0ZXN0OiBeMS4yNC42Cg==",
       "type": "text"
     },
     {

@@ -11,7 +11,7 @@ const dart = DartDependency('3.1.0', '4.0.0');
 const flutter = FlutterDependency('3.13.0');
 final packages = [
   PackageDependency('alchemist', '0.6.1'),
-  PackageDependency('auto_route', '7.8.2'),
+  PackageDependency('auto_route', '7.8.3'),
   PackageDependency('auto_route_generator', '7.3.1'),
   PackageDependency('bloc_concurrency', '0.2.2'),
   PackageDependency('bloc_test', '9.1.4'),
@@ -39,7 +39,7 @@ final packages = [
   PackageDependency('theme_tailor', '2.0.0'),
   PackageDependency('url_strategy', '0.2.0'),
   PackageDependency('yaru_icons', '2.2.1'),
-  PackageDependency('yaru', '1.0.0'),
+  PackageDependency('yaru', '1.1.0'),
 ];
 
 const androidNativeDirectory = Template(

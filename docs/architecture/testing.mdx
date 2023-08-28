@@ -1,30 +1,111 @@
+export const Chip = (props) => {
+  const chipStyle = {
+    display: 'inline-flex', 
+    justifyContent: 'center',
+    backgroundColor: props.color,
+    color: 'white',
+    fontWeight: 'bold',
+    borderRadius: '16px',
+    padding: '4px 12px',
+    margin: '4px',
+    cursor: props.link ? 'pointer' : 'default',
+    textDecoration: 'none',
+    fontSize: '12px',
+    minWidth: '64px'
+  };
+
+return (
+props.link ? (
+
+<a
+  href={props.link}
+  style={chipStyle}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  {props.children}
+</a>
+) : (<span style={chipStyle}>{props.children}</span>) ); };
+
 # Testing
 
 ## Unit & Widget Testing
 
 ### Testing UI Package
 
+<div>
+  <Chip color="#867DA1">flutter_test</Chip>
+  <Chip color="#867DA1">alchemist</Chip>
+</div>
+
 TODO
 
 ### Testing Platform Root Package
+
+<div>
+  <Chip color="#867DA1">flutter_test</Chip>
+  <Chip color="#867DA1">mocktail</Chip>
+</div>
 
 TODO
 
 ### Testing Platform Feature Package
 
+<div>
+  <Chip color="#867DA1">alchemist</Chip>
+  <Chip color="#867DA1">bloc_test</Chip>
+  <Chip color="#867DA1">flutter_test</Chip>
+  <Chip color="#867DA1">mocktail</Chip>
+</div>
+
 TODO
 
 ### Testing Domain Package
+
+<div>
+  <Chip color="#867DA1">test</Chip>
+</div>
 
 TODO
 
 ### Testing Infrastructure Package
 
+<div>
+  <Chip color="#867DA1">mocktail</Chip>
+  <Chip color="#867DA1">test</Chip>
+</div>
+
 TODO
 
 ### Running Tests
 
-TODO
+<Tabs
+  values={[
+    { label: "rapid", value: "rapid" },
+    { label: "native", value: "native" },
+  ]}
+>
+<TabItem value="rapid">
+
+```bash
+# Run tests
+melos test
+
+# Run tests with coverage
+melos test:coverage
+```
+</TabItem>
+<TabItem value="native">
+
+```bash
+# Run tests
+flutter test
+
+# Run tests with coverage
+flutter test --coverage
+```
+</TabItem>
+</Tabs>
 
 ## Integration Testing (E2E)
 

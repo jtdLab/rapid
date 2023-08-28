@@ -127,6 +127,8 @@ The main purpose of this package is to provide localization for the application.
 
 ## Platform Feature Package
 
+There are several diffrent types of feature packages. See below.
+
 <div>
   <Chip color="#F9C909">presentation</Chip>
   <Chip color="#FF5252">application</Chip>
@@ -136,7 +138,50 @@ The main purpose of this package is to provide localization for the application.
   <Chip color="#867DA1">injectable</Chip>
 </div>
 
-**🎯 Implement states and user interface of a feature.**
+## Platform App Feature Package
+
+**🎯 Provide the root widget of the application.**
+
+**🎯 Provide global state of the application.**
+
+The app feature package must be present as it provides the root `App` widget.
+It is also the location where global state is implemented.
+
+## Platform Page Feature Package
+
+**🎯 Provide a page widget of the application.**
+
+**🎯 Provide state of the page.**
+
+A page feature package is used when adding a simple page to the application.
+
+## Platform Flow Feature Package
+
+**🎯 Provide a flow widget of the application.**
+
+**🎯 Provide state of the flow.**
+
+A flow feature package is used when adding nested navigation to the application.
+
+[Nested Navigation](https://pub.dev/packages/auto_route#nested-navigation)
+
+## Platform Tab Flow Feature Package
+
+**🎯 Provide a tab flow widget of the application.**
+
+**🎯 Provide state of the tab flow.**
+
+A tab flow feature package is used when adding nested tab navigation to the application.
+
+[Nested Tab Navigation](https://pub.dev/packages/auto_route#tab-navigation)
+
+## Platform Widget Feature Package
+
+**🎯 Provide a widget.**
+
+**🎯 Provide state of the widget.**
+
+A widget feature package is used for parts of UI that are not abstract enough to be part of the design language but is shared accross multiple other feature packages.
 
 ### Components
 
@@ -186,7 +231,7 @@ sealed class CounterEvent with _$CounterEvent {
 @injectable
 ```
 
-Registers an factory of `CounterBloc` under the `android`
+Registers a factory of `CounterBloc` under the `android`
 environment to the dependency injection container.
 The factory can now be used to retrive fresh instances within the application using `getIt<CounterBloc>()`.
 
@@ -238,7 +283,7 @@ class CounterCubit extends Cubit<int> {
 @injectable
 ```
 
-Registers an factory of `CounterCubit` under the `android`
+Registers a factory of `CounterCubit` under the `android`
 environment to the dependency injection container.
 The factory can now be used to retrive fresh instances within the application using `getIt<CounterCubit>()`.
 

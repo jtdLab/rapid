@@ -82,7 +82,12 @@ final platformPageFeaturePackageBundle = MasonBundle.fromJson(<String, dynamic>{
           "IyBtZWxvc19tYW5hZ2VkX2RlcGVuZGVuY3lfb3ZlcnJpZGVzOiB7e3Byb2plY3RfbmFtZX19X3t7cGxhdGZvcm19fV9hcHAse3twcm9qZWN0X25hbWV9fV97e3BsYXRmb3JtfX1fbG9jYWxpemF0aW9uLHt7cHJvamVjdF9uYW1lfX1fe3twbGF0Zm9ybX19X25hdmlnYXRpb24se3twcm9qZWN0X25hbWV9fV9kaSx7e3Byb2plY3RfbmFtZX19X2RvbWFpbix7e3Byb2plY3RfbmFtZX19X3VpLHt7cHJvamVjdF9uYW1lfX1fdWlfe3twbGF0Zm9ybX19CmRlcGVuZGVuY3lfb3ZlcnJpZGVzOgogIHt7cHJvamVjdF9uYW1lfX1fe3twbGF0Zm9ybX19X2FwcDoKICAgIHBhdGg6IC4uL3t7cHJvamVjdF9uYW1lfX1fe3twbGF0Zm9ybX19X2FwcAogIHt7cHJvamVjdF9uYW1lfX1fe3twbGF0Zm9ybX19X2xvY2FsaXphdGlvbjoKICAgIHBhdGg6IC4uLy4uL3t7cHJvamVjdF9uYW1lfX1fe3twbGF0Zm9ybX19X2xvY2FsaXphdGlvbgogIHt7cHJvamVjdF9uYW1lfX1fe3twbGF0Zm9ybX19X25hdmlnYXRpb246CiAgICBwYXRoOiAuLi8uLi97e3Byb2plY3RfbmFtZX19X3t7cGxhdGZvcm19fV9uYXZpZ2F0aW9uCiAge3twcm9qZWN0X25hbWV9fV9kaToKICAgIHBhdGg6IC4uLy4uLy4uL3t7cHJvamVjdF9uYW1lfX1fZGkKICB7e3Byb2plY3RfbmFtZX19X2RvbWFpbjoKICAgIHBhdGg6IC4uLy4uLy4uL3t7cHJvamVjdF9uYW1lfX1fZG9tYWluL3t7cHJvamVjdF9uYW1lfX1fZG9tYWluCiAge3twcm9qZWN0X25hbWV9fV91aToKICAgIHBhdGg6IC4uLy4uLy4uLy4uL3t7cHJvamVjdF9uYW1lfX1fdWkve3twcm9qZWN0X25hbWV9fV91aQogIHt7cHJvamVjdF9uYW1lfX1fdWlfe3twbGF0Zm9ybX19OgogICAgcGF0aDogLi4vLi4vLi4vLi4ve3twcm9qZWN0X25hbWV9fV91aS97e3Byb2plY3RfbmFtZX19X3VpX3t7cGxhdGZvcm19fQo=",
       "type": "text"
     },
-    {"path": "README.md", "data": "", "type": "text"},
+    {
+      "path": "README.md",
+      "data":
+          "IyMgUGFnZSBGZWF0dXJlIFBhY2thZ2UgKHt7cGxhdGZvcm0udGl0bGVDYXNlKCl9fSkKCiMjIyBSZXNwb25zaWJpbGl0aWVzCgrwn46vIFByb3ZpZGUgYSBwYWdlIHdpZGdldCBvZiB0aGUgYXBwbGljYXRpb24uCgrwn46vIFByb3ZpZGUgc3RhdGUgb2YgdGhlIHBhZ2UuCgpGb3IgbW9yZSBpbmZvcm1hdGlvbiBjbGljayBbaGVyZV1bMV0uCgpbMV06IGh0dHBzOi8vZG9jcy5wYWdlL2p0ZExhYi9yYXBpZC9hcmNoaXRlY3R1cmUvYXBwLW1vZHVsZSNwbGF0Zm9ybS1wYWdlLWZlYXR1cmUtcGFja2FnZQo=",
+      "type": "text"
+    },
     {
       "path": "test/ensure_build_test.dart",
       "data":

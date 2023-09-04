@@ -18,7 +18,7 @@ jobs:
         working-directory: packages/rapid_cli
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Setup Flutter SDK
         uses: subosito/flutter-action@v2
@@ -194,7 +194,7 @@ jobs:
           - test/e2e/windows_remove_navigator_test.dart
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get Cached Fixtures
         uses: actions/cache/restore@v3

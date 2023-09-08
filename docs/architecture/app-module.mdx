@@ -1,3 +1,32 @@
+export const Chip = (props) => {
+  const chipStyle = {
+    display: 'inline-flex', 
+    justifyContent: 'center',
+    backgroundColor: props.color,
+    color: 'white',
+    fontWeight: 'bold',
+    borderRadius: '16px',
+    padding: '4px 12px',
+    margin: '4px',
+    cursor: props.link ? 'pointer' : 'default',
+    textDecoration: 'none',
+    fontSize: '12px',
+    minWidth: '64px'
+  };
+
+return (
+props.link ? (
+
+<a
+  href={props.link}
+  style={chipStyle}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  {props.children}
+</a>
+) : (<span style={chipStyle}>{props.children}</span>) ); };
+
 # App Module
 
 <Image
@@ -9,108 +38,634 @@
 
 ## Dependency Injection Package
 
-🎯 Provide a dependency injection container.
+<div>
+  <Chip color="#CCCCCC">core</Chip>
+  <Chip color="#867DA1">get_it, injectable</Chip>
+</div>
 
-🎯 Provide platform annotations for dependency injection.
+**🎯 Provide a dependency injection container.**
+
+**🎯 Provide platform annotations for dependency injection.**
+
+This package uses [get_it](https://pub.dev/packages/get_it) to offer the applications central dependency injection container. Other packages will retrieve dependencies from it and use [injectable](https://pub.dev/packages/injectable) to register them beforehand.
+In addition to providing the dependency container, this package introduces annotations that enable the registration of specific dependencies for particular platforms.
 
 ## Logging Package
 
-🎯 Provide a logger.
+<div>
+  <Chip color="#CCCCCC">core</Chip>
+</div>
+
+**🎯 Provide a logger.**
+
+The primary goal of this package is to offer a single, dedicated logger that can be effortlessly employed throughout the entire application. By default, an implementation is provided, yet developers have the freedom to either create their own customized logger or use existing solutions like for example [logger](https://pub.dev/packages/logger) or [logging](https://pub.dev/packages/logging).
 
 ## Platform Root Package
 
-🎯 Provide entrypoints to run the application in diffrent environments.
+<div>
+  <Chip color="#CCCCCC">core</Chip>
+  <Chip color="#F9C909">presentation</Chip>
+  <Chip color="#FF5252">application</Chip>
+  <Chip color="#867DA1">auto_route</Chip>
+  <Chip color="#867DA1">bloc, bloc_concurrency</Chip>
+  <Chip color="#867DA1">get_it, injectable</Chip>
+</div>
 
-🎯 Setup Dependency Injection.
+**🎯 Provide entrypoints to run the application in different environments.**
 
-🎯 Setup Routing.
+**🎯 Setup Dependency Injection.**
 
-🎯 Setup Localization.
+**🎯 Setup Routing.**
 
-🎯 Provide a BlocObserver.
+**🎯 Provide a BlocObserver.**
 
-🎯 Provide a RouterObserver.
+**🎯 Provide a RouterObserver.**
+
+**🎯 Integration Testing.**
+
+This package provides entry points for different environments via `main_development.dart`, `main_test.dart`, and `main_prod.dart`, where the application gets set up depending on the needs of each environment. It initializes dependency injection, routing, logging and hosts the native application. The package is also the location where integration tests take place.
 
 More information about testing a [Platform Root Package](/architecture/app-module#platform-root-package) can be found [here](/architecture/testing#testing-platform-root-package).
 
 ## Platform Navigation Package
 
-🎯 Provide [Navigator Interfaces](/architecture/app-module#navigator-interface) to navigate between [Platform Feature Packages](/architecture/app-module#platform-feature-package).
+<div>
+  <Chip color="#CCCCCC">core</Chip>
+  <Chip color="#867DA1">auto_route</Chip>
+</div>
 
-### Navigator Interface
+**🎯 Provide interfaces to navigate between feature packages.**
+
+The primary goal of this package is to decouple [Platform Feature Packages](/architecture/app-module#platform-feature-package) and allow navigation between them. This is achieved by defining [Navigator Interfaces](/architecture/app-module#navigator-interface) for each feature package that will be navigated to from within another feature package. The interface will then be implemented in the associated feature package using a [Navigator Implementation](/architecture/app-module#navigator-implementation) which is registred to the dependency injection container.
+Feature packages that want to navigate to the feature package can then use the injected implementation instead of depending on the feature package directly.
+
+### Components
+
+#### Navigator Interface
+
+A navigator interface is a component which defines an interface to navigate to a feature package.
+This can be common navigation methods like `push`, `replace` and more.
 
 ```dart
-TODO
+// i_home_page_navigator.dart
+abstract class IHomePageNavigator {
+  // add navigation methods (e.g push, replace, ...) here
+}
 ```
+
+## Platform Localization Package
+
+<div>
+  <Chip color="#CCCCCC">core</Chip>
+  <Chip color="#867DA1">flutter_localizations</Chip>
+  <Chip color="#867DA1">intl</Chip>
+</div>
+
+**🎯 Provide translations for different languages.**
+
+The main purpose of this package is to provide localization for the application. This is done using `.arb` files via [flutter_localizations](https://docs.flutter.dev/ui/accessibility-and-localization/internationalization) and [intl](https://pub.dev/packages/intl).
 
 ## Platform Feature Package
 
-🎯 Implement states and user interface of a feature.
+There are several diffrent types of feature packages. See below.
 
-### Bloc
+<div>
+  <Chip color="#F9C909">presentation</Chip>
+  <Chip color="#FF5252">application</Chip>
+  <Chip color="#867DA1">auto_route</Chip>
+  <Chip color="#867DA1">bloc, flutter_bloc</Chip>
+  <Chip color="#867DA1">freezed</Chip>
+  <Chip color="#867DA1">injectable</Chip>
+</div>
+
+## Platform App Feature Package
+
+**🎯 Provide the root widget of the application.**
+
+**🎯 Provide global state of the application.**
+
+The app feature package must be present as it provides the root `App` widget.
+It is also the location where global state is implemented.
+
+## Platform Page Feature Package
+
+**🎯 Provide a page widget of the application.**
+
+**🎯 Provide state of the page.**
+
+A page feature package is used when adding a simple page to the application.
+
+## Platform Flow Feature Package
+
+**🎯 Provide a flow widget of the application.**
+
+**🎯 Provide state of the flow.**
+
+A flow feature package is used when adding nested navigation to the application.
+
+[Nested Navigation](https://pub.dev/packages/auto_route#nested-navigation)
+
+## Platform Tab Flow Feature Package
+
+**🎯 Provide a tab flow widget of the application.**
+
+**🎯 Provide state of the tab flow.**
+
+A tab flow feature package is used when adding nested tab navigation to the application.
+
+[Nested Tab Navigation](https://pub.dev/packages/auto_route#tab-navigation)
+
+## Platform Widget Feature Package
+
+**🎯 Provide a widget.**
+
+**🎯 Provide state of the widget.**
+
+A widget feature package is used for parts of UI that are not abstract enough to be part of the design language but is shared accross multiple other feature packages.
+
+### Components
+
+#### Bloc
+
+A bloc is a component which manages the state of a feature package.
+Events can be added to the bloc and states are emitted by the bloc.
+The UI of a feature package can then listen to these state changes and rebuild
+properly. See [bloc](https://pub.dev/packages/bloc) and [flutter_bloc](https://pub.dev/packages/flutter_bloc) for more information.
 
 ```dart
-TODO
+// counter_bloc.dart
+@android
+@injectable
+class CounterBloc extends Bloc<CounterEvent, int> {
+  CounterBloc()
+      : super(
+          // Set initial state
+          0,
+        ) {
+    // Register handlers
+    on<CounterStarted>(_onIncrement);
+  }
+
+  /// Handle incoming [CounterIncrement] event.
+  void _onIncrement(
+    CounterIncrement event,
+    Emitter<int> emit,
+  ) {
+    emit(state + 1);
+  }
+}
+
+// counter_event.dart
+@freezed
+sealed class CounterEvent with _$CounterEvent {
+  const factory CounterEvent.increment() = CounterIncrement;
+}
+
+// counter_state.dart
+// (not needed in this example)
 ```
 
-### Cubit
+<Accordion title="Context to understand the code">
+```dart
+@android
+@injectable
+```
+
+Registers a factory of `CounterBloc` under the `android`
+environment to the dependency injection container.
+The factory can now be used to retrive fresh instances within the application using `getIt<CounterBloc>()`.
 
 ```dart
-TODO
+@freezed
+sealed class CounterEvent with _$CounterEvent {
+  const factory CounterEvent.increment() = CounterIncrement;
+}
 ```
 
-### Navigator Implementation
+Defines a sealed union class for events with immutable cases.
+
+For more information see:
+
+[Registering factories](https://pub.dev/packages/injectable#registering-factories)
+
+[Register under different environments](https://pub.dev/packages/injectable#register-under-different-environments)
+
+[Union types and Sealed classes](https://pub.dev/packages/freezed#legacy-union-types-and-sealed-classes)
+</Accordion>
+
+#### Cubit
+
+Cubit is a less complex version of a bloc where events are not represented by a seperate class but using methods instead. It has the same purpose and can be used interchangeably.
 
 ```dart
-TODO
+// counter_cubit.dart
+@android
+@injectable
+class CounterCubit extends Cubit<int> {
+  CounterCubit()
+      : super(
+          // Set initial state
+          0,
+        );
+
+  void started() {
+    emit(state + 1);
+  }
+}
+
+// counter_state.dart
+// (not needed in this example)
 ```
+
+<Accordion title="Context to understand the code">
+```dart
+@android
+@injectable
+```
+
+Registers a factory of `CounterCubit` under the `android`
+environment to the dependency injection container.
+The factory can now be used to retrive fresh instances within the application using `getIt<CounterCubit>()`.
+
+For more information see:
+
+[Registering factories](https://pub.dev/packages/injectable#registering-factories)
+
+[Register under different environments](https://pub.dev/packages/injectable#register-under-different-environments)
+
+</Accordion>
+
+#### Navigator Implementation
+
+A navigator implementation is a component which implements its associated [Navigator Interface](/architecture/app-module#navigator-interface).
+By implementing the interface from within the feature package and registering it in the dependency injection container decoupling between feature packages is achieved.
+
+```dart
+// navigator.dart
+@android
+@LazySingleton(as: IHomePageNavigator)
+class HomePageNavigator implements IHomePageNavigator {
+  // implement navigation methods (e.g push, replace, ...) here
+}
+```
+
+<Accordion title="Context to understand the code">
+```dart
+@android
+@LazySingleton(as: IHomePageNavigator)
+```
+
+Registers an instance of `IHomePageNavigator` under the `android`
+environment to the dependency injection container.
+The instance can now be retrived within the application using `getIt<IHomePageNavigator>()`.
+
+For more information see:
+
+[Binding abstract classes to implementations](https://pub.dev/packages/injectable#binding-abstract-classes-to-implementations)
+
+[Register under different environments](https://pub.dev/packages/injectable#register-under-different-environments)
+</Accordion>
 
 More information about testing a [Platform Feature Package](/architecture/app-module#platform-feature-package) can be found [here](/architecture/testing#testing-platform-feature-package).
 
 ## Domain Package
 
-🎯 Abstract a domain using [Entities](/architecture/app-module#entity), [Service Interfaces](/architecture/app-module#service-interface), [Value Objects](/architecture/app-module#value-object) and [Failures](/architecture/app-module#failure).
+<div>
+  <Chip color="#2FCC71">domain</Chip>
+  <Chip color="#867DA1">faker</Chip>
+  <Chip color="#867DA1">freezed</Chip>
+</div>
 
-### Entity
+**🎯 Represent a domain using [Entities](/architecture/app-module#entity), [Service Interfaces](/architecture/app-module#service-interface) and [Value Objects](/architecture/app-module#value-object).**
+
+A domain package models a specific domain using domain components. It serves as the boundary to the external world and is implemented by its associated [Infrastructure Package](/architecture/app-module#infrastructure-package). Objects exposed by this package are immutable, and exceptions are represented by seperate failure classes (see [Value Object](/architecture/app-module#value-object), [Service Interface](/architecture/app-module#service-interface)) to achieve domain safety.
+
+<Info>
+  Domain safety refers to the domain being designed in an safe way, mitigating
+  possible errors introduced by mutable models and uncaught exceptions.
+</Info>
+
+### Components
+
+#### Entity
+
+An entity is a component which represents a immutable unit which is part of a domain.
 
 ```dart
-TODO
+// user.dart
+@freezed
+class User with _$User {
+  const factory User({
+    required String id,
+    // add more fields here
+  }) = _User;
+
+  factory User.random() {
+    final faker = Faker();
+
+    return User(
+      id: faker.randomGenerator.string(16, min: 16),
+    );
+  }
+}
 ```
 
-### Service Interface
+<Accordion title="Context to understand the code">
+```dart
+@freezed
+```
+Marks the class as a `freezed` model.
 
 ```dart
-TODO
+final faker = Faker();
 ```
 
-### Value Object
+Creates an instance of `Faker` used to generated fake data.
+
+For more information see:
+
+[Creating a model using freezed](https://pub.dev/packages/freezed#creating-a-model-using-freezed)
+
+[Faker](https://pub.dev/packages/faker)
+</Accordion>
+
+#### Service Interface
+
+A service interface component defines an interface for actions the application needs to perform its
+business logic. Every method of a service interface defines its own result union type and map possbile exceptions thrown by the method to failure cases. (Hint errors should not be mapped only exceptions should as they are intended to be handled by clients using the domain package)
 
 ```dart
-TODO
+// i_authentication_service.dart
+abstract class IAuthenticationService {
+  SingInResult signIn({
+    required EmailAddress email,
+    required Password password,
+  });
+
+  // add more service methods
+}
+
+sealed class SingInResult {
+  const SingInResult();
+}
+
+@freezed
+class SignInSuccess extends SingInResult with _$SignInSuccess {
+  const factory SignInSuccess(String value) = _SignInSuccess;
+  const SignInSuccess._();
+}
+
+@freezed
+sealed class SignInFailure extends SignInResult with _$SignInFailure {
+  const SignInFailure._();
+  const factory SignInFailure.invalidEmail() = SignInFailureInvalidEmail;
+  const factory SignInFailure.invalidPassword() = SignInFailureInvalidPassword;
+  const factory SignInFailure.serverNotReachable() = SignInFailureServerNotReachable;
+  // add more failure cases here
+}
+
+// add more service method results here
 ```
 
-### Failure
+<Accordion title="Context to understand the code">
 
 ```dart
-TODO
+sealed class SingInResult {
+  const SingInResult();
+}
+
+@freezed
+class SignInSuccess extends SingInResult with _$SignInSuccess {
+  const factory SignInSuccess(String value) = _SignInSuccess;
+  const SignInSuccess._();
+}
+
+@freezed
+sealed class SignInFailure extends SignInResult with _$SignInFailure {
+  const SignInFailure._();
+  const factory SignInFailure.invalidEmail() = SignInFailureInvalidEmail;
+  const factory SignInFailure.invalidPassword() = SignInFailureInvalidPassword;
+  const factory SignInFailure.serverNotReachable() = SignInFailureServerNotReachable;
+  // add more failure cases here
+}
 ```
+
+Definies a sealed class for immutable success and failure return cases of the `signIn` method. Clients can then switch over each case and handle them explicitly.
+
+For more information see:
+
+[Union types and Sealed classes](https://pub.dev/packages/freezed#legacy-union-types-and-sealed-classes)
+</Accordion>
+
+#### Value Object
+
+A value object is a component which wraps an other type (primitives, collections or other entities) and validates its value. Based on the provided value the value object union is either mapped to a valid or failure state. This allows to build a more expressive domain language and write safer code.
+
+```dart
+// email_address.dart
+sealed class EmailAddress {
+  factory EmailAddress(String raw) {
+    return _validate(raw);
+  }
+
+  factory EmailAddress.random({bool valid = true}) {
+    final faker = Faker();
+
+    if (valid) {
+      return faker.randomGenerator.element([
+        // insert random valid instances here
+      ]);
+    } else {
+      return faker.randomGenerator.element([
+        // insert random invalid instances here
+      ]);
+    }
+  }
+
+  const EmailAddress._();
+
+  static EmailAddress _validate(String raw) {
+    // implement validation here
+  }
+
+  String getOrCrash() {
+    return switch (this) {
+      final ValidEmailAddress valid => valid.value,
+      final EmailAddressFailure failure =>
+        throw StateError('Unexpected $failure at unrecoverable point.'),
+    };
+  }
+
+  bool isValid() => this is ValidEmailAddress;
+}
+
+@freezed
+class ValidEmailAddress extends EmailAddress with _$ValidEmailAddress {
+  const factory ValidEmailAddress(String value) = _ValidEmailAddress;
+  const ValidEmailAddress._() : super._();
+}
+
+@freezed
+sealed class EmailAddressFailure extends EmailAddress
+    with _$EmailAddressFailure {
+  const EmailAddressFailure._() : super._();
+  const factory EmailAddressFailure.missingLocalPart() = EmailAddressFailureFoo;
+  const factory EmailAddressFailure.missingDomainPart() = EmailAddressFailureFoo;
+  // add more failures here
+}
+```
+<Accordion title="Context to understand the code">
+
+```dart
+sealed class EmailAddress {
+  ...
+}
+
+@freezed
+class ValidEmailAddress extends EmailAddress with _$ValidEmailAddress {
+  const factory ValidEmailAddress(String value) = _ValidEmailAddress;
+  const ValidEmailAddress._() : super._();
+}
+
+@freezed
+sealed class EmailAddressFailure extends EmailAddress
+    with _$EmailAddressFailure {
+  const EmailAddressFailure._() : super._();
+  const factory EmailAddressFailure.missingLocalPart() = EmailAddressFailureFoo;
+  const factory EmailAddressFailure.missingDomainPart() = EmailAddressFailureFoo;
+  // add more failures here
+}
+```
+
+Definies a sealed class for immutable success and failure return cases of the value object. Clients can then switch over each case and handle them explicitly.
+
+```dart
+final faker = Faker();
+```
+
+Creates an instance of `Faker` used to generated fake data.
+
+For more information see:
+
+[Union types and Sealed classes](https://pub.dev/packages/freezed#legacy-union-types-and-sealed-classes)
+
+[Faker](https://pub.dev/packages/faker)
+</Accordion>
 
 More information about testing a [Domain Package](/architecture/app-module#domain-package) can be found [here](/architecture/testing#testing-domain-package).
 
 ## Infrastructure Package
 
-🎯 Implement [Service Interfaces](/architecture/app-module#service-interface) of its associated [Domain Package](/architecture/app-module#domain-package).
+<div>
+  <Chip color="#3498DA">infrastructure</Chip>
+  <Chip color="#867DA1">injectable</Chip>
+  <Chip color="#867DA1">freezed</Chip>
+  <Chip color="#867DA1">json_serializable</Chip>
+</div>
 
-### Data Transfer Object
+**🎯 Implement its associated [Domain Package](/architecture/app-module#domain-package).**
+
+An infrastructure package implements the interface defined in its associated [Domain Package](/architecture/app-module#domain-package). This is done interacting with external or local data sources and services, such as databases or APIs, to fetch or store data as needed. Every infrastructure package can provide multiple [Service Implementations](/architecture/app-module#service-implementation) per [Service Interface](/architecture/app-module#service-interface) which can be easily injected depending on environment.
+
+### Components
+
+#### Data Transfer Object
+
+A data transfer object is a component which is associated to an [Entity](/architecture/app-module#entity).
+Its only purpose is to transform data from the outside world (mostly json) to an [Entity](/architecture/app-module#entity) and back.
 
 ```dart
-TODO
+// user_dto.dart
+@freezed
+class UserDto with _$UserDto {
+  const factory UserDto({
+    required String id,
+    // add more fields here
+  }) = _UserDto;
+
+  factory UserDto.fromDomain(User domain) {
+    return UserDto(
+      id: domain.id,
+    );
+  }
+
+  factory UserDto.fromJson(Map<String, dynamic> json) =>
+      _$UserDtoFromJson(json);
+
+  const UserDto._();
+
+  User toDomain() {
+    return User(
+      id: id,
+    );
+  }
+}
 ```
 
-### Service Implementation
+<Accordion title="Context to understand the code">
+```dart
+@freezed
+```
+Marks the class as a `freezed` model.
 
 ```dart
-TODO
+factory UserDto.fromJson(Map<String, dynamic> json) =>
+    _$UserDtoFromJson(json);
 ```
+
+Tells `freezed` to generate fromJson/toJson serialization.
+
+```dart
+const UserDto._();
+```
+
+Private constructor required by `freezed` when adding custom methods (e.g `toDomain`).
+
+For more information see:
+
+[Creating a model using freezed](https://pub.dev/packages/freezed#creating-a-model-using-freezed)
+
+[FromJson/ToJson](https://pub.dev/packages/freezed#fromjsontojson)
+
+[Adding getters and methods to our models](https://pub.dev/packages/freezed#adding-getters-and-methods-to-our-models)
+
+</Accordion>
+
+#### Service Implementation
+
+A service implementation implements the interface specified by its corresponding [Service Interface](/architecture/app-module#service-interface), handling all the technical details, using SDKS, Rest APIs or other ways to communicated with the external world or the device. When implementing the interface it is important to map exceptions to the correct failures of the respective result and let errors bubble up to be handled at the root level.
+
+```dart
+// fake_authentication_service.dart
+@dev
+@LazySingleton(as: IAuthenticationService)
+class FakeAuthenticationService implements IAuthenticationService {
+  @override
+  SingInResult signIn({
+    required EmailAddress email,
+    required Password password,
+  }){
+    // implement
+  }
+}
+```
+
+<Accordion title="Context to understand the code">
+```dart
+@dev
+@LazySingleton(as: IAuthenticationService)
+```
+
+Registers an instance of `FakeAuthenticationService` under the `development`
+environment to the dependency injection container.
+The instance can now be retrived within the application using `getIt<IAuthenticationService>()`.
+
+For more information see:
+
+[Binding abstract classes to implementations](https://pub.dev/packages/injectable#binding-abstract-classes-to-implementations)
+
+[Register under different environments](https://pub.dev/packages/injectable#register-under-different-environments)
+
+</Accordion>
 
 More information about testing an [Infrastructure Package](/architecture/app-module#infrastructure-package) can be found [here](/architecture/testing#testing-infrastructure-package).

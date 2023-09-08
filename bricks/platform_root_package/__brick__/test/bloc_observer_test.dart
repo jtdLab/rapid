@@ -80,7 +80,7 @@ void main() {
       final {{project_name.camelCase()}}BlocObserver = _get{{project_name.pascalCase()}}BlocObserver(logger);
 
       // Act
-      {{project_name.camelCase()}}BlocObserver.onError(MockBloc(), Error(), StackTrace.empty);
+      {{project_name.camelCase()}}BlocObserver.onError(MockBloc(), Error(), StackTrace.empty,);
 
       // Assert
       verify(

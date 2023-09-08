@@ -811,6 +811,7 @@ Future<TestResult> _runFlutterOrDartTest({
 
   double? totalCoverage;
   if (coverage) {
+    // TODO(jtdLab): can remove remove_from_coverage?.
     await Process.run(
       'remove_from_coverage',
       [

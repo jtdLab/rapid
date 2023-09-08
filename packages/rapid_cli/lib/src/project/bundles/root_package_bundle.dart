@@ -8,7 +8,7 @@ final rootPackageBundle = MasonBundle.fromJson(<String, dynamic>{
     {
       "path": ".gitignore",
       "data":
-          "IyBNaXNjZWxsYW5lb3VzCiouY2xhc3MKKi5sb2cKKi5weWMKKi5zd3AKLkRTX1N0b3JlCi5hdG9tLwouYnVpbGRsb2cvCi5oaXN0b3J5Ci5zdm4vCm1pZ3JhdGVfd29ya2luZ19kaXIvCgojIEludGVsbGlKIHJlbGF0ZWQKKi5pbWwKKi5pcHIKKi5pd3MKLmlkZWEvCgojIFRoZSAudnNjb2RlIGZvbGRlciBjb250YWlucyBsYXVuY2ggY29uZmlndXJhdGlvbiBhbmQgdGFza3MgeW91IGNvbmZpZ3VyZSBpbgojIFZTIENvZGUgd2hpY2ggeW91IG1heSB3aXNoIHRvIGJlIGluY2x1ZGVkIGluIHZlcnNpb24gY29udHJvbCwgc28gdGhpcyBsaW5lCiMgaXMgY29tbWVudGVkIG91dCBieSBkZWZhdWx0LgojLnZzY29kZS8KCiMgRmx1dHRlci9EYXJ0L1B1YiByZWxhdGVkCi5kYXJ0X3Rvb2wvCgojIE5vZGUKbm9kZV9tb2R1bGVzLwpwYWNrYWdlLWxvY2suanNvbgpwYWNrYWdlLmpzb24KCiMgQ29tbWl0bGludApjb21taXRsaW50LmNvbmZpZy5qcwoKIyBSYXBpZAoucmFwaWRfdG9vbC8K",
+          "IyBNaXNjZWxsYW5lb3VzCiouY2xhc3MKKi5sb2cKKi5weWMKKi5zd3AKLkRTX1N0b3JlCi5hdG9tLwouYnVpbGRsb2cvCi5oaXN0b3J5Ci5zdm4vCm1pZ3JhdGVfd29ya2luZ19kaXIvCgojIEludGVsbGlKIHJlbGF0ZWQKKi5pbWwKKi5pcHIKKi5pd3MKLmlkZWEvCgojIEZsdXR0ZXIvRGFydC9QdWIgcmVsYXRlZAouZGFydF90b29sLwoKIyBSYXBpZAoucmFwaWRfdG9vbC8K",
       "type": "text"
     },
     {
@@ -29,7 +29,12 @@ final rootPackageBundle = MasonBundle.fromJson(<String, dynamic>{
           "bmFtZToge3twcm9qZWN0X25hbWV9fQoKZW52aXJvbm1lbnQ6CiAgc2RrOiAiPj0zLjEuMCA8NC4wLjAiCgpkZXZfZGVwZW5kZW5jaWVzOgogIG1lbG9zOiBeMy4xLjEKICByYXBpZF9jbGk6CiAgICBnaXQ6CiAgICAgIHVybDogaHR0cHM6Ly9naXRodWIuY29tL2p0ZExhYi9yYXBpZC5naXQKICAgICAgcGF0aDogcGFja2FnZXMvcmFwaWRfY2xpCgpyYXBpZDoKICBuYW1lOiB7e3Byb2plY3RfbmFtZX19Cg==",
       "type": "text"
     },
-    {"path": "README.md", "data": "VE9ETwo=", "type": "text"}
+    {
+      "path": "README.md",
+      "data":
+          "IyMge3twcm9qZWN0X25hbWUudGl0bGVDYXNlKCl9fQoKVE9ETzogQWRkIGFsbCByZWxldmFudCBpbmZvcm1hdGlvbiBhYm91dCB0aGUgcHJvamVjdCBoZXJlLgo=",
+      "type": "text"
+    }
   ],
   "hooks": [],
   "name": "root_package",

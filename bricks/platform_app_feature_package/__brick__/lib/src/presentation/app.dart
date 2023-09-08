@@ -32,7 +32,7 @@ abstract class App extends StatelessWidget {
     this.router,
   })  : supportedLocales = {{project_name.pascalCase()}}Localizations.supportedLocales,
         localizationsDelegates = const [
-          {{project_name.pascalCase()}}Localizations.delegate
+          {{project_name.pascalCase()}}Localizations.delegate,
         ];
 
   final List<Locale> supportedLocales;
@@ -159,7 +159,7 @@ abstract class App extends StatelessWidget {
     this.router,
   })  : supportedLocales = {{project_name.pascalCase()}}Localizations.supportedLocales,
         localizationsDelegates = const [
-          {{project_name.pascalCase()}}Localizations.delegate
+          {{project_name.pascalCase()}}Localizations.delegate,
         ];
 
   final List<Locale> supportedLocales;
@@ -286,7 +286,7 @@ abstract class App extends StatelessWidget {
     this.router,
   })  : supportedLocales = {{project_name.pascalCase()}}Localizations.supportedLocales,
         localizationsDelegates = const [
-          {{project_name.pascalCase()}}Localizations.delegate
+          {{project_name.pascalCase()}}Localizations.delegate,
         ];
 
   final List<Locale> supportedLocales;
@@ -413,7 +413,7 @@ abstract class App extends StatelessWidget {
     this.router,
   })  : supportedLocales = {{project_name.pascalCase()}}Localizations.supportedLocales,
         localizationsDelegates = const [
-          {{project_name.pascalCase()}}Localizations.delegate
+          {{project_name.pascalCase()}}Localizations.delegate,
         ];
 
   final List<Locale> supportedLocales;
@@ -540,7 +540,7 @@ abstract class App extends StatelessWidget {
     this.router,
   })  : supportedLocales = {{project_name.pascalCase()}}Localizations.supportedLocales,
         localizationsDelegates = const [
-          {{project_name.pascalCase()}}Localizations.delegate
+          {{project_name.pascalCase()}}Localizations.delegate,
         ];
 
   final List<Locale> supportedLocales;
@@ -667,7 +667,7 @@ abstract class App extends StatelessWidget {
     this.router,
   })  : supportedLocales = {{project_name.pascalCase()}}Localizations.supportedLocales,
         localizationsDelegates = const [
-          {{project_name.pascalCase()}}Localizations.delegate
+          {{project_name.pascalCase()}}Localizations.delegate,
         ];
 
   final List<Locale> supportedLocales;
@@ -794,7 +794,7 @@ abstract class App extends StatelessWidget {
     this.router,
   })  : supportedLocales = {{project_name.pascalCase()}}Localizations.supportedLocales,
         localizationsDelegates = const [
-          {{project_name.pascalCase()}}Localizations.delegate
+          {{project_name.pascalCase()}}Localizations.delegate,
         ];
 
   final List<Locale> supportedLocales;

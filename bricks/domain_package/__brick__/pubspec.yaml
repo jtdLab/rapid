@@ -1,6 +1,6 @@
 name: {{project_name}}_domain{{#has_name}}_{{name}}{{/has_name}}
 description: TODO
-version: 0.0.1
+version: 0.1.0
 publish_to: none
 
 environment:
@@ -13,5 +13,6 @@ dependencies:
 dev_dependencies:
   test: ^1.24.6
   build_runner: ^2.4.6
-  freezed: ^2.4.1
   build_verify: ^3.1.0
+  freezed: ^2.4.1
+ 

@@ -1,4 +1,113 @@
+export const Chip = (props) => {
+  const chipStyle = {
+    display: 'inline-flex', 
+    justifyContent: 'center',
+    backgroundColor: props.color,
+    color: 'white',
+    fontWeight: 'bold',
+    borderRadius: '16px',
+    padding: '4px 12px',
+    margin: '4px',
+    cursor: props.link ? 'pointer' : 'default',
+    textDecoration: 'none',
+    fontSize: '12px',
+    minWidth: '64px'
+  };
+
+return (
+props.link ? (
+
+<a
+  href={props.link}
+  style={chipStyle}
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  {props.children}
+</a>
+) : (<span style={chipStyle}>{props.children}</span>) ); };
+
 # Testing
+
+## Unit & Widget Testing
+
+### Testing UI Package
+
+<div>
+  <Chip color="#867DA1">flutter_test</Chip>
+  <Chip color="#867DA1">alchemist</Chip>
+</div>
+
+Widgets can be tested with widget tests using [flutter_test](https://docs.flutter.dev/cookbook/testing/widget/introduction) and golden tests using [alchemist](https://pub.dev/packages/alchemist).
+Themes can be tested using basic unit tests.
+
+### Testing Platform Root Package
+
+<div>
+  <Chip color="#867DA1">flutter_test</Chip>
+  <Chip color="#867DA1">mocktail</Chip>
+</div>
+
+The package can be tested using basic unit tests.
+
+### Testing Platform Feature Package
+
+<div>
+  <Chip color="#867DA1">alchemist</Chip>
+  <Chip color="#867DA1">bloc_test</Chip>
+  <Chip color="#867DA1">flutter_test</Chip>
+  <Chip color="#867DA1">mocktail</Chip>
+</div>
+
+Blocs and Cubits can be tested using [bloc_test](https://pub.dev/packages/bloc_test).
+Widgets can be tested with widget tests using [flutter_test](https://docs.flutter.dev/cookbook/testing/widget/introduction) and golden tests using [alchemist](https://pub.dev/packages/alchemist).
+
+### Testing Domain Package
+
+<div>
+  <Chip color="#867DA1">test</Chip>
+</div>
+
+Entities and Value Objects can be testet with basic unit tests.
+
+### Testing Infrastructure Package
+
+<div>
+  <Chip color="#867DA1">mocktail</Chip>
+  <Chip color="#867DA1">test</Chip>
+</div>
+
+Data Transfer Objects and Service Implementations can be testet with basic unit tests.
+
+### Running Tests
+
+<Tabs
+  values={[
+    { label: "rapid", value: "rapid" },
+    { label: "native", value: "native" },
+  ]}
+>
+<TabItem value="rapid">
+
+```bash
+# Run tests
+melos test
+
+# Run tests with coverage
+melos test:coverage
+```
+</TabItem>
+<TabItem value="native">
+
+```bash
+# Run tests
+flutter test
+
+# Run tests with coverage
+flutter test --coverage
+```
+</TabItem>
+</Tabs>
 
 ## Integration Testing (E2E)
 
@@ -199,29 +308,3 @@ flutter drive \
 
 </TabItem>
 </Tabs>
-
-## Unit & Widget Testing
-
-### Testing UI Package
-
-TODO
-
-### Testing Platform Root Package
-
-TODO
-
-### Testing Platform Feature Package
-
-TODO
-
-### Testing Domain Package
-
-TODO
-
-### Testing Infrastructure Package
-
-TODO
-
-### Running Tests
-
-TODO

@@ -1,6 +1,1 @@
 include: ../../../../analysis_options.yaml
-# Uncomment the following section to specify additional rules.
-
-# linter:
-#   rules:
-#     - camel_case_types

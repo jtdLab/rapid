@@ -42,7 +42,6 @@ rapid domain <subdomain> add entity <name> [arguments]
 
 - Description: The output directory relative to `<domain_package>/lib/` .
 - Type: String
-- Required: No
 - Default: `"."`
 
 ## rapid domain &lt;subdomain&gt; add service_interface
@@ -57,7 +56,6 @@ rapid domain <subdomain> add service_interface <name> [arguments]
 
 - Description: The output directory relative to `<domain_package>/lib/` .
 - Type: String
-- Required: No
 - Default: `"."`
 
 ## rapid domain &lt;subdomain&gt; add value_object
@@ -72,14 +70,12 @@ rapid domain <subdomain> add value_object <name> [arguments]
 
 - Description: The output directory relative to `<domain_package>/lib/` .
 - Type: String
-- Required: No
 - Default: `"."`
 
 #### `--type`
 
 - Description: The type that gets wrapped by this value object. Generics get escaped via `"#"` e.g `Tuple<#A, #B, String>`.
 - Type: String
-- Required: No
 - Default: `"String"`
 
 ## rapid domain &lt;subdomain&gt; remove entity
@@ -94,7 +90,6 @@ rapid domain <subdomain> remove entity <name> [arguments]
 
 - Description: The directory relative to `<domain_package>/lib/` .
 - Type: String
-- Required: No
 - Default: `"."`
 
 ## rapid domain &lt;subdomain&gt; remove service_interface
@@ -109,7 +104,6 @@ rapid domain <subdomain> remove service_interface <name> [arguments]
 
 - Description: The directory relative to `<domain_package>/lib/` .
 - Type: String
-- Required: No
 - Default: `"."`
 
 ## rapid domain &lt;subdomain&gt; remove value_object
@@ -124,5 +118,4 @@ rapid domain <subdomain> remove value_object <name> [arguments]
 
 - Description: The directory relative to `<domain_package>/lib/` .
 - Type: String
-- Required: No
 - Default: `"."`

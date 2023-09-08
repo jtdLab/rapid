@@ -1,3 +1,32 @@
+export const Chip = (props) => {
+  const chipStyle = {
+    display: 'inline-flex', 
+    justifyContent: 'center',
+    backgroundColor: props.color,
+    color: 'white',
+    fontWeight: 'bold',
+    borderRadius: '16px',
+    padding: '4px 12px',
+    margin: '4px',
+    cursor: props.link ? 'pointer' : 'default',
+    textDecoration: 'none',
+    fontSize: '12px',
+    minWidth: '64px'
+  };
+
+  return (
+    props.link ? (
+      <a href={props.link} style={chipStyle} target="_blank" rel="noopener noreferrer">
+        {props.children}
+      </a>
+    ) : (
+      <span style={chipStyle}>
+        {props.children}
+      </span>
+    )
+  );
+};
+
 # UI Module
 
 <Image
@@ -9,46 +38,74 @@
 
 ## UI Package
 
-🎯 Provide platform independent [Widgets](/architecture/ui-module#widget).
+<div>
+  <Chip color="#F9C809">presentation</Chip>
+  <Chip color="#867DA1">theme_tailor</Chip>
+</div>
 
-🎯 Provide platform independent colors and other design language.
+🎯 Provide platform independent design language.
 
-### Widget
+### Components
+
+#### Widget
+
+The widget component represents a reusable fraction of the UI. It can have an associated theme that allows easy styling and a scalable design system. The themes are realized using [`ThemeExtensions`](https://api.flutter.dev/flutter/material/ThemeExtension-class.html) via [theme_tailor](https://pub.dev/packages/theme_tailor).
 
 ```dart
-TODO
+// button.dart
+class MyAppButton extends StatelessWidget {
+  const MyAppButton({
+    super.key,
+    this.theme,
+  });
+
+  final MyAppButtonTheme? theme;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = this.theme ?? context.myAppButtonTheme;
+    final backgroundColor = theme.backgroundColor;
+
+    // implement the button
+  }
+}
+
+// button_theme.dart (optional)
+@Tailor(themeGetter: ThemeGetter.onBuildContext)
+class _$MyAppButtonTheme {
+  static List<Color> backgroundColor = [
+    const Color(0xFFFFFFFF),
+    const Color(0xFF000000),
+  ];
+}
 ```
+
+<Accordion title="Context to understand the code">
+```dart
+@Tailor(themeGetter: ThemeGetter.onBuildContext)
+````
+Creates a `theme_tailor` theme.
+
+For more information see:
+
+[Create Theme class](https://pub.dev/packages/theme_tailor#create-theme-class)
+
+[Change generated extensions](https://pub.dev/packages/theme_tailor#change-generated-extensions)
+</Accordion>
 
 More information about testing the [UI Package](/architecture/ui-module#ui-package) can be found [here](/architecture/testing#testing-ui-package).
 
 ## Platform UI Package
 
-🎯 Provide platform dependent [Widgets](/architecture/ui-module#widget-1).
+<div>
+  <Chip color="#F9C809">presentation</Chip>
+  <Chip color="#867DA1">theme_tailor</Chip>
+</div>
 
-🎯 Provide platform dependent colors and other design language.
+🎯 Provide platform dependent design language.
 
-### Widget
+### Components
 
-#### `<name>.dart`
-
-```dart
-TODO
-```
-
-#### `<name>_theme.dart`
-
-```dart
-TODO
-```
-
-#### `<name>_theme.tailor.dart`
-
-Type: Generated
-
-Generator: [theme_tailor](https://pub.dev/packages/theme_tailor)
-
----
-Find more information about adding here and removing [Widgets] here.
----
+See [UI Package](/architecture/ui-module#components).
 
 More information about testing a [Platform UI Package](/architecture/ui-module#platform-ui-package) can be found [here](/architecture/testing#testing-ui-package).

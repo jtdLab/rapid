@@ -10,7 +10,7 @@ const platforms = [
 const dart = DartDependency('3.1.0', '4.0.0');
 const flutter = FlutterDependency('3.13.0');
 final packages = [
-  PackageDependency('alchemist', '0.6.1'),
+  PackageDependency('alchemist', '0.7.0'),
   PackageDependency('auto_route', '7.8.3'),
   PackageDependency('auto_route_generator', '7.3.1'),
   PackageDependency('bloc_concurrency', '0.2.2'),
@@ -18,14 +18,14 @@ final packages = [
   PackageDependency('bloc', '8.1.2'),
   PackageDependency('build_runner', '2.4.6'),
   PackageDependency('build_verify', '3.1.0'),
-  PackageDependency('cupertino_icons', '1.0.5'),
+  PackageDependency('cupertino_icons', '1.0.6'),
   PackageDependency('faker', '2.1.0'),
-  PackageDependency('fluent_ui', '4.7.3'),
+  PackageDependency('fluent_ui', '4.7.4'),
   PackageDependency('flutter_bloc', '8.1.3'),
   PackageDependency('flutter_gen_runner', '5.3.1'),
   PackageDependency('freezed_annotation', '2.4.1'),
   PackageDependency('freezed', '2.4.1'),
-  PackageDependency('get_it', '7.6.0'),
+  PackageDependency('get_it', '7.6.4'),
   PackageDependency('injectable_generator', '2.4.0'),
   PackageDependency('injectable', '2.3.0'),
   PackageDependency('json_annotation', '4.8.1'),

@@ -26,5 +26,4 @@ flutter pub global activate -sgit https://github.com/jtdLab/rapid.git --git-path
 rapid create my_app --android --ios --windows
 ```
 
-[//]: <> (TODO change to main branch)
-[rapid_create]: https://raw.githubusercontent.com/jtdLab/rapid/dev/docs/assets/vhs/create.gif
+[rapid_create]: https://raw.githubusercontent.com/jtdLab/rapid/main/docs/assets/vhs/create.gif

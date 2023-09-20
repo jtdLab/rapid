@@ -30,7 +30,7 @@ void main() {
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -47,7 +47,7 @@ void main() {
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -95,7 +95,7 @@ void main() {
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -112,7 +112,7 @@ void main() {
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -158,7 +158,7 @@ void main() {
               brightness: Brightness.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -175,7 +175,7 @@ void main() {
               brightness: Brightness.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -223,7 +223,7 @@ void main() {
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -240,7 +240,7 @@ void main() {
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -288,7 +288,7 @@ void main() {
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -305,7 +305,7 @@ void main() {
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -353,7 +353,7 @@ void main() {
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -370,7 +370,7 @@ void main() {
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -416,7 +416,7 @@ void main() {
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -433,7 +433,7 @@ void main() {
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -479,7 +479,7 @@ void main() {
               themeMode: ThemeMode.light,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),
@@ -496,7 +496,7 @@ void main() {
               themeMode: ThemeMode.dark,
               widget: _get{{project_name.pascalCase()}}{{name.pascalCase()}}(
                 theme:
-                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12)),
+                    const {{project_name.pascalCase()}}{{name.pascalCase()}}Theme(backgroundColor: Color(0xFF12FF12),),
               ),
             ),
           ),

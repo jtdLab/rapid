@@ -14,7 +14,7 @@ void main() {
         'ios <feature> add bloc',
         performTest(
           platform: Platform.ios,
-          expectedCoverage: 72.73,
+          expectedCoverage: 80,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );

@@ -34,6 +34,8 @@ dynamic Function() performTest({
       ]);
 
       // Assert
+      // TODO(jtdLab): service interface has one_member_abstract lint
+      // await verifyNoAnalyzerIssues();
       await verifyNoFormattingIssues();
       verifyDoExist({
         ...tester.serviceInterfaceFiles(

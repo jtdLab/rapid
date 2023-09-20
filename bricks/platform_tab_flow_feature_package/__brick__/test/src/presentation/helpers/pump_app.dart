@@ -10,7 +10,7 @@ import 'package:{{project_name}}_ui_{{platform}}/{{project_name}}_ui_{{platform}
 ///
 /// Use the [locale] parameter to set the language of the app.
 ///
-/// Use the [themeMode] parameter to customize the app's appearance.
+/// Use the [{{^ios}}themeMode{{/ios}}{{#ios}}brightness{{/ios}}] parameter to customize the app's appearance.
 ///
 /// The [observer] parameter allows inspection of navigation events.
 /// Typically, a mocked instance is used for verification purposes.

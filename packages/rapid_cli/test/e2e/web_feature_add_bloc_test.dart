@@ -14,7 +14,7 @@ void main() {
         'web <feature> add bloc',
         performTest(
           platform: Platform.web,
-          expectedCoverage: 72.73,
+          expectedCoverage: 80,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );

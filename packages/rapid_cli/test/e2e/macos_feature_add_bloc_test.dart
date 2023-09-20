@@ -14,7 +14,7 @@ void main() {
         'macos <feature> add bloc',
         performTest(
           platform: Platform.macos,
-          expectedCoverage: 78.57,
+          expectedCoverage: 84.62,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );

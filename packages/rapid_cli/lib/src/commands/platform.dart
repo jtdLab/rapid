@@ -564,7 +564,11 @@ mixin _PlatformMixin on _Rapid {
 
     final rootPackage = platformDirectory.rootPackage;
     final remainingFeaturePackages = featuresDirectory.featurePackages()
-      ..remove(featurePackage);
+      ..removeWhere(
+        (e) =>
+            e.path == featurePackage.path &&
+            e.packageName == featurePackage.packageName,
+      );
 
     logger.newLine();
 

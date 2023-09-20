@@ -14,7 +14,7 @@ void main() {
         'windows <feature> add bloc',
         performTest(
           platform: Platform.windows,
-          expectedCoverage: 72.73,
+          expectedCoverage: 80,
         ),
         timeout: const Timeout(Duration(minutes: 8)),
       );

@@ -10,5 +10,9 @@ dev_dependencies:
       url: https://github.com/jtdLab/rapid.git
       path: packages/rapid_cli
 
+dependency_overrides:
+  pub_updater: ^0.4.0
+  file: ^7.0.0
+
 rapid:
   name: {{project_name}}

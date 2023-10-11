@@ -23,7 +23,7 @@ dependencies:
   dart_style: ^2.3.3
   file: ^7.0.0
   io: ^1.0.4
-  mason: 0.1.0-dev.50 # fixed because logger tests depend on /src of this version
+  mason: 0.1.0-dev.51 # fixed because logger tests depend on /src of this version
   meta: ^1.10.0
   path: ^1.8.3
   platform: ^3.1.2

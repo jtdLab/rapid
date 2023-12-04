@@ -201,7 +201,7 @@ jobs:
       - name: Install Rapid CLI locally
         run: melos dev:activate
 
-      - uses: actions/setup-java@v3
+      - uses: actions/setup-java@v4
         with:
           distribution: zulu
           java-version: 17
